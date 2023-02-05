@@ -1,0 +1,351 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+{% load static %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-1">
+            <div class="card-body">
+                <div class="card-widgets">
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#user_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                </div>
+                <h5 class="card-title mb-0">User Manage</h5>
+
+                <div id="cardCollpase1" class="collapse pt-3 show">
+                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                        <thead>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Email</th>
+                            <th>Mobile No</th>
+                            <th>Role</th>
+                            <th>Agency</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{user.name}}</td>
+                                    {% if user.gender == "M" %}
+                                    <td>Male</td>
+                                    {% else %}
+                                     <td>Female</td>
+                                    {% endif %}
+                                    <td>{{user.email_id}}</td>
+                                    <td>{{user.mobile_no}}</td>
+                                    <td>{{user.role_id}}</td>
+                                    <td>{{user.agency_id}}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            {% if user.is_active == "Y" %}
+                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Deactivate" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Deactivate')"><i class="uil uil-lock-alt"></i></button>
+                                            {% else %}
+                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Activate')"><i class="uil uil-unlock"></i></button>
+                                            {% endif %}
+                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit"
+                                                     onclick="populateEditForm('{{user.login_id}}', '{{user.name}}', '{{user.gender}}', '{{user.Email_Id}}',
+                                                       '{{user.mobile_no}}', '{{user.role_id_id}}', '{{user.agency_id_id}}')"><i class="mdi mdi-square-edit-outline"></i> </button>
+                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Reset Password" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Reset')"><i class="uil-key-skeleton"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="post" id="add_user_form">
+    {% csrf_token %}
+    <div id="user_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="user_modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="fullWidthModalLabel">Manage Users</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Name</label>
+                                <input type="text" name="name" class="form-control" id="name">
+                            </div>
+                            <div id="nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Gender</label>
+                                <div class="mt-1">
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" id="male_radio" name="gender" value="M" class="form-check-input">
+                                        <label class="form-check-label" for="male_radio">Male</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" id="female_radio" name="gender" value="F" class="form-check-input">
+                                        <label class="form-check-label" for="female_radio">Female</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="genderErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email</label>
+                                <input type="email" name="email" class="form-control" id="email" onchange="validate_email_id(this.value)">
+                            </div>
+                            <div id="emailErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Contact Number</label>
+                                <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contact_number" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                            </div>
+                            <div id="contact_numberErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Role</label>
+                                <select id="role" name="role" class="form-select">
+                                    <option value="">--SELECT ROLE--</option>
+                                    {% for role in role %}
+                                        <option value="{{ role.role_id }}">{{ role.role_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="roleErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Agency</label>
+                                <select id="agency" name="agency" class="form-select">
+                                    <option value="">--SELECT AGENCY--</option>
+                                    {% for agency in agency %}
+                                        <option value="{{ agency.agency_id }}">{{ agency.agency_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="agencyErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-success" id="successMsg" style="display:none"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_users()">Add</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form>
+<script>
+function validate_email_id(emailId)
+{
+    let pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    let no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(3000).fadeOut('slow');
+    }
+    else
+    {
+         $.ajax({
+            type : "POST",
+            url : "{% url 'check_email_id' %}",
+            data : $('#add_user_form').serialize(),
+            success : function(data)
+            {
+                if(data.count == "1")
+                {
+                    $('#email').val("");
+                    $('#emailErrorMsg').html("Email Already Exists.Try With Another Email");
+                    $('#emailErrorMsg').show();
+                    $('#emailErrorMsg').delay(3000).fadeOut('slow');
+                }
+                else
+                {
+                    $('#emailErrorMsg').hide();
+                }
+            }
+        });
+    }
+
+}
+
+function save_users()
+{
+        let name = $('#name').val();
+        let gender = $("input[name=gender]:checked").length;
+        let email = $('#email').val();
+        let contact_number = $('#contact_number').val();
+        let role = $('#role').val();
+        let agency = $('#agency').val();
+        let contact_number_count = $('#contact_number').val().length;
+
+        if(name == "")
+        {
+            $('#nameErrorMsg').html("Enter Name.");
+            $('#nameErrorMsg').show();
+            $('#nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(gender < 1)
+        {
+            $('#genderErrorMsg').html("Select One Gender.");
+            $('#genderErrorMsg').show();
+            $('#genderErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(email == "")
+        {
+            $('#emailErrorMsg').html("Enter Email.");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(contact_number == "")
+        {
+            $('#contact_numberErrorMsg').html("Enter Contact Number.");
+            $('#contact_numberErrorMsg').show();
+            $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(contact_number_count < 8)
+        {
+            $('#contact_numberErrorMsg').html("Cannot Be Less Than Eight Digits.");
+            $('#contact_numberErrorMsg').show();
+            $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(role == "")
+        {
+            $('#roleErrorMsg').html("Select Role.");
+            $('#roleErrorMsg').show();
+            $('#roleErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(agency == "")
+        {
+            $('#agencyErrorMsg').html("Select Agency.");
+            $('#agencyErrorMsg').show();
+            $('#agencyErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $("#pageloader").show();
+            $.ajax({
+                type : "POST",
+                url : "{% url 'add_user' %}",
+                data : $('#add_user_form').serialize(),
+                success : function()
+                {
+                    $("#pageloader").hide();
+                    $('#successMsg').html("User Successfully Added.");
+                    $('#successMsg').show();
+                    setTimeout(function() {
+                        $('#successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#userModal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                    $('#add_user_form')[0].reset();
+                }
+            });
+        }
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#mobileErrorMsg').html("Must Start with either 1 or 7.");
+        $('#mobileErrorMsg').show();
+        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
+        $('#mobile').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#mobileErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#mobileErrorMsg').show();
+        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
+        $('#mobile').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#mobileErrorMsg').html("Second Digit Cannot be 6.");
+        $('#mobileErrorMsg').show();
+        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
+        $('#mobile').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#mobileErrorMsg').html("Second Digit Must Start with 7.");
+        $('#mobileErrorMsg').show();
+        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
+        $('#mobile').val("");
+    }
+
+}
+
+function populateEditForm(loginId, name, empId, gender, emailId, mobileNumber, roleId, divisionId, sectionId, fieldId)
+{
+    $('#editLoginId').val(loginId);
+    $('#edit_name').val(name);
+	$('#edit_emp_id').val(empId);
+    $('#edit_email').val(emailId);
+    $('#edit_mobile').val(mobileNumber);
+    $('#edit_role').val(roleId);
+    $('#edit-user-modal').modal('show');
+    if(gender == "M")
+    {
+        $('#male_radio').attr('checked',true);
+    }
+    else
+    {
+        $('#female_radio').attr('checked',true);
+    }
+}
+
+
+function manage_user(login_id,email,name,identifier)
+{
+    if(identifier == "Reset")
+    {
+        $("#loader").show();
+    }
+    $.ajax({
+        type : "GET",
+        url : "{% url 'manage_user' %}",
+        data :{'login_id':login_id,'Email_Id':email,'Name':name,'identifier':identifier},
+        success : function(data)
+        {
+
+            if(data.identifier == "Activate")
+            {
+                $('#userMsg').html("User Activated Successfully.");
+            }
+            else if(data.identifier == "Deactivate")
+            {
+                $('#userMsg').html("User Deactivated Successfully.");
+            }
+            else
+            {
+                $("#loader").hide();
+                $('#userMsg').html("Password Reset Success.");
+            }
+            $('#userMsg').show();
+            setTimeout(function() {
+                $('#userMsg').delay(2000).fadeOut('slow');
+            }, 2000);
+            setTimeout(function() {
+                location.reload();
+            }, 3000);
+        }
+    });
+}
+</script>
+{% endblock %}

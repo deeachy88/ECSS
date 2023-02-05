@@ -1,0 +1,33 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-1">
+            <div class="card-body">
+                <!--<div class="card-widgets">
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#user_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                </div>-->
+                <h5 class="card-title mb-0">Role Master</h5>
+
+                <div id="cardCollpase1" class="collapse pt-3 show">
+                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                        <thead>
+                            <th>#</th>
+                            <th>Role Name</th>
+                        </thead>
+                        <tbody>
+                            {% for role in role %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{role.role_name}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

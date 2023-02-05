@@ -1,0 +1,333 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-1">
+            <div class="card-header">
+                <strong class="card-title">General Account Setting</strong>
+            </div>
+            <div class="card-body">
+                {% for application_details in application_details %}
+                    <div class="card my-1 shadow-none border">
+                        <div class="p-2">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                </div>
+                                <div class="col ps-0">
+                                    <strong>Name</strong>
+                                </div>
+                                <div class="col-auto">
+                                    {{application_details.name}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card my-1 shadow-none border">
+                        <div class="p-2">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                </div>
+                                <div class="col ps-0">
+                                    <strong>Email Address</strong>
+                                </div>
+                                <div class="col-auto">
+                                    {{application_details.email_id}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card my-1 shadow-none border">
+                        <div class="p-2">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                </div>
+                                <div class="col ps-0">
+                                    <strong>Password</strong>
+                                </div>
+                                <div class="col-auto">
+                                    <a data-toggle="modal" href="#" data-bs-toggle="modal" data-bs-target="#password_change_modal" class="btn btn-outline-primary"><i class="uil-key-skeleton"></i> Change Password</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card my-1 shadow-none border">
+                        <div class="p-2">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                </div>
+                                <div class="col ps-0">
+                                    <strong>Contact Number</strong>
+                                </div>
+                                <div class="col-auto">
+                                    {{application_details.mobile_no}}&nbsp;
+                                    <a data-toggle="modal" href="#" data-bs-toggle="modal" data-bs-target="#change_contact_modal" class="btn btn-outline-primary"><i class="uil-phone-alt"></i> Change Contact Number</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" id="change_password_form">
+    {% csrf_token %}
+    <div id="password_change_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="password_change_modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Change Password</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success col-md-12 col-sm-12 col-xs-12" id="successMsg" style="display:none"></div>
+                    <div class="alert alert-success col-md-12 col-sm-12 col-xs-12" id="passwordChangeErrorMsg" style="display:none"></div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email</label>
+                                {% for application_details in application_details %}
+                                    <input type="text" class="form-control" value="{{application_details.email_id}}" disabled>
+                                    <input type="hidden" class="form-control" value="{{application_details.login_id}}" disabled>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Current Password</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="password" name="current_password" id="current_password" class="form-control" minlength="8" onchange="check_password()">
+                                    <div class="input-group-text" data-password="false">
+                                        <span class="password-eye"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="current_passwordErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">New Password</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="password" name="new_password" id="new_password" class="form-control" minlength="8">
+                                    <div class="input-group-text" data-password="false">
+                                        <span class="password-eye"></span>
+                                    </div>
+                                </div>
+                                <span class="font-13 text-muted">Password must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters</span>
+                            </div>
+                            <div id="new_passwordErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Confirm Password</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" minlength="8">
+                                    <div class="input-group-text" data-password="false">
+                                        <span class="password-eye"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="confirm_passwordErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="changePassword()">Change</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form>
+
+<form method="post" id="change_contact_form">
+    {% csrf_token %}
+    <div id="change_contact_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="change_contact_modal" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="fullWidthModalLabel">Change Contact Number</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success" id="mobilesuccessMsgDiv" style="display:none"></div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Current Contact Number</label>
+                                {% for application_details in application_details %}
+                                    <input type="text" id="current_contact_number" class="form-control" value="{{application_details.mobile_no}}" disabled>
+                                    <input type="hidden" class="form-control" value="{{application_details.login_id}}" disabled>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">New Contact Number</label>
+                                <input type="number" class="form-control" name="new_contact_number" id="new_contact_number" maxlength="8">
+                            </div>
+                            <div class="alert alert-danger" id="new_contact_numberErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="changeContactNumber()">Change Contact Number</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form>
+<script>
+    function changePassword()
+	{
+		let current_password = $('#current_password').val();
+		let new_password = $('#new_password').val();
+		let password_confirmation = $('#confirm_password').val();
+		let pattern=/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
+		let no=new_password.match(pattern);
+
+		if(current_password == "")
+		{
+			$('#current_passwordErrorMsg').html("Current password cannot be empty");
+	      	$('#current_passwordErrorMsg').show();
+	      	$('#current_passwordErrorMsg').delay(2000).fadeOut('slow');
+		}
+		if(new_password == "")
+		{
+			$('#new_passwordErrorMsg').html("New password cannot be empty");
+	      	$('#new_passwordErrorMsg').show();
+	      	$('#new_passwordErrorMsg').delay(2000).fadeOut('slow');
+		}
+		if(password_confirmation == "")
+		{
+			$('#confirm_passwordErrorMsg').html("Password Confirmation cannot be empty");
+	      	$('#confirm_passwordErrorMsg').show();
+            $('#confirm_passwordErrorMsg').delay(2000).fadeOut('slow');
+		}
+		if(current_password == new_password)
+		{
+			$('#new_passwordErrorMsg').html("New password and Current password cannot be the same");
+	      	$('#new_passwordErrorMsg').show();
+	      	$('#new_passwordErrorMsg').delay(2000).fadeOut('slow');
+	      	$('#new_password').val("");
+	      	$('#confirm_password').val("");
+		}
+		if(new_password != password_confirmation)
+		{
+			$('#confirm_passwordErrorMsg').html("New password and Password Confirmation doesnot match");
+	      	$('#confirm_passwordErrorMsg').show();
+	      	$('#confirm_passwordErrorMsg').delay(2000).fadeOut('slow');
+	      	$('#new_password').val("");
+	      	$('#confirm_password').val("");
+		}
+		if(no==null)
+		{
+			$('#passwordChangeErrorMsg').html("Password Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters");
+	      	$('#passworderrorMsgDiv').show();
+	      	$('#passworderrorMsgDiv').delay(2000).fadeOut('slow');
+		}
+		else
+		{
+			$.ajax({
+				type : "POST",
+				url : "{% url 'change_password' %}",
+				data : $('#change_password_form').serialize(),
+				success: function(data)
+				{
+                    if(data.message == "update_successful")
+                    {
+                        $('#successMsg').html("Password Changed Successful.");
+                        $('#successMsg').show();
+                        $('#successMsg').delay(2000).fadeOut('slow');
+                        $('#current_password').val("");
+		                $('#new_password').val("");
+		                $('#confirm_password').val("");
+                        setTimeout(function() {
+                            $('#password_change_modal').modal('hide');
+                        }, 3000);
+                         setTimeout(function() {
+                           location.reload();
+                        }, 3000);
+                    }
+				}
+			});
+		}
+	}
+
+	function changeContactNumber()
+	{
+		let new_contact_number = $('#new_contact_number').val();
+		let current_contact_number = $('#current_contact_number').val();
+
+		if(new_contact_number == "")
+		{
+			$('#new_contact_numberErrorMsg').html("");
+			$('#new_contact_numberErrorMsg').html("New contact number cannot be empty");
+	      	$('#new_contact_numberErrorMsg').show();
+	      	$('#new_contact_numberErrorMsg').delay(2000).fadeOut('slow');
+	      	return;
+		}
+		if(new_contact_number == current_contact_number)
+		{
+			$('#new_contact_numberErrorMsg').html("");
+			$('#new_contact_numberErrorMsg').html("New contact number and Current contact number cannot be the same");
+	      	$('#new_contact_numberErrorMsg').show();
+	      	$('#new_contact_numberErrorMsg').delay(2000).fadeOut('slow');
+	      	$('#new_contact_number').val("");
+	      	return;
+		}
+		else
+		{
+		    $.ajax({
+				type : "POST",
+				url : "{% url 'change_mobile_number' %}",
+				data : $('#change_contact_form').serialize(),
+				success: function(data)
+				{
+                    if(data.message == "update_successful")
+                    {
+                        $('#mobilesuccessMsgDiv').html("Mobile number has been changed successfully.");
+                        $('#mobilesuccessMsgDiv').show();
+                        $('#mobilesuccessMsgDiv').delay(2000).fadeOut('slow');
+                        $('#new_mobile').val("");
+                        setTimeout(function() {
+                            $('#modal_editMobile').modal('hide');
+                        }, 3000);
+                         setTimeout(function() {
+                           location.reload();
+                        }, 3000);
+
+                    }
+				}
+			});
+		}
+	}
+
+	function check_password()
+	{
+        $.ajax({
+            type : "GET",
+            url : "{% url 'check_user_password' %}",
+            data : $('#change_password_form').serialize(),
+            success: function(data)
+            {
+                if (data.form_is_valid)
+                {
+                    $('#current_passwordErrorMsg').hide();
+                }
+                else
+                {
+                    $('#current_passwordErrorMsg').html("Current Password Does Not Match");
+                    $('#current_passwordErrorMsg').show();
+                    $('#current_passwordErrorMsg').delay(2000).fadeOut('slow');
+                }
+            }
+        });
+	}
+</script>
+{% endblock %}

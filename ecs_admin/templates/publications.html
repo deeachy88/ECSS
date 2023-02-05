@@ -1,0 +1,42 @@
+{% extends 'index.html' %}
+{% block content %}
+<style>
+    p {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <p class="alert alert-success border-0 rounded-0 text-center col-md-4 offset-md-4" role="alert">
+            <i class="uil-folder-heart me-1 h5 align-middle"></i>Publications
+        </p>
+        <div class="row">
+            <div class="card col-md-12">
+                <div class="card-body">
+                    <div id="cardCollpase1" class="collapse pt-3 show">
+                        <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                            <thead>
+                                <th>Publication Name</th>
+                                <th>Attachment</th>
+                            </thead>
+                            <tbody>
+                                {% for publication_details in publication_details %}
+                                    <tr>
+                                        <td>{{publication_details.publication_title}}</td>
+                                        {% for file_attachment in file_attachment %}
+                                            {% if file_attachment.document_id == publication_details.document_id %}
+                                                <td><a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a></td>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

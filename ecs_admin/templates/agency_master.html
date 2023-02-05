@@ -1,0 +1,246 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-1">
+            <div class="card-body">
+                <div class="card-widgets">
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add_agency_modal"><i class="mdi mdi-plus-circle me-2"></i>Add</button>
+                </div>
+                <h5 class="card-title mb-0">Agency Master</h5>
+
+                <div id="cardCollpase1" class="collapse pt-3 show">
+                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                        <thead>
+                            <th>#</th>
+                            <th>Agency</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            {% for agency_details in agency_list %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{agency_details.agency_name}}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit Agency"
+                                                     onclick="populateEditForm('{{agency_details.agency_id}}', '{{agency_details.agency_name}}')"><i class="mdi mdi-square-edit-outline"></i> </button>
+                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Delete Agency"
+                                                     onclick="populateDeleteForm('{{agency_details.agency_id}}', '{{agency_details.agency_name}}')"><i class="mdi mdi-delete"></i> </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" id="add_agency_form">
+    {% csrf_token %}
+    <div id="add_agency_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="add_agency_modal" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="fullWidthModalLabel">Add Agency Master</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success" id="successMsg" role="alert" style="display:none;">
+                        <i class="ri-check-line me-2"></i>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Agency Name</label>
+                                <input type="text" name="agency_name" class="form-control" id="agency_name">
+                            </div>
+                            <div id="agency_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_agency()">Add</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form><!-- /.form -->
+
+<form method="post" id="edit_agency_form">
+    {% csrf_token %}
+    <div id="edit_agency_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="edit_agency_modal" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Agency Master</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success" id="edit_successMsg" role="alert" style="display:none;">
+                        <i class="ri-check-line me-2"></i>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Agency Name</label>
+                                <input type="text" name="edit_agency_name" class="form-control" id="edit_agency_name">
+                                <input type="hidden" name="edit_agency_id" class="form-control" id="edit_agency_id">
+                            </div>
+                            <div id="edit_agency_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="edit_agency_details()">Update</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form><!-- /.form -->
+
+<form method="post" id="delete_agency_form">
+    {% csrf_token %}
+    <div id="delete_agency_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="delete_agency_modal" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete Agency Master</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success" id="delete_successMsg" role="alert" style="display:none;">
+                        <i class="ri-check-line me-2"></i>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>Are You Sure You Want To Delete <b><span id="delete_agency_name"></span></b> ?</p>
+                            <input type="hidden" name="delete_agency_id" class="form-control" id="delete_agency_id">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" onclick="delete_agency_details()">Yes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form><!-- /.form -->
+
+<script>
+function populateEditForm(agency_id, agency_name)
+{
+    $('#edit_agency_id').val(agency_id);
+    $('#edit_agency_name').val(agency_name);
+    $('#edit_agency_modal').modal('show');
+}
+
+function populateDeleteForm(agency_id, agency_name)
+{
+    $('#delete_agency_id').val(agency_id);
+    $('#delete_agency_name').html(agency_name);
+    $('#delete_agency_modal').modal('show');
+}
+
+function save_agency()
+{
+        let agency_name = $('#agency_name').val();
+
+        if(agency_name == "")
+        {
+            $('#agency_nameErrorMsg').html("Enter Agency.");
+            $('#agency_nameErrorMsg').show();
+            $('#agency_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'add_agency_master' %}",
+                data : $('#add_agency_form').serialize(),
+                success : function()
+                {
+                    $('#successMsg').html("Agency Successfully Added.");
+                    $('#successMsg').show();
+                    setTimeout(function() {
+                        $('#successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#add_agency_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                    $('#add_agency_form')[0].reset();
+                }
+            });
+        }
+}
+
+function edit_agency_details()
+{
+        let edit_agency_name = $('#edit_agency_name').val();
+
+        if(edit_agency_name == "")
+        {
+            $('#edit_agency_nameErrorMsg').html("Enter Agency.");
+            $('#edit_agency_nameErrorMsg').show();
+            $('#edit_agency_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'edit_agency_master' %}",
+                data : $('#edit_agency_form').serialize(),
+                success : function()
+                {
+                    $('#edit_successMsg').html("Agency Successfully Updated.");
+                    $('#edit_successMsg').show();
+                    setTimeout(function() {
+                        $('#edit_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_agency_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                    $('#edit_agency_form')[0].reset();
+                }
+            });
+        }
+}
+
+function delete_agency_details()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'delete_agency_master' %}",
+        data : $('#delete_agency_form').serialize(),
+        success : function()
+        {
+            $('#delete_successMsg').html("Agency Deleted Successfully.");
+            $('#delete_successMsg').show();
+            setTimeout(function() {
+                $('#delete_successMsg').delay(2000).fadeOut('slow');
+            }, 2000);
+            setTimeout(function() {
+                $('#delete_agency_modal').modal('hide');
+            }, 2000);
+            setTimeout(function() {
+                location.reload();
+            }, 3000);
+        }
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+        <title>NEC | ECS </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Deepak" name="author" />
+
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}">
+
+        <!-- Plugin css -->
+        <link rel="stylesheet" href="{% static 'assets/vendor/daterangepicker/daterangepicker.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css' %}">
+
+        <!-- Theme Config Js -->
+        <script src="{% static 'assets/js/hyper-config.js' %}"></script>
+
+        <!-- App css -->
+        <link href="{% static 'assets/css/app-saas.min.css' %}" rel="stylesheet" type="text/css" id="app-style" />
+
+        <!-- Icons css -->
+        <link href="{% static 'assets/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+        <!-- DataTable -->
+        <link href="{% static 'assets/vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
+</head>
+<style>
+    .navbar-nav li:hover > ul.dropdown-menu {
+    display: block;
+}
+.dropdown-submenu {
+    position:relative;
+}
+.dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top:-6px;
+}
+
+/* rotate caret on hover */
+.dropdown-menu > li > a:hover:after {
+    text-decoration: underline;
+    transform: rotate(-90deg);
+}
+</style>
+<body style="background-color:white;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-11 mt-0">
+                <img class="mx-auto d-block" src="{% static 'assets/images/nec_header.png' %}" style="background:center;max-width:100%">  
+            </div>
+        </div>
+        {% include 'header.html' %}
+        <hr>
+        {% block content %}
+            <div id="content_div">
+                <div class="row">
+                {% for other_details in other_details %}
+                    {% if other_details.type == 'publications' %}
+                    <div class="card col-md-4 mt-1">
+                        <div class="card-body">
+                            <h5 class="card-title mb-0 text-center">{{other_details.type}}</h5>
+                            <div id="cardCollpase1" class="collapse pt-3 show justify-content-between">
+                                <div class="table-responsive">
+                                    <table class="table mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>{{other_details.title}}</th>
+                                                {% for file_attachment in file_attachment %}
+                                                    {% if file_attachment.document_id == other_details.document_id %}
+                                                        <th><a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a></th>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% elif other_details.type == 'downloads' %}
+                    <div class="card col-md-4 mt-1">
+                        <div class="card-body">
+                            <h5 class="card-title mb-0 text-center">{{other_details.type}}</h5>
+                            <div class="collapse pt-3 show justify-content-between">
+                                <div class="table-responsive">
+                                    <table class="table mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>{{other_details.title}}</th>
+                                                {% for file_attachment in file_attachment %}
+                                                    {% if file_attachment.document_id == other_details.document_id %}
+                                                        <th><a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a></th>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="card col-md-4 mt-1">
+                        <div class="card-body">
+                            <h5 class="card-title mb-0 text-center">{{other_details.type}}</h5>
+                            <div class="collapse pt-3 show justify-content-between">
+                                <div class="table-responsive">
+                                    <table class="table mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>{{other_details.title}}</th>
+                                                {% for file_attachment in file_attachment %}
+                                                    {% if file_attachment.document_id == other_details.document_id %}
+                                                        <th><a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a></th>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                {% endfor %}
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+    <div class="modal fade" id="loginModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div id="loginBox">
+        <div class="modal-header">
+            <h4 class="modal-title" id="fullWidthModalLabel"><strong><i class="uil uil-lock-alt"></i>
+												&nbsp;Please Enter Your Credentials</strong></h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+        </div>
+      <!--Body-->
+      <form action="{% url 'login' %}" id="loginForm" method="post">
+        {% csrf_token %}
+        {% if message %}
+            <div class="alert alert-danger" id="login_error">{{ message }}</div>
+        {% endif %}
+      <div class="modal-body mx-4">
+        <div class="md-form mb-2">
+          <input type="email" id="username" name="username" placeholder="Email" class="form-control validate">
+        </div>
+
+        <div class="md-form pb-3">
+            <div class="input-group input-group-merge">
+                <input type="password" name="password" id="password" class="form-control" placeholder="Password">
+                <div class="input-group-text" data-password="false">
+                    <span class="password-eye"></span>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mb-3">
+            <button class="btn btn-primary btn-sm mt-1"><i class="uil uil-message me-1"></i>Log in</button>
+        </div>
+
+      </div>
+      </form>
+      
+      <!--Footer-->
+      <div class="modal-footer mx-5 pt-3 mb-1 justify-content-center">
+        <a href="#" onclick="forgotPassword()" class="font-small blue-text d-flex justify-content-center">
+			Forgot Password ?
+		</a>
+      </div>
+      </div>
+      <div id="ForgotBox" style="display:none;">
+          <div class="modal-header text-center">
+            <h4 class="modal-title"><strong><i class="uil uil-lock-alt"></i>
+												&nbsp;Reset Your Password</strong></h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+        </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <!--Body-->
+      <form id="forgot_password_form" method="post">
+            {% csrf_token %}
+        <div class="alert alert-danger" id="errorMsg" style="display:none"></div>
+		<div class="alert alert-info" id="successMsgReset" style="display:none"></div>
+       <div class="form-group mt-1">
+   			<label>Email</label>
+   			<input type="email" name="email_id" class="form-control" id="email_id" required="required" placeholder="Your Email"  onchange="validateemailId(this.value)" onblur="getSecurityQuestion(this.value)"/>
+  		    <div class="alert" id="email_idErrorMsg" style="display:none"></div>
+       </div>
+  		<div class="form-group mt-1">
+			<label for="security_question">Security Question</label>
+			<select class="form-control" id="security_question" name="security_question" tabindex="2" onchange="getAnswer(this.value)">
+				<option value="">--SELECT SECURITY QUESTION--</option>
+                {% for security in security %}
+                    <option value="{{ security.question_id }}">{{ security.question }}</option>
+                {% endfor %}
+			</select>
+            <div class="alert" id="securityErrorMsg" style="display:none"></div>
+		</div>
+		<div class="form-group mt-1">
+			<label for="answer">Security Answer</label>
+			<input type="text" class="form-control" id="answer" name="answer" placeholder="Security Answer" tabindex="3">
+		    <div class="alert" id="answerErrorMsg" style="display:none"></div>
+        </div>
+        <div class="text-center mb-3">
+            <button class="btn btn-primary btn-sm mt-2" onclick="update_password()"><i class="uil uil-envelope-add me-1"></i>Reset Password</button>
+        </div>
+        <input type="hidden" id="securityAnswer">
+		<div id="submitMsgDiv" style="display: none"></div>
+      </form>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer mx-5 pt-3 mb-1 justify-content-center">
+        <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center">
+			Back To Login 
+		</a>
+      </div>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+<!-- Modal -->
+   <!-- Modal -->
+<div class="modal fade" id="registrationModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong><i class="fa fa-lock"></i>
+												&nbsp;Client Registration</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <form method="post" id="client_registration_form">
+      {% csrf_token %}
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Proponent Type</label>
+                    <select id="proponent_type" name="proponent_type" class="form-select">
+                        <option value="">--SELECT--</option>
+                        {% for proponent_type in proponent_type %}
+                            <option value="{{ proponent_type.proponent_type_id }}">{{ proponent_type.proponent_type_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="proponent_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Proponent Name</label>
+                    <input type="text" name="proponent_name" class="form-control" id="proponent_name">
+                </div>
+                <div id="proponent_nameErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+            </div>
+        </div>
+         <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Address</label>
+                    <input type="text" name="proponent_address" class="form-control" id="proponent_address">
+                </div>
+                <div id="proponent_addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Contact Person</label>
+                    <input type="text" name="contact_person" class="form-control" id="contact_person">
+                </div>
+                <div id="contact_personErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Official Email</label>
+                    <input type="email" name="email" class="form-control" id="email" onchange="validate_email_id(this.value)">
+                </div>
+                <div id="emailErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Contact Number</label>
+                    <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contact_number" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                </div>
+                <div id="mobileErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Dzongkhag</label>
+                    <select id="dzongkhag" name="dzongkhag" class="form-select" onchange="get_gewog(this.value)">
+                        <option value="">--SELECT DZONGKHAG--</option>
+                        {% for dzongkhag in dzongkhag %}
+                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="dzongkhagErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Gewog</label>
+                    <select id="gewog" name="gewog" class="form-select" onchange="get_village(this.value)">
+                        <option value="">--SELECT GEWOG--</option>
+                        {% for gewog in gewog %}
+                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="gewogErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Village</label>
+                    <select id="village" name="village" class="form-select">
+                        <option value="">--SELECT VILLAGE--</option>
+                        {% for village in village %}
+                            <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="villageErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+            </div>
+        </div>
+      </div>
+      <div class="alert alert-success" id="client_registration_message_div" style="display:none"></div>
+      <div class="alert alert-danger" id="client_registration_error_message_div" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-success" onclick="register_client()"><i class="uil uil-message me-1"></i>Submit</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Cancel</button>
+      </div>
+      </form>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+<!-- Vendor js -->
+        <script src="{% static 'assets/js/vendor.min.js' %}"></script>
+
+        <!-- Daterangepicker js -->
+        <script src="{% static 'assets/vendor/daterangepicker/moment.min.js' %}"></script>
+        <script src="{% static 'assets/vendor/daterangepicker/daterangepicker.js' %}"></script>
+        <!-- App js -->
+        <script src="{% static 'assets/js/app.min.js' %}"></script>
+    <!-- bootstrap -->
+    <script>
+        function forgotPassword()
+        {
+			$('#loginBox').hide();
+			$('#ForgotBox').show();
+	 	}
+
+         function back()
+         {
+			$('#loginBox').show();
+			$('#ForgotBox').hide();
+	 	}
+
+        function get_gewog(dzongkhag_id)
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'load_gewog' %}",
+                data :{'dzongkhag_id':dzongkhag_id},
+                success : function(data)
+                {
+                    $('#gewog').html(data);
+                }
+            });
+        }
+
+        function get_village(gewog_id)
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'load_village' %}",
+                data :{'gewog_id':gewog_id},
+                success : function(data)
+                {
+                    $('#village').html(data);
+                }
+            });
+        }
+
+        function validate_email_id(email)
+        {
+            var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+            var no=email.match(pattern);
+
+            if(no==null)
+            {
+                $('#emailErrorMsg').html("The email is invalid");
+                $('#email').val("");
+                $('#emailErrorMsg').show();
+                $('#emailErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                $('#emailErrorMsg').hide();
+            }
+        }
+
+        function register_client()
+        {
+            let proponent_type = $('#proponent_type').val();
+            let proponent_name = $('#proponent_name').val();
+            let address = $('#proponent_address').val();
+            let contact_person = $('#contact_person').val();
+            let email = $('#email').val();
+            let contact_number = $('#contact_number').val();
+            let contact_number_count = $('#contact_number').val().length;
+            let dzongkhag = $('#dzongkhag').val();
+            let gewog = $('#gewog').val();
+            let village = $('#village').val();
+
+            if(proponent_type == "")
+            {
+                $('#proponent_typeErrorMsg').html("Select Proponent Type.");
+                $('#proponent_typeErrorMsg').show();
+                $('#proponent_typeErrorMsg').delay(2000).fadeOut('slow');
+                $("#proponent_type").focus();
+            }
+            else if(proponent_name == "")
+            {
+                $('#proponent_nameErrorMsg').html("Enter Proponent Name.");
+                $('#proponent_nameErrorMsg').show();
+                $('#proponent_nameErrorMsg').delay(2000).fadeOut('slow');
+                $("#proponent_name").focus();
+            }
+            else if(address == "")
+            {
+                $('#proponent_addressErrorMsg').html("Enter Address.");
+                $('#proponent_addressErrorMsg').show();
+                $('#proponent_addressErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(contact_person == "")
+            {
+                $('#contact_personErrorMsg').html("Enter Contact Person.");
+                $('#contact_personErrorMsg').show();
+                $('#contact_personErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(email == "")
+            {
+                $('#emailErrorMsg').html("Enter Official Email.");
+                $('#emailErrorMsg').show();
+                $('#emailErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(contact_number == "")
+            {
+                $('#contact_numberErrorMsg').html("Enter Contact Number.");
+                $('#contact_numberErrorMsg').show();
+                $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(contact_number_count < 8)
+            {
+                $('#contact_numberErrorMsg').html("Cannot Be Less Than Eight Digits.");
+                $('#contact_numberErrorMsg').show();
+                $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(dzongkhag == "")
+            {
+                $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+                $('#dzongkhagErrorMsg').show();
+                $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(gewog == "")
+            {
+                $('#gewogErrorMsg').html("Select Gewog.");
+                $('#gewogErrorMsg').show();
+                $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(village == "")
+            {
+                $('#villageErrorMsg').html("Select Village.");
+                $('#villageErrorMsg').show();
+                $('#villageErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'check_email_id' %}",
+                    data : $('#client_registration_form').serialize(),
+                    success : function(data)
+                    {
+                        if(data.count == "1")
+                        {
+                            $('#email').val("");
+                            $('#emailErrorMsg').html("Email Already Exists.Try With Another Email");
+                            $('#emailErrorMsg').show();
+                            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+                        }
+                        else
+                        {
+                            $.ajax({
+                                type : "POST",
+                                url : "{% url 'client_registration' %}",
+                                data : $('#client_registration_form').serialize(),
+                                success : function(data)
+                                {
+                                    if(data.message == "registration successful")
+                                    {
+                                        $('#client_registration_message_div').show();
+                                        $('#client_registration_message_div').html("Client Registered Successfully");
+                                        setTimeout(function() {
+                                            $('#client_registration_message_div').delay(2000).fadeOut('slow');
+                                        }, 3000);
+                                        setTimeout(function() {
+                                            location.reload();
+                                        }, 3000);
+                                    }
+                                    else
+                                    {
+                                        $('#client_registration_error_message_div').show();
+                                        $('#client_registration_error_message_div').html("Client Registration Failed");
+                                        setTimeout(function() {
+                                            $('#client_registration_error_message_div').delay(2000).fadeOut('slow');
+                                        }, 3000);
+                                        setTimeout(function() {
+                                            location.reload();
+                                        }, 3000);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+    function update_password()
+    {
+
+        var uid = $('#email_id').val();
+        var answer = $('#answer').val();
+        var security = $('#security').val();
+        var answerForm =  $('#securityAnswer').val();
+
+        if(uid == "")
+        {
+            $('#emailErrorMsg').html("Email Is Required");
+            $('#emailErrorMsg').show();
+            $('#email').focus();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(security == "")
+        {
+            $('#securityErrorMsg').html("Select Security Question");
+            $('#securityErrorMsg').show();
+            $('#security').focus();
+            $('#securityErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(answer == "")
+        {
+            $('#answerErrorMsg').html("Enter Your Security Questions Answer");
+            $('#answerErrorMsg').show();
+            $('#answer').focus();
+            $('#answerErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var enteredAnswer = $('#answer').val();
+            if(answerForm.toLowerCase() == enteredAnswer.toLowerCase())
+            {
+                $('#answerErrorMsg').html("Please Wait..");
+                $('#answerErrorMsg').show();
+                $('#answerErrorMsg').delay(3000).fadeOut('slow');
+                $('#submit_button').hide();
+                $.ajax({
+                    type: 'POST',
+                    url : "{% url 'update_password' %}",
+                    data : $('#forgot_password_form').serialize(),
+                    success: function(data)
+                    {
+                        $('#sucessMsg').show();
+                        $('#sucessMsg').delay(2000).fadeOut('slow');
+                        $('#submit_button').show();
+                        setTimeout('location.reload()',3000);
+                    }
+                });
+            }
+            else
+            {
+                $('#answerErrorMsg').html("The answer you entered does not match your previous answer, please verify and try again else contact administrator");
+                $('#answerErrorMsg').show();
+                $('#answerErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+    }
+
+    function getSecurityQuestion(uid)
+     {
+        if(uid == "")
+        {
+            $('#email_idErrorMsg').html("Email Is Required.");
+            $('#email_idErrorMsg').show();
+            $('#email_idErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'load_security_question' %}",
+                data :{'email':uid},
+                success : function(data)
+                {
+                    $('#security_question').html(data);
+                }
+            });
+        }
+     }
+
+    function getAnswer(questionId)
+    {
+        var uid = $('#email_id').val();
+        $.ajax({
+            async: false,
+            type: 'GET',
+            url : "{% url 'get_security_answer' %}",
+            data :{'questionId':questionId, 'email_id':uid,  csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(data)
+            {
+                $('#securityAnswer').val(data.answer);
+            }
+        });
+    }
+
+    function validateemailId(emailId)
+    {
+        var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+        var no=emailId.match(pattern);
+
+        if(no==null)
+        {
+            $('#email_idErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+            $('#email_id').val("");
+            $('#email_idErrorMsg').show();
+            $('#email_idErrorMsg').delay(2000).fadeOut('slow');
+        }else{
+         $('#email_idErrorMsg').hide();
+        }
+
+    }
+
+    function loadSubMenuPage(menu_id)
+    {
+        $.ajax
+		({
+			type : "GET",
+			url : "{% url 'get_content_details' %}",
+			data : {'menu_id':menu_id, 'identifier':'SM'},
+			dataType : "html",
+			success : function(responseText)
+			{
+			    $('#content_div').show();
+				$("#content_div").html(responseText);
+			}
+		});
+    }
+
+    function loadMenuPage(menu_id)
+    {
+        $.ajax
+		({
+			type : "GET",
+			url : "{% url 'get_content_details' %}",
+			data : {'menu_id':menu_id, 'identifier':'M'},
+			dataType : "html",
+			success : function(responseText)
+			{
+				$("#content_div").html(responseText);
+				$('#content_div').show();
+			}
+		});
+    }
+    </script>
+</body>
+</html>

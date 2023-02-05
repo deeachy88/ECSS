@@ -1,0 +1,276 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+{% load static %}
+
+<div class="card mt-1">
+    <div class="card-body">
+        <h5 class="card-title mb-0">Edit Menu Details</h5>
+        <div id="cardCollpase1" class="collapse pt-3 show">
+            <form method="post" id="edit_menu_form">
+            {% csrf_token %}
+                <div class="row">
+                {% for menu_details in menu_details %}
+                    <input type="hidden" class="form-control" id="edit_document_id" value="{{menu_details.document_id}}">
+                    <input type="hidden" class="form-control" id="menu_id" value="{{menu_details.menu_id}}">
+                    <input type="hidden" class="form-control" id="menu_has_sub_menu" value="{{menu_details.has_sub_menu}}">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Menu Name</label>
+                            <textarea class="form-control" name="edit_menu_name" id="edit_menu_name">{{menu_details.menu_name}}</textarea>
+                        </div>
+                        <div class="alert alert-danger" id="edit_menu_nameErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Has Submenu ?</label>
+                            <div class="mt-1">
+                                {% if menu_details.has_sub_menu == 'Yes'%}
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" name="edit_has_submenu" value="Yes" class="form-check-input" checked onclick="check_has_submenu(this.value)">
+                                        <label class="form-check-label">Yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" name="edit_has_submenu" value="No" class="form-check-input" onclick="check_has_submenu(this.value)">
+                                        <label class="form-check-label">No</label>
+                                    </div>
+                                {% else %}
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" name="edit_has_submenu" value="Yes" class="form-check-input" onclick="check_has_submenu(this.value)">
+                                        <label class="form-check-label">Yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" name="edit_has_submenu" value="No" class="form-check-input" checked onclick="check_has_submenu(this.value)">
+                                        <label class="form-check-label">No</label>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div id="edit_has_submenuErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                    </div>
+                </div>
+                <div class="row" id="menu_content_div">
+                    <div class="col-md-12">
+                        <label class="form-label">Content</label>
+                        <div id="snow-editor" style="height: 200px;">{{ menu_details.menu_content|safe}}</div>
+                        <textarea name="text" style="display:none" id="hiddenArea"></textarea>
+                    </div>
+                    <div id="menu_contentErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                </div>
+                {% endfor %}
+                </form>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-widgets">
+                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#edit_menu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                </div>
+                                <h5 class="card-title mb-0">Attachments</h5>
+                                <div id="cardCollpase2" class="collapse pt-3 show">
+                                    <div id="menu_file_attachment">
+                                        {% include 'file_attachment_page.html' %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-success" id="edit_successMsg" style="display:none"></div>
+                <div class="float-end">
+                    <button type="button" class="btn btn-md btn-primary" onclick="update_menu_master_details()">Update Menu</button>
+                    <a href="#" class="btn btn-md btn-danger"> Cancel </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<form method="post" id="edit_menu_attachment_form" enctype="multipart/form-data">
+{% csrf_token %}
+<div class="modal fade" id="edit_menu_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Add Attachment</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Attachment</label>
+                    <input type="file" name="edit_menu_attach" class="form-control" id="edit_menu_attach" accept=".png,.jpg,.jpeg">
+                </div>
+                <div class="alert alert-danger" id="edit_menu_attachErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="edit_menu_attachment()">Add</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if(document.getElementById("menu_has_sub_menu").value == 'No')
+        {
+            $('#menu_content_div').show();
+        }
+        else
+        {
+            $('#menu_content_div').hide();
+        }
+    });
+
+    function check_has_submenu(value)
+    {
+        if(value == "Yes")
+        {
+            $('#menu_content_div').hide();
+        }
+        else
+        {
+            $('#menu_content_div').show();
+        }
+    }
+
+    function edit_menu_attachment()
+    {
+        let file_length = document.getElementById("edit_menu_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#edit_menu_attachErrorMsg').html("Please Choose A Attachment");
+            $('#edit_menu_attachErrorMsg').show();
+            $('#edit_menu_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var fileName = document.getElementById('edit_menu_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('edit_menu_attach').files[0];
+            fd.append('menu_attach', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_menu_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let document_id = $('#edit_document_id').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_menu_attachment_details' %}",
+                            data : {'filename':fileName, 'file_url':file_url, 'document_id':document_id},
+                            success : function(responseText)
+                            {
+                                $('#edit_menu_attachment_modal').modal('hide');
+                                $('#menu_file_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#edit_menu_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#edit_menu_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#edit_menu_attachErrorMsg').show();
+                        $('#edit_menu_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+        }
+    }
+
+    function update_menu_master_details()
+    {
+        var myEditor = document.querySelector('#snow-editor')
+        var content = myEditor.children[0].innerHTML
+        var menu_name = $('#edit_menu_name').val();
+        var has_submenu = $('input[name="edit_has_submenu"]:checked').val();
+        var has_submenu_value = $("input[name=edit_has_submenu]:checked").length;
+        var document_id = $('#edit_document_id').val();
+        var menu_id = $('#menu_id').val();
+
+        if(menu_name == "")
+        {
+            $('#menu_nameErrorMsg').html("Enter Menu Name.");
+            $('#menu_nameErrorMsg').show();
+            $('#menu_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(has_submenu_value < 1)
+        {
+            $('#has_submenuErrorMsg').html("Choose One.");
+            $('#has_submenuErrorMsg').show();
+            $('#has_submenuErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(has_submenu == "Yes")
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'update_menu_details' %}",
+                data : {'menu_name':menu_name, 'has_submenu':has_submenu, 'menu_id':menu_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data)
+                {
+                    $('#edit_successMsg').html("Menu Updated Successfully");
+                    $('#edit_successMsg').show();
+                    setTimeout(function() {
+                        $('#edit_successMsg').delay(3000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        window.location.href = '/manage_menu';
+                    }, 2000);
+                }
+            });
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'update_menu_details' %}",
+                data : {'menu_name':menu_name,'has_submenu':has_submenu, 'menu_id':menu_id, 'content':content,'document_id':document_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data)
+                {
+                    $('#edit_successMsg').html("Menu Updated Successfully");
+                    $('#edit_successMsg').show();
+                    setTimeout(function() {
+                        $('#edit_successMsg').delay(3000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        window.location.href = '/manage_menu';
+                    }, 2000);
+                }
+            });
+        }
+    }
+</script>
+
+{% endblock %}                 
+
+
+
+

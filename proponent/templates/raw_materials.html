@@ -1,0 +1,28 @@
+<table class="table table-hover table-bordered table-centered mb-0">
+    <thead>
+        <tr>
+            <th>Sl.no.</th>
+            <th>List of raw materials</th>
+            <th>Quantity (MT/annum)</th>
+            <th>Source</th>
+            <th>Method of storage (fully enclosed/partially enclosed/open)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for raw_materials in raw_materials %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{raw_materials.raw_material}}</td>
+                <td>{{raw_materials.qty}}</td>
+                <td>{{raw_materials.source}}</td>
+                <td>{{raw_materials.storage_method}}</td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="raw_materials_details_edit('{{raw_materials.record_id}}','{{raw_materials.application_no}}','{{raw_materials.raw_material}}','{{raw_materials.qty}}','{{raw_materials.source}}','{{raw_materials.storage_method}}')"><i class="mdi mdi-square-edit-outline"></i></a>
+                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_menu('{{raw_materials.record_id}}','{{raw_materials.application_no}}')"><i class="uil-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

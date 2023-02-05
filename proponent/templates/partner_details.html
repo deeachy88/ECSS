@@ -1,0 +1,29 @@
+<table class="table table-hover table-bordered table-centered mb-0">
+    <thead>
+        <tr>
+            <th>Sl.no.</th>
+            <th>Partner Type</th>
+            <th>CID</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for partner_details in partner_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{partner_details.partner_type}}</td>
+                <td>{{partner_details.partner_cid}}</td>
+                <td>{{partner_details.partner_name}}</td>
+                <td>{{partner_details.partner_address}}</td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="partner_details_edit('{{partner_details.record_id}}','{{partner_details.application_no}}','{{partner_details.partner_type}}','{{partner_details.partner_cid}}','{{partner_details.partner_name}}','{{partner_details.partner_address}}')"><i class="mdi mdi-square-edit-outline"></i></a>
+                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_menu('{{partner_details.record_id}}','{{partner_details.application_no}}')"><i class="uil-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

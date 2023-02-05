@@ -1,0 +1,75 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary px-0 py-3">
+    <div class="container">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="mdi mdi-menu"></i>
+        </button>
+
+        <!-- menus -->
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+
+            <!-- left menu -->
+            <ul class="navbar-nav me-auto align-items-center">
+                <li class="nav-item mx-lg-1">
+                    <a class="nav-link" href="{% url 'index' %}">Home</a>
+                </li>
+                {% for menu_details in menu_details %}
+                    {% if menu_details.has_sub_menu == 'Yes' %}
+                     <li class="nav-item dropdown mx-lg-1">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{ menu_details.menu_name }} </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            {% for submenu_details in submenu_details %}
+                                <li><a class="dropdown-item" href="#" onclick="loadSubMenuPage('{{ submenu_details.sub_menu_id }}')">{{ submenu_details.sub_menu_name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                     </li>
+                    {% else %}
+                        <li class="nav-item mx-lg-1">
+                            <a class="nav-link" href="#" onclick="loadMenuPage('{{ menu_details.menu_id }}')">{{ menu_details.menu_name }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+<!--                <li class="nav-item mx-lg-1">-->
+<!--                    <a class="nav-link" href="{% url 'publications' %}">Publications</a>-->
+<!--                </li>-->
+                <li class="nav-item mx-lg-1">
+                    <a class="nav-link" href="{% url 'contact_us' %}">Contact Us</a>
+                </li>
+
+<!--                <li class="nav-item mx-lg-1">-->
+<!--                    <a class="nav-link" href="{% url 'about_us' %}">About Us</a>-->
+<!--                </li>-->
+<!--                <li class="nav-item mx-lg-1">-->
+<!--                    <a class="nav-link" href="{% url 'notification_circulars' %}">Notifications and Circulars</a>-->
+<!--                </li>-->
+<!--                <li class="nav-item mx-lg-1">-->
+<!--                    <a class="nav-link" href="{% url 'publications' %}">Committee Schedule</a>-->
+<!--                </li>-->
+<!--                <li class="nav-item mx-lg-1">-->
+<!--                    <a class="nav-link" href="{% url 'publications' %}">EIA Related</a>-->
+<!--                </li>-->
+<!--                <li class="nav-item mx-lg-1">-->
+<!--                    <a class="nav-link" href="{% url 'manage_live_statistics' %}">Live Statistics</a>-->
+<!--                </li>-->
+<!--                <li class="nav-item mx-lg-1">-->
+<!--                    <a class="nav-link" href="{% url 'track_application' %}">Track Application</a>-->
+<!--                </li>-->
+
+            </ul>
+
+            <!-- right menu -->
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item me-0">
+                    <a href="{% url 'user_login' %}" data-bs-toggle="modal" data-bs-target="#loginModalForm" class="nav-link d-lg-none">Login</a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#registrationModalForm" class="nav-link d-lg-none">Client Register</a>
+                    <a href="{% url 'user_login' %}" class="btn btn-sm btn-light rounded-pill d-none d-lg-inline-flex">
+                        <i class="mdi mdi-account-key me-2"></i> Login
+                    </a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#registrationModalForm" class="btn btn-sm btn-light rounded-pill d-none d-lg-inline-flex">
+                        <i class="mdi mdi-account-multiple-plus me-2"></i> Client Register
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>

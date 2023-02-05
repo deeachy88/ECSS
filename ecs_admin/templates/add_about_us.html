@@ -1,0 +1,92 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+{% load static %}
+    <style>
+        .ql-link{
+            display: none !important;
+        }
+        .ql-image{
+            display: none !important;
+        }
+        .ql-video{
+            display: none !important;
+        }
+        .ql-clean{
+            display: none !important;
+        }
+    </style>
+<div class="card mt-1">
+    <div class="card-body">
+        <h5 class="card-title mb-0">Add About Us</h5>
+        <div id="cardCollpase1" class="collapse pt-3 show">
+            <form method="post" id="add_about_us_form">
+            {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Title</label>
+                            <input type="text" name="about_us_title" class="form-control" id="about_us_title">
+                        </div>
+                        <div id="about_us_titleErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">Content</label>
+                        <div id="snow-editor" style="height: 200px;"></div>
+                        <textarea name="text" style="display:none" id="hiddenArea"></textarea>
+                    </div>
+                    <div id="about_us_contentErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                </div>
+                <br>
+            </form>
+        </div>
+        <div class="alert alert-success" id="successMsg" style="display:none"></div>
+        <div class="float-end">
+            <button type="button" class="btn btn-md btn-primary" onclick="save_about_us_details()">Add About Us</button>
+            <button type="button" class="btn btn-md btn-danger" onclick="go_back()"> Cancel </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function save_about_us_details()
+    {
+        var myEditor = document.querySelector('#snow-editor')
+        var content = myEditor.children[0].innerHTML
+        var about_us_title = $('#about_us_title').val();
+
+        if(about_us_title == "")
+        {
+            $('#about_us_titleErrorMsg').html("Enter Title.");
+            $('#about_us_titleErrorMsg').show();
+            $('#about_us_titleErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'save_about_us' %}",
+                data : {'about_us_title':about_us_title, 'about_us_content':content, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#successMsg').html("About Us Added Successfully");
+                    $('#successMsg').show();
+                    setTimeout(function() {
+                        $('#successMsg').delay(3000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        window.location.href = '/manage_about_us';
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function go_back()
+    {
+        window.location.href = '/manage_about_us';
+    }
+</script>
+{% endblock %}
+

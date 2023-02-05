@@ -1,0 +1,218 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+{% load static %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-1">
+            <div class="card-body">
+                <h5 class="card-title mb-0">Edit Sub Menu</h5>
+                <div id="cardCollpase1" class="collapse pt-3 show">
+                    <form method="post" id="edit_menu_form">
+                    {% csrf_token %}
+                   {% for sub_menu_details in sub_menu_details %}
+                    <div class="row">
+                        <input type="hidden" class="form-control" id="edit_document_id" value="{{sub_menu_details.document_id}}">
+                        <input type="hidden" class="form-control" id="sub_menu_id" value="{{sub_menu_details.sub_menu_id}}">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Menu Name</label>
+                                <select id="edit_menu_name" name="edit_menu_name" class="form-select">
+                                    <option value="">--MENU--</option>
+                                    {% for menu_list in menu_list %}
+                                        <option value="{{ menu_list.menu_id }}"{% if sub_menu_details.menu_id == menu_list.menu_id %}selected{% endif %}>{{ menu_list.menu_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="alert alert-danger" id="edit_menu_nameErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Sub Menu Name</label>
+                                <input type="text" name="edit_sub_menu_name" class="form-control" id="edit_sub_menu_name" value="{{sub_menu_details.sub_menu_name}}">
+                            </div>
+                            <div id="edit_sub_menu_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label">Content</label>
+                            <div id="snow-editor" style="height: 200px;">{{ sub_menu_details.sub_menu_content|safe}}</div>
+                            <textarea name="text" style="display:none" id="hiddenArea"></textarea>
+                        </div>
+                        <div id="edit_sub_menu_contentErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                    </div>
+                    <br>
+                    {% endfor %}
+                    </form>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-widgets">
+                                        <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#edit_submenu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                    </div>
+                                    <h5 class="card-title mb-0">Attachments</h5>
+                                    <div id="cardCollpase2" class="collapse pt-3 show">
+                                        <div id="sub_menu_file_attachment">
+                                            {% include 'file_attachment_page.html' %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-success" id="edit_successMsg" style="display:none"></div>
+                    <div class="float-end">
+                        <button type="button" class="btn btn-md btn-primary" onclick="update_submenu_master_details()">Update Sub Menu</button>
+                        <a href="#" class="btn btn-md btn-danger"> Cancel </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" id="edit_submenu_attachment_form" enctype="multipart/form-data">
+{% csrf_token %}
+<div class="modal fade" id="edit_submenu_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Add Attachment</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Attachment</label>
+                    <input type="file" name="edit_submenu_attach" class="form-control" id="edit_submenu_attach" accept=".png,.jpg,.jpeg">
+                </div>
+                <div class="alert alert-danger" id="edit_submenu_attachErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="edit_submenu_attachment()">Add</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+<script>
+    function edit_submenu_attachment()
+    {
+        let file_length = document.getElementById("edit_submenu_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#edit_submenu_attachErrorMsg').html("Please Choose A Attachment");
+            $('#edit_submenu_attachErrorMsg').show();
+            $('#edit_submenu_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var fileName = document.getElementById('edit_submenu_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('edit_submenu_attach').files[0];
+            fd.append('sub_menu_attach', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_submenu_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let document_id = $('#document_id').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_submenu_attachment_details' %}",
+                            data : {'filename':fileName, 'file_url':file_url, 'document_id':document_id},
+                            success : function(responseText)
+                            {
+                                $('#edit_submenu_attachment_modal').modal('hide');
+                                $('#sub_menu_file_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#edit_submenu_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#edit_submenu_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#edit_submenu_attachErrorMsg').show();
+                        $('#edit_submenu_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+        }
+    }
+
+    function update_submenu_master_details()
+    {
+        var myEditor = document.querySelector('#snow-editor')
+        var content = myEditor.children[0].innerHTML
+        var menu_name = $('#edit_menu_name').val();
+        var sub_menu_name = $('#edit_sub_menu_name').val();
+        var document_id = $('#edit_submenu_document_id').val();
+        var sub_menu_id = $('#sub_menu_id').val();
+        if(menu_name == "")
+        {
+            $('#edit_menu_nameErrorMsg').html("Select Menu Name.");
+            $('#edit_menu_nameErrorMsg').show();
+            $('#edit_menu_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(sub_menu_name == "")
+        {
+            $('#edit_sub_menu_nameErrorMsg').html("Enter Sub Menu Name.");
+            $('#edit_sub_menu_nameErrorMsg').show();
+            $('#edit_sub_menu_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'update_submenu_details' %}",
+                data : {'menu_name':menu_name,'sub_menu_id':sub_menu_id, 'sub_menu_name':sub_menu_name, 'content':content, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data)
+                {
+                    $('#edit_successMsg').html("Sub Menu Updated Successfully");
+                    $('#edit_successMsg').show();
+                    setTimeout(function() {
+                        $('#edit_successMsg').delay(3000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        window.location.href = '/manage_submenu';
+                    }, 2000);
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}                 
+
+
+
+

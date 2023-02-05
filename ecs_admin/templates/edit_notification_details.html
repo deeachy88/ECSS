@@ -1,0 +1,29 @@
+<div class="row">
+    {% for notification_details in notification_details %}
+        <input type="hidden" class="form-control" id="edit_document_id" value="{{notification_details.document_id}}">
+        <div class="col-lg-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Notification Title</label>
+                <input type="text" name="edit_notification_title" class="form-control" id="edit_notification_title" value="{{notification_details.notification_title}}">
+            </div>
+            <div class="alert alert-danger" id="edit_notitfication_titleErrorMsg" style="display:none"></div>
+        </div>
+    {% endfor %}
+    {% for file_attach in file_attachment %}
+        <div class="col-lg-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Attachment</label><br>
+                <a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a>&nbsp;&nbsp;<span  data-toggle="tooltip" title="Delete Attachment" class="btn btn-outline-danger btn-md" onclick="delete_notification_attachment('{{file_attach.document_id}}')"><i class="uil-trash"></i></span>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-lg-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Attachment</label>
+                <input type="file" name="edit_notification_document" class="form-control" id="edit_notification_document" accept=".png,.jpg,.jpeg,.gif,.pdf,.docx,.doc">
+            </div>
+            <div class="alert alert-danger" id="edit_notification_documentErrorMsg" style="display:none"></div>
+        </div>
+    {% endfor %}
+</div>
+

@@ -1,0 +1,121 @@
+{% extends 'index.html' %}
+{% block content %}
+<style>
+    p {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+</style>
+<div class="row">
+    <div class="col-md-12">
+<!--        <p class="alert alert-success border-0 rounded-0 text-center col-md-4 offset-md-4" role="alert">-->
+<!--            <i class="uil-folder-heart me-1 h5 align-middle"></i>Login-->
+<!--        </p>-->
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="mt-0 text-center">Applicant Login In</h4>
+                    <div class="modal-header justify-content-center">
+                        <h4 class="modal-title"><strong><i class="uil uil-lock-alt"></i>
+                                                            &nbsp;Please Enter Your Credentials</strong></h4>
+                    </div>
+                    <br>
+                    <form action="{% url 'login' %}" id="applicant_loginForm" method="post">
+                        {% csrf_token %}
+                        {% if message %}
+                            <div class="alert alert-danger" id="applicant_login_error">{{ message }}</div>
+                        {% endif %}
+                        <div class="mb-3">
+                            <label for="emailaddress" class="form-label">Email address</label>
+                            <input class="form-control" type="email" id="emailaddress" required="" placeholder="Enter your email">
+                        </div>
+                        <div class="mb-3">
+                            <a href="pages-recoverpw-2.html" class="text-muted float-end"><small>Forgot your password?</small></a>
+                            <label for="password" class="form-label">Password</label>
+                            <input class="form-control" type="password" required="" id="applicant_password" placeholder="Enter your password">
+                        </div>
+                        <div class="d-grid mb-0 text-center">
+                            <button class="btn btn-primary" type="submit"><i class="mdi mdi-login"></i> Log In </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <h4 class="mt-0  text-center">Processing Authority Login</h4>
+                    <div id="loginBox">
+                        <div class="modal-header justify-content-center">
+                            <h4 class="modal-title" id="fullWidthModalLabel"><strong><i class="uil uil-lock-alt"></i>
+                                                                &nbsp;Please Enter Your Credentials</strong></h4>
+                        </div>
+                      <br>
+                      <form action="{% url 'login' %}" id="loginForm" method="post">
+                        {% csrf_token %}
+                        {% if message %}
+                            <div class="alert alert-danger" id="login_error">{{ message }}</div>
+                        {% endif %}
+                        <div class="mb-3">
+                            <label for="emailaddress" class="form-label">Email address</label>
+                            <input class="form-control" type="text" name="username" id="username" required="" placeholder="Enter your email">
+                        </div>
+                        <div class="mb-3">
+                            <a href="#" class="text-muted float-end" onclick="forgotPassword()"><small>Forgot your password?</small></a>
+                            <label for="password" class="form-label">Password</label>
+                            <input class="form-control" type="password" name="password" id="password" placeholder="Enter your password">
+                        </div>
+                        <div class="d-grid mb-0 text-center">
+                            <button class="btn btn-primary" type="submit"><i class="mdi mdi-login"></i> Log In </button>
+                        </div>
+                      </form>
+                      </div>
+                      <div id="ForgotBox" style="display:none;">
+                          <div class="modal-header text-center">
+                            <h4 class="modal-title"><strong><i class="uil uil-lock-alt"></i>
+                                                                &nbsp;Reset Your Password</strong></h4>
+                        </div>
+                      <!--Body-->
+                      <div class="modal-body mx-4">
+                        <!--Body-->
+                      <form id="forgot_password_form" method="post">
+                            {% csrf_token %}
+                        <div class="alert alert-danger" id="errorMsg" style="display:none"></div>
+                        <div class="alert alert-info" id="successMsgReset" style="display:none"></div>
+                       <div class="form-group mt-1">
+                            <label>Email</label>
+                            <input type="email" name="email_id" class="form-control" id="email_id" required="required" placeholder="Your Email"  onchange="validateemailId(this.value)" onblur="getSecurityQuestion(this.value)"/>
+                            <div class="alert" id="email_idErrorMsg" style="display:none"></div>
+                       </div>
+                        <div class="form-group mt-1">
+                            <label for="security_question">Security Question</label>
+                            <select class="form-control" id="security_question" name="security_question" tabindex="2" onchange="getAnswer(this.value)">
+                                <option value="">--SELECT SECURITY QUESTION--</option>
+                                {% for security in security %}
+                                    <option value="{{ security.question_id }}">{{ security.question }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="alert" id="securityErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="form-group mt-1">
+                            <label for="answer">Security Answer</label>
+                            <input type="text" class="form-control" id="answer" name="answer" placeholder="Security Answer" tabindex="3">
+                            <div class="alert" id="answerErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="text-center mb-3">
+                            <button class="btn btn-primary btn-sm mt-2" onclick="update_password()"><i class="uil uil-envelope-add me-1"></i>Reset Password</button>
+                        </div>
+                        <input type="hidden" id="securityAnswer">
+                        <div id="submitMsgDiv" style="display: none"></div>
+                      </form>
+                      </div>
+                      <!--Footer-->
+                      <div class="modal-footer mx-5 pt-3 mb-1 justify-content-center">
+                        <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center">
+                            Back To Login
+                        </a>
+                      </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

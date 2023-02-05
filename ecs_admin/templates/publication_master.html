@@ -1,0 +1,471 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+{% load static %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-1">
+            <div class="card-body">
+                 <div class="card-widgets">
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#publication_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                </div>
+                <h5 class="card-title mb-0">Manage Publications</h5>
+                <div class="alert alert-success" id="manage_publication_SuccessMsg" role="alert" style="display:none;">
+                    <i class="ri-check-line me-2"></i>
+                </div>
+                <div id="cardCollpase1" class="collapse pt-3 show">
+                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                        <thead>
+                            <th>Type</th>
+                            <th>Title</th>
+                            <th>Attachment</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            {% for publication_details in publication_details %}
+                                <tr>
+                                    <td>{{publication_details.type}}</td>
+                                    <td>{{publication_details.title}}</td>
+                                    {% for file_attachment in file_attachment %}
+                                        {% if file_attachment.document_id == publication_details.document_id %}
+                                            <td>{{file_attachment.attachment}}</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="get_other_details('{{ publication_details.others_id }}','{{publication_details.document_id}}')"><i class="mdi mdi-account-eye"></i></button>
+                                                {% if publication_details.is_active == "Y" %}
+                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Deactivate" onclick="manage_publication_details('{{ publication_details.others_id }}','Deactivate')"><i class="uil uil-lock-alt"></i></button>
+                                                {% else %}
+                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="manage_publication_details('{{ publication_details.others_id }}','Activate')"><i class="uil uil-unlock"></i></button>
+                                                {% endif %}
+                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Delete" onclick="populateDeleteForm('{{ publication_details.others_id }}','{{publication_details.title}}','{{publication_details.document_id}}')"><i class="uil-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" id="publication_form" enctype="multipart/form-data">
+{% csrf_token %}
+<div class="modal fade" id="publication_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Add</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <form method="post" id="client_registration_form">
+      {% csrf_token %}
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <input type="hidden" class="form-control" id="document_id" value="{{document_id}}">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Type</label>
+                    <select type="text" name="type" class="form-control" id="type">
+                        <option value="">--SELECT--</option>
+                        <option value="publications">Publications</option>
+                        <option value="downloads">Downloads</option>
+                        <option value="forms">Forms</option>
+                    </select>
+                </div>
+                <div class="alert alert-danger" id="typeErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Title</label>
+                    <input type="text" name="title" class="form-control" id="title">
+                </div>
+                <div class="alert alert-danger" id="titleErrorMsg" style="display:none"></div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Attachment</label>
+                    <input type="file" name="publication_document" class="form-control" id="publication_document" accept=".png,.jpg,.jpeg,.gif,.pdf,.docx,.doc">
+                </div>
+                <div class="alert alert-danger" id="publication_documentErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+          <div class="alert alert-success" id="publication_SuccessMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="add_publication_details()">Add</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+      </form>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+<form method="post" id="edit_publication_form">
+    {% csrf_token %}
+    <div id="edit_publication_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="delete_proponent_modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="publication_edit_details">
+
+                    </div>
+                </div>
+                <div class="alert alert-success" id="edit_successMsg" role="alert" style="display:none;">
+                    <i class="ri-check-line me-2"></i>
+                </div>
+                <div class="alert alert-success" id="edit_publication_SuccessMsg" style="display:none"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" onclick="edit_publication_details()">Update</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form><!-- /.form -->
+
+<form method="post" id="delete_publication_form">
+    {% csrf_token %}
+    <div id="delete_publication_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="delete_proponent_modal" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>Are You Sure You Want To Delete <b><span id="delete_publication_name"></span></b> ? </p>
+                            <input type="hidden" name="delete_publication_id" class="form-control" id="delete_publication_id">
+                            <input type="hidden" name="delete_document_id" class="form-control" id="delete_document_id">
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-success" id="delete_publication_SuccessMsg" role="alert" style="display:none;">
+                    <i class="ri-check-line me-2"></i>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" onclick="delete_publication_details()">Yes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form><!-- /.form -->
+<script>
+    function add_publication_details()
+    {
+        let type = $('#type').val();
+        let title = $('#title').val();
+        let file_length = document.getElementById("publication_document");
+
+        if(type = "")
+        {
+            $('#typeErrorMsg').html("Select Type");
+            $('#typeErrorMsg').show();
+            $('#typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(title = "")
+        {
+            $('#titleErrorMsg').html("Enter Title");
+            $('#titleErrorMsg').show();
+            $('#titleErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(file_length.value.length < 1)
+        {
+            $('#publication_documentErrorMsg').html("Please Choose A File");
+            $('#publication_documentErrorMsg').show();
+            $('#publication_documentErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            let fileName = document.getElementById('publication_document').files[0].name;
+            let fd = new FormData();
+            let file = document.getElementById('publication_document').files[0];
+            fd.append('publication_document', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                    xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+                $.ajax({
+                type : "POST",
+                url : "{% url 'add_publication_file' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let document_id = $('#document_id').val();
+                        let title = $('#title').val();
+                        let file_url = data.file_url
+                        let type = $('#type').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'add_publication_attach' %}",
+                            data : {'document_id':document_id ,'type':type, 'title':title, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#publication_SuccessMsg').html("Add Successful");
+                                $('#publication_SuccessMsg').show();
+                                setTimeout(function()
+                                {
+                                    $('#publication_SuccessMsg').delay(2000).fadeOut('slow');
+                                }, 2000);
+                                setTimeout(function() {
+                                    $('#publication_modal').modal('hide');
+                                }, 2000);
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 3000);
+                                $('#publication_form')[0].reset();
+                            }
+                        });
+                    }else
+                    {
+                        $('#publication_documentErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#publication_documentErrorMsg').show();
+                        $('#publication_documentErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+       }
+    }
+
+    function populateDeleteForm(publication_id, publication_title, document_id)
+    {
+
+        $('#delete_publication_id').val(publication_id);
+        $('#delete_publication_name').html(publication_title);
+        $('#delete_document_id').val(document_id);
+        $('#delete_publication_modal').modal('show');
+    }
+
+    function get_other_details(others_id, document_id)
+    {
+        $.ajax
+        ({
+            type : "GET",
+            url : "{% url 'get_other_details' %}",
+            data : {'others_id':others_id, 'document_id':document_id},
+            success : function(responseText)
+            {
+                $('#edit_publication_modal').modal('show');
+                $('#publication_edit_details').html(responseText);
+            }
+        });
+    }
+
+    function delete_publication_attachment(document_id)
+    {
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_publication_attachment' %}",
+            data : {'document_id':document_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#delete_publication_modal').modal('show');
+                $('#publication_edit_details').html(responseText);
+            }
+        });
+    }
+
+    function edit_publication_details()
+    {
+        var type = $('#edit_type').val();
+        var title = $('#edit_title').val();
+        var file_length = document.getElementById("edit_publication_document");
+
+        if(file_length == null)
+        {
+            var edit_document_id = $('#edit_document_id').val();
+            var edit_publication_title = $('#edit_publication_title').val();
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_publication_attach' %}",
+                data : {'document_id':edit_document_id ,'type':type, 'title':title, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#edit_publication_SuccessMsg').html("Update Successful");
+                    $('#edit_publication_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#edit_publication_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_publication_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                }
+            });
+        }
+        else
+        {
+            if(type = "")
+            {
+                $('#edit_titleErrorMsg').html("Enter Title");
+                $('#edit_titleErrorMsg').show();
+                $('#edit_titleErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(title = "")
+            {
+                $('#edit_titleErrorMsg').html("Enter Title");
+                $('#edit_titleErrorMsg').show();
+                $('#edit_titleErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(file_length.value.length < 1)
+            {
+                $('#edit_publication_documentErrorMsg').html("Please Choose A File");
+                $('#edit_publication_documentErrorMsg').show();
+                $('#edit_publication_documentErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var fileName = document.getElementById('edit_publication_document').files[0].name;
+                var fd = new FormData();
+                var file = document.getElementById('edit_publication_document').files[0];
+                var document_id = $('#edit_document_id').val();
+                fd.append('edit_publication_document', file);
+                fd.append('document_id', document_id);
+                token_value=$("input[name=csrfmiddlewaretoken]").val();
+                $.ajaxSetup
+                ({
+                    beforeSend: function(xhr, settings)
+                    {
+                        xhr.setRequestHeader("X-CSRFToken", token_value);
+                    }
+                });
+                    $.ajax({
+                    type : "POST",
+                    url : "{% url 'update_publication_file' %}",
+                    data : fd,
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    success : function(data)
+                    {
+                        if (data.form_is_valid)
+                        {
+                            var edit_document_id = $('#edit_document_id').val();
+                            var type = $('#edit_type').val();
+                            var title = $('#edit_title').val();
+                            var file_url = data.file_url
+                            $.ajax
+                            ({
+                                type : "POST",
+                                url : "{% url 'update_publication_attach' %}",
+                                data : {'document_id':edit_document_id ,'type':type, 'title':title, 'filename':fileName, 'file_url':file_url},
+                                success : function(responseText)
+                                {
+                                    $('#edit_publication_SuccessMsg').html("Publication Updated Successfully");
+                                    $('#edit_publication_SuccessMsg').show();
+                                    setTimeout(function()
+                                    {
+                                        $('#edit_publication_SuccessMsg').delay(2000).fadeOut('slow');
+                                    }, 2000);
+                                    setTimeout(function() {
+                                        $('#edit_publication_modal').modal('hide');
+                                    }, 2000);
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 3000);
+                                }
+                            });
+                        }else
+                        {
+                            $('#edit_publication_documentErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                            $('#edit_publication_documentErrorMsg').show();
+                            $('#edit_publication_documentErrorMsg').delay(2000).fadeOut('slow');
+                        }
+                    }
+                });
+           }
+        }
+   }
+
+   function manage_publication_details(publication_id, identifier)
+   {
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'manage_publication_details' %}",
+            data : {'publication_id':publication_id ,'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                if(identifier == 'Deactivate')
+                {
+                    $('#manage_publication_SuccessMsg').html("Deactivated Successfully");
+                }
+                else
+                {
+                    $('#manage_publication_SuccessMsg').html("Activated Successfully");
+                }
+                $('#manage_publication_SuccessMsg').show();
+                setTimeout(function()
+                {
+                    $('#manage_publication_SuccessMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
+        });
+   }
+
+   function delete_publication_details()
+   {
+        var publication_id = $('#delete_publication_id').val();
+        var document_id = $('#delete_document_id').val();
+        var identifier = "Delete";
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'manage_publication_details' %}",
+            data : {'publication_id':publication_id ,'document_id':document_id,'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#delete_publication_SuccessMsg').html("Deleted Successfully");
+                $('#delete_publication_SuccessMsg').show();
+                setTimeout(function()
+                {
+                    $('#delete_publication_SuccessMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function()
+                {
+                    $('#delete_publication_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
+        });
+   }
+</script>
+{% endblock %}

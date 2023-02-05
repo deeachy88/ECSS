@@ -1,0 +1,246 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-1">
+            <div class="card-body">
+                <div class="card-widgets">
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add_proponent_modal"><i class="mdi mdi-plus-circle me-2"></i>Add</button>
+                </div>
+                <h5 class="card-title mb-0">Proponent Type Master</h5>
+
+                <div id="cardCollpase1" class="collapse pt-3 show">
+                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                        <thead>
+                            <th>#</th>
+                            <th>Proponent Type Name</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            {% for proponent_list in proponent_list %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{proponent_list.proponent_type_name}}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit Agency"
+                                                     onclick="populateEditForm('{{proponent_list.proponent_type_id}}', '{{proponent_list.proponent_type_name}}')"><i class="mdi mdi-square-edit-outline"></i> </button>
+                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Delete Agency"
+                                                     onclick="populateDeleteForm('{{proponent_list.proponent_type_id}}', '{{proponent_list.proponent_type_name}}')"><i class="mdi mdi-delete"></i> </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" id="add_proponent_form">
+    {% csrf_token %}
+    <div id="add_proponent_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="add_proponent_modal" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="fullWidthModalLabel">Add Proponent Type Master</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success" id="successMsg" role="alert" style="display:none;">
+                        <i class="ri-check-line me-2"></i>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Proponent Type Name</label>
+                                <input type="text" name="proponent_type_name" class="form-control" id="proponent_type_name">
+                            </div>
+                            <div id="proponent_type_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_proponent()">Add</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form><!-- /.form -->
+
+<form method="post" id="edit_proponent_form">
+    {% csrf_token %}
+    <div id="edit_proponent_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="edit_proponent_modal" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Proponent Type Master</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success" id="edit_successMsg" role="alert" style="display:none;">
+                        <i class="ri-check-line me-2"></i>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Agency Name</label>
+                                <input type="text" name="edit_proponent_type_name" class="form-control" id="edit_proponent_type_name">
+                                <input type="hidden" name="edit_proponent_type_id" class="form-control" id="edit_proponent_type_id">
+                            </div>
+                            <div id="edit_proponent_type_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="edit_proponent_details()">Update</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form><!-- /.form -->
+
+<form method="post" id="delete_proponent_form">
+    {% csrf_token %}
+    <div id="delete_proponent_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="delete_proponent_modal" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete Proponent Master</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success" id="delete_successMsg" role="alert" style="display:none;">
+                        <i class="ri-check-line me-2"></i>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>Are You Sure You Want To Delete <b><span id="delete_proponent_type_name"></span></b> ? </p>
+                            <input type="hidden" name="delete_proponent_type_id" class="form-control" id="delete_proponent_type_id">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" onclick="delete_proponent_details()">Yes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form><!-- /.form -->
+
+<script>
+function populateEditForm(proponent_type_id, proponent_type_name)
+{
+    $('#edit_proponent_type_id').val(proponent_type_id);
+    $('#edit_proponent_type_name').val(proponent_type_name);
+    $('#edit_proponent_modal').modal('show');
+}
+
+function populateDeleteForm(proponent_type_id, proponent_type_name)
+{
+    $('#delete_proponent_type_id').val(proponent_type_id);
+    $('#delete_proponent_type_name').html(proponent_type_name);
+    $('#delete_proponent_modal').modal('show');
+}
+
+function save_proponent()
+{
+        let proponent_type_name = $('#proponent_type_name').val();
+
+        if(proponent_type_name == "")
+        {
+            $('#proponent_type_nameErrorMsg').html("Enter Proponent Type.");
+            $('#proponent_type_nameErrorMsg').show();
+            $('#proponent_type_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'add_proponent_master' %}",
+                data : $('#add_proponent_form').serialize(),
+                success : function()
+                {
+                    $('#successMsg').html("Proponent Type Added Successfully.");
+                    $('#successMsg').show();
+                    setTimeout(function() {
+                        $('#successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#add_proponent_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                    $('#add_proponent_form')[0].reset();
+                }
+            });
+        }
+}
+
+function edit_proponent_details()
+{
+        let edit_proponent_type_name = $('#edit_proponent_type_name').val();
+
+        if(edit_proponent_type_name == "")
+        {
+            $('#edit_proponent_type_nameErrorMsg').html("Enter Agency.");
+            $('#edit_proponent_type_nameErrorMsg').show();
+            $('#edit_proponent_type_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'edit_proponent_master' %}",
+                data : $('#edit_proponent_form').serialize(),
+                success : function()
+                {
+                    $('#edit_successMsg').html("Proponent Type Updated Successfully.");
+                    $('#edit_successMsg').show();
+                    setTimeout(function() {
+                        $('#edit_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_proponent_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                    $('#edit_proponent_form')[0].reset();
+                }
+            });
+        }
+}
+
+function delete_proponent_details()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'delete_proponent_master' %}",
+        data : $('#delete_proponent_form').serialize(),
+        success : function()
+        {
+            $('#delete_successMsg').html("Proponent Type Deleted Successfully.");
+            $('#delete_successMsg').show();
+            setTimeout(function() {
+                $('#delete_successMsg').delay(2000).fadeOut('slow');
+            }, 2000);
+            setTimeout(function() {
+                $('#delete_proponent_modal').modal('hide');
+            }, 2000);
+            setTimeout(function() {
+                location.reload();
+            }, 3000);
+        }
+    });
+}
+</script>
+{% endblock %}

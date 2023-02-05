@@ -1,0 +1,157 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+{% load static %}
+    <style>
+        .ql-link{
+            display: none !important;
+        }
+        .ql-image{
+            display: none !important;
+        }
+        .ql-video{
+            display: none !important;
+        }
+        .ql-clean{
+            display: none !important;
+        }
+    </style>
+<div class="card mt-1">
+    <div class="card-body">
+        <div class="card-widgets">
+            <a class="btn btn-primary btn-sm" href="{% url 'add_menu_details' %}"><i class="mdi mdi-plus me-2"></i>Add</a>
+        </div>
+        <h5 class="card-title mb-0">Menu Management</h5>
+        <div class="alert alert-success" id="manage_menu_success_msg" role="alert" style="display:none;">
+            <i class="ri-check-line me-2"></i>
+        </div>
+        <div id="cardCollpase1" class="collapse pt-3 show">
+            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                <thead>
+                    <th>#</th>
+                    <th>Menu Name</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    {% for menu_details in menu_details %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{menu_details.menu_name}}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="{% url 'get_menu_details' menu_details.menu_id %}"><i class="mdi mdi-square-edit-outline"></i></a>
+                                    {% if menu_details.is_active == "Y" %}
+                                    <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Deactivate" onclick="manage_menu('{{ menu_details.menu_id }}','Deactivate')"><i class="uil uil-lock-alt"></i></button>
+                                    {% else %}
+                                    <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="manage_menu('{{ menu_details.menu_id }}','Activate')"><i class="uil uil-unlock"></i></button>
+                                    {% endif %}
+                                    <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_menu('{{ menu_details.menu_id }}','{{menu_details.menu_name}}','{{menu_details.document_id}}')"><i class="uil-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<form method="post" id="delete_menu_form">
+    {% csrf_token %}
+    <div id="delete_menu_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="delete_proponent_modal" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete Menu</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>Are You Sure You Want To Delete <b><span id="delete_menu_name"></span></b> ? </p>
+                            <input type="hidden" name="delete_menu_id" class="form-control" id="delete_menu_id">
+                            <input type="hidden" name="delete_document_id" class="form-control" id="delete_document_id">
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-success" id="delete_menu_success_msg" role="alert" style="display:none;">
+                    <i class="ri-check-line me-2"></i>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" onclick="delete_menu_details()">Yes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form><!-- /.form -->
+
+<script>
+    function populate_delete_menu(menu_id, menu_name, document_id)
+    {
+
+        $('#delete_menu_id').val(menu_id);
+        $('#delete_menu_name').html(menu_name);
+        $('#delete_document_id').val(document_id);
+        $('#delete_menu_modal').modal('show');
+    }
+
+    function manage_menu(menu_id, identifier)
+   {
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'manage_menu_details' %}",
+            data : {'menu_id':menu_id ,'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                if(identifier == 'Deactivate')
+                {
+                    $('#manage_menu_success_msg').html("Menu Deactivated Successfully");
+                }
+                else
+                {
+                    $('#manage_menu_success_msg').html("Menu Activated Successfully");
+                }
+                $('#manage_menu_success_msg').show();
+                setTimeout(function()
+                {
+                    $('#manage_menu_success_msg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
+        });
+   }
+
+   function delete_menu_details()
+   {
+        var menu_id = $('#delete_menu_id').val();
+        var document_id = $('#delete_document_id').val();
+        var identifier = "Delete";
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'manage_menu_details' %}",
+            data : {'menu_id':menu_id ,'document_id':document_id,'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#delete_menu_success_msg').html("Menu Deleted Successfully");
+                $('#delete_menu_success_msg').show();
+                setTimeout(function()
+                {
+                    $('#delete_menu_success_msg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function()
+                {
+                    $('#delete_menu_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
+        });
+   }
+</script>
+{% endblock %}

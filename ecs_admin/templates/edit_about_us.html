@@ -1,0 +1,85 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+{% load static %}
+<div class="card mt-1">
+    <div class="card-body">
+        <h5 class="card-title mb-0">Edit About Us</h5>
+            <div id="cardCollpase1" class="collapse pt-3 show">
+                <form method="post" id="edit_menu_form">
+                    {% csrf_token %}
+                        <div class="row">
+                        {% for about_us_details in about_us_details %}
+                            <input type="hidden" class="form-control" id="edit_about_us_id" value="{{about_us_details.about_us_id}}">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Title</label>
+                                    <textarea class="form-control" name="edit_about_us_title" id="edit_about_us_title">{{about_us_details.about_us_title}}</textarea>
+                                </div>
+                                <div class="alert alert-danger" id="edit_about_us_titleErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">Content</label>
+                                <div id="snow-editor" style="height: 200px;">{{ about_us_details.about_us_content|safe }}</div>
+                                <textarea name="text" style="display:none" id="hiddenArea"></textarea>
+                            </div>
+                            <div id="edit_about_us_contentErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                    {% endfor %}
+                </form>
+                <br>
+                    <div class="alert alert-success" id="edit_successMsg" style="display:none"></div>
+                    <div class="float-end">
+                        <button type="button" class="btn btn-md btn-primary" onclick="update_about_us_details()">Update About Us</button>
+                        <button type="button" class="btn btn-md btn-danger" onclick="back()"> Cancel </button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function update_about_us_details()
+    {
+        var edit_about_us_id = $('#edit_about_us_id').val();
+        var myEditor = document.querySelector('#snow-editor')
+        var content = myEditor.children[0].innerHTML
+        var about_us_title = $('#edit_about_us_title').val();
+
+        if(about_us_title == "")
+        {
+            $('#edit_about_us_titleErrorMsg').html("Enter Title.");
+            $('#edit_about_us_titleErrorMsg').show();
+            $('#edit_about_us_titleErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'update_about_us' %}",
+                data : {'about_us_title':about_us_title, 'about_us_id':edit_about_us_id, 'about_us_content':content, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data)
+                {
+                    $('#edit_successMsg').html("About Us Updated Successfully");
+                    $('#edit_successMsg').show();
+                    setTimeout(function() {
+                        $('#edit_successMsg').delay(3000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        window.location.href = '/manage_about_us';
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function back()
+    {
+        window.location.href = '/manage_about_us';
+    }
+</script>
+{% endblock %}
+
+
+
+

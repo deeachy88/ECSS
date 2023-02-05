@@ -1,0 +1,50 @@
+<div class="row">
+    {% for others_details in others_details %}
+        <input type="hidden" class="form-control" id="edit_document_id" value="{{others_details.document_id}}">
+        <div class="col-lg-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Type</label>
+                <select type="text" name="edit_type" class="form-control" value="{{others_details.type}}" id="edit_type">
+                    {% if others_details.type == 'publications'%}
+                    <option value="publications" selected>Publications</option>
+                    <option value="downloads">Downloads</option>
+                    <option value="forms">Forms</option>
+                    {% elif  others_details.type == 'downloads'%}
+                    <option value="publications">Publications</option>
+                    <option value="downloads" selected>Downloads</option>
+                    <option value="forms">Forms</option>
+                    {% else %}
+                    <option value="publications">Publications</option>
+                    <option value="downloads">Downloads</option>
+                    <option value="forms" selected>Forms</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="alert alert-danger" id="edit_typeErrorMsg" style="display:none"></div>
+        </div>
+        <div class="col-lg-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Publication Title</label>
+                <input type="text" name="edit_title" class="form-control" value="{{others_details.title}}" id="edit_title">
+            </div>
+            <div class="alert alert-danger" id="edit_titleErrorMsg" style="display:none"></div>
+        </div>
+    {% endfor %}
+    {% for file_attach in file_attachment %}
+        <div class="col-lg-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Attachment</label><br>
+                <a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a>&nbsp;&nbsp;<span  data-toggle="tooltip" title="Delete Attachment" class="btn btn-outline-danger btn-md" onclick="delete_publication_attachment('{{file_attach.document_id}}')"><i class="uil-trash"></i></span>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-lg-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Attachment</label>
+                <input type="file" name="edit_publication_document" class="form-control" id="edit_publication_document" accept=".png,.jpg,.jpeg,.gif,.pdf,.docx,.doc">
+            </div>
+            <div class="alert alert-danger" id="edit_publication_documentErrorMsg" style="display:none"></div>
+        </div>
+    {% endfor %}
+</div>
+

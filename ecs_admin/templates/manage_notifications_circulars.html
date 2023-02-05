@@ -1,0 +1,437 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+{% load static %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-1">
+            <div class="card-body">
+                 <div class="card-widgets">
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#notification_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                </div>
+                <h5 class="card-title mb-0">Manage Notifications And Circulars</h5>
+                <div class="alert alert-success" id="manage_notification_SuccessMsg" role="alert" style="display:none;">
+                    <i class="ri-check-line me-2"></i>
+                </div>
+                <div id="cardCollpase1" class="collapse pt-3 show">
+                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                        <thead>
+                            <th>Title</th>
+                            <th>Attachment</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            {% for notification_details in notification_details %}
+                                <tr>
+                                    <td>{{notification_details.notification_title}}</td>
+                                    {% for file_attachment in file_attachment %}
+                                        {% if file_attachment.document_id == notification_details.document_id %}
+                                            <td>{{file_attachment.attachment}}</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="get_notification_details('{{ notification_details.notification_id }}','{{notification_details.document_id}}')"><i class="mdi mdi-account-eye"></i></button>
+                                                {% if notification_details.is_active == "Y" %}
+                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Deactivate" onclick="manage_notification_details('{{ notification_details.notification_id }}','Deactivate')"><i class="uil uil-lock-alt"></i></button>
+                                                {% else %}
+                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="manage_notification_details('{{ notification_details.notification_id }}','Activate')"><i class="uil uil-unlock"></i></button>
+                                                {% endif %}
+                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Delete" onclick="populateDeleteForm('{{ notification_details.notification_id }}','{{notification_details.notification_title}}','{{notification_details.document_id}}')"><i class="uil-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" id="notification_form" enctype="multipart/form-data">
+{% csrf_token %}
+<div class="modal fade" id="notification_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Add Notification And Circulars</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <input type="hidden" class="form-control" id="document_id" value="{{document_id}}"></input>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Notification Title</label>
+                    <input type="text" name="notification_title" class="form-control" id="notification_title">
+                </div>
+                <div class="alert alert-danger" id="notification_titleErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Attachment</label>
+                    <input type="file" name="notification_document" class="form-control" id="notification_document" accept=".png,.jpg,.jpeg,.gif,.pdf,.docx,.doc">
+                </div>
+                <div class="alert alert-danger" id="notification_documentErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+          <div class="alert alert-success" id="notification_SuccessMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="add_notification_details()">Add</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+<form method="post" id="edit_notification_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div id="edit_notification_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="edit_notification_modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Notification and Circular</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="notification_edit_details">
+
+                    </div>
+                </div>
+                <div class="alert alert-success" id="edit_successMsg" role="alert" style="display:none;">
+                    <i class="ri-check-line me-2"></i>
+                </div>
+                <div class="alert alert-success" id="edit_notification_SuccessMsg" style="display:none"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" onclick="edit_notification_details()">Update</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form><!-- /.form -->
+
+<form method="post" id="delete_notification_form">
+    {% csrf_token %}
+    <div id="delete_notification_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="delete_proponent_modal" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete Notification and Circular</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>Are You Sure You Want To Delete <b><span id="delete_notification_title"></span></b> ? </p>
+                            <input type="hidden" name="delete_notification_id" class="form-control" id="delete_notification_id">
+                            <input type="hidden" name="delete_document_id" class="form-control" id="delete_document_id">
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-success" id="delete_notification_SuccessMsg" role="alert" style="display:none;">
+                    <i class="ri-check-line me-2"></i>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" onclick="delete_notification_details()">Yes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form><!-- /.form -->
+<script>
+    function add_notification_details()
+    {
+        let notification_title = $('#notification_title').val();
+        let file_length = document.getElementById("notification_document");
+
+        if(notification_title = "")
+        {
+            $('#notification_titleErrorMsg').html("Enter Notification Title");
+            $('#notification_titleErrorMsg').show();
+            $('#notification_titleErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(file_length.value.length < 1)
+        {
+            $('#notification_documentErrorMsg').html("Please Choose A File");
+            $('#notification_documentErrorMsg').show();
+            $('#notification_documentErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            let fileName = document.getElementById('notification_document').files[0].name;
+            let fd = new FormData();
+            let file = document.getElementById('notification_document').files[0];
+            fd.append('notification_document', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                    xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+                $.ajax({
+                type : "POST",
+                url : "{% url 'add_notification_file' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let document_id = $('#document_id').val();
+                        let notification_title = $('#notification_title').val();
+                        let file_url = data.file_url
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'add_notification_attach' %}",
+                            data : {'document_id':document_id ,'notification_title':notification_title, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#notification_SuccessMsg').html("Notification and Circular Added Successfully");
+                                $('#notification_SuccessMsg').show();
+                                setTimeout(function()
+                                {
+                                    $('#notification_SuccessMsg').delay(2000).fadeOut('slow');
+                                }, 2000);
+                                setTimeout(function() {
+                                    $('#notification_modal').modal('hide');
+                                }, 2000);
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 3000);
+                                $('#notification_form')[0].reset();
+                            }
+                        });
+                    }else
+                    {
+                        $('#notification_documentErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#notification_documentErrorMsg').show();
+                        $('#notification_documentErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+       }
+    }
+
+    function populateDeleteForm(notification_id, notification_title, document_id)
+    {
+
+        $('#delete_notification_id').val(notification_id);
+        $('#delete_notification_title').html(notification_title);
+        $('#delete_document_id').val(document_id);
+        $('#delete_notification_modal').modal('show');
+    }
+
+    function get_notification_details(notification_id, document_id)
+    {
+        $.ajax
+        ({
+            type : "GET",
+            url : "{% url 'get_notification_details' %}",
+            data : {'notification_id':notification_id, 'document_id':document_id},
+            success : function(responseText)
+            {
+                $('#edit_notification_modal').modal('show');
+                $('#notification_edit_details').html(responseText);
+            }
+        });
+    }
+
+    function delete_notification_attachment(document_id)
+    {
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_notification_attachment' %}",
+            data : {'document_id':document_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#edit_notification_modal').modal('show');
+                $('#notification_edit_details').html(responseText);
+            }
+        });
+    }
+
+    function edit_notification_details()
+    {
+        var notification_title = $('#edit_notification_title').val();
+        var file_length = document.getElementById("edit_notification_document");
+
+        if(file_length == null)
+        {
+            var edit_document_id = $('#edit_document_id').val();
+            var edit_notification_title = $('#edit_notification_title').val();
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_notification_attach' %}",
+                data : {'document_id':edit_document_id ,'notification_title':edit_notification_title, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#edit_notification_SuccessMsg').html("Notification and Circular Updated Successfully");
+                    $('#edit_notification_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#edit_notification_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_notification_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                }
+            });
+        }
+        else
+        {
+            if(notification_title = "")
+            {
+                $('#edit_notification_titleErrorMsg').html("Enter Notification Title");
+                $('#edit_notification_titleErrorMsg').show();
+                $('#edit_notification_titleErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(file_length.value.length < 1)
+            {
+                $('#edit_notification_documentErrorMsg').html("Please Choose A File");
+                $('#edit_notification_documentErrorMsg').show();
+                $('#edit_notification_documentErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var fileName = document.getElementById('edit_notification_document').files[0].name;
+                var fd = new FormData();
+                var file = document.getElementById('edit_notification_document').files[0];
+                var document_id = $('#edit_document_id').val();
+                fd.append('edit_notification_document', file);
+                fd.append('document_id', document_id);
+                token_value=$("input[name=csrfmiddlewaretoken]").val();
+                $.ajaxSetup
+                ({
+                    beforeSend: function(xhr, settings)
+                    {
+                        xhr.setRequestHeader("X-CSRFToken", token_value);
+                    }
+                });
+                    $.ajax({
+                    type : "POST",
+                    url : "{% url 'update_notification_file' %}",
+                    data : fd,
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    success : function(data)
+                    {
+                        if (data.form_is_valid)
+                        {
+                            var edit_document_id = $('#edit_document_id').val();
+                            var edit_notification_title = $('#edit_notification_title').val();
+                            var file_url = data.file_url
+                            $.ajax
+                            ({
+                                type : "POST",
+                                url : "{% url 'update_notification_attach' %}",
+                                data : {'document_id':edit_document_id ,'notification_title':edit_notification_title, 'filename':fileName, 'file_url':file_url},
+                                success : function(responseText)
+                                {
+                                    $('#edit_notification_SuccessMsg').html("Publication Updated Successfully");
+                                    $('#notification_title').show();
+                                    setTimeout(function()
+                                    {
+                                        $('#notification_title').delay(2000).fadeOut('slow');
+                                    }, 2000);
+                                    setTimeout(function() {
+                                        $('#edit_notification_modal').modal('hide');
+                                    }, 2000);
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 3000);
+                                }
+                            });
+                        }else
+                        {
+                            $('#edit_notification_documentErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                            $('#edit_notification_documentErrorMsg').show();
+                            $('#edit_notification_documentErrorMsg').delay(2000).fadeOut('slow');
+                        }
+                    }
+                });
+           }
+        }
+   }
+
+   function manage_notification_details(notification_id, identifier)
+   {
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'manage_notification_details' %}",
+            data : {'notification_id':notification_id ,'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                if(identifier == 'Deactivate')
+                {
+                    $('#manage_notification_SuccessMsg').html("Notification and Circular Deactivated Successfully");
+                }
+                else
+                {
+                    $('#manage_notification_SuccessMsg').html("Notification and Circular Activated Successfully");
+                }
+                $('#manage_notification_SuccessMsg').show();
+                setTimeout(function()
+                {
+                    $('#manage_notification_SuccessMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
+        });
+   }
+
+   function delete_notification_details()
+   {
+        var notification_id = $('#delete_notification_id').val();
+        var document_id = $('#delete_document_id').val();
+        var identifier = "Delete";
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'manage_notification_details' %}",
+            data : {'notification_id':notification_id ,'document_id':document_id,'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#delete_notification_SuccessMsg').html("Notication and Circular Deleted Successfully");
+                $('#delete_notification_SuccessMsg').show();
+                setTimeout(function()
+                {
+                    $('#delete_notification_SuccessMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function()
+                {
+                    $('#delete_notification_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
+        });
+   }
+</script>
+{% endblock %}
