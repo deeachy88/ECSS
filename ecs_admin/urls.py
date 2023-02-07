@@ -81,6 +81,10 @@ urlpatterns = [
     path('manage_eia_related',views.manage_eia_related, name='manage_eia_related'),
     path('manage_live_statistics',views.manage_live_statistics, name='manage_live_statistics'),
     path('manage_home_page', views.manage_home_page, name='manage_home_page'),
+    path('update_homepage_details', views.update_homepage_details, name='update_homepage_details'),
+    path('save_homepage_attachment', views.save_homepage_attachment, name='save_homepage_attachment'),
+    path('save_homepage_attachment_details', views.save_homepage_attachment_details,
+         name='save_homepage_attachment_details'),
 
 
 

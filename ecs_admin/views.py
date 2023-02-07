@@ -4,7 +4,7 @@ from django.utils import timezone
 
 from ecs_admin.models import t_user_master, t_security_question_master, t_role_master, t_forgot_password, \
     t_file_attachment, t_menu_master, t_agency_master, t_proponent_type_master, t_dzongkhag_master, t_village_master,\
-    t_gewog_master,t_submenu_master, t_other_details, t_about_us, t_notification_details
+    t_gewog_master,t_submenu_master, t_other_details, t_about_us, t_notification_details, t_homepage_master
 from ecs_admin.forms import UserForm, RoleForm
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password, check_password
@@ -24,11 +24,14 @@ def home(request):
     menu_details = t_menu_master.objects.filter(is_active='Y',is_deleted='N')
     submenu_details = t_submenu_master.objects.filter(is_active='Y',is_deleted='N')
     other_details = t_other_details.objects.filter(is_active='Y',is_deleted='N')
+    homepage_details = t_homepage_master.objects.filter()
     file_attachment = t_file_attachment.objects.all()
+    home_attachment = t_file_attachment.objects.filter(attachment_type='H')
     return render(request, 'index.html',{'proponent_type':proponent_type,'dzongkhag':dzongkhag,
                                          'gewog':gewog,'village':village,'security':security,'menu_details':menu_details,
                                          'submenu_details':submenu_details, 'other_details':other_details,
-                                         'file_attachment':file_attachment})
+                                         'file_attachment':file_attachment, 'homepage_details':homepage_details,
+                                         'home_attachment':home_attachment})
 
 def user_login(request):
     return render(request, 'login.html')
@@ -624,7 +627,46 @@ def manage_live_statistics(request):
     return render(request, 'manage_live_statistics.html')
 
 def manage_home_page(request):
-    return render(request, 'manage_home_page.html')
+    home_page_details = t_homepage_master.objects.filter(homepage_id='1')
+    file_attachment = t_file_attachment.objects.filter(attachment_type='H')
+    return render(request, 'manage_home_page.html', {'home_page_details': home_page_details,
+                                                'file_attach': file_attachment})
+
+def update_homepage_details(request):
+    homepage_title = request.POST.get('homepage_title')
+    content = request.POST.get('content')
+    home_page = t_homepage_master.objects.filter(homepage_id=1)
+    home_page.update(homepage_title=homepage_title,homepage_content=content)
+    home_page_details = t_homepage_master.objects.filter(homepage_id=1)
+    file_attach = t_file_attachment.objects.filter(attachment_type='H')
+    return render(request, 'manage_home_page.html', {'home_page_details': home_page_details, 'file_attach': file_attach})
+
+def save_homepage_attachment(request):
+    data = dict()
+    menu_attach = request.FILES['homepage_attach']
+    file_name = menu_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/homepage/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, menu_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/homepage" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_homepage_attachment_details(request):
+    document_id = request.POST.get('document_id')
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+
+    t_file_attachment.objects.create(document_id=document_id,file_path=file_url,
+                                     attachment=file_name,attachment_type='H')
+
+    file_attach = t_file_attachment.objects.filter(document_id=document_id,attachment_type='H')
+    home_page_details = t_homepage_master.objects.filter(homepage_id=1)
+    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
 
 def change_password(request):
     data = dict()

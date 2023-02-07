@@ -59,75 +59,95 @@
         {% block content %}
             <div id="content_div">
                 <div class="row">
-                {% for other_details in other_details %}
-                    {% if other_details.type == 'publications' %}
-                    <div class="card col-md-4 mt-1">
-                        <div class="card-body">
-                            <h5 class="card-title mb-0 text-center">{{other_details.type}}</h5>
-                            <div id="cardCollpase1" class="collapse pt-3 show justify-content-between">
-                                <div class="table-responsive">
-                                    <table class="table mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>{{other_details.title}}</th>
-                                                {% for file_attachment in file_attachment %}
-                                                    {% if file_attachment.document_id == other_details.document_id %}
-                                                        <th><a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a></th>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </tr>
-                                        </thead>
-                                    </table>
+                    <div class="col-lg-4">
+                        <div id="carouselExampleCaption" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner" role="listbox">
+                                <div class="carousel-item active">
+                                    {% for home_attachment in home_attachment %}
+                                        <img src="{{home_attachment.file_path }}" alt="..." class="d-block img-fluid">
+                                    {% endfor %}
+                                    <div class="carousel-caption d-none d-md-block text-center">
+                                        {% for homepage_details in homepage_details %}
+                                            <h3 class="text-dark">{{homepage_details.homepage_title}}</h3>
+                                            <h5 class="text-dark">{{homepage_details.homepage_content|safe}}</h5>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
+                            <a class="carousel-control-prev" href="#carouselExampleCaption" role="button" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselExampleCaption" role="button" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </a>
                         </div>
                     </div>
-                    {% elif other_details.type == 'downloads' %}
-                    <div class="card col-md-4 mt-1">
-                        <div class="card-body">
-                            <h5 class="card-title mb-0 text-center">{{other_details.type}}</h5>
-                            <div class="collapse pt-3 show justify-content-between">
-                                <div class="table-responsive">
-                                    <table class="table mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>{{other_details.title}}</th>
-                                                {% for file_attachment in file_attachment %}
-                                                    {% if file_attachment.document_id == other_details.document_id %}
-                                                        <th><a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a></th>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </tr>
-                                        </thead>
-                                    </table>
+                    <div class="col-lg-8">
+                        <div class="row">
+                            {% for other_details in other_details %}
+                            {% if other_details.type == 'publications' %}
+                                <div class="border p-2 mt-4 mt-lg-0 rounded col-lg-4">
+                                    <h4 class="header-title mb-0">{{other_details.type}}</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-nowrap mb-0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        {% for file_attachment in file_attachment %}
+                                                            {% if file_attachment.document_id == other_details.document_id %}
+                                                                <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>&nbsp;
+                                {% elif other_details.type == 'downloads' %}
+                                <div class="border p-2 mt-4 mt-lg-0 rounded col-lg-4">
+                                    <h4 class="header-title mb-0">{{other_details.type}}</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-nowrap table-centered mb-0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        {% for file_attachment in file_attachment %}
+                                                            {% if file_attachment.document_id == other_details.document_id %}
+                                                                <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>&nbsp;
+                                {% else %}
+                                <div class="border p-2 mt-4 mt-lg-0 rounded col-lg-2">
+                                    <h4 class="header-title mb-0">{{other_details.type}}</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-nowrap table-centered mb-0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        {% for file_attachment in file_attachment %}
+                                                            {% if file_attachment.document_id == other_details.document_id %}
+                                                                <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
+                        {% endfor %}
                         </div>
                     </div>
-                    {% else %}
-                    <div class="card col-md-4 mt-1">
-                        <div class="card-body">
-                            <h5 class="card-title mb-0 text-center">{{other_details.type}}</h5>
-                            <div class="collapse pt-3 show justify-content-between">
-                                <div class="table-responsive">
-                                    <table class="table mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>{{other_details.title}}</th>
-                                                {% for file_attachment in file_attachment %}
-                                                    {% if file_attachment.document_id == other_details.document_id %}
-                                                        <th><a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a></th>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-                {% endfor %}
                 </div>
             </div>
         {% endblock %}

@@ -1,157 +1,187 @@
 {% extends 'common_dashboard.html' %}
 {% block content %}
-{% load static %}
-    <style>
-        .ql-link{
-            display: none !important;
-        }
-        .ql-image{
-            display: none !important;
-        }
-        .ql-video{
-            display: none !important;
-        }
-        .ql-clean{
-            display: none !important;
-        }
-    </style>
 <div class="card mt-1">
     <div class="card-body">
-        <div class="card-widgets">
-            <a class="btn btn-primary btn-sm" href="{% url 'add_menu_details' %}"><i class="mdi mdi-plus me-2"></i>Add</a>
-        </div>
-        <h5 class="card-title mb-0">Menu Management</h5>
-        <div class="alert alert-success" id="manage_menu_success_msg" role="alert" style="display:none;">
-            <i class="ri-check-line me-2"></i>
-        </div>
+        <h5 class="card-title mb-0">Manage Home Page Details</h5>
         <div id="cardCollpase1" class="collapse pt-3 show">
-            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
-                <thead>
-                    <th>#</th>
-                    <th>Menu Name</th>
-                    <th></th>
-                </thead>
-                <tbody>
-                    {% for menu_details in menu_details %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{menu_details.menu_name}}</td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="{% url 'get_menu_details' menu_details.menu_id %}"><i class="mdi mdi-square-edit-outline"></i></a>
-                                    {% if menu_details.is_active == "Y" %}
-                                    <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Deactivate" onclick="manage_menu('{{ menu_details.menu_id }}','Deactivate')"><i class="uil uil-lock-alt"></i></button>
-                                    {% else %}
-                                    <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="manage_menu('{{ menu_details.menu_id }}','Activate')"><i class="uil uil-unlock"></i></button>
-                                    {% endif %}
-                                    <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_menu('{{ menu_details.menu_id }}','{{menu_details.menu_name}}','{{menu_details.document_id}}')"><i class="uil-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<form method="post" id="delete_menu_form">
-    {% csrf_token %}
-    <div id="delete_menu_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="delete_proponent_modal" aria-hidden="true">
-        <div class="modal-dialog modal-md modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Delete Menu</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+            <form method="post" id="edit_menu_form">
+            {% csrf_token %}
+                <div class="row">
+                {% for home_page_details in home_page_details %}
+                    <input type="hidden" class="form-control" id="document_id" value="{{home_page_details.document_id}}">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Title</label>
+                            <input class="form-control" name="homepage_title" id="homepage_title" value="{{home_page_details.homepage_title}}">
+                        </div>
+                        <div class="alert alert-danger" id="homepage_titleErrorMsg" style="display:none"></div>
+                    </div>
                 </div>
-                <div class="modal-body">
-
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>Are You Sure You Want To Delete <b><span id="delete_menu_name"></span></b> ? </p>
-                            <input type="hidden" name="delete_menu_id" class="form-control" id="delete_menu_id">
-                            <input type="hidden" name="delete_document_id" class="form-control" id="delete_document_id">
+                <div class="row" id="menu_content_div">
+                    <div class="col-md-12">
+                        <label class="form-label">Content</label>
+                        <div id="snow-editor" style="height: 200px;">{{ home_page_details.homepage_content|safe}}</div>
+                        <textarea name="text" style="display:none" id="hiddenArea"></textarea>
+                    </div>
+                    <div id="homepage_contentErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                </div>
+                {% endfor %}
+                </form>
+            <br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-widgets">
+                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#edit_menu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                </div>
+                                <h5 class="card-title mb-0">Attachments</h5>
+                                <div id="cardCollpase2" class="collapse pt-3 show">
+                                    <div id="home_page_file_attachment">
+                                        {% include 'file_attachment_page.html' %}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="alert alert-success" id="delete_menu_success_msg" role="alert" style="display:none;">
-                    <i class="ri-check-line me-2"></i>
+                <div class="alert alert-success" id="successMsg" style="display:none"></div>
+                <div class="float-end">
+                    <button type="button" class="btn btn-md btn-primary" onclick="update_homepage_details()">Update Home Page</button>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-danger" onclick="delete_menu_details()">Yes</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-</form><!-- /.form -->
+            </div>
+        </div>
+    </div>
 
+
+<form method="post" id="edit_menu_attachment_form" enctype="multipart/form-data">
+{% csrf_token %}
+<div class="modal fade" id="edit_menu_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Add Attachment</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Images</label>
+                    <input type="file" name="homepage_attach" class="form-control" id="homepage_attach" accept=".png,.jpg,.jpeg">
+                </div>
+                <div class="alert alert-danger" id="homepage_attachErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="add_homepage_attachment()">Add</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
 <script>
-    function populate_delete_menu(menu_id, menu_name, document_id)
+    function add_homepage_attachment()
     {
-
-        $('#delete_menu_id').val(menu_id);
-        $('#delete_menu_name').html(menu_name);
-        $('#delete_document_id').val(document_id);
-        $('#delete_menu_modal').modal('show');
+        let file_length = document.getElementById("homepage_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#homepage_attach').html("Please Choose A Image");
+            $('#homepage_attach').show();
+            $('#homepage_attach').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var fileName = document.getElementById('homepage_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('homepage_attach').files[0];
+            fd.append('homepage_attach', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_homepage_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let document_id = $('#document_id').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_homepage_attachment_details' %}",
+                            data : {'filename':fileName, 'file_url':file_url, 'document_id':document_id},
+                            success : function(responseText)
+                            {
+                                $('#edit_menu_attachment_modal').modal('hide');
+                                $('#home_page_file_attachment').html(responseText);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#homepage_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#homepage_attachErrorMsg').show();
+                        $('#homepage_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+        }
     }
 
-    function manage_menu(menu_id, identifier)
-   {
-        $.ajax
-        ({
-            type : "POST",
-            url : "{% url 'manage_menu_details' %}",
-            data : {'menu_id':menu_id ,'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
-            success : function(responseText)
-            {
-                if(identifier == 'Deactivate')
-                {
-                    $('#manage_menu_success_msg').html("Menu Deactivated Successfully");
-                }
-                else
-                {
-                    $('#manage_menu_success_msg').html("Menu Activated Successfully");
-                }
-                $('#manage_menu_success_msg').show();
-                setTimeout(function()
-                {
-                    $('#manage_menu_success_msg').delay(2000).fadeOut('slow');
-                }, 2000);
-                setTimeout(function() {
-                    location.reload();
-                }, 3000);
-            }
-        });
-   }
+    function update_homepage_details()
+    {
+        var myEditor = document.querySelector('#snow-editor')
+        var content = myEditor.children[0].innerHTML
+        var homepage_title = $('#homepage_title').val();
+        var document_id = $('#document_id').val();
 
-   function delete_menu_details()
-   {
-        var menu_id = $('#delete_menu_id').val();
-        var document_id = $('#delete_document_id').val();
-        var identifier = "Delete";
-        $.ajax
-        ({
-            type : "POST",
-            url : "{% url 'manage_menu_details' %}",
-            data : {'menu_id':menu_id ,'document_id':document_id,'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
-            success : function(responseText)
-            {
-                $('#delete_menu_success_msg').html("Menu Deleted Successfully");
-                $('#delete_menu_success_msg').show();
-                setTimeout(function()
+        if(homepage_title == "")
+        {
+            $('#homepage_titleErrorMsg').html("Enter Home Page Title.");
+            $('#homepage_titleErrorMsg').show();
+            $('#homepage_titleErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'update_homepage_details' %}",
+                data : {'homepage_title':homepage_title,'content':content,'document_id':document_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data)
                 {
-                    $('#delete_menu_success_msg').delay(2000).fadeOut('slow');
-                }, 2000);
-                setTimeout(function()
-                {
-                    $('#delete_menu_modal').modal('hide');
-                }, 2000);
-                setTimeout(function() {
-                    location.reload();
-                }, 3000);
-            }
-        });
-   }
+                    $('#successMsg').html("Home Page Details Updated Successfully");
+                    $('#successMsg').show();
+                    setTimeout(function() {
+                        $('#successMsg').delay(3000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        window.location.href = '/manage_home_page';
+                    }, 2000);
+                }
+            });
+        }
+    }
 </script>
+
 {% endblock %}

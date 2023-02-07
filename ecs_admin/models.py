@@ -186,6 +186,14 @@ class t_submenu_master(models.Model):
     document_id = models.IntegerField(blank=True, null=True)
     is_deleted = models.CharField(max_length=3, default=None, blank=True, null=True)
 
+class t_homepage_master(models.Model):
+    homepage_id = models.AutoField(primary_key=True)
+    homepage_title = models.CharField(max_length=250, default=None, blank=True, null=True)
+    homepage_content = models.TextField(max_length=250, default=None, blank=True, null=True)
+    is_active = models.CharField(max_length=3, default=None, blank=True, null=True)
+    document_id = models.IntegerField(blank=True, null=True)
+    is_deleted = models.CharField(max_length=3, default=None, blank=True, null=True)
+
 class t_file_attachment(models.Model):
     file_id = models.AutoField(primary_key=True)
     file_path = models.CharField(max_length=250)
