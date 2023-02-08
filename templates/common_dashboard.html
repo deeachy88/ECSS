@@ -139,12 +139,6 @@
                             <li class="side-nav-title side-nav-item">User Details</li>
 
                             <li class="side-nav-item">
-                                <a href="{% url 'manage_home_page' %}" class="side-nav-link">
-                                    <i class="mdi mdi-air-filter"></i>
-                                    <span> Manage Homepage </span>
-                                </a>
-                            </li>
-                            <li class="side-nav-item">
                                 <a href="{% url 'user_master' %}" class="side-nav-link">
                                     <i class="mdi mdi-account-reactivate-outline"></i>
                                     <span> Manage Users </span>
@@ -153,6 +147,12 @@
 
                             <li class="side-nav-title side-nav-item mt-1">Components</li>
 
+                            <li class="side-nav-item">
+                                <a href="{% url 'manage_home_page' %}" class="side-nav-link">
+                                    <i class="mdi mdi-air-filter"></i>
+                                    <span> Manage Homepage </span>
+                                </a>
+                            </li>
                             <li class="side-nav-item">
                                 <a href="{% url 'manage_menu' %}" class="side-nav-link">
                                     <i class="mdi mdi-air-filter"></i>
@@ -166,7 +166,7 @@
                                 </a>
                             </li>
                             <li class="side-nav-item">
-                                <a href="{% url 'manage_publications' %}" class="side-nav-link">
+                                <a href="{% url 'manage_others' %}" class="side-nav-link">
                                     <i class="mdi mdi-air-filter"></i>
                                     <span> Manage others </span>
                                 </a>

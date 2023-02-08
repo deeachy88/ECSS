@@ -36,7 +36,7 @@ urlpatterns = [
     #Menu Details
     path('get_content_details', views.get_content_details, name='get_content_details'),
     path('contact_us', views.contact_us, name='contact_us'),
-    path('manage_publications',views.manage_publications, name='manage_publications'),
+    path('manage_others',views.manage_others, name='manage_others'),
     path('add_publication_file', views.add_publication_file, name='add_publication_file'),
     path('add_publication_attach', views.add_publication_attach, name='add_publication_attach'),
     path('get_other_details', views.get_other_details, name='get_other_details'),

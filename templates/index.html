@@ -59,99 +59,110 @@
         {% block content %}
             <div id="content_div">
                 <div class="row">
-                    <div class="col-lg-4">
-                        <div id="carouselExampleCaption" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner" role="listbox">
-                                <div class="carousel-item active">
-                                    {% for home_attachment in home_attachment %}
-                                        <img src="{{home_attachment.file_path }}" alt="..." class="d-block img-fluid">
-                                    {% endfor %}
-                                    <div class="carousel-caption d-none d-md-block text-center">
-                                        {% for homepage_details in homepage_details %}
-                                            <h3 class="text-dark">{{homepage_details.homepage_title}}</h3>
-                                            <h5 class="text-dark">{{homepage_details.homepage_content|safe}}</h5>
+                    <div class="col-xl-8 col-lg-7">
+                        <div class="card d-block">
+                            <div class="card-body">
+                                {% for homepage_details in homepage_details %}
+                                    <h3 class="m-0">{{homepage_details.homepage_title}}</h3>
+                                {% endfor %}<br>
+                                <a href="javascript: void(0);" class="text-center d-block mb-4">
+                                {% for home_attachment in home_attachment %}
+                                    <img src="{{home_attachment.file_path }}" class="img-fluid"  alt="Product-img">
+                                {% endfor %}
+                                </a>
+                                {% for homepage_details in homepage_details %}
+                                        <h5 class="m-0">{{homepage_details.homepage_content|safe}}</h5>
+                                {% endfor %}
+                            </div> <!-- end card body -->
+                        </div> <!-- end card -->
+                    </div> <!-- end col -->
+                    <div class="col-xl-4 col-lg-5">
+                        {% if pub_file_attachment_count > 0 %}
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <h4 class="header-title">Publications</h4>
+                                    </div>
+                                    <hr>
+                                    <div class="inbox-widget">
+                                        {% for file_attachment in pub_file_attachment %}
+                                            <div class="inbox-item">
+                                                <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                            </div>
+                                         {% endfor %}
+                                    </div> <!-- end inbox-widget -->
+                                    {% if form_file_attachment_count > 5 %}
+                                        <div class="text-center mt-1">
+                                            <a href="javascript:void(0);" class="text-danger"><i class="mdi mdi-spin mdi-loading me-1"></i> Load more </a>
+                                        </div>
+                                    {% endif %}
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card -->
+                        {% endif %}
+                        {% if down_file_attachment_count > 0 %}
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <h4 class="header-title">Downloads</h4>
+                                    </div>
+                                    <hr>
+                                    <div class="inbox-widget">
+                                         {% for file_attachment in down_file_attachment %}
+                                            <div class="inbox-item">
+                                                <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                            </div>
+                                         {% endfor %}
+                                    </div> <!-- end inbox-widget -->
+                                    {% if form_file_attachment_count > 5 %}
+                                        <div class="text-center mt-1">
+                                            <a href="javascript:void(0);" class="text-danger"><i class="mdi mdi-spin mdi-loading me-1"></i> Load more </a>
+                                        </div>
+                                    {% endif %}
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card -->
+                        {% endif %}
+                        {% if form_file_attachment_count > 0 %}
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <h4 class="header-title">Forms</h4>
+                                    </div>
+                                    <hr>
+                                    <div class="inbox-widget">
+                                        {% for file_attachment in form_file_attachment %}
+                                            <div class="inbox-item">
+                                                <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                            </div>
                                         {% endfor %}
-                                    </div>
-                                </div>
+                                    </div> <!-- end inbox-widget -->
+                                    {% if form_file_attachment_count > 5 %}
+                                        <div class="text-center mt-1">
+                                            <a href="javascript:void(0);" class="text-danger"><i class="mdi mdi-spin mdi-loading me-1"></i> Load more </a>
+                                        </div>
+                                    {% endif %}
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card -->
+                        {% endif %}
+                    </div> <!-- end col-->
+
+
+                </div>
+
+            </div>
+            <footer class="bg-dark">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div>
+                                <p class="text-muted mt-4 text-center mb-0">© <script>document.write(new Date().getFullYear())</script> National Environment Commission</p>
                             </div>
-                            <a class="carousel-control-prev" href="#carouselExampleCaption" role="button" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </a>
-                            <a class="carousel-control-next" href="#carouselExampleCaption" role="button" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-8">
-                        <div class="row">
-                            {% for other_details in other_details %}
-                            {% if other_details.type == 'publications' %}
-                                <div class="border p-2 mt-4 mt-lg-0 rounded col-lg-4">
-                                    <h4 class="header-title mb-0">{{other_details.type}}</h4>
-                                    <div class="table-responsive">
-                                        <table class="table table-nowrap mb-0">
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        {% for file_attachment in file_attachment %}
-                                                            {% if file_attachment.document_id == other_details.document_id %}
-                                                                <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>&nbsp;
-                                {% elif other_details.type == 'downloads' %}
-                                <div class="border p-2 mt-4 mt-lg-0 rounded col-lg-4">
-                                    <h4 class="header-title mb-0">{{other_details.type}}</h4>
-                                    <div class="table-responsive">
-                                        <table class="table table-nowrap table-centered mb-0">
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        {% for file_attachment in file_attachment %}
-                                                            {% if file_attachment.document_id == other_details.document_id %}
-                                                                <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>&nbsp;
-                                {% else %}
-                                <div class="border p-2 mt-4 mt-lg-0 rounded col-lg-2">
-                                    <h4 class="header-title mb-0">{{other_details.type}}</h4>
-                                    <div class="table-responsive">
-                                        <table class="table table-nowrap table-centered mb-0">
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        {% for file_attachment in file_attachment %}
-                                                            {% if file_attachment.document_id == other_details.document_id %}
-                                                                <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
                         </div>
                     </div>
                 </div>
-            </div>
+            </footer>
         {% endblock %}
     </div>
+
     <div class="modal fade" id="loginModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">

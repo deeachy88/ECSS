@@ -24,14 +24,23 @@ def home(request):
     menu_details = t_menu_master.objects.filter(is_active='Y',is_deleted='N')
     submenu_details = t_submenu_master.objects.filter(is_active='Y',is_deleted='N')
     other_details = t_other_details.objects.filter(is_active='Y',is_deleted='N')
-    homepage_details = t_homepage_master.objects.filter()
-    file_attachment = t_file_attachment.objects.all()
+    homepage_details = t_homepage_master.objects.filter(homepage_id='1')
+    pub_file_attachment = t_file_attachment.objects.filter(attachment_type='P')
+    down_file_attachment = t_file_attachment.objects.filter(attachment_type='D')
+    form_file_attachment = t_file_attachment.objects.filter(attachment_type='F')
     home_attachment = t_file_attachment.objects.filter(attachment_type='H')
+    pub_file_attachment_count = t_file_attachment.objects.filter(attachment_type='P').count()
+    down_file_attachment_count = t_file_attachment.objects.filter(attachment_type='D').count()
+    form_file_attachment_count = t_file_attachment.objects.filter(attachment_type='F').count()
     return render(request, 'index.html',{'proponent_type':proponent_type,'dzongkhag':dzongkhag,
                                          'gewog':gewog,'village':village,'security':security,'menu_details':menu_details,
                                          'submenu_details':submenu_details, 'other_details':other_details,
-                                         'file_attachment':file_attachment, 'homepage_details':homepage_details,
-                                         'home_attachment':home_attachment})
+                                         'pub_file_attachment':pub_file_attachment, 'homepage_details':homepage_details,
+                                         'home_attachment':home_attachment,'down_file_attachment':down_file_attachment,
+                                         'form_file_attachment':form_file_attachment,
+                                         'pub_file_attachment_count':pub_file_attachment_count,
+                                         'down_file_attachment_count':down_file_attachment_count,
+                                         'form_file_attachment_count':form_file_attachment_count})
 
 def user_login(request):
     return render(request, 'login.html')
@@ -846,11 +855,11 @@ def load_security_question(request):
     return render(request, 'forgot_pass_list.html', {'security': security})
 
 
-def manage_publications(request):
-    publication_details = t_other_details.objects.filter(is_deleted='N')
+def manage_others(request):
+    other_details = t_other_details.objects.filter(is_deleted='N')
     document_id = get_random_document_id_string(5)
     file_attachment = t_file_attachment.objects.all()
-    return render(request,'publication_master.html', {'publication_details': publication_details,
+    return render(request,'others_master.html', {'other_details': other_details,
                                                       'file_attachment':file_attachment,'document_id':document_id})
 
 def add_publication_file(request):
@@ -875,7 +884,15 @@ def add_publication_attach(request):
     title = request.POST.get('title')
     type = request.POST.get('type')
 
-    t_file_attachment.objects.create(file_path=file_url,attachment=attachment_name,document_id=document_id)
+    if type == 'publications':
+        t_file_attachment.objects.create(file_path=file_url,attachment=attachment_name,document_id=document_id,
+                                         attachment_type='P')
+    elif type == 'download':
+        t_file_attachment.objects.create(file_path=file_url, attachment=attachment_name, document_id=document_id,
+                                         attachment_type='D')
+    else:
+        t_file_attachment.objects.create(file_path=file_url, attachment=attachment_name, document_id=document_id,
+                                         attachment_type='F')
 
     t_other_details.objects.create(title=title, type=type, document_id=document_id,is_active='Y',
                                          is_deleted='N')
