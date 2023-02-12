@@ -1,0 +1,4 @@
+<option value="">--SELECT--</option>
+{% for specific_activity_description in specific_activity_description %}
+        <option value="{{ specific_activity_description.specific_activity_code }}">{{ specific_activity_description.specific_activity_description }}</option>
+{% endfor %}

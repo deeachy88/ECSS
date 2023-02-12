@@ -1,10 +1,31 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from proponent.models import t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line
+from ecs_admin.models import t_bsic_code
 # Create your views here.
 from django.db.models import Max
 from django.utils import timezone
+from django.http import JsonResponse
 
-def new_iee_application(request):
+
+def new_application(request):
+    bsic_details = t_bsic_code.objects.all()
+    return render(request, 'new_application.html',{'bsic_details':bsic_details})
+def new_ea_application(request):
+    service_code = 'EA'
+    application_no = get_application_no(request, service_code)
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    project_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    return render(request, 'industry_ea_form.html',
+                  {'partner_details': partner_details, 'machine_equipment': machine_equipment,
+                   'raw_materials': raw_materials,
+                   'project_product': project_product, 'ancillary_road': ancillary_road, 'power_line': power_line,
+                   'application_no': application_no})
+
+def new_road_application(request):
     service_code = 'IEE'
     application_no = get_application_no(request, service_code)
     partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -16,6 +37,42 @@ def new_iee_application(request):
     return render(request, 'industry_iee_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no})
 
+def new_transmission_application(request):
+    service_code = 'IEE'
+    application_no = get_application_no(request, service_code)
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    project_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    return render(request, 'industry_iee_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no})
+
+
+def new_forest_application(request):
+    service_code = 'IEE'
+    application_no = get_application_no(request, service_code)
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    project_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    return render(request, 'industry_iee_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no})
+
+def new_general_application(request):
+    service_code = 'IEE'
+    application_no = get_application_no(request, service_code)
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    project_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    return render(request, 'industry_iee_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no})
 
 def get_application_no(request, service_code):
     application_no= t_ec_industries_t1_general.objects.aggregate(Max('application_no'))
@@ -144,7 +201,7 @@ def update_partner_details(request):
 
 def delete_partner_details(request):
     record_id = request.POST.get('record_id')
-    application_no = application_no,
+    application_no = request.POST.get('application_no')
 
     partner_type_details = t_ec_industries_t2_partner_details.objects.filter(record_id=record_id)
     partner_type_details.delete()
@@ -240,5 +297,180 @@ def add_product_details(request):
         'record_id')
     return render(request, 'partner_details.html',{'partner_details':partner_details})
 
-def new_ea_application(request):
-    return render(request, 'industry_ea_form.html')
+def get_specific_activity_description(request):
+    broad_activity_code = request.GET.get('broad_activity_code')
+    specific_activity_description = t_bsic_code.objects.filter(broad_activity_code=broad_activity_code)
+    return render(request, 'specific_activity_description_list.html',
+                  {'specific_activity_description':specific_activity_description})
+
+def get_category(request):
+    specific_activity_code = request.GET.get('specific_activity_code')
+    category_details = t_bsic_code.objects.filter(specific_activity_code=specific_activity_code)
+    return render(request, 'category_list.html',
+                  {'category_details':category_details})
+
+def get_application_service_id(request):
+    data = dict()
+    broad_activity_code = request.GET.get('broad_activity_code')
+    specific_activity_code = request.GET.get('specific_activity_code')
+    category = request.GET.get('category')
+    print(broad_activity_code)
+
+    category_details = t_bsic_code.objects.filter(broad_activity_code=broad_activity_code,specific_activity_code=specific_activity_code,category=category)
+    for cat_details in category_details:
+        data['service_id'] = cat_details.service_id
+        data['colour_code'] = cat_details.colour_code
+        data['competant_authority'] = cat_details.competent_authority
+    return JsonResponse(data)
+
+# IEE DETAILS
+def new_iee_application(request):
+    service_code = 'IEE'
+    application_no = get_application_no(request, service_code)
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    project_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    return render(request, 'industry_iee_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no})
+def save_iee_attachment(request):
+    data = dict()
+    iee_attach = request.FILES['iee_attach']
+    file_name = iee_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/IEE/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, iee_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/IEE" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_iee_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+
+    t_file_attachment.objects.create(file_path=file_url, attachment=file_name,attachment_type='IEE')
+    file_attach = t_file_attachment.objects.filter(attachment_type='IEE')
+
+    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
+
+def save_anc_power_line_details(request):
+    application_no = request.POST.get('application_no')
+    line_chainage_from = request.POST.get('line_chainage_from')
+    line_chainage_to = request.POST.get('line_chainage_to')
+    land_type = request.POST.get('land_type')
+    terrain = request.POST.get('terrain')
+    tower_type = request.POST.get('tower_type')
+    no_of_tower = request.POST.get('no_of_tower')
+    row = request.POST.get('row')
+    area_required = request.POST.get('area_required')
+
+    t_ec_industries_t7_ancillary_power_line.objects.create(application_no=application_no,line_chainage_from=line_chainage_from,
+                                                           line_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
+                                                           tower_type=tower_type,no_of_tower=no_of_tower,row=row,area_required=area_required)
+    anc_power_line_details = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no).order_by('record_id')
+    return render('anc_power_line_details.html', {'anc_power_line_details':anc_power_line_details})
+
+def update_anc_power_line_details(request):
+    record_id = request.POST.get('record_id')
+    application_no = request.POST.get('application_no')
+    line_chainage_from = request.POST.get('line_chainage_from')
+    line_chainage_to = request.POST.get('line_chainage_to')
+    land_type = request.POST.get('land_type')
+    terrain = request.POST.get('terrain')
+    tower_type = request.POST.get('tower_type')
+    no_of_tower = request.POST.get('no_of_tower')
+    row = request.POST.get('row')
+    area_required = request.POST.get('area_required')
+
+    power_line_details = t_ec_industries_t7_ancillary_power_line.objects.filter(record_id=record_id)
+    power_line_details.update(application_no=application_no,line_chainage_from=line_chainage_from,
+                                                           line_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
+                                                           tower_type=tower_type,no_of_tower=no_of_tower,row=row,area_required=area_required)
+    anc_power_line_details = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no).order_by('record_id')
+    return render('anc_power_line_details.html', {'anc_power_line_details':anc_power_line_details})
+
+def delete_anc_power_line_details(request):
+    record_id = request.POST.get('record_id')
+    application_no = request.POST.get('application_no')
+
+    power_line_details = t_ec_industries_t7_ancillary_power_line.objects.filter(record_id=record_id)
+    power_line_details.delete()
+    anc_power_line_details = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no).order_by(
+        'record_id')
+    return render(request, 'anc_power_line_details.html', {'anc_power_line_details': anc_power_line_details})
+
+def save_anc_road_details(request):
+    application_no = request.POST.get('application_no')
+    line_chainage_from = request.POST.get('road_line_chainage_from')
+    line_chainage_to = request.POST.get('road_line_chainage_to')
+    land_type = request.POST.get('road_land_type')
+    terrain = request.POST.get('road_terrain')
+    road_width = request.POST.get('road_width')
+    row = request.POST.get('road_row')
+    area_required = request.POST.get('road_area_required')
+
+    t_ec_industries_t6_ancillary_road.objects.create(application_no=application_no,line_chainage_from=line_chainage_from,
+                                                           line_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
+                                                           road_width=road_width,row=row,area_required=area_required)
+    anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by('record_id')
+    return render('anc_approach_road_details.html', {'anc_road_details':anc_road_details})
+
+def update_anc_road_details(request):
+    record_id = request.POST.get('record_id')
+    application_no = request.POST.get('application_no')
+    line_chainage_from = request.POST.get('line_chainage_from')
+    line_chainage_to = request.POST.get('line_chainage_to')
+    land_type = request.POST.get('land_type')
+    terrain = request.POST.get('terrain')
+    road_width = request.POST.get('road_width')
+    row = request.POST.get('row')
+    area_required = request.POST.get('area_required')
+
+    road_details = t_ec_industries_t6_ancillary_road.objects.filter(record_id=record_id)
+    road_details.update(application_no=application_no,line_chainage_from=line_chainage_from,
+                       line_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
+                       road_width=road_width,no_of_tower=no_of_tower,row=row,area_required=area_required)
+    anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by('record_id')
+    return render('anc_approach_road_details.html', {'anc_road_details':anc_road_details})
+
+def delete_anc_road_details(request):
+    record_id = request.POST.get('record_id')
+    application_no = request.POST.get('application_no')
+
+    road_details = t_ec_industries_t6_ancillary_road.objects.filter(record_id=record_id)
+    road_details.delete()
+    anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by(
+        'record_id')
+    return render(request, 'anc_approach_road_details.html', {'anc_road_details': anc_road_details})
+
+#EA Details
+def save_ea_attachment(request):
+    data = dict()
+    ea_attach = request.FILES['ea_attach']
+    file_name = ea_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/EA/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, ea_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/EA" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_ea_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+
+    t_file_attachment.objects.create(file_path=file_url, attachment=file_name,attachment_type='EA')
+    file_attach = t_file_attachment.objects.filter(attachment_type='EA')
+
+    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
+

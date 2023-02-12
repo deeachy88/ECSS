@@ -1,0 +1,162 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card mt-1">
+                <div class="card-body">
+                    <h4 class="header-title mb-3"> New Application</h4>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Activity Description</label>
+                                <select class="form-control" name="activity_description" id="activity_description" onchange="get_specific_activity_description(this.value)">
+                                    <option value="">--SELECT-</option>
+                                    {% for bsic_details in bsic_details %}
+                                        <option value="{{ bsic_details.broad_activity_code }}">{{ bsic_details.activity_description }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="activity_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Specific Activity Description</label>
+                                <select class="form-control" name="specific_activity_description" id="specific_activity_description" onchange="get_category(this.value)">
+                                    <option value="">--SELECT--</option>
+                                    {% for bsic_details in bsic_details %}
+                                        <option value="{{ bsic_details.specific_activity_code }}">{{ bsic_details.specific_activity_description }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="specific_activity_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Category</label>
+                                <select class="form-control" name="category" id="category">
+                                    <option value="">--SELECT--</option>
+                                    {% for bsic_details in bsic_details %}
+                                        <option value="{{ bsic_details.category }}" extra-attr="{{ bsic_details.service_id }}">{{ bsic_details.category }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="categoryErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <a href="#" onclick="get_application_details()" class="btn btn-primary btn-sm mt-1">Submit <i class="mdi mdi-arrow-right ms-1"></i></a>
+                    </div>
+                    <div class="alert alert-danger" id="successMsg" style="display:none"></div>
+                </div> <!-- end card-body -->
+            </div> <!-- end card-->
+        </div>
+    </div>
+<script>
+    function get_specific_activity_description(broad_activity_code)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'get_specific_activity_description' %}",
+            data :{'broad_activity_code':broad_activity_code},
+            success : function(data)
+            {
+                $('#specific_activity_description').html(data);
+            }
+        });
+    }
+
+    function get_category(specific_activity_code)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'get_category' %}",
+            data :{'specific_activity_code':specific_activity_code},
+            success : function(data)
+            {
+                $('#category').html(data);
+            }
+        });
+    }
+
+    function get_application_details ()
+    {
+        var specific_activity = $('#activity_description').val();
+        var specific_activity_description = $('#specific_activity_description').val();
+        var category = $('#category').val();
+
+        if(specific_activity == "")
+        {
+            $('#activity_descriptionErrorMsg').html("Select One.");
+            $('#activity_descriptionErrorMsg').show();
+            $('#activity_descriptionErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(specific_activity_description == "")
+        {
+            $('#specific_activity_descriptionErrorMsg').html("Select One.");
+            $('#specific_activity_descriptionErrorMsg').show();
+            $('#specific_activity_descriptionErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(category == "")
+        {
+            $('#categoryErrorMsg').html("Select One.");
+            $('#categoryErrorMsg').show();
+            $('#categoryErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'get_application_service_id' %}",
+                data : {'broad_activity_code':specific_activity,'specific_activity_code':specific_activity_description,'category':category},
+                success : function(data)
+                {
+                    service_id = data.service_id;
+                    colour_code = data.colour_code;
+
+                    if(colour_code == 'Red')
+                    {
+                        $('#successMsg').html("You need to Draft TOR And Submit.");
+                        $('#successMsg').show();
+                        $('#successMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(colour_code == 'Green')
+                    {
+                        $('#successMsg').html("No need For Environment Clearance.");
+                        $('#successMsg').show();
+                        $('#successMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        if(service_id == '1')
+                        {
+                            window.location.href = '/new_iee_application';
+                        }
+                        else if(service_id == '3')
+                        {
+                            window.location.href = '/new_road_application';
+                        }
+                        else if(service_id == '4')
+                        {
+                            window.location.href = '/new_transmission_application';
+                        }
+                        else if(service_id == '7')
+                        {
+                            window.location.href = '/new_general_application';
+                        }
+                        else
+                        {
+                            window.location.href = '/new_general_application';
+                        }
+                    }
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}
