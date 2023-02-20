@@ -2,7 +2,8 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
-from ecs_admin.models import t_user_master, t_security_question_master, t_role_master, t_forgot_password, \
+from ecs_admin.models import t_user_master, t_security_question_master, t_role_master, t_service_master, \
+    t_fees_schedule, t_bsic_code, t_forgot_password, \
     t_file_attachment, t_menu_master, t_agency_master, t_proponent_type_master, t_dzongkhag_master, t_village_master,\
     t_gewog_master,t_submenu_master, t_other_details, t_about_us, t_notification_details, t_homepage_master
 from ecs_admin.forms import UserForm, RoleForm
@@ -225,12 +226,80 @@ def proponent_master(request):
     proponent_list = t_proponent_type_master.objects.all()
     return render(request, 'proponent_master.html', {'proponent_list':proponent_list})
 
-
 def role_master(request):
     role_list = t_role_master.objects.all()
     return render(request, 'role_master.html', {'role':role_list})
 
+def service_master(request):
+    service_list = t_service_master.objects.all().order_by('service_name')
+    return render(request, 'service_master.html', {'service':service_list})
 
+def fee_schedule_master(request):
+    fees_schedule_list = t_fees_schedule.objects.all().order_by('service_name')
+    return render(request, 'fees_schedule.html', {'fees_schedule':fees_schedule_list})
+
+def edit_fee_schedule_master(request):
+    edit_service_name = request.POST.get('service_name')
+    edit_parameter = request.POST.get('parameter')
+    edit_rate = request.POST.get('rate')
+    edit_application_fee = request.POST.get('application_fee')
+    edit_fees_id = request.POST.get('fees_id')
+    fees_details = t_fees_schedule.objects.filter(fees_id=edit_fees_id)
+    fees_details.update(rate=edit_rate, application_fee=edit_application_fee)
+    return redirect(fee_schedule_master)
+
+def delete_fee_schedule_master(request):
+    fees_schedule_list = t_fees_schedule.objects.all()
+    return render(request, 'fees_schedule.html', {'fees_schedule':fees_schedule_list})
+
+def bsic_master(request):
+    bsic_code_list = t_bsic_code.objects.all().order_by('activity_description')
+    service_list = t_service_master.objects.all()
+    return render(request, 'bsic_code_master.html', {'bsic_code_list':bsic_code_list, 'service_list':service_list})
+
+def add_bsic_code_master(request):
+    broad_activity_code = request.GET.get('broad_activity_code')
+    activity_description = request.GET.get('activity_description')
+    specific_activity_code = request.GET.get('specific_activity_code')
+    specific_activity_description = request.GET.get('specific_activity_description')
+    classification = request.GET.get('classification')
+    category = request.GET.get('category')
+    colour_code = request.GET.get('colour_code')
+    competent_authority = request.GET.get('competent_authority')
+    entry_point = 'ECSS'
+    service_id = request.GET.get('service_id')
+    t_bsic_code.objects.create(broad_activity_code=broad_activity_code, activity_description=activity_description,
+                               specific_activity_code=specific_activity_code,
+                               specific_activity_description=specific_activity_description,
+                               classification=classification, category=category, colour_code=colour_code,
+                               competent_authority=competent_authority, entry_point=entry_point, service_id=service_id)
+    return redirect(bsic_master)
+
+def get_bsic_code_details(request, bsic_id):
+    bsic_code_details = t_bsic_code.objects.filter(bsic_id=bsic_id)
+    service_list = t_service_master.objects.all()
+    return render(request, 'edit_bsic_code.html', {'bsic_code_details': bsic_code_details, 'service_list':service_list})
+
+def edit_bsic_code_master(request):
+    edit_bsic_id = request.POST.get('bsic_id')
+    edit_broad_activity_code = request.POST.get('broad_activity_code')
+    edit_activity_description = request.POST.get('activity_description')
+    edit_specific_activity_code = request.POST.get('specific_activity_code')
+    edit_specific_activity_description = request.POST.get('specific_activity_description')
+    edit_classification = request.POST.get('classification')
+    edit_category = request.POST.get('category')
+    edit_colour_code = request.POST.get('colour_code')
+    edit_competent_authority = request.POST.get('competent_authority')
+    edit_service_id = request.POST.get('service_id')
+    bsic_code_details = t_bsic_code.objects.filter(bsic_id=edit_bsic_id)
+    bsic_code_details.update(broad_activity_code=edit_broad_activity_code, activity_description=edit_activity_description, specific_activity_code=edit_specific_activity_code, specific_activity_description=edit_specific_activity_description, classification=edit_classification, category=edit_category, colour_code=edit_colour_code, competent_authority=edit_competent_authority, service_id=edit_service_id)
+    return redirect(bsic_master)
+
+def delete_bsic_code_master(request):
+    delete_bsic_id = request.POST.get('bsic_id')
+    bsic_details = t_bsic_code.objects.filter(bsic_id=delete_bsic_id)
+    bsic_details.delete()
+    return redirect(bsic_master)
 
 def add_agency_master(request):
     agency_name = request.POST.get('agency_name')

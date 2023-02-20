@@ -1,0 +1,326 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-1">
+            <div class="card-body">
+                <div class="card-widgets">
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add_bsic_code_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                </div>
+                <h5 class="card-title mb-0">BSIC Code Master</h5>
+                <div id="cardCollpase1" class="collapse pt-3 show">
+                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                        <thead>
+                            <th>#</th>
+                            <th>Activity Code</th>
+                            <th>Activity Description</th>
+                            <th>Specific Activity Code</th>
+                            <th>Specific Activity Desc</th>
+                            <th>Classification</th>
+                            <th>Category</th>
+                            <th>Colour Code</th>
+                            <th>Competent Authority</th>
+                            <th>Service</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            {% for bsic_code_list in bsic_code_list %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{bsic_code_list.broad_activity_code}}</td>
+                                    <td>{{bsic_code_list.activity_description}}</td>
+                                    <td>{{bsic_code_list.specific_activity_code}}</td>
+                                    <td>{{bsic_code_list.specific_activity_description}}</td>
+                                    <td>{{bsic_code_list.classification}}</td>
+                                    <td>{{bsic_code_list.category}}</td>
+                                    <td>{{bsic_code_list.colour_code}}</td>
+                                    <td>{{bsic_code_list.competent_authority}}</td>
+                                    <td>{{bsic_code_list.service_id}}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="{% url 'get_bsic_code_details' bsic_code_list.bsic_id %}"><i class="mdi mdi-square-edit-outline"></i></a>
+                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Delete BSIC Code"
+                                                     onclick="populateDeleteForm('{{bsic_code_list.bsic_id}}', '{{bsic_code_list.activity_description}}')"><i class="mdi mdi-delete"></i> </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" id="bsic_code_form" enctype="multipart/form-data">
+{% csrf_token %}
+    <div class="modal fade" id="add_bsic_code_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+        <div class="modal-content form-elegant">
+              <!--Header-->
+          <div class="modal-header text-center">
+            <h4 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Add BSIC Code Details</strong></h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+              <!--Body-->
+          <div class="modal-body mx-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Broad Activity Code</label>
+                        <input type="text" name="broad_activity_code" class="form-control" id="broad_activity_code">
+                    </div>
+                    <div class="alert alert-danger" id="b_activity_codeErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Broad Activity Description</label>
+                        <input type="text" name="activity_description" class="form-control" id="activity_description">
+                    </div>
+                    <div class="alert alert-danger" id="b_activity_descriptionErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Specific Activity Code</label>
+                        <input type="text" name="specific_activity_code" class="form-control" id="specific_activity_code">
+                    </div>
+                    <div class="alert alert-danger" id="s_activity_codeErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Specific Activity Description</label>
+                        <input type="text" name="specific_activity_description" class="form-control" id="specific_activity_description">
+                    </div>
+                    <div class="alert alert-danger" id="s_activity_descriptionErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Category</label>
+                        <input type="text" name="category" class="form-control" id="category">
+                    </div>
+                    <div class="alert alert-danger" id="categoryErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Classification</label>
+                        <select type="text" name="classification" class="form-control" id="classification">
+                            <option value="">--SELECT--</option>
+                            <option value="P">P</option>
+                            <option value="C">C</option>
+                            <option value="S">S</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="classificationErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Colour Code</label>
+                        <select type="text" name="colour_code" class="form-control" id="colour_code">
+                            <option value="">--SELECT--</option>
+                            <option value="Red">Red</option>
+                            <option value="Blue">Blue</option>
+                            <option value="Green">Green</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="colour_codeErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Competent Authority</label>
+                        <select type="text" name="competent_authority" class="form-control" id="competent_authority">
+                            <option value="">--SELECT--</option>
+                            <option value="DECC">DECC</option>
+                            <option value="Thromde">Thromde</option>
+                            <option value="DEC">DEC</option>
+                            <option value="DOL">DOL</option>
+                            <option value="DoFPS">DoFPS</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="competent_authorityErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Service</label>
+                        <select id="service_id" name="service_id" class="form-select">
+                                    <option value="">--SERVICE--</option>
+                                    {% for service_list in service_list %}
+                                        <option value="{{ service_list.service_id }}">{{ service_list.service_name }}</option>
+                                    {% endfor %}
+                                </select>
+                    </div>
+                    <div class="alert alert-danger" id="serviceErrorMsg" style="display:none"></div>
+                </div>
+              </div>
+              <div class="alert alert-success" id="bsic_code_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="add_bsic_code_details()">Add</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</form>
+
+<form method="post" id="bsicDeleteForm">
+    {% csrf_token %}
+    <div id="delete_bsic_code_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="delete_bsic_code_modal" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete BSIC Code</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success" id="delete_successMsg" role="alert" style="display:none;">
+                        <i class="ri-check-line me-2"></i>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>Are You Sure You Want To Delete <b><span id="delete_activity_description"></span></b> ? </p>
+                            <input type="text" name="delete_bsic_id" class="form-control" id="delete_bsic_id">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" onclick="delete_bsic_code_details()">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+
+function add_bsic_code_details()
+    {
+        let broad_activity_code = $('#broad_activity_code').val();
+        let activity_description = $('#activity_description').val();
+        let specific_activity_code = $('#specific_activity_code').val();
+        let specific_activity_description = $('#specific_activity_description').val();
+        let category = $('#category').val();
+        let classification = $('#classification').val();
+        let colour_code = $('#colour_code').val();
+        let competent_authority = $('#competent_authority').val();
+        let service_id = $('#service_id').val();
+
+        if(broad_activity_code == "")
+        {
+            $('#b_activity_codeErrorMsg').html("Enter Broad Activity Code");
+            $('#b_activity_codeErrorMsg').show();
+            $('#b_activity_codeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(activity_description == "")
+        {
+            $('#b_activity_descriptionErrorMsg').html("Enter Activity Description");
+            $('#b_activity_descriptionErrorMsg').show();
+            $('#b_activity_descriptionErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(specific_activity_code == "")
+        {
+            $('#s_activity_codeErrorMsg').html("Enter Specific Activity Code");
+            $('#s_activity_codeErrorMsg').show();
+            $('#s_activity_codeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(specific_activity_description == "")
+        {
+            $('#s_activity_descriptionErrorMsg').html("Enter Specific Activity Description");
+            $('#s_activity_descriptionErrorMsg').show();
+            $('#s_activity_descriptionErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(category == "")
+        {
+            $('#categoryErrorMsg').html("Select Category");
+            $('#categoryErrorMsg').show();
+            $('#categoryErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(classification == "")
+        {
+            $('#classificationErrorMsg').html("Enter Classification");
+            $('#classificationErrorMsg').show();
+            $('#classificationErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(colour_code == "")
+        {
+            $('#colour_codeErrorMsg').html("Select Colour Code");
+            $('#colour_codeErrorMsg').show();
+            $('#colour_codeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(competent_authority == "")
+        {
+            $('#competent_authorityErrorMsg').html("Select Competent Authority");
+            $('#competent_authorityErrorMsg').show();
+            $('#competent_authorityErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(service_id == "")
+        {
+            $('#serviceErrorMsg').html("Select Service");
+            $('#serviceErrorMsg').show();
+            $('#serviceErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'add_bsic_code_master' %}",
+                data : $('#bsic_code_form').serialize(),
+                success : function()
+                {
+                    $('#bsic_code_SuccessMsg').html("Add Successful");
+                    $('#bsic_code_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#bsic_code_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#add_bsic_code_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                    $('#bsic_code_form')[0].reset();
+                }
+            });
+       }
+    }
+
+
+function populateDeleteForm(bsic_id, activity_description)
+{
+    $('#delete_bsic_id').val(bsic_id);
+    $('#delete_activity_description').html(activity_description);
+    $('#delete_bsic_code_modal').modal('show');
+}
+
+function delete_bsic_code_details()
+{
+    var bsic_id = $('#delete_bsic_id').val();
+    $.ajax({
+        type : "POST",
+        url : "{% url 'delete_bsic_code_master' %}",
+        data : {'bsic_id':bsic_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
+        success : function()
+        {
+            $('#delete_successMsg').html("BSIC Code Deleted Successfully.");
+            $('#delete_successMsg').show();
+            setTimeout(function() {
+                $('#delete_successMsg').delay(2000).fadeOut('slow');
+            }, 2000);
+            setTimeout(function() {
+                $('#delete_bsic_code_modal').modal('hide');
+            }, 2000);
+            setTimeout(function() {
+                location.reload();
+            }, 3000);
+        }
+    });
+}
+</script>
+{% endblock %}
