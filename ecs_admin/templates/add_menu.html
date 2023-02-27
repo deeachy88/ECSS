@@ -62,9 +62,9 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="card-widgets">
-                                <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#menu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#menu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add Image</button>
                             </div>
-                            <h5 class="card-title mb-0">Attachments</h5>
+                            <h5 class="card-title mb-0">Images</h5>
                             <div id="cardCollpase2" class="collapse pt-3 show">
                                 <div id="menu_file_attachment">
                                     {% include 'file_attachment_page.html' %}
@@ -92,8 +92,8 @@
     <div class="modal-content form-elegant">
       <!--Header-->
       <div class="modal-header text-center">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Add Attachment</strong></h3>
+        <h4 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Add Image</strong></h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
       <form method="post" id="client_registration_form">
@@ -103,7 +103,7 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Attachment</label>
+                    <label class="form-label fw-bold">Images</label>
                     <input type="file" name="menu_attach" class="form-control" id="menu_attach" accept=".png,.jpg,.jpeg">
                 </div>
                 <div class="alert alert-danger" id="menu_attachErrorMsg" style="display:none"></div>

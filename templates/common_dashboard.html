@@ -145,31 +145,37 @@
                                 </a>
                             </li>
 
-                            <li class="side-nav-title side-nav-item mt-1">Components</li>
-
+                            <li class="side-nav-title side-nav-item">Portal</li>
                             <li class="side-nav-item">
-                                <a href="{% url 'manage_home_page' %}" class="side-nav-link">
-                                    <i class="mdi mdi-air-filter"></i>
-                                    <span> Manage Homepage </span>
+                                <a data-bs-toggle="collapse" href="#sidebarClient" aria-expanded="false" aria-controls="sidebarClient" class="side-nav-link">
+                                    <i class="mdi mdi-content-save"></i>
+                                    <span> Portal Manage </span>
+                                    <span class="menu-arrow"></span>
                                 </a>
-                            </li>
-                            <li class="side-nav-item">
-                                <a href="{% url 'manage_menu' %}" class="side-nav-link">
-                                    <i class="mdi mdi-air-filter"></i>
-                                    <span> Manage Menu </span>
-                                </a>
-                            </li>
-                            <li class="side-nav-item">
-                                <a href="{% url 'manage_submenu' %}" class="side-nav-link">
-                                    <i class="mdi mdi-air-filter"></i>
-                                    <span> Manage Sub Menu </span>
-                                </a>
-                            </li>
-                            <li class="side-nav-item">
-                                <a href="{% url 'manage_others' %}" class="side-nav-link">
-                                    <i class="mdi mdi-air-filter"></i>
-                                    <span> Manage others </span>
-                                </a>
+                                <div class="collapse" id="sidebarClient">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="{% url 'manage_home_page' %}" class="side-nav-link">
+                                                <span> Manage Homepage </span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'manage_menu' %}" class="side-nav-link">
+                                                <span> Manage Main Menu </span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'manage_submenu' %}" class="side-nav-link">
+                                                <span> Manage Sub Menu </span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'manage_others' %}" class="side-nav-link">
+                                                <span> Manage Others </span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
 <!--                            <li class="side-nav-item">-->
 <!--                                <a href="{% url 'manage_notification_circulars' %}" class="side-nav-link">-->
