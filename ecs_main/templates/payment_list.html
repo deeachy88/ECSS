@@ -1,0 +1,227 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+
+<div class="card mt-1">
+    <div class="card-body">
+        <h5 class="card-title mb-0 text-right">Application List</h5>
+        <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
+            <i class="ri-check-line me-2"></i>
+        </div>
+        <div id="cardCollpase1" class="collapse pt-3 show">
+            <table id="alternative-page-datatable" class="table dt-responsive nowrap w-100">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Application No</th>
+                        <th scope="col">EC Reference No</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment_details in payment_details %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><button type="button" class="btn btn-primary btn-link"  onclick="populate_payment_modal('{{payment_details.application_no}}','{{payment_details.amount}}')">{{payment_details.application_no}}</button></td>
+                            <td>{{payment_details.ec_no}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="5" class="text-center">No Data</td>
+                        </tr>
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<form method="post" id="payment_form">
+    {% csrf_token %}
+        <div id="payment-modal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title pull-left">Update Payment Details</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12">
+                    <div class="row">
+                        <input type="hidden" name="application_no" id="application_no">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Payment Type <font color="red">*</font></label>
+                                <select class="form-control" name="payment_type" id="payment_type" onchange="checkPaymentType(this.value)">
+                                    <option value="">--SELECT--</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Cheque">Cheque</option>
+                                </select>
+                            </div>
+                            <div class="alert alert-danger" id="payment_typeErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Instrument No <font color="red">*</font></label>
+                                <input type="text" class="form-control" name="instrument_no" id="instrument_no">
+                            </div>
+                            <div class="alert alert-danger" id="instrument_noErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Amount <font color="red">*</font></label>
+                                <input type="text" class="form-control" name="amount" id="amount" readonly="readonly">
+                            </div>
+                            <div class="alert alert-danger" id="amountErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label id="receipt">Receipt No <font color="red">*</font></label>
+                                <label id="jrnl" style="display:none">Jrnl. No <font color="red">*</font></label>
+                                <input type="text" class="form-control" name="transaction_no" id="transaction_no" onchange="checkReceiptNo(this.value)">
+                            </div>
+                            <div class="alert alert-danger" id="transaction_noErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label id="receipt_date_label">Receipt Date <font color="red">*</font></label>
+                                <label id="jrnl_date" style="display:none">Jrnl. Date <font color="red">*</font></label>
+                                <input type="date" class="form-control" id="transaction_date" name="transaction_date">
+                            </div>
+                            <div class="alert alert-danger" id="transaction_dateErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                    Payment Updated
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="update_payment()">Update Payment</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    function update_payment()
+    {
+        var Payment_Type = $('#payment_type').val();
+        var Instrument_No = $('#instrument_no').val();
+        var Amount = $('#amount').val();
+        var Receipt_No = $('#transaction_no').val();
+        var Receipt_Date = $('#transaction_date').val();
+
+        if(Payment_Type == "")
+        {
+            $('#payment_typeErrorMsg').html("Select Payment Type.");
+            $('#payment_typeErrorMsg').show();
+            $('#payment_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(Payment_Type == "Cheque" && Instrument_No == "")
+        {
+            $('#instrument_noErrorMsg').html("Enter Instrument No");
+            $('#instrument_noErrorMsg').show();
+            $('#instrument_noErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(Amount == "")
+        {
+            $('#amountErrorMsg').html("Enter Amount");
+            $('#amountErrorMsg').show();
+            $('#amountErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(Receipt_No == "")
+        {
+            $('#transaction_noErrorMsg').html("Enter Receipt No");
+            $('#transaction_noErrorMsg').show();
+            $('#transaction_noErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(Receipt_Date == "")
+        {
+            $('#transaction_dateErrorMsg').html("Select Receipt Date");
+            $('#transaction_dateErrorMsg').show();
+            $('#transaction_dateErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'update_payment_details' %}",
+                data :$('#payment_form').serialize(),
+                success : function()
+                {
+                    $('#submitMsg').show();
+                    setTimeout(function() {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function() {
+                        $("#payment-modal").modal('hide')
+                    }, 3000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                }
+            });
+        }
+    }
+
+    function checkReceiptNo(receipt_no)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'validate_receipt_no' %}",
+            data :{ 'receipt_no' : receipt_no},
+            success : function(data)
+            {
+                if(data.status == "Exists")
+                {
+                    $('#transaction_noErrorMsg').html("Receipt No Already Used.");
+                    $('#transaction_noErrorMsg').show();
+                    $('#transaction_noErrorMsg').delay(2000).fadeOut('slow');
+                    $('#transaction_no').val("");
+                }
+            }
+        });
+    }
+    function checkPaymentType(payment_type)
+    {
+        var p_type = payment_type;
+        if(p_type == "Cash")
+        {
+            $('#instrument_no').val("");
+            $("#instrument_no" ).prop( "disabled", true );
+            $('#receipt').show();
+            $('#receipt_date_label').show();
+            $('#jrnl').hide();
+            $('#jrnl_date').hide();
+        }
+        else if(p_type == "Online")
+        {
+            $('#instrument_no').val("");
+            $("#instrument_no" ).prop( "disabled", true );
+            $('#receipt').hide();
+            $('#receipt_date_label').hide();
+            $('#jrnl').show();
+            $('#jrnl_date').show();
+        }
+        else
+        {
+            $("#instrument_no" ).prop( "disabled", false );
+            $('#receipt').show();
+            $('#receipt_date_label').show();
+            $('#jrnl').hide();
+            $('#jrnl_date').hide();
+        }
+    }
+
+    function populate_payment_modal(application_no,amount)
+    {
+        $('#application_no').val(application_no);
+        $('#amount').val(amount);
+        $("#payment-modal").modal('show')
+    }
+</script>
+{% endblock %}
+        
+
+                    

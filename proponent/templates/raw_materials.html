@@ -5,7 +5,7 @@
             <th>List of raw materials</th>
             <th>Quantity (MT/annum)</th>
             <th>Source</th>
-            <th>Method of storage (fully enclosed/partially enclosed/open)</th>
+            <th>Method of storage</th>
         </tr>
     </thead>
     <tbody>
@@ -15,13 +15,23 @@
                 <td>{{raw_materials.raw_material}}</td>
                 <td>{{raw_materials.qty}}</td>
                 <td>{{raw_materials.source}}</td>
-                <td>{{raw_materials.storage_method}}</td>
+                {% if raw_materials.storage_method == 'Fully_Enclosed' %}
+                    <td>Fully Enclosed</td>
+                {% elif raw_materials.storage_method == 'Partially_Enclosed' %}
+                    <td>Partially Enclosed</td>
+                {% else %}
+                    <td>Open</td>
+                {% endif %}
                 <td>
                     <div class="btn-group btn-group-sm">
-                        <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="raw_materials_details_edit('{{raw_materials.record_id}}','{{raw_materials.application_no}}','{{raw_materials.raw_material}}','{{raw_materials.qty}}','{{raw_materials.source}}','{{raw_materials.storage_method}}')"><i class="mdi mdi-square-edit-outline"></i></a>
-                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_menu('{{raw_materials.record_id}}','{{raw_materials.application_no}}')"><i class="uil-trash"></i></button>
+                        <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="raw_materials_details_edit('{{raw_materials.record_id}}','{{raw_materials.application_no}}','{{raw_materials.raw_material}}','{{raw_materials.qty}}','{{raw_materials.source}}','{{raw_materials.storage_method}}')"><i class="mdi mdi-square-edit-outline"></i></button>
+                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_raw_materials('{{raw_materials.record_id}}','{{raw_materials.application_no}}')"><i class="uil-trash"></i></button>
                     </div>
                 </td>
+            </tr>
+        {% empty %}
+            <tr>
+              <td colspan="6" class="text-center">No Data Available</td>
             </tr>
         {% endfor %}
     </tbody>

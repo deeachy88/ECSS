@@ -1,0 +1,31 @@
+<table class="table table-hover table-bordered table-centered mb-0">
+    <thead>
+        <tr>
+            <th>Sl.no.</th>
+            <th>Name of Produce</th>
+            <th>Installed capacity/quantity per annum</th>
+            <th>Method of storage (fully enclosed/partially enclosed/open)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for forestry_produce in forestry_produce %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{forestry_produce.produce_name}}</td>
+                <td>{{forestry_produce.qty}}</td>
+                <td>{{forestry_produce.storage_method}}</td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="forestry_produce_populate('{{forestry_produce.record_id}}','{{forestry_produce.application_no}}','{{forestry_produce.produce_name}}','{{forestry_produce.qty}}','{{forestry_produce.storage_method}}')"><i class="mdi mdi-square-edit-outline"></i></a>
+                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_forest_produce('{{forestry_produce.record_id}}','{{forestry_produce.application_no}}')"><i class="uil-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center">No Data</td>
+                </tr>
+
+        {% endfor %}
+    </tbody>
+</table>

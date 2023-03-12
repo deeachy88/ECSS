@@ -1,0 +1,4 @@
+<option value="">--SELECT VILLAGE--</option>
+{% for village in village_list %}
+        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+{% endfor %}

@@ -224,6 +224,60 @@
                                 </div>
                             </li>
                         </ul>
+                    {% elif request.session.role == 'Verifier' %}
+                        <ul class="side-nav">
+                            <li class="side-nav-title side-nav-item">Navigation</li>
+
+                            <li class="side-nav-item">
+                                <a href="javascript:void(0);" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Home </span>
+                                </a>
+                            </li>
+
+                            <li class="side-nav-item">
+                                <a href="{% url 'verify_application_list' %}" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Application List </span>
+                                </a>
+                            </li>
+                        </ul>
+                    {% elif request.session.role == 'Reviewer' %}
+                        <ul class="side-nav">
+                            <li class="side-nav-title side-nav-item">Navigation</li>
+
+                            <li class="side-nav-item">
+                                <a href="javascript:void(0);" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Home </span>
+                                </a>
+                            </li>
+
+                            <li class="side-nav-item">
+                                <a href="{% url 'reviewer_application_list' %}" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Application List </span>
+                                </a>
+                            </li>
+                        </ul>
+                    {% elif request.session.role == 'Reviewer' %}
+                        <ul class="side-nav">
+                            <li class="side-nav-title side-nav-item">Navigation</li>
+
+                            <li class="side-nav-item">
+                                <a href="javascript:void(0);" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Home </span>
+                                </a>
+                            </li>
+
+                            <li class="side-nav-item">
+                                <a href="{% url 'approver_application_list' %}" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Application List </span>
+                                </a>
+                            </li>
+                        </ul>
                     {% else %}
                         <ul class="side-nav">
                             <li class="side-nav-title side-nav-item">Navigation</li>
@@ -250,6 +304,9 @@
                                         </li>
                                         <li>
                                             <a href="apps-ecommerce-products-details.html">Draft Application</a>
+                                        </li>
+                                        <li>
+                                            <a href="apps-ecommerce-products-details.html">Resubmit Application</a>
                                         </li>
                                     </ul>
                                 </div>

@@ -196,6 +196,7 @@ class t_homepage_master(models.Model):
 
 class t_file_attachment(models.Model):
     file_id = models.AutoField(primary_key=True)
+    application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     file_path = models.CharField(max_length=250)
     attachment = models.FileField(storage=fs)
     attachment_type = models.CharField(max_length=100, blank=True, null=True)

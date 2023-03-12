@@ -1,0 +1,27 @@
+<table class="table table-hover table-bordered table-centered mb-0">
+    <thead>
+        <tr>
+            <th>Sl.no.</th>
+            <th>Name of chemicals/substances</th>
+            <th>Quantity</th>
+            <th>Storage</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for hazardous_chemicals in hazardous_chemicals %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{hazardous_chemicals.chemical_name}}</td>
+                <td>{{hazardous_chemicals.qty}}</td>
+                <td>{{hazardous_chemicals.storage_method}}</td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="populate_hazardous_chemicals_details('{{hazardous_chemicals.record_id}}','{{hazardous_chemicals.application_no}}','{{hazardous_chemicals.chemical_name}}','{{hazardous_chemicals.qty}}','{{hazardous_chemicals.storage_method}}')"><i class="mdi mdi-square-edit-outline"></i></a>
+                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_hazardous_chemicals('{{hazardous_chemicals.record_id}}','{{hazardous_chemicals.application_no}}')"><i class="uil-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

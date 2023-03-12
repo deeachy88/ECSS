@@ -3,23 +3,24 @@
         <tr>
             <th>Sl.no.</th>
             <th>Type</th>
+            <th>Name of Products/ by-products</th>
             <th>Quantity per annum</th>
             <th>Storage</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        {% for products_by_products_details in products_by_products_details %}
+        {% for products_by_products_details in products_by_products %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{products_by_products_details.line_chainage_from}}</td>
-                <td>{{products_by_products_details.line_chainage_to}}</td>
-                <td>{{products_by_products_details.land_type}}</td>
-                <td>{{products_by_products_details.land_type}}</td>
+                <td>{{products_by_products_details.type}}</td>
+                <td>{{products_by_products_details.product_name}}</td>
+                <td>{{products_by_products_details.qty}}</td>
+                <td>{{products_by_products_details.storage_method}}</td>
                 <td>
                     <div class="btn-group btn-group-sm">
-                        <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="populate_approach_road_details('{{products_by_products_details.record_id}}','{{products_by_products_details.application_no}}','{{products_by_products_details.line_chainage_from}}','{{products_by_products_details.line_chainage_to}}','{{products_by_products_details.land_type}}','{{products_by_products_details.land_type}}')"><i class="mdi mdi-square-edit-outline"></i></a>
-                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_approach_road('{{products_by_products_details.record_id}}','{{products_by_products_details.application_no}}')"><i class="uil-trash"></i></button>
+                        <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="populate_products_by_products_details('{{products_by_products_details.record_id}}','{{products_by_products_details.application_no}}','{{products_by_products_details.type}}','{{products_by_products_details.product_name}}','{{products_by_products_details.qty}}','{{products_by_products_details.storage_method}}')"><i class="mdi mdi-square-edit-outline"></i></a>
+                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_products_by_products('{{products_by_products_details.record_id}}','{{products_by_products_details.application_no}}')"><i class="uil-trash"></i></button>
                     </div>
                 </td>
             </tr>

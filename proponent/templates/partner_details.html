@@ -19,10 +19,14 @@
                 <td>{{partner_details.partner_address}}</td>
                 <td>
                     <div class="btn-group btn-group-sm">
-                        <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="partner_details_edit('{{partner_details.record_id}}','{{partner_details.application_no}}','{{partner_details.partner_type}}','{{partner_details.partner_cid}}','{{partner_details.partner_name}}','{{partner_details.partner_address}}')"><i class="mdi mdi-square-edit-outline"></i></a>
-                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_menu('{{partner_details.record_id}}','{{partner_details.application_no}}')"><i class="uil-trash"></i></button>
+                        <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="partner_details_edit('{{partner_details.record_id}}','{{partner_details.application_no}}','{{partner_details.partner_type}}','{{partner_details.partner_cid}}','{{partner_details.partner_name}}','{{partner_details.partner_address}}')"><i class="mdi mdi-square-edit-outline"></i></button>
+                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_partner_details('{{partner_details.record_id}}','{{partner_details.application_no}}')"><i class="uil-trash"></i></button>
                     </div>
                 </td>
+            </tr>
+        {% empty %}
+            <tr>
+              <td colspan="6" class="text-center">No Data Available</td>
             </tr>
         {% endfor %}
     </tbody>

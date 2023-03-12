@@ -1,0 +1,4 @@
+<option value="">--SELECT GEWOG--</option>
+{% for gewog in gewog_list %}
+        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+{% endfor %}
