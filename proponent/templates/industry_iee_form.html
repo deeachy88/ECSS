@@ -94,6 +94,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Industry Type</label>
+                                                
                                                 <input type="text" name="industry_type" class="form-control" id="industry_type">
                                             </div>
                                             <div id="industry_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -110,7 +111,11 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Classification of Industry</label>
-                                                <input type="text" name="industry_classification" class="form-control" id="industry_classification">
+                                                <select class="form-control" name="industry_classification" id="industry_classification">
+                                                    <option value="Small">Small</option>
+                                                    <option value="cottage">Cottage</option>
+                                                    <option>Large</option>
+                                                </select> 
                                             </div>
                                             <div id="industry_classificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>

@@ -34,6 +34,7 @@ def payment_list(request):
 def view_application_details(request):
     application_no = request.POST.get('application_no')
     service_id = request.POST.get('service_id')
+    application_source = request.POST.get('application_source')
 
     if service_id == '1':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)

@@ -628,7 +628,9 @@ def save_iee_application(request):
                                         assigned_user_id=None,
                                         assigned_role_id=None,
                                         assigned_role_name=None,
-                                        result=None
+                                        result=None,
+                                        ca_authority=request.session['ca_authority'],
+                                        dzongkhag_thromde_id=dzongkhag_code
                                     )
         data['message'] = "success"
     except Exception as e:

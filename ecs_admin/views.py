@@ -2,7 +2,7 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
-from ecs_admin.models import t_user_master, t_security_question_master, t_role_master, t_service_master, \
+from ecs_admin.models import t_competant_authority_master, t_user_master, t_security_question_master, t_role_master, t_service_master, \
     t_fees_schedule, t_bsic_code, t_forgot_password, \
     t_file_attachment, t_menu_master, t_agency_master, t_proponent_type_master, t_dzongkhag_master, t_village_master,\
     t_gewog_master,t_submenu_master, t_other_details, t_about_us, t_notification_details, t_homepage_master
@@ -215,7 +215,7 @@ def add_submenu_master(request):
 def user_master(request):
     users = t_user_master.objects.filter(login_type='I')
     roles = t_role_master.objects.all().order_by('role_name')
-    agency = t_agency_master.objects.all().order_by('agency_name')
+    agency = t_competant_authority_master.objects.all().order_by('competent_authority')
     return render(request, 'user_master.html', {'users': users, 'role': roles, 'agency':agency})
 
 def agency_master(request):

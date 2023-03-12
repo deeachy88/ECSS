@@ -128,7 +128,7 @@
                                 <select id="agency" name="agency" class="form-select">
                                     <option value="">--SELECT AGENCY--</option>
                                     {% for agency in agency %}
-                                        <option value="{{ agency.agency_id }}">{{ agency.agency_name }}</option>
+                                        <option value="{{ agency.competent_authority }}">{{ agency.agency_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
