@@ -1,0 +1,156 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card mt-1">
+            <div class="card-body">
+                <h4 class="header-title mb-3"> TOR Form</h4>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Name of Project</label>
+                            <input type="text" name="project_name" class="form-control" id="project_name">
+                        </div>
+                        <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                </div>
+                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Applicant Name</label>
+                            <input type="text" name="applicant_name" class="form-control" id="applicant_name">
+                        </div>
+                        <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Address</label>
+                            <input type="text" name="address" class="form-control" id="address">
+                        </div>
+                        <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Contact No</label>
+                            <input type="number" min="1"  name="contact_no" class="form-control" id="contact_no" maxlength="8">
+                        </div>
+                        <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Email</label>
+                            <input type="email" name="email" class="form-control" id="email">
+                        </div>
+                        <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
+                            <textarea class="form-control" id="focal_person" name="focal_person" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div id="focal_personErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
+                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Thromde</label>
+                            <select class="form-select" name="thromde"  id="thromde" onchange="getGewog(this.value)">
+                                <option value="">--SELECT THROMDE--</option>
+                                {% for thromde in thromde %}
+                                    <option value="{{ thromde.dzongkhag_code }}">{{ thromde.dzongkhag_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Dzongkhag</label>
+                            <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                <option value="">--SELECT DZONGKHAG--</option>
+                                {% for dzongkhag in dzongkhag %}
+                                    <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Gewog</label>
+                            <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                <option value="">--SELECT GEWOG--</option>
+                                {% for gewog in gewog %}
+                                    <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Village/Chiwog</label>
+                            <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                <option value="">--SELECT VILLAGE--</option>
+                                {% for village in village %}
+                                <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Name of Particular Project Site</label>
+                            <input type="text" name="location_name" class="form-control" id="location_name">
+                        </div>
+                        <div id="location_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function getGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#gewog').html(data);
+            }
+        });
+    }
+
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#vil_chiwog').html(data);
+            }
+        });
+    }
+</script>
+{% endblock %}
