@@ -86,8 +86,6 @@ urlpatterns = [
     path('save_homepage_attachment_details', views.save_homepage_attachment_details,
          name='save_homepage_attachment_details'),
 
-
-
     #Master Details
     path('agency_master', views.agency_master, name='agency_master'),
     path('add_agency_master', views.add_agency_master, name='add_agency_master'),
@@ -97,7 +95,16 @@ urlpatterns = [
     path('add_proponent_master', views.add_proponent_master, name='add_proponent_master'),
     path('edit_proponent_master', views.edit_proponent_master, name='edit_proponent_master'),
     path('delete_proponent_master', views.delete_proponent_master, name='delete_proponent_master'),
-    path('role_master', views.role_master, name='role_master')
+    path('role_master', views.role_master, name='role_master'),
+    path('service_master', views.service_master, name='service_master'),
+    path('fee_schedule_master', views.fee_schedule_master, name='fee_schedule_master'),
+    path('edit_fee_schedule_master', views.edit_fee_schedule_master, name='edit_fee_schedule_master'),
+    path('delete_fee_schedule_master', views.delete_fee_schedule_master, name='delete_fee_schedule_master'),
+    path('bsic_master', views.bsic_master, name='bsic_master'),
+    path('add_bsic_code_master', views.add_bsic_code_master, name='add_bsic_code_master'),
+    path('get_bsic_code_details/<int:bsic_id>', views.get_bsic_code_details, name='get_bsic_code_details'),
+    path('edit_bsic_code_master', views.edit_bsic_code_master, name='edit_bsic_code_master'),
+    path('delete_bsic_code_master', views.delete_bsic_code_master, name='delete_bsic_code_master')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

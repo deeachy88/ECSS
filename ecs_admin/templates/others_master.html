@@ -8,7 +8,7 @@
                  <div class="card-widgets">
                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#publication_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                 </div>
-                <h5 class="card-title mb-0">Manage Others</h5>
+                <h5 class="card-title mb-0">Others Management</h5>
                 <div class="alert alert-success" id="manage_publication_SuccessMsg" role="alert" style="display:none;">
                     <i class="ri-check-line me-2"></i>
                 </div>
@@ -60,8 +60,8 @@
     <div class="modal-content form-elegant">
       <!--Header-->
       <div class="modal-header text-center">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Add</strong></h3>
+        <h4 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Add</strong></h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
       <form method="post" id="client_registration_form">
@@ -75,9 +75,9 @@
                     <label class="form-label fw-bold">Type</label>
                     <select type="text" name="type" class="form-control" id="type">
                         <option value="">--SELECT--</option>
+                        <option value="circulars">Circulars</option>
                         <option value="publications">Publications</option>
                         <option value="downloads">Downloads</option>
-                        <option value="forms">Forms</option>
                     </select>
                 </div>
                 <div class="alert alert-danger" id="typeErrorMsg" style="display:none"></div>
