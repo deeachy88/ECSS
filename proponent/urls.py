@@ -10,7 +10,7 @@ urlpatterns = [
     path('new_forestry_application', views.new_forestry_application, name='new_forestry_application'),
     path('new_general_application', views.new_general_application, name='new_general_application'),
     path('new_ground_water_application', views.new_ground_water_application, name='new_ground_water_application'),
-    path('new_industry_application', views.new_industry_application, name='new_industry_application'),
+    
     
     path('add_machine_tool_details', views.add_machine_tool_details, name='add_machine_tool_details'),
     path('update_machine_tool_details', views.update_machine_tool_details, name='update_machine_tool_details'),
@@ -64,6 +64,7 @@ urlpatterns = [
     path('save_noise_level_details', views.save_noise_level_details, name='save_noise_level_details'),
     path('save_other_impact_details', views.save_other_impact_details, name='save_other_impact_details'),
     path('submit_iee_application', views.submit_iee_application, name='submit_iee_application'),
+    
     #ea_details
     path('save_ea_attachment', views.save_ea_attachment, name='save_ea_attachment'),
     path('save_ea_attachment_details', views.save_ea_attachment_details, name='save_ea_attachment_details'),
@@ -76,5 +77,12 @@ urlpatterns = [
     path('save_terrain_baseline_details_one', views.save_terrain_baseline_details_one, name='save_terrain_baseline_details_one'),
     path('save_terrain_baseline_details_two', views.save_terrain_baseline_details_two, name='save_terrain_baseline_details_two'),
     path('submit_ea_application', views.submit_ea_application, name='submit_ea_application'),
+
+    #Ancillary Application Details
+    path('industry_ancillary_form', views.industry_ancillary_form, name='industry_ancillary_form'),
+    path('ground_water_ancillary_form', views.ground_water_ancillary_form, name='ground_water_ancillary_form'),
+    path('forest_ancillary_form', views.forest_ancillary_form, name='forest_ancillary_form'),
+    path('general_ancillary_form', views.general_ancillary_form, name='general_ancillary_form'),
+    path('save_industry_ancillary_application', views.save_industry_ancillary_application, name='save_industry_ancillary_application'),
 
 ]

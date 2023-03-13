@@ -335,7 +335,7 @@
                                     </div>
                                     <div class="row mt-4">
                                         <div class="text-sm-end">
-                                            <button type="button" class="btn btn-success" onclick="save_iee_application()">
+                                            <button type="button" class="btn btn-success" onclick="save_industry_ancillary_application()">
                                                 <i class="mdi mdi-arrow-right me-1"></i> Save-Next </button>
                                         </div>
                                     </div>
@@ -1566,26 +1566,6 @@
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="iee_disclaimer_application_no">
                                     
-                                    <div class="row industry_application" style="display:none;">
-                                        <a href="{% url 'new_industry_application' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Industrial projects </a>
-                                    </div>
-                                    
-                                    <div class="row forestry_application mt-1" style="display:none;">
-                                        <a href="{% url 'new_forestry_application' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Forestry projects </a>
-                                    </div>
-                                    
-                                    <div class="row ground_water_application mt-1" style="display:none;">
-                                        <a href="{% url 'new_ground_water_application' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Ground Water projects </a>
-                                    </div>
-                                    
-                                    <div class="row general_application mt-1" style="display:none;">
-                                        <a href="{% url 'new_general_application' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
-                                    </div>
-
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="iee_submit_successMsg" style="display:none">
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
@@ -3420,7 +3400,7 @@
         });
     }
 
-    function save_iee_application()
+    function save_industry_ancillary_application()
     {
         let project_name = $('#project_name').val();
         let project_category = $('#project_category').val();
@@ -3645,7 +3625,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_iee_application' %}",
+                url : "{% url 'save_industry_ancillary_application' %}",
                 data : $('#iee_application_form').serialize(),
                 success : function(data)
                 {
