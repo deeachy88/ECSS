@@ -6,6 +6,7 @@ from ecs_admin.models import t_bsic_code, t_file_attachment, t_dzongkhag_master,
 from django.db.models import Max
 from django.utils import timezone
 from django.http import JsonResponse
+from django.core.files.storage import FileSystemStorage
 
 
 def new_application(request):
