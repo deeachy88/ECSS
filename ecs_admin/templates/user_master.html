@@ -17,7 +17,7 @@
                             <th>Name</th>
                             <th>Gender</th>
                             <th>Email</th>
-                            <th>Mobile No</th>
+                            <th>Contact Number</th>
                             <th>Role</th>
                             <th>Agency</th>
                             <th></th>
@@ -48,8 +48,7 @@
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Activate')"><i class="uil uil-unlock"></i></button>
                                             {% endif %}
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit"
-                                                     onclick="populateEditForm('{{user.login_id}}', '{{user.name}}', '{{user.gender}}', '{{user.Email_Id}}',
-                                                       '{{user.mobile_no}}', '{{user.role_id_id}}', '{{user.agency_id_id}}')"><i class="mdi mdi-square-edit-outline"></i> </button>
+                                                     onclick="populateEditForm('{{user.login_id}}', '{{user.name}}', '{{user.gender}}', '{{user.email_id}}','{{user.contact_number}}', '{{user.role_id_id}}', '{{user.agency_id_id}}')"><i class="mdi mdi-square-edit-outline"></i> </button>
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Reset Password" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Reset')"><i class="uil-key-skeleton"></i></button>
                                         </div>
                                     </td>
@@ -108,7 +107,7 @@
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Contact Number</label>
-                                <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contact_number" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contact_number" maxlength="8" min="1">
                             </div>
                             <div id="contact_numberErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                         </div>
@@ -144,6 +143,94 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" onclick="save_users()">Add</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form>
+<form method="post" id="edit_user_form">
+    {% csrf_token %}
+    <div id="edit-user-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="edit-user-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="fullWidthModalLabel">Edit Users</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" class="form-control" id="editLoginId" name="editLoginId">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Name</label>
+                                <input type="text" name="edit_name" class="form-control" id="edit_name">
+                            </div>
+                            <div id="edit_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Gender</label>
+                                <div class="mt-1">
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" id="edit_male_radio" name="edit_gender" value="M" class="form-check-input">
+                                        <label class="form-check-label" for="male_radio">Male</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" id="edit_female_radio" name="edit_gender" value="F" class="form-check-input">
+                                        <label class="form-check-label" for="female_radio">Female</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="edit_genderErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email</label>
+                                <input type="email" name="edit_email" class="form-control" id="edit_email" readonly>
+                            </div>
+                            <div id="edit_emailErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Contact Number</label>
+                                <input type="number" class="form-control" id="edit_contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="edit_contact_number" maxlength="8" min="1">
+                            </div>
+                            <div id="edit_contact_numberErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Role</label>
+                                <select id="edit_role" name="edit_role" class="form-select">
+                                    <option value="">--SELECT ROLE--</option>
+                                    {% for role in role %}
+                                        <option value="{{ role.role_id }}">{{ role.role_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="edit_roleErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6 agency_div" style="display:none;">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Agency</label>
+                                <select id="edit_agency" name="edit_agency" class="form-select">
+                                    <option value="">--SELECT AGENCY--</option>
+                                    {% for agency in agency %}
+                                        <option value="{{ agency.competent_authority }}">{{ agency.agency_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="edit_agencyErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-success" id="edit_successMsg" style="display:none"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_users()">Update</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -266,52 +353,114 @@ function save_users()
         }
 }
 
-function checkContact(value)
+
+function update_users()
 {
-    var firstDigit = value.charAt(0);
-    var secondDigit = value.charAt(1);
-
-    if(firstDigit != 7 && firstDigit != 1){
-        $('#mobileErrorMsg').html("Must Start with either 1 or 7.");
-        $('#mobileErrorMsg').show();
-        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
-        $('#mobile').val("");
-    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
-        $('#mobileErrorMsg').html("Second Digit Must Start with either 6 or 7.");
-        $('#mobileErrorMsg').show();
-        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
-        $('#mobile').val("");
-    }else if(firstDigit == 7 && secondDigit == 6){
-        $('#mobileErrorMsg').html("Second Digit Cannot be 6.");
-        $('#mobileErrorMsg').show();
-        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
-        $('#mobile').val("");
-    }else if(firstDigit == 7 && secondDigit != 7){
-        $('#mobileErrorMsg').html("Second Digit Must Start with 7.");
-        $('#mobileErrorMsg').show();
-        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
-        $('#mobile').val("");
-    }
-
-}
-
-function populateEditForm(loginId, name, empId, gender, emailId, mobileNumber, roleId, divisionId, sectionId, fieldId)
-{
-    $('#editLoginId').val(loginId);
-    $('#edit_name').val(name);
-	$('#edit_emp_id').val(empId);
-    $('#edit_email').val(emailId);
-    $('#edit_mobile').val(mobileNumber);
-    $('#edit_role').val(roleId);
-    $('#edit-user-modal').modal('show');
-    if(gender == "M")
+    let name = $('#edit_name').val();
+    let gender = $("input[name=edit_gender]:checked").length;
+    let email = $('#edit_email').val();
+    let contact_number = $('#edit_contact_number').val();
+    let role = $('#edit_role').val();
+    let agency = $('#edit_agency').val();
+    let contact_number_count = $('#edit_contact_number').val().length;
+    
+    if(name == "")
     {
-        $('#male_radio').attr('checked',true);
+        $('#edit_nameErrorMsg').html("Enter Name.");
+        $('#edit_nameErrorMsg').show();
+        $('#edit_nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(gender < 1)
+    {
+        $('#edit_genderErrorMsg').html("Select One Gender.");
+        $('#edit_genderErrorMsg').show();
+        $('#edit_genderErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(email == "")
+    {
+        $('#edit_emailErrorMsg').html("Enter Email.");
+        $('#edit_emailErrorMsg').show();
+        $('#edit_emailErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(contact_number == "")
+    {
+        $('#edit_contact_numberErrorMsg').html("Enter Contact Number.");
+        $('#edit_contact_numberErrorMsg').show();
+        $('#edit_contact_numberErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(contact_number_count < 8)
+    {
+        $('#edit_contact_numberErrorMsg').html("Cannot Be Less Than Eight Digits.");
+        $('#edit_contact_numberErrorMsg').show();
+        $('#edit_contact_numberErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(role == "")
+    {
+        $('#edit_roleErrorMsg').html("Select Role.");
+        $('#edit_roleErrorMsg').show();
+        $('#edit_roleErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(role != "1" && agency == "")
+    {
+        $('#edit_agencyErrorMsg').html("Select Agency.");
+        $('#edit_agencyErrorMsg').show();
+        $('#edit_agencyErrorMsg').delay(2000).fadeOut('slow');
     }
     else
     {
-        $('#female_radio').attr('checked',true);
+        $("#pageloader").show();
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_user' %}",
+            data : $('#edit_user_form').serialize(),
+            success : function()
+            {
+                $("#pageloader").hide();
+                $('#edit_successMsg').html("User Successfully Updated.");
+                $('#edit_successMsg').show();
+                setTimeout(function() {
+                    $('#edit_successMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#edit-user-modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+                $('#edit_user_form')[0].reset();
+            }
+        });
     }
+}
+
+function populateEditForm(loginId, name, gender, emailId, contactNumber, roleId, agencyId)
+{
+    $('#editLoginId').val(loginId);
+    $('#edit_name').val(name);
+    if(gender == "M")
+    {
+        $('#edit_male_radio').attr('checked',true);
+    }
+    else
+    {
+        $('#edit_female_radio').attr('checked',true);
+    }
+    $('#edit_email').val(emailId);
+    $('#edit_contact_number').val(contactNumber);
+    $('#edit_role').val(roleId);
+    if(roleId == '1')
+    {
+        $('.agency_div').hide();
+    }
+    else
+    {
+        $('.agency_div').show();
+        $('#edit_agency').val(roleId);
+    }
+    
+    $('#edit-user-modal').modal('show');
+
+    
 }
 
 

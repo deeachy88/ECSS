@@ -87,11 +87,13 @@ def login(request):
                                         request.session['role'] = roles.role_name
                                         request.session['email'] = check_user.email_id
                                         request.session['login_type'] = check_user.login_type
+                                        request.session['login_id'] = check_user.login_id
                                         return render(request, 'common_dashboard.html')
                                 else:
                                     request.session['name'] = check_user.proponent_name
                                     request.session['email'] = check_user.email_id
                                     request.session['login_type'] = check_user.login_type
+                                    request.session['login_id'] = check_user.login_id
                                     return render(request, 'common_dashboard.html')
 
                     else:
@@ -114,22 +116,45 @@ def add_user(request):
         agency = request.POST['agency']
         password = get_random_password_string(8)
         password_value = make_password(password)
-        print(password_value)
         if role == '1':
             t_user_master.objects.create(login_type="I", name=name, gender=gender,
                                          contact_number=contact_number, email_id=email,
                                          password=password_value, is_active="Y",agency_id=None,
-                                         logical_delete="N", last_login_date=None, created_by=None,
-                                         created_on=None, modified_by=None, modified_on=None, role_id_id=role)
+                                         logical_delete="N", last_login_date=None, created_by=request.session['login_id'],
+                                         created_on=date.today(), modified_by=None, modified_on=None, role_id_id=role)
         else:
             t_user_master.objects.create(login_type="I", name=name, gender=gender,
                                          contact_number=contact_number, email_id=email,
                                          password=password_value, is_active="Y",agency_id=agency,
-                                         logical_delete="N", last_login_date=None, created_by=None,
-                                         created_on=None, modified_by=None, modified_on=None, role_id_id=role)
+                                         logical_delete="N", last_login_date=None, created_by=request.session['login_id'],
+                                         created_on=date.today(), modified_by=None, modified_on=None, role_id_id=role)
         details = t_user_master.objects.filter(login_type="I").order_by('login_id')
         sendmail(request, name, email, password)
         return redirect(user_master)
+
+def update_user(request):
+    login_id = request.POST.get('editLoginId')
+    name = request.POST.get('edit_name')
+    gender = request.POST.get('edit_gender')
+    email = request.POST.get('edit_email')
+    contact_number = request.POST.get('edit_contact_number')
+    role = request.POST.get('edit_role')
+    agency = request.POST.get('edit_agency')
+
+    print(role)
+    
+    user_details = t_user_master.objects.filter(login_id=login_id)
+    if role != '1':
+        user_details.update(name=name, gender=gender,
+                            contact_number=contact_number, email_id=email,
+                            agency_id=agency, modified_by=request.session['login_id'],
+                            modified_on=date.today(), role_id_id=role)
+    else:
+        user_details.update(name=name, gender=gender,
+                            contact_number=contact_number, email_id=email,
+                            modified_by=request.session['login_id'],
+                            modified_on=date.today(), role_id_id=role)
+    return redirect(user_master)
 
 def get_random_password_string(length):
     password_characters = string.ascii_letters + string.digits + string.punctuation

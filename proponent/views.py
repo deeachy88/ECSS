@@ -6,6 +6,7 @@ from ecs_admin.models import t_bsic_code, t_file_attachment, t_dzongkhag_master,
 from django.db.models import Max
 from django.utils import timezone
 from django.http import JsonResponse
+from django.core.files.storage import FileSystemStorage
 
 
 def new_application(request):
@@ -19,6 +20,7 @@ def new_application(request):
 def new_ea_application(request):
     service_code = 'EA'
     application_no = get_application_no(request, service_code)
+    request.session['application_no'] = application_no
     partner_details = t_ec_industries_t2_partner_details.objects.all()
     machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
     project_product = t_ec_industries_t4_project_product.objects.all()
@@ -37,6 +39,7 @@ def new_ea_application(request):
 def new_road_application(request):
     service_code = 'ROA'
     application_no = get_application_no(request, service_code)
+    request.session['application_no'] = application_no
     partner_details = t_ec_industries_t2_partner_details.objects.all()
     machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
     project_product = t_ec_industries_t4_project_product.objects.all()
@@ -52,6 +55,7 @@ def new_road_application(request):
 def new_transmission_application(request):
     service_code = 'TRA'
     application_no = get_application_no(request, service_code)
+    request.session['application_no'] = application_no
     partner_details = t_ec_industries_t2_partner_details.objects.all()
     machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
     project_product = t_ec_industries_t4_project_product.objects.all()
@@ -64,6 +68,7 @@ def new_transmission_application(request):
 def new_forestry_application(request):
     service_code = 'FO'
     application_no = get_application_no(request, service_code)
+    request.session['application_no'] = application_no
     forest_produce = t_ec_industries_t8_forest_produce.objects.all()
     ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
     power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
@@ -72,6 +77,7 @@ def new_forestry_application(request):
 def new_general_application(request):
     service_code = 'GE'
     application_no = get_application_no(request, service_code)
+    request.session['application_no'] = application_no
     partner_details = t_ec_industries_t2_partner_details.objects.all()
     machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
     project_product = t_ec_industries_t4_project_product.objects.all()
@@ -84,6 +90,7 @@ def new_general_application(request):
 def new_ground_water_application(request):
     service_code = 'GW'
     application_no = get_application_no(request, service_code)
+    request.session['application_no'] = application_no
     partner_details = t_ec_industries_t2_partner_details.objects.all()
     machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
     project_product = t_ec_industries_t4_project_product.objects.all()
@@ -93,17 +100,66 @@ def new_ground_water_application(request):
     return render(request, 'ground_water_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no})
 
-def new_industry_application(request):
-    service_code = 'GW'
-    application_no = get_application_no(request, service_code)
+def industry_ancillary_form(request):
+    application_no = request.session['application_no']
     partner_details = t_ec_industries_t2_partner_details.objects.all()
     machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-    project_product = t_ec_industries_t4_project_product.objects.all()
+    final_product = t_ec_industries_t4_project_product.objects.all()
     raw_materials = t_ec_industries_t5_raw_materials.objects.all()
     ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
     power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
-    return render(request, 'industry_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no})
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'industry_ancillary_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'final_product':final_product,'ancillary_road':ancillary_road, 'power_line':power_line,
+                                                     'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+
+def ground_water_ancillary_form(request):
+    application_no = request.session['application_no']
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    final_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'ground_water_ancillary_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'final_product':final_product,'ancillary_road':ancillary_road, 'power_line':power_line,
+                                                     'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+
+def forest_ancillary_form(request):
+    application_no = request.session['application_no']
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    final_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'forest_ancillary_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'final_product':final_product,'ancillary_road':ancillary_road, 'power_line':power_line,
+                                                     'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+
+def general_ancillary_form(request):
+    application_no = request.session['application_no']
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    final_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'general_ancillary_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'final_product':final_product,'ancillary_road':ancillary_road, 'power_line':power_line,
+                                                     'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+
 
 def get_application_no(request, service_code):
     application_no= t_ec_industries_t1_general.objects.aggregate(Max('application_no'))
@@ -275,7 +331,7 @@ def save_iee_application(request):
         t_ec_industries_t1_general.objects.create(
             application_no=application_no,
             application_date=None,
-            application_type='N',
+            application_type='Main Activity',
             ca_authority=request.session['ca_authority'],
             applicant_id=request.session['email'],
             colour_code=request.session['colour_code'],
@@ -1384,6 +1440,90 @@ def submit_iee_application(request):
         data['message'] = "failure"
     return JsonResponse(data)
 
+def save_industry_ancillary_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('application_no')
+        project_name = request.POST.get('project_name')
+        project_category = request.POST.get('project_category')
+        applicant_name = request.POST.get('applicant_name')
+        address = request.POST.get('address')
+        cid = request.POST.get('cid')
+        contact_no = request.POST.get('contact_no')
+        email = request.POST.get('email')
+        focal_person = request.POST.get('focal_person')
+        industry_type = request.POST.get('industry_type')
+        establishment_type = request.POST.get('establishment_type')
+        industry_classification = request.POST.get('industry_classification')
+        dzongkhag_code = request.POST.get('dzo_throm')
+        gewog_code = request.POST.get('gewog')
+        village_code = request.POST.get('vil_chiwog')
+        location_name = request.POST.get('location_name')
+        industrial_area_acre = request.POST.get('industrial_area_acre')
+        state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
+        private_area_acre = request.POST.get('private_area_acre')
+        others_area_acre = request.POST.get('others_area_acre')
+        total_area_acre = request.POST.get('total_area_acre')
+        green_area_acre = request.POST.get('green_area_acre')
+        production_process_flow = request.POST.get('production_process_flow')
+        project_objective = request.POST.get('project_objective')
+        project_no_of_workers = request.POST.get('project_no_of_workers')
+        project_cost = request.POST.get('project_cost')
+        project_duration = request.POST.get('project_duration')
+
+        t_ec_industries_t1_general.objects.create(
+            application_no=application_no,
+            application_date=None,
+            application_type='Ancillary',
+            ca_authority=None,
+            applicant_id=request.session['email'],
+            colour_code=None,
+            project_name=project_name,
+            project_category=project_category,
+            applicant_name=applicant_name,
+            address=address,
+            cid=cid,
+            contact_no=contact_no,
+            email=email,
+            focal_person=focal_person,
+            industry_type=industry_type,
+            establishment_type=establishment_type,
+            industry_classification=industry_classification,
+            dzongkhag_code=dzongkhag_code,
+            gewog_code=gewog_code,
+            village_code=village_code,
+            location_name=location_name,
+            industrial_area_acre=industrial_area_acre,
+            state_reserve_forest_acre=state_reserve_forest_acre,
+            private_area_acre=private_area_acre,
+            others_area_acre=others_area_acre,
+            total_area_acre=total_area_acre,
+            green_area_acre=green_area_acre,
+            production_process_flow=production_process_flow,
+            project_objective=project_objective,
+            project_no_of_workers=project_no_of_workers,
+            project_cost=project_cost,
+            project_duration=project_duration
+            )
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                        service_id=request.session['service_id'],
+                                        application_status='P',
+                                        action_date=None,
+                                        actor_id=None,
+                                        actor_name=None,
+                                        assigned_user_id=None,
+                                        assigned_role_id=None,
+                                        assigned_role_name=None,
+                                        result=None,
+                                        ca_authority=None,
+                                        dzongkhag_thromde_id=None
+                                    )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
 
 def add_product_details(request):
     application_no = request.POST.get('application_no')
@@ -1434,9 +1574,11 @@ def load_village(request):
     gewog_id = request.GET.get('gewog_id')
     village_list = t_village_master.objects.filter(gewog_code=gewog_id).order_by('village_name')
     return render(request, 'village_list.html', {'village_list': village_list})
+
 def new_iee_application(request):
     service_code = 'IEE'
     application_no = get_application_no(request, service_code)
+    request.session['application_no'] = application_no
     partner_details = t_ec_industries_t2_partner_details.objects.all()
     machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
     final_product = t_ec_industries_t4_project_product.objects.all()
