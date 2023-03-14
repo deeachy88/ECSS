@@ -215,7 +215,7 @@ def add_submenu_master(request):
 def user_master(request):
     users = t_user_master.objects.filter(login_type='I')
     roles = t_role_master.objects.all().order_by('role_name')
-    agency = t_competant_authority_master.objects.all().order_by('competent_authority')
+    agency = t_competant_authority_master.objects.all().order_by('remarks')
     return render(request, 'user_master.html', {'users': users, 'role': roles, 'agency':agency})
 
 def agency_master(request):

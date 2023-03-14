@@ -33,9 +33,13 @@
                                      <td>Female</td>
                                     {% endif %}
                                     <td>{{user.email_id}}</td>
-                                    <td>{{user.mobile_no}}</td>
+                                    <td>{{user.contact_number}}</td>
                                     <td>{{user.role_id}}</td>
-                                    <td>{{user.agency_id}}</td>
+                                    {% for agency in agency %}
+                                        {% if agency.competent_authority_id == user.agency_id %}
+                                            <td>{{agency.remarks}}</td>
+                                        {% endif %}
+                                    {% endfor %}
                                     <td>
                                         <div class="btn-group btn-group-sm">
                                             {% if user.is_active == "Y" %}
@@ -126,9 +130,9 @@
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Agency</label>
                                 <select id="agency" name="agency" class="form-select">
-                                    <option value="">--SELECT AGENCY--</option>
+                                    <option value="">--SELECT COMPETENT AUTHORITY--</option>
                                     {% for agency in agency %}
-                                        <option value="{{ agency.competent_authority }}">{{ agency.agency_name }}</option>
+                                        <option value="{{ agency.competent_authority_id }}">{{ agency.remarks }}</option>
                                     {% endfor %}
                                 </select>
                             </div>

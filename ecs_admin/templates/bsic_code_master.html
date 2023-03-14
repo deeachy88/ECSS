@@ -37,7 +37,11 @@
                                     <td>{{bsic_code_list.category}}</td>
                                     <td>{{bsic_code_list.colour_code}}</td>
                                     <td>{{bsic_code_list.competent_authority}}</td>
-                                    <td>{{bsic_code_list.service_id}}</td>
+                                    {% for service in service_list %}
+                                        {% if service.service_id == bsic_code_list.service_id %}
+                                            <td>{{service.service_name}}</td>
+                                        {% endif %}
+                                    {% endfor %}
                                     <td>
                                         <div class="btn-group btn-group-sm">
                                             <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="{% url 'get_bsic_code_details' bsic_code_list.bsic_id %}"><i class="mdi mdi-square-edit-outline"></i></a>
