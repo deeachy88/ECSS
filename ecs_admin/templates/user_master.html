@@ -35,7 +35,15 @@
                                     <td>{{user.email_id}}</td>
                                     <td>{{user.contact_number}}</td>
                                     <td>{{user.role_id}}</td>
-                                    <td>{{user.agency_id}}</td>
+                                    {% if user.agency_id %}
+                                        {% for agency in agency %}
+                                            {% if user.agency_id == agency.competent_authority_id %}
+                                                <td>{{ agency.remarks }}</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <td>None</td>
+                                    {% endif %}
                                     <td>
                                         <div class="btn-group btn-group-sm">
                                             {% if user.is_active == "Y" %}
@@ -127,7 +135,7 @@
                                 <select id="agency" name="agency" class="form-select">
                                     <option value="">--SELECT AGENCY--</option>
                                     {% for agency in agency %}
-                                        <option value="{{ agency.competent_authority }}">{{ agency.agency_name }}</option>
+                                        <option value="{{ agency.competent_authority_id }}">{{ agency.remarks }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -215,7 +223,7 @@
                                 <select id="edit_agency" name="edit_agency" class="form-select">
                                     <option value="">--SELECT AGENCY--</option>
                                     {% for agency in agency %}
-                                        <option value="{{ agency.competent_authority }}">{{ agency.agency_name }}</option>
+                                        <option value="{{ agency.competent_authority_id }}">{{ agency.remarks }}</option>
                                     {% endfor %}
                                 </select>
                             </div>

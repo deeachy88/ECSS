@@ -8,24 +8,24 @@ from django.core.mail import send_mail
 
 # Create your views here.
 def verify_application_list(request):
-    application_list = t_workflow_dtls.objects.all(application_status='P', action_date__isnull=False)
+    application_list = t_workflow_dtls.objects.filter(application_status='P', action_date__isnull=False)
     service_details = t_service_master.objects.all()
-    return render(request, application_list.html,{'application_list':application_list, 'service_details':service_details})
+    return render(request, 'application_list.html',{'application_list':application_list, 'service_details':service_details})
 
 def reviewer_application_list(request):
-    application_list = t_workflow_dtls.objects.all(application_status='P', action_date__isnull=False)
+    application_list = t_workflow_dtls.objects.filter(application_status='P', action_date__isnull=False)
     service_details = t_service_master.objects.all()
-    return render(request, application_list.html,{'application_list':application_list, 'service_details':service_details})
+    return render(request, 'application_list.html', {'application_list':application_list, 'service_details':service_details})
 
 def approver_application_list(request):
-    application_list = t_workflow_dtls.objects.all(application_status='P', action_date__isnull=False)
+    application_list = t_workflow_dtls.objects.filter(application_status='P', action_date__isnull=False)
     service_details = t_service_master.objects.all()
-    return render(request, application_list.html,{'application_list':application_list, 'service_details':service_details})
+    return render(request, 'application_list.html', {'application_list':application_list, 'service_details':service_details})
 
 def resubmit_application_list(request):
-    application_list = t_workflow_dtls.objects.all(application_status='P', action_date__isnull=False)
+    application_list = t_workflow_dtls.objects.filter(application_status='P', action_date__isnull=False)
     service_details = t_service_master.objects.all()
-    return render(request, application_list.html,{'application_list':application_list, 'service_details':service_details})
+    return render(request, 'application_list.html', {'application_list':application_list, 'service_details':service_details})
 
 def payment_list(request):
     payment_details = t_payment_details.objects.filter(receipt_no__isnull=True)
@@ -37,22 +37,40 @@ def view_application_details(request):
     application_source = request.POST.get('application_source')
 
     if service_id == '1':
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        partner_details = t_ec_industries_t2_partner_details.objects.all()
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-        project_product = t_ec_industries_t4_project_product.objects.all()
-        raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
-        forest_produce = t_ec_industries_t8_forest_produce
-        products_by_products = t_ec_industries_t9_products_by_products
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
+        if application_source == 'IBLS':
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            partner_details = t_ec_industries_t2_partner_details.objects.all()
+            machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+            project_product = t_ec_industries_t4_project_product.objects.all()
+            raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+            ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+            power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+            forest_produce = t_ec_industries_t8_forest_produce
+            products_by_products = t_ec_industries_t9_products_by_products
+            hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals
+            dzongkhag = t_dzongkhag_master.objects.all()
+            gewog = t_gewog_master.objects.all()
+            village = t_village_master.objects.all()
 
-        return render(request, 'industry_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+            return render(request, 'ea_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+        else:
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            partner_details = t_ec_industries_t2_partner_details.objects.all()
+            machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+            project_product = t_ec_industries_t4_project_product.objects.all()
+            raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+            ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+            power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+            forest_produce = t_ec_industries_t8_forest_produce
+            products_by_products = t_ec_industries_t9_products_by_products
+            hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals
+            dzongkhag = t_dzongkhag_master.objects.all()
+            gewog = t_gewog_master.objects.all()
+            village = t_village_master.objects.all()
+
+            return render(request, 'iee_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '2':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()

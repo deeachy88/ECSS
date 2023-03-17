@@ -66,38 +66,34 @@ def login(request):
     if request.method == 'POST':
         _username = request.POST['username']
         _password = request.POST['password']
-        check_user = t_user_master.objects.filter(email_id=_username)
+        check_user = t_user_master.objects.filter(email_id=_username, is_active='Y', logical_delete='N')
         if check_user is not None:
             for check_user in check_user:
                 check_pass = check_password(_password, check_user.password)
                 if check_pass:
-                    check_user_status = t_user_master.objects.filter(is_active='Y', logical_delete='N')
-                    if check_user_status:
-                        if not check_user.last_login_date:
-                            request.session['login_id'] = check_user.login_id
-                            request.session['email'] = check_user.email_id
-                            security = t_security_question_master.objects.all()
-                            return render(request, 'update_password.html', {'security': security})
-                        else:
-                            for user_details in check_user_status:
-                                if user_details.login_type == 'I':
-                                    role_details = t_role_master.objects.filter(role_id=check_user.role_id_id)
-                                    for roles in role_details:
-                                        request.session['name'] = check_user.name
-                                        request.session['role'] = roles.role_name
-                                        request.session['email'] = check_user.email_id
-                                        request.session['login_type'] = check_user.login_type
-                                        request.session['login_id'] = check_user.login_id
-                                        return render(request, 'common_dashboard.html')
-                                else:
-                                    request.session['name'] = check_user.proponent_name
-                                    request.session['email'] = check_user.email_id
-                                    request.session['login_type'] = check_user.login_type
-                                    request.session['login_id'] = check_user.login_id
-                                    return render(request, 'common_dashboard.html')
-
+                    if not check_user.last_login_date:
+                        request.session['login_id'] = check_user.login_id
+                        request.session['email'] = check_user.email_id
+                        security = t_security_question_master.objects.all()
+                        return render(request, 'update_password.html', {'security': security})
                     else:
-                        _message = 'Invalid Account, Please Contact Admin.'
+                        if check_user.login_type == 'I':
+                            role_details = t_role_master.objects.filter(role_id=check_user.role_id_id)
+                            for roles in role_details:
+                                request.session['name'] = check_user.name
+                                request.session['role'] = roles.role_name
+                                request.session['email'] = check_user.email_id
+                                request.session['login_type'] = check_user.login_type
+                                request.session['login_id'] = check_user.login_id
+                                request.session['ca_authority'] = check_user.agency_id
+                                request.session['dzongkhag_code'] = check_user.dzongkhag_code
+                                return render(request, 'common_dashboard.html')
+                        else:
+                            request.session['name'] = check_user.proponent_name
+                            request.session['email'] = check_user.email_id
+                            request.session['login_type'] = check_user.login_type
+                            request.session['login_id'] = check_user.login_id
+                            return render(request, 'common_dashboard.html')
                 else:
                     _message = 'User ID or Password Not Matching.'
         else:

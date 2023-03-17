@@ -113,8 +113,8 @@
                                                 <label class="form-label fw-bold">Classification of Industry</label>
                                                 <select class="form-control" name="industry_classification" id="industry_classification">
                                                     <option value="Small">Small</option>
-                                                    <option value="cottage">Cottage</option>
-                                                    <option>Large</option>
+                                                    <option value="Cottage">Cottage</option>
+                                                    <option value="Large">Large</option>
                                                 </select> 
                                             </div>
                                             <div id="industry_classificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -351,7 +351,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingTwoBtn"
-                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" disabled>
+                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                 Terrain Baseline/Existing information
                             </button>
                         </h2>
@@ -411,8 +411,17 @@
                                             <tr>
                                                 <td>a)</td>
                                                 <td>Protected Areas and zonation (multiple use/buffer/core)</td>
-                                                <td><input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" ></td>
-                                                <td><input type="text" name="bl_protected_area_distance" class="form-control col-lg-6" id="bl_protected_area_distance"></td>
+                                                <td>
+                                                    <div class="mb-1">
+                                                        <input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" >
+                                                    </div>
+                                                    <div id="bl_protected_area_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                </td>
+                                                <td>
+                                                    <div class="mb-1">
+                                                        <input type="text" name="bl_protected_area_distance" class="form-control col-lg-6" id="bl_protected_area_distance"></td>
+                                                    </div>
+                                                    <div id="bl_protected_area_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </tr>
                                             <tr>
                                                 <td>b)</td>

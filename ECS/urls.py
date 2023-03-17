@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('ecs_admin.urls')),
     path('', include('proponent.urls')),
+    path('', include('ecs_main.urls')),
 ]
