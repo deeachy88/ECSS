@@ -1,41 +1,45 @@
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from proponent.models import t_ec_industries_t10_hazardous_chemicals, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_industries_t9_products_by_products, t_payment_details, t_workflow_dtls
-from ecs_admin.models import t_dzongkhag_master, t_gewog_master, t_role_master, t_service_master, t_user_master, t_village_master
+from ecs_admin.models import t_dzongkhag_master, t_file_attachment, t_gewog_master, t_role_master, t_service_master, t_user_master, t_village_master
 from django.utils import timezone
 from datetime import date
 from django.core.mail import send_mail
+from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 def verify_application_list(request):
-    application_list = t_workflow_dtls.objects.filter(application_status='P', action_date__isnull=False)
+    application_list = t_workflow_dtls.objects.filter(application_status='P', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='DEC', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='AL', action_date__isnull=False)
     service_details = t_service_master.objects.all()
-    return render(request, 'application_list.html',{'application_list':application_list, 'service_details':service_details})
+    payment_details = t_payment_details.objects.all()
+    return render(request, 'application_list.html',{'application_list':application_list, 'service_details':service_details, 'payment_details':payment_details})
+
+def client_application_list(request):
+    application_list = t_workflow_dtls.objects.filter(application_status='ALR', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='ALA', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='EATC', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='RS', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='LU', action_date__isnull=False)
+    service_details = t_service_master.objects.all()
+    payment_details = t_payment_details.objects.all()
+    return render(request, 'application_list.html',{'application_list':application_list, 'service_details':service_details, 'payment_details':payment_details})
 
 def reviewer_application_list(request):
-    application_list = t_workflow_dtls.objects.filter(application_status='P', action_date__isnull=False)
+    application_list = t_workflow_dtls.objects.filter(application_status='R', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='ALS', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='FEATC', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='RSS', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='LUS', action_date__isnull=False)
     service_details = t_service_master.objects.all()
-    return render(request, 'application_list.html', {'application_list':application_list, 'service_details':service_details})
-
-def approver_application_list(request):
-    application_list = t_workflow_dtls.objects.filter(application_status='P', action_date__isnull=False)
-    service_details = t_service_master.objects.all()
-    return render(request, 'application_list.html', {'application_list':application_list, 'service_details':service_details})
-
-def resubmit_application_list(request):
-    application_list = t_workflow_dtls.objects.filter(application_status='P', action_date__isnull=False)
-    service_details = t_service_master.objects.all()
-    return render(request, 'application_list.html', {'application_list':application_list, 'service_details':service_details})
+    payment_details = t_payment_details.objects.all()
+    return render(request, 'application_list.html', {'application_list':application_list, 'service_details':service_details, 'payment_details':payment_details})
 
 def payment_list(request):
-    payment_details = t_payment_details.objects.filter(receipt_no__isnull=True)
+    payment_details = t_payment_details.objects.filter(transaction_no__isnull=True)
     return render(request, 'payment_details.html', {'payment_details': payment_details})
 
 def view_application_details(request):
     application_no = request.POST.get('application_no')
     service_id = request.POST.get('service_id')
     application_source = request.POST.get('application_source')
+    status = None
 
+    workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
+    for work_details in workflow_details:
+        status = work_details.application_status
+        
     if service_id == '1':
         if application_source == 'IBLS':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -52,7 +56,7 @@ def view_application_details(request):
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
 
-            return render(request, 'ea_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+            return render(request, 'ea_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials, 'status':status,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
         else:
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -69,7 +73,7 @@ def view_application_details(request):
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
 
-            return render(request, 'iee_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+            return render(request, 'iee_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '2':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -101,7 +105,7 @@ def view_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        return render(request, 'road_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'road_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '4':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -117,7 +121,7 @@ def view_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        return render(request, 'transmission_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'transmission_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '5':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -133,7 +137,7 @@ def view_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        return render(request, 'tourism_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'tourism_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '6':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -149,7 +153,7 @@ def view_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        return render(request, 'ground_water_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'ground_water_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '7':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -165,7 +169,7 @@ def view_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        return render(request, 'forest_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'forest_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '8':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -181,7 +185,7 @@ def view_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        return render(request, 'quarry_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'quarry_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '9':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -197,7 +201,7 @@ def view_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        return render(request, 'general_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'general_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '10':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -213,7 +217,7 @@ def view_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        return render(request, 'renewal_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'renewal_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '11':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -229,7 +233,7 @@ def view_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        return render(request, 'name_change_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'name_change_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '12':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -245,7 +249,7 @@ def view_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        return render(request, 'ownwership_change_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'ownwership_change_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
 
 
@@ -292,8 +296,7 @@ def approve_application(request):
             for email_id in application_details:
                 emailId = email_id.email
                 send_ec_approve_email(ec_no, emailId, application_no, service_name)
-                insert_payment_details(application_no, ec_no, service_name)
-    return redirect(approver_application_list)
+    return redirect(verify_application_list)
 
 def resubmit_application(request):
     application_no = request.POST.get('application_no')
@@ -321,24 +324,14 @@ def resubmit_application(request):
             for service in service_details:
                 service_name = service.service_name
                 send_ec_resubmission_email(email, application_no, service_name)
-    return redirect(resubmit_application_list)
+    return redirect(reviewer_application_list)
 
-def insert_payment_details(application_no, ec_no):
-    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-    for application in application_details:
-        application_details.update(
-            application_type= application.application_type,
-            application_no=application_no,
-            application_date=application.application_date, 
-            proponent_name=application.applicant_name,
-            ec_no=ec_no 
-        )
-    return redirect(approver_application_list)
+
 
 def validate_receipt_no(request):
     data = dict()
     receipt_no = request.GET.get('receipt_no')
-    receipt_no_count = t_payment_details.objects.filter(receipt_no=receipt_no).count()
+    receipt_no_count = t_payment_details.objects.filter(transaction_no=receipt_no).count()
 
     if receipt_no_count > 0:
         data['status'] = "Exists"
@@ -348,13 +341,13 @@ def validate_receipt_no(request):
 
 
 def update_payment_details(request):
-    Application_No = request.POST.get('application_no')
+    application_no = request.POST.get('application_no')
     payment_type = request.POST.get('payment_type')
     transaction_no = request.POST.get('transaction_no')
     amount = request.POST.get('amount')
     instrument_no = request.POST.get('instrument_no')
     transaction_date = request.POST.get('transaction_date')
-    payment_details = t_payment_details.objects.filter(application_no=Application_No)
+    payment_details = t_payment_details.objects.filter(application_no=application_no)
     payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
                                instrument_no=instrument_no, transaction_date=transaction_date)
     return redirect(payment_list)
@@ -396,3 +389,128 @@ def send_ec_resubmission_email(email, application_no, service_name):
     send_mail(subject, message, 'sparkletechnology2019@gmail.com', recipient_list, fail_silently=False,
               auth_user='sparkletechnology2019@gmail.com', auth_password='ypohpmxhdlmidwgm',
               connection=None, html_message=None)
+    
+def save_eatc_attachment(request):
+    data = dict()
+    eatc_attach = request.FILES['eatc_attach']
+    app_no = request.POST.get('application_no')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + eatc_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/EATC/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, eatc_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/EATC" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+    
+
+def save_eatc_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('application_no')
+
+    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='EATC')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
+
+    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
+
+def forward_application(request):
+    application_no = request.POST.get('application_no')
+    identifier = request.POST.get('identifier')
+
+    workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
+    if identifier == 'R':
+        forward_to = request.POST.get('forward_to')
+        workflow_details.update(application_status='R', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=forward_to, assigned_role_id='3',assigned_role_name='Reviewer')
+        return redirect(reviewer_application_list)
+    elif identifier == 'AL':
+        workflow_details.update(application_status='AL', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='2',assigned_role_name='Verifier')
+        return redirect(reviewer_application_list)
+    elif identifier == 'ALA':
+        workflow_details.update(application_status='ALA', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id=None,assigned_role_name=None)
+        return redirect(verify_application_list)
+    elif identifier == 'ALR':
+        workflow_details.update(application_status='ALA', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id=None,assigned_role_name=None)
+        return redirect(verify_application_list)
+    elif identifier == 'ALS':
+        workflow_details.update(application_status='ALS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
+        return redirect(verify_application_list)
+    elif identifier == 'EATC':
+        workflow_details.update(application_status='EATC', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
+        return redirect(verify_application_list)
+    elif identifier == 'FEATC':
+        workflow_details.update(application_status='FEATC', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
+        return redirect(client_application_list)
+    elif identifier == 'RS':
+        workflow_details.update(application_status='RS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
+        return redirect(verify_application_list)
+    elif identifier == 'RSS':
+        workflow_details.update(application_status='RSS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
+        return redirect(client_application_list)
+    elif identifier == 'LU':
+        workflow_details.update(application_status='LU', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
+        return redirect(verify_application_list)
+    elif identifier == 'LUS':
+        workflow_details.update(application_status='LUS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
+        return redirect(verify_application_list)
+    elif identifier == 'DEC':
+        workflow_details.update(application_status='DEC', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
+        return redirect(reviewer_application_list)
+    elif identifier == 'A':
+        workflow_details.update(application_status='A', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
+        return redirect(verify_application_list)
+
+def save_draft_ec_attachment(request):
+    data = dict()
+    draft_ec_attach = request.FILES['draft_ec_attach']
+    app_no = request.POST.get('application_no')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + draft_ec_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/EC/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, draft_ec_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/EC" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_draft_ec_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('application_no')
+
+    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='DEC')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='DEC')
+
+    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
+
+def save_lu_attachment(request):
+    data = dict()
+    lu_attach = request.FILES['lu_attach']
+    app_no = request.POST.get('application_no')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + lu_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/LU/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, lu_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/LU" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_lu_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('application_no')
+
+    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='LU')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
+
+    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})

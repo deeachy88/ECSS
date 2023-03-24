@@ -7,7 +7,7 @@
     <div class="col-xl-12">
         <div class="card mt-1">
             <div class="card-body">
-                <h4 class="header-title mb-3"> New Application</h4>
+                <h4 class="header-title mb-3"> Forest Form</h4>
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
@@ -654,6 +654,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingForest">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
@@ -673,15 +674,15 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Project Beneficiaries</label>
-                                            <input type="text" name="project_beneficiaries" class="form-control" id="project_beneficiaries" value="{{application_details.project_beneficiaries}}" disabled>
+                                            <label class="form-label fw-bold">Project Output/Extraction volume (per annum)</label>
+                                            <input type="text" name="project_output" class="form-control" id="project_output" value="{{application_details.project_output}}" disabled>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                            <label class="form-label fw-bold">Project Cost</label>
                                             <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                         </div>
                                     </div>
@@ -695,65 +696,39 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Abstraction Type</label>
-                                            {% if application_details.abstraction_type == 'Community' %}
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="abstraction_type" class="form-check-input" value="Community" checked>
-                                                        <label class="form-check-label">Community</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="abstraction_type" class="form-check-input" value="Individual" disabled>
-                                                        <label class="form-check-label">Individual</label>
-                                                    </div>
-                                                </div>
-                                            {% else %}
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="abstraction_type" class="form-check-input" value="Community" disabled>
-                                                        <label class="form-check-label">Community</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="abstraction_type" class="form-check-input" value="Individual" checked>
-                                                        <label class="form-check-label">Individual</label>
-                                                    </div>
-                                                </div>
-                                            {% endif %}
+                                            <label class="form-label fw-bold">Name the month/season of the year when the activity will be undertaken</label>
+                                            <input type="text" name="month_season_name" class="form-control" id="month_season_name" value="{{application_details.month_season_name}}" disabled>
                                         </div>
-                                        <div id="abstraction_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Number of workers to be employed</label>
+                                            <input type="text" name="no_of_workers" class="form-control" id="no_of_workers" value="{{application_details.no_of_workers}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Types and number of machineries to be used</label>
+                                            <input type="text" name="machineries_number" class="form-control" id="machineries_number" value="{{application_details.machineries_number}}" disabled>
+                                        </div>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide Project Details in the table below (if applicable)
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide information on forestry produce  in the table below (if applicable)
                                 </div>
                                 <br>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <table class="table table-hover table-bordered table-centered mb-0">
-                                            <tbody>
-                                                <tr>
-                                                    <td>Total requirement –cubic meter/day</td>
-                                                    <td><input type="text" name="total_requirement" class="form-control col-lg-6" id="total_requirement" value="{{application_details.total_requirement}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Installed capacity of the bore-well</td>
-                                                    <td><input type="text" name="borewell_installed_capacity" class="form-control col-lg-6" id="borewell_installed_capacity" value="{{application_details.borewell_installed_capacity}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Geo-coordinates of the proposed site</td>
-                                                    <td><input type="text" name="geo_coordinates" class="form-control col-lg-6" id="geo_coordinates" value="{{application_details.geo_coordinates}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Width and depth of the bore-well –meters</td>
-                                                    <td><input type="text" name="borewell_width_depth" class="form-control col-lg-6" id="borewell_width_depth" value="{{application_details.borewell_width_depth}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Depth of the borewell</td>
-                                                    <td><input type="text" name="borewell_depth" class="form-control col-lg-6" id="borewell_depth" value="{{application_details.borewell_depth}}" disabled></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="collapse pt-3 show">
+                                                <div id="forestry_produce_div">
+                                                    {% include 'forestry_produce.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -973,297 +948,9 @@
                         </div>
                     </div>
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingFive">
-                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFiveBtn"
-                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" disabled>
-                                Ancillary:Approach Road
-                            </button>
-                        </h2>
-                        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
-                            data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Will the activity require construction of Approach road?</label>
-                                            {% if application_details.anc_road_required == 'Yes' %}
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_road_required" class="form-check-input" value="Yes" checked>
-                                                        <label class="form-check-label" for="customRadio3">Yes</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_road_required" class="form-check-input" value="No" disabled>
-                                                        <label class="form-check-label" for="customRadio4">No</label>
-                                                    </div>
-                                                </div>
-                                            {% else %}
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_road_required" class="form-check-input" value="Yes" disabled>
-                                                        <label class="form-check-label" for="customRadio3">Yes</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_road_required" class="form-check-input" value="No" checked>
-                                                        <label class="form-check-label" for="customRadio4">No</label>
-                                                    </div>
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                        <div id="approach_roadErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                </div>
-                                <div class="row" id="approach_road_details" style="display: none;">
-                                    <div class="col-lg-4">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Length of road in km</label>
-                                            <input type="text" name="anc_road_length" class="form-control" id="anc_road_length" value="{{ application_details.anc_road_length}}" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Starting point</label>
-                                            <input type="text" name="anc_road_start_point" class="form-control" id="anc_road_start_point" value="{{ application_details.anc_road_start_point}}" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Termination point</label>
-                                            <input type="text" name="anc_road_end_point" class="form-control" id="anc_road_end_point" value="{{ application_details.anc_road_end_point}}" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="card mt-1">
-                                            <div class="card-body">
-                                                <div class="card-widgets">
-                                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#anc_approach_road_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                                </div>
-                                                <h5 class="card-title mb-2"></h5>
-                                                <div id="cardCollpase1" class="collapse pt-3 show">
-                                                    <div id="anc_approach_road_details">
-                                                        {% include 'anc_approach_road_details.html' %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Will the activity require Blasting?</label>
-                                            {% if application_details.anc_road_blast_required == 'Yes' %}
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_road_blast_required" class="form-check-input" value="Yes" checked>
-                                                        <label class="form-check-label" for="customRadio3">Yes</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_road_blast_required" class="form-check-input" value="No" disabled>
-                                                        <label class="form-check-label" for="customRadio4">No</label>
-                                                    </div>
-                                                </div>
-                                            {% else %}
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_road_blast_required" class="form-check-input" value="Yes" disabled>
-                                                        <label class="form-check-label" for="customRadio3">Yes</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_road_blast_required" class="form-check-input" value="No" checked>
-                                                        <label class="form-check-label" for="customRadio4">No</label>
-                                                    </div>
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                                {% if application_details.anc_road_blast_required == 'Yes' %}
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Mention type of blasting</label>
-                                                <input type="text" name="anc_road_blast_type" class="form-control" id="anc_road_blast_type">
-                                            </div>
-                                            <div id="anc_road_blast_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Type and quantity of explosive to be used</label>
-                                                <input type="text" name="anc_road_blast_qty" class="form-control" id="anc_road_blast_qty">
-                                            </div>
-                                            <div id="anc_road_blast_qtyErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Mention location (s) where blasting is required</label>
-                                                <input type="text" name="anc_road_blast_location" class="form-control" id="anc_road_blast_location">
-                                            </div>
-                                            <div id="anc_road_blast_locationErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Frequency and timing of blasting per day</label>
-                                                <input type="text" name="anc_road_blast_frequency_time" class="form-control" id="anc_road_blast_frequency_time">
-                                            </div>
-                                            <div id="anc_road_blast_frequency_timeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingSix">
-                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSixBtn"
-                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" disabled>
-                                Ancillary:Power Lines
-                            </button>
-                        </h2>
-                        <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix"
-                            data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity require construction of Power Line?</label>
-                                                {% if application_details.anc_road_blast_required == 'Yes' %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_power_line_required" class="form-check-input" value="Yes" checked>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_power_line_required" class="form-check-input" value="No" disabled>
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
-                                                    </div>
-                                                {% else %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_power_line_required" class="form-check-input" value="Yes" disabled>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_power_line_required" class="form-check-input" value="No" checked>
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% if application_details.anc_road_blast_required == 'Yes' %}
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Voltage level in kV</label>
-                                                <input type="text" name="anc_power_line_voltage" class="form-control" id="anc_power_line_voltage" value="{{application_details.anc_power_line_voltage}}" disabled>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Length of transmission /distribution line in km</label>
-                                                <input type="text" name="anc_power_line_length" class="form-control" id="anc_power_line_length" value="{{application_details.anc_power_line_length}}" disabled>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Starting point</label>
-                                                <input type="text" name="anc_power_line_start_point" class="form-control" id="anc_power_line_start_point" value="{{application_details.anc_power_line_start_point}}" disabled>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Termination point</label>
-                                                <input type="text" name="anc_power_line_end_point" class="form-control" id="anc_power_line_end_point" value="{{application_details.anc_power_line_end_point}}" disabled>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Methods of storing materials</label>
-                                                <input type="text" name="anc_power_line_storing_method" class="form-control" id="anc_power_line_storing_method" value="{{application_details.anc_power_line_storing_method}}" disabled>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="card mt-1">
-                                                <div class="card-body">
-                                                    <div class="card-widgets">
-                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#anc_power_line_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                                    </div>
-                                                    <h5 class="card-title mb-2"></h5>
-                                                    <div id="cardCollpase2" class="collapse pt-3 show">
-                                                        <div id="anc_power_line_details">
-                                                            {% include 'anc_power_line_details.html' %}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingSeven">
-                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSevenBtn"
-                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
-                                Ancillary:Others
-                            </button>
-                        </h2>
-                        <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven"
-                            data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
-                                </div>
-                                <br>
-                                {% if application_details.anc_road_blast_required == 'Yes' %}
-                                    <div class="form-check">
-                                        <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" checked disabled>
-                                        <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                    </div>
-                                {% endif %}
-                                {% if application_details.anc_other_surface_collection == 'Yes' %}
-                                    <div class="form-check">
-                                        <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" checked disabled>
-                                        <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                    </div>
-                                {% endif %}
-                                {% if application_details.anc_other_ground_water == 'Yes' %}
-                                    <div class="form-check">
-                                        <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" checked disabled>
-                                        <label class="form-check-label">Ground water abstraction</label>
-                                    </div>
-                                {% endif %}
-                                {% if application_details.anc_other_mineral == 'Yes' %}
-                                    <div class="form-check">
-                                        <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" checked disabled>
-                                        <label class="form-check-label">Mineral stockyards outside the project area</label>
-                                    </div>
-                                {% endif %}
-                                {% if application_details.anc_other_general == 'Yes' %}
-                                    <div class="form-check">
-                                        <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" checked disabled>
-                                        <label class="form-check-label">Others</label>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
                         <h2 class="accordion-header" id="headingEight">
-                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
                                 Solid Waste
                             </button>
                         </h2>
@@ -1274,12 +961,12 @@
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Provide an allocated budget for the management plan proposed</label>
-                                            <input type="text" name="management_plan_proposed" class="form-control" id="management_plan_proposed" value="{{application_details.management_plan_proposed}}" disabled>
+                                            <input type="text" name="en_impact_allocated_budget" class="form-control" id="en_impact_allocated_budget" value="{{application_details.en_impact_allocated_budget}}" disabled>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Solid wastes and by-products
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                 </div>
                                 <br>
                                 <div class="col-lg-12">
@@ -1493,8 +1180,8 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingAttachment">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
-                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
                                 File Attachment
                             </button>
                         </h2>
@@ -1522,41 +1209,36 @@
                                                 </tr>
                                                 <tr>
                                                     <td>4</td>
-                                                    <td>Layout plan of the plant/industry</td>
+                                                    <td>Layout plan of the proposed project, if applicable</td>
                                                 </tr>
                                                 <tr>
                                                     <td>5</td>
-                                                    <td>Water abstraction permit from concerned local authority (Dzongkhag/Gewog Administration) for any water abstraction activity</td>
+                                                    <td>Extraction plan and production schedule</td>
                                                 </tr>
                                                 <tr>
                                                     <td>6</td>
-                                                    <td>Process flow/Schematic diagram of the manufacturing process describing the production process in sequential manner starting from use of raw material to the production of final product supported by process flow, </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>7</td>
-                                                    <td>Brochure of the technology</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>8</td>
-                                                    <td>Schematic diagram/process flow of Effluent Treatment Plant and  Air Pollution Control Device including description of treatment process.</td>
+                                                    <td>Water abstraction permit from concerned local authority (Dzongkhag/Gewog Administration) for any water abstraction activity</td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="col-md-12">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="card-widgets">
-                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#iee_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                                </div>
-                                                <h5 class="card-title mb-0">Attachments</h5>
-                                                <div id="cardCollpase7" class="collapse pt-3 show">
-                                                    <div id="iee_file_attachment">
-                                                        {% include 'file_attachment_page.html' %}
-                                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-0">Attachments</h5>
+                                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                                <div id="forest_file_attachment">
+                                                    {% include 'file_attachment_page.html' %}
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="text-sm-end">
+                                        <a href="#" class="btn btn-success" onclick="save_forest_attachment_details()">
+                                            <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
                                     </div>
                                 </div>
                             </div>
@@ -1564,7 +1246,7 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingDisclaimer">
-                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingDisclaimerBtn"
+                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseDisclaimer" aria-expanded="false" aria-controls="collapseDisclaimer">
                                 Disclaimer
                             </button>
@@ -1572,325 +1254,10 @@
                         <div id="collapseDisclaimer" class="accordion-collapse collapse" aria-labelledby="headingDisclaimer"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                
+                                <div class="row mt-4">
+                                    
+                                </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item" id="client_details_accordian" style="display:none;">
-                        <h2 class="accordion-header" id="headingClientDetails">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseClientDetails"
-                                aria-expanded="true" aria-controls="collapseDetails">
-                                Client Details
-                            </button>
-                        </h2>
-                        <div id="collapseClientDetails" class="accordion-collapse collapse show" aria-labelledby="headingClientDetails" data-bs-parent="#accordionExample">
-                            <form method="post" id="client_form">
-                                {% csrf_token %}
-                                <div class="row">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Additional Information Letter</label>
-                                                <textarea class="form-control" id="additional_info" name="additional_info" rows="2">{{application_details.additional_info}}</textarea>
-                                            </div>
-                                        </div>
-                                        <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="col-md-12 eatc_attachment_details" style="display: none;">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h5 class="card-title mb-0">EATC Attachment</h5>
-                                                <div id="cardCollpase7" class="collapse pt-3 show">
-                                                    {% include 'file_attachment_page.html' %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="client_application_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="client_application_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3 ALS_button" style="display:none;">
-                                            <div class="text-sm-end">
-                                                <a href="#" class="btn btn-success" onclick="forwardApplication('ALS')">
-                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3 FEATC_button" style="display:none;">
-                                            <div class="text-sm-end">
-                                                <a href="#" class="btn btn-success" onclick="forwardApplication('FEATC')">
-                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3 RSS_button" style="display:none;">
-                                            <div class="text-sm-end">
-                                                <a href="#" class="btn btn-success" onclick="forwardApplication('RSS')">
-                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3 LUS_button" style="display:none;">
-                                            <div class="text-sm-end">
-                                                <a href="#" class="btn btn-success" onclick="forwardApplication('LUS')">
-                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item" id="verifier_details_accordian" style="display:none;">
-                        <h2 class="accordion-header" id="headingVerifiersDetails">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVerifiersDetails"
-                                aria-expanded="true" aria-controls="collapseDetails">
-                                Verifier Details
-                            </button>
-                        </h2>
-                        <div id="VerifiersDetails" class="accordion-collapse collapse show" aria-labelledby="headingVerifiersDetails" data-bs-parent="#accordionExample">
-                            <form method="post" id="verifier_form">
-                                {% csrf_token %}
-                                <div class="row forwardTo">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Forward To</label>
-                                            <select class="form-control" name="forward_to"  id="forward_to">
-                                                <option value="">--SELECT REVIEWER--</option>
-                                                {% for reviewer_list in reviewer_list %}
-                                                        <option value="{{ reviewer_list.Login_Id }}">{{ reviewer_list.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <div id="forward_toErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="row verifier_additional_info_letter" style="display: none;">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Additional Information Letter</label>
-                                                <textarea class="form-control" id="additional_info" name="additional_info" rows="2">{{application_details.additional_info}}</textarea>
-                                            </div>
-                                        </div>
-                                        <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="col-md-12 ec_draft_div" style="display: none;">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h5 class="card-title mb-0">Attachments</h5>
-                                                <div id="cardCollpase7" class="collapse pt-3 show">
-                                                    {% include 'file_attachment_page.html' %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="verifier_application_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="verifier_application_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3 R_button" style="display:none;">
-                                            <div class="text-sm-end">
-                                                <a href="#" class="btn btn-success" onclick="forwardApplication('R')">
-                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Reviewer </a>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3 ALA_button" style="display:none;">
-                                            <div class="text-sm-end">
-                                                <a href="#" class="btn btn-success" onclick="forwardApplication('ALA')">
-                                                    <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Approve </a>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3 ALR_button" style="display:none;">
-                                            <div class="text-sm-end">
-                                                <a href="#" class="btn btn-danger" onclick="forwardApplication('ALR')">
-                                                    <i class="uil uil-multiply me-1"></i> Reject </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item" id="reviewer_details_accordian" style="display:none;">
-                        <h2 class="accordion-header" id="headingReviewerDetails">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReviewerDetails"
-                                aria-expanded="true" aria-controls="collapseDetails">
-                                Verifier Details
-                            </button>
-                        </h2>
-                        <div id="ReviewerDetails" class="accordion-collapse collapse show" aria-labelledby="headingReviewerDetails" data-bs-parent="#accordionExample">
-                            <form method="post" id="reviewer_form">
-                                {% csrf_token %}
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Is The Information Complete?</label>
-                                            <div class="mt-2">
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" id="customRadio3" name="information" class="form-check-input"  value="Yes" onclick="check_information_radio(this.value)">
-                                                    <label class="form-check-label" for="customRadio3">Yes</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" id="customRadio4" name="information" class="form-check-input"  value="No" onclick="check_information_radio(this.value)">
-                                                    <label class="form-check-label" for="customRadio4">No</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="informationErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="row additional_info_letter" style="display: none;">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Additional Information Letter</label>
-                                                <textarea class="form-control" id="additional_info" name="additional_info" rows="2"></textarea>
-                                            </div>
-                                        </div>
-                                        <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="row additional_payment_info" style="display: none;">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Is There Additional Payment?</label>
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio3" name="addtional_payment" class="form-check-input"  value="Yes" onclick="check_eatc_addtional_payment(this.value)">
-                                                        <label class="form-check-label" for="customRadio3">Yes</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio4" name="addtional_payment" class="form-check-input"  value="No" onclick="check_eatc_addtional_payment(this.value)">
-                                                        <label class="form-check-label" for="customRadio4">No</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="col-md-12 eatc_attachment_div" style="display: none;">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="card-widgets">
-                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#eatc_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                                </div>
-                                                <h5 class="card-title mb-0">Attachments</h5>
-                                                <div id="cardCollpase7" class="collapse pt-3 show">
-                                                    <div id="eatc_file_attachment">
-                                                        {% include 'file_attachment_page.html' %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row fines_penalty_div" style="display: none;">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Is There Fines And Penalties?</label>
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio3" name="fines_penalty" class="form-check-input"  value="Yes" onclick="check_fines_and_penalty(this.value)">
-                                                        <label class="form-check-label" for="customRadio3">Yes</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio4" name="fines_penalty" class="form-check-input"  value="No" onclick="check_fines_and_penalty(this.value)">
-                                                        <label class="form-check-label" for="customRadio4">No</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="row rectification_div" style="display: none;">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Is There Rectification/on hold/further studies/clarification?</label>
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio3" name="rectification" class="form-check-input"  value="Yes" onclick="check_rectification(this.value)">
-                                                        <label class="form-check-label" for="customRadio3">Yes</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio4" name="rectification" class="form-check-input"  value="No" onclick="check_rectification(this.value)">
-                                                        <label class="form-check-label" for="customRadio4">No</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="rectificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="col-md-12 lu_attachment_div" style="display: none;">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h5 class="card-title mb-0">Attachments</h5>
-                                                <div id="cardCollpase7" class="collapse pt-3 show">
-                                                        {% include 'file_attachment_page.html' %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 draft_ec_div" style="display: none;">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="card-widgets">
-                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#draft_ec_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                                </div>
-                                                <h5 class="card-title mb-0">Attachments</h5>
-                                                <div id="cardCollpase7" class="collapse pt-3 show">
-                                                    <div id="draft_ec_attachment">
-                                                        {% include 'file_attachment_page.html' %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="reviewer_application_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="reviewer_application_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="col-lg-6 AL_button">
-                                        <div class="mb-3">
-                                            <div class="text-sm-end">
-                                                <a href="#" class="btn btn-success" onclick="forwardApplication('AL')">
-                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3 EATC_button" style="display: none;">
-                                            <div class="text-sm-end">
-                                                <a href="#" class="btn btn-success" onclick="forwardApplication('EATC')">
-                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3"></div>
-                                            <div class="text-sm-end LU_button">
-                                                <a href="#" class="btn btn-success" onclick="forwardApplication('LU')">
-                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 rectification_button">
-                                        <div class="mb-3"></div>
-                                            <div class="text-sm-end">
-                                                <a href="#" class="btn btn-success" onclick="forwardApplication('OH')">
-                                                    <i class="mdi mdi-alert-octagon me-1"></i> On Hold </a>
-                                                <a href="#" class="btn btn-success" onclick="forwardApplication('RS')">
-                                                    <i class="uil uil-history-alt me-1"></i> Resubmit </a>
-                                                <a href="#" class="btn btn-success" onclick="forwardApplication('V')">
-                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -1899,488 +1266,4 @@
     </div>
 </div>
 {% endfor %}
-<form method="post" id="eatc_attachment_form" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="modal fade" id="eatc_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <!--Content-->
-        <div class="modal-content form-elegant">
-          <!--Header-->
-          <div class="modal-header text-center">
-            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;Attach</strong></h3>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-          <!--Body-->
-          <div class="modal-body mx-4">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Attachment</label>
-                        <input type="file" name="eatc_attach" class="form-control" id="eatc_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
-                    </div>
-                    <div class="alert alert-danger" id="eatc_attachErrorMsg" style="display:none"></div>
-                </div>
-            </div>
-          </div>
-          <div class="modal-footer flex-center justify-content-center">
-            <button type="button" class="btn btn-sm btn-primary" onclick="save_eatc_attachment()">Add</button>
-            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-        <!--/.Content-->
-      </div>
-    </div>
-</form>
-
-<form method="post" id="lu_attachment_form" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="modal fade" id="lu_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <!--Content-->
-        <div class="modal-content form-elegant">
-          <!--Header-->
-          <div class="modal-header text-center">
-            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;Attach</strong></h3>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-          <!--Body-->
-          <div class="modal-body mx-4">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Attachment</label>
-                        <input type="file" name="lu_attach" class="form-control" id="lu_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
-                    </div>
-                    <div class="alert alert-danger" id="lu_attachErrorMsg" style="display:none"></div>
-                </div>
-            </div>
-          </div>
-          <div class="modal-footer flex-center justify-content-center">
-            <button type="button" class="btn btn-sm btn-primary" onclick="save_lu_attachment()">Add</button>
-            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-        <!--/.Content-->
-      </div>
-    </div>
-</form>
-
-<form method="post" id="draft_ec_form" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="modal fade" id="draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <!--Content-->
-        <div class="modal-content form-elegant">
-          <!--Header-->
-          <div class="modal-header text-center">
-            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;EC Draft</strong></h3>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-          <!--Body-->
-          <div class="modal-body mx-4">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">EC Draft Attach</label>
-                        <input type="file" name="draft_ec_attach" class="form-control" id="draft_ec_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
-                    </div>
-                    <div class="alert alert-danger" id="draft_ec_attachrrorMsg" style="display:none"></div>
-                </div>
-            </div>
-          </div>
-          <div class="modal-footer flex-center justify-content-center">
-            <button type="button" class="btn btn-sm btn-primary" onclick="save_ec_draft()">Add</button>
-            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-        <!--/.Content-->
-      </div>
-    </div>
-</form>
-
-<script>
-    $(function() {
-        let status = $('#status').val();
-
-        if(status == 'P' || status == 'DEC' || status == 'AL')
-        {
-            if(status == 'P')
-            {
-                
-                $('.R_button').show();
-            }
-            else if(status == 'AL')
-            {
-                $('.verifier_additional_info_letter').show();
-                $('.ALR_button').show();
-                $('.ALA_button').show();
-            }
-            else if(status == 'DEC')
-            {
-                $('.forwardTo').hide();
-                $('.ec_draft_div').show();
-            }
-            $('#verifier_details_accordian').show();
-        }
-        else if(status == 'R' || status == 'ALS' || status == 'FEATC' || status == 'RSS' || status == 'LUS')
-        {
-            if(status == 'R')
-            {
-                $('.AL_button').show();
-            }
-            else if(status == 'ALS')
-            {
-                $('.EATC_button').show();
-            }
-            else if(status == 'FEATC')
-            {
-                $('.rectification_button').show();
-            }
-            else if(status == 'LUS')
-            {
-                $('.LU_button').show();
-                $('.lu_attachment_div').show();
-            }
-            
-            $('#reviewer_details_accordian').show();
-        }
-        else if(status == 'ALR' || status == 'ALA' || status == 'EATC' || status == 'RS' || status == 'LU')
-        {
-            if(status == 'ALR' || status == 'ALA')
-            {
-                $('.ALS_button').show();
-            }
-            else if(status == 'EATC')
-            {
-                $('.FEATC_button').show();
-            }
-            else if(status == 'RS')
-            {
-                $('.RSS_button').show();
-            }
-            else if(status == 'LU')
-            {
-                $('.LUS_button').show();
-            }
-            $('#client_details_accordian').show();
-        }
-    });
-
-    function forwardApplication(identifier)
-    {
-        let application_no = $('#application_no').val();
-
-        if(identifier == 'R')
-        {
-            let forward_to = $('#forward_to').val();
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'forward_application' %}",
-                data : {'application_no':application_no, 'identifier':identifier, 'forward_to':forward_to},
-                success : function(data)
-                {
-                    if(data.message == 'success')
-                    {
-                        $('#verifier_application_successMsg').html("Application Forwarded Successfully");
-                        $('#verifier_application_successMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#verifier_application_successMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
-                            location.reload();
-                        }, 2000);
-                    }
-                    else
-                    {
-                        $('#verifier_application_errorMsg').html("Please Check And Try Again");
-                        $('#verifier_application_errorMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#verifier_application_errorMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
-                            location.reload();
-                        }, 2000);
-                    }
-                }
-            });
-        }
-        else
-        {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'forward_application' %}",
-                data : {'application_no':application_no, 'identifier':identifier},
-                success : function(data)
-                {
-                    if(data.message == 'success')
-                    {
-                        $('#verifier_application_successMsg').html("Application Forwarded Successfully");
-                        $('#verifier_application_successMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#verifier_application_successMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
-                            location.reload();
-                        }, 2000);
-                    }
-                    else
-                    {
-                        $('#verifier_application_errorMsg').html("Please Check And Try Again");
-                        $('#verifier_application_errorMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#verifier_application_errorMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
-                            location.reload();
-                        }, 2000);
-                    }
-                }
-            });
-        }
-    }
-
-    function check_information_radio(value)
-    {
-        if(value == 'Yes')
-        {
-            $('.additional_info_letter').show();
-            $('.additional_payment_info').hide();
-        }
-        else
-        {
-            $('.additional_payment_info').show();
-            $('.additional_info_letter').hide();
-        }
-    }
-
-    function check_eatc_addtional_payment(value)
-    {
-        if(value == 'Yes')
-        {
-            $('.eatc_attachment_div').hide();
-        }
-        else
-        {
-            $('.eatc_attachment_div').show();
-        }
-    }
-
-    function check_fines_and_penalty(value)
-    {
-        if(value == 'No')
-        {
-            $('.lu_attachment_div').show();
-        }
-        else
-        { 
-            $('.lu_attachment_div').hide();
-        }
-        
-    }
-    function save_ec_draft()
-    {
-        let file_length = document.getElementById("draft_ec_attach");
-        if(file_length.value.length < 1)
-        {
-            $('#draft_ec_attachErrorMsg').html("Please Choose A Attachment");
-            $('#draft_ec_attachErrorMsg').show();
-            $('#draft_ec_attachErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else
-        {
-            let application_no = $('#application_no').val();
-            var fileName = document.getElementById('draft_ec_attach').files[0].name;
-            var fd = new FormData();
-            var file = document.getElementById('draft_ec_attach').files[0];
-            fd.append('draft_ec_attach', file);
-            fd.append('application_no', application_no);
-            token_value=$("input[name=csrfmiddlewaretoken]").val();
-            $.ajaxSetup
-            ({
-                beforeSend: function(xhr, settings)
-                {
-                xhr.setRequestHeader("X-CSRFToken", token_value);
-                }
-            });
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'save_draft_ec_attachment' %}",
-                data : fd,
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                success : function(data)
-                {
-                    if (data.form_is_valid)
-                    {
-                        let file_url = data.file_url;
-                        let application_no = $('#application_no').val();
-                        $.ajax
-                        ({
-                            type : "POST",
-                            url : "{% url 'save_draft_ec_attachment_details' %}",
-                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
-                            success : function(responseText)
-                            {
-                                $('#draft_ec_modal').modal('hide');
-                                $('#draft_ec_attachment').html(responseText);
-                                $('.modal-backdrop').remove();
-                                $('#draft_ec_form')[0].reset();
-                            }
-                        });
-                    }
-                    else
-                    {
-                        $('#draft_ec_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                        $('#draft_ec_attachErrorMsg').show();
-                        $('#draft_ec_attachErrorMsg').delay(2000).fadeOut('slow');
-                    }
-                }
-            });
-        }
-    }
-    function save_eatc_attachment()
-    {
-        let file_length = document.getElementById("eatc_attach");
-        if(file_length.value.length < 1)
-        {
-            $('#eatc_attachErrorMsg').html("Please Choose A Attachment");
-            $('#eatc_attachErrorMsg').show();
-            $('#eatc_attachErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else
-        {
-            let application_no = $('#application_no').val();
-            var fileName = document.getElementById('eatc_attach').files[0].name;
-            var fd = new FormData();
-            var file = document.getElementById('eatc_attach').files[0];
-            fd.append('eatc_attach', file);
-            fd.append('application_no', application_no);
-            token_value=$("input[name=csrfmiddlewaretoken]").val();
-            $.ajaxSetup
-            ({
-                beforeSend: function(xhr, settings)
-                {
-                xhr.setRequestHeader("X-CSRFToken", token_value);
-                }
-            });
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'save_eatc_attachment' %}",
-                data : fd,
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                success : function(data)
-                {
-                    if (data.form_is_valid)
-                    {
-                        let file_url = data.file_url;
-                        let application_no = $('#application_no').val();
-                        $.ajax
-                        ({
-                            type : "POST",
-                            url : "{% url 'save_eatc_attachment_details' %}",
-                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
-                            success : function(responseText)
-                            {
-                                $('#eatc_attachment_modal').modal('hide');
-                                $('#eatc_file_attachment').html(responseText);
-                                $('.modal-backdrop').remove();
-                                $('#eatc_attachment_form')[0].reset();
-                            }
-                        });
-                    }
-                    else
-                    {
-                        $('#eatc_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                        $('#eatc_attachErrorMsg').show();
-                        $('#eatc_attachErrorMsg').delay(2000).fadeOut('slow');
-                    }
-                }
-            });
-        }
-    }
-
-
-    function save_lu_attachment()
-    {
-        let file_length = document.getElementById("lu_attach");
-        if(file_length.value.length < 1)
-        {
-            $('#lu_attachErrorMsg').html("Please Choose A Attachment");
-            $('#lu_attachErrorMsg').show();
-            $('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else
-        {
-            let application_no = $('#application_no').val();
-            var fileName = document.getElementById('lu_attach').files[0].name;
-            var fd = new FormData();
-            var file = document.getElementById('lu_attach').files[0];
-            fd.append('lu_attach', file);
-            fd.append('application_no', application_no);
-            token_value=$("input[name=csrfmiddlewaretoken]").val();
-            $.ajaxSetup
-            ({
-                beforeSend: function(xhr, settings)
-                {
-                xhr.setRequestHeader("X-CSRFToken", token_value);
-                }
-            });
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'save_lu_attachment' %}",
-                data : fd,
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                success : function(data)
-                {
-                    if (data.form_is_valid)
-                    {
-                        let file_url = data.file_url;
-                        let application_no = $('#application_no').val();
-                        $.ajax
-                        ({
-                            type : "POST",
-                            url : "{% url 'save_lu_attachment_details' %}",
-                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
-                            success : function(responseText)
-                            {
-                                $('#lu_attachment_modal').modal('hide');
-                                $('#lu_file_attachment').html(responseText);
-                                $('.modal-backdrop').remove();
-                                $('#lu_attachment_form')[0].reset();
-                            }
-                        });
-                    }
-                    else
-                    {
-                        $('#lu_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                        $('#lu_attachErrorMsg').show();
-                        $('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
-                    }
-                }
-            });
-        }
-    }
-</script>
-
-
 {% endblock %}

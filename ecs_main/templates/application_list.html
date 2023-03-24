@@ -1,45 +1,68 @@
 {% extends 'common_dashboard.html' %}
 {% block content %}
-<div class="card mt-1">
-    <div class="card-body">
-        <h5 class="card-title mb-0 text-right">Application List</h5>
-        <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
-            <i class="ri-check-line me-2"></i>
-        </div>
-        <div id="cardCollpase1" class="collapse pt-3 show">
-            <table id="alternative-page-datatable" class="table dt-responsive nowrap w-100">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Application No</th>
-                        <th scope="col">Service Name</th>
-                        <th scope="col">Application Date</th>
-                        <th scope="col">Application Source</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for application_details in application_details %}
+<div id="application_details">
+    <div class="card mt-1">
+        <div class="card-body">
+            <h5 class="card-title mb-0 text-right">Application List</h5>
+            <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
+                <i class="ri-check-line me-2"></i>
+            </div>
+            <div id="cardCollpase1" class="collapse pt-3 show">
+                <table id="alternative-page-datatable" class="table dt-responsive nowrap w-100">
+                    <thead>
                         <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td><button type="button" class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.application_no}}','{{application_details.service_code}}')">{{application_details.application_no}}</button></td>
-                            {% for service_details in service_details %}
-                                {% if application_details.service_id == service_details.service_id %}
-                                    <td>{{service_details.service_name}}</td>
-                                {% endif %}
-                            {% endfor %}
-                            <td>{{application_details.action_date|date:"d-m-Y"}}</td>
-                            <td>{{application_details.application_source}}</td>
+                            <th scope="col">#</th>
+                            <th scope="col">Application No</th>
+                            <th scope="col">Service Name</th>
+                            <th scope="col">Application Date</th>
+                            <th scope="col">Application Source</th>
                         </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="text-center">No Data</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for application_details in application_details %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                {% for payment_details in payment_details %}
+                                    {% if application_details.application_no == payment_details.application_no %}
+                                        {% if payment_details.receipt_date %}
+                                            <td><button type="button" class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.application_no}}','{{application_details.service_code}}')">{{application_details.application_no}}</button></td>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% for service_details in service_details %}
+                                    {% if application_details.service_id == service_details.service_id %}
+                                        <td>{{service_details.service_name}}</td>
+                                    {% endif %}
+                                {% endfor %}
+                                <td>{{application_details.action_date|date:"d-m-Y"}}</td>
+                                <td>{{application_details.application_source}}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No Data</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+<script>
+    function viewApplicationDetails(application_no,service_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'view_application_details' %}",
+            data :{'application_no':application_no, 'service_id':service_id},
+            success : function(data)
+            {
+                $('#application_details').html(data);
+                $('#application-application_details-modal').show();
+            }
+        });
+    }
+</script>
 {% endblock %}       
 
                     

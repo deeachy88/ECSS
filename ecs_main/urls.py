@@ -5,13 +5,19 @@ from ECS import settings
 
 urlpatterns = [
     path('verify_application_list', views.verify_application_list, name='verify_application_list'),
+    path('client_application_list', views.client_application_list, name='client_application_list'),
     path('reviewer_application_list', views.reviewer_application_list, name='reviewer_application_list'),
-    path('approver_application_list', views.approver_application_list, name='approver_application_list'),
-    path('resubmit_application_list', views.resubmit_application_list, name='resubmit_application_list'),
     path('view_application_details', views.view_application_details, name='view_application_details'),
     path('forward_application', views.forward_application, name='forward_application'),
     path('approve_application', views.approve_application, name='approve_application'),
     path('resubmit_application', views.resubmit_application, name='resubmit_application'),
     path('update_payment_details', views.update_payment_details, name='update_payment_details'),
-    path('validate_receipt_no', views.validate_receipt_no, name='validate_receipt_no')
+    path('validate_receipt_no', views.validate_receipt_no, name='validate_receipt_no'),
+    path('save_eatc_attachment', views.save_eatc_attachment, name='save_eatc_attachment'),
+    path('save_eatc_attachment_details', views.save_eatc_attachment_details, name='save_eatc_attachment_details'),
+    path('forward_application', views.forward_application, name='forward_application'),
+    path('save_draft_ec_attachment', views.save_draft_ec_attachment, name='save_draft_ec_attachment'),
+    path('save_draft_ec_attachment_details', views.save_draft_ec_attachment_details, name='save_draft_ec_attachment_details'),
+    path('save_lu_attachment', views.save_lu_attachment, name='save_lu_attachment'),
+    path('save_lu_attachment_details', views.save_lu_attachment_details, name='save_lu_attachment_details')
 ]

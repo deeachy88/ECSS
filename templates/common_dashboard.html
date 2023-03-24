@@ -120,7 +120,7 @@
 
                             <li class="side-nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarClient" aria-expanded="false" aria-controls="sidebarClient" class="side-nav-link">
-                                    <i class="mdi mdi-account-switch"></i>
+                                    <i class="mdi mdi-account-network"></i>
                                     <span> Client Manage </span>
                                     <span class="menu-arrow"></span>
                                 </a>
@@ -253,7 +253,11 @@
                             <li class="side-nav-item">
                                 <a href="{% url 'verify_application_list' %}" class="side-nav-link">
                                     <i class="uil-home-alt"></i>
-                                    <span> Application List </span>
+                                    <span> Application List 
+                                        <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            99+
+                                        </span> -->
+                                    </span>
                                 </a>
                             </li>
                         </ul>
@@ -264,32 +268,18 @@
                             <li class="side-nav-item">
                                 <a href="javascript:void(0);" class="side-nav-link">
                                     <i class="uil-home-alt"></i>
-                                    <span> Home </span>
+                                    <span> Home</span>
                                 </a>
                             </li>
 
                             <li class="side-nav-item">
                                 <a href="{% url 'reviewer_application_list' %}" class="side-nav-link">
                                     <i class="uil-home-alt"></i>
-                                    <span> Application List </span>
-                                </a>
-                            </li>
-                        </ul>
-                    {% elif request.session.role == 'Reviewer' %}
-                        <ul class="side-nav">
-                            <li class="side-nav-title side-nav-item">Navigation</li>
-
-                            <li class="side-nav-item">
-                                <a href="javascript:void(0);" class="side-nav-link">
-                                    <i class="uil-home-alt"></i>
-                                    <span> Home </span>
-                                </a>
-                            </li>
-
-                            <li class="side-nav-item">
-                                <a href="{% url 'approver_application_list' %}" class="side-nav-link">
-                                    <i class="uil-home-alt"></i>
-                                    <span> Application List </span>
+                                    <span> Application List
+                                        <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            99+
+                                        </span> -->
+                                    </span>
                                 </a>
                             </li>
                         </ul>

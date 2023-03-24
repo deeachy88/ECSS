@@ -1,7 +1,7 @@
 from datetime import date
 from django.shortcuts import render, redirect
-from proponent.models import t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals
-from ecs_admin.models import t_bsic_code, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_village_master
+from proponent.models import t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals
+from ecs_admin.models import t_bsic_code, t_fees_schedule, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_village_master
 # Create your views here.
 from django.db.models import Max
 from django.utils import timezone
@@ -226,12 +226,12 @@ def update_raw_materials(request):
         'record_id')
     return render(request, 'raw_materials.html', {'raw_materials': raw_materials})
 
-def delete_raw_materials(request):
+def dee_raw_materials(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     raw_materials_details = t_ec_industries_t5_raw_materials.objects.filter(record_id=record_id)
-    raw_materials_details.delete()
+    raw_materials_details.dee()
     raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'raw_materials.html', {'raw_materials': raw_materials})
@@ -248,12 +248,12 @@ def update_machine_tool_details(request):
     machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no= application_no).order_by('record_id')
     return render(request, 'details_machine_equipment_tool.html',{'machine_equipment':machine_equipment})
 
-def delete_machine_tool_details(request):
+def dee_machine_tool_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     machine_equipment_details = t_ec_industries_t3_machine_equipment.objects.filter(record_id=record_id)
-    machine_equipment_details.delete()
+    machine_equipment_details.dee()
     machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'details_machine_equipment_tool.html', {'machine_equipment': machine_equipment})
@@ -286,12 +286,12 @@ def update_partner_details(request):
     return render(request, 'partner_details.html',{'partner_details':partner_type_details})
 
 
-def delete_partner_details(request):
+def dee_partner_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     partner_type_details = t_ec_industries_t2_partner_details.objects.filter(record_id=record_id)
-    partner_type_details.delete()
+    partner_type_details.dee()
     partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'partner_details.html', {'partner_details': partner_details})
@@ -679,8 +679,8 @@ def save_iee_application(request):
                                         service_id=request.session['service_id'],
                                         application_status='P',
                                         action_date=None,
-                                        actor_id=None,
-                                        actor_name=None,
+                                        actor_id=request.session['login_id'],
+                                        actor_name=request.session['name'],
                                         assigned_user_id=None,
                                         assigned_role_id=None,
                                         assigned_role_name=None,
@@ -1434,6 +1434,7 @@ def submit_iee_application(request):
         application_no = request.POST.get('iee_disclaimer_application_no')
         workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
         workflow_dtls.update(action_date=date.now())
+        insert_payment_details(application_no)
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -1652,12 +1653,12 @@ def update_anc_power_line_details(request):
     anc_power_line_details = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no).order_by('record_id')
     return render('anc_power_line_details.html', {'anc_power_line_details':anc_power_line_details})
 
-def delete_anc_power_line_details(request):
+def dee_anc_power_line_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     power_line_details = t_ec_industries_t7_ancillary_power_line.objects.filter(record_id=record_id)
-    power_line_details.delete()
+    power_line_details.dee()
     anc_power_line_details = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'anc_power_line_details.html', {'anc_power_line_details': anc_power_line_details})
@@ -1696,12 +1697,12 @@ def update_anc_road_details(request):
     anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by('record_id')
     return render('anc_approach_road_details.html', {'anc_road_details':anc_road_details})
 
-def delete_anc_road_details(request):
+def dee_anc_road_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     road_details = t_ec_industries_t6_ancillary_road.objects.filter(record_id=record_id)
-    road_details.delete()
+    road_details.dee()
     anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'anc_approach_road_details.html', {'anc_road_details': anc_road_details})
@@ -1731,12 +1732,12 @@ def update_forestry_produce_details(request):
         'record_id')
     return render(request, 'forestry_produce.html', {'forestry_produce': forestry_produce})
 
-def delete_forestry_produce_details(request):
+def dee_forestry_produce_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     forestry_produce_details = t_ec_industries_t8_forest_produce.objects.filter(record_id=record_id)
-    forestry_produce_details.delete()
+    forestry_produce_details.dee()
     forestry_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'forestry_produce.html', {'forestry_produce': forestry_produce})
@@ -1818,11 +1819,11 @@ def save_general_attachment_details(request):
 def add_final_product_details(request):
     application_no = request.POST.get('application_no')
     product_name = request.POST.get('product_name')
-    name_location = request.POST.get('name_location')
+    quantity_annum = request.POST.get('quantity_annum')
     storage_method = request.POST.get('storage_method')
 
     t_ec_industries_t4_project_product.objects.create(application_no=application_no, product_name=product_name,
-                                                    name_location_type=name_location, storage_method=storage_method)
+                                                    quantity_annum=quantity_annum, storage_method=storage_method)
     final_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'final_products.html', {'final_product': final_product})
@@ -1830,22 +1831,22 @@ def add_final_product_details(request):
 def update_final_product_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
-    product_name = request.POST.get('product_name')
-    name_location = request.POST.get('name_location')
-    storage_method = request.POST.get('storage_method')
+    product_name = request.POST.get('edit_product_name')
+    quantity_annum = request.POST.get('edit_quantity_annum')
+    storage_method = request.POST.get('edit_final_product_storage_method')
 
     final_product_details = t_ec_industries_t4_project_product.objects.filter(record_id=record_id)
-    final_product_details.update(product_name=product_name, name_location_type=name_location, storage_method=storage_method)
+    final_product_details.update(product_name=product_name, quantity_annum=quantity_annum, storage_method=storage_method)
     final_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'final_products.html', {'final_product': final_product})
 
-def delete_final_product_details(request):
+def dee_final_product_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     final_product_details = t_ec_industries_t4_project_product.objects.filter(record_id=record_id)
-    final_product_details.delete()
+    final_product_details.dee()
     final_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'final_products.html', {'final_product': final_product})
@@ -1875,12 +1876,12 @@ def update_forest_produce_details(request):
         'record_id')
     return render(request, 'forestry_produce.html', {'forestry_produce': forestry_produce})
 
-def delete_forest_produce_details(request):
+def dee_forest_produce_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     final_product_details = t_ec_industries_t8_forest_produce.objects.filter(record_id=record_id)
-    final_product_details.delete()
+    final_product_details.dee()
     final_product = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'forestry_produce.html', {'final_product': final_product})
@@ -1964,12 +1965,12 @@ def update_products_by_products_details(request):
         'record_id')
     return render(request, 'final_products.html', {'final_product': final_product})
 
-def delete_products_by_products_details(request):
+def dee_products_by_products_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     products_by_products_details = t_ec_industries_t9_products_by_products.objects.filter(record_id=record_id)
-    products_by_products_details.delete()
+    products_by_products_details.dee()
     products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'products_by_products.html', {'products_by_products': products_by_products})
@@ -1999,12 +2000,12 @@ def update_ea_hazardous_details(request):
         'record_id')
     return render(request, 'hazardous_chemicals.html', {'hazardous_chemicals': hazardous_chemicals})
 
-def delete_ea_hazardous_details(request):
+def dee_ea_hazardous_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     hazardous_chemicals_details = t_ec_industries_t10_hazardous_chemicals.objects.filter(record_id=record_id)
-    hazardous_chemicals_details.delete()
+    hazardous_chemicals_details.dee()
     hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'hazardous_chemicals.html', {'hazardous_chemicals': hazardous_chemicals})
@@ -2125,6 +2126,175 @@ def submit_ea_application(request):
         application_no = request.POST.get('ea_disclaimer_application_no')
         workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
         workflow_dtls.update(action_date=date.now())
+        insert_payment_details(application_no)
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+#Transmission Details
+def save_project_details(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('project_details_application_no')
+        project_objective = request.POST.get('project_objective')
+        project_beneficiaries = request.POST.get('project_beneficiaries')
+        proposed_route_reason = request.POST.get('proposed_route_reason')
+        project_cost = request.POST.get('project_cost')
+        project_duration = request.POST.get('project_duration')
+        right_of_way = request.POST.get('right_of_way')
+        length_of_transmission = request.POST.get('length_of_transmission')
+        transmission_voltage_level = request.POST.get('transmission_voltage_level')
+        starting_point_transmission = request.POST.get('starting_point_transmission')
+        transmission_termination_point = request.POST.get('transmission_termination_point')
+        construction_substation = request.POST.get('construction_substation')
+        transmission_numbers = request.POST.get('transmission_numbers')
+        transmission_area = request.POST.get('transmission_area')
+        location_transmission = request.POST.get('location_transmission')
+        no_of_workers = request.POST.get('no_of_workers')
+        project_output = request.POST.get('project_output')
+        month_season_name = request.POST.get('month_season_name')
+        machineries_type_number = request.POST.get('machineries_type_number')
+        abstraction_type = request.POST.get('abstraction_type')
+        total_requirement = request.POST.get('total_requirement')
+        borewell_installed_capacity = request.POST.get('borewell_installed_capacity')
+        geo_coordinates = request.POST.get('geo_coordinates')
+        borewell_width_depth = request.POST.get('borewell_width_depth')
+        borewell_depth_dec = request.POST.get('borewell_depth_dec')
+        borewell_depth_jan = request.POST.get('borewell_depth_jan')
+        borewell_depth_feb = request.POST.get('borewell_depth_feb')
+        proposed_location_justification = request.POST.get('proposed_location_justification')
+        blast_required = request.POST.get('blast_required') 
+        blast_type = request.POST.get('blast_type')
+        blast_qty = request.POST.get('blast_qty')
+        blast_frequency_time = request.POST.get('blast_frequency_time')
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        application_details.update(project_objective=project_objective,
+                                    project_beneficiaries=project_beneficiaries,
+                                    proposed_route_reason=proposed_route_reason,
+                                    project_cost=project_cost,
+                                    project_duration=project_duration,
+                                    right_of_way=right_of_way,
+                                    length_of_transmission=length_of_transmission,
+                                    transmission_voltage_level=transmission_voltage_level,
+                                    starting_point_transmission=starting_point_transmission,
+                                    transmission_termination_point=transmission_termination_point,
+                                    construction_substation=construction_substation,
+                                    transmission_numbers=transmission_numbers,
+                                    transmission_area=transmission_area,
+                                    location_transmission=location_transmission,
+                                    project_no_of_workers=no_of_workers,
+                                    project_output=project_output,
+                                    month_season_name=month_season_name,
+                                    machineries_type_number=machineries_type_number,
+                                    abstraction_type=abstraction_type,
+                                    total_requirement=total_requirement,
+                                    borewell_installed_capacity=borewell_installed_capacity,
+                                    geo_coordinates=geo_coordinates,
+                                    borewell_width_depth=borewell_width_depth,
+                                    borewell_depth_dec=borewell_depth_dec,
+                                    borewell_depth_jan=borewell_depth_jan,
+                                    borewell_depth_feb=borewell_depth_feb,
+                                    proposed_location_justification=proposed_location_justification,
+                                    blast_required=blast_required, 
+                                    blast_type=blast_type,
+                                    blast_qty=blast_qty,
+                                    blast_frequency_time=blast_frequency_time
+                                    )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+def save_general_water_requirement(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('general_water_application_no')
+        energy_source = request.POST.get('energy_source')
+        water_excavated_muck = request.POST.get('water_excavated_muck')
+        water_required = request.POST.get('water_required')
+        water_provided_by = request.POST.get('water_provided_by')
+        water_raw_material_source = request.POST.get('water_raw_material_source')
+        water_raw_material_qty_day = request.POST.get('#water_raw_material_qty_day')
+        water_raw_material_recycle_day = request.POST.get('#water_raw_material_recycle_day')
+        water_cleaning_source = request.POST.get('#water_cleaning_source')
+        water_cleaning_qty_day = request.POST.get('#water_cleaning_qty_day')
+        water_cleaning_recycle_day = request.POST.get('#water_cleaning_recycle_day')
+        water_process_source = request.POST.get('#water_process_source')
+        water_process_qty_day = request.POST.get('#water_process_qty_day')
+        water_process_recycle_day = request.POST.get('#water_process_recycle_day')
+        water_domestic_source = request.POST.get('#water_domestic_source')
+        water_domestic_qty_day = request.POST.get('#water_domestic_qty_day')
+        water_domestic_recycle_day = request.POST.get('#water_domestic_recycle_day')
+        water_dust_compression_source = request.POST.get('#water_dust_compression_source')
+        water_dust_compression_qty_day = request.POST.get('#water_dust_compression_qty_day')
+        water_dust_compression_recycle_day = request.POST.get('#water_dust_compression_recycle_day')
+        water_others_name = request.POST.get('#water_others_name')
+        water_others_source = request.POST.get('#water_others_source')
+        water_others_qty_day = request.POST.get('#water_others_qty_day')
+        water_downstream_users = request.POST.get('#water_downstream_users')
+        water_flow_rate_lean = request.POST.get('#water_flow_rate_lean')
+        water_source_distance = request.POST.get('#water_source_distance')
+
+        water_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+
+        water_details.update(energy_source=energy_source,
+                             water_excavated_muck=water_excavated_muck,
+                             water_required=water_required,
+                             water_provide_by_iestate=water_provided_by,
+                             water_raw_material_source=water_raw_material_source,
+                             water_raw_material_qty_day=water_raw_material_qty_day,
+                             water_raw_material_recycle_day=water_raw_material_recycle_day,
+                             water_cleaning_source=water_cleaning_source,
+                             water_cleaning_qty_day=water_cleaning_qty_day,
+                             water_cleaning_recycle_day=water_cleaning_recycle_day,
+                             water_process_source=water_process_source,
+                             water_process_qty_day=water_process_qty_day,
+                             water_process_recycle_day=water_process_recycle_day,
+                             water_domestic_source=water_domestic_source,
+                             water_domestic_qty_day=water_domestic_qty_day,
+                             water_domestic_recycle_day=water_domestic_recycle_day,
+                             water_dust_compression_source=water_dust_compression_source,
+                             water_dust_compression_qty_day=water_dust_compression_qty_day,
+                             water_dust_compression_recycle_day=water_dust_compression_recycle_day,
+                             water_others_name=water_others_name,
+                             water_others_source=water_others_source,
+                             water_others_qty_day=water_others_qty_day,
+                             water_downstream_users=water_downstream_users,
+                             water_flow_rate_lean=water_flow_rate_lean,
+                             water_source_distance=water_source_distance
+                             )
+        data['message'] = "success"
+        return JsonResponse(data)
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+    
+def submit_transmission_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('transmission_disclaimer_application_no')
+        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+        workflow_dtls.update(action_date=date.now())
+        insert_payment_details(application_no)
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+#General Application Details
+def submit_general_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('general_disclaimer_application_no')
+        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+        workflow_dtls.update(action_date=date.now())
+        insert_payment_details(application_no)
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -2132,9 +2302,849 @@ def submit_ea_application(request):
     return JsonResponse(data)
 
 
+#TOR
+def save_tor_form(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('ea_disclaimer_application_no')
+        project_name = request.POST.get('project_name')
+        applicant_name = request.POST.get('applicant_name')
+        address = request.POST.get('address')
+        contact_no = request.POST.get('contact_no')
+        email = request.POST.get('email')
+        focal_person = request.POST.get('focal_person')
+        thromde = request.POST.get('thromde')
+        dzongkhag = request.POST.get('dzongkhag')
+        gewog = request.POST.get('gewog')
+        vil_chiwog = request.POST.get('vil_chiwog')
+        location_name = request.POST.get('location_name')
+        
+        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+        workflow_dtls.update(action_date=date.now())
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
 
 
+def insert_payment_details(application_no):
+    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+    service_id = None
+    source = None
+    industry_classification = None
+    amount = None
+
+    workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
+    for work_details in workflow_details:
+        service_id = work_details.service_code
+        source = work_details.application_source
+
+    for application in application_details:
+        industry_classification = application.application
+
+    if service_id == '1' & source == 'IBLS' & industry_classification == 'small':
+        fees_details = t_fees_schedule.objects.filter(application_no=application_no)
+        amount = fees_details.rate * fees_details.application_fee
+     
 
 
+        payment_details = t_payment_details.objects.create(application_no=application_no)
+        payment_details.update(
+            application_type= application.application_type,
+            application_no=application_no,
+            application_date=application.application_date, 
+            proponent_name=application.applicant_name,
+            amount=amount
+        )
+    return redirect(new_iee_application)
 
 
+# Road Application Details
+def save_road_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('application_no')
+        project_name = request.POST.get('project_name')
+        project_category = request.POST.get('project_category')
+        applicant_name = request.POST.get('applicant_name')
+        address = request.POST.get('address')
+        cid = request.POST.get('cid')
+        contact_no = request.POST.get('contact_no')
+        email = request.POST.get('email')
+        focal_person = request.POST.get('focal_person')
+        dzongkhag_code = request.POST.get('dzo_throm')
+        gewog_code = request.POST.get('gewog')
+        village_code = request.POST.get('vil_chiwog')
+        bl_protected_area_name = request.POST.get('bl_protected_area_name')
+        bl_protected_area_distance = request.POST.get('bl_protected_area_distance')
+        bl_migratory_route_name = request.POST.get('bl_migratory_route_name')
+        bl_migratory_route_distance = request.POST.get('bl_migratory_route_distance')
+        bl_wetland_name = request.POST.get('bl_wetland_name')
+        bl_wetland_distance = request.POST.get('bl_wetland_distance')
+        bl_water_bodies_name = request.POST.get('bl_water_bodies_name')
+        bl_water_bodies_distance = request.POST.get('bl_water_bodies_distance')
+        bl_fmu_name = request.POST.get('bl_fmu_name')
+        bl_fmu_distance = request.POST.get('bl_fmu_distance')
+        bl_agricultural_name = request.POST.get('bl_agricultural_name')
+        bl_agricultural_distance = request.POST.get('bl_agricultural_distance')
+        bl_settlement_name = request.POST.get('bl_settlement_name')
+        bl_settlement_distance = request.POST.get('bl_settlement_distance')
+        bl_road_name = request.POST.get('bl_road_name')
+        bl_road_distance = request.POST.get('bl_road_distance')
+        bl_public_infra_name = request.POST.get('bl_public_infra_name')
+        bl_public_infra_distance = request.POST.get('bl_public_infra_distance')
+        bl_school_name = request.POST.get('bl_school_name')
+        bl_school_distance = request.POST.get('bl_school_distance')
+        bl_heritage_name = request.POST.get('bl_heritage_name')
+        bl_heritage_distance = request.POST.get('bl_heritage_distance')
+        bl_tourist_facility_name = request.POST.get('bl_tourist_facility_name')
+        bl_tourist_facility_distance = request.POST.get('bl_tourist_facility_distance')
+        bl_impt_installation_name = request.POST.get('bl_impt_installation_name')
+        bl_impt_installation_distance = request.POST.get('bl_impt_installation_distance')
+        bl_industries_name = request.POST.get('bl_industries_name')
+        bl_industries_distance = request.POST.get('bl_industries_distance')
+        bl_others = request.POST.get('bl_others')
+        bl_others_name = request.POST.get('bl_others_name')
+        bl_others_distance = request.POST.get('bl_others_distance')
+        
+        t_ec_industries_t1_general.objects.create(
+            application_no=application_no,
+            application_date=None,
+            application_type='Main Activity',
+            ca_authority=request.session['ca_authority'],
+            applicant_id=request.session['email'],
+            colour_code=request.session['colour_code'],
+            project_name=project_name,
+            project_category=project_category,
+            applicant_name=applicant_name,
+            address=address,
+            cid=cid,
+            contact_no=contact_no,
+            email=email,
+            focal_person=focal_person,
+            dzongkhag_code=dzongkhag_code,
+            gewog_code=gewog_code,
+            village_code=village_code,
+            bl_protected_area_name=bl_protected_area_name,
+            bl_protected_area_distance=bl_protected_area_distance,
+            bl_migratory_route_name=bl_migratory_route_name,
+            bl_migratory_route_distance=bl_migratory_route_distance,
+            bl_wetland_name=bl_wetland_name,
+            bl_wetland_distance=bl_wetland_distance,
+            bl_water_bodies_name=bl_water_bodies_name,
+            bl_water_bodies_distance=bl_water_bodies_distance,
+            bl_fmu_name=bl_fmu_name,
+            bl_fmu_distance=bl_fmu_distance,
+            bl_agricultural_name=bl_agricultural_name,
+            bl_agricultural_distance=bl_agricultural_distance,
+            bl_settlement_name=bl_settlement_name,
+            bl_settlement_distance=bl_settlement_distance,
+            bl_road_name=bl_road_name,
+            bl_road_distance=bl_road_distance,
+            bl_public_infra_name=bl_public_infra_name,
+            bl_public_infra_distance=bl_public_infra_distance,
+            bl_school_name=bl_school_name,
+            bl_school_distance=bl_school_distance,
+            bl_heritage_name=bl_heritage_name,
+            bl_heritage_distance=bl_heritage_distance,
+            bl_tourist_facility_name=bl_tourist_facility_name,
+            bl_tourist_facility_distance=bl_tourist_facility_distance,
+            bl_impt_installation_name=bl_impt_installation_name,
+            bl_impt_installation_distance=bl_impt_installation_distance,
+            bl_industries_name=bl_industries_name,
+            bl_industries_distance=bl_industries_distance,
+            bl_others=bl_others,
+            bl_others_name=bl_others_name,
+            bl_others_distance=bl_others_distance
+            )
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                        service_id=request.session['service_id'],
+                                        application_status='P',
+                                        action_date=None,
+                                        actor_id=request.session['login_id'],
+                                        actor_name=request.session['name'],
+                                        assigned_user_id=None,
+                                        assigned_role_id=None,
+                                        assigned_role_name=None,
+                                        result=None,
+                                        ca_authority=request.session['ca_authority'],
+                                        dzongkhag_thromde_id=dzongkhag_code
+                                    )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+# General Application Details
+def save_general_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('application_no')
+        project_name = request.POST.get('project_name')
+        project_category = request.POST.get('project_category')
+        applicant_name = request.POST.get('applicant_name')
+        address = request.POST.get('address')
+        cid = request.POST.get('cid')
+        contact_no = request.POST.get('contact_no')
+        email = request.POST.get('email')
+        focal_person = request.POST.get('focal_person')
+        dzongkhag_code = request.POST.get('dzo_throm')
+        gewog_code = request.POST.get('gewog')
+        village_code = request.POST.get('vil_chiwog')
+        industrial_area_acre = request.POST.get('industrial_area_acre')
+        state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
+        private_area_acre = request.POST.get('private_area_acre')
+        others_area_acre = request.POST.get('others_area_acre')
+        total_area_acre = request.POST.get('total_area_acre')
+        
+        
+        t_ec_industries_t1_general.objects.create(
+            application_no=application_no,
+            application_date=None,
+            application_type='Main Activity',
+            ca_authority=request.session['ca_authority'],
+            applicant_id=request.session['email'],
+            colour_code=request.session['colour_code'],
+            project_name=project_name,
+            project_category=project_category,
+            applicant_name=applicant_name,
+            address=address,
+            cid=cid,
+            contact_no=contact_no,
+            email=email,
+            focal_person=focal_person,
+            dzongkhag_code=dzongkhag_code,
+            gewog_code=gewog_code,
+            village_code=village_code,
+            industrial_area_acre=industrial_area_acre,
+            state_reserve_forest_acre=state_reserve_forest_acre,
+            private_area_acre=private_area_acre,
+            others_area_acre=others_area_acre,
+            total_area_acre=total_area_acre,
+            )
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                        service_id=request.session['service_id'],
+                                        application_status='P',
+                                        action_date=None,
+                                        actor_id=request.session['login_id'],
+                                        actor_name=request.session['name'],
+                                        assigned_user_id=None,
+                                        assigned_role_id=None,
+                                        assigned_role_name=None,
+                                        result=None,
+                                        ca_authority=request.session['ca_authority'],
+                                        dzongkhag_thromde_id=dzongkhag_code
+                                    )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+
+# Forest Application Details
+def save_forest_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('application_no')
+        project_name = request.POST.get('project_name')
+        project_category = request.POST.get('project_category')
+        applicant_name = request.POST.get('applicant_name')
+        address = request.POST.get('address')
+        cid = request.POST.get('cid')
+        contact_no = request.POST.get('contact_no')
+        email = request.POST.get('email')
+        focal_person = request.POST.get('focal_person')
+        dzongkhag_code = request.POST.get('dzo_throm')
+        gewog_code = request.POST.get('gewog')
+        village_code = request.POST.get('vil_chiwog')
+        industrial_area_acre = request.POST.get('industrial_area_acre')
+        state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
+        private_area_acre = request.POST.get('private_area_acre')
+        others_area_acre = request.POST.get('others_area_acre')
+        total_area_acre = request.POST.get('total_area_acre')
+        max_evacuation_depth = request.POST.get('max_evacuation_depth')
+        terrain_elevation = request.POST.get('terrain_elevation')
+        terrain_slope = request.POST.get('terrain_slope')
+        
+        t_ec_industries_t1_general.objects.create(
+            application_no=application_no,
+            application_date=None,
+            application_type='Main Activity',
+            ca_authority=request.session['ca_authority'],
+            applicant_id=request.session['email'],
+            colour_code=request.session['colour_code'],
+            project_name=project_name,
+            project_category=project_category,
+            applicant_name=applicant_name,
+            address=address,
+            cid=cid,
+            contact_no=contact_no,
+            email=email,
+            focal_person=focal_person,
+            dzongkhag_code=dzongkhag_code,
+            gewog_code=gewog_code,
+            village_code=village_code,
+            industrial_area_acre=industrial_area_acre,
+            state_reserve_forest_acre=state_reserve_forest_acre,
+            private_area_acre=private_area_acre,
+            others_area_acre=others_area_acre,
+            total_area_acre=total_area_acre,
+            max_evacuation_depth=max_evacuation_depth,
+            terrain_elevation=terrain_elevation,
+            terrain_slope=terrain_slope
+            )
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                        service_id=request.session['service_id'],
+                                        application_status='P',
+                                        action_date=None,
+                                        actor_id=request.session['login_id'],
+                                        actor_name=request.session['name'],
+                                        assigned_user_id=None,
+                                        assigned_role_id=None,
+                                        assigned_role_name=None,
+                                        result=None,
+                                        ca_authority=request.session['ca_authority'],
+                                        dzongkhag_thromde_id=dzongkhag_code
+                                    )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+def submit_forest_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('transmission_disclaimer_application_no')
+        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+        workflow_dtls.update(action_date=date.now())
+        insert_payment_details(application_no)
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+# ground water
+def save_ground_water_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('application_no')
+        project_name = request.POST.get('project_name')
+        project_category = request.POST.get('project_category')
+        applicant_name = request.POST.get('applicant_name')
+        address = request.POST.get('address')
+        cid = request.POST.get('cid')
+        contact_no = request.POST.get('contact_no')
+        email = request.POST.get('email')
+        focal_person = request.POST.get('focal_person')
+        dzongkhag_code = request.POST.get('dzo_throm')
+        gewog_code = request.POST.get('gewog')
+        village_code = request.POST.get('vil_chiwog')
+        industrial_area_acre = request.POST.get('industrial_area_acre')
+        state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
+        private_area_acre = request.POST.get('private_area_acre')
+        others_area_acre = request.POST.get('others_area_acre')
+        total_area_acre = request.POST.get('total_area_acre')
+        max_evacuation_depth = request.POST.get('max_evacuation_depth')
+        land_form = request.POST.get('land_form')
+        terrain_elevation = request.POST.get('terrain_elevation')
+        terrain_slope = request.POST.get('terrain_slope')
+        
+        t_ec_industries_t1_general.objects.create(
+            application_no=application_no,
+            application_date=None,
+            application_type='Main Activity',
+            ca_authority=request.session['ca_authority'],
+            applicant_id=request.session['email'],
+            colour_code=request.session['colour_code'],
+            project_name=project_name,
+            project_category=project_category,
+            applicant_name=applicant_name,
+            address=address,
+            cid=cid,
+            contact_no=contact_no,
+            email=email,
+            focal_person=focal_person,
+            dzongkhag_code=dzongkhag_code,
+            gewog_code=gewog_code,
+            village_code=village_code,
+            industrial_area_acre=industrial_area_acre,
+            state_reserve_forest_acre=state_reserve_forest_acre,
+            private_area_acre=private_area_acre,
+            others_area_acre=others_area_acre,
+            total_area_acre=total_area_acre,
+            max_evacuation_depth=max_evacuation_depth,
+            land_form=land_form,
+            terrain_elevation=terrain_elevation,
+            terrain_slope=terrain_slope
+            )
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                        service_id=request.session['service_id'],
+                                        application_status='P',
+                                        action_date=None,
+                                        actor_id=request.session['login_id'],
+                                        actor_name=request.session['name'],
+                                        assigned_user_id=None,
+                                        assigned_role_id=None,
+                                        assigned_role_name=None,
+                                        result=None,
+                                        ca_authority=request.session['ca_authority'],
+                                        dzongkhag_thromde_id=dzongkhag_code
+                                    )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+# Quarry Application Details
+def save_quarry_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('application_no')
+        project_name = request.POST.get('project_name')
+        project_category = request.POST.get('project_category')
+        applicant_name = request.POST.get('applicant_name')
+        address = request.POST.get('address')
+        cid = request.POST.get('cid')
+        contact_no = request.POST.get('contact_no')
+        email = request.POST.get('email')
+        focal_person = request.POST.get('focal_person')
+        dzongkhag_code = request.POST.get('dzo_throm')
+        gewog_code = request.POST.get('gewog')
+        village_code = request.POST.get('vil_chiwog')
+        industrial_area_acre = request.POST.get('industrial_area_acre')
+        state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
+        private_area_acre = request.POST.get('private_area_acre')
+        others_area_acre = request.POST.get('others_area_acre')
+        total_area_acre = request.POST.get('total_area_acre')
+        actual_mineable_area = request.POST.get('actual_mineable_area')
+        green_belt_area = request.POST.get('max_evacuation_depth')
+        terrain_elevation = request.POST.get('terrain_elevation')
+        terrain_slope = request.POST.get('terrain_slope')
+        
+        t_ec_industries_t1_general.objects.create(
+            application_no=application_no,
+            application_date=None,
+            application_type='Main Activity',
+            ca_authority=request.session['ca_authority'],
+            applicant_id=request.session['email'],
+            colour_code=request.session['colour_code'],
+            project_name=project_name,
+            project_category=project_category,
+            applicant_name=applicant_name,
+            address=address,
+            cid=cid,
+            contact_no=contact_no,
+            email=email,
+            focal_person=focal_person,
+            dzongkhag_code=dzongkhag_code,
+            gewog_code=gewog_code,
+            village_code=village_code,
+            industrial_area_acre=industrial_area_acre,
+            state_reserve_forest_acre=state_reserve_forest_acre,
+            private_area_acre=private_area_acre,
+            others_area_acre=others_area_acre,
+            total_area_acre=total_area_acre,
+            actual_mineable_area=actual_mineable_area,
+            green_belt_area=green_belt_area,
+            terrain_elevation=terrain_elevation,
+            terrain_slope=terrain_slope
+            )
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                        service_id=request.session['service_id'],
+                                        application_status='P',
+                                        action_date=None,
+                                        actor_id=request.session['login_id'],
+                                        actor_name=request.session['name'],
+                                        assigned_user_id=None,
+                                        assigned_role_id=None,
+                                        assigned_role_name=None,
+                                        result=None,
+                                        ca_authority=request.session['ca_authority'],
+                                        dzongkhag_thromde_id=dzongkhag_code
+                                    )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+def submit_quarry_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('transmission_disclaimer_application_no')
+        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+        workflow_dtls.update(action_date=date.now())
+        insert_payment_details(application_no)
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+# Road Application Details
+def road_project_details(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('project_details_one_application_no')
+        project_objective = request.POST.get('project_objective')
+        proposed_route_reason = request.POST.get('proposed_route_reason')
+        project_cost = request.POST.get('project_cost')
+        project_duration = request.POST.get('project_duration')
+        road_length = request.POST.get('road_length')
+        starting_point = request.POST.get('starting_point')
+        terminating_point = request.POST.get('terminating_point')
+        road_row_width = request.POST.get('road_row_width')
+        formation_width = request.POST.get('formation_width')
+        pavement_width = request.POST.get('pavement_width')
+        pavement_material = request.POST.get('pavement_material')
+        extracted_material_vol = request.POST.get('extracted_material_vol')
+        maximum_road_gradient = request.POST.get('maximum_road_gradient')
+        cross_drains = request.POST.get('cross_drains')
+        box_culvert = request.POST.get('box_culvert')
+        bridges = request.POST.get('bridges')
+        bridge_width = request.POST.get('bridge_width')
+        bridge_length = request.POST.get('bridge_length')
+        side_drain = request.POST.get('side_drain')
+        side_drain_length = request.POST.get('side_drain_length')
+        side_drain_length = request.POST.get('side_drain_length')
+        side_drain_dimensions = request.POST.get('side_drain_dimensions')
+        box_drain_length = request.POST.get('box_drain_length')
+        
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        application_details.update(project_objective=project_objective,
+                                   proposed_route_reason=proposed_route_reason,
+                                   project_cost=project_cost,
+                                   project_duration=project_duration,
+                                    road_length =road_length, 
+                                    starting_point =starting_point,
+                                    terminating_point =terminating_point,
+                                    road_row_width=road_row_width, 
+                                    formation_width=formation_width, 
+                                    pavement_width=pavement_width, 
+                                    pavement_material=pavement_material, 
+                                    extracted_material_vol=extracted_material_vol, 
+                                    maximum_road_gradient=maximum_road_gradient, 
+                                    cross_drains=cross_drains,
+                                    box_culvert=box_culvert, 
+                                    bridges=bridges, 
+                                    bridge_width=bridge_width, 
+                                    bridge_length=bridge_length, 
+                                    side_drain=side_drain, 
+                                    side_drain_length=side_drain_length, 
+                                    side_drain_dimensions=side_drain_dimensions, 
+                                    box_drain_length=box_drain_length 
+                                    )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+def road_project_details_one(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('project_details_application_no')
+        blast_required = request.POST.get('blast_required') 
+        blast_type = request.POST.get('blast_type')
+        blast_qty = request.POST.get('blast_qty')
+        blast_location = request.POST.get('blast_location')
+        blast_frequency_time = request.POST.get('blast_frequency_time')
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        application_details.update(blast_required=blast_required, 
+                                    blast_type=blast_type,
+                                    blast_qty=blast_qty,
+                                    blast_location=blast_location,
+                                    blast_frequency_time=blast_frequency_time
+                                    )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+def road_project_details_two(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('project_details_two_application_no')
+        water_excavated_muck = request.POST.get('water_excavated_muck')
+        water_required = request.POST.get('water_required')
+        water_provided_by = request.POST.get('water_provided_by')
+        water_raw_material_source = request.POST.get('water_raw_material_source')
+        water_raw_material_qty_day = request.POST.get('#water_raw_material_qty_day')
+        water_raw_material_recycle_day = request.POST.get('#water_raw_material_recycle_day')
+        water_cleaning_source = request.POST.get('#water_cleaning_source')
+        water_cleaning_qty_day = request.POST.get('#water_cleaning_qty_day')
+        water_cleaning_recycle_day = request.POST.get('#water_cleaning_recycle_day')
+        water_process_source = request.POST.get('#water_process_source')
+        water_process_qty_day = request.POST.get('#water_process_qty_day')
+        water_process_recycle_day = request.POST.get('#water_process_recycle_day')
+        water_domestic_source = request.POST.get('#water_domestic_source')
+        water_domestic_qty_day = request.POST.get('#water_domestic_qty_day')
+        water_domestic_recycle_day = request.POST.get('#water_domestic_recycle_day')
+        water_dust_compression_source = request.POST.get('#water_dust_compression_source')
+        water_dust_compression_qty_day = request.POST.get('#water_dust_compression_qty_day')
+        water_dust_compression_recycle_day = request.POST.get('#water_dust_compression_recycle_day')
+        water_others_name = request.POST.get('#water_others_name')
+        water_others_source = request.POST.get('#water_others_source')
+        water_others_qty_day = request.POST.get('#water_others_qty_day')
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+
+        application_details.update(water_excavated_muck=water_excavated_muck,
+                             water_required=water_required,
+                             water_provide_by_iestate=water_provided_by,
+                             water_raw_material_source=water_raw_material_source,
+                             water_raw_material_qty_day=water_raw_material_qty_day,
+                             water_raw_material_recycle_day=water_raw_material_recycle_day,
+                             water_cleaning_source=water_cleaning_source,
+                             water_cleaning_qty_day=water_cleaning_qty_day,
+                             water_cleaning_recycle_day=water_cleaning_recycle_day,
+                             water_process_source=water_process_source,
+                             water_process_qty_day=water_process_qty_day,
+                             water_process_recycle_day=water_process_recycle_day,
+                             water_domestic_source=water_domestic_source,
+                             water_domestic_qty_day=water_domestic_qty_day,
+                             water_domestic_recycle_day=water_domestic_recycle_day,
+                             water_dust_compression_source=water_dust_compression_source,
+                             water_dust_compression_qty_day=water_dust_compression_qty_day,
+                             water_dust_compression_recycle_day=water_dust_compression_recycle_day,
+                             water_others_name=water_others_name,
+                             water_others_source=water_others_source,
+                             water_others_qty_day=water_others_qty_day
+                             )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+def submit_road_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('transmission_disclaimer_application_no')
+        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+        workflow_dtls.update(action_date=date.now())
+        insert_payment_details(application_no)
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+#Energy Application Details
+def save_energy_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('application_no')
+        project_name = request.POST.get('project_name')
+        project_category = request.POST.get('project_category')
+        applicant_name = request.POST.get('applicant_name')
+        address = request.POST.get('address')
+        cid = request.POST.get('cid')
+        contact_no = request.POST.get('contact_no')
+        email = request.POST.get('email')
+        focal_person = request.POST.get('focal_person')
+        dzongkhag_code = request.POST.get('dzo_throm')
+        gewog_code = request.POST.get('gewog')
+        village_code = request.POST.get('vil_chiwog')
+        industrial_area_acre = request.POST.get('industrial_area_acre')
+        state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
+        private_area_acre = request.POST.get('private_area_acre')
+        others_area_acre = request.POST.get('others_area_acre')
+        total_area_acre = request.POST.get('total_area_acre')
+        
+        t_ec_industries_t1_general.objects.create(
+            application_no=application_no,
+            application_date=None,
+            application_type='Main Activity',
+            ca_authority=request.session['ca_authority'],
+            applicant_id=request.session['email'],
+            colour_code=request.session['colour_code'],
+            project_name=project_name,
+            project_category=project_category,
+            applicant_name=applicant_name,
+            address=address,
+            cid=cid,
+            contact_no=contact_no,
+            email=email,
+            focal_person=focal_person,
+            dzongkhag_code=dzongkhag_code,
+            gewog_code=gewog_code,
+            village_code=village_code,
+            industrial_area_acre=industrial_area_acre,
+            state_reserve_forest_acre=state_reserve_forest_acre,
+            private_area_acre=private_area_acre,
+            others_area_acre=others_area_acre,
+            total_area_acre=total_area_acre,
+            )
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                        service_id=request.session['service_id'],
+                                        application_status='P',
+                                        action_date=None,
+                                        actor_id=request.session['login_id'],
+                                        actor_name=request.session['name'],
+                                        assigned_user_id=None,
+                                        assigned_role_id=None,
+                                        assigned_role_name=None,
+                                        result=None,
+                                        ca_authority=request.session['ca_authority'],
+                                        dzongkhag_thromde_id=dzongkhag_code
+                                    )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+def submit_energy_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('transmission_disclaimer_application_no')
+        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+        workflow_dtls.update(action_date=date.now())
+        insert_payment_details(application_no)
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+
+def save_tourism_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('application_no')
+        project_name = request.POST.get('project_name')
+        project_category = request.POST.get('project_category')
+        applicant_name = request.POST.get('applicant_name')
+        address = request.POST.get('address')
+        cid = request.POST.get('cid')
+        contact_no = request.POST.get('contact_no')
+        email = request.POST.get('email')
+        focal_person = request.POST.get('focal_person')
+        dzongkhag_code = request.POST.get('dzo_throm')
+        gewog_code = request.POST.get('gewog')
+        village_code = request.POST.get('vil_chiwog')
+        industrial_area_acre = request.POST.get('industrial_area_acre')
+        state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
+        private_area_acre = request.POST.get('private_area_acre')
+        others_area_acre = request.POST.get('others_area_acre')
+        total_area_acre = request.POST.get('total_area_acre')
+        
+        t_ec_industries_t1_general.objects.create(
+            application_no=application_no,
+            application_date=None,
+            application_type='Main Activity',
+            ca_authority=request.session['ca_authority'],
+            applicant_id=request.session['email'],
+            colour_code=request.session['colour_code'],
+            project_name=project_name,
+            project_category=project_category,
+            applicant_name=applicant_name,
+            address=address,
+            cid=cid,
+            contact_no=contact_no,
+            email=email,
+            focal_person=focal_person,
+            dzongkhag_code=dzongkhag_code,
+            gewog_code=gewog_code,
+            village_code=village_code,
+            industrial_area_acre=industrial_area_acre,
+            state_reserve_forest_acre=state_reserve_forest_acre,
+            private_area_acre=private_area_acre,
+            others_area_acre=others_area_acre,
+            total_area_acre=total_area_acre,
+            )
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                        service_id=request.session['service_id'],
+                                        application_status='P',
+                                        action_date=None,
+                                        actor_id=request.session['login_id'],
+                                        actor_name=request.session['name'],
+                                        assigned_user_id=None,
+                                        assigned_role_id=None,
+                                        assigned_role_name=None,
+                                        result=None,
+                                        ca_authority=request.session['ca_authority'],
+                                        dzongkhag_thromde_id=dzongkhag_code
+                                    )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+def save_tourism_sewerage_details(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('sewerage_application_no')
+        waste_water_bod_source = request.POST.get('waste_water_bod_source')
+        waste_water_bod_discharge = request.POST.get('waste_water_bod_discharge')
+        waste_water_bod_treatment = request.POST.get('waste_water_bod_treatment')
+        waste_water_tss_source = request.POST.get('waste_water_tss_source')
+        waste_water_tss_discharge = request.POST.get('waste_water_tss_discharge')
+        waste_water_tss_treatment = request.POST.get('waste_water_tss_treatment')
+        waste_water_fecal_source = request.POST.get('waste_water_fecal_source')
+        waste_water_fecal_discharge = request.POST.get('waste_water_fecal_discharge')
+        waste_water_fecal_treatment = request.POST.get('waste_water_fecal_treatment')
+        waste_water_ph_source = request.POST.get('waste_water_ph_source')
+        waste_water_ph_discharge = request.POST.get('waste_water_ph_discharge')
+        waste_water_ph_treatment = request.POST.get('waste_water_ph_treatment')
+        waste_water_cod_source = request.POST.get('waste_water_cod_source')
+        waste_water_cod_discharge = request.POST.get('waste_water_cod_discharge')
+        waste_water_cod_treatment = request.POST.get('waste_water_cod_treatment') 
+        sewerage_quantity = request.POST.get('sewerage_quantity')
+        capacity_stp = request.POST.get('capacity_stp')
+        dimension_stp = request.POST.get('dimension_stp')
+        sludge_quantity_mgt_plan = request.POST.get('sludge_quantity_mgt_plan')
+        sewerage_water_source_distance = request.POST.get('sewerage_water_source_distance')
+        
+
+        sewerage_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        sewerage_details.update(waste_water_bod_source =waste_water_bod_source,
+                                 waste_water_bod_discharge =waste_water_bod_discharge,
+                                 waste_water_bod_treatment =waste_water_bod_treatment,
+                                 waste_water_tss_source =waste_water_tss_source,
+                                 waste_water_tss_discharge =waste_water_tss_discharge,
+                                 waste_water_tss_treatment =waste_water_tss_treatment,
+                                 waste_water_fecal_source =waste_water_fecal_source,
+                                 waste_water_fecal_discharge =waste_water_fecal_discharge,
+                                 waste_water_fecal_treatment =waste_water_fecal_treatment,
+                                 waste_water_ph_source =waste_water_ph_source,
+                                 waste_water_ph_discharge =waste_water_ph_discharge,
+                                 waste_water_ph_treatment =waste_water_ph_treatment,
+                                 waste_water_cod_source =waste_water_cod_source,
+                                 waste_water_cod_discharge =waste_water_cod_discharge,
+                                 waste_water_cod_treatment =waste_water_cod_treatment, 
+                                 sewerage_quantity =sewerage_quantity,
+                                 capacity_stp =capacity_stp,
+                                 dimension_stp =dimension_stp,
+                                 sludge_quantity_mgt_plan =sludge_quantity_mgt_plan,
+                                 sewerage_water_source_distance =sewerage_water_source_distance
+                                )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+def submit_tourism_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('transmission_disclaimer_application_no')
+        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+        workflow_dtls.update(action_date=date.now())
+        insert_payment_details(application_no)
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)

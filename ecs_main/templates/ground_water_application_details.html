@@ -1,0 +1,2058 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+
+{% for application_details in application_details %}
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card mt-1">
+            <div class="card-body">
+                <h4 class="header-title mb-3"> Ground Water Form</h4>
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                                aria-expanded="true" aria-controls="collapseOne">
+                                General Information
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                            data-bs-parent="#accordionExample">
+                            <input type="text" class="form-control" value="{{status}}" id="status" name="status" style="display:none;">
+                            <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Name of Project</label>
+                                            <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Business Type</label>
+                                            <input type="text" name="project_category" class="form-control" id="project_category" value="{{ application_details.project_category }}" disabled>
+                                        </div>
+                                        <div id="project_categoryErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">CID</label>
+                                            <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" value="{{ application_details.cid }}" disabled>
+                                        </div>
+                                        <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Applicant Name</label>
+                                            <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
+                                        </div>
+                                        <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Address</label>
+                                            <input type="text" name="address" class="form-control" id="address" value="{{ application_details.address }}" disabled>
+                                        </div>
+                                        <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Contact No</label>
+                                            <input type="number" min="1"  name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{ application_details.contact_no }}" disabled>
+                                        </div>
+                                        <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Email</label>
+                                            <input type="email" name="email" class="form-control" id="email" value="{{ application_details.email }}" disabled>
+                                        </div>
+                                        <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
+                                            <textarea class="form-control" id="focal_person" name="focal_person" rows="3" disabled>{{ application_details.focal_person }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div id="focal_personErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Industry Type</label>
+                                            
+                                            <input type="text" name="industry_type" class="form-control" id="industry_type"  value="{{ application_details.industry_type }}" disabled>
+                                        </div>
+                                        <div id="industry_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Establishment Type</label>
+                                            <input type="text" name="establishment_type" class="form-control" id="establishment_type" value="{{ application_details.establishment_type}}" disabled>
+                                        </div>
+                                        <div id="establishment_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Classification of Industry</label>
+                                            <select class="form-control" name="industry_classification" id="industry_classification" disabled>
+                                                {% if application_details.industry_classification == 'Small' %}
+                                                    <option value="Small" selected>Small</option>
+                                                {% elif application_details.industry_classification == 'cottage' %}
+                                                    <option value="Cottage" selected>Cottage</option>
+                                                {% else %}
+                                                    <option selected>Large</option>
+                                                {% endif %}
+                                            </select> 
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Dzongkhag/Thromde</label>
+                                            <select class="form-select" name="dzo_throm"  id="dzo_throm" disabled>
+                                                {% for dzongkhag in dzongkhag %}
+                                                    <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                        {{ dzongkhag.dzongkhag_name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Gewog</label>
+                                            <select class="form-select" name="gewog" id="gewog" disabled>
+                                                {% for gewog in gewog %}
+                                                    <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                        {{ gewog.gewog_name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Village/Chiwog</label>
+                                            <select class="form-select" name="vil_chiwog" id="vil_chiwog" disabled>
+                                                {% for village in village %}
+                                                <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                    {{ village.village_name }}
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                            <input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
+                                            <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{ application_details.industrial_area_acre }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">State Forest Reserve (acres)</label>
+                                            <input type="number" min="0" name="state_reserve_forest_acre" class="form-control" id="state_reserve_forest_acre" value="{{ application_details.state_reserve_forest_acre }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Private Area (acres)</label>
+                                            <input type="number" min="0" name="private_area_acre" class="form-control" id="private_area_acre" value="{{ application_details.private_area_acre }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Others Specify (acres)</label>
+                                            <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" value="{{ application_details.others_area_acre }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Total land area required (acre)</label>
+                                            <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" value="{{ application_details.total_area_acre }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Total Green Space (acre)</label>
+                                            <input type="text" name="green_area_acre" class="form-control" id="green_area_acre" value="{{ application_details.green_area_acre }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Brief Description of Production and Process Flow</label>
+                                            <textarea class="form-control" name="production_process_flow" id="production_process_flow" rows="3" disabled>{{ application_details.production_process_flow }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Details of Machine/Equipment/Tools
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-widgets mb-3">
+                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#machine_equipment_tool_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            </div>
+                                            <div class="collapse pt-3 show">
+                                                <div id="machine_details_div">
+                                                    {% include 'details_machine_equipment_tool.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Details
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Project Objective</label>
+                                            <input type="text" name="project_objective" class="form-control" id="project_objective" value="{{ application_details.project_objective }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Number of Workers To Be Employed</label>
+                                            <input type="number" min="1" name="project_no_of_workers" class="form-control" id="project_no_of_workers" value="{{ application_details.project_no_of_workers }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Project Cost</label>
+                                            <input type="number" min="0" name="project_cost" class="form-control" id="project_cost" value="{{ application_details.project_cost }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Project Duration</label>
+                                            <input type="text" name="project_duration" class="form-control" id="project_duration" value="{{ application_details.project_duration }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Provide information for final products in the table below
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-widgets mb-3">
+                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#final_products_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            </div>
+                                            <div class="collapse pt-3 show">
+                                                <div id="final_products_div">
+                                                    {% include 'final_products.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> List of raw materials, source and storage methods
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-widgets mb-3">
+                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#raw_materials_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            </div>
+                                            <div class="collapse pt-3 show">
+                                                <div id="raw_materials_div">
+                                                    {% include 'raw_materials.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Partner’s Details if Joint Ownership
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-widgets mb-3">
+                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#partner_details_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            </div>
+                                            <div class="collapse pt-3 show">
+                                                <div id="partner_details_div">
+                                                    {% include 'partner_details.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingTwoBtn"
+                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Baseline/Existing information
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">If the project is proposed outside the approved Industrial Area/Estate/Park/Special Economic Zone, provide explanation/justification for the proposed location</label>
+                                            <input type="text" name="proposed_location_justification" class="form-control" id="proposed_location_justification" value="{{ application_details.proposed_location_justification }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Terrain Characteristics at the Project Site
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Elevation(meters)</label>
+                                            <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Slope/Gradient</label>
+                                            <select class="form-select" name="terrain_slope" id="terrain_slope" disabled>
+                                                {% if application_details.terrain_slope == 'flat_land' %}
+                                                    <option value="flat_land">Flat land (below 20 degrees)</option>
+                                                {% elif application_details.terrain_slope == 'gentle_slope' %}
+                                                    <option value="gentle_slope">Gentle slope (21-45 degrees)</option>
+                                                {% elif application_details.terrain_slope == 'steep_slope' %}
+                                                    <option value="steep_slope">Steep slope (46 – 60 degrees)</option>
+                                                {% else %}
+                                                    <option value="very_steep_slope">Very steep slope (above 60 degrees)</option>
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-secondary border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Baseline/Existing Information
+                                </div>
+                                <table class="table table-hover table-bordered table-centered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Sl.no.</th>
+                                            <th>Land use/existing infrastructure</th>
+                                            <th>Name/Location Name</th>
+                                            <th>Distance from the proposed project site (meters)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>a)</td>
+                                            <td>Protected Areas and zonation (multiple use/buffer/core)</td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="{{ application_details.bl_protected_area_name}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_protected_area_distance" class="form-control col-lg-6" id="bl_protected_area_distance" value="{{ application_details.bl_protected_area_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>b)</td>
+                                            <td>Migratory route/habitat/key biodiversity areas</td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_migratory_route_name" class="form-control col-lg-6" id="bl_migratory_route_name" value="{{ application_details.bl_migratory_route_name }}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_migratory_route_distance" class="form-control col-lg-6" id="bl_migratory_route_distance" value="{{ application_details.bl_migratory_route_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>c)</td>
+                                            <td>Wetland/catchment area</td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_wetland_name" class="form-control col-lg-6" id="bl_wetland_name" value="{{ application_details.bl_wetland_name }}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_wetland_distance" class="form-control col-lg-6" id="bl_wetland_distance" value="{{ application_details.bl_wetland_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>d)</td>
+                                            <td>Water bodies/resources/source (rivers, streams, springs, lakes, etc.)</td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_water_bodies_name" class="form-control col-lg-6" id="bl_water_bodies_name" value="{{ application_details.bl_water_bodies_name }}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_water_bodies_distance" class="form-control col-lg-6" id="bl_water_bodies_distance" value="{{ application_details.bl_water_bodies_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>e)</td>
+                                            <td>FMUs/Community forests/private forests</td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_fmu_name" class="form-control col-lg-6" id="bl_fmu_name" value="{{ application_details.bl_fmu_name }}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_fmu_distance" class="form-control col-lg-6" id="bl_fmu_distance" value="{{ application_details.bl_fmu_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>f)</td>
+                                            <td>Agricultural lands/private lands</td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_agricultural_name" class="form-control col-lg-6" id="bl_agricultural_name" value="{{ application_details.bl_agricultural_name }}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_agricultural_distance" class="form-control col-lg-6" id="bl_agricultural_distance" value="{{ application_details.bl_agricultural_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>g)</td>
+                                            <td>Settlements</td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_settlement_name" class="form-control col-lg-6" id="bl_settlement_name" value="{{ application_details.bl_settlement_name }}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_settlement_distance" class="form-control col-lg-6" id="bl_settlement_distance" value="{{ application_details.bl_settlement_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>h)</td>
+                                            <td>Roads</td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_road_name" class="form-control col-lg-6" id="bl_road_name" value="{{ application_details.bl_road_name }}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_road_distance" class="form-control col-lg-6" id="bl_road_distance" value="{{ application_details.bl_road_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>i)</td>
+                                            <td>Public infrastructures (irrigation canals/drinking water supply/Powerlines/Telecommunication towers, etc)</td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_public_infra_name" class="form-control col-lg-6" id="bl_public_infra_name" value="{{ application_details.bl_public_infra_name }}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_public_infra_distance" class="form-control col-lg-6" id="bl_public_infra_distance" value="{{ application_details.bl_public_infra_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>j)</td>
+                                            <td>Schools/Institutions/Hospitals/BHUs</td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_school_name" class="form-control col-lg-6" id="bl_school_name" value="{{ application_details.bl_school_name }}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_school_distance" class="form-control col-lg-6" id="bl_school_distance" value="{{ application_details.bl_school_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>k)</td>
+                                            <td>Heritage/religious/archaeological /cultural sites</td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_heritage_name" class="form-control col-lg-6" id="bl_heritage_name" value="{{ application_details.bl_heritage_name }}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_heritage_distance" class="form-control col-lg-6" id="bl_heritage_distance" value="{{ application_details.bl_heritage_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>l)</td>
+                                            <td>Tourist facilities/tourism sites/ Nature recreation sites</td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_tourist_facility_name" class="form-control col-lg-6" id="bl_tourist_facility_name" value="{{ application_details.bl_tourist_facility_name }}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_tourist_facility_distance" class="form-control col-lg-6" id="bl_tourist_facility_distance" value="{{ application_details.bl_tourist_facility_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>l)</td>
+                                            <td>Important installations (early warning systems, weather stations, flood mitigation activities, etc.)</td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_impt_installation_name" class="form-control col-lg-6" id="bl_impt_installation_name" value="{{ application_details.bl_impt_installation_name }}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_impt_installation_distance" class="form-control col-lg-6" id="bl_impt_installation_distance" value="{{ application_details.bl_impt_installation_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>l)</td>
+                                            <td>Industries</td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_industries_name" class="form-control col-lg-6" id="bl_industries_name" value="{{ application_details.bl_industries_name }}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_industries_distance" class="form-control col-lg-6" id="bl_industries_distance" value="{{ application_details.bl_industries_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>o)</td>
+                                            <td>
+                                                <div class="row">
+                                                    <label for="bl_others" class="col-sm-4 col-form-label">Others Specify</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control" id="bl_others" name="bl_others" value="{{ application_details.bl_others }}" disabled>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_others_name" class="form-control col-lg-6" id="bl_others_name" value="{{ application_details.bl_others_name }}" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <input type="text" name="bl_others_distance" class="form-control col-lg-6" id="bl_others_distance" value="{{ application_details.bl_others_distance }}" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <br>
+                                <div class="alert alert-danger border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide following information on the technology to be used (furnace/boiler/kiln, calcinatory/others).
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Number of furnace/boiler/kiln/calcinator/others to be installed</label>
+                                            <input type="text" name="technology_used" class="form-control" id="technology_used" value="{{ application_details.technology_used }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Total capacity</label>
+                                            <input type="text" name="technology_total_capacity" class="form-control" id="technology_total_capacity" value="{{ application_details.technology_total_capacity }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-danger border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Energy.
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Source of energy to operate the proposed plant</label>
+                                            <select class="form-select" name="energy_source" id="energy_source" disabled>
+                                                {% if application_details.energy_source == 'electric' %}
+                                                    <option value="electric" selected>Electric</option>
+                                                {% if application_details.energy_source == 'electric' %}
+                                                    <option value="coal" selected>Coal</option>
+                                                {% elif application_details.energy_source == 'electric' %}
+                                                    <option value="high_speed_diesel" selected>High Speed Diesel</option>
+                                                {% elif application_details.energy_source == 'electric' %}
+                                                    <option value="wood_fired" selected>Wood-Fired</option>
+                                                {% elif application_details.energy_source == 'electric' %}
+                                                    <option value="biomass" selected>Biomass</option>
+                                                {% else %}
+                                                    <option value="others" selected>others - specify</option>
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">If the energy source is other than electricity, provide explanation/justification along with its requirement per annum in appropriate units</label>
+                                            <textarea name="energy_source_justification" class="form-control" id="energy_source_justification" disabled>{{ application_details.energy_source_justification }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingForest">
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseForest" aria-expanded="false" aria-controls="collapseForest">
+                                Project Details
+                            </button>
+                        </h2>
+                        <div id="collapseForest" class="accordion-collapse collapse" aria-labelledby="headingForest"
+                            data-bs-parent="#headingForest">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Project objective</label>
+                                            <input type="text" name="project_objective" class="form-control" id="project_objective" value="{{application_details.project_objective}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Project Beneficiaries</label>
+                                            <input type="text" name="project_beneficiaries" class="form-control" id="project_beneficiaries" value="{{application_details.project_beneficiaries}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                            <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Project Duration</label>
+                                            <input type="text" name="project_duration" class="form-control" id="project_duration" value="{{application_details.project_duration}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Abstraction Type</label>
+                                            {% if application_details.abstraction_type == 'Community' %}
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="abstraction_type" class="form-check-input" value="Community" checked>
+                                                        <label class="form-check-label">Community</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="abstraction_type" class="form-check-input" value="Individual" disabled>
+                                                        <label class="form-check-label">Individual</label>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="abstraction_type" class="form-check-input" value="Community" disabled>
+                                                        <label class="form-check-label">Community</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="abstraction_type" class="form-check-input" value="Individual" checked>
+                                                        <label class="form-check-label">Individual</label>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div id="abstraction_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide Project Details in the table below (if applicable)
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <table class="table table-hover table-bordered table-centered mb-0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>Total requirement –cubic meter/day</td>
+                                                    <td><input type="text" name="total_requirement" class="form-control col-lg-6" id="total_requirement" value="{{application_details.total_requirement}}" disabled></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Installed capacity of the bore-well</td>
+                                                    <td><input type="text" name="borewell_installed_capacity" class="form-control col-lg-6" id="borewell_installed_capacity" value="{{application_details.borewell_installed_capacity}}" disabled></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Geo-coordinates of the proposed site</td>
+                                                    <td><input type="text" name="geo_coordinates" class="form-control col-lg-6" id="geo_coordinates" value="{{application_details.geo_coordinates}}" disabled></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Width and depth of the bore-well –meters</td>
+                                                    <td><input type="text" name="borewell_width_depth" class="form-control col-lg-6" id="borewell_width_depth" value="{{application_details.borewell_width_depth}}" disabled></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Depth of the borewell</td>
+                                                    <td><input type="text" name="borewell_depth" class="form-control col-lg-6" id="borewell_depth" value="{{application_details.borewell_depth}}" disabled></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                Energy / Ground Water Parameters
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Mention the source of energy to operate the proposed activity</label>
+                                            <select class="form-control" id="energy_source" name="energy_source" disabled>
+                                                {% if application_details.energy_source == 'Electric' %}
+                                                    <option value="Electric">Electric</option>
+                                                {% if application_details.energy_source == 'Coal' %}    
+                                                    <option value="Coal">Coal</option>
+                                                {% if application_details.energy_source == 'High_Speed_Diesel' %}
+                                                    <option value="High_Speed_Diesel">High speed diesel</option>
+                                                {% if application_details.energy_source == 'Wood-Fired' %}
+                                                    <option value="Wood-Fired">Wood-Fired</option>
+                                                {% else %}
+                                                    <option value="Biomass">Biomass</option>
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                        <div id="energy_sourceErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide the list of raw materials, source, transportation and storage methods in table below
+                                </div>
+                                <br>
+                                <div class="col-md-12" id="dump_yard_details" style="display:none;">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="collapse pt-3 show">
+                                                <div id="raw_materials_div">
+                                                    {% include 'raw_materials.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingSix">
+                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSixBtn"
+                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" disabled>
+                                Ancillary:Power Lines
+                            </button>
+                        </h2>
+                        <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Will the activity require construction of Power Line?</label>
+                                                {% if application_details.anc_road_blast_required == 'Yes' %}
+                                                    <div class="mt-2">
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="anc_power_line_required" class="form-check-input" value="Yes" checked>
+                                                            <label class="form-check-label" for="customRadio3">Yes</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="anc_power_line_required" class="form-check-input" value="No" disabled>
+                                                            <label class="form-check-label" for="customRadio4">No</label>
+                                                        </div>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="mt-2">
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="anc_power_line_required" class="form-check-input" value="Yes" disabled>
+                                                            <label class="form-check-label" for="customRadio3">Yes</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="anc_power_line_required" class="form-check-input" value="No" checked>
+                                                            <label class="form-check-label" for="customRadio4">No</label>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% if application_details.anc_road_blast_required == 'Yes' %}
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Voltage level in kV</label>
+                                                <input type="text" name="anc_power_line_voltage" class="form-control" id="anc_power_line_voltage" value="{{application_details.anc_power_line_voltage}}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Length of transmission /distribution line in km</label>
+                                                <input type="text" name="anc_power_line_length" class="form-control" id="anc_power_line_length" value="{{application_details.anc_power_line_length}}" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Starting point</label>
+                                                <input type="text" name="anc_power_line_start_point" class="form-control" id="anc_power_line_start_point" value="{{application_details.anc_power_line_start_point}}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Termination point</label>
+                                                <input type="text" name="anc_power_line_end_point" class="form-control" id="anc_power_line_end_point" value="{{application_details.anc_power_line_end_point}}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Methods of storing materials</label>
+                                                <input type="text" name="anc_power_line_storing_method" class="form-control" id="anc_power_line_storing_method" value="{{application_details.anc_power_line_storing_method}}" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="card mt-1">
+                                                <div class="card-body">
+                                                    <div class="card-widgets">
+                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#anc_power_line_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                    </div>
+                                                    <h5 class="card-title mb-2"></h5>
+                                                    <div id="cardCollpase2" class="collapse pt-3 show">
+                                                        <div id="anc_power_line_details">
+                                                            {% include 'anc_power_line_details.html' %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingAnalysis">
+                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseAnalysis" aria-expanded="false" aria-controls="collapseAnalysis">
+                                Analysis of Alternatives
+                            </button>
+                        </h2>
+                        <div id="collapseAnalysis" class="accordion-collapse collapse" aria-labelledby="headingAnalysis"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <div class="alert alert-primary border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide description and analysis of alternatives sites other than the proposed one.
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Surface water: The details on alternative sources should include name of the water sources, location, GPS coordinates, distance from the proposed users, and flow rate for both peak and lean season (m3/hr), water quality test as required under the Bhutan Drinking Water Quality Standard 2016, water quantity, existing users, if any.</label>
+                                            <textarea class="form-control" name="alternative_surface_water" id="alternative_surface_water" rows="3" disabled>{{application_details.alternative_surface_water}}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Provide detailed analysis on Capital expenditure and operational expenditure between the alternative water source and the proposed groundwater abstraction.</label>
+                                            <textarea class="form-control" name="alternative_capital_expenditure" id="alternative_capital_expenditure" rows="3" disabled>{{application_details.alternative_capital_expenditure}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">In continuation to above, kindly provide adequate justification for no longer considering the alternative sites other than the proposed one.</label>
+                                            <textarea class="form-control" name="alternative_adequate_justification" id="alternative_adequate_justification" rows="3" disabled>{{application_details.alternative_adequate_justification}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingEight">
+                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
+                                Solid Waste
+                            </button>
+                        </h2>
+                        <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Provide an allocated budget for the management plan proposed</label>
+                                            <input type="text" name="en_impact_allocated_budget" class="form-control" id="en_impact_allocated_budget" value="{{application_details.en_impact_allocated_budget}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
+                                </div>
+                                <br>
+                                <div class="col-lg-12">
+                                    <table class="table table-hover table-bordered table-centered mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Solid waste generation and by-products (Tick as appropriate)</th>
+                                                <th>List of wastes/by-products</th>
+                                                <th>Source</th>
+                                                <th>Quantity per annum</th>
+                                                <th>Management Plan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Hazardous Waste</td>
+                                                <td><input type="text" name="en_impact_hazardous_waste_list" id="en_impact_hazardous_waste_list" class="form-control col-lg-6" value="{{application_details.en_impact_hazardous_waste_list}}" disabled></td>
+                                                <td><input type="text" name="en_impact_hazardous_waste_source" id="en_impact_hazardous_waste_source" class="form-control col-lg-6" value="{{application_details.en_impact_hazardous_waste_source}}" disabled></td>
+                                                <td><input type="text" name="en_impact_hazardous_waste_qty_annum" id="en_impact_hazardous_waste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_hazardous_waste_qty_annum}}" disabled></td>
+                                                <td><input type="text" name="en_impact_hazardous_waste_mgt_plan" id="en_impact_hazardous_waste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_hazardous_waste_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Non-Hazardous Waste</td>
+                                                <td><input type="text" name="en_impact_non_hazardous_waste_list" id="en_impact_non_hazardous_waste_list" class="form-control col-lg-6" value="{{application_details.en_impact_non_hazardous_waste_list}}" disabled></td>
+                                                <td><input type="text" name="en_impact_non_hazardous_waste_source" id="en_impact_non_hazardous_waste_source" class="form-control col-lg-6" value="{{application_details.en_impact_non_hazardous_waste_source}}" disabled></td>
+                                                <td><input type="text" name="en_impact_non_hazardous_waste_qty_annum" id="en_impact_non_hazardous_waste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_non_hazardous_waste_qty_annum}}" disabled></td>
+                                                <td><input type="text" name="en_impact_non_hazardous_waste_mgt_plan" id="en_impact_non_hazardous_waste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_non_hazardous_waste_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Medical</td>
+                                                <td><input type="text" name="en_impact_medical_waste_list" id="en_impact_medical_waste_list" class="form-control col-lg-6" value="{{application_details.en_impact_medical_waste_list}}" disabled></td>
+                                                <td><input type="text" name="en_impact_medical_waste_source" id="en_impact_medical_waste_source" class="form-control col-lg-6" value="{{application_details.en_impact_medical_waste_source}}" disabled></td>
+                                                <td><input type="text" name="en_impact_medical_waste_qty_annum" id="en_impact_medical_waste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_medical_waste_qty_annum}}" disabled></td>
+                                                <td><input type="text" name="en_impact_medical_waste_mgt_plan" id="en_impact_medical_waste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_medical_waste_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>E-waste</td>
+                                                <td><input type="text" name="en_impact_ewaste_list" id="en_impact_ewaste_list" class="form-control col-lg-6" value="{{application_details.en_impact_ewaste_list}}" disabled></td>
+                                                <td><input type="text" name="en_impact_ewaste_source" id="en_impact_ewaste_source" class="form-control col-lg-6" value="{{application_details.en_impact_ewaste_source}}" disabled></td>
+                                                <td><input type="text" name="en_impact_ewaste_qty_annum" id="en_impact_ewaste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_ewaste_qty_annum}}" disabled></td>
+                                                <td><input type="text" name="en_impact_ewaste_mgt_plan" id="en_impact_ewaste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_ewaste_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Others</td>
+                                                <td><input type="text" name="en_impact_others_waste_list" id="en_impact_others_waste_list" class="form-control col-lg-6" value="{{application_details.en_impact_others_waste_list}}" disabled></td>
+                                                <td><input type="text" name="en_impact_others_waste_source" id="en_impact_others_waste_source" class="form-control col-lg-6" value="{{application_details.en_impact_others_waste_source}}" disabled></td>
+                                                <td><input type="text" name="en_impact_others_waste_qty_annum" id="en_impact_others_waste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_others_waste_qty_annum}}" disabled></td>
+                                                <td><input type="text" name="en_impact_others_waste_mgt_plan" id="en_impact_others_waste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_others_waste_mgt_plan}}" disabled></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwelve">
+                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTwelveBtn"
+                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" disabled>
+                                Noise Level
+                            </button>
+                        </h2>
+                        <div id="collapseTwelve" class="accordion-collapse collapse" aria-labelledby="headingTwelve"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <div class="alert alert-primary border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide maximum noise level at the project boundary during operation along with its management plan
+                                </div>
+                                <br>
+                                <div class="col-lg-12">
+                                    <table class="table table-hover table-bordered table-centered mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Parameter</th>
+                                                <th>Unit</th>
+                                                <th>Day (06:00 - 22:00)</th>
+                                                <th>Night (22:00 - 06:00)</th>
+                                                <th>Management Plan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Industrial Area</td>
+                                                <td>dB(A)</td>
+                                                <td><input type="text" name="en_noise_ind_area_day" id="en_noise_ind_area_day" class="form-control col-lg-6" value="{{application_details.en_air_pollution_control_pcd_dimention}}" disabled></td>
+                                                <td><input type="text" name="en_noise_ind_area_night" id="en_noise_ind_area_night" class="form-control col-lg-6" value="{{application_details.en_air_pollution_control_pcd_dimention}}" disabled></td>
+                                                <td><input type="text" name="en_noise_ind_area_mgt_plan" id="en_noise_ind_area_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_air_pollution_control_pcd_dimention}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Mixed Area</td>
+                                                <td>dB(A)</td>
+                                                <td><input type="text" name="en_noise_mixed_area_day" id="en_noise_mixed_area_day" class="form-control col-lg-6" value="{{application_details.en_noise_mixed_area_day}}" disabled></td>
+                                                <td><input type="text" name="en_noise_mixed_area_night" id="en_noise_mixed_area_night" class="form-control col-lg-6" value="{{application_details.en_noise_mixed_area_night}}" disabled></td>
+                                                <td><input type="text" name="en_noise_mixed_area_mgt_plan" id="en_noise_mixed_area_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_noise_mixed_area_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Sensitive Area</td>
+                                                <td>dB(A)</td>
+                                                <td><input type="text" name="en_noise_sen_area_day" id="en_noise_sen_area_day" class="form-control col-lg-6" value="{{application_details.en_noise_sen_area_day}}" disabled></td>
+                                                <td><input type="text" name="en_noise_sen_area_night" id="en_noise_sen_area_night" class="form-control col-lg-6" value="{{application_details.en_noise_sen_area_night}}" disabled></td>
+                                                <td><input type="text" name="en_noise_sen_area_mgt_plan" id="en_noise_sen_area_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_noise_sen_area_mgt_plan}}" disabled></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOtherImpacts">
+                            <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
+                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                Other Impacts
+                            </button>
+                        </h2>
+                        <div id="collapseOtherImpacts" class="accordion-collapse collapse" aria-labelledby="headingOtherImpacts"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <div class="alert alert-secondary border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Other impacts during construction and operation of Plant and from ancillary activities such as road and power line along with its management plan.
+                                </div>
+                                <br>
+                                <div class="col-lg-12">
+                                    <table class="table table-hover table-bordered table-centered mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Other Issues</th>
+                                                <th>Sources</th>
+                                                <th>Quantity if applicable</th>
+                                                <th>Management Plan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Odour</td>
+                                                <td><input type="text" name="en_other_impact_odour_source" id="en_other_impact_odour_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_odour_source}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_odour_qty" id="en_other_impact_odour_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_odour_qty}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_odour_mgt_plan" id="en_other_impact_odour_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_odour_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Fugitive emission</td>
+                                                <td><input type="text" name="en_other_impact_fugutive_source" id="en_other_impact_fugutive_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_fugutive_source}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_fugutive_qty" id="en_other_impact_fugutive_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_fugutive_qty}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_fugutive_mgt_plan" id="en_other_impact_fugutive_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_fugutive_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Slope instability</td>
+                                                <td><input type="text" name="en_other_impact_slope_source" id="en_other_impact_slope_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_slope_source}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_slope_qty" id="en_other_impact_slope_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_slope_qty}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_slope_mgt_plan" id="en_other_impact_slope_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_slope_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Aesthetic</td>
+                                                <td><input type="text" name="en_other_impact_aesthetic_source" id="en_other_impact_aesthetic_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_aesthetic_source}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_aesthetic_qty" id="en_other_impact_aesthetic_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_aesthetic_qty}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_aesthetic_mgt_plan" id="en_other_impact_aesthetic_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_aesthetic_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Excavated mucks</td>
+                                                <td><input type="text" name="en_other_impact_mucks_source" id="en_other_impact_mucks_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_mucks_source}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_mucks_qty" id="en_other_impact_mucks_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_mucks_qty}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_mucks_mgt_plan" id="en_other_impact_mucks_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_mucks_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Sewerage generation</td>
+                                                <td><input type="text" name="en_other_impact_sewerage_source" id="en_other_impact_sewerage_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_sewerage_source}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_sewerage_qty" id="en_other_impact_sewerage_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_sewerage_qty}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_sewerage_mgt_plan" id="en_other_impact_sewerage_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_sewerage_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Surface Run-off/Erosion</td>
+                                                <td><input type="text" name="en_other_impact_erosion_source" id="en_other_impact_erosion_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_erosion_source}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_erosion_qty" id="en_other_impact_erosion_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_erosion_qty}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_erosion_mgt_plan" id="en_other_impact_erosion_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_erosion_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Storm water</td>
+                                                <td><input type="text" name="en_other_impact_storm_water_source" id="en_other_impact_storm_water_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_storm_water_source}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_storm_water_qty" id="en_other_impact_storm_water_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_storm_water_qty}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_storm_water_mgt_plan" id="en_other_impact_storm_water_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_storm_water_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Loss of habitat</td>
+                                                <td><input type="text" name="en_other_impact_habitat_source" id="en_other_impact_habitat_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_habitat_source}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_habitat_qty" id="en_other_impact_habitat_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_habitat_qty}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_habitat_mgt_plan" id="en_other_impact_habitat_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_habitat_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Socio-economic issues</td>
+                                                <td><input type="text" name="en_other_impact_socio_source" id="en_other_impact_socio_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_socio_source}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_socio_qty" id="en_other_impact_socio_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_socio_qty}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_socio_mgt_plan" id="en_other_impact_socio_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_socio_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Impact on water resources</td>
+                                                <td><input type="text" name="en_other_impact_water_source_source" id="en_other_impact_water_source_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_water_source_source}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_water_source_qty" id="en_other_impact_water_source_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_water_source_qty}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_water_source_mgt_plan" id="en_other_impact_water_source_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_water_source_mgt_plan}}" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Other environmental impacts</td>
+                                                <td><input type="text" name="en_other_impact_other_source" id="en_other_impact_other_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_other_source}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_other_qty" id="en_other_impact_other_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_other_qty}}" disabled></td>
+                                                <td><input type="text" name="en_other_impact_other_mgt_plan" id="en_other_impact_other_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_other_mgt_plan}}" disabled></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingAttachment">
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
+                                File Attachment
+                            </button>
+                        </h2>
+                        <div id="collapseAttachment" class="accordion-collapse collapse" aria-labelledby="headingAttachment"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <div class="alert alert-danger border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Note: If the activity is proposed in the industrial area/estate/park/SEZ, the list of documents from 1 to 3 are not required.
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <table class="table table-hover table-bordered table-centered mb-0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Written consent from individual/juristic person directly impacted by the proposed project and ancillary activities authenticated by the concerned local authority</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Records of public consultation signed by member (s) of the concerned local authority present during the consultation. If there are no individuals/public within the vicinity of the project, submit endorsement/approval of the concerned local authority.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>KMZ file indicating the proposed site and its boundary, access road alignment, electricity tapping point and alignment (if applicable), water source, and nearby sensitive receptors as identified in the baseline information</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>4</td>
+                                                    <td>Water abstraction permit from concerned local authority (Dzongkhag/Gewog Administration) for any water abstraction activity.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>5</td>
+                                                    <td>Provide detailed description of methodology adopted for carrying out the study on ground water recharge potential, hydrology and aquifer characteristics of the area (Lean season).</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-widgets">
+                                                <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#ground_water_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            </div>
+                                            <h5 class="card-title mb-0">Attachments</h5>
+                                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                                <div id="ground_water_attachment">
+                                                    {% include 'file_attachment_page.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingDisclaimer">
+                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseDisclaimer" aria-expanded="false" aria-controls="collapseDisclaimer">
+                                Disclaimer
+                            </button>
+                        </h2>
+                        <div id="collapseDisclaimer" class="accordion-collapse collapse" aria-labelledby="headingDisclaimer"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" id="client_details_accordian" style="display:none;">
+                        <h2 class="accordion-header" id="headingClientDetails">
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseClientDetails"
+                                aria-expanded="true" aria-controls="collapseDetails">
+                                Client Details
+                            </button>
+                        </h2>
+                        <div id="collapseClientDetails" class="accordion-collapse collapse show" aria-labelledby="headingClientDetails" data-bs-parent="#accordionExample">
+                            <form method="post" id="client_form">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Additional Information Letter</label>
+                                                <textarea class="form-control" id="additional_info" name="additional_info" rows="2">{{application_details.additional_info}}</textarea>
+                                            </div>
+                                        </div>
+                                        <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="col-md-12 eatc_attachment_details" style="display: none;">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title mb-0">EATC Attachment</h5>
+                                                <div id="cardCollpase7" class="collapse pt-3 show">
+                                                    {% include 'file_attachment_page.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="client_application_successMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="client_application_errorMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3 ALS_button" style="display:none;">
+                                            <div class="text-sm-end">
+                                                <a href="#" class="btn btn-success" onclick="forwardApplication('ALS')">
+                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 FEATC_button" style="display:none;">
+                                            <div class="text-sm-end">
+                                                <a href="#" class="btn btn-success" onclick="forwardApplication('FEATC')">
+                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 RSS_button" style="display:none;">
+                                            <div class="text-sm-end">
+                                                <a href="#" class="btn btn-success" onclick="forwardApplication('RSS')">
+                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 LUS_button" style="display:none;">
+                                            <div class="text-sm-end">
+                                                <a href="#" class="btn btn-success" onclick="forwardApplication('LUS')">
+                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" id="verifier_details_accordian" style="display:none;">
+                        <h2 class="accordion-header" id="headingVerifiersDetails">
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVerifiersDetails"
+                                aria-expanded="true" aria-controls="collapseDetails">
+                                Verifier Details
+                            </button>
+                        </h2>
+                        <div id="VerifiersDetails" class="accordion-collapse collapse show" aria-labelledby="headingVerifiersDetails" data-bs-parent="#accordionExample">
+                            <form method="post" id="verifier_form">
+                                {% csrf_token %}
+                                <div class="row forwardTo">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Forward To</label>
+                                            <select class="form-control" name="forward_to"  id="forward_to">
+                                                <option value="">--SELECT REVIEWER--</option>
+                                                {% for reviewer_list in reviewer_list %}
+                                                        <option value="{{ reviewer_list.Login_Id }}">{{ reviewer_list.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div id="forward_toErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="row verifier_additional_info_letter" style="display: none;">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Additional Information Letter</label>
+                                                <textarea class="form-control" id="additional_info" name="additional_info" rows="2">{{application_details.additional_info}}</textarea>
+                                            </div>
+                                        </div>
+                                        <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="col-md-12 ec_draft_div" style="display: none;">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title mb-0">Attachments</h5>
+                                                <div id="cardCollpase7" class="collapse pt-3 show">
+                                                    {% include 'file_attachment_page.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="verifier_application_successMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="verifier_application_errorMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3 R_button" style="display:none;">
+                                            <div class="text-sm-end">
+                                                <a href="#" class="btn btn-success" onclick="forwardApplication('R')">
+                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Reviewer </a>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 ALA_button" style="display:none;">
+                                            <div class="text-sm-end">
+                                                <a href="#" class="btn btn-success" onclick="forwardApplication('ALA')">
+                                                    <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Approve </a>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 ALR_button" style="display:none;">
+                                            <div class="text-sm-end">
+                                                <a href="#" class="btn btn-danger" onclick="forwardApplication('ALR')">
+                                                    <i class="uil uil-multiply me-1"></i> Reject </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" id="reviewer_details_accordian" style="display:none;">
+                        <h2 class="accordion-header" id="headingReviewerDetails">
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReviewerDetails"
+                                aria-expanded="true" aria-controls="collapseDetails">
+                                Verifier Details
+                            </button>
+                        </h2>
+                        <div id="ReviewerDetails" class="accordion-collapse collapse show" aria-labelledby="headingReviewerDetails" data-bs-parent="#accordionExample">
+                            <form method="post" id="reviewer_form">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Is The Information Complete?</label>
+                                            <div class="mt-2">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="customRadio3" name="information" class="form-check-input"  value="Yes" onclick="check_information_radio(this.value)">
+                                                    <label class="form-check-label" for="customRadio3">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="customRadio4" name="information" class="form-check-input"  value="No" onclick="check_information_radio(this.value)">
+                                                    <label class="form-check-label" for="customRadio4">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="informationErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="row additional_info_letter" style="display: none;">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Additional Information Letter</label>
+                                                <textarea class="form-control" id="additional_info" name="additional_info" rows="2"></textarea>
+                                            </div>
+                                        </div>
+                                        <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="row additional_payment_info" style="display: none;">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Is There Additional Payment?</label>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="customRadio3" name="addtional_payment" class="form-check-input"  value="Yes" onclick="check_eatc_addtional_payment(this.value)">
+                                                        <label class="form-check-label" for="customRadio3">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="customRadio4" name="addtional_payment" class="form-check-input"  value="No" onclick="check_eatc_addtional_payment(this.value)">
+                                                        <label class="form-check-label" for="customRadio4">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="col-md-12 eatc_attachment_div" style="display: none;">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="card-widgets">
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#eatc_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                </div>
+                                                <h5 class="card-title mb-0">Attachments</h5>
+                                                <div id="cardCollpase7" class="collapse pt-3 show">
+                                                    <div id="eatc_file_attachment">
+                                                        {% include 'file_attachment_page.html' %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row fines_penalty_div" style="display: none;">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Is There Fines And Penalties?</label>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="customRadio3" name="fines_penalty" class="form-check-input"  value="Yes" onclick="check_fines_and_penalty(this.value)">
+                                                        <label class="form-check-label" for="customRadio3">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="customRadio4" name="fines_penalty" class="form-check-input"  value="No" onclick="check_fines_and_penalty(this.value)">
+                                                        <label class="form-check-label" for="customRadio4">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="row rectification_div" style="display: none;">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Is There Rectification/on hold/further studies/clarification?</label>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="customRadio3" name="rectification" class="form-check-input"  value="Yes" onclick="check_rectification(this.value)">
+                                                        <label class="form-check-label" for="customRadio3">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="customRadio4" name="rectification" class="form-check-input"  value="No" onclick="check_rectification(this.value)">
+                                                        <label class="form-check-label" for="customRadio4">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="rectificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="col-md-12 lu_attachment_div" style="display: none;">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title mb-0">Attachments</h5>
+                                                <div id="cardCollpase7" class="collapse pt-3 show">
+                                                        {% include 'file_attachment_page.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 draft_ec_div" style="display: none;">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="card-widgets">
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#draft_ec_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                </div>
+                                                <h5 class="card-title mb-0">Attachments</h5>
+                                                <div id="cardCollpase7" class="collapse pt-3 show">
+                                                    <div id="draft_ec_attachment">
+                                                        {% include 'file_attachment_page.html' %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="reviewer_application_successMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="reviewer_application_errorMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
+                                    <div class="col-lg-6 AL_button">
+                                        <div class="mb-3">
+                                            <div class="text-sm-end">
+                                                <a href="#" class="btn btn-success" onclick="forwardApplication('AL')">
+                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3 EATC_button" style="display: none;">
+                                            <div class="text-sm-end">
+                                                <a href="#" class="btn btn-success" onclick="forwardApplication('EATC')">
+                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3"></div>
+                                            <div class="text-sm-end LU_button">
+                                                <a href="#" class="btn btn-success" onclick="forwardApplication('LU')">
+                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 rectification_button">
+                                        <div class="mb-3"></div>
+                                            <div class="text-sm-end">
+                                                <a href="#" class="btn btn-success" onclick="forwardApplication('OH')">
+                                                    <i class="mdi mdi-alert-octagon me-1"></i> On Hold </a>
+                                                <a href="#" class="btn btn-success" onclick="forwardApplication('RS')">
+                                                    <i class="uil uil-history-alt me-1"></i> Resubmit </a>
+                                                <a href="#" class="btn btn-success" onclick="forwardApplication('V')">
+                                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- end card-body -->
+        </div> <!-- end card-->
+    </div>
+</div>
+{% endfor %}
+<form method="post" id="eatc_attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="eatc_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Attach</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Attachment</label>
+                        <input type="file" name="eatc_attach" class="form-control" id="eatc_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                    </div>
+                    <div class="alert alert-danger" id="eatc_attachErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="save_eatc_attachment()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+
+<form method="post" id="lu_attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="lu_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Attach</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Attachment</label>
+                        <input type="file" name="lu_attach" class="form-control" id="lu_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                    </div>
+                    <div class="alert alert-danger" id="lu_attachErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="save_lu_attachment()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+
+<form method="post" id="draft_ec_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;EC Draft</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">EC Draft Attach</label>
+                        <input type="file" name="draft_ec_attach" class="form-control" id="draft_ec_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                    </div>
+                    <div class="alert alert-danger" id="draft_ec_attachrrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="save_ec_draft()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+
+<script>
+    $(function() {
+        let status = $('#status').val();
+
+        if(status == 'P' || status == 'DEC' || status == 'AL')
+        {
+            if(status == 'P')
+            {
+                
+                $('.R_button').show();
+            }
+            else if(status == 'AL')
+            {
+                $('.verifier_additional_info_letter').show();
+                $('.ALR_button').show();
+                $('.ALA_button').show();
+            }
+            else if(status == 'DEC')
+            {
+                $('.forwardTo').hide();
+                $('.ec_draft_div').show();
+            }
+            $('#verifier_details_accordian').show();
+        }
+        else if(status == 'R' || status == 'ALS' || status == 'FEATC' || status == 'RSS' || status == 'LUS')
+        {
+            if(status == 'R')
+            {
+                $('.AL_button').show();
+            }
+            else if(status == 'ALS')
+            {
+                $('.EATC_button').show();
+            }
+            else if(status == 'FEATC')
+            {
+                $('.rectification_button').show();
+            }
+            else if(status == 'LUS')
+            {
+                $('.LU_button').show();
+                $('.lu_attachment_div').show();
+            }
+            
+            $('#reviewer_details_accordian').show();
+        }
+        else if(status == 'ALR' || status == 'ALA' || status == 'EATC' || status == 'RS' || status == 'LU')
+        {
+            if(status == 'ALR' || status == 'ALA')
+            {
+                $('.ALS_button').show();
+            }
+            else if(status == 'EATC')
+            {
+                $('.FEATC_button').show();
+            }
+            else if(status == 'RS')
+            {
+                $('.RSS_button').show();
+            }
+            else if(status == 'LU')
+            {
+                $('.LUS_button').show();
+            }
+            $('#client_details_accordian').show();
+        }
+    });
+
+    function forwardApplication(identifier)
+    {
+        let application_no = $('#application_no').val();
+
+        if(identifier == 'R')
+        {
+            let forward_to = $('#forward_to').val();
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'forward_application' %}",
+                data : {'application_no':application_no, 'identifier':identifier, 'forward_to':forward_to},
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $('#verifier_application_successMsg').html("Application Forwarded Successfully");
+                        $('#verifier_application_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#verifier_application_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2000);
+                    }
+                    else
+                    {
+                        $('#verifier_application_errorMsg').html("Please Check And Try Again");
+                        $('#verifier_application_errorMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#verifier_application_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2000);
+                    }
+                }
+            });
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'forward_application' %}",
+                data : {'application_no':application_no, 'identifier':identifier},
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $('#verifier_application_successMsg').html("Application Forwarded Successfully");
+                        $('#verifier_application_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#verifier_application_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2000);
+                    }
+                    else
+                    {
+                        $('#verifier_application_errorMsg').html("Please Check And Try Again");
+                        $('#verifier_application_errorMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#verifier_application_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2000);
+                    }
+                }
+            });
+        }
+    }
+
+    function check_information_radio(value)
+    {
+        if(value == 'Yes')
+        {
+            $('.additional_info_letter').show();
+            $('.additional_payment_info').hide();
+        }
+        else
+        {
+            $('.additional_payment_info').show();
+            $('.additional_info_letter').hide();
+        }
+    }
+
+    function check_eatc_addtional_payment(value)
+    {
+        if(value == 'Yes')
+        {
+            $('.eatc_attachment_div').hide();
+        }
+        else
+        {
+            $('.eatc_attachment_div').show();
+        }
+    }
+
+    function check_fines_and_penalty(value)
+    {
+        if(value == 'No')
+        {
+            $('.lu_attachment_div').show();
+        }
+        else
+        { 
+            $('.lu_attachment_div').hide();
+        }
+        
+    }
+    function save_ec_draft()
+    {
+        let file_length = document.getElementById("draft_ec_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#draft_ec_attachErrorMsg').html("Please Choose A Attachment");
+            $('#draft_ec_attachErrorMsg').show();
+            $('#draft_ec_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            let application_no = $('#application_no').val();
+            var fileName = document.getElementById('draft_ec_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('draft_ec_attach').files[0];
+            fd.append('draft_ec_attach', file);
+            fd.append('application_no', application_no);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_draft_ec_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_draft_ec_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#draft_ec_modal').modal('hide');
+                                $('#draft_ec_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#draft_ec_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#draft_ec_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#draft_ec_attachErrorMsg').show();
+                        $('#draft_ec_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+        }
+    }
+    function save_eatc_attachment()
+    {
+        let file_length = document.getElementById("eatc_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#eatc_attachErrorMsg').html("Please Choose A Attachment");
+            $('#eatc_attachErrorMsg').show();
+            $('#eatc_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            let application_no = $('#application_no').val();
+            var fileName = document.getElementById('eatc_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('eatc_attach').files[0];
+            fd.append('eatc_attach', file);
+            fd.append('application_no', application_no);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_eatc_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_eatc_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#eatc_attachment_modal').modal('hide');
+                                $('#eatc_file_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#eatc_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#eatc_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#eatc_attachErrorMsg').show();
+                        $('#eatc_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+        }
+    }
+
+
+    function save_lu_attachment()
+    {
+        let file_length = document.getElementById("lu_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#lu_attachErrorMsg').html("Please Choose A Attachment");
+            $('#lu_attachErrorMsg').show();
+            $('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            let application_no = $('#application_no').val();
+            var fileName = document.getElementById('lu_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('lu_attach').files[0];
+            fd.append('lu_attach', file);
+            fd.append('application_no', application_no);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_lu_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_lu_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#lu_attachment_modal').modal('hide');
+                                $('#lu_file_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#lu_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#lu_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#lu_attachErrorMsg').show();
+                        $('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}

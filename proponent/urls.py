@@ -85,4 +85,48 @@ urlpatterns = [
     path('general_ancillary_form', views.general_ancillary_form, name='general_ancillary_form'),
     path('save_industry_ancillary_application', views.save_industry_ancillary_application, name='save_industry_ancillary_application'),
 
+    #General Application Details
+    path('save_general_water_requirement', views.save_general_water_requirement, name='save_general_water_requirement'),
+    path('submit_general_application', views.submit_general_application, name='submit_general_application'),
+
+    #Transmission Details
+    
+    path('submit_transmission_application', views.submit_transmission_application, name='submit_transmission_application'),
+
+    #TOR
+    path('save_tor_form', views.save_tor_form, name='save_tor_form'),
+
+    # General Application Details
+    path('save_general_info', views.save_general_application, name='save_general_info'),
+
+    #Forest Application Details
+    path('save_forest_application', views.save_forest_application, name='save_forest_application'),
+    path('submit_forest_application', views.submit_forest_application, name='submit_forest_application'),
+
+    # Ground Water Application Details
+    path('save_ground_water_application', views.save_ground_water_application, name='save_ground_water_application'),
+
+    # Quarry Application Details
+    path('save_quarry_application', views.save_quarry_application, name='save_quarry_application'),
+    path('submit_quarry_application', views.submit_quarry_application, name='submit_quarry_application'),
+
+    #Road Application Details
+    path('save_road_application', views.save_road_application, name='save_road_application'),
+    path('road_project_details', views.road_project_details, name='road_project_details'),
+    path('road_project_details_one', views.road_project_details_one, name='road_project_details_one'),
+    path('road_project_details_two', views.road_project_details_two, name='road_project_details_two'),
+    path('submit_road_application', views.submit_road_application, name='submit_road_application'),
+
+    #Energy Application Details
+    path('save_energy_application', views.save_energy_application, name='save_energy_application'),
+    path('submit_energy_application', views.submit_energy_application, name='submit_energy_application'),
+
+    #Tourism Application Details
+    path('save_tourism_application', views.save_tourism_application, name='save_tourism_application'),
+    path('save_tourism_sewerage_details', views.save_tourism_sewerage_details, name='save_tourism_sewerage_details'),
+    path('submit_tourism_application', views.submit_tourism_application, name='submit_tourism_application'),
+
+    # Common 
+    path('save_project_details', views.save_project_details, name='save_project_details'),
+
 ]
