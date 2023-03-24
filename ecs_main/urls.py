@@ -20,4 +20,14 @@ urlpatterns = [
     path('save_draft_ec_attachment_details', views.save_draft_ec_attachment_details, name='save_draft_ec_attachment_details'),
     path('save_lu_attachment', views.save_lu_attachment, name='save_lu_attachment'),
     path('save_lu_attachment_details', views.save_lu_attachment_details, name='save_lu_attachment_details')
+
+#InspectionMonitoring
+    path('inspection_list', views.inspection_list, name='inspection_list'),
+    path('add_inspection', views.add_inspection, name='add_inspection'),
+    path('get_inspection_details/<int:record_id>', views.get_inspection_details, name='get_inspection_details'),
+    path('load_ec_details', views.load_ec_details, name='load_ec_details'),
+    path('edit_inspection', views.edit_inspection, name='edit_inspection'),
+    path('delete_inspection', views.delete_inspection, name='delete_inspection'),
+
+
 ]

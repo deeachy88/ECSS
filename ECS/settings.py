@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'proponent',
     'ecs_main',
+    'report',
 ]
 
 MIDDLEWARE = [
