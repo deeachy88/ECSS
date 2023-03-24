@@ -226,12 +226,12 @@ def update_raw_materials(request):
         'record_id')
     return render(request, 'raw_materials.html', {'raw_materials': raw_materials})
 
-def dee_raw_materials(request):
+def delete_raw_materials(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     raw_materials_details = t_ec_industries_t5_raw_materials.objects.filter(record_id=record_id)
-    raw_materials_details.dee()
+    raw_materials_details.delete()
     raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'raw_materials.html', {'raw_materials': raw_materials})
@@ -248,12 +248,12 @@ def update_machine_tool_details(request):
     machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no= application_no).order_by('record_id')
     return render(request, 'details_machine_equipment_tool.html',{'machine_equipment':machine_equipment})
 
-def dee_machine_tool_details(request):
+def delete_machine_tool_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     machine_equipment_details = t_ec_industries_t3_machine_equipment.objects.filter(record_id=record_id)
-    machine_equipment_details.dee()
+    machine_equipment_details.delete()
     machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'details_machine_equipment_tool.html', {'machine_equipment': machine_equipment})
@@ -286,12 +286,12 @@ def update_partner_details(request):
     return render(request, 'partner_details.html',{'partner_details':partner_type_details})
 
 
-def dee_partner_details(request):
+def delete_partner_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     partner_type_details = t_ec_industries_t2_partner_details.objects.filter(record_id=record_id)
-    partner_type_details.dee()
+    partner_type_details.delete()
     partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'partner_details.html', {'partner_details': partner_details})
@@ -1653,12 +1653,12 @@ def update_anc_power_line_details(request):
     anc_power_line_details = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no).order_by('record_id')
     return render('anc_power_line_details.html', {'anc_power_line_details':anc_power_line_details})
 
-def dee_anc_power_line_details(request):
+def delete_anc_power_line_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     power_line_details = t_ec_industries_t7_ancillary_power_line.objects.filter(record_id=record_id)
-    power_line_details.dee()
+    power_line_details.delete()
     anc_power_line_details = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'anc_power_line_details.html', {'anc_power_line_details': anc_power_line_details})
@@ -1697,12 +1697,12 @@ def update_anc_road_details(request):
     anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by('record_id')
     return render('anc_approach_road_details.html', {'anc_road_details':anc_road_details})
 
-def dee_anc_road_details(request):
+def delete_anc_road_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     road_details = t_ec_industries_t6_ancillary_road.objects.filter(record_id=record_id)
-    road_details.dee()
+    road_details.delete()
     anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'anc_approach_road_details.html', {'anc_road_details': anc_road_details})
@@ -1732,12 +1732,12 @@ def update_forestry_produce_details(request):
         'record_id')
     return render(request, 'forestry_produce.html', {'forestry_produce': forestry_produce})
 
-def dee_forestry_produce_details(request):
+def delete_forestry_produce_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     forestry_produce_details = t_ec_industries_t8_forest_produce.objects.filter(record_id=record_id)
-    forestry_produce_details.dee()
+    forestry_produce_details.delete()
     forestry_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'forestry_produce.html', {'forestry_produce': forestry_produce})
@@ -1841,12 +1841,12 @@ def update_final_product_details(request):
         'record_id')
     return render(request, 'final_products.html', {'final_product': final_product})
 
-def dee_final_product_details(request):
+def delete_final_product_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     final_product_details = t_ec_industries_t4_project_product.objects.filter(record_id=record_id)
-    final_product_details.dee()
+    final_product_details.delete()
     final_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'final_products.html', {'final_product': final_product})
@@ -1876,12 +1876,12 @@ def update_forest_produce_details(request):
         'record_id')
     return render(request, 'forestry_produce.html', {'forestry_produce': forestry_produce})
 
-def dee_forest_produce_details(request):
+def delete_forest_produce_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     final_product_details = t_ec_industries_t8_forest_produce.objects.filter(record_id=record_id)
-    final_product_details.dee()
+    final_product_details.delete()
     final_product = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'forestry_produce.html', {'final_product': final_product})
@@ -1965,12 +1965,12 @@ def update_products_by_products_details(request):
         'record_id')
     return render(request, 'final_products.html', {'final_product': final_product})
 
-def dee_products_by_products_details(request):
+def delete_products_by_products_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     products_by_products_details = t_ec_industries_t9_products_by_products.objects.filter(record_id=record_id)
-    products_by_products_details.dee()
+    products_by_products_details.delete()
     products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'products_by_products.html', {'products_by_products': products_by_products})
@@ -2000,12 +2000,12 @@ def update_ea_hazardous_details(request):
         'record_id')
     return render(request, 'hazardous_chemicals.html', {'hazardous_chemicals': hazardous_chemicals})
 
-def dee_ea_hazardous_details(request):
+def delete_ea_hazardous_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
 
     hazardous_chemicals_details = t_ec_industries_t10_hazardous_chemicals.objects.filter(record_id=record_id)
-    hazardous_chemicals_details.dee()
+    hazardous_chemicals_details.delete()
     hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'hazardous_chemicals.html', {'hazardous_chemicals': hazardous_chemicals})

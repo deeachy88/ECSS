@@ -518,7 +518,6 @@ def save_lu_attachment_details(request):
 
 
 # Inspection Report
-
 def inspection_list(request):
     inspection_list = t_inspection_monitoring_t1.objects.all().order_by('inspection_date')
     user_list = t_user_master.objects.all()

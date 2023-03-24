@@ -19,7 +19,7 @@ urlpatterns = [
     path('save_draft_ec_attachment', views.save_draft_ec_attachment, name='save_draft_ec_attachment'),
     path('save_draft_ec_attachment_details', views.save_draft_ec_attachment_details, name='save_draft_ec_attachment_details'),
     path('save_lu_attachment', views.save_lu_attachment, name='save_lu_attachment'),
-    path('save_lu_attachment_details', views.save_lu_attachment_details, name='save_lu_attachment_details')
+    path('save_lu_attachment_details', views.save_lu_attachment_details, name='save_lu_attachment_details'),
 
 #InspectionMonitoring
     path('inspection_list', views.inspection_list, name='inspection_list'),

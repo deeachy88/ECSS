@@ -570,7 +570,7 @@ class t_report_submission_t1(models.Model):
 
 class t_report_submission_t2(models.Model):
     record_id = models.AutoField(primary_key=True)
-    precord_id = models.ForeignKey(t_report_submission_t1, on_dee=models.CASCADE, null=True, blank=True)
+    precord_id = models.ForeignKey(t_report_submission_t1, on_delete=models.CASCADE, null=True, blank=True)
     ec_clearance_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     ec_terms = models.TextField(default=None, blank=True, null=True)
     action_undertaken = models.TextField(default=None, blank=True, null=True)
@@ -589,7 +589,7 @@ class t_ec_renewal_t1(models.Model):
 
 class t_ec_renewal_t2(models.Model):
     record_id = models.AutoField(primary_key=True)
-    precord_id = models.ForeignKey(t_report_submission_t1, on_dee=models.CASCADE, null=True, blank=True)
+    precord_id = models.ForeignKey(t_report_submission_t1, on_delete=models.CASCADE, null=True, blank=True)
     ec_terms = models.TextField(default=None, blank=True, null=True)
     action_undertaken = models.TextField(default=None, blank=True, null=True)
     remarks = models.TextField(default=None, blank=True, null=True)
