@@ -1,0 +1,100 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+     form, input, select, textarea{
+    color: black !important;
+}
+</style>
+<div id="RevenueDetails">
+    <form id="certificateReportForm" xmlns="http://www.w3.org/1999/html">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Revenue Report Form</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">From Date <font color="red">*</font></label>
+                            <input type="text" class="form-control date-picker flatpickr-input active" id="fromDate" name="fromDate"  placeholder="Pick a date" readonly="readonly">
+                        </div>
+                        <div class="alert alert-danger" id="fromDateErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">To Date <font color="red">*</font></label>
+                            <input type="text" class="form-control date-picker flatpickr-input active" id="toDate" name="toDate"  placeholder="Pick a date" readonly="readonly">
+                        </div>
+                        <div class="alert alert-danger" id="toDateErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Payment Type <font color="red">*</font></label>
+                            <select class="form-control" id="payment_type" name="payment_type">
+                                <option value="">--SELECT--</option>
+                                <option value="ALL">All</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="Online">Online</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="payment_typeErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary btn-lg pull-right" value="View" onclick="view_revenue_list()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+function view_revenue_list()
+    {
+        var from_date = $('#fromDate').val();
+        var to_date = $('#toDate').val();
+        var payment_type = $('#payment_type').val();
+
+        if(from_date == "")
+        {
+            $('#fromDateErrorMsg').html("Select From Date.");
+            $('#fromDateErrorMsg').show();
+            $('#fromDateErrorMsg').delay(3000).fadeOut('slow');
+        }
+        else if(to_date == "")
+        {
+            $('#toDateErrorMsg').html("Select To Date.");
+            $('#toDateErrorMsg').show();
+            $('#toDateErrorMsg').delay(3000).fadeOut('slow');
+        }
+        else if(payment_type == "")
+        {
+            $('#payment_typeErrorMsg').html("Select Payment Type.");
+            $('#payment_typeErrorMsg').show();
+            $('#payment_typeErrorMsg').delay(3000).fadeOut('slow');
+        }
+        else
+        {
+            var fDate = moment(from_date, "DD.MM.YYYY").format("YYYY-MM-DD");
+            var tDate = moment(to_date, "DD.MM.YYYY").format("YYYY-MM-DD");
+             $.ajax({
+                    type : "GET",
+                    url : "{% url 'view_revenue_list' %}",
+                    data :{'from_date':fDate,'to_date':tDate, 'payment_type':payment_type},
+                    success : function(data)
+                    {
+                        $('#RevenueDetails').html(data);
+                    }
+                });
+        }
+    }
+
+</script>
+{% endblock %}

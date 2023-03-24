@@ -256,6 +256,46 @@
                                     <span> Application List </span>
                                 </a>
                             </li>
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarMasters" aria-expanded="false" aria-controls="sidebarMasters" class="side-nav-link">
+                                    <i class="uil-clipboard-alt"></i>
+                                    <span> Manage Inspection </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarMasters">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="{% url 'inspection_list' %}">Inspection/Monitoring</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarMasters" aria-expanded="false" aria-controls="sidebarMasters" class="side-nav-link">
+                                    <i class="uil-clipboard-alt"></i>
+                                    <span> Report </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarMasters">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="{% url 'ec_report_form' %}">1. List of EC Issued</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'ec_rejected_report_form' %}">2. List of EC Rejected</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'ec_pending_report_form' %}">3. List of Pending Application</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'land_use_report_form' %}">4. Land Use Report</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'revenue_report_form' %}">5. Revenue</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
                         </ul>
                     {% elif request.session.role == 'Reviewer' %}
                         <ul class="side-nav">

@@ -13,5 +13,15 @@ urlpatterns = [
     path('approve_application', views.approve_application, name='approve_application'),
     path('resubmit_application', views.resubmit_application, name='resubmit_application'),
     path('update_payment_details', views.update_payment_details, name='update_payment_details'),
-    path('validate_receipt_no', views.validate_receipt_no, name='validate_receipt_no')
+    path('validate_receipt_no', views.validate_receipt_no, name='validate_receipt_no'),
+
+#InspectionMonitoring
+    path('inspection_list', views.inspection_list, name='inspection_list'),
+    path('add_inspection', views.add_inspection, name='add_inspection'),
+    path('get_inspection_details/<int:record_id>', views.get_inspection_details, name='get_inspection_details'),
+    path('load_ec_details', views.load_ec_details, name='load_ec_details'),
+    path('edit_inspection', views.edit_inspection, name='edit_inspection'),
+    path('delete_inspection', views.delete_inspection, name='delete_inspection'),
+
+
 ]

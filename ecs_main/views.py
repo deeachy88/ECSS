@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from proponent.models import t_ec_industries_t10_hazardous_chemicals, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_industries_t9_products_by_products, t_payment_details, t_workflow_dtls
 from ecs_admin.models import t_dzongkhag_master, t_gewog_master, t_role_master, t_service_master, t_user_master, t_village_master
+from ecs_main.models import t_inspection_monitoring_t1
 from django.utils import timezone
 from datetime import date
 from django.core.mail import send_mail
@@ -396,3 +397,69 @@ def send_ec_resubmission_email(email, application_no, service_name):
     send_mail(subject, message, 'sparkletechnology2019@gmail.com', recipient_list, fail_silently=False,
               auth_user='sparkletechnology2019@gmail.com', auth_password='ypohpmxhdlmidwgm',
               connection=None, html_message=None)
+
+
+# Inspection Report
+
+def inspection_list(request):
+    inspection_list = t_inspection_monitoring_t1.objects.all().order_by('inspection_date')
+    user_list = t_user_master.objects.all()
+    ec_details = t_ec_industries_t1_general.objects.all()
+    return render(request, 'inspection.html', {'inspection_list':inspection_list, 'user_list':user_list, 'ec_details':ec_details})
+
+def load_ec_details(request):
+    ec_reference_no = request.GET.get('ec_clearance_no')
+    ec_detail_list = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+    return render(request, 'ec_details.html', {'ec_detail_list': ec_detail_list})
+
+def add_inspection(request):
+    inspection_type = request.GET.get('inspection_type')
+    inspection_date = request.GET.get('inspection_date')
+    inspection_reason = request.GET.get('inspection_reason')
+    ec_clearance_no = request.GET.get('ec_clearance_no')
+    login_id = request.GET.get('login_id')
+    proponent_name = request.GET.get('proponent_name')
+    project_name = request.GET.get('project_name')
+    address = request.GET.get('address')
+    observation = request.GET.get('observation')
+    team_leader = request.GET.get('team_leader')
+    team_members = request.GET.get('team_members')
+    remarks = request.GET.get('remarks')
+    fines_penalties = request.GET.get('fines_penalties')
+    status = request.GET.get('status')
+    updated_by_ca = request.GET.get('updated_by_ca')
+    record_status = request.GET.get('record_status')
+
+    t_inspection_monitoring_t1.objects.create(inspection_type=inspection_type, inspection_date=inspection_date,
+                                              inspection_reason=inspection_reason, ec_clearance_no=ec_clearance_no,
+                               login_id=login_id, project_name=project_name, proponent_name=proponent_name,
+                               address=address, observation=observation, team_leader=team_leader,
+                               team_members=team_members, remarks=remarks, fines_penalties=fines_penalties,
+                               status=status, updated_by_ca=updated_by_ca, record_status=record_status)
+    return redirect(inspection_list)
+
+def get_inspection_details(request, record_id):
+    inspection_details = t_inspection_monitoring_t1.objects.filter(record_id=record_id)
+    service_list = t_service_master.objects.all()
+    return render(request, 'edit_bsic_code.html', {'inspection_details': inspection_details, 'service_list':service_list})
+
+def edit_inspection(request):
+    edit_bsic_id = request.POST.get('bsic_id')
+    edit_broad_activity_code = request.POST.get('broad_activity_code')
+    edit_activity_description = request.POST.get('activity_description')
+    edit_specific_activity_code = request.POST.get('specific_activity_code')
+    edit_specific_activity_description = request.POST.get('specific_activity_description')
+    edit_classification = request.POST.get('classification')
+    edit_category = request.POST.get('category')
+    edit_colour_code = request.POST.get('colour_code')
+    edit_competent_authority = request.POST.get('competent_authority')
+    edit_service_id = request.POST.get('service_id')
+    bsic_code_details = t_bsic_code.objects.filter(bsic_id=edit_bsic_id)
+    bsic_code_details.update(broad_activity_code=edit_broad_activity_code, activity_description=edit_activity_description, specific_activity_code=edit_specific_activity_code, specific_activity_description=edit_specific_activity_description, classification=edit_classification, category=edit_category, colour_code=edit_colour_code, competent_authority=edit_competent_authority, service_id=edit_service_id)
+    return redirect(bsic_master)
+
+def delete_inspection(request):
+    delete_bsic_id = request.POST.get('bsic_id')
+    bsic_details = t_bsic_code.objects.filter(bsic_id=delete_bsic_id)
+    bsic_details.delete()
+    return redirect(bsic_master)

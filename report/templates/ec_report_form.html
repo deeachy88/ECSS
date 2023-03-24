@@ -1,0 +1,151 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+
+<div id="CertificateDetails">
+    <form id="certificateReportForm">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Environment Clearance Report Form</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label class="form-label">From Date <font color="red">*</font></label>
+                                <input type="date" class="form-control" id="fromDate" name="fromDate">
+                            </div>
+                        </div>
+                        <div class="alert alert-danger" id="fromDateErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label class="form-label">To Date <font color="red">*</font></label>
+                                <input type="date" class="form-control" id="toDate" name="toDate">
+                            </div>
+                        </div>
+                        <div class="alert alert-danger" id="toDateErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label class="form-label">Category <font color="red">*</font></label>
+                                <select id="service_id" name="service_id" class="form-select">
+                                    <option value="">--SELECT Category--</option>
+                                    {% for service_list in service_list %}
+                                        <option value="{{ service_list.service_id }}">{{ service_list.service_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="alert alert-danger" id="serviceErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label class="form-label">Dzongkhag <font color="red">*</font></label>
+                                <select id="dzongkhag_code" name="dzongkhag_code" class="form-select">
+                                    <option value="">--SELECT Dzongkhag--</option>
+                                    {% for dzongkhag_list in dzongkhag_list %}
+                                        <option value="{{ dzongkhag_list.dzongkhag_code }}">{{ dzongkhag_list.dzongkhag_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label class="form-label">Competent Authority <font color="red">*</font></label>
+                                <select id="ca_authority" name="ca_authority" class="form-select">
+                                    <option value="">--SELECT Competent Authority--</option>
+                                    {% for ca_list in ca_list %}
+                                        <option value="{{ ca_list.competent_authority }}">{{ ca_list.competent_authority }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="form-group">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <input type="button" class="btn btn-sm btn-primary" value="View" onclick="viewECIssuedList()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+function viewECIssuedList()
+    {
+        var from_date = $('#fromDate').val();
+        var to_date = $('#toDate').val();
+        var service_id = $('#service_id').val();
+        var ca_authority = $('#ca_authority').val();
+        var dzongkhag_code = $('#dzongkhag_code').val();
+
+
+        if(from_date == "")
+        {
+            $('#fromDateErrorMsg').html("Select From Date.");
+            $('#fromDateErrorMsg').show();
+            $('#fromDateErrorMsg').delay(3000).fadeOut('slow');
+        }
+        else if(to_date == "")
+        {
+            $('#toDateErrorMsg').html("Select To Date.");
+            $('#toDateErrorMsg').show();
+            $('#toDateErrorMsg').delay(3000).fadeOut('slow');
+        }
+        else if(service_id == "")
+        {
+            $('#serviceErrorMsg').html("Select Service.");
+            $('#serviceErrorMsg').show();
+            $('#serviceErrorMsg').delay(3000).fadeOut('slow');
+        }
+        else
+        {
+
+            var fDate = moment(from_date, "DD.MM.YYYY").format("YYYY-MM-DD");
+            var tDate = moment(to_date, "DD.MM.YYYY").format("YYYY-MM-DD");
+            alert(from_date);
+            alert(to_date);
+
+
+            alert(service_id);
+            alert(dzongkhag_code);
+             $.ajax({
+                    type : "GET",
+                    url : "{% url 'view_ec_list' %}",
+                    data :{'from_date':fDate,'to_date':tDate, 'service_id':service_id},
+                    success : function(data)
+                    {
+                    $('#CertificateDetails').html(data);
+                    }
+                });
+        }
+    }
+</script>
+{% endblock %}
