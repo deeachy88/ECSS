@@ -539,23 +539,6 @@ class t_ec_industries_t10_hazardous_chemicals(models.Model):
     qty = models.IntegerField(default=None, blank=True, null=True)
     storage_method = models.CharField(max_length=100,default=None, blank=True, null=True)
 
-class t_inspection_monitoring_t1(models.Model):
-    record_id = models.AutoField(primary_key=True)
-    application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
-    inspection_type = models.CharField(max_length=100, default=None, blank=True, null=True)
-    ec_clearance_no = models.CharField(max_length=100, default=None, blank=True, null=True)
-    proponent_name = models.CharField(max_length=100, default=None, blank=True, null=True)
-    address = models.CharField(max_length=100, default=None, blank=True, null=True)
-    inspection_date = models.DateField(default=None, blank=True, null=True)
-    inspection_reason = models.CharField(max_length=20, default=None, blank=True, null=True)
-    observation = models.TextField(default=None, blank=True, null=True)
-    team_leader = models.CharField(max_length=10, default=None, blank=True, null=True)
-    team_members = models.CharField(max_length=10, default=None, blank=True, null=True)
-    remarks = models.TextField(default=None, blank=True, null=True)
-    fines_penalties = models.CharField(max_length=3, default=None, blank=True, null=True)
-    status = models.CharField(max_length=100, default=None, blank=True, null=True)
-
-
 class t_report_submission_t1(models.Model):
     record_id = models.AutoField(primary_key=True)
     report_type = models.CharField(max_length=100, default=None, blank=True, null=True)

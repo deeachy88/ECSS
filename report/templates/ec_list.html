@@ -1,7 +1,7 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
-<div id="CertificateDetails">
+<div id="ECDetails">
     <div class="animated fadeIn">
         <div class="row">
             <div class="col-md-12">
@@ -10,129 +10,43 @@
                         <h4 class="card-title">Report.</h4>
                     </div>
                     <div class="card-body">
-                        {% for service_name in service_name %}
-                            {% if service_name.Service_Id == 16 %}
-                                <h4 class="card-title">List of GAP Certificates Issued.</h4>
-                                <div class="table-responsive">
-                                <table id="certificate_gap_table" class="table table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Applicant Type</th>
-                                            <th scope="col">Applicant</th>
-                                            <th scope="col">Farm Name</th>
-                                            <th scope="col">Farm Location</th>
-                                            <th scope="col">Contact No</th>
-                                            <th scope="col">Certificate Number</th>
-                                            <th scope="col">Approve Date</th>
-                                            <th scope="col">Validity</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for certificate_details in certificate_details %}
-                                            <tr>
-                                                <td>{{ forloop.counter }}</td>
-                                                {% if certificate_details.Application_Type == 'I' %}
-                                                    <td>Individual</td>
-                                                    <td>{{certificate_details.Applicant_Name}}</td>
-                                                {% elif certificate_details.Application_Type == 'F' %}
-                                                    <td>Farmer Group</td>
-                                                    <td>{{certificate_details.Farmer_Group_Name}}</td>
-                                                {% endif %}
-                                                <td>{{certificate_details.Farm_Name}}</td>
-                                                <td>{{certificate_details.Farm_Location}}</td>
-                                                <td>{{certificate_details.Contact_No}}</td>
-                                                <td>{{certificate_details.Certificate_No}}</td>
-                                                <td>{{certificate_details.Approve_Date}}</td>
-                                                <td>{{certificate_details.Validity}}</td>
-                                            </tr>
-                                            {% empty %}
-                                            <tr>
-                                              <td colspan="9" class="text-center">No Data</td>
-                                            </tr>
-                                            {% endfor %}
-                                    </tbody>
-                                </table>
-                                </div>
-                            {% elif service_name.Service_Id == 17 %}
-                                <h4 class="card-title">List of Organic Certificates Issued.</h4>
-                                <div class="table-responsive data-table">
-                                <table id="certificate_org_table" class="table table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Applicant Type</th>
-                                            <th scope="col">Applicant</th>
-                                            <th scope="col">Farm Name</th>
-                                            <th scope="col">Farm Location</th>
-                                            <th scope="col">Contact No</th>
-                                            <th scope="col">Certificate Number</th>
-                                            <th scope="col">Approve Date</th>
-                                            <th scope="col">Validity</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for certificate_details in certificate_details %}
-                                            <tr>
-                                                <td>{{ forloop.counter }}</td>
-                                                {% if certificate_details.Application_Type == 'I' %}
-                                                    <td>Individual</td>
-                                                    <td>{{certificate_details.Applicant_Name}}</td>
-                                                {% elif certificate_details.Application_Type == 'F' %}
-                                                    <td>Farmer Group</td>
-                                                    <td>{{certificate_details.Farmer_Group_Name}}</td>
-                                                {% endif %}
-                                                <td>{{certificate_details.Farm_Name}}</td>
-                                                <td>{{certificate_details.Farm_Location}}</td>
-                                                <td>{{certificate_details.Contact_No}}</td>
-                                                <td>{{certificate_details.Certificate_No}}</td>
-                                                <td>{{certificate_details.Approve_Date}}</td>
-                                                <td>{{certificate_details.Validity}}</td>
-                                            </tr>
-                                            {% empty %}
-                                            <tr>
-                                              <td colspan="9" class="text-center">No Data</td>
-                                            </tr>
-                                            {% endfor %}
-                                    </tbody>
-                                </table>
-                                </div>
-                            {% elif service_name.Service_Id == 18 %}
-                                <h4 class="card-title">List of Food Product Certificates Issued.</h4>
-                                <div class="table-responsive data-table">
-                                <table id="certificate_fpc_table" class="table table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Firm Name</th>
-                                            <th scope="col">Firm Address</th>
-                                            <th scope="col">Firm Contact No</th>
-                                            <th scope="col">Certificate Number</th>
-                                            <th scope="col">Approve Date</th>
-                                            <th scope="col">Validity</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for certificate_details in certificate_details %}
-                                            <tr>
-                                                <td>{{ forloop.counter }}</td>
-                                                <td>{{certificate_details.Firm_Name}}</td>
-                                                <td>{{certificate_details.Firm_Address}}</td>
-                                                <td>{{certificate_details.Firm_Contact_No}}</td>
-                                                <td>{{certificate_details.Certificate_No}}</td>
-                                                <td>{{certificate_details.Approve_Date}}</td>
-                                                <td>{{certificate_details.Validity}}</td>
-                                            </tr>
-                                            {% empty %}
-                                            <tr>
-                                              <td colspan="9" class="text-center">No Data</td>
-                                            </tr>
-                                            {% endfor %}
-                                    </tbody>
-                                </table>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
+                        <h4 class="card-title">List of Environment Clearance Issued.</h4>
+                        <div class="table-responsive">
+                        <table id="ec_table" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Proponent</th>
+                                    <th scope="col">Proponent Type</th>
+                                    <th scope="col">Project Name</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">EC Number</th>
+                                    <th scope="col">Approve Date</th>
+                                    <th scope="col">Expiry Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ec_list in ec_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ec_list.applicant_name}}</td>
+                                        <td>{{ec_list.applicant_type}}</td>
+                                        <td>{{ec_list.project_name}}</td>
+                                        <td>{{ec_list.project_category}}</td>
+                                        <td>{{ec_list.address}}</td>
+                                        <td>{{ec_list.ec_reference_no}}</td>
+                                        <td>{{ec_list.ec_approve_date}}</td>
+                                        <td>{{ec_list.ec_approve_date}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="9" class="text-center">No Data</td>
+                                    </tr>
+                                    {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -140,74 +54,26 @@
     </div>
 </div>
 <script>
-    $(function ()
+    $(document).ready(function()
         {
-            $("#certificate_gap_table").DataTable({
+            $("#ec_table").DataTable({
                 dom: 'Bfrtip',
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'List of GAP Certificate',
+                        title: 'List of Environment Clearance Issued',
                         text:'<i class="fas fa-file-excel"></i>',
                         titleAttr: 'Excel'
                     },
                     {
                         extend: 'pdfHtml5',
-                        title: 'List of GAP Certificate',
+                        title: 'List of Environment Clearance Issued',
                         text:'<i class="fas fa-file-pdf"></i>',
                         titleAttr: 'PDF'
                     },
                      {
                         extend: 'print',
-                        title: 'List of GAP Certificate',
-                        text: '<i class="fas fa-print"></i>',
-                        titleAttr: 'Print'
-                    },
-                ]
-            });
-
-            $("#certificate_org_table").DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        title: 'List of Organic Certificate',
-                        text:'<i class="fas fa-file-excel"></i>',
-                        titleAttr: 'Excel'
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'List of Organic Certificate',
-                        text:'<i class="fas fa-file-pdf"></i>',
-                        titleAttr: 'PDF'
-                    },
-                     {
-                        extend: 'print',
-                        title: 'List of Organic Certificate',
-                        text: '<i class="fas fa-print"></i>',
-                        titleAttr: 'Print'
-                    },
-                ]
-            });
-
-            $("#certificate_fpc_table").DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        title: 'List of Food Product Certificate',
-                        text:'<i class="fas fa-file-excel"></i>',
-                        titleAttr: 'Excel'
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'List of Food Product Certificate',
-                        text:'<i class="fas fa-file-pdf"></i>',
-                        titleAttr: 'PDF'
-                    },
-                     {
-                        extend: 'print',
-                        title: 'List of Food Product Certificate',
+                        title: 'List of Environment Clearance Issued',
                         text: '<i class="fas fa-print"></i>',
                         titleAttr: 'Print'
                     },

@@ -21,4 +21,5 @@ urlpatterns = [
     path('', include('ecs_admin.urls')),
     path('', include('proponent.urls')),
     path('', include('ecs_main.urls')),
+    path('', include('report.urls')),
 ]

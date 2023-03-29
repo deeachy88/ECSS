@@ -21,11 +21,11 @@
                             <th>EC Number</th>
                             <th>Address</th>
                             <th>Observation</th>
-                            <th>Remarks</th>
                             <th>Status</th>
                             <th>Team Leader</th>
                             <th>Team Members</th>
                             <th>Fines</th>
+                            <th>Remarks</th>
                             <th></th>
                         </thead>
                         <tbody>
@@ -39,16 +39,16 @@
                                     <td>{{inspection_list.ec_clearance_no}}</td>
                                     <td>{{inspection_list.address}}</td>
                                     <td>{{inspection_list.observation}}</td>
-                                    <td>{{inspection_list.remarks}}</td>
                                     <td>{{inspection_list.status}}</td>
                                     <td>{{inspection_list.team_leader}}</td>
                                     <td>{{inspection_list.team_members}}</td>
                                     <td>{{inspection_list.fines_penalties}}</td>
+                                    <td>{{inspection_list.remarks}}</td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
                                             <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="{% url 'get_inspection_details' inspection_list.record_id %}"><i class="mdi mdi-square-edit-outline"></i></a>
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Delete Inspection Report"
-                                                     onclick="populateDeleteForm('{{inspection_list.record_id}}', '{{inspection_list.inspection_type}}')"><i class="mdi mdi-delete"></i> </button>
+                                                     onclick="populateDeleteForm('{{inspection_list.record_id}}', '{{inspection_list.ec_clearance_no}}', '{{inspection_list.project_name}}')"><i class="mdi mdi-delete"></i> </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -111,29 +111,20 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Proponent Name</label>
-                        <select id="gewog" name="gewog" class="form-select" onchange="get_village(this.value)">
-                        <option value="">--SELECT Applicant--</option>
-                        {% for ec_detail_list in ec_detail_list %}
-                            <option value="{{ ec_detail_list.applicant_name }}">{{ ec_detail_list.applicant_name }}</option>
-                        {% endfor %}
-                        </select>
-
+                        <input type="text" name="proponent_name" class="form-control" id="proponent_name" >
                     </div>
-                    <div class="alert alert-danger" id="proponent_nameErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Project Name</label>
                         <input type="text" name="project_name" class="form-control" id="project_name">
                     </div>
-                    <div class="alert alert-danger" id="project_nameErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Address</label>
                         <input type="text" name="address" class="form-control" id="address">
                     </div>
-                    <div class="alert alert-danger" id="addressErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
@@ -165,11 +156,16 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Remarks</label>
-                        <input type="text" name="remarks" class="form-control" id="remarks">
+                        <label class="form-label fw-bold">Status</label>
+                        <select type="text" name="inspection_status" class="form-control" id="inspection_status">
+                            <option value="">--SELECT--</option>
+                            <option value="Non Conformity">Non Conformity</option>
+                            <option value="No Issue">No Issue</option>
+                        </select>
                     </div>
-                    <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                    <div class="alert alert-danger" id="inspection_statusErrorMsg" style="display:none"></div>
                 </div>
+
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Fines and Penalties</label>
@@ -180,6 +176,13 @@
                         </select>
                     </div>
                     <div class="alert alert-danger" id="fines_penaltiesErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Remarks</label>
+                        <input type="text" name="remarks" class="form-control" id="remarks">
+                    </div>
+                    <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                 </div>
               </div>
               <div class="alert alert-success" id="inspection_SuccessMsg" style="display:none"></div>
@@ -193,13 +196,13 @@
     </div>
 </form>
 
-<form method="post" id="bsicDeleteForm">
+<form method="post" id="InspectionDeleteForm">
     {% csrf_token %}
     <div id="delete_inspection_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="delete_inspection_modal" aria-hidden="true">
         <div class="modal-dialog modal-md modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Delete BSIC Code</h4>
+                    <h4 class="modal-title">Delete Inspection Record</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                 </div>
                 <div class="modal-body">
@@ -208,8 +211,8 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-12">
-                            <p>Are You Sure You Want To Delete <b><span id="delete_activity_description"></span></b> ? </p>
-                            <input type="text" name="delete_bsic_id" class="form-control" id="delete_bsic_id">
+                            <p>Are You Sure You Want To Delete <b><span id="delete_project_name"></span></b> ? </p>
+                            <input type=hidden name="delete_record_id" class="form-control" id="delete_record_id">
                         </div>
                     </div>
                 </div>
@@ -238,9 +241,8 @@ function add_inspection_details()
         let team_members = $('#team_members').val();
         let remarks = $('#remarks').val();
         let fines_penalties = $('#fines_penalties').val();
-        let status = $('#status').val();
-        let updated_by_ca = $('#updated_by_ca').val();
-        let record_status = $('#record_status').val();
+        let inspection_status = $('#inspection_status').val();
+        let record_status = 'Active';
 
         if(inspection_type == "")
         {
@@ -302,6 +304,12 @@ function add_inspection_details()
             $('#team_membersErrorMsg').show();
             $('#team_membersErrorMsg').delay(2000).fadeOut('slow');
         }
+        else if(inspection_status == "")
+        {
+            $('#inspection_statusErrorMsg').html("Select Status");
+            $('#inspection_statusErrorMsg').show();
+            $('#inspection_statusErrorMsg').delay(2000).fadeOut('slow');
+        }
         else if(fines_penalties == "")
         {
             $('#fines_penaltiesErrorMsg').html("Select Fines & Penalties (Yes/No)");
@@ -342,28 +350,31 @@ function get_ec_details(ec_clearance_no)
                 data :{'ec_reference_no':ec_clearance_no},
                 success : function(data)
                 {
-                    $('#ec_details').html(data);
+                    $('#proponent_name').val(data.applicant_name);
+                    $('#project_name').val(data.project_name);
+                    $('#address').val(data.address);
                 }
             });
         }
 
-function populateDeleteForm(bsic_id, activity_description)
+function populateDeleteForm(record_id, ec_clearance_no, project_name)
 {
-    $('#delete_bsic_id').val(bsic_id);
-    $('#delete_activity_description').html(activity_description);
-    $('#delete_bsic_code_modal').modal('show');
+    $('#delete_record_id').val(record_id);
+    $('#delete_ec_clearance_no').val(ec_clearance_no);
+    $('#delete_project_name').html(project_name);
+    $('#delete_inspection_modal').modal('show');
 }
 
-function delete_bsic_code_details()
+function delete_inspection_details()
 {
-    var bsic_id = $('#delete_bsic_id').val();
+    var record_id = $('#delete_record_id').val();
     $.ajax({
         type : "POST",
-        url : "{% url 'delete_bsic_code_master' %}",
-        data : {'bsic_id':bsic_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
+        url : "{% url 'delete_inspection' %}",
+        data : {'record_id':record_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
         success : function()
         {
-            $('#delete_successMsg').html("BSIC Code Deleted Successfully.");
+            $('#delete_successMsg').html("Inspection Deleted Successfully.");
             $('#delete_successMsg').show();
             setTimeout(function() {
                 $('#delete_successMsg').delay(2000).fadeOut('slow');

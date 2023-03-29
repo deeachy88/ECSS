@@ -29,5 +29,4 @@ urlpatterns = [
     path('edit_inspection', views.edit_inspection, name='edit_inspection'),
     path('delete_inspection', views.delete_inspection, name='delete_inspection'),
 
-
 ]
