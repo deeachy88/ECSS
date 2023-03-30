@@ -654,9 +654,313 @@
                             </div>
                         </div>
                         <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading">
+                                <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapsebase" aria-expanded="false" aria-controls="collapsebase" disabled>
+                                    Baseline/Existing information (1)
+                                </button>
+                            </h2>
+                            <div id="collapsebase" class="accordion-collapse collapse" aria-labelledby="heading"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" id="terrain_baseline_application_no_one">
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide data on ambient air quality and other parameters as follows
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <table class="table table-hover table-bordered table-centered mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="5" class="text-center">Ambient Air Quality</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td rowspan="2">Sl.no</td>
+                                                        <td rowspan="2">Parameters (in mg/Nm3)</td>
+                                                        <td colspan="3" class="text-center">Readings</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Sampling location 1(within project site)</td>
+                                                        <td>Sampling location 2()at project boundary</td>
+                                                        <td>Sampling location 3</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>TPSM (24 Hour Average)</td>
+                                                        <td><input type="text" name="bl_tpsm_sampling_location_one" id="bl_tpsm_location_one" class="form-control col-lg-6" value="{{application_details.bl_tpsm_location_one}}" disabled></td>
+                                                        <td><input type="text" name="bl_tpsm_sampling_location_two" id="bl_tpsm_location_two" class="form-control col-lg-6" value="{{application_details.bl_tpsm_location_two}}" disabled></td>
+                                                        <td><input type="text" name="bl_tpsm_sampling_location" id="bl_tpsm_location" class="form-control col-lg-6" value="{{application_details.bl_tpsm_location}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2</td>
+                                                        <td>RPM (24 Hour Average</td>
+                                                        <td><input type="text" name="bl_rpm_sampling_location_one" id="bl_rpm_sampling_location_one" class="form-control col-lg-6" value="{{application_details.bl_rpm_sampling_location_one}}" disabled></td>
+                                                        <td><input type="text" name="bl_rpm_sampling_location_two" id="bl_rpm_sampling_location_two" class="form-control col-lg-6" value="{{application_details.bl_rpm_sampling_location_two}}" disabled></td>
+                                                        <td><input type="text" name="bl_rpm_sampling_location" id="bl_rpm_sampling_location" class="form-control col-lg-6" value="{{application_details.bl_rpm_sampling_location}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3</td>
+                                                        <td>SO2</td>
+                                                        <td><input type="text" name="bl_so2_sampling_location_one" id="bl_so2_sampling_location_one" class="form-control col-lg-6" value="{{application_details.bl_so2_sampling_location_one}}" disabled></td>
+                                                        <td><input type="text" name="bl_so2_sampling_location_two" id="bl_so2_sampling_location_two" class="form-control col-lg-6" value="{{application_details.bl_so2_sampling_location_two}}" disabled></td>
+                                                        <td><input type="text" name="bl_so2_sampling_location" id="bl_so2_sampling_location" class="form-control col-lg-6" value="{{application_details.bl_so2_sampling_location}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>4</td>
+                                                        <td>NOx</td>
+                                                        <td><input type="text" name="bl_nox_sampling_location_one" id="bl_nox_sampling_location_one" class="form-control col-lg-6" value="{{application_details.bl_nox_sampling_location_one}}" disabled></td>
+                                                        <td><input type="text" name="bl_nox_sampling_location_two" id="bl_nox_sampling_location_two" class="form-control col-lg-6" value="{{application_details.bl_nox_sampling_location_two}}" disabled></td>
+                                                        <td><input type="text" name="bl_nox_sampling_location" id="bl_nox_sampling_location" class="form-control col-lg-6" value="{{application_details.bl_nox_sampling_location}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>5</td>
+                                                        <td>CO</td>
+                                                        <td><input type="text" name="bl_co_sampling_location_one" id="bl_co_sampling_location_one" class="form-control col-lg-6" value="{{application_details.bl_co_sampling_location_one}}" disabled></td>
+                                                        <td><input type="text" name="bl_co_sampling_location_two" id="bl_co_sampling_location_two" class="form-control col-lg-6" value="{{application_details.bl_co_sampling_location_two}}" disabled></td>
+                                                        <td><input type="text" name="bl_co_sampling_location" id="bl_co_sampling_location" class="form-control col-lg-6" value="{{application_details.bl_co_sampling_location}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>6</td>
+                                                        <td>Any other gaseous pollutants as appropriate</td>
+                                                        <td><input type="text"name="bl_other_poll_sampling_location_one" id="bl_other_poll_sampling_location_one" class="form-control col-lg-6" value="{{application_details.bl_other_poll_sampling_location_one}}" disabled></td>
+                                                        <td><input type="text" name="bl_other_poll_sampling_location_two" id="bl_other_poll_sampling_location_two" class="form-control col-lg-6" value="{{application_details.bl_other_poll_sampling_location_two}}" disabled></td>
+                                                        <td><input type="text" name="bl_other_poll_sampling_location" id="bl_other_poll_sampling_location" class="form-control col-lg-6" value="{{application_details.bl_other_poll_sampling_location}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td></td>
+                                                        <td>Geo-coordinates of the sampling locations</td>
+                                                        <td><input type="text" name="bl_geo_coordinates_sampling_location_one" id="bl_geo_coordinates_sampling_location_one" class="form-control col-lg-6" value="{{application_details.bl_geo_coordinates_sampling_location_one}}" disabled></td>
+                                                        <td><input type="text" name="bl_geo_coordinates_sampling_location_two" id="bl_geo_coordinates_sampling_location_two" class="form-control col-lg-6" value="{{application_details.bl_geo_coordinates_sampling_location_two}}" disabled></td>
+                                                        <td><input type="text" name="bl_geo_coordinates_sampling_location" id="bl_geo_coordinates_sampling_location" class="form-control col-lg-6" value="{{application_details.bl_geo_coordinates_sampling_location}}" disabled></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <table class="table table-hover table-bordered table-centered mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="3" class="text-center">Ambient Air Quality</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Sl.no</td>
+                                                        <td>Parameters</td>
+                                                        <td>Readings</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Temperature (Degree Celsius)</td>
+                                                        <td><input type="text" name="bl_air_temperature" id="bl_air_temperature" class="form-control col-lg-6" value="{{application_details.bl_air_temperature}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2</td>
+                                                        <td>Humidity</td>
+                                                        <td><input type="text" name="bl_air_humidity" id="bl_air_humidity" class="form-control col-lg-6" value="{{application_details.bl_air_humidity}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3</td>
+                                                        <td>Rainfall (mm)</td>
+                                                        <td><input type="text" name="bl_air_rainfall" id="bl_air_rainfall" class="form-control col-lg-6" value="{{application_details.bl_air_rainfall}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>4</td>
+                                                        <td>Wind direction</td>
+                                                        <td><input type="text" name="bl_air_wind_direction" id="bl_air_wind_direction" class="form-control col-lg-6" value="{{application_details.bl_air_wind_direction}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>5</td>
+                                                        <td>Wind speed (m/s)</td>
+                                                        <td><input type="text" name="bl_air_wind_speed" id="bl_air_wind_speed" class="form-control col-lg-6" value="{{application_details.bl_air_wind_speed}}" disabled></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-4">
+                                        <div class="text-sm-end">
+                                            <a href="#" class="btn btn-success" onclick="save_terrain_baseline_details_one()">
+                                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading_2">
+                                <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapsebase_2" aria-expanded="false" aria-controls="collapsebase_2" disabled>
+                                    Baseline/Existing information (2)
+                                </button>
+                            </h2>
+                            <div id="collapsebase_2" class="accordion-collapse collapse" aria-labelledby="heading_2"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" id="terrain_baseline_application_no_two">
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Data on ambient noise measured at minimum of four different directions of the locations at the project boundary
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <table class="table table-hover table-bordered table-centered mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Sl.no</th>
+                                                        <th>Sampling location</th>
+                                                        <th>Readings (in dB)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1.</td>
+                                                        <td>Northern boundary</td>
+                                                        <td><input type="text"  class="form-control" name="bl_nb_sampling_location" id="bl_nb_sampling_location" value="{{application_details.bl_nb_sampling_location}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2.</td>
+                                                        <td>Southern boundary</td>
+                                                        <td><input type="text" class="form-control" name="bl_sb_sampling_location" id="bl_sb_sampling_location" value="{{application_details.bl_sb_sampling_location}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3.</td>
+                                                        <td>Eastern boundary</td>
+                                                        <td><input type="text" class="form-control" name="bl_eb_sampling_location" id="bl_eb_sampling_location" value="{{application_details.bl_eb_sampling_location}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>4.</td>
+                                                        <td>Western boundary</td>
+                                                        <td><input type="text" class="form-control" name="bl_wb_sampling_location" id="bl_wb_sampling_location" value="{{application_details.bl_wb_sampling_location}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>5.</td>
+                                                        <td>Any Other</td>
+                                                        <td><input type="text" class="form-control" name="bl_others_sampling_location" id="bl_others_sampling_location" value="{{application_details.bl_others_sampling_location}}" disabled></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Data on ambient water quality for physical, chemical and biological characteristics
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <table class="table table-hover table-bordered table-centered mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Sl.no</th>
+                                                        <th>Parameters</th>
+                                                        <th>Readings</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1.</td>
+                                                        <td>pH</td> 
+                                                        <td><input type="text" class="form-control" name="bl_ambient_ph" id="bl_ambient_ph" value="{{application_details.bl_ambient_ph}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2.</td>
+                                                        <td>TSS (in mg/L)</td>
+                                                        <td><input type="text" class="form-control" name="bl_ambient_tss" id="bl_ambient_tss" value="{{application_details.bl_ambient_tss}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3.</td>
+                                                        <td>TDS (in mg/L)</td>
+                                                        <td><input type="text" class="form-control" name="bl_ambient_tds" id="bl_ambient_tds" value="{{application_details.bl_ambient_tds}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>4.</td>
+                                                        <td>Conductivity (in μS/cm)</td>
+                                                        <td><input type="text" class="form-control" name="bl_ambient_conductivity" id="bl_ambient_conductivity" value="{{application_details.bl_ambient_conductivity}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>5.</td>
+                                                        <td>BOD (in mg/L)</td>
+                                                        <td><input type="text" class="form-control" name="bl_ambient_bod" id="bl_ambient_bod" value="{{application_details.bl_ambient_bod}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>6.</td>
+                                                        <td>COD (in mg/L)</td>
+                                                        <td><input type="text" class="form-control" name="bl_ambient_cod" id="bl_ambient_cod" value="{{application_details.bl_ambient_cod}}" disabled></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Data on ambient water quality for physical, chemical and biological characteristics
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <table class="table table-hover table-bordered table-centered mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Flora</th>
+                                                        <th>Fauna</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input type="text" class="form-control" name="bl_ambient_flora" id="bl_ambient_flora" value="{{application_details.bl_ambient_flora}}" disabled></td>
+                                                        <td><input type="text" class="form-control" name="bl_ambient_fauna" id="bl_ambient_fauna" value="{{application_details.bl_ambient_fauna}}" disabled></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Basic information on socio-economic environment (If there are no settlements within the study area, skip this section)
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Name of the settlements</label>
+                                                <input type="text" name="bl_socio_settlement_name" class="form-control" id="bl_socio_settlement_name" value="{{application_details.bl_socio_settlement_name}}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Total population</label>
+                                                <input type="text" name="bl_socio_total_population" class="form-control" id="bl_socio_total_population" value="{{application_details.bl_socio_total_population}}" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Main source of income</label>
+                                                <input type="text" name="bl_socio_income_source" class="form-control" id="bl_socio_income_source" value="{{application_details.bl_socio_income_source}}" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-4">
+                                        <div class="text-sm-end">
+                                            <a href="#" class="btn btn-success" onclick="save_terrain_baseline_details_two()">
+                                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
                             <h2 class="accordion-header" id="headingFour">
                                 <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFourBtn"
-                                    data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" disabled>
+                                    data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                                     Water Requirement
                                 </button>
                             </h2>
@@ -1107,535 +1411,125 @@
                             </div>
                         </div>
                         <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingEight">
-                                <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
-                                    data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
-                                    Solid Waste
-                                </button>
-                            </h2>
-                            <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight"
-                                data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Provide an allocated budget for the management plan proposed</label>
-                                                <input type="text" name="en_impact_allocated_budget" class="form-control" id="en_impact_allocated_budget" value="{{application_details.en_impact_allocated_budget}}" disabled>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
-                                    </div>
-                                    <br>
-                                    <div class="col-lg-12">
-                                        <table class="table table-hover table-bordered table-centered mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Solid waste generation and by-products (Tick as appropriate)</th>
-                                                    <th>List of wastes/by-products</th>
-                                                    <th>Source</th>
-                                                    <th>Quantity per annum</th>
-                                                    <th>Management Plan</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>Hazardous Waste</td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_list" id="en_impact_hazardous_waste_list" class="form-control col-lg-6" value="{{application_details.en_impact_hazardous_waste_list}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_source" id="en_impact_hazardous_waste_source" class="form-control col-lg-6" value="{{application_details.en_impact_hazardous_waste_source}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_qty_annum" id="en_impact_hazardous_waste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_hazardous_waste_qty_annum}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_mgt_plan" id="en_impact_hazardous_waste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_hazardous_waste_mgt_plan}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Non-Hazardous Waste</td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_list" id="en_impact_non_hazardous_waste_list" class="form-control col-lg-6" value="{{application_details.en_impact_non_hazardous_waste_list}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_source" id="en_impact_non_hazardous_waste_source" class="form-control col-lg-6" value="{{application_details.en_impact_non_hazardous_waste_source}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_qty_annum" id="en_impact_non_hazardous_waste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_non_hazardous_waste_qty_annum}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_mgt_plan" id="en_impact_non_hazardous_waste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_non_hazardous_waste_mgt_plan}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Medical</td>
-                                                    <td><input type="text" name="en_impact_medical_waste_list" id="en_impact_medical_waste_list" class="form-control col-lg-6" value="{{application_details.en_impact_medical_waste_list}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_source" id="en_impact_medical_waste_source" class="form-control col-lg-6" value="{{application_details.en_impact_medical_waste_source}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_qty_annum" id="en_impact_medical_waste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_medical_waste_qty_annum}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_mgt_plan" id="en_impact_medical_waste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_medical_waste_mgt_plan}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>E-waste</td>
-                                                    <td><input type="text" name="en_impact_ewaste_list" id="en_impact_ewaste_list" class="form-control col-lg-6" value="{{application_details.en_impact_ewaste_list}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_ewaste_source" id="en_impact_ewaste_source" class="form-control col-lg-6" value="{{application_details.en_impact_ewaste_source}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_ewaste_qty_annum" id="en_impact_ewaste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_ewaste_qty_annum}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_ewaste_mgt_plan" id="en_impact_ewaste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_ewaste_mgt_plan}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Others</td>
-                                                    <td><input type="text" name="en_impact_others_waste_list" id="en_impact_others_waste_list" class="form-control col-lg-6" value="{{application_details.en_impact_others_waste_list}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_others_waste_source" id="en_impact_others_waste_source" class="form-control col-lg-6" value="{{application_details.en_impact_others_waste_source}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_others_waste_qty_annum" id="en_impact_others_waste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_others_waste_qty_annum}}" disabled></td>
-                                                    <td><input type="text" name="en_impact_others_waste_mgt_plan" id="en_impact_others_waste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_others_waste_mgt_plan}}" disabled></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
                             <h2 class="accordion-header" id="headingNine">
                                 <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingNineBtn"
                                     data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine" disabled>
-                                    Effluent
+                                    Hazardous
                                 </button>
                             </h2>
                             <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine"
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity generate wastewater/effluent?</label>
-                                                {% if application_details.en_waste_water_generate == 'Yes' %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="en_waste_water_generate" class="form-check-input" value="Yes" checked>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="en_waste_water_generate" class="form-check-input" value="No" disabled>
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                    <div class="col-lg-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="card-widgets mb-3">
+                                                    <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#ea_hazardous_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                </div>
+                                                <div class="collapse pt-3 show">
+                                                    <div id="ea_hazardous_div">
+                                                        {% include 'ea_hazardous_details.html' %}
                                                     </div>
-                                                {% else %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="en_waste_water_generate" class="form-check-input" value="Yes" disabled>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="en_waste_water_generate" class="form-check-input" value="No" checked>
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
-                                                    </div>
-                                                {% endif %}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <br>
-                                    {% if application_details.en_waste_water_generate == 'Yes' %}
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="hazardous_successMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="text-sm-end">
+                                            <a href="#" class="btn btn-success" onclick="save_hazardous_details()">
+                                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTen">
+                                <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTenBtn"
+                                    data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen" disabled>
+                                    Products & By-Products
+                                </button>
+                            </h2>
+                            <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="col-lg-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="card-widgets mb-3">
+                                                    <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#products_by_products_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                </div>
+                                                <div class="collapse pt-3 show">
+                                                    <div id="products_by_products_div">
+                                                        {% include 'products_by_products.html' %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="products_successMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="text-sm-end">
+                                            <a href="#" class="btn btn-success" onclick="save_products_details()">
+                                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingEight">
+                                <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
+                                    data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
+                                    Waste
+                                </button>
+                            </h2>
+                            <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <form method="post" id="waste_form">
+                                        {% csrf_token %}
+                                        <input type="hidden" class="form-control" value="{{application_no}}" id="waste_application_no">
                                         <div class="col-lg-12">
                                             <table class="table table-hover table-bordered table-centered mb-0">
                                                 <thead>
                                                     <tr>
-                                                        <th>Parameters (tick as appropriate)</th>
-                                                        <th>Source</th>
-                                                        <th>Expected discharge level before treatment (mg/l)</th>
-                                                        <th>Treated effluent discharge parameter (mg/l)</th>
-                                                        <th>Name and location of the receiving water body/surrounding environment of the treated effluent</th>
+                                                        <th>Stack Height</th>
+                                                        <th>Stack Diameter</th>
+                                                        <th>Dimension of measurement platform and port (m x m)</th>
+                                                        <th>Volumetric flow rate of flue gas (Nm 3 /hr)</th>
+                                                        <th>Temperature (degree celsius) of flue</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td>1.Ammoniacal Nitrogen (NH3-N)</td>
-                                                        <td><input type="text" name="waste_water_nh3n_source" id="waste_water_nh3n_source" class="form-control col-lg-6" value="{{application_details.waste_water_nh3n_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_nh3n_discharge" id="waste_water_nh3n_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_nh3n_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_nh3n_treatment" id="waste_water_nh3n_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_nh3n_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_nh3n_name_location" id="waste_water_nh3n_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_nh3n_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>2.Arsenic</td>
-                                                        <td><input type="text" name="waste_water_arsenic_source" id="waste_water_arsenic_source" class="form-control col-lg-6" value="{{application_details.waste_water_arsenic_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_arsenic_discharge" id="waste_water_arsenic_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_arsenic_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_arsenic_treatment" id="waste_water_arsenic_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_arsenic_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_arsenic_name_location" id="waste_water_arsenic_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_arsenic_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>3.BOD</td>
-                                                        <td><input type="text" name="waste_water_bod_source" id="waste_water_bod_source" class="form-control col-lg-6" value="{{application_details.waste_water_bod_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_bod_discharge" id="waste_water_bod_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_bod_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_bod_treatment" id="waste_water_bod_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_bod_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_bod_name_location" id="waste_water_bod_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_bod_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>4.Boron</td>
-                                                        <td><input type="text" name="waste_water_boron_source" id="waste_water_boron_source" class="form-control col-lg-6" value="{{application_details.waste_water_boron_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_boron_discharge" id="waste_water_boron_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_boron_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_boron_treatment" id="waste_water_boron_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_boron_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_boron_name_location" id="waste_water_boron_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_boron_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>5.Cadmium total</td>
-                                                        <td><input type="text" name="waste_water_cadmium_source" id="waste_water_cadmium_source" class="form-control col-lg-6" value="{{application_details.waste_water_cadmium_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_cadmium_discharge" id="waste_water_cadmium_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_cadmium_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_cadmium_treatment" id="waste_water_cadmium_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_cadmium_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_cadmium_name_location" id="waste_water_cadmium_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_cadmium_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>6.COD</td>
-                                                        <td><input type="text" name="waste_water_cod_source" id="waste_water_cod_source" class="form-control col-lg-6" value="{{application_details.waste_water_cod_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_cod_discharge" id="waste_water_cod_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_cod_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_cod_treatment" id="waste_water_cod_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_cod_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_cod_name_location" id="waste_water_cod_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_cod_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>7.Chloride</td>
-                                                        <td><input type="text" name="waste_water_cloride_source" id="waste_water_cloride_source" class="form-control col-lg-6" value="{{application_details.waste_water_cloride_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_cloride_discharge" id="waste_water_cloride_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_cloride_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_cloride_treatment" id="waste_water_cloride_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_cloride_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_cloride_name_location" id="waste_water_cloride_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_cloride_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>8.Chromium total</td>
-                                                        <td><input type="text" name="waste_water_chromium_source" id="waste_water_chromium_source" class="form-control col-lg-6" value="{{application_details.waste_water_chromium_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_chromium_discharge" id="waste_water_chromium_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_chromium_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_chromium_treatment" id="waste_water_chromium_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_chromium_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_chromium_name_location" id="waste_water_chromium_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_chromium_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>9.Chromium Hexavalent</td>
-                                                        <td><input type="text" name="waste_water_chromium_hex_source" id="waste_water_chromium_hex_source" class="form-control col-lg-6" value="{{application_details.waste_water_chromium_hex_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_chromium_hex_discharge" id="waste_water_chromium_hex_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_chromium_hex_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_chromium_hex_treatment" id="waste_water_chromium_hex_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_chromium_hex_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_chromium_hex_name_location" id="waste_water_chromium_hex_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_chromium_hex_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>10.Copper total</td>
-                                                        <td><input type="text" name="waste_water_copper_source" id="waste_water_copper_source" class="form-control col-lg-6" value="{{application_details.waste_water_copper_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_copper_discharge" id="waste_water_copper_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_copper_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_copper_treatment" id="waste_water_copper_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_copper_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_copper_name_location" id="waste_water_copper_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_copper_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>11.Cyanide</td>
-                                                        <td><input type="text" name="waste_water_cyanide_source" id="waste_water_cyanide_source" class="form-control col-lg-6" value="{{application_details.waste_water_cyanide_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_cyanide_discharge" id="waste_water_cyanide_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_cyanide_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_cyanide_treatment" id="waste_water_cyanide_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_cyanide_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_cyanide_name_location" id="waste_water_cyanide_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_cyanide_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>12.Fluoride</td>
-                                                        <td><input type="text" name="waste_water_floride_source" id="waste_water_floride_source" class="form-control col-lg-6" value="{{application_details.waste_water_floride_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_floride_discharge" id="waste_water_floride_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_floride_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_floride_treatment" id="waste_water_floride_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_floride_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_floride_name_location" id="waste_water_floride_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_floride_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>13.Phosphate</td>
-                                                        <td><input type="text" name="waste_water_phosphate_source" id="waste_water_phosphate_source" class="form-control col-lg-6" value="{{application_details.waste_water_phosphate_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_phosphate_discharge" id="waste_water_phosphate_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_phosphate_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_phosphate_treatment" id="waste_water_phosphate_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_phosphate_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_phosphate_name_location" id="waste_water_phosphate_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_phosphate_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>14.Nitrate</td>
-                                                        <td><input type="text" name="waste_water_nitrate_source" id="waste_water_nitrate_source" class="form-control col-lg-6" value="{{application_details.waste_water_nitrate_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_nitrate_discharge" id="waste_water_nitrate_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_nitrate_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_nitrate_treatment" id="waste_water_nitrate_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_nitrate_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_nitrate_name_location" id="waste_water_nitrate_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_nitrate_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>15.Iron total</td>
-                                                        <td><input type="text" name="waste_water_iron_source" id="waste_water_iron_source" class="form-control col-lg-6" value="{{application_details.waste_water_iron_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_iron_discharge" id="waste_water_iron_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_iron_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_iron_treatment" id="waste_water_iron_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_iron_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_iron_name_location" id="waste_water_iron_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_iron_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>16.Lead total</td>
-                                                        <td><input type="text" name="waste_water_lead_source" id="waste_water_lead_source" class="form-control col-lg-6" value="{{application_details.waste_water_lead_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_lead_discharge" id="waste_water_lead_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_lead_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_lead_treatment" id="waste_water_lead_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_lead_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_lead_name_location" id="waste_water_lead_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_lead_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>17.Manganese</td>
-                                                        <td><input type="text" name="waste_water_manganese_source" id="waste_water_manganese_source" class="form-control col-lg-6" value="{{application_details.waste_water_manganese_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_manganese_discharge" id="waste_water_manganese_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_manganese_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_manganese_treatment" id="waste_water_manganese_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_manganese_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_manganese_name_location" id="waste_water_manganese_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_manganese_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>18.Mercury</td>
-                                                        <td><input type="text" name="waste_water_mercury_source" id="waste_water_mercury_source" class="form-control col-lg-6" value="{{application_details.waste_water_mercury_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_mercury_discharge" id="waste_water_mercury_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_mercury_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_mercury_treatment" id="waste_water_mercury_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_mercury_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_mercury_name_location" id="waste_water_mercury_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_mercury_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>19.Nickel</td>
-                                                        <td><input type="text" name="waste_water_nickel_source" id="waste_water_nickel_source" class="form-control col-lg-6" value="{{application_details.waste_water_nickel_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_nickel_discharge" id="waste_water_nickel_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_nickel_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_nickel_treatment" id="waste_water_nickel_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_nickel_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_nickel_name_location" id="waste_water_nickel_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_nickel_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>20.Oil and grease</td>
-                                                        <td><input type="text" name="waste_water_oil_source" id="waste_water_oil_source" class="form-control col-lg-6" value="{{application_details.waste_water_oil_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_oil_discharge" id="waste_water_oil_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_oil_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_oil_treatment" id="waste_water_oil_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_oil_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_oil_name_location" id="waste_water_oil_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_oil_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>21.pH</td>
-                                                        <td><input type="text" name="waste_water_ph_source" id="waste_water_ph_source" class="form-control col-lg-6" value="{{application_details.waste_water_ph_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_ph_discharge" id="waste_water_ph_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_ph_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_ph_treatment" id="waste_water_ph_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_ph_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_ph_name_location" id="waste_water_ph_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_ph_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>22.Phenolic compounds</td>
-                                                        <td><input type="text" name="waste_water_phenolic_source" id="waste_water_phenolic_source" class="form-control col-lg-6" value="{{application_details.waste_water_phenolic_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_phenolic_discharge" id="waste_water_phenolic_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_phenolic_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_phenolic_treatment" id="waste_water_phenolic_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_phenolic_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_phenolic_name_location" id="waste_water_phenolic_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_phenolic_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>23.Selenium</td>
-                                                        <td><input type="text" name="waste_water_selenium_source" id="waste_water_selenium_source" class="form-control col-lg-6" value="{{application_details.waste_water_selenium_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_selenium_discharge" id="waste_water_selenium_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_selenium_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_selenium_treatment" id="waste_water_selenium_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_selenium_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_selenium_name_location" id="waste_water_selenium_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_selenium_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>24.Sulphate (SO4)</td>
-                                                        <td><input type="text" name="waste_water_so4_source" id="waste_water_so4_source" class="form-control col-lg-6" value="{{application_details.waste_water_so4_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_so4_discharge" id="waste_water_so4_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_so4_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_so4_treatment" id="waste_water_so4_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_so4_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_so4_name_location" id="waste_water_so4_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_so4_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>25.Sulphide (S)</td>
-                                                        <td><input type="text" name="waste_water_s_source" id="waste_water_s_source" class="form-control col-lg-6" value="{{application_details.waste_water_s_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_s_discharge" id="waste_water_s_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_s_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_s_treatment" id="waste_water_s_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_s_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_s_name_location" id="waste_water_s_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_s_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>26.TDS</td>
-                                                        <td><input type="text" name="waste_water_tds_source" id="waste_water_tds_source" class="form-control col-lg-6" value="{{application_details.waste_water_tds_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_tds_discharge" id="waste_water_tds_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_tds_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_tds_treatment" id="waste_water_tds_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_tds_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_tds_name_location" id="waste_water_tds_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_tds_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>27.TSS</td>
-                                                        <td><input type="text" name="waste_water_tss_source" id="waste_water_tss_source" class="form-control col-lg-6" value="{{application_details.waste_water_tss_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_tss_discharge" id="waste_water_tss_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_tss_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_tss_treatment" id="waste_water_tss_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_tss_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_tss_name_location" id="waste_water_tss_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_tss_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>28.Temperature</td>
-                                                        <td><input type="text" name="waste_water_temp_source" id="waste_water_temp_source" class="form-control col-lg-6" value="{{application_details.waste_water_temp_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_temp_discharge" id="waste_water_temp_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_temp_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_temp_treatment" id="waste_water_temp_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_temp_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_temp_name_location" id="waste_water_temp_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_temp_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>29.TKN</td>
-                                                        <td><input type="text" name="waste_water_tkn_source" id="waste_water_tkn_source" class="form-control col-lg-6" value="{{application_details.waste_water_tkn_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_tkn_discharge" id="waste_water_tkn_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_tkn_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_tkn_treatment" id="waste_water_tkn_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_tkn_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_tkn_name_location" id="waste_water_tkn_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_tkn_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>30.Total residual chloride</td>
-                                                        <td><input type="text" name="waste_water_residual_cloride_source" id="waste_water_residual_cloride_source" class="form-control col-lg-6" value="{{application_details.waste_water_residual_cloride_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_residual_cloride_discharge" id="waste_water_residual_cloride_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_residual_cloride_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_residual_cloride_treatment" id="waste_water_residual_cloride_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_residual_cloride_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_residual_cloride_name_location" id="waste_water_residual_cloride_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_residual_cloride_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>31.Zinc total</td>
-                                                        <td><input type="text" name="waste_water_zinc_source" id="waste_water_zinc_source" class="form-control col-lg-6" value="{{application_details.waste_water_zinc_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_zinc_discharge" id="waste_water_zinc_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_zinc_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_zinc_treatment" id="waste_water_zinc_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_zinc_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_zinc_name_location" id="waste_water_zinc_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_zinc_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>32.Free Ammonia</td>
-                                                        <td><input type="text" name="waste_water_ammonia_source" id="waste_water_ammonia_source" class="form-control col-lg-6" value="{{application_details.waste_water_ammonia_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_ammonia_discharge" id="waste_water_ammonia_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_ammonia_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_ammonia_treatment" id="waste_water_ammonia_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_ammonia_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_ammonia_name_location" id="waste_water_ammonia_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_ammonia_name_location}}" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>33.Color and odor</td>
-                                                        <td><input type="text" name="waste_water_colour_source" id="waste_water_colour_source" class="form-control col-lg-6" value="{{application_details.waste_water_colour_source}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_colour_discharge" id="waste_water_colour_discharge" class="form-control col-lg-6" value="{{application_details.waste_water_colour_discharge}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_colour_treatment" id="waste_water_colour_treatment" class="form-control col-lg-6" value="{{application_details.waste_water_colour_treatment}}" disabled></td>
-                                                        <td><input type="text" name="waste_water_colour_name_location" id="waste_water_colour_name_location" class="form-control col-lg-6" value="{{application_details.waste_water_colour_name_location}}" disabled></td>
+                                                        <td><input type="text" name="en_pol_control_device_stack_height" id="en_pol_control_device_stack_height" class="form-control col-lg-6" value="{{application_details.en_pol_control_device_stack_height}}" disabled></td>
+                                                        <td><input type="text" name="en_pol_control_device_stack_diameter" id="en_pol_control_device_stack_diameter" class="form-control col-lg-6" value="{{application_details.en_pol_control_device_stack_diameter}}" disabled></td>
+                                                        <td><input type="text" name="en_pol_control_device_dimension" id="en_pol_control_device_dimension" class="form-control col-lg-6" value="{{application_details.en_pol_control_device_dimension}}" disabled></td>
+                                                        <td><input type="text" name="en_pol_control_device_volume" id="en_pol_control_device_volume" class="form-control col-lg-6" value="{{application_details.en_pol_control_device_volume}}" disabled></td>
+                                                        <td><input type="text" name="en_pol_control_device_temp" id="en_pol_control_device_temp" class="form-control col-lg-6" value="{{application_details.en_pol_control_device_temp}}" disabled></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <br>
-                                        <div class="alert alert-primary border-0 rounded-0" role="alert">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide following information on Effluent Treatment Plant (ETP), if required
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Capacity</label>
-                                                    <input type="number" name="waste_water_treatment_plant_capacity" class="form-control" id="waste_water_treatment_plant_capacity" maxlength="8" value="{{application_details.waste_water_treatment_plant_capacity}}" disabled>
-                                                </div>
+                                        <div class="alert alert-success border-0 rounded-0" role="alert" id="solid_waste_successMsg" style="display:none">
+                                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Expected Total Quantity of the liquid/Effluent waste generation (quantity per annum)</label>
-                                                    <input type="email" name="waste_water_qty_per_annum" class="form-control" id="waste_water_qty_per_annum" value="{{application_details.waste_water_qty_per_annum}}" disabled>
-                                                </div>
+                                            <div class="alert alert-danger border-0 rounded-0" role="alert" id="solid_waste_errorMsg" style="display:none">
+                                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                            </div>
+                                        <div class="row mt-2">
+                                            <div class="text-sm-end">
+                                                <a href="#" class="btn btn-success" onclick="save_solid_waste_details()">
+                                                    <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Dimension of ETP</label>
-                                                    <input type="number" name="waste_water_treatment_plant_etp" class="form-control" id="waste_water_treatment_plant_etp" maxlength="8" value="{{application_details.waste_water_treatment_plant_etp}}" disabled>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Quantity of sludge to be generated along with the management plan</label>
-                                                    <input type="email" name="waste_water_treatment_sludge_qty" class="form-control" id="waste_water_treatment_sludge_qty" value="{{application_details.waste_water_treatment_sludge_qty}}" disabled>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Name, location and distance of the receiving water body/surrounding environment of the treated effluent</label>
-                                                    <input type="number" name="waste_water_treatment_plant_name_location" class="form-control" id="waste_water_treatment_plant_name_location" maxlength="8" value="{{application_details.waste_water_treatment_plant_name_location}}" disabled>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingEleven">
-                                <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingElevenBtn"
-                                    data-bs-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven" disabled>
-                                    Industry Emission
-                                </button>
-                            </h2>
-                            <div id="collapseEleven" class="accordion-collapse collapse" aria-labelledby="headingEleven"
-                                data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity generate industry emission?</label>
-                                                {% if application_details.en_industry_emission_generate == 'Yes' %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="en_industry_emission_generate" class="form-check-input" value="Yes" checked>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="en_industry_emission_generate" class="form-check-input" value="No" disabled>
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
-                                                    </div>
-                                                {% else %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="en_industry_emission_generate" class="form-check-input" value="Yes" disabled>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="en_industry_emission_generate" class="form-check-input" value="No" checked>
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <table class="table table-hover table-bordered table-centered mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Parameter</th>
-                                                    <th>Expected emission levels (mg/Nm3)</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>SPM</td>
-                                                    <td><input type="text" name="en_spm_emission_expected" id="en_spm_emission_expected" class="form-control col-lg-6" value="{{application_details.en_spm_emission_expected}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>SO2</td>
-                                                    <td><input type="text" name="en_so2_emission_expected" id="en_so2_emission_expected" class="form-control col-lg-6" value="{{application_details.en_so2_emission_expected}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>NOx</td>
-                                                    <td><input type="text" name="en_nox_emission_expected" id="en_nox_emission_expected" class="form-control col-lg-6" value="{{application_details.en_nox_emission_expected}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>CO</td>
-                                                    <td><input type="text" name="en_co_emission_expected" id="en_co_emission_expected" class="form-control col-lg-6" value="{{application_details.en_co_emission_expected}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Total Fluoride</td>
-                                                    <td><input type="text" name="en_fluoride_emission_expected" id="en_fluoride_emission_expected" class="form-control col-lg-6" value="{{application_details.en_fluoride_emission_expected}}" disabled></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <br>
-                                    <div class="alert alert-primary border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide information on the type of pollution control device for off gas/flue gas/emissions along with their working mechanism and layout plan (if applicable)
-                                    </div>
-                                    <br>
-                                    <div class="col-lg-12">
-                                        <table class="table table-hover table-bordered table-centered mb-0">
-                                            <tbody>
-                                                <tr>
-                                                    <td>Stack Height</td>
-                                                    <td><input type="text" name="en_pol_control_device_stack_heicht" id="en_pol_control_device_stack_heicht" class="form-control col-lg-6" value="{{application_details.en_pol_control_device_stack_heicht}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Stack Diameter</td>
-                                                    <td><input type="text" name="en_pol_control_device_stack_diameter" id="en_pol_control_device_stack_diameter" class="form-control col-lg-6" value="{{application_details.en_pol_control_device_stack_diameter}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Dimension of measurement platform and port (m x m)</td>
-                                                    <td><input type="text" name="en_pol_control_device_dimention" id="en_pol_control_device_dimention" class="form-control col-lg-6" value="{{application_details.en_pol_control_device_dimention}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Volumetric flow rate of flue gas (Nm 3 /hr)</td>
-                                                    <td><input type="text" name="en_pol_control_device_volume" id="en_pol_control_device_volume" class="form-control col-lg-6" value="{{application_details.en_pol_control_device_volume}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Temperature (degree celsius) of flue</td>
-                                                    <td><input type="text" name="en_pol_control_device_temp" id="en_pol_control_device_temp" class="form-control col-lg-6" value="{{application_details.en_pol_control_device_temp}}" disabled></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <br>
-                                    <div class="alert alert-primary border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide following information on Air Pollution Control Device
-                                    </div>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Capacity</label>
-                                                <input type="number" name="en_air_pollution_control_device_capacity" class="form-control" id="en_air_pollution_control_device_capacity" maxlength="8" value="{{application_details.en_air_pollution_control_device_capacity}}" disabled>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Components and dimensions of the PCD</label>
-                                                <input type="text" name="en_air_pollution_control_pcd_dimention" class="form-control" id="en_air_pollution_control_pcd_dimention" value="{{application_details.en_air_pollution_control_pcd_dimention}}" disabled>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -1649,148 +1543,292 @@
                             <div id="collapseTwelve" class="accordion-collapse collapse" aria-labelledby="headingTwelve"
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <div class="alert alert-primary border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide maximum noise level at the project boundary during operation along with its management plan
-                                    </div>
-                                    <br>
-                                    <div class="col-lg-12">
-                                        <table class="table table-hover table-bordered table-centered mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Parameter</th>
-                                                    <th>Unit</th>
-                                                    <th>Day (06:00 - 22:00)</th>
-                                                    <th>Night (22:00 - 06:00)</th>
-                                                    <th>Management Plan</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>Industrial Area</td>
-                                                    <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_ind_area_day" id="en_noise_ind_area_day" class="form-control col-lg-6" value="{{application_details.en_air_pollution_control_pcd_dimention}}" disabled></td>
-                                                    <td><input type="text" name="en_noise_ind_area_night" id="en_noise_ind_area_night" class="form-control col-lg-6" value="{{application_details.en_air_pollution_control_pcd_dimention}}" disabled></td>
-                                                    <td><input type="text" name="en_noise_ind_area_mgt_plan" id="en_noise_ind_area_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_air_pollution_control_pcd_dimention}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Mixed Area</td>
-                                                    <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_mixed_area_day" id="en_noise_mixed_area_day" class="form-control col-lg-6" value="{{application_details.en_noise_mixed_area_day}}" disabled></td>
-                                                    <td><input type="text" name="en_noise_mixed_area_night" id="en_noise_mixed_area_night" class="form-control col-lg-6" value="{{application_details.en_noise_mixed_area_night}}" disabled></td>
-                                                    <td><input type="text" name="en_noise_mixed_area_mgt_plan" id="en_noise_mixed_area_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_noise_mixed_area_mgt_plan}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Sensitive Area</td>
-                                                    <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_sen_area_day" id="en_noise_sen_area_day" class="form-control col-lg-6" value="{{application_details.en_noise_sen_area_day}}" disabled></td>
-                                                    <td><input type="text" name="en_noise_sen_area_night" id="en_noise_sen_area_night" class="form-control col-lg-6" value="{{application_details.en_noise_sen_area_night}}" disabled></td>
-                                                    <td><input type="text" name="en_noise_sen_area_mgt_plan" id="en_noise_sen_area_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_noise_sen_area_mgt_plan}}" disabled></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <form method="post" id="noise_level_form">
+                                        {% csrf_token %}
+                                        <input type="hidden" class="form-control" value="{{application_no}}" id="noise_level_application_no">
+                                        <div class="alert alert-primary border-0 rounded-0" role="alert">
+                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide maximum noise level at the project boundary during operation along with its management plan
+                                        </div>
+                                        <br>
+                                        <div class="col-lg-12">
+                                            <table class="table table-hover table-bordered table-centered mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parameter</th>
+                                                        <th>Unit</th>
+                                                        <th>Day (06:00 - 22:00)</th>
+                                                        <th>Night (22:00 - 06:00)</th>
+                                                        <th>Management Plan</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Industrial Area</td>
+                                                        <td>dB(A)</td>
+                                                        <td><input type="text" name="en_noise_ind_area_day" id="en_noise_ind_area_day" class="form-control col-lg-6" value="{{application_details.en_noise_ind_area_day}}" disabled></td>
+                                                        <td><input type="text" name="en_noise_ind_area_night" id="en_noise_ind_area_night" class="form-control col-lg-6" value="{{application_details.en_noise_ind_area_night}}" disabled></td>
+                                                        <td><input type="text" name="en_noise_ind_area_mgt_plan" id="en_noise_ind_area_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_noise_ind_area_mgt_plan}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Mixed Area</td>
+                                                        <td>dB(A)</td>
+                                                        <td><input type="text" name="en_noise_mixed_area_day" id="en_noise_mixed_area_day" class="form-control col-lg-6" value="{{application_details.en_noise_mixed_area_day}}" disabled></td>
+                                                        <td><input type="text" name="en_noise_mixed_area_night" id="en_noise_mixed_area_night" class="form-control col-lg-6" value="{{application_details.en_noise_mixed_area_night}}" disabled></td>
+                                                        <td><input type="text" name="en_noise_mixed_area_mgt_plan" id="en_noise_mixed_area_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_noise_mixed_area_mgt_plan}}" disabled></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Sensitive Area</td>
+                                                        <td>dB(A)</td>
+                                                        <td><input type="text" name="en_noise_sen_area_day" id="en_noise_sen_area_day" class="form-control col-lg-6" value="{{application_details.en_noise_sen_area_day}}" disabled></td>
+                                                        <td><input type="text" name="en_noise_sen_area_night" id="en_noise_sen_area_night" class="form-control col-lg-6" value="{{application_details.en_noise_sen_area_night}}" disabled></td>
+                                                        <td><input type="text" name="en_noise_sen_area_mgt_plan" id="en_noise_sen_area_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_noise_sen_area_mgt_plan}}" disabled></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="alert alert-success border-0 rounded-0" role="alert" id="noise_level_successMsg" style="display:none">
+                                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                        </div>
+                                        <div class="alert alert-danger border-0 rounded-0" role="alert" id="noise_level_errorMsg" style="display:none">
+                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="text-sm-end">
+                                                <a href="#" class="btn btn-success" onclick="save_noise_level_details()">
+                                                    <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                         <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingOtherImpacts">
-                                <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                    data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
-                                    Other Impacts
+                            <h2 class="accordion-header" id="headingImpacts">
+                                <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="headingImpactsBtn"
+                                    data-bs-target="#collapseImpacts" aria-expanded="false" aria-controls="collapseImpacts" disabled>
+                                    Impacts Assessment
                                 </button>
                             </h2>
-                            <div id="collapseOtherImpacts" class="accordion-collapse collapse" aria-labelledby="headingOtherImpacts"
+                            <div id="collapseImpacts" class="accordion-collapse collapse" aria-labelledby="headingImpacts"
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
                                     <div class="alert alert-secondary border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Other impacts during construction and operation of Plant and from ancillary activities such as road and power line along with its management plan.
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Impact Assessment and Environmental Management Plan <br>
+                                        Identify and list both positive and negative impacts covering construction and operation phases of the project including the associated activities and describe mitigation measures and monitoring plan for all adverse impacts identified.
                                     </div>
                                     <br>
                                     <div class="col-lg-12">
                                         <table class="table table-hover table-bordered table-centered mb-0">
                                             <thead>
                                                 <tr>
-                                                    <th>Other Issues</th>
-                                                    <th>Sources</th>
-                                                    <th>Quantity if applicable</th>
-                                                    <th>Management Plan</th>
+                                                    <th>Sl.No</th>
+                                                    <th>Environmental Component</th>
+                                                    <th>Potential Source of Impacts</th>
+                                                    <th>Potential Impacts</th>
+                                                    <th>Mitigation Plan</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td>Odour</td>
-                                                    <td><input type="text" name="en_other_impact_odour_source" id="en_other_impact_odour_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_odour_source}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_odour_qty" id="en_other_impact_odour_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_odour_qty}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_odour_mgt_plan" id="en_other_impact_odour_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_odour_mgt_plan}}" disabled></td>
+                                                    <td rowspan="2">1</td>
+                                                    <td rowspan="2">Air Quality</td>
+                                                    <td rowspan="2">
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="air_quality" name="air_quality" value="{{application_details.air_quality}}" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <label for="bl_others" class="col-sm-4 col-form-label">Construction</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" class="form-control" id="air_quality_construction" name="air_quality_construction" value="{{application_details.air_quality_construction}}" disabled>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <label for="bl_others" class="col-sm-4 col-form-label">Operation</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" class="form-control" id="air_quality_operation" name="air_quality_operation" value="{{application_details.air_quality_operation}}" disabled>
+                                                            </div>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Fugitive emission</td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_source" id="en_other_impact_fugutive_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_fugutive_source}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_qty" id="en_other_impact_fugutive_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_fugutive_qty}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_mgt_plan" id="en_other_impact_fugutive_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_fugutive_mgt_plan}}" disabled></td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="air_quality_construction_plan" name="air_quality_construction_plan" value="{{application_details.air_quality_construction_plan}}" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="air_quality_operation_plan" name="air_quality_operation_plan" value="{{application_details.air_quality_operation_plan}}" disabled>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Slope instability</td>
-                                                    <td><input type="text" name="en_other_impact_slope_source" id="en_other_impact_slope_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_slope_source}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_slope_qty" id="en_other_impact_slope_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_slope_qty}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_slope_mgt_plan" id="en_other_impact_slope_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_slope_mgt_plan}}" disabled></td>
+                                                    <td rowspan="2">2</td>
+                                                    <td rowspan="2">Water Quality</td>
+                                                    <td rowspan="2">
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="water_quality" name="water_quality" value="{{application_details.water_quality}}" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <label for="bl_others" class="col-sm-4 col-form-label">Construction</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" class="form-control" id="water_quality_construction" name="water_quality_construction" value="{{application_details.water_quality_construction}}" disabled>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <label for="bl_others" class="col-sm-4 col-form-label">Operation</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" class="form-control" id="water_quality_operation" name="water_quality_operation"  value="{{application_details.water_quality_operation}}" disabled>
+                                                            </div>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Aesthetic</td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_source" id="en_other_impact_aesthetic_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_aesthetic_source}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_qty" id="en_other_impact_aesthetic_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_aesthetic_qty}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_mgt_plan" id="en_other_impact_aesthetic_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_aesthetic_mgt_plan}}" disabled></td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="water_quality_construction_plan" name="water_quality_construction_plan" value="{{application_details.water_quality_construction_plan}}" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="water_quality_operation_plan" name="water_quality_operation_plan" value="{{application_details.water_quality_operation_plan}}" disabled>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Excavated mucks</td>
-                                                    <td><input type="text" name="en_other_impact_mucks_source" id="en_other_impact_mucks_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_mucks_source}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_mucks_qty" id="en_other_impact_mucks_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_mucks_qty}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_mucks_mgt_plan" id="en_other_impact_mucks_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_mucks_mgt_plan}}" disabled></td>
+                                                    <td rowspan="2">3</td>
+                                                    <td rowspan="2">Noise Environment</td>
+                                                    <td rowspan="2">
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="noise_environment" name="air_quality" value="{{application_details.air_quality}}" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <label for="bl_others" class="col-sm-4 col-form-label">Construction</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" class="form-control" id="noise_environment_construction" name="noise_environment_construction"  value="{{application_details.noise_environment_construction}}" disabled>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <label for="bl_others" class="col-sm-4 col-form-label">Operation</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" class="form-control" id="noise_environment_operation" name="noise_environment_operation" value="{{application_details.noise_environment_operation}}" disabled>
+                                                            </div>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Sewerage generation</td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_source" id="en_other_impact_sewerage_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_sewerage_source}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_qty" id="en_other_impact_sewerage_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_sewerage_qty}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_mgt_plan" id="en_other_impact_sewerage_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_sewerage_mgt_plan}}" disabled></td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="noise_environment_construction_plan" name="noise_environment_construction_plan" value="{{application_details.noise_environment_construction_plan}}" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="noise_environment_operation_plan" name="noise_environment_operation_plan" value="{{application_details.noise_environment_operation_plan}}" disabled>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Surface Run-off/Erosion</td>
-                                                    <td><input type="text" name="en_other_impact_erosion_source" id="en_other_impact_erosion_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_erosion_source}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_erosion_qty" id="en_other_impact_erosion_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_erosion_qty}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_erosion_mgt_plan" id="en_other_impact_erosion_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_erosion_mgt_plan}}" disabled></td>
+                                                    <td rowspan="2">4</td>
+                                                    <td rowspan="2">Land Environment</td>
+                                                    <td rowspan="2">
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="land_environment" name="land_environment" value="{{application_details.land_environment}}" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <label for="bl_others" class="col-sm-4 col-form-label">Construction</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" class="form-control" id="land_environment_construction" name="land_environment_construction" value="{{application_details.land_environment_construction}}" disabled>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <label for="bl_others" class="col-sm-4 col-form-label">Operation</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" class="form-control" id="land_environment_operation" name="land_environment_operation" value="{{application_details.land_environment_operation}}" disabled>
+                                                            </div>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Storm water</td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_source" id="en_other_impact_storm_water_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_storm_water_source}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_qty" id="en_other_impact_storm_water_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_storm_water_qty}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_mgt_plan" id="en_other_impact_storm_water_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_storm_water_mgt_plan}}" disabled></td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="land_environment_construction_plan" name="land_environment_construction_plan"  value="{{application_details.land_environment_construction_plan}}" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="land_environment_operation_plan" name="land_environment_operation_plan" value="{{application_details.land_environment_operation_plan}}" disabled>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Loss of habitat</td>
-                                                    <td><input type="text" name="en_other_impact_habitat_source" id="en_other_impact_habitat_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_habitat_source}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_habitat_qty" id="en_other_impact_habitat_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_habitat_qty}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_habitat_mgt_plan" id="en_other_impact_habitat_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_habitat_mgt_plan}}" disabled></td>
+                                                    <td rowspan="2">5</td>
+                                                    <td rowspan="2">Socio-economic environment</td>
+                                                    <td rowspan="2">
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="socio_economic_environment" name="socio_economic_environment" value="{{application_details.socio_economic_environment}}" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <label for="bl_others" class="col-sm-4 col-form-label">Construction</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" class="form-control" id="socio_economic_environment_construction" name="socio_economic_environment_construction" value="{{application_details.socio_economic_environment_construction}}" disabled>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <label for="bl_others" class="col-sm-4 col-form-label">Operation</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" class="form-control" id="socio_economic_environment_operation" name="socio_economic_environment_operation" value="{{application_details.socio_economic_environment_operation}}" disabled>
+                                                            </div>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Socio-economic issues</td>
-                                                    <td><input type="text" name="en_other_impact_socio_source" id="en_other_impact_socio_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_socio_source}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_socio_qty" id="en_other_impact_socio_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_socio_qty}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_socio_mgt_plan" id="en_other_impact_socio_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_socio_mgt_plan}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Impact on water resources</td>
-                                                    <td><input type="text" name="en_other_impact_water_source_source" id="en_other_impact_water_source_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_water_source_source}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_water_source_qty" id="en_other_impact_water_source_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_water_source_qty}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_water_source_mgt_plan" id="en_other_impact_water_source_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_water_source_mgt_plan}}" disabled></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Other environmental impacts</td>
-                                                    <td><input type="text" name="en_other_impact_other_source" id="en_other_impact_other_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_other_source}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_other_qty" id="en_other_impact_other_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_other_qty}}" disabled></td>
-                                                    <td><input type="text" name="en_other_impact_other_mgt_plan" id="en_other_impact_other_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_other_mgt_plan}}" disabled></td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="socio_economic_environment_construction_plan" name="socio_economic_environment_construction_plan" value="{{application_details.socio_economic_environment_construction_plan}}" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <input type="text" class="form-control" id="socio_economic_operation_plan" name="socio_economic_operation_plan" value="{{application_details.socio_economic_operation_plan}}" disabled>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
+                                    </div>
+                                    <br>
+                                    <div class="alert alert-secondary border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Monitoring Plan <br>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">For point source emission and effluent generation, provide treatment system and pollution concentration after treatment</label>
+                                                <textarea class="form-control" rows="3" name="treatment_system" id="treatment_system" disabled>{{application_details.socio_economic_operation_plan}}</textarea>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1850,6 +1888,9 @@
                                         <div class="col-md-12">
                                             <div class="card">
                                                 <div class="card-body">
+                                                    <div class="card-widgets">
+                                                        <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#iee_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                    </div>
                                                     <h5 class="card-title mb-0">Attachments</h5>
                                                     <div id="cardCollpase7" class="collapse pt-3 show">
                                                         <div id="iee_file_attachment">
@@ -1978,17 +2019,11 @@
                                             <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-md-12 ec_draft_div" style="display: none;">
-                                            <div class="col-md-12">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <div class="card-widgets mb-3">
-                                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#ec_draft_details_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                                        </div>
-                                                        <div class="collapse pt-3 show">
-                                                            <div id="ec_draft_details_div">
-                                                                {% include 'ec_draft_details.html' %}
-                                                            </div>
-                                                        </div>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5 class="card-title mb-0">Attachments</h5>
+                                                    <div id="cardCollpase7" class="collapse pt-3 show">
+                                                        {% include 'file_attachment_page.html' %}
                                                     </div>
                                                 </div>
                                             </div>
@@ -2111,7 +2146,6 @@
                                             </div>
                                             <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        
                                         <div class="row rectification_div" style="display: none;">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
@@ -2201,7 +2235,6 @@
                                 </form>
                             </div>
                         </div>
-                        
                     </div>
                 </div> <!-- end card-body -->
             </div> <!-- end card-->

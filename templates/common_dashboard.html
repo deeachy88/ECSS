@@ -177,36 +177,6 @@
                                     </ul>
                                 </div>
                             </li>
-<!--                            <li class="side-nav-item">-->
-<!--                                <a href="{% url 'manage_notification_circulars' %}" class="side-nav-link">-->
-<!--                                    <i class="mdi mdi-air-filter"></i>-->
-<!--                                    <span> Manage Notification & Circulars </span>-->
-<!--                                </a>-->
-<!--                            </li>-->
-<!--                            <li class="side-nav-item">-->
-<!--                                <a href="{% url 'manage_about_us' %}" class="side-nav-link">-->
-<!--                                    <i class="mdi mdi-air-filter"></i>-->
-<!--                                    <span> Manage About Us </span>-->
-<!--                                </a>-->
-<!--                            </li>-->
-<!--                            <li class="side-nav-item">-->
-<!--                                <a href="{% url 'manage_committee_schedule' %}" class="side-nav-link">-->
-<!--                                    <i class="mdi mdi-air-filter"></i>-->
-<!--                                    <span> Manage Committee Schedule </span>-->
-<!--                                </a>-->
-<!--                            </li>-->
-<!--                            <li class="side-nav-item">-->
-<!--                                <a href="{% url 'manage_eia_related' %}" class="side-nav-link">-->
-<!--                                    <i class="mdi mdi-air-filter"></i>-->
-<!--                                    <span> Manage EIA Related </span>-->
-<!--                                </a>-->
-<!--                            </li>-->
-<!--                            <li class="side-nav-item">-->
-<!--                                <a href="{% url 'manage_live_statistics' %}" class="side-nav-link">-->
-<!--                                    <i class="mdi mdi-air-filter"></i>-->
-<!--                                    <span> Manage Live Statistics </span>-->
-<!--                                </a>-->
-<!--                            </li>-->
 
                             <li class="side-nav-title side-nav-item mt-1">Master Tables</li>
                             <li class="side-nav-item">
@@ -274,32 +244,7 @@
                                     </ul>
                                 </div>
                             </li>
-                            <li class="side-nav-item">
-                                <a data-bs-toggle="collapse" href="#sidebarMasters" aria-expanded="false" aria-controls="sidebarMasters" class="side-nav-link">
-                                    <i class="uil-clipboard-alt"></i>
-                                    <span> Report </span>
-                                    <span class="menu-arrow"></span>
-                                </a>
-                                <div class="collapse" id="sidebarMasters">
-                                    <ul class="side-nav-second-level">
-                                        <li>
-                                            <a href="{% url 'ec_report_form' %}">1. List of EC Issued</a>
-                                        </li>
-                                        <li>
-                                            <a href="{% url 'ec_rejected_report_form' %}">2. List of EC Rejected</a>
-                                        </li>
-                                        <li>
-                                            <a href="{% url 'ec_pending_report_form' %}">3. List of Pending Application</a>
-                                        </li>
-                                        <li>
-                                            <a href="{% url 'land_use_report_form' %}">4. Land Use Report</a>
-                                        </li>
-                                        <li>
-                                            <a href="{% url 'revenue_report_form' %}">5. Revenue</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
+                            
                         </ul>
                     {% elif request.session.role == 'Reviewer' %}
                         <ul class="side-nav">
@@ -350,8 +295,49 @@
                                         <li>
                                             <a href="apps-ecommerce-products-details.html">Draft Application</a>
                                         </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="javascript:void(0);" class="side-nav-link">
+                                    <i class="uil-folder-plus"></i>
+                                    <span> Resubmit Application </span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'ec_renewal' %}" class="side-nav-link">
+                                    <i class="uil-document-layout-center"></i>
+                                    <span> EC Renew </span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#otherModification" aria-expanded="false" aria-controls="otherModification" class="side-nav-link">
+                                    <i class="uil-clipboard-alt"></i>
+                                    <span> Other Modifications </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="otherModification">
+                                    <ul class="side-nav-second-level">
                                         <li>
-                                            <a href="apps-ecommerce-products-details.html">Resubmit Application</a>
+                                            <a href="{% url 'name_change' %}">Name Change</a>
+                                        </li>
+                                        <li>
+                                            <a href="apps-ecommerce-products-details.html">Ownership Change</a>
+                                        </li>
+                                        <li>
+                                            <a href="apps-ecommerce-products-details.html">Technology Change</a>
+                                        </li>
+                                        <li>
+                                            <a href="apps-ecommerce-products-details.html">Product Change</a>
+                                        </li>
+                                        <li>
+                                            <a href="apps-ecommerce-products-details.html">Capacity Change</a>
+                                        </li>
+                                        <li>
+                                            <a href="apps-ecommerce-products-details.html">Area Change</a>
+                                        </li>
+                                        <li>
+                                            <a href="apps-ecommerce-products-details.html">Location Change</a>
                                         </li>
                                     </ul>
                                 </div>

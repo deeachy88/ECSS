@@ -94,6 +94,7 @@ urlpatterns = [
     path('submit_transmission_application', views.submit_transmission_application, name='submit_transmission_application'),
 
     #TOR
+    path('tor_form', views.tor_form, name='tor_form'),
     path('save_tor_form', views.save_tor_form, name='save_tor_form'),
 
     # General Application Details
@@ -128,5 +129,15 @@ urlpatterns = [
 
     # Common 
     path('save_project_details', views.save_project_details, name='save_project_details'),
+    path('ec_renewal', views.ec_renewal, name='ec_renewal'),
 
+    #Other Modifications
+    path('name_change', views.name_change, name='name_change'),
+    path('ownership_change', views.ownership_change, name='ownership_change'),
+    path('technology_change', views.technology_change, name='technology_change'),
+    path('product_change', views.product_change, name='product_change'),
+    path('capacity_change', views.capacity_change, name='capacity_change'),
+    path('area_change', views.area_change, name='area_change'),
+    path('location_change', views.location_change, name='location_change'),
+    path('get_other_modification_details', views.get_other_modification_details, name='get_other_modification_details')
 ]

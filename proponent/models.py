@@ -444,6 +444,7 @@ class t_ec_industries_t1_general(models.Model):
     dimension_stp = models.CharField(max_length=250,default=None, blank=True, null=True)
     sludge_quantity_mgt_plan = models.CharField(max_length=250,default=None, blank=True, null=True)
     sewerage_water_source_distance = models.CharField(max_length=250,default=None, blank=True, null=True)
+    project_location_site = models.CharField(max_length='3',default=None, blank=True, null=True)
     fee = models.IntegerField(default=None, blank=True, null=True)
     assigned_to = models.CharField(max_length=250,default=None, blank=True, null=True)
     assigned_date = models.DateField(default=None, blank=True, null=True)
@@ -454,11 +455,14 @@ class t_ec_industries_t1_general(models.Model):
     ec_type = models.CharField(max_length=250,default=None, blank=True, null=True)
     ec_reference_no = models.CharField(max_length=250,default=None, blank=True, null=True)
     ec_approve_date = models.DateField(default=None, blank=True, null=True)
+    ec_expiry_date = models.DateField(default=None, blank=True, null=True)
     ec_approval_committee = models.TextField(max_length=250, default=None, blank=True, null=True)
     fines_penalties = models.CharField(max_length=3,default=None, blank=True, null=True)
+    fines_penalties_remarks = models.CharField(max_length=255,default=None, blank=True, null=True)
     application_status = models.CharField(max_length=20,default=None, blank=True, null=True)
     resubmit_remarks = models.TextField(max_length=250, default=None, blank=True, null=True)
     resubmit_date = models.DateField(default=None, blank=True, null=True)
+    service_id = models.IntegerField(default=None, blank=True, null=True)
 
 
 class t_ec_industries_t2_partner_details(models.Model):
@@ -538,6 +542,12 @@ class t_ec_industries_t10_hazardous_chemicals(models.Model):
     chemical_name = models.CharField(max_length=250,default=None, blank=True, null=True)
     qty = models.IntegerField(default=None, blank=True, null=True)
     storage_method = models.CharField(max_length=100,default=None, blank=True, null=True)
+
+class t_ec_industries_t11_ec_details(models.Model):
+    record_id = models.AutoField(primary_key=True)
+    application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
+    ec_heading = models.CharField(max_length=250,default=None, blank=True, null=True)
+    ec_content = models.TextField(default=None, blank=True, null=True)
 
 class t_inspection_monitoring_t1(models.Model):
     record_id = models.AutoField(primary_key=True)

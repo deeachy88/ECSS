@@ -29,5 +29,7 @@ urlpatterns = [
     path('edit_inspection', views.edit_inspection, name='edit_inspection'),
     path('delete_inspection', views.delete_inspection, name='delete_inspection'),
 
+#fines and penalties
+    path('get_fines_penalties_details', views.get_fines_penalties_details, name='get_fines_penalties_details')
 
 ]

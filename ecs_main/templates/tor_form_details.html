@@ -1,0 +1,222 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+{% for application_details in application_details %}
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card mt-1">
+                <div class="card-body">
+                    <h4 class="header-title mb-3"> TOR Form</h4>
+                    <form method="post" id="tor_form">
+                        {% csrf_token %}
+                        <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Name of Project</label>
+                                    <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-warning border-0 rounded-0" role="alert">
+                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Applicant Name</label>
+                                    <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Address</label>
+                                    <input type="text" name="address" class="form-control" id="address" value="{{ application_details.address }}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Contact No</label>
+                                    <input type="number" min="1"  name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{ application_details.contact_no }}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Email</label>
+                                    <input type="email" name="email" class="form-control" id="email" value="{{ application_details.email }}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
+                                    <textarea class="form-control" id="focal_person" name="focal_person" rows="3" disabled>{{ application_details.focal_person }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-warning border-0 rounded-0" role="alert">
+                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Site</label>
+                                    {% if application_details.project_location_site == 'D' %}
+                                        <div class="mt-2">
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" id="customRadio3" name="site" class="form-check-input" checked>
+                                                <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" id="customRadio4" name="site" class="form-check-input"  disabled>
+                                                <label class="form-check-label" for="customRadio4">Thromde</label>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="mt-2">
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" id="customRadio3" name="site" class="form-check-input" disabled>
+                                                <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" id="customRadio4" name="site" class="form-check-input"  checked>
+                                                <label class="form-check-label" for="customRadio4">Thromde</label>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            </div>
+                            <div class="col-lg-6 thromde_div">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Thromde</label>
+                                    <select class="form-select" disabled>
+                                        {% for thromde in thromde %}
+                                            <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                                {{ thromde.thromde_name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {% if application_details.project_location_site == 'D' %}
+                                <div class="col-lg-6 dzongkhag_div" style="display:none;">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Dzongkhag</label>
+                                        <select class="form-select" disabled>
+                                            {% for dzongkhag in dzongkhag %}
+                                                <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                    {{ dzongkhag.dzongkhag_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Gewog</label>
+                                        <select class="form-select" disabled>
+                                            {% for gewog in gewog %}
+                                                <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                    {{ gewog.gewog_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Village/Chiwog</label>
+                                        <select class="form-select" disabled>
+                                            {% for village in village %}
+                                                <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                    {{ village.village_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                <input type="text" name="location_name" class="form-control" id="location_name">
+                            </div>
+                            <div id="location_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="alert alert-success border-0 rounded-0" role="alert" id="tor_form_successMsg" style="display:none">
+                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                        </div>
+                        <div class="alert alert-danger border-0 rounded-0" role="alert" id="tor_form_errorMsg" style="display:none">
+                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Forward To</label>
+                                <select class="form-control" name="forward_to"  id="forward_to">
+                                    <option value="">--SELECT REVIEWER--</option>
+                                    {% for reviewer_list in reviewer_list %}
+                                        <option value="{{ reviewer_list.Login_Id }}">{{ reviewer_list.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="forward_toErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="text-sm-end">
+                                <button type="button" class="btn btn-success" onclick="forward_tor_form()">
+                                    <i class="mdi mdi-arrow-right me-1"></i> Forward </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+<script>
+    function forward_tor_form()
+    {
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'forward_application' %}",
+            data : $('#tor_form').serialize(),
+            success : function(data)
+            {
+                if(data.message == 'success')
+                {
+                    $('#tor_form_successMsg').html("Forwarded Successfully");
+                    $('#tor_form_successMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#tor_form_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        location.reload()
+                    }, 2000);
+                }
+                else
+                {
+                    $('#tor_form_errorMsg').html("Please Check And Submit Again");
+                    $('#tor_form_errorMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#tor_form_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

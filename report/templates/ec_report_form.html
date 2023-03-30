@@ -130,21 +130,15 @@ function viewECIssuedList()
 
             var fDate = moment(from_date, "DD.MM.YYYY").format("YYYY-MM-DD");
             var tDate = moment(to_date, "DD.MM.YYYY").format("YYYY-MM-DD");
-            alert(from_date);
-            alert(to_date);
-
-
-            alert(service_id);
-            alert(dzongkhag_code);
-             $.ajax({
-                    type : "GET",
-                    url : "{% url 'view_ec_list' %}",
-                    data :{'from_date':fDate,'to_date':tDate, 'service_id':service_id},
-                    success : function(data)
-                    {
-                    $('#CertificateDetails').html(data);
-                    }
-                });
+            $.ajax({
+                type : "GET",
+                url : "{% url 'view_ec_list' %}",
+                data :{'from_date':fDate,'to_date':tDate, 'service_id':service_id},
+                success : function(data)
+                {
+                $('#CertificateDetails').html(data);
+                }
+            });
         }
     }
 </script>

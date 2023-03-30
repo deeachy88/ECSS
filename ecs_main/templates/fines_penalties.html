@@ -3,7 +3,7 @@
 <div id="application_details">
     <div class="card mt-1">
         <div class="card-body">
-            <h5 class="card-title mb-0 text-right">EC Renewal</h5>
+            <h5 class="card-title mb-0 text-right">Fines And Penalties</h5>
             <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
                 <i class="ri-check-line me-2"></i>
             </div>
@@ -11,9 +11,9 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <form id="ec_renewal_form" method="post">
+                            <form id="fines_penalties_form" method="post">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Enter EC Number/Application No" name="ec_no" id="ec_no">
+                                    <input type="text" class="form-control" placeholder="Enter EC Number/Application No" name="ec_ref_no" id="ec_ref_no">
                                     <span class="input-group-btn input-group-append">
                                         <button class="btn btn-primary" type="button" onclick="getECDetails()">
                                             <i class="uil uil-arrow-right"></i>
@@ -28,7 +28,7 @@
         </div>
     </div>
 </div>
-<div id="ec_renewal_details" style="display:none;">
+<div id="fines_penalties_details" style="display:none;">
 
 </div>
 <script>
@@ -36,12 +36,12 @@
     {
         $.ajax({
             type : "GET",
-            url : "{% url 'ec_renewal' %}",
-            data :$('#ec_renewal_form').serialize(),
+            url : "{% url 'get_fines_penalties_details' %}",
+            data :$('#fines_penalties_form').serialize(),
             success : function(data)
             {
-                $('#ec_renewal_details').html(data);
-                $('#ec_renewal_details').show();
+                $('#fines_penalties_details').html(data);
+                $('#fines_penalties_details').show();
             }
         });
     }

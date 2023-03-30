@@ -66,17 +66,33 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
+                                <label class="form-label fw-bold">Site</label>
+                                <div class="mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" id="customRadio3" name="site" class="form-check-input"  value="D" onclick="check_site_radio(this.value)">
+                                        <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" id="customRadio4" name="site" class="form-check-input"  value="T" onclick="check_site_radio(this.value)">
+                                        <label class="form-check-label" for="customRadio4">Thromde</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6 thromde_div" style="display:none;">
+                            <div class="mb-3">
                                 <label class="form-label fw-bold">Thromde</label>
-                                <select class="form-select" name="thromde"  id="thromde" onchange="getGewog(this.value)">
+                                <select class="form-select" name="thromde"  id="thromde">
                                     <option value="">--SELECT THROMDE--</option>
                                     {% for thromde in thromde %}
-                                        <option value="{{ thromde.dzongkhag_code }}">{{ thromde.dzongkhag_name }}</option>
+                                        <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 dzongkhag_div" style="display:none;">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Dzongkhag</label>
                                 <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
@@ -89,7 +105,7 @@
                             <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row dzongkhag_div" style="display:none;">
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Gewog</label>
@@ -103,7 +119,7 @@
                             <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row dzongkhag_div" style="display:none;">
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Village/Chiwog</label>
@@ -142,6 +158,20 @@
     </div>
 </div>
 <script>
+    function check_site_radio(value)
+    {
+        if(value == 'T')
+        {
+            $('.thromde_div').show();
+            $('.dzongkhag_div').hide();
+        }
+        else
+        {
+            $('.dzongkhag_div').show();
+            $('.thromde_div').hide();
+        }
+    }
+
     function getGewog(dzongkhag_id)
     {
         $.ajax({
@@ -170,36 +200,157 @@
 
     function save_tor_form()
     {
-        $.ajax
-        ({
-            type : "POST",
-            url : "{% url 'save_tor_form' %}",
-            data : $('#tor_form').serialize(),
-            success : function(data)
-            {
-                if(data.message == 'success')
+        let project_name = $('#project_name').val();
+        let applicant_name = $('#applicant_name').val();
+        let address = $('#address').val();
+        let contact_no = $('#contact_no').val();
+        let contact_no_length = $('#contact_no').val().length;
+        let email = $('#email').val();
+        let site = $("input[name=site]:checked").length;
+        let site_value = $("input[name=site]:checked").val();
+        let dzongkhag = $('#dzongkhag').val();
+        let gewog = $('#gewog').val();
+        let village = $('#vil_chiwog').val();
+        let thromde = $('#thromde').val();
+
+        if(project_name == "")
+        {
+            $('#project_nameErrorMsg').html("Enter Name of Project");
+            $('#project_nameErrorMsg').show();
+            $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#project_name').focus();
+        }
+        if(project_name == "")
+        {
+            $('#project_nameErrorMsg').html("Enter Name of Project");
+            $('#project_nameErrorMsg').show();
+            $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#project_name').focus();
+        }
+        else if(project_category == "")
+        {
+            $('#project_categoryErrorMsg').html("Enter Business Type");
+            $('#project_categoryErrorMsg').show();
+            $('#project_categoryErrorMsg').delay(2000).fadeOut('slow');
+            $('#project_category').focus();
+        }
+        else if(cid == "")
+        {
+            $('#cidErrorMsg').html("Enter CID");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            $('#cid').focus();
+        }
+        else if(cid_length < 11)
+        {
+            $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            $('#cid').focus();
+        }
+        else if(applicant_name == "")
+        {
+            $('#applicant_nameErrorMsg').html("Enter Name of The Applicant");
+            $('#applicant_nameErrorMsg').show();
+            $('#applicant_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#applicant_name').focus();
+        }
+        else if(address == "")
+        {
+            $('#addressErrorMsg').html("Enter Address");
+            $('#addressErrorMsg').show();
+            $('#addressErrorMsg').delay(2000).fadeOut('slow');
+            $('#address').focus();
+        }
+        else if(contact_no == "")
+        {
+            $('#contact_noErrorMsg').html("Enter Contact No");
+            $('#contact_noErrorMsg').show();
+            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
+            $('#contact_no').focus();
+        }
+        else if(contact_no_length < 8)
+        {
+            $('#contact_noErrorMsg').html("Cannot Be Less Than Eight Digits");
+            $('#contact_noErrorMsg').show();
+            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
+            $('#contact_no').focus();
+        }
+        else if(email == "")
+        {
+            $('#emailErrorMsg').html("Enter Email");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+            $('#email').focus();
+        }
+        else if(site < 1)
+        {
+            $('#siteErrorMsg').html("Please Select One.");
+            $('#siteErrorMsg').show();
+            $('#siteErrorMsg').delay(2000).fadeOut('slow');
+            $("input[name=site]").focus();
+        }
+        else if(site_value == 'T' && thromde == "")
+        {
+            $('#thromdeErrorMsg').html("Select Dzongkhag");
+            $('#dzongkhagErrorMsg').show();
+            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag').focus();
+        }
+        else if(site_value == 'D' && dzongkhag == "")
+        {
+            $('#dzongkhagErrorMsg').html("Select Dzongkhag");
+            $('#dzongkhagErrorMsg').show();
+            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag').focus();
+        }
+        else if(site_value == 'D' && gewog == "")
+        {
+            $('#gewogErrorMsg').html("Select Gewog");
+            $('#gewogErrorMsg').show();
+            $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+            $('#gewog').focus();
+        }
+        else if(site_value == 'D' && village == "")
+        {
+            $('#vil_chiwogErrorMsg').html("Select Village");
+            $('#vil_chiwogErrorMsg').show();
+            $('#vil_chiwogErrorMsg').delay(2000).fadeOut('slow');
+            $('#vil_chiwog').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_tor_form' %}",
+                data : $('#tor_form').serialize(),
+                success : function(data)
                 {
-                    $('#iee_submit_successMsg').html("Saved Successfully");
-                    $('#iee_submit_successMsg').show();
-                    setTimeout(function()
+                    if(data.message == 'success')
                     {
-                        $('#iee_submit_successMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        location.reload()
-                    }, 2000);
-                }
-                else
-                {
-                    $('#iee_submit_errorMsg').html("Please Check And Submit Again");
-                    $('#iee_submit_errorMsg').show();
-                    setTimeout(function()
+                        $('#tor_form_successMsg').html("Saved Successfully");
+                        $('#tor_form_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#tor_form_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            location.reload()
+                        }, 2000);
+                    }
+                    else
                     {
-                        $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
+                        $('#tor_form_errorMsg').html("Please Check And Submit Again");
+                        $('#tor_form_errorMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#tor_form_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 </script>
 {% endblock %}

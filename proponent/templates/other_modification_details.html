@@ -11,9 +11,9 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <form id="ec_renewal_form" method="post">
+                            <form id="other_modification_form" method="post">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Enter EC Number/Application No" name="ec_no" id="ec_no">
+                                    <input type="text" class="form-control" placeholder="Enter EC Number" name="ec_no" id="ec_no">
                                     <span class="input-group-btn input-group-append">
                                         <button class="btn btn-primary" type="button" onclick="getECDetails()">
                                             <i class="uil uil-arrow-right"></i>
@@ -28,20 +28,20 @@
         </div>
     </div>
 </div>
-<div id="ec_renewal_details" style="display:none;">
+<div id="other_modification_details" style="display:none;">
 
 </div>
 <script>
-    function getECDetails()
+    function other_modification_form()
     {
         $.ajax({
             type : "GET",
-            url : "{% url 'ec_renewal' %}",
+            url : "{% url 'get_other_modification_details' %}",
             data :$('#ec_renewal_form').serialize(),
             success : function(data)
             {
-                $('#ec_renewal_details').html(data);
-                $('#ec_renewal_details').show();
+                $('#other_modification_details').html(data);
+                $('#other_modification_details').show();
             }
         });
     }

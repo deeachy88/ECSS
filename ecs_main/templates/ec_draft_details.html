@@ -1,0 +1,25 @@
+<table class="table table-hover table-bordered table-centered mb-0">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Heading</th>
+            <th>Content </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for en_draft_details in en_draft_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{en_draft_details.ec_heading}}</td>
+                <td>{{en_draft_details.ec_content}}</td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="populate_approach_road_details('{{en_draft_details.record_id}}','{{en_draft_details.application_no}}','{{en_draft_details.ec_heading}}','{{en_draft_details.ec_content}}'"><i class="mdi mdi-square-edit-outline"></i></a>
+                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_approach_road('{{en_draft_details.record_id}}','{{en_draft_details.application_no}}')"><i class="uil-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

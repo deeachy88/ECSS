@@ -1835,7 +1835,7 @@
                                     </div>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
-                                            <a href="#" class="btn btn-success" onclick="save_iee_attachment_details()">
+                                            <a href="#" class="btn btn-success" onclick="iee_attachment_details_save()">
                                                 <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
                                         </div>
                                     </div>
@@ -6625,7 +6625,7 @@
         }
     }
 
-    function save_iee_attachment_details()
+    function iee_attachment_details_save()
     {
         $('#iee_attachment_successMsg').html("Saved Successfully");
         $('#iee_attachment_successMsg').show();
@@ -7237,6 +7237,68 @@
         else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').not(":checked"))
         {
             $('.general_application').hide();
+        }
+    }
+
+    function save_iee_attachment()
+    {
+        let file_length = document.getElementById("iee_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#iee_attachErrorMsg').html("Please Choose A Attachment");
+            $('#iee_attachErrorMsg').show();
+            $('#iee_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var fileName = document.getElementById('iee_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('iee_attach').files[0];
+            fd.append('iee_attach', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_iee_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_iee_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#iee_attachment_modal').modal('hide');
+                                $('#iee_file_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#iee_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#iee_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#iee_attachErrorMsg').show();
+                        $('#iee_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
         }
     }
 
