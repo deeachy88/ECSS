@@ -1,0 +1,288 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+{% load static %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-2">
+            <div class="card-body">
+                <h5 class="card-title mb-0">Edit Inspection</h5>
+                <div id="cardCollpase1" class="collapse pt-3 show">
+                    <form method="post" id="edit_bsic_code_form">
+                    {% csrf_token %}
+                    {% for inspection_details in inspection_details %}
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Inspection Type</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <select type="text" name="inspection_type" class="form-select" id="inspection_type">
+                                <option value="{{ inspection_details.inspection_type }}" {% if inspection_details.inspection_type == inspection_details.inspection_type %}selected{% endif %} >{{ inspection_details.inspection_type }}</option>
+                                <option value="Ad hoc">Ad hoc</option>
+                                <option value="Regular">Regular</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="inspection_typeErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Inspection Date</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="date" name="inspection_date" class="form-control" id="inspection_date" value="{{inspection_details.inspection_date}}">
+                        </div>
+                        <div class="alert alert-danger" id="inspection_dateErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">EC Number</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <select id="ec_clearance_no" name="ec_clearance_no" class="form-select" onchange="get_ec_details(this.value)">
+                                <option value="">--EC Number--</option>
+                                {% for ec_details in ec_details %}
+                                    <option value="{{ ec_details.ec_reference_no }}" {% if inspection_details.ec_clearance_no == inspection_details.ec_clearance_no %}selected{% endif %} >{{ ec_details.ec_reference_no }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="ec_clearance_noErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Proponent</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" name="proponent_name" class="form-control" id="proponent_name" value="{{inspection_details.proponent_name}}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Project</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" name="project_name" class="form-control" id="project_name" value="{{inspection_details.project_name}}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Address</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" name="address" class="form-control" id="address" value="{{inspection_details.address}}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Reason for Inspection</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" name="inspection_reason" class="form-control" id="inspection_reason" value="{{inspection_details.inspection_reason}}">
+                        </div>
+                        <div class="alert alert-danger" id="inspection_reasonErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Observation</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" name="observation" class="form-control" id="observation" value="{{inspection_details.observation}}">
+                        </div>
+                        <div class="alert alert-danger" id="observationErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Inspection Status</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <select type="text" name="inspection_status" class="form-select" id="inspection_status">
+                                <option value="{{ inspection_details.status }}" {% if inspection_details.status == inspection_details.status %}selected{% endif %} >{{ inspection_details.status }}</option>
+                                <option value="Non Conformity">Non Conformity</option>
+                                <option value="No Issue">No Issue</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Team Leader</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" name="team_leader" class="form-control" id="team_leader" value="{{inspection_details.team_leader}}">
+                        </div>
+                        <div class="alert alert-danger" id="team_leaderErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Team Members</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" name="team_members" class="form-control" id="team_members" value="{{inspection_details.team_members}}">
+                        </div>
+                        <div class="alert alert-danger" id="team_membersErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Fines and Penalties</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <select type="text" name="fines_penalties" class="form-select" id="fines_penalties">
+                                <option value="{{ inspection_details.fines_penalties }}" {% if inspection_details.fines_penalties == inspection_details.fines_penalties %}selected{% endif %} >{{ inspection_details.fines_penalties }}</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="fines_penaltiesErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Remarks</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" name="remarks" class="form-control" id="remarks" value="{{inspection_details.remarks}}">
+                        </div>
+                        <input type="hidden" class="form-control" id="record_id" value="{{inspection_details.record_id}}">
+                    </div>
+                    {% endfor %}
+                    </form>
+                    <div class="alert alert-success" id="edit_successMsg" style="display:none"></div>
+                    <div class="float-end">
+                        <button type="button" class="btn btn-md btn-primary" onclick="update_inspection_details()">Update Inspection Report</button>
+                        <a href="{% url 'inspection_list' %}" class="btn btn-md btn-danger"> Cancel </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function update_inspection_details()
+    {
+        var record_id = $('#record_id').val();
+        var inspection_type = $('#inspection_type').val();
+        var inspection_date = $('#inspection_date').val();
+        var inspection_reason = $('#inspection_reason').val();
+        var ec_clearance_no = $('#ec_clearance_no').val();
+        var login_id = $('#login_id').val();
+        var proponent_name = $('#proponent_name').val();
+        var project_name = $('#project_name').val();
+        var address = $('#address').val();
+        var observation = $('#observation').val();
+        var team_leader = $('#team_leader').val();
+        var team_members = $('#team_members').val();
+        var remarks = $('#remarks').val();
+        var fines_penalties = $('#fines_penalties').val();
+        var inspection_status = $('#inspection_status').val();
+        var record_status = 'Active';
+
+        if(inspection_type == "")
+        {
+            $('#inspection_typeErrorMsg').html("Enter Inspection Type");
+            $('#inspection_typeErrorMsg').show();
+            $('#inspection_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(inspection_date == "")
+        {
+            $('#inspection_dateErrorMsg').html("Choose Inspection Date");
+            $('#inspection_dateErrorMsg').show();
+            $('#inspection_dateErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(inspection_reason == "")
+        {
+            $('#inspection_reasonErrorMsg').html("Enter Inspection Reason");
+            $('#inspection_reasonErrorMsg').show();
+            $('#inspection_reasonErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(ec_clearance_no == "")
+        {
+            $('#ec_clearance_noErrorMsg').html("Enter Environment Clearance Number");
+            $('#ec_clearance_noErrorMsg').show();
+            $('#ec_clearance_noErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(proponent_name == "")
+        {
+            $('#proponent_nameErrorMsg').html("Proponent Name Cannot Be Empty");
+            $('#proponent_nameErrorMsg').show();
+            $('#proponent_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(project_name == "")
+        {
+            $('#project_nameErrorMsg').html("Enter Project Name");
+            $('#project_nameErrorMsg').show();
+            $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(address == "")
+        {
+            $('#addressErrorMsg').html("Enter Address");
+            $('#addressErrorMsg').show();
+            $('#addressErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(observation == "")
+        {
+            $('#observationErrorMsg').html("Enter Observation");
+            $('#observationErrorMsg').show();
+            $('#observationErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(team_leader == "")
+        {
+            $('#team_leaderErrorMsg').html("Enter Team Leader");
+            $('#team_leaderErrorMsg').show();
+            $('#team_leaderErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(team_members == "")
+        {
+            $('#team_membersErrorMsg').html("Enter Team Members");
+            $('#team_membersErrorMsg').show();
+            $('#team_membersErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(inspection_status == "")
+        {
+            $('#inspection_statusErrorMsg').html("Select Status");
+            $('#inspection_statusErrorMsg').show();
+            $('#inspection_statusErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(fines_penalties == "")
+        {
+            $('#fines_penaltiesErrorMsg').html("Select Fines & Penalties (Yes/No)");
+            $('#fines_penaltiesErrorMsg').show();
+            $('#fines_penaltiesErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "post",
+                url : "{% url 'edit_inspection' %}",
+                data : {'record_id':record_id, 'inspection_type':inspection_type, 'inspection_date':inspection_date, 'ec_clearance_no':ec_clearance_no, 'inspection_reason':inspection_reason, 'proponent_name':proponent_name, 'project_name':project_name, 'address':address, 'observation':observation, 'team_leader':team_leader, 'team_members':team_members, 'remarks':remarks, 'fines_penalties':fines_penalties, 'inspection_status':inspection_status, csrfmiddlewaretoken:'{{ csrf_token }}'},
+                success : function(data)
+                {
+                    $('#edit_successMsg').html("Inspection Updated Successfully.");
+                    $('#edit_successMsg').show();
+                    setTimeout(function() {
+                        $('#edit_successMsg').delay(3000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        window.location.href = '/inspection_list';
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function get_ec_details(ec_clearance_no)
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'load_ec_details' %}",
+                data :{'ec_reference_no':ec_clearance_no},
+                success : function(data)
+                {
+                    $('#proponent_name').val(data.applicant_name);
+                    $('#project_name').val(data.project_name);
+                    $('#address').val(data.address);
+                }
+            });
+        }
+</script>
+{% endblock %}                 
+
+
+
+

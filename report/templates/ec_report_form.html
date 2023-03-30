@@ -3,7 +3,7 @@
 {% block content %}
 {% load static %}
 
-<div id="CertificateDetails">
+<div id="ECDetails">
     <form id="certificateReportForm">
         <div class="card">
             <div class="card-header">
@@ -50,7 +50,7 @@
                             <div class="form-group">
                                 <label class="form-label">Dzongkhag <font color="red">*</font></label>
                                 <select id="dzongkhag_code" name="dzongkhag_code" class="form-select">
-                                    <option value="">--SELECT Dzongkhag--</option>
+                                    <option value="ALL">--SELECT ALL--</option>
                                     {% for dzongkhag_list in dzongkhag_list %}
                                         <option value="{{ dzongkhag_list.dzongkhag_code }}">{{ dzongkhag_list.dzongkhag_name }}</option>
                                     {% endfor %}
@@ -65,7 +65,7 @@
                             <div class="form-group">
                                 <label class="form-label">Competent Authority <font color="red">*</font></label>
                                 <select id="ca_authority" name="ca_authority" class="form-select">
-                                    <option value="">--SELECT Competent Authority--</option>
+                                    <option value="ALL">--SELECT ALL--</option>
                                     {% for ca_list in ca_list %}
                                         <option value="{{ ca_list.competent_authority }}">{{ ca_list.competent_authority }}</option>
                                     {% endfor %}
@@ -106,7 +106,6 @@ function viewECIssuedList()
         var ca_authority = $('#ca_authority').val();
         var dzongkhag_code = $('#dzongkhag_code').val();
 
-
         if(from_date == "")
         {
             $('#fromDateErrorMsg').html("Select From Date.");
@@ -127,18 +126,17 @@ function viewECIssuedList()
         }
         else
         {
-
             var fDate = moment(from_date, "DD.MM.YYYY").format("YYYY-MM-DD");
             var tDate = moment(to_date, "DD.MM.YYYY").format("YYYY-MM-DD");
-            $.ajax({
-                type : "GET",
-                url : "{% url 'view_ec_list' %}",
-                data :{'from_date':fDate,'to_date':tDate, 'service_id':service_id},
-                success : function(data)
-                {
-                $('#CertificateDetails').html(data);
-                }
-            });
+             $.ajax({
+                    type : "GET",
+                    url : "{% url 'view_ec_list' %}",
+                    data :{'from_date':from_date,'to_date':to_date, 'service_id':service_id, 'ca_authority':ca_authority, 'dzongkhag_code':dzongkhag_code, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    success : function(data)
+                    {
+                    $('#ECDetails').html(data);
+                    }
+                });
         }
     }
 </script>

@@ -982,12 +982,12 @@ def add_publication_attach(request):
                                          attachment_type='D')
     else:
         t_file_attachment.objects.create(file_path=file_url, attachment=attachment_name, document_id=document_id,
-                                         attachment_type='F')
+                                         attachment_type='C')
 
     t_other_details.objects.create(title=title, type=type, document_id=document_id,is_active='Y',
                                          is_deleted='N')
 
-    return redirect(manage_publications)
+    return redirect(manage_others)
 
 
 def get_other_details(request):
@@ -1068,7 +1068,7 @@ def update_publication_attach(request):
         t_file_attachment.objects.create(file_path=file_url,attachment=attachment_name,document_id=document_id)
         publication_details.update(title=title)
         publication_details.update(type=type)
-    return redirect(manage_publications)
+    return redirect(manage_others)
 
 def manage_publication_details(request):
     others_id = request.POST.get('publication_id')
@@ -1081,7 +1081,7 @@ def manage_publication_details(request):
         publication_details.update(is_deleted='Y')
     else:
         publication_details.update(is_active='N')
-    return redirect(manage_publications)
+    return redirect(manage_others)
 
 def publications(request):
     publication_details = t_other_details.objects.filter(is_active='Y',is_deleted='N')
