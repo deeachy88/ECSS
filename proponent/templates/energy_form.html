@@ -900,19 +900,19 @@
                                     </div>
                                     <br>
                                     <div class="form-check anc_others">
-                                        <input type="checkbox" class="form-check-input">
+                                        <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()">
                                         <label class="form-check-label">Housing Colony</label>
                                     </div>
                                     <div class="form-check anc_others">
-                                        <input type="checkbox" class="form-check-input">
+                                        <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()">
                                         <label class="form-check-label">Power Excavation Line</label>
                                     </div>
                                     <div class="form-check anc_others">
-                                        <input type="checkbox" class="form-check-input">
+                                        <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()">
                                         <label class="form-check-label">Crushing Unit</label>
                                     </div>
                                     <div class="form-check anc_others">
-                                        <input type="checkbox" class="form-check-input">
+                                        <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()">
                                         <label class="form-check-label">Others</label>
                                     </div>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_others_successMsg" style="display:none">
@@ -1303,14 +1303,9 @@
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for Industrial projects </a>
                                     </div>
                                     
-                                    <div class="row forestry_application mt-1" style="display:none;">
-                                        <a href="{% url 'forest_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Forestry projects </a>
-                                    </div>
-                                    
-                                    <div class="row ground_water_application mt-1" style="display:none;">
-                                        <a href="{% url 'ground_water_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Ground Water projects </a>
+                                    <div class="row transmission_application mt-1" style="display:none;">
+                                        <a href="{% url 'transmission_ancillary_form' %}" class="btn btn-danger">
+                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Transmission projects </a>
                                     </div>
                                     
                                     <div class="row general_application mt-1" style="display:none;">
@@ -3397,6 +3392,15 @@
                         location.reload()
                     }, 2000);
                 }
+                else if(data.message == 'not submitted')
+                {
+                    $('#iee_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
+                    $('#iee_submit_errorMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
                 else
                 {
                     $('#energy_submit_errorMsg').html("Please Check And Submit Again");
@@ -4032,6 +4036,43 @@
         sum += parseFloat(others_area_acre) || 0;
 
         $('#total_area_acre').val(sum);
+    }
+
+    function check_anc_other_general()
+    {
+        if($('#anc_other_general').is(":checked") || $('#anc_power_excavation').is(":checked"))
+        {
+            $('.general_application').show();
+        }
+        else if($('#anc_other_general').is(":checked") && $('#anc_power_excavation').not(":checked"))
+        {
+            $('.general_application').show();
+        }
+        else if($('#anc_other_general').is(":checked") && $('#anc_other_crushing_unit').is(":checked"))
+        {
+            $('.general_application').show();
+        }
+        else if($('#anc_other_general').not(":checked") && $('#anc_other_crushing_unit').is(":checked"))
+        {
+            $('.general_application').hide();
+        }
+    }
+
+    function check_anc_power_excavation()
+    {
+
+    }
+
+    function check_anc_other_crushing_unit()
+    {
+        if($('#anc_other_crushing_unit').is(":checked"))
+        {
+            $('.industry_application').show();
+        }
+        else
+        {
+            $('.industry_application').hide();
+        }
     }
 </script>
 {% endblock %}

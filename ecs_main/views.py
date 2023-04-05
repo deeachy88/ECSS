@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from ecs_admin.views import bsic_master
-from proponent.models import t_ec_industries_t10_hazardous_chemicals, t_ec_industries_t11_ec_details, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_industries_t9_products_by_products, t_payment_details, t_workflow_dtls
+from proponent.models import t_ec_industries_t10_hazardous_chemicals, t_ec_industries_t11_ec_details, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_industries_t9_products_by_products, t_fines_penalties, t_payment_details, t_workflow_dtls
 from ecs_admin.models import t_bsic_code, t_dzongkhag_master, t_file_attachment, t_gewog_master, t_role_master, t_service_master, t_thromde_master, t_user_master, t_village_master
 from ecs_main.models import t_inspection_monitoring_t1
 from django.utils import timezone
@@ -320,7 +320,7 @@ def approve_application(request):
     workflow_details.update(action_date=date.today())
     workflow_details.update(actor_id=request.session['login_id'])
     workflow_details.update(actor_name=request.session['name'])
-    workflow_details.update(status_id='A')
+    workflow_details.update(application_status='A')
     for work_details in workflow_details:
         service_id = work_details.service_id
         service_details = t_service_master.objects.filter(service_id=service_id)
@@ -630,4 +630,83 @@ def get_fines_penalties_details(request):
     application_details = t_ec_industries_t1_general.objects.filter(application_no=ec_ref_no) | t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_ref_no)
     
     return render(request, 'fines_penalties_details.html', {'application_details':application_details})
+
+def save_fines_penalties(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('application_no')
+        fines_penalties_type = request.POST.get('fines_penalty_type')
+        ec_no = request.POST.get('ec_ref_no')
+        proponent_name = request.POST.get('ec_ref_no')
+        address = request.POST.get('address')
+        validity = request.POST.get('ec_expiry_date')
+        amount = request.POST.get('fines_and_penalties')
+        
+
+        t_fines_penalties.objects.create(application_no=application_no,
+                                        fines_penalties_type=fines_penalties_type,
+                                        fines_date=date.now(),
+                                        ec_no=ec_no,
+                                        proponent_name=proponent_name,
+                                        address=address,
+                                        validity=validity,
+                                        amount=amount,
+                                        fines_status='P'
+                                        )
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+
+#TOR Details
+def tor_to_verifier(request):
+    application_no = request.POST.get('application_no')
+
+    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+    application_details.update(application_status='V') #Tor Submitted to Verifier/approver
+    workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_user_id=None)
+    workflow_details.update(assigned_role_id='3')
+    workflow_details.update(assigned_role_name='Verifier')
+    workflow_details.update(action_date=date.today())
+    workflow_details.update(actor_id=request.session['login_id'])
+    workflow_details.update(actor_name=request.session['name'])
+    workflow_details.update(application_status='V')
+    
+    return redirect(reviewer_application_list)
+
+def approve_tor_application(request):
+    application_no = request.POST.get('application_no')
+
+    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+    application_details.update(application_status='A') #Tor Submitted to Verifier/approver
+    workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_user_id=None)
+    workflow_details.update(assigned_role_id='3')
+    workflow_details.update(assigned_role_name='Verifier')
+    workflow_details.update(action_date=date.today())
+    workflow_details.update(actor_id=request.session['login_id'])
+    workflow_details.update(actor_name=request.session['name'])
+    workflow_details.update(application_status='A')
+    for work_details in workflow_details:
+        service_id = work_details.service_id
+        service_details = t_service_master.objects.filter(service_id=service_id)
+        for service in service_details:
+            service_name = service.service_name
+            for email_id in application_details:
+                emailId = email_id.email
+                tor_submit_email(emailId, application_no, service_name)
+    return redirect(verify_application_list)
+
+def tor_submit_email(email_id, application_no, service_name):
+    subject = 'APPLICATION APPROVED'
+    message = "Dear Sir," \
+              "" \
+              "Your TOR Application For" + service_name + "Has Been Approved. Your " \
+              " Application No is " + application_no + " . " 
+    recipient_list = [email_id]
+    send_mail(subject, message, 'sparkletechnology2019@gmail.com', recipient_list, fail_silently=False,
+              auth_user='sparkletechnology2019@gmail.com', auth_password='ypohpmxhdlmidwgm',
+              connection=None, html_message=None)
 

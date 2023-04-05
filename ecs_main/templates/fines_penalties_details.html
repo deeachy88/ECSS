@@ -11,6 +11,8 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <form id="fines_penalties_form" method="post">
+                            {% csrf_token %}
+                            <input type="text" class="form-control" value="{{application_no}}" name="application_no" style="display:none;">
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
@@ -21,7 +23,7 @@
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Fines and Penalties Type</label>
-                                        <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" disabled>
+                                        <input type="text" name="fines_penalty_type" class="form-control" id="fines_penalty_type" value="{{ application_details.project_name }}" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -124,7 +126,7 @@
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">EC Reference No</label>
-                                        <input type="text" class="form-control"  value="{{ application_details.ec_ref_no }}" disabled>
+                                        <input type="text" class="form-control" name="ec_ref_no"  value="{{ application_details.ec_ref_no }}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -136,7 +138,7 @@
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">EC Expiry Date</label>
-                                        <input type="text" class="form-control"  value="{{ application_details.ec_expiry_date }}" disabled>
+                                        <input type="text" class="form-control" name="ec_expiry_date"  value="{{ application_details.ec_expiry_date }}" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -156,7 +158,6 @@
                                         <label class="form-label fw-bold">Remarks</label>
                                         <input type="text" class="form-control" name="fines_penalties_remarks" id="fines_penalties_remarks">
                                     </div>
-                                    <div id="fines_penalties_remarksErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                             </div>
                             <div class="alert alert-success border-0 rounded-0" role="alert" id="fines_penalties_successMsg" style="display:none">
@@ -183,16 +184,47 @@
 <script>
     function save_fines_penalties()
     {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'get_fines_penalties_details' %}",
-            data :$('#fines_penalties_form').serialize(),
-            success : function(data)
-            {
-                $('#fines_penalties_details').html(data);
-                $('#fines_penalties_details').show();
-            }
-        });
+        let fines_and_penalties = $('#fines_and_penalties').val();
+        
+        if(fines_and_penalties == "")
+        {
+            $('#fines_and_penaltiesErrorMsg').html("Enter CID");
+            $('#fines_and_penaltiesErrorMsg').show();
+            $('#fines_and_penaltiesErrorMsg').delay(2000).fadeOut('slow');
+            $('#fines_and_penalties').focus();
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'save_fines_penalties' %}",
+                data :$('#fines_penalties_form').serialize(),
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $('#fines_penalties_successMsg').html("Submitted Successfully");
+                        $('#other_impact_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#other_impact_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2000);
+                    }
+                    else
+                    {
+                        $('#fines_penalties_errorMsg').html("Please Check And Submit Again");
+                        $('#other_impact_errorMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#other_impact_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
+                }
+            });
+        }
     }
 </script>
 {% endblock %}       

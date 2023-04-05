@@ -195,7 +195,7 @@
                                     </div>
                                     <div class="row mt-4">
                                         <div class="text-sm-end">
-                                            <a href="#" class="btn btn-success" onclick="save_general_info()">
+                                            <a href="#" class="btn btn-success" onclick="save_transmission_application()">
                                                 <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
                                         </div>
                                     </div>
@@ -2895,28 +2895,28 @@
 
     function save_general_water_requirement()
     {
-        water_excavated_muck = $("input[name=water_excavated_muck]:checked").length;
-        water_required = $("input[name=water_required]:checked").length;
-        water_required_value = $("input[name=water_required]:checked").val();
-        water_provided_by = $("input[name=water_provided_by]:checked").length;
-        water_raw_material_source = $('#water_raw_material_source').val();
-        water_raw_material_qty_day = $('#water_raw_material_qty_day').val();
-        water_raw_material_recycle_day = $('#water_raw_material_recycle_day').val();
-        water_cleaning_source = $('#water_cleaning_source').val();
-        water_cleaning_qty_day = $('#water_cleaning_qty_day').val();
-        water_cleaning_recycle_day = $('#water_cleaning_recycle_day').val();
-        water_process_source = $('#water_process_source').val();
-        water_process_qty_day = $('#water_process_qty_day').val();
-        water_process_recycle_day = $('#water_process_recycle_day').val();
-        water_domestic_source = $('#water_domestic_source').val();
-        water_domestic_qty_day = $('#water_domestic_qty_day').val();
-        water_domestic_recycle_day = $('#water_domestic_recycle_day').val();
-        water_dust_compression_source = $('#water_dust_compression_source').val();
-        water_dust_compression_qty_day = $('#water_dust_compression_qty_day').val();
-        water_dust_compression_recycle_day = $('#water_dust_compression_recycle_day').val();
-        water_others_name = $('#water_others_name').val();
-        water_others_source = $('#water_others_source').val();
-        water_others_qty_day = $('#water_others_qty_day').val();
+        let water_excavated_muck = $("input[name=water_excavated_muck]:checked").length;
+        let water_required = $("input[name=water_required]:checked").length;
+        let water_required_value = $("input[name=water_required]:checked").val();
+        let water_provided_by = $("input[name=water_provided_by]:checked").length;
+        let water_raw_material_source = $('#water_raw_material_source').val();
+        let water_raw_material_qty_day = $('#water_raw_material_qty_day').val();
+        let water_raw_material_recycle_day = $('#water_raw_material_recycle_day').val();
+        let water_cleaning_source = $('#water_cleaning_source').val();
+        let water_cleaning_qty_day = $('#water_cleaning_qty_day').val();
+        let water_cleaning_recycle_day = $('#water_cleaning_recycle_day').val();
+        let water_process_source = $('#water_process_source').val();
+        let water_process_qty_day = $('#water_process_qty_day').val();
+        let water_process_recycle_day = $('#water_process_recycle_day').val();
+        let water_domestic_source = $('#water_domestic_source').val();
+        let water_domestic_qty_day = $('#water_domestic_qty_day').val();
+        let water_domestic_recycle_day = $('#water_domestic_recycle_day').val();
+        let water_dust_compression_source = $('#water_dust_compression_source').val();
+        let water_dust_compression_qty_day = $('#water_dust_compression_qty_day').val();
+        let water_dust_compression_recycle_day = $('#water_dust_compression_recycle_day').val();
+        let water_others_name = $('#water_others_name').val();
+        let water_others_source = $('#water_others_source').val();
+        let water_others_qty_day = $('#water_others_qty_day').val();
 
         if(water_excavated_muck < 1)
         {
@@ -3091,17 +3091,17 @@
     function save_anc_approach_road_details()
     {
 
-        anc_road_required = $("input[name=anc_road_required]:checked").length;
-        anc_road_required_value = $("input[name=anc_road_required]:checked").val();
-        anc_road_length = $('#anc_road_length').val();
-        anc_road_start_point = $('#anc_road_start_point').val();
-        anc_road_end_point  = $('#anc_road_end_point').val();
-        anc_road_blast_required= $("input[name=anc_road_required]:checked").length;
-        anc_road_blast_required_value = $("input[name=anc_road_required]:checked").val();
-        anc_road_blast_type = $('#anc_road_blast_type').val();
-        anc_road_blast_qty = $('#anc_road_blast_qty').val();
-        anc_road_blast_location = $('#anc_road_blast_location').val();
-        anc_road_blast_frequency_time = $('#anc_road_blast_frequency_time').val();
+        let anc_road_required = $("input[name=anc_road_required]:checked").length;
+        let anc_road_required_value = $("input[name=anc_road_required]:checked").val();
+        let anc_road_length = $('#anc_road_length').val();
+        let anc_road_start_point = $('#anc_road_start_point').val();
+        let anc_road_end_point  = $('#anc_road_end_point').val();
+        let anc_road_blast_required= $("input[name=anc_road_required]:checked").length;
+        let anc_road_blast_required_value = $("input[name=anc_road_required]:checked").val();
+        let anc_road_blast_type = $('#anc_road_blast_type').val();
+        let anc_road_blast_qty = $('#anc_road_blast_qty').val();
+        let anc_road_blast_location = $('#anc_road_blast_location').val();
+        let anc_road_blast_frequency_time = $('#anc_road_blast_frequency_time').val();
 
         if(anc_road_required < 1)
         {
@@ -3241,27 +3241,27 @@
 
     function save_solid_waste_details()
     {
-        en_impact_allocated_budget = $('#en_impact_allocated_budget').val();
-        en_impact_hazardous_waste_list = $('#en_impact_hazardous_waste_list').val();
-        en_impact_hazardous_waste_source = $('#en_impact_hazardous_waste_source').val();
-        en_impact_hazardous_waste_qty_annum = $('#en_impact_hazardous_waste_qty_annum').val();
-        en_impact_hazardous_waste_mgt_plan = $('#en_impact_hazardous_waste_mgt_plan').val();
-        en_impact_non_hazardous_waste_list = $('#en_impact_non_hazardous_waste_list').val();
-        en_impact_non_hazardous_waste_source = $('#en_impact_non_hazardous_waste_source').val();
-        en_impact_non_hazardous_waste_qty_annum = $('#en_impact_non_hazardous_waste_qty_annum').val();
-        en_impact_non_hazardous_waste_mgt_plan = $('#en_impact_non_hazardous_waste_mgt_plan').val();
-        en_impact_medical_waste_list = $('#en_impact_medical_waste_list').val();
-        en_impact_medical_waste_source = $('#en_impact_medical_waste_source').val();
-        en_impact_medical_waste_qty_annum = $('#en_impact_medical_waste_qty_annum').val();
-        en_impact_medical_waste_mgt_plan = $('#en_impact_medical_waste_mgt_plan').val();
-        en_impact_ewaste_list = $('#en_impact_ewaste_list').val();
-        en_impact_ewaste_source = $('#en_impact_ewaste_source').val();
-        en_impact_ewaste_qty_annum = $('#en_impact_ewaste_qty_annum').val();
-        en_impact_ewaste_mgt_plan = $('#en_impact_ewaste_mgt_plan').val();
-        en_impact_others_waste_list = $('#en_impact_others_waste_list').val();
-        en_impact_others_waste_source = $('#en_impact_others_waste_source').val();
-        en_impact_others_waste_qty_annum = $('#en_impact_others_waste_qty_annum').val();
-        en_impact_others_waste_mgt_plan = $('#en_impact_others_waste_mgt_plan').val();
+        let en_impact_allocated_budget = $('#en_impact_allocated_budget').val();
+        let en_impact_hazardous_waste_list = $('#en_impact_hazardous_waste_list').val();
+        let en_impact_hazardous_waste_source = $('#en_impact_hazardous_waste_source').val();
+        let en_impact_hazardous_waste_qty_annum = $('#en_impact_hazardous_waste_qty_annum').val();
+        let en_impact_hazardous_waste_mgt_plan = $('#en_impact_hazardous_waste_mgt_plan').val();
+        let en_impact_non_hazardous_waste_list = $('#en_impact_non_hazardous_waste_list').val();
+        let en_impact_non_hazardous_waste_source = $('#en_impact_non_hazardous_waste_source').val();
+        let en_impact_non_hazardous_waste_qty_annum = $('#en_impact_non_hazardous_waste_qty_annum').val();
+        let en_impact_non_hazardous_waste_mgt_plan = $('#en_impact_non_hazardous_waste_mgt_plan').val();
+        let en_impact_medical_waste_list = $('#en_impact_medical_waste_list').val();
+        let en_impact_medical_waste_source = $('#en_impact_medical_waste_source').val();
+        let en_impact_medical_waste_qty_annum = $('#en_impact_medical_waste_qty_annum').val();
+        let en_impact_medical_waste_mgt_plan = $('#en_impact_medical_waste_mgt_plan').val();
+        let en_impact_ewaste_list = $('#en_impact_ewaste_list').val();
+        let en_impact_ewaste_source = $('#en_impact_ewaste_source').val();
+        let en_impact_ewaste_qty_annum = $('#en_impact_ewaste_qty_annum').val();
+        let en_impact_ewaste_mgt_plan = $('#en_impact_ewaste_mgt_plan').val();
+        let en_impact_others_waste_list = $('#en_impact_others_waste_list').val();
+        let en_impact_others_waste_source = $('#en_impact_others_waste_source').val();
+        let en_impact_others_waste_qty_annum = $('#en_impact_others_waste_qty_annum').val();
+        let en_impact_others_waste_mgt_plan = $('#en_impact_others_waste_mgt_plan').val();
 
         if(en_impact_allocated_budget == "")
         {
@@ -3449,15 +3449,15 @@
 
     function save_noise_level_details()
     {
-        en_noise_ind_area_day = $('#en_noise_ind_area_day').val();
-        en_noise_ind_area_night = $('#en_noise_ind_area_night').val();
-        en_noise_ind_area_mgt_plan = $('#en_noise_ind_area_mgt_plan').val();
-        en_noise_mixed_area_day = $('#en_noise_mixed_area_day').val();
-        en_noise_mixed_area_night = $('#en_noise_mixed_area_night').val();
-        en_noise_mixed_area_mgt_plan = $('#en_noise_mixed_area_mgt_plan').val();
-        en_noise_sen_area_day = $('#en_noise_sen_area_day').val();
-        en_noise_sen_area_night = $('#en_noise_sen_area_night').val();
-        en_noise_sen_area_mgt_plan = $('#en_noise_sen_area_mgt_plan').val();
+        let en_noise_ind_area_day = $('#en_noise_ind_area_day').val();
+        let en_noise_ind_area_night = $('#en_noise_ind_area_night').val();
+        let en_noise_ind_area_mgt_plan = $('#en_noise_ind_area_mgt_plan').val();
+        let en_noise_mixed_area_day = $('#en_noise_mixed_area_day').val();
+        let en_noise_mixed_area_night = $('#en_noise_mixed_area_night').val();
+        let en_noise_mixed_area_mgt_plan = $('#en_noise_mixed_area_mgt_plan').val();
+        let en_noise_sen_area_day = $('#en_noise_sen_area_day').val();
+        let en_noise_sen_area_night = $('#en_noise_sen_area_night').val();
+        let en_noise_sen_area_mgt_plan = $('#en_noise_sen_area_mgt_plan').val();
 
         if(en_noise_ind_area_day == "")
         {
@@ -3561,42 +3561,42 @@
 
     function save_other_impact_details()
     {
-        en_other_impact_odour_source = $('#en_other_impact_odour_source').val();
-        en_other_impact_odour_qty = $('#en_other_impact_odour_qty').val();
-        en_other_impact_odour_mgt_plan = $('#en_other_impact_odour_mgt_plan').val();
-        en_other_impact_fugutive_source = $('#en_other_impact_fugutive_source').val();
-        en_other_impact_fugutive_qty = $('#en_other_impact_fugutive_qty').val();
-        en_other_impact_fugutive_mgt_plan = $('#en_other_impact_fugutive_mgt_plan').val();
-        en_other_impact_slope_source = $('#en_other_impact_slope_source').val();
-        en_other_impact_slope_qty = $('#en_other_impact_slope_qty').val();
-        en_other_impact_slope_mgt_plan = $('#en_other_impact_slope_mgt_plan').val();
-        en_other_impact_aesthetic_source = $('#en_other_impact_aesthetic_source').val();
-        en_other_impact_aesthetic_qty = $('#en_other_impact_aesthetic_qty').val();
-        en_other_impact_aesthetic_mgt_plan = $('#en_other_impact_aesthetic_mgt_plan').val();
-        en_other_impact_mucks_source = $('#en_other_impact_mucks_source').val();
-        en_other_impact_mucks_qty = $('#en_other_impact_mucks_qty').val();
-        en_other_impact_mucks_mgt_plan = $('#en_other_impact_mucks_mgt_plan').val();
-        en_other_impact_sewerage_source = $('#en_other_impact_sewerage_source').val();
-        en_other_impact_sewerage_qty = $('#en_other_impact_sewerage_qty').val();
-        en_other_impact_sewerage_mgt_plan = $('#en_other_impact_sewerage_mgt_plan').val();
-        en_other_impact_erosion_source = $('#en_other_impact_erosion_source').val();
-        en_other_impact_erosion_qty = $('#en_other_impact_erosion_qty').val();
-        en_other_impact_erosion_mgt_plan = $('#en_other_impact_erosion_mgt_plan').val();
-        en_other_impact_storm_water_source = $('#en_other_impact_storm_water_source').val();
-        en_other_impact_storm_water_qty = $('#en_other_impact_storm_water_qty').val();
-        en_other_impact_storm_water_mgt_plan = $('#en_other_impact_storm_water_mgt_plan').val();
-        en_other_impact_habitat_source = $('#en_other_impact_habitat_source').val();
-        en_other_impact_habitat_qty = $('#en_other_impact_habitat_qty').val();
-        en_other_impact_habitat_mgt_plan = $('#en_other_impact_habitat_mgt_plan').val();
-        en_other_impact_socio_source = $('#en_other_impact_socio_source').val();
-        en_other_impact_socio_qty = $('#en_other_impact_socio_qty').val();
-        en_other_impact_socio_mgt_plan = $('#en_other_impact_socio_mgt_plan').val();
-        en_other_impact_water_source_source = $('#en_other_impact_water_source_source').val();
-        en_other_impact_water_source_qty = $('#en_other_impact_water_source_qty').val();
-        en_other_impact_water_source_mgt_plan = $('#en_other_impact_water_source_mgt_plan').val();
-        en_other_impact_other_source = $('#en_other_impact_other_source').val();
-        en_other_impact_other_qty = $('#en_other_impact_other_qty').val();
-        en_other_impact_other_mgt_plan = $('#en_other_impact_other_mgt_plan').val();
+        let en_other_impact_odour_source = $('#en_other_impact_odour_source').val();
+        let en_other_impact_odour_qty = $('#en_other_impact_odour_qty').val();
+        let en_other_impact_odour_mgt_plan = $('#en_other_impact_odour_mgt_plan').val();
+        let en_other_impact_fugutive_source = $('#en_other_impact_fugutive_source').val();
+        let en_other_impact_fugutive_qty = $('#en_other_impact_fugutive_qty').val();
+        let en_other_impact_fugutive_mgt_plan = $('#en_other_impact_fugutive_mgt_plan').val();
+        let en_other_impact_slope_source = $('#en_other_impact_slope_source').val();
+        let en_other_impact_slope_qty = $('#en_other_impact_slope_qty').val();
+        let en_other_impact_slope_mgt_plan = $('#en_other_impact_slope_mgt_plan').val();
+        let en_other_impact_aesthetic_source = $('#en_other_impact_aesthetic_source').val();
+        let en_other_impact_aesthetic_qty = $('#en_other_impact_aesthetic_qty').val();
+        let en_other_impact_aesthetic_mgt_plan = $('#en_other_impact_aesthetic_mgt_plan').val();
+        let en_other_impact_mucks_source = $('#en_other_impact_mucks_source').val();
+        let en_other_impact_mucks_qty = $('#en_other_impact_mucks_qty').val();
+        let en_other_impact_mucks_mgt_plan = $('#en_other_impact_mucks_mgt_plan').val();
+        let en_other_impact_sewerage_source = $('#en_other_impact_sewerage_source').val();
+        let en_other_impact_sewerage_qty = $('#en_other_impact_sewerage_qty').val();
+        let en_other_impact_sewerage_mgt_plan = $('#en_other_impact_sewerage_mgt_plan').val();
+        let en_other_impact_erosion_source = $('#en_other_impact_erosion_source').val();
+        let en_other_impact_erosion_qty = $('#en_other_impact_erosion_qty').val();
+        let en_other_impact_erosion_mgt_plan = $('#en_other_impact_erosion_mgt_plan').val();
+        let en_other_impact_storm_water_source = $('#en_other_impact_storm_water_source').val();
+        let en_other_impact_storm_water_qty = $('#en_other_impact_storm_water_qty').val();
+        let en_other_impact_storm_water_mgt_plan = $('#en_other_impact_storm_water_mgt_plan').val();
+        let en_other_impact_habitat_source = $('#en_other_impact_habitat_source').val();
+        let en_other_impact_habitat_qty = $('#en_other_impact_habitat_qty').val();
+        let en_other_impact_habitat_mgt_plan = $('#en_other_impact_habitat_mgt_plan').val();
+        let en_other_impact_socio_source = $('#en_other_impact_socio_source').val();
+        let en_other_impact_socio_qty = $('#en_other_impact_socio_qty').val();
+        let en_other_impact_socio_mgt_plan = $('#en_other_impact_socio_mgt_plan').val();
+        let en_other_impact_water_source_source = $('#en_other_impact_water_source_source').val();
+        let en_other_impact_water_source_qty = $('#en_other_impact_water_source_qty').val();
+        let en_other_impact_water_source_mgt_plan = $('#en_other_impact_water_source_mgt_plan').val();
+        let en_other_impact_other_source = $('#en_other_impact_other_source').val();
+        let en_other_impact_other_qty = $('#en_other_impact_other_qty').val();
+        let en_other_impact_other_mgt_plan = $('#en_other_impact_other_mgt_plan').val();
 
         if(en_other_impact_odour_source == "")
         {
@@ -3924,6 +3924,15 @@
                         location.reload()
                     }, 2000);
                 }
+                else if(data.message == 'not submitted')
+                {
+                    $('#iee_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
+                    $('#iee_submit_errorMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
                 else
                 {
                     $('#transmission_submit_errorMsg').html("Please Check And Submit Again");
@@ -3939,10 +3948,10 @@
 
     function add_machine_tool_details()
     {
-        application_no = $('#application_no').val();
-        machine_tool = $('#machine_tool').val();
-        machine_tool_qty = $('#machine_tool_qty').val();
-        machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
+        let application_no = $('#application_no').val();
+        let machine_tool = $('#machine_tool').val();
+        let machine_tool_qty = $('#machine_tool_qty').val();
+        let  machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
 
         if(machine_tool == "")
         {
@@ -4004,11 +4013,11 @@
 
     function update_machine_equipment_populate(record_id, application_no, machine_name, qty, installed_capacity)
     {
-        record_id = $('#edit_machine_tool_record_id').val();
-        application_no = $('#edit_machine_tool_app_no').val();
-        machine_tool = $('#edit_machine_tool').val();
-        qty = $('#edit_machine_tool_qty').val();
-        machine_tool_installed_capacity = $('#edit_machine_tool_installed_capacity').val();
+        let record_id = $('#edit_machine_tool_record_id').val();
+        let application_no = $('#edit_machine_tool_app_no').val();
+        let machine_tool = $('#edit_machine_tool').val();
+        let qty = $('#edit_machine_tool_qty').val();
+        let machine_tool_installed_capacity = $('#edit_machine_tool_installed_capacity').val();
 
         if(machine_tool == "")
         {
@@ -4094,11 +4103,11 @@
 
     function add_raw_material_details()
     {
-        application_no = $('#application_no').val();
-        raw_material = $('#raw_material').val();
-        raw_material_qty = $('#raw_material_qty').val();
-        raw_material_source = $('#raw_material_source').val();
-        raw_material_storage_method = $('#raw_material_storage_method').val();
+        let application_no = $('#application_no').val();
+        let raw_material = $('#raw_material').val();
+        let raw_material_qty = $('#raw_material_qty').val();
+        let raw_material_source = $('#raw_material_source').val();
+        let raw_material_storage_method = $('#raw_material_storage_method').val();
 
         if(raw_material == "")
         {
@@ -4168,12 +4177,12 @@
 
     function update_raw_material_details()
     {
-        record_id = $('#edit_raw_material_record_id').val();
-        application_no = $('#edit_raw_material_app_no').val();
-        raw_material = $('#edit_raw_material').val();
-        raw_material_qty = $('#edit_raw_material_qty').val();
-        raw_material_source = $('#edit_raw_material_source').val();
-        raw_material_storage_method = $('#edit_raw_material_storage_method').val();
+        let record_id = $('#edit_raw_material_record_id').val();
+        let application_no = $('#edit_raw_material_app_no').val();
+        let raw_material = $('#edit_raw_material').val();
+        let raw_material_qty = $('#edit_raw_material_qty').val();
+        let raw_material_source = $('#edit_raw_material_source').val();
+        let raw_material_storage_method = $('#edit_raw_material_storage_method').val();
 
         if(raw_material == "")
         {
@@ -4238,8 +4247,8 @@
 
     function delete_raw_material_details()
     {
-        record_id = $('#delete_raw_material_record_id').val();
-        application_no = $('#delete_raw_material_app_no').val();
+        let record_id = $('#delete_raw_material_record_id').val();
+        let application_no = $('#delete_raw_material_app_no').val();
 
         $.ajax
         ({
@@ -4266,10 +4275,10 @@
 
     function add_partner_details()
     {
-        application_no = $('#application_no').val();
-        partner_type = $('#partner_type').val();
-        partner_type_name = $('#partner_type_name').val();
-        partner_type_address = $('#partner_type_address').val();
+        let application_no = $('#application_no').val();
+        let partner_type = $('#partner_type').val();
+        let partner_type_name = $('#partner_type_name').val();
+        let partner_type_address = $('#partner_type_address').val();
 
         if(partner_type == "")
         {
@@ -4328,8 +4337,8 @@
 
     function delete_partner_details()
     {
-        record_id = $('#delete_partner_details_record_id').val();
-        application_no = $('#delete_partner_details_app_no').val();
+        let record_id = $('#delete_partner_details_record_id').val();
+        let application_no = $('#delete_partner_details_app_no').val();
 
         $.ajax
         ({
@@ -4354,7 +4363,7 @@
         });
     }
 
-    function transmission_application_form()
+    function save_transmission_application()
     {
         let project_name = $('#project_name').val();
         let project_category = $('#project_category').val();
@@ -4365,7 +4374,6 @@
         let contact_no = $('#contact_no').val();
         let contact_no_length = $('#contact_no').val().length;
         let email = $('#email').val();
-        let focal_person = $('#focal_person').val();
         let industry_type = $('#industry_type').val();
         let establishment_type = $('#establishment_type').val();
         let industry_classification = $('#industry_classification').val();
@@ -4377,13 +4385,8 @@
         let state_reserve_forest_acre = $('#state_reserve_forest_acre').val();
         let private_area_acre = $('#private_area_acre').val();
         let others_area_acre = $('#others_area_acre').val();
-        let total_area_acre = $('#total_area_acre').val();
-        let green_area_acre = $('#green_area_acre').val();
-        let production_process_flow = $('#production_process_flow').val();
-        let project_objective = $('#project_objective').val();
-        let project_no_of_workers = $('#project_no_of_workers').val();
-        let project_cost = $('#project_cost').val();
-        let project_duration = $('#project_duration').val();
+        let total_build_up_area = $('#total_build_up_area').val();
+        
 
         if(project_name == "")
         {
@@ -4532,47 +4535,12 @@
             $('#others_area_acreErrorMsg').delay(2000).fadeOut('slow');
             $('#others_area_acre').focus();
         }
-        else if(green_area_acre == "")
+        else if(total_build_up_area == "")
         {
-            $('#green_area_acreErrorMsg').html("Enter Total Green Space");
-            $('#green_area_acreErrorMsg').show();
-            $('#green_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#green_area_acre').focus();
-        }
-        else if(production_process_flow == "")
-        {
-            $('#production_process_flowErrorMsg').html("Enter Brief Description of Production and Process Flow");
-            $('#production_process_flowErrorMsg').show();
-            $('#production_process_flowErrorMsg').delay(2000).fadeOut('slow');
-            $('#production_process_flow').focus();
-        }
-        else if(project_objective == "")
-        {
-            $('#project_objectiveErrorMsg').html("Enter Project Objective");
-            $('#project_objectiveErrorMsg').show();
-            $('#project_objectiveErrorMsg').delay(2000).fadeOut('slow');
-            $('#project_objective').focus();
-        }
-        else if(project_no_of_workers == "")
-        {
-            $('#project_no_of_workersErrorMsg').html("Enter Project Objective");
-            $('#project_no_of_workersErrorMsg').show();
-            $('#project_no_of_workersErrorMsg').delay(2000).fadeOut('slow');
-            $('#project_no_of_workers').focus();
-        }
-        else if(project_cost == "")
-        {
-            $('#project_costErrorMsg').html("Enter Project Cost");
-            $('#project_costErrorMsg').show();
-            $('#project_costErrorMsg').delay(2000).fadeOut('slow');
-            $('#project_cost').focus();
-        }
-        else if(project_duration == "")
-        {
-            $('#project_durationErrorMsg').html("Enter Project Duration");
-            $('#project_durationErrorMsg').show();
-            $('#project_durationErrorMsg').delay(2000).fadeOut('slow');
-            $('#project_duration').focus();
+            $('#total_build_up_areaErrorMsg').html("Enter Total Build Up Area");
+            $('#total_build_up_areaErrorMsg').show();
+            $('#total_build_up_areaErrorMsg').delay(2000).fadeOut('slow');
+            $('#total_build_up_area').focus();
         }
         else
         {
@@ -4580,7 +4548,7 @@
             ({
                 type : "POST",
                 url : "{% url 'save_iee_application' %}",
-                data : $('#iee_application_form').serialize(),
+                data : $('#transmission_application_form').serialize(),
                 success : function(data)
                 {
                     if(data.message == 'success')
@@ -4612,17 +4580,6 @@
         }
     }
 
-    function check_application_details(value)
-    {
-        if(value == "")
-        {
-
-        }
-        else
-        {
-
-        }
-    }
 
     function save_transmission_attachment()
     {
@@ -4688,15 +4645,15 @@
 
     function save_power_line_details()
     {
-        application_no = $('#application_no').val();
-        line_chainage_from = $('#line_chainage_from').val();
-        line_chainage_to = $('#line_chainage_to').val();
-        land_type = $('#land_type').val();
-        terrain = $('#terrain').val();
-        tower_type = $('#tower_type').val();
-        no_of_tower = $('#no_of_tower').val();
-        row = $('#row').val();
-        area_required = $('#area_required').val();
+        let application_no = $('#application_no').val();
+        let line_chainage_from = $('#line_chainage_from').val();
+        let line_chainage_to = $('#line_chainage_to').val();
+        let land_type = $('#land_type').val();
+        let terrain = $('#terrain').val();
+        let tower_type = $('#tower_type').val();
+        let no_of_tower = $('#no_of_tower').val();
+        let row = $('#row').val();
+        let area_required = $('#area_required').val();
 
         if(line_chainage_from == "")
         {

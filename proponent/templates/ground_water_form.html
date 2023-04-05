@@ -236,8 +236,8 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingTwoBtn"
+                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" disabled>
                                 Baseline/Existing information
                             </button>
                         </h2>
@@ -376,14 +376,14 @@
                         </div>
                     </div>
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingForest">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseForest" aria-expanded="false" aria-controls="collapseForest">
+                        <h2 class="accordion-header" id="headingProjectDetails">
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingProjectDetailsBtn"
+                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" disabled>
                                 Project Details
                             </button>
                         </h2>
-                        <div id="collapseForest" class="accordion-collapse collapse" aria-labelledby="headingForest"
-                            data-bs-parent="#headingForest">
+                        <div id="collapseProjectDetails" class="accordion-collapse collapse" aria-labelledby="headingForest"
+                            data-bs-parent="#headingProjectDetails">
                             <div class="accordion-body">
                                 <form method="post" id="project_details_form">
                                     {% csrf_token %}
@@ -520,55 +520,95 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
-                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFourBtn"
+                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" disabled>
                                 Energy / Ground Water Parameters
                             </button>
                         </h2>
                         <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Mention the source of energy to operate the proposed activity</label>
-                                            <select class="form-control" id="energy_source" name="energy_source">
-                                                <option value="">--SELECT--</option>
-                                                <option value="Electric">Electric</option>
-                                                <option value="Coal">Coal</option>
-                                                <option value="High speed diesel">High speed diesel</option>
-                                                <option value="Wood-Fired">Wood-Fired</option>
-                                                <option value="Biomass">Biomass</option>
-                                            </select>
-                                        </div>
-                                        <div id="energy_sourceErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                </div>
-                                <br>
-                                <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide the list of raw materials, source, transportation and storage methods in table below
-                                </div>
-                                <br>
-                                <div class="col-md-12" id="dump_yard_details" style="display:none;">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="card-widgets mb-3">
-                                                <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#raw_materials_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                <form method="post" id="ground_water_form">
+                                    {% csrf_token %}
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="ground_water_application_no">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Mention the source of energy to operate the proposed activity</label>
+                                                <select class="form-control" id="energy_source" name="energy_source">
+                                                    <option value="">--SELECT--</option>
+                                                    <option value="Electric">Electric</option>
+                                                    <option value="Coal">Coal</option>
+                                                    <option value="High speed diesel">High speed diesel</option>
+                                                    <option value="Wood-Fired">Wood-Fired</option>
+                                                    <option value="Biomass">Biomass</option>
+                                                </select>
                                             </div>
-                                            <div class="collapse pt-3 show">
-                                                <div id="raw_materials_div">
-                                                    {% include 'raw_materials.html' %}
+                                            <div id="energy_sourceErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide the list of raw materials, source, transportation and storage methods in table below
+                                    </div>
+                                    <br>
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="card-widgets mb-3">
+                                                    <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#raw_materials_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                </div>
+                                                <div class="collapse pt-3 show">
+                                                    <div id="raw_materials_div">
+                                                        {% include 'raw_materials.html' %}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row mt-4">
-                                    <div class="text-sm-end">
-                                        <a href="#" class="btn btn-success" onclick="save_ground_water_requirement()">
-                                            <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                    <br>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Parameters of Ground Water in line with BDWQS 2016
                                     </div>
-                                </div>
+                                    <br>
+                                    <table class="table table-hover table-bordered table-centered mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Parameter</th>
+                                                <th>Unit</th>
+                                                <th>Test Result</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>pH</td>
+                                                <td>pH Scale</td>
+                                                <td><input type="text" name="water_source_ph" class="form-control col-lg-6" id="water_source_ph"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Turbidity</td>
+                                                <td>NTU</td>
+                                                <td><input type="text" name="water_source_turbidity" class="form-control col-lg-6" id="water_source_turbidity"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Conductivity</td>
+                                                <td>µS/cm</td>
+                                                <td><input type="text" name="water_source_conductivity" class="form-control col-lg-6" id="water_source_conductivity"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>E.Coli</td>
+                                                <td>CFU/100ml sample</td>
+                                                <td><input type="text" name="water_source_ecoli" class="form-control col-lg-6" id="water_source_ecoli"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="row mt-4">
+                                        <div class="text-sm-end">
+                                            <a href="#" class="btn btn-success" onclick="save_ground_water_requirement()">
+                                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -3078,7 +3118,6 @@
                             $("#headingTwoBtn").removeAttr("disabled");
                             $("#collapseTwo").addClass("show");
                             $("#collapseOne").removeClass("show");
-                            $('#proposed_location_justification').focus();
                         }, 2000);
                     }
                     else
@@ -3365,7 +3404,7 @@
                             $('#terrain_baseline_application_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                         setTimeout(function() {
-                            $("#ProjectDetailsBtn").removeAttr("disabled");
+                            $("#headingProjectDetailsBtn").removeAttr("disabled");
                             $("#collapseProjectDetails").addClass("show");
                             $("#collapseTwo").removeClass("show");
                         }, 2000);
@@ -3502,7 +3541,7 @@
                             $('#project_details_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                         setTimeout(function() {
-                            $("#collapseFourBtn").removeAttr("disabled");
+                            $("#headingFourBtn").removeAttr("disabled");
                             $("#collapseFour").addClass("show");
                             $("#collapseProjectDetails").removeClass("show");
                         }, 2000);
@@ -3519,6 +3558,87 @@
                 }
             });
         }
+    }
+
+    function save_ground_water_requirement()
+    {
+        let energy_source = $('#energy_source').val();
+        let water_source_ph =  $('#water_source_ph').val();
+        let water_source_turbidity = $('#water_source_turbidity').val();
+        let water_source_conductivity = $('#water_source_conductivity').val();
+        let water_source_ecoli = $('#water_source_ecoli').val();
+
+        if(energy_source == "")
+        {
+            $('#energy_sourceErrorMsg').html("Select one.");
+            $('#energy_sourceErrorMsg').show();
+            $('#energy_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#energy_source').focus();
+        }
+        else if(water_source_ph == "")
+        {
+            $('#water_source_phErrorMsg').html("Please Enter.");
+            $('#water_source_phErrorMsg').show();
+            $('#water_source_phErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_source_ph').focus();
+        }
+        else if(water_source_turbidity == "")
+        {
+            $('#water_source_turbidityErrorMsg').html("Please Enter.");
+            $('#water_source_turbidityErrorMsg').show();
+            $('#water_source_turbidityErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_source_turbidity').focus();
+        }
+        else if(water_source_conductivity == "")
+        {
+            $('#water_source_conductivityErrorMsg').html("Please Enter.");
+            $('#water_source_conductivityErrorMsg').show();
+            $('#water_source_conductivityErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_source_conductivity').focus();
+        }
+        else if(water_source_ecoli == "")
+        {
+            $('#water_source_ecoliErrorMsg').html("Please Enter.");
+            $('#water_source_ecoliErrorMsg').show();
+            $('#water_source_ecoliErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_source_ecoli').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_ground_water_requirement' %}",
+                data : $('#ground_water_form').serialize(),
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $('#ground_water_successMsg').html("Saved Successfully");
+                        $('#ground_water_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#ground_water_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            $("#headingSixBtn").removeAttr("disabled");
+                            $("#collapseSix").addClass("show");
+                            $("#collapseForest").removeClass("show");
+                        }, 2000);
+                    }
+                    else
+                    {
+                        $('#ground_water_errorMsg').html("Please Check And Submit Again");
+                        $('#ground_water_errorMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#ground_water_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
+                }
+            });
+        }
+
     }
 
     function save_anc_power_line_form()
@@ -4311,7 +4431,7 @@
         $.ajax
         ({
             type : "POST",
-            url : "{% url 'submit_iee_application' %}",
+            url : "{% url 'submit_ground_water_application' %}",
             data : $('#ground_water_submit_form').serialize(),
             success : function(data)
             {
@@ -4325,6 +4445,15 @@
                     }, 2000);
                     setTimeout(function() {
                         location.reload()
+                    }, 2000);
+                }
+                else if(data.message == 'not submitted')
+                {
+                    $('#iee_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
+                    $('#iee_submit_errorMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                 }
                 else

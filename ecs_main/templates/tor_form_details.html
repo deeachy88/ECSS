@@ -9,6 +9,7 @@
                     <form method="post" id="tor_form">
                         {% csrf_token %}
                         <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+                        <input type="text" class="form-control" value="{{application_details.application_status}}" id="status" name="status" style="display:none;">
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="mb-3">
@@ -160,7 +161,7 @@
                         <div class="alert alert-danger border-0 rounded-0" role="alert" id="tor_form_errorMsg" style="display:none">
                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 show_verifier_details" style="display: none;">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Forward To</label>
                                 <select class="form-control" name="forward_to"  id="forward_to">
@@ -172,10 +173,16 @@
                             </div>
                             <div id="forward_toErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
-                        <div class="row mt-4">
+                        <div class="row mt-4 show_verifier_details" style="display: none;">
                             <div class="text-sm-end">
                                 <button type="button" class="btn btn-success" onclick="forward_tor_form()">
                                     <i class="mdi mdi-arrow-right me-1"></i> Forward </button>
+                            </div>
+                        </div>
+                        <div class="row mt-4 show_reviewer_details" style="display: none;">
+                            <div class="text-sm-end">
+                                <button type="button" class="btn btn-success" onclick="forward_tor_form()">
+                                    <i class="mdi mdi-arrow-right me-1"></i> Submit </button>
                             </div>
                         </div>
                     </form>
@@ -185,6 +192,19 @@
     </div>
 {% endfor %}
 <script>
+    $(function() {
+        let status = $('#status').val();
+
+        if(status == 'P')
+        {
+            $('.show_verifier_details').show();
+        }
+        else 
+        {
+            $('.show_reviewer_details').show();
+        }
+    });
+
     function forward_tor_form()
     {
         $.ajax

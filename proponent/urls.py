@@ -83,6 +83,7 @@ urlpatterns = [
     path('ground_water_ancillary_form', views.ground_water_ancillary_form, name='ground_water_ancillary_form'),
     path('forest_ancillary_form', views.forest_ancillary_form, name='forest_ancillary_form'),
     path('general_ancillary_form', views.general_ancillary_form, name='general_ancillary_form'),
+    path('transmission_ancillary_form', views.transmission_ancillary_form, name='transmission_ancillary_form'),
     path('save_industry_ancillary_application', views.save_industry_ancillary_application, name='save_industry_ancillary_application'),
 
     #General Application Details
@@ -106,6 +107,8 @@ urlpatterns = [
 
     # Ground Water Application Details
     path('save_ground_water_application', views.save_ground_water_application, name='save_ground_water_application'),
+    path('save_ground_water_requirement', views.save_ground_water_requirement, name='save_ground_water_requirement'),
+    path('submit_ground_water_application', views.submit_ground_water_application, name='submit_ground_water_application'),
 
     # Quarry Application Details
     path('save_quarry_application', views.save_quarry_application, name='save_quarry_application'),
@@ -135,9 +138,14 @@ urlpatterns = [
     path('name_change', views.name_change, name='name_change'),
     path('ownership_change', views.ownership_change, name='ownership_change'),
     path('technology_change', views.technology_change, name='technology_change'),
-    path('product_change', views.product_change, name='product_change'),
+    path('product_change', views.product_change, name='prod uct_change'),
     path('capacity_change', views.capacity_change, name='capacity_change'),
     path('area_change', views.area_change, name='area_change'),
     path('location_change', views.location_change, name='location_change'),
-    path('get_other_modification_details', views.get_other_modification_details, name='get_other_modification_details')
+    path('get_other_modification_details', views.get_other_modification_details, name='get_other_modification_details'),
+    
+    # Draft Application Details
+    path('draft_application_list', views.draft_application_list, name='draft_application_list'),
+
+
 ]

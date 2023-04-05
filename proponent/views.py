@@ -160,6 +160,21 @@ def general_ancillary_form(request):
                                                      'final_product':final_product,'ancillary_road':ancillary_road, 'power_line':power_line,
                                                      'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 
+def transmission_ancillary_form(request):
+    application_no = request.session['application_no']
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    project_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'transmission_ancillary_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
+                                                     'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+
 
 def get_application_no(request, service_code):
     application_no= t_ec_industries_t1_general.objects.aggregate(Max('application_no'))
@@ -304,6 +319,7 @@ def save_iee_application(request):
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
+        application_type = request.POST.get('application_type')
         address = request.POST.get('address')
         cid = request.POST.get('cid')
         contact_no = request.POST.get('contact_no')
@@ -331,7 +347,8 @@ def save_iee_application(request):
         t_ec_industries_t1_general.objects.create(
             application_no=application_no,
             application_date=None,
-            application_type='Main Activity',
+            application_type=application_type,
+            form_type='Main Activity',
             ca_authority=request.session['ca_authority'],
             applicant_id=request.session['email'],
             colour_code=request.session['colour_code'],
@@ -1433,10 +1450,14 @@ def submit_iee_application(request):
     data = dict()
     try:
         application_no = request.POST.get('iee_disclaimer_application_no')
-        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-        workflow_dtls.update(action_date=date.now())
-        insert_payment_details(application_no)
-        data['message'] = "success"
+        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+        if(ancillary_count > 0):
+            data['message'] = "not submitted"
+        else:
+            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+            workflow_dtls.update(action_date=date.now())
+            insert_payment_details(application_no)
+            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -1448,6 +1469,7 @@ def save_industry_ancillary_application(request):
         application_no = request.POST.get('application_no')
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
+        application_type = request.POST.get('application_type')
         applicant_name = request.POST.get('applicant_name')
         address = request.POST.get('address')
         cid = request.POST.get('cid')
@@ -1476,7 +1498,8 @@ def save_industry_ancillary_application(request):
         t_ec_industries_t1_general.objects.create(
             application_no=application_no,
             application_date=None,
-            application_type='Ancillary',
+            application_type=application_type,
+            form_type='Ancillary',
             ca_authority=None,
             applicant_id=request.session['email'],
             colour_code=None,
@@ -2125,10 +2148,14 @@ def submit_ea_application(request):
     data = dict()
     try:
         application_no = request.POST.get('ea_disclaimer_application_no')
-        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-        workflow_dtls.update(action_date=date.now())
-        insert_payment_details(application_no)
-        data['message'] = "success"
+        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+        if(ancillary_count > 0):
+            data['message'] = "not submitted"
+        else:
+            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+            workflow_dtls.update(action_date=date.now())
+            insert_payment_details(application_no)
+            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -2491,10 +2518,14 @@ def submit_general_application(request):
     data = dict()
     try:
         application_no = request.POST.get('general_disclaimer_application_no')
-        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-        workflow_dtls.update(action_date=date.now())
-        insert_payment_details(application_no)
-        data['message'] = "success"
+        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+        if(ancillary_count > 0):
+            data['message'] = "not submitted"
+        else:
+            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+            workflow_dtls.update(action_date=date.now())
+            insert_payment_details(application_no)
+            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -2734,6 +2765,7 @@ def save_road_application(request):
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
+        application_type = request.POST.get('application_type')
         address = request.POST.get('address')
         cid = request.POST.get('cid')
         contact_no = request.POST.get('contact_no')
@@ -2777,7 +2809,8 @@ def save_road_application(request):
         t_ec_industries_t1_general.objects.create(
             application_no=application_no,
             application_date=None,
-            application_type='Main Activity',
+            application_type=application_type,
+            form_type='Main Activity',
             ca_authority=request.session['ca_authority'],
             applicant_id=request.session['email'],
             colour_code=request.session['colour_code'],
@@ -2852,6 +2885,7 @@ def save_general_application(request):
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
+        application_type = request.POST.get('applicant_name')
         address = request.POST.get('address')
         cid = request.POST.get('cid')
         contact_no = request.POST.get('contact_no')
@@ -2870,7 +2904,8 @@ def save_general_application(request):
         t_ec_industries_t1_general.objects.create(
             application_no=application_no,
             application_date=None,
-            application_type='Main Activity',
+            application_type=application_type,
+            form_type='Main Activity',
             ca_authority=request.session['ca_authority'],
             applicant_id=request.session['email'],
             colour_code=request.session['colour_code'],
@@ -2988,10 +3023,14 @@ def submit_forest_application(request):
     data = dict()
     try:
         application_no = request.POST.get('transmission_disclaimer_application_no')
-        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-        workflow_dtls.update(action_date=date.now())
-        insert_payment_details(application_no)
-        data['message'] = "success"
+        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+        if(ancillary_count > 0):
+            data['message'] = "not submitted"
+        else:
+            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+            workflow_dtls.update(action_date=date.now())
+            insert_payment_details(application_no)
+            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3005,6 +3044,7 @@ def save_ground_water_application(request):
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
+        application_type =request.POST.get('application_type')
         address = request.POST.get('address')
         cid = request.POST.get('cid')
         contact_no = request.POST.get('contact_no')
@@ -3026,7 +3066,8 @@ def save_ground_water_application(request):
         t_ec_industries_t1_general.objects.create(
             application_no=application_no,
             application_date=None,
-            application_type='Main Activity',
+            application_type=application_type,
+            form_type='Main Activity',
             ca_authority=request.session['ca_authority'],
             applicant_id=request.session['email'],
             colour_code=request.session['colour_code'],
@@ -3071,6 +3112,46 @@ def save_ground_water_application(request):
         data['message'] = "failure"
     return JsonResponse(data)
 
+def save_ground_water_requirement(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('ground_water_application_no')
+        energy_source = request.POST.get('energy_source')
+        water_source_ph =  request.POST.get('water_source_ph')
+        water_source_turbidity = request.POST.get('water_source_turbidity')
+        water_source_conductivity = request.POST.get('water_source_conductivity')
+        water_source_ecoli = request.POST.get('water_source_ecoli')
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        application_details.update(energy_source=energy_source,
+                                    water_source_ph=water_source_ph,
+                                    water_source_turbidity=water_source_turbidity,
+                                    water_source_conductivity=water_source_conductivity,
+                                    water_source_ecoli=water_source_ecoli
+                                    )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+def submit_ground_water_application(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('ground_water_disclaimer_application_no')
+        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+        if(ancillary_count > 0):
+            data['message'] = "not submitted"
+        else:
+            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+            workflow_dtls.update(action_date=date.now())
+            insert_payment_details(application_no)
+            data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
 # Quarry Application Details
 def save_quarry_application(request):
     data = dict()
@@ -3079,6 +3160,7 @@ def save_quarry_application(request):
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
+        application_type = request.POST.get('application_type')
         address = request.POST.get('address')
         cid = request.POST.get('cid')
         contact_no = request.POST.get('contact_no')
@@ -3100,7 +3182,8 @@ def save_quarry_application(request):
         t_ec_industries_t1_general.objects.create(
             application_no=application_no,
             application_date=None,
-            application_type='Main Activity',
+            application_type=application_type,
+            form_type='Main Activity',
             ca_authority=request.session['ca_authority'],
             applicant_id=request.session['email'],
             colour_code=request.session['colour_code'],
@@ -3149,10 +3232,14 @@ def submit_quarry_application(request):
     data = dict()
     try:
         application_no = request.POST.get('transmission_disclaimer_application_no')
-        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-        workflow_dtls.update(action_date=date.now())
-        insert_payment_details(application_no)
-        data['message'] = "success"
+        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+        if(ancillary_count > 0):
+            data['message'] = "not submitted"
+        else:
+            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+            workflow_dtls.update(action_date=date.now())
+            insert_payment_details(application_no)
+            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3301,10 +3388,14 @@ def submit_road_application(request):
     data = dict()
     try:
         application_no = request.POST.get('transmission_disclaimer_application_no')
-        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-        workflow_dtls.update(action_date=date.now())
-        insert_payment_details(application_no)
-        data['message'] = "success"
+        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+        if(ancillary_count > 0):
+            data['message'] = "not submitted"
+        else:
+            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+            workflow_dtls.update(action_date=date.now())
+            insert_payment_details(application_no)
+            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3318,6 +3409,7 @@ def save_energy_application(request):
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
+        application_type =request.POST.get('application_type')
         address = request.POST.get('address')
         cid = request.POST.get('cid')
         contact_no = request.POST.get('contact_no')
@@ -3335,7 +3427,8 @@ def save_energy_application(request):
         t_ec_industries_t1_general.objects.create(
             application_no=application_no,
             application_date=None,
-            application_type='Main Activity',
+            application_type=application_type,
+            form_type='Main Activity',
             ca_authority=request.session['ca_authority'],
             applicant_id=request.session['email'],
             colour_code=request.session['colour_code'],
@@ -3380,10 +3473,14 @@ def submit_energy_application(request):
     data = dict()
     try:
         application_no = request.POST.get('transmission_disclaimer_application_no')
-        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-        workflow_dtls.update(action_date=date.now())
-        insert_payment_details(application_no)
-        data['message'] = "success"
+        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+        if(ancillary_count > 0):
+            data['message'] = "not submitted"
+        else:
+            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+            workflow_dtls.update(action_date=date.now())
+            insert_payment_details(application_no)
+            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3397,6 +3494,7 @@ def save_tourism_application(request):
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
+        application_type = request.POST.get('application_type')
         address = request.POST.get('address')
         cid = request.POST.get('cid')
         contact_no = request.POST.get('contact_no')
@@ -3414,7 +3512,8 @@ def save_tourism_application(request):
         t_ec_industries_t1_general.objects.create(
             application_no=application_no,
             application_date=None,
-            application_type='Main Activity',
+            application_type=application_type,
+            form_type='Main Activity',
             ca_authority=request.session['ca_authority'],
             applicant_id=request.session['email'],
             colour_code=request.session['colour_code'],
@@ -3513,10 +3612,14 @@ def submit_tourism_application(request):
     data = dict()
     try:
         application_no = request.POST.get('transmission_disclaimer_application_no')
-        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-        workflow_dtls.update(action_date=date.now())
-        insert_payment_details(application_no)
-        data['message'] = "success"
+        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+        if(ancillary_count > 0):
+            data['message'] = "not submitted"
+        else:
+            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+            workflow_dtls.update(action_date=date.now())
+            insert_payment_details(application_no)
+            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3586,9 +3689,10 @@ def get_other_modification_details(request):
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
+            identifier = 'OM'
 
             return render(request, 'renewal/ea_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials, 'status':status,
-                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
         else:
             application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
             partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3603,9 +3707,9 @@ def get_other_modification_details(request):
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
-
+            identifier = 'OM'
             return render(request, 'renewal/iee_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '2':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3620,8 +3724,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        identifier = 'OM'
         return render(request, 'renewal/energy_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '3':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3636,8 +3741,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        identifier = 'OM'
         return render(request, 'renewal/road_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '4':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3652,8 +3758,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        identifier = 'OM'
         return render(request, 'renewal/transmission_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '5':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3668,8 +3775,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        identifier = 'OM'
         return render(request, 'renewal/tourism_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '6':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3684,8 +3792,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        identifier = 'OM'
         return render(request, 'renewal/ground_water_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '7':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3700,8 +3809,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        identifier = 'OM'
         return render(request, 'renewal/forest_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '8':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3716,8 +3826,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        identifier = 'OM'
         return render(request, 'renewal/quarry_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '9':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3732,5 +3843,11 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        identifier = 'OM'
         return render(request, 'renewal/general_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+    
+# Draft Application Details
+def draft_application_list(request):
+    application_list = t_ec_industries_t1_general.objects.filter(application_status='P',form_type='Main Activity')
+    return render(request, 'draft/application_list',{'application_list':application_list})

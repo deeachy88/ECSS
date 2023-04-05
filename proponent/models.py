@@ -8,6 +8,7 @@ class t_ec_industries_t1_general(models.Model):
     application_no = models.CharField(max_length=100,default=None, blank=True, null=True)
     application_date = models.DateField(default=None, blank=True, null=True)
     application_type = models.CharField(max_length=100,default=None, blank=True, null=True)
+    form_type = models.CharField(max_length=250, default=None, blank=True, null=True)
     ca_authority = models.CharField(max_length=100,default=None, blank=True, null=True)
     applicant_id = models.CharField(max_length=100,default=None, blank=True, null=True)
     applicant_type = models.CharField(max_length=100,default=None, blank=True, null=True)
@@ -170,6 +171,7 @@ class t_ec_industries_t1_general(models.Model):
     anc_other_ground_water = models.CharField(max_length=250,default=None, blank=True, null=True)
     anc_other_mineral = models.CharField(max_length=250,default=None, blank=True, null=True)
     anc_other_general = models.CharField(max_length=250,default=None, blank=True, null=True)
+    anc_other_transmission = models.CharField(max_length=250,default=None, blank=True, null=True)
     en_impact_allocated_budget = models.IntegerField(default=None, blank=True, null=True)
     en_impact_hazardous_waste_list = models.CharField(max_length=250,default=None, blank=True, null=True)
     en_impact_hazardous_waste_source = models.CharField(max_length=250,default=None, blank=True, null=True)
@@ -445,6 +447,10 @@ class t_ec_industries_t1_general(models.Model):
     sludge_quantity_mgt_plan = models.CharField(max_length=250,default=None, blank=True, null=True)
     sewerage_water_source_distance = models.CharField(max_length=250,default=None, blank=True, null=True)
     project_location_site = models.CharField(max_length='3',default=None, blank=True, null=True)
+    water_source_ph = models.CharField(max_length=100,default=None, blank=True, null=True)
+    water_source_turbidity = models.CharField(max_length=100,default=None, blank=True, null=True)
+    water_source_conductivity = models.CharField(max_length=100,default=None, blank=True, null=True)
+    water_source_ecoli = models.CharField(max_length=100,default=None, blank=True, null=True)
     fee = models.IntegerField(default=None, blank=True, null=True)
     assigned_to = models.CharField(max_length=250,default=None, blank=True, null=True)
     assigned_date = models.DateField(default=None, blank=True, null=True)
@@ -454,6 +460,7 @@ class t_ec_industries_t1_general(models.Model):
     recommendation = models.TextField(max_length=250, default=None, blank=True, null=True)
     ec_type = models.CharField(max_length=250,default=None, blank=True, null=True)
     ec_reference_no = models.CharField(max_length=250,default=None, blank=True, null=True)
+    prev_ec_reference_no = models.CharField(max_length=250,default=None, blank=True, null=True)
     ec_approve_date = models.DateField(default=None, blank=True, null=True)
     ec_expiry_date = models.DateField(default=None, blank=True, null=True)
     ec_approval_committee = models.TextField(max_length=250, default=None, blank=True, null=True)
@@ -646,7 +653,6 @@ class t_workflow_dtls(models.Model):
     ca_authority = models.CharField(max_length=100, default=None, blank=True, null=True)
     dzongkhag_thromde_id = models.CharField(max_length=100, default=None, blank=True, null=True)
     result = models.CharField(max_length=250, default=None, blank=True, null=True)
-
 
 class t_workflow_dtls_audit(models.Model):
     instance_id = models.AutoField(primary_key=True)

@@ -6661,6 +6661,15 @@
                         location.reload()
                     }, 2000);
                 }
+                else if(data.message == 'not submitted')
+                {
+                    $('#iee_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
+                    $('#iee_submit_errorMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
                 else
                 {
                     $('#iee_submit_errorMsg').html("Please Check And Submit Again");

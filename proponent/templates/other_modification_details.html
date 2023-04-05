@@ -1,6 +1,6 @@
 {% extends 'common_dashboard.html' %}
 {% block content %}
-<div id="application_details">
+<div id="other_modification_details">
     <div class="card mt-1">
         <div class="card-body">
             <h5 class="card-title mb-0 text-right">EC Renewal</h5>
@@ -28,16 +28,13 @@
         </div>
     </div>
 </div>
-<div id="other_modification_details" style="display:none;">
-
-</div>
 <script>
     function other_modification_form()
     {
         $.ajax({
             type : "GET",
             url : "{% url 'get_other_modification_details' %}",
-            data :$('#ec_renewal_form').serialize(),
+            data :$('#other_modification_form').serialize(),
             success : function(data)
             {
                 $('#other_modification_details').html(data);
