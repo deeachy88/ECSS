@@ -2312,17 +2312,17 @@
     $(function() {
         let identifier = $('#identifier').val();
 
-        if(identifier == 'OC')
+        if(identifier == 'NC')
         {
-            
+            $("#project_name").prop('disabled', false);
         }
-        else if(status == 'R')
+        else if(identifier == 'OC')
         {
-           
+            $("#applicant_name").prop('disabled', false);
         }
         else
         {
-            
+            $("input").prop('disabled', false);
         }
     });
 

@@ -349,7 +349,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Elevation(meters)</label>
-                                                <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
+                                                <input type="text" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
@@ -387,7 +387,7 @@
                                                 <td>Protected Areas and zonation (multiple use/buffer/core)</td>
                                                 <td>
                                                     <div class="mb-1">
-                                                        <input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="{{ application_details.bl_protected_area_name}" disabled>
+                                                        <input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="{{ application_details.bl_protected_area_name}}" disabled>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -973,36 +973,36 @@
                             <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix"
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Will the activity require construction of Power Line?</label>
-                                                    {% if application_details.anc_road_blast_required == 'Yes' %}
-                                                        <div class="mt-2">
-                                                            <div class="form-check form-check-inline">
-                                                                <input type="radio" name="anc_power_line_required" class="form-check-input" value="Yes" checked>
-                                                                <label class="form-check-label" for="customRadio3">Yes</label>
-                                                            </div>
-                                                            <div class="form-check form-check-inline">
-                                                                <input type="radio" name="anc_power_line_required" class="form-check-input" value="No" disabled>
-                                                                <label class="form-check-label" for="customRadio4">No</label>
-                                                            </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Will the activity require construction of Power Line?</label>
+                                                {% if application_details.anc_road_blast_required == 'Yes' %}
+                                                    <div class="mt-2">
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="anc_power_line_required" class="form-check-input" value="Yes" checked>
+                                                            <label class="form-check-label" for="customRadio3">Yes</label>
                                                         </div>
-                                                    {% else %}
-                                                        <div class="mt-2">
-                                                            <div class="form-check form-check-inline">
-                                                                <input type="radio" name="anc_power_line_required" class="form-check-input" value="Yes" disabled>
-                                                                <label class="form-check-label" for="customRadio3">Yes</label>
-                                                            </div>
-                                                            <div class="form-check form-check-inline">
-                                                                <input type="radio" name="anc_power_line_required" class="form-check-input" value="No" checked>
-                                                                <label class="form-check-label" for="customRadio4">No</label>
-                                                            </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="anc_power_line_required" class="form-check-input" value="No" disabled>
+                                                            <label class="form-check-label" for="customRadio4">No</label>
                                                         </div>
-                                                    {% endif %}
-                                                </div>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="mt-2">
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="anc_power_line_required" class="form-check-input" value="Yes" disabled>
+                                                            <label class="form-check-label" for="customRadio3">Yes</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="anc_power_line_required" class="form-check-input" value="No" checked>
+                                                            <label class="form-check-label" for="customRadio4">No</label>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
                                             </div>
                                         </div>
+                                    </div>
                                     {% if application_details.anc_road_blast_required == 'Yes' %}
                                         <div class="row">
                                             <div class="col-lg-6">
@@ -1073,7 +1073,7 @@
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                     </div>
                                     <br>
-                                    {% if application_details.anc_road_blast_required == 'Yes' %}
+                                    {% if application_details.anc_other_crushing_unit == 'Yes' %}
                                         <div class="form-check">
                                             <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" checked disabled>
                                             <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>

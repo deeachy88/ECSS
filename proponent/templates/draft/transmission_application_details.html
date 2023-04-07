@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
 {% load static %}
+{% for application_details in application_details %}
 <div class="row">
     <div class="col-xl-12">
         <div class="card mt-1">
@@ -1315,4 +1316,4031 @@
         </div> <!-- end card-->
     </div>
 </div>
+{% endfor %}
+
+<form method="post" id="machine_equipment_tool_form">
+{% csrf_token %}
+<div class="modal fade" id="machine_equipment_tool_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Add</strong></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Machine/Tool/Equipment</label>
+                    <input type="text" name="machine_tool" class="form-control" id="machine_tool">
+                </div>
+                <div class="alert alert-danger" id="machine_toolErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Qty</label>
+                    <input type="text" name="machine_tool_qty" class="form-control" id="machine_tool_qty">
+                </div>
+                <div class="alert alert-danger" id="machine_tool_qtyErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Installed Capacity</label>
+                    <input type="text" name="machine_tool_installed_capacity" class="form-control" id="machine_tool_installed_capacity">
+                </div>
+                <div class="alert alert-danger" id="machine_tool_installed_capacityErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+          <div class="alert alert-success" id="machine_tool_SuccessMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="add_machine_tool_details()">Add</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+<form method="post" id="edit_machine_equipment_tool_form">
+{% csrf_token %}
+<div class="modal fade" id="edit_machine_equipment_tool_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Edit</strong></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <div class="modal-body mx-4">
+        <input type="text" name="edit_machine_tool_record_id" class="form-control" id="edit_machine_tool_record_id">
+        <input type="text" name="edit_machine_tool_app_no" class="form-control" id="edit_machine_tool_app_no">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Machine/Tool/Equipment</label>
+                    <input type="text" name="edit_machine_tool" class="form-control" id="edit_machine_tool">
+                </div>
+                <div class="alert alert-danger" id="edit_machine_toolErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Qty</label>
+                    <input type="text" name="edit_machine_tool_qty" class="form-control" id="edit_machine_tool_qty">
+                </div>
+                <div class="alert alert-danger" id="edit_machine_tool_qtyErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Installed Capacity</label>
+                    <input type="text" name="edit_machine_tool_installed_capacity" class="form-control" id="edit_machine_tool_installed_capacity">
+                </div>
+                <div class="alert alert-danger" id="edit_machine_tool_installed_capacityErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+          <div class="alert alert-success" id="edit_machine_tool_SuccessMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="update_machine_tool_details()">Update</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+<form method="post" id="delete_machine_equipment_tool_form">
+{% csrf_token %}
+<div class="modal fade" id="delete_machine_equipment_tool_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Delete</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <div class="modal-body mx-4">
+        <input type="text" name="delete_machine_tool_record_id" class="form-control" id="delete_machine_tool_record_id">
+        <input type="text" name="delete_machine_tool_app_no" class="form-control" id="delete_machine_tool_app_no">
+          <div class="row">
+            <div class="col-lg-12">
+                <p>Are You Sure You Want To Delete ? </p>
+            </div>
+        </div>
+      </div>
+          <div class="alert alert-success" id="delete_machine_tool_SuccessMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="delete_machine_tool_details()">Delete</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+<form method="post" id="delete_raw_material_form">
+{% csrf_token %}
+<div class="modal fade" id="delete_raw_material_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Delete</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <div class="modal-body mx-4">
+        <input type="text" name="delete_raw_material_record_id" class="form-control" id="delete_raw_material_record_id">
+        <input type="text" name="delete_raw_material_app_no" class="form-control" id="delete_raw_material_app_no">
+          <div class="row">
+            <div class="col-lg-12">
+                <p>Are You Sure You Want To Delete ? </p>
+            </div>
+        </div>
+      </div>
+          <div class="alert alert-success" id="delete_raw_material_SuccessMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="delete_raw_material_details()">Delete</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+
+<form method="post" id="delete_partner_details_form">
+{% csrf_token %}
+<div class="modal fade" id="delete_partner_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Delete</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <div class="modal-body mx-4">
+        <input type="text" name="delete_partner_details_record_id" class="form-control" id="delete_partner_details_record_id">
+        <input type="text" name="delete_partner_details_app_no" class="form-control" id="delete_partner_details_app_no">
+          <div class="row">
+            <div class="col-lg-12">
+                <p>Are You Sure You Want To Delete ? </p>
+            </div>
+        </div>
+      </div>
+          <div class="alert alert-success" id="delete_partner_details_SuccessMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="delete_partner_details()">Delete</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+<form method="post" id="final_products_form">
+{% csrf_token %}
+<div class="modal fade" id="final_products_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Add</strong></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Name of Products</label>
+                    <input type="text" name="product_name" class="form-control" id="product_name">
+                </div>
+                <div class="alert alert-danger" id="product_nameErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Installed capacity/quantity per annum</label>
+                    <input type="text" name="quantity_annum" class="form-control" id="quantity_annum">
+                </div>
+                <div class="alert alert-danger" id="quantity_annumErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Method of Storage</label>
+                    <select class="form-select" name="storage_method" id="storage_method">
+                        <option selected>Choose One</option>
+                        <option value="fully_enclosed">Fully Enclosed</option>
+                        <option value="partially_enclosed">Partially Enclosed</option>
+                        <option value="open">Open</option>
+                    </select>
+                </div>
+                <div class="alert alert-danger" id="storage_methodErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+          <div class="alert alert-success" id="final_products_SuccessMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="add_final_products_details()">Add</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+<form method="post" id="edit_final_products_form">
+{% csrf_token %}
+<div class="modal fade" id="edit_final_products_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Edit</strong></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <input type="hidden" name="edit_final_products_record_id" class="form-control" id="edit_final_products_record_id">
+            <input type="hidden" name="edit_final_products_app_no" class="form-control" id="edit_final_products_app_no">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Name of produce</label>
+                    <input type="text" name="edit_produce_name" class="form-control" id="edit_produce_name">
+                </div>
+                <div class="alert alert-danger" id="edit_produce_nameErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Installed capacity/quantity per annum</label>
+                    <input type="text" name="edit_final_product_qty" class="form-control" id="edit_final_product_qty">
+                </div>
+                <div class="alert alert-danger" id="edit_final_product_qtyErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Method of storage</label>
+                    <select class="form-select" name="edit_final_product_storage_method" id="edit_final_product_storage_method">
+                        <option selected>Choose One</option>
+                        <option value="fully_enclosed">Fully Enclosed</option>
+                        <option value="partially_enclosed">Partially Enclosed</option>
+                        <option value="open">Open</option>
+                    </select>
+                </div>
+                <div class="alert alert-danger" id="edit_final_product_storage_methodErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+          <div class="alert alert-success" id="edit_final_product_SuccessMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="update_final_product_details()">Update</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+<form method="post" id="delete_final_product_form">
+{% csrf_token %}
+<div class="modal fade" id="delete_final_product_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Delete</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <div class="modal-body mx-4">
+        <input type="text" name="delete_forestry_produce_record_id" class="form-control" id="delete_final_product_record_id">
+        <input type="text" name="delete_forestry_produce_app_no" class="form-control" id="delete_final_product_app_no">
+          <div class="row">
+            <div class="col-lg-12">
+                <p>Are You Sure You Want To Delete ? </p>
+            </div>
+        </div>
+      </div>
+          <div class="alert alert-success" id="delete_final_product_SuccessMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="delete_final_product_details()">Delete</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+<form method="post" id="raw_materials_form">
+{% csrf_token %}
+<div class="modal fade" id="raw_materials_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Add</strong></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">List of raw materials </label>
+                    <input type="text" name="raw_material" class="form-control" id="raw_material">
+                </div>
+                <div class="alert alert-danger" id="raw_materialErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Quantity (MT/annum)</label>
+                    <input type="text" name="raw_material_qty" class="form-control" id="raw_material_qty">
+                </div>
+                <div class="alert alert-danger" id="raw_material_qtyErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Source</label>
+                    <input type="text" name="raw_material_source" class="form-control" id="raw_material_source">
+                </div>
+                <div class="alert alert-danger" id="raw_material_sourceErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Method of Storage</label>
+                    <select class="form-select" name="raw_material_storage_method" id="raw_material_storage_method">
+                        <option selected>Choose One</option>
+                        <option value="fully_enclosed">Fully Enclosed</option>
+                        <option value="partially_enclosed">Partially Enclosed</option>
+                        <option value="open">Open</option>
+                    </select>
+                </div>
+                <div class="alert alert-danger" id="raw_material_storage_methodErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+          <div class="alert alert-success" id="raw_material_SuccessMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="add_raw_material_details()">Add</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+<form method="post" id="edit_raw_materials_form">
+{% csrf_token %}
+<div class="modal fade" id="edit_raw_materials_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Update</strong></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <input type="text" name="edit_raw_material_record_id" class="form-control" id="edit_raw_material_record_id">
+        <input type="text" name="edit_raw_material_app_no" class="form-control" id="edit_raw_material_app_no">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">List of raw materials </label>
+                    <input type="text" name="edit_raw_material" class="form-control" id="edit_raw_material">
+                </div>
+                <div class="alert alert-danger" id="edit_raw_materialErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Quantity (MT/annum)</label>
+                    <input type="text" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
+                </div>
+                <div class="alert alert-danger" id="edit_raw_material_qtyErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Source</label>
+                    <input type="text" name="edit_raw_material_source" class="form-control" id="edit_raw_material_source">
+                </div>
+                <div class="alert alert-danger" id="edit_raw_material_sourceErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Method of Storage</label>
+                    <select class="form-select" name="edit_raw_material_storage_method" id="edit_raw_material_storage_method">
+                        <option selected>Choose One</option>
+                        <option value="fully_enclosed">Fully Enclosed</option>
+                        <option value="partially_enclosed">Partially Enclosed</option>
+                        <option value="open">Open</option>
+                    </select>
+                </div>
+                <div class="alert alert-danger" id="edit_raw_material_storage_methodErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+          <div class="alert alert-success" id="edit_raw_material_SuccessMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="update_raw_material_details()">Update</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+<form method="post" id="partner_details_form">
+{% csrf_token %}
+<div class="modal fade" id="partner_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Add</strong></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Partner Type </label>
+                    <input type="text" name="partner_type" class="form-control" id="partner_type">
+                </div>
+                <div class="alert alert-danger" id="partner_typeErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Name</label>
+                    <input type="text" name="partner_type_name" class="form-control" id="partner_type_name">
+                </div>
+                <div class="alert alert-danger" id="partner_type_nameErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Address</label>
+                    <textarea class="form-control" rows="3" name="partner_type_address" id="partner_type_address"></textarea>
+                </div>
+                <div class="alert alert-danger" id="partner_type_addressErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+          <div class="alert alert-success" id="partner_type_SuccessMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="add_partner_details()">Add</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+<form method="post" id="transmission_attachment_form" enctype="multipart/form-data">
+{% csrf_token %}
+<div class="modal fade" id="transmission_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Add Attachment</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Attachment</label>
+                    <input type="file" name="transmission_attach" class="form-control" id="transmission_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                </div>
+                <div class="alert alert-danger" id="transmission_attachErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="save_transmission_attachment()">Add</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+<form method="post" id="anc_power_line_form">
+{% csrf_token %}
+<div class="modal fade" id="anc_power_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Add Power Line Details</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Transmission line Chainage From</label>
+                    <input type="text" name="line_chainage_from" class="form-control" id="line_chainage_from" onblur="calculate_area_required()">
+                </div>
+                <div class="alert alert-danger" id="line_chainage_fromErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Transmission line Chainage To</label>
+                    <input type="text" name="line_chainage_to" class="form-control" id="line_chainage_to" onblur="calculate_area_required()">
+                </div>
+                <div class="alert alert-danger" id="line_chainage_toErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Land Type</label>
+                    <select name="land_type" class="form-control" id="land_type">
+                        <option value="">--SELECT--</option>
+                        <option value="State Reserve Forest">State Reserve Forest</option>
+                        <option value="Private ">Private </option>
+                        <option value="Protected Area">Protected Area</option>
+                        <option value="Biological Corridor">Biological Corridor</option>
+                        <option value="Institutional Area">Institutional Area</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+                <div class="alert alert-danger" id="land_typeErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
+                    <select name="terrain" class="form-control" id="terrain">
+                        <option value="">--SELECT--</option>
+                        <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
+                        <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
+                        <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
+                        <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
+                    </select>
+                </div>
+                <div class="alert alert-danger" id="terrainErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Type of Tower</label>
+                    <input type="text" name="tower_type" class="form-control" id="tower_type">
+                </div>
+                <div class="alert alert-danger" id="tower_typeErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">No. of Towers</label>
+                    <input type="text" name="no_of_tower" class="form-control" id="no_of_tower">
+                </div>
+                <div class="alert alert-danger" id="no_of_towerErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Right of way (RoW)</label>
+                    <input type="text" name="row" class="form-control" id="row" onblur="calculate_area_required()">
+                </div>
+                <div class="alert alert-danger" id="rowErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Area Required (length x RoW)</label>
+                    <input type="text" name="area_required" class="form-control" id="area_required" readonly="readonly">
+                </div>
+                <div class="alert alert-danger" id="area_requiredErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+      <div class="alert alert-success" id="power_line_successMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="save_power_line_details()">Add</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+<form method="post" id="edit_anc_power_line_form">
+{% csrf_token %}
+<div class="modal fade" id="edit_anc_power_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Edit Power Line Details</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+          <input type="hidden" name="edit_anc_record_id" class="form-control" id="edit_anc_record_id">
+          <input type="hidden" name="edit_anc_application_no" class="form-control" id="edit_anc_application_no">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Transmission line Chainage From</label>
+                    <input type="text" name="edit_line_chainage_from" class="form-control" id="edit_line_chainage_from" onblur="calculate_edit_area_required()">
+                </div>
+                <div class="alert alert-danger" id="edit_line_chainage_fromErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Transmission line Chainage To</label>
+                    <input type="text" name="edit_line_chainage_to" class="form-control" id="edit_line_chainage_to" onblur="calculate_edit_area_required()">
+                </div>
+                <div class="alert alert-danger" id="edit_line_chainage_toErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Land Type</label>
+                    <select name="edit_land_type" class="form-control" id="edit_land_type">
+                        <option value="">--SELECT--</option>
+                        <option value="State Reserve Forest">State Reserve Forest</option>
+                        <option value="Private ">Private </option>
+                        <option value="Protected Area">Protected Area</option>
+                        <option value="Biological Corridor">Biological Corridor</option>
+                        <option value="Institutional Area">Institutional Area</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+                <div class="alert alert-danger" id="edit_land_typeErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
+                    <select name="edit_terrain" class="form-control" id="edit_terrain">
+                        <option value="">--SELECT--</option>
+                        <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
+                        <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
+                        <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
+                        <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
+                    </select>
+                </div>
+                <div class="alert alert-danger" id="edit_terrainErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Type of Tower</label>
+                    <input type="text" name="edit_tower_type" class="form-control" id="edit_tower_type">
+                </div>
+                <div class="alert alert-danger" id="edit_tower_typeErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">No. of Towers</label>
+                    <input type="text" name="edit_no_of_tower" class="form-control" id="edit_no_of_tower">
+                </div>
+                <div class="alert alert-danger" id="edit_no_of_towerErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Right of way (RoW)</label>
+                    <input type="text" name="edit_row" class="form-control" id="edit_row" onblur="calculate_edit_area_required()">
+                </div>
+                <div class="alert alert-danger" id="edit_rowErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Area Required (length x RoW)</label>
+                    <input type="text" name="edit_area_required" class="form-control" id="edit_area_required" readonly="readonly">
+                </div>
+                <div class="alert alert-danger" id="edit_area_requiredErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+        <div class="alert alert-success" id="edit_power_line_successMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="update_power_line_details()">Update</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+<form method="post" id="delete_anc_power_line_form">
+{% csrf_token %}
+<div class="modal fade" id="delete_anc_power_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Edit Power Line Details</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+          <input type="hidden" name="delete_anc_record_id" class="form-control" id="delete_anc_record_id">
+          <input type="hidden" name="delete_anc_application_no" class="form-control" id="delete_anc_application_no">
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Are You Sure You Want To Delete ? </p>
+                </div>
+            </div>
+      </div>
+        <div class="alert alert-success" id="delete_power_line_successMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="delete_power_line_details()">Delete</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+<form method="post" id="anc_approach_road_form">
+{% csrf_token %}
+<div class="modal fade" id="anc_approach_road_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Add Approach Road Details</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Road Chainage From (m)</label>
+                    <input type="text" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onblur="calculate_road_area_required()">
+                </div>
+                <div class="alert alert-danger" id="road_line_chainage_fromErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Road Chainage To (m)</label>
+                    <input type="text" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onblur="calculate_road_area_required()">
+                </div>
+                <div class="alert alert-danger" id="road_line_chainage_toErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Land Type</label>
+                    <select name="road_land_type" class="form-control" id="road_land_type">
+                        <option value="">--SELECT--</option>
+                        <option value="State Reserve Forest">State Reserve Forest</option>
+                        <option value="Private ">Private </option>
+                        <option value="Protected Area">Protected Area</option>
+                        <option value="Biological Corridor">Biological Corridor</option>
+                        <option value="Institutional Area">Institutional Area</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+                <div class="alert alert-danger" id="road_land_typeErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
+                    <select name="road_terrain" class="form-control" id="road_terrain">
+                        <option value="">--SELECT--</option>
+                        <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
+                        <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
+                        <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
+                        <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
+                    </select>
+                </div>
+                <div class="alert alert-danger" id="road_ErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Road Width (m)</label>
+                    <input type="text" name="road_width" class="form-control" id="road_width">
+                </div>
+                <div class="alert alert-danger" id="road_widthErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Right of way (RoW)</label>
+                    <input type="text" name="road_row" class="form-control" id="road_row">
+                </div>
+                <div class="alert alert-danger" id="road_rowErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Area Required (length x RoW)</label>
+                    <input type="text" name="road_area_required" class="form-control" id="road_area_required" readonly="readonly">
+                </div>
+                <div class="alert alert-danger" id="road_area_requiredErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+      <div class="alert alert-success" id="road_successMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="save_anc_road_details()">Add</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+<form method="post" id="edit_anc_approach_road_form">
+{% csrf_token %}
+<div class="modal fade" id="edit_anc_approach_road_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Edit Approach Road Details</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+        <div class="row">
+            <input type="hidden" name="edit_anc_record_id" class="form-control" id="edit_anc_road_record_id">
+            <input type="hidden" name="edit_anc_application_no" class="form-control" id="edit_anc_road_application_no">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Road Chainage From (m)</label>
+                    <input type="text" name="edit_road_line_chainage_from" class="form-control" id="edit_road_line_chainage_from" onblur="calculate_road_area_required()">
+                </div>
+                <div class="alert alert-danger" id="edit_road_line_chainage_fromErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Road Chainage To(m)</label>
+                    <input type="text" name="edit_road_line_chainage_to" class="form-control" id="edit_road_line_chainage_to" onblur="calculate_road_area_required()">
+                </div>
+                <div class="alert alert-danger" id="edit_road_line_chainage_toErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Land Type</label>
+                    <select name="edit_road_land_type" class="form-control" id="edit_road_land_type">
+                        <option value="">--SELECT--</option>
+                        <option value="State Reserve Forest">State Reserve Forest</option>
+                        <option value="Private ">Private </option>
+                        <option value="Protected Area">Protected Area</option>
+                        <option value="Biological Corridor">Biological Corridor</option>
+                        <option value="Institutional Area">Institutional Area</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+                <div class="alert alert-danger" id="edit_road_land_typeErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
+                    <select name="edit_road_terrain" class="form-control" id="edit_road_terrain">
+                        <option value="">--SELECT--</option>
+                        <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
+                        <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
+                        <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
+                        <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
+                    </select>
+                </div>
+                <div class="alert alert-danger" id="edit_road_ErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Road Width (m)</label>
+                    <input type="text" name="edit_road_width" class="form-control" id="edit_road_width">
+                </div>
+                <div class="alert alert-danger" id="edit_road_widthErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Right of way (RoW)</label>
+                    <input type="text" name="edit_road_row" class="form-control" id="edit_road_row">
+                </div>
+                <div class="alert alert-danger" id="edit_road_rowErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Area Required (length x RoW)</label>
+                    <input type="text" name="edit_road_area_required" class="form-control" id="edit_road_area_required" readonly="readonly">
+                </div>
+                <div class="alert alert-danger" id="edit_road_area_requiredErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+      </div>
+      <div class="alert alert-success" id="edit_road_successMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="update_anc_road_details()">Update</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+
+
+<form method="post" id="delete_anc_approach_road_form">
+{% csrf_token %}
+<div class="modal fade" id="delete_anc_approach_road_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+												&nbsp;Edit Power Line Details</strong></h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <!--Body-->
+      <div class="modal-body mx-4">
+          <input type="hidden" name="delete_road_record_id" class="form-control" id="delete_anc_road_record_id">
+          <input type="hidden" name="delete_road_application_no" class="form-control" id="delete_anc_road_application_no">
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Are You Sure You Want To Delete ? </p>
+                </div>
+            </div>
+      </div>
+        <div class="alert alert-success" id="delete_road_successMsg" style="display:none"></div>
+      <div class="modal-footer flex-center justify-content-center">
+        <button type="button" class="btn btn-sm btn-primary" onclick="delete_anc_road_details()">Delete</button>
+        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+</form>
+<script>
+    function check_industry_radio(value)
+    {
+        if(value == 'Yes')
+        {
+            $('#general_water_details').show();
+        }
+        else
+        {
+            $('#general_water_details').hide();
+        }
+    }
+
+    function check_approach_road(value)
+    {
+        if(value == 'Yes')
+        {
+            $('#approach_road_details').show();
+        }
+        else
+        {
+            $('#approach_road_details').hide();
+        }
+    }
+
+    function check_blasting_radio(value)
+    {
+        if(value == 'Yes')
+        {
+            $('.blasting_details').show();
+        }
+        else
+        {
+            $('.blasting_details').hide();
+        }
+    }
+
+    function check_power_line(value)
+    {
+        if(value == 'Yes')
+        {
+            $('.power_line_details').show();
+            $('.power_line_details_table').hide();
+        }
+        else
+        {
+            $('.power_line_details').hide();
+            $('.power_line_details_table').show();
+
+        }
+    }
+
+    function check_wastewater(value)
+    {
+        if(value == 'Yes')
+        {
+            $('.power_line_details').show();
+        }
+        else
+        {
+            $('.power_line_details').hide();
+        }
+    }
+
+    function check_industry_emission(value)
+    {
+        if(value == 'Yes')
+        {
+            $('.power_line_details').show();
+        }
+        else
+        {
+            $('.power_line_details').hide();
+        }
+    }
+
+    function save_terrain_baseline_details()
+    {
+        
+        bl_protected_area_name = $('#bl_protected_area_name').val();
+        bl_protected_area_distance = $('#bl_protected_area_distance').val();
+        bl_migratory_route_name = $('#bl_migratory_route_name').val();
+        bl_migratory_route_distance = $('#bl_migratory_route_distance').val();
+        bl_wetland_name = $('#bl_wetland_name').val();
+        bl_wetland_distance = $('#bl_wetland_distance').val();
+        bl_water_bodies_name = $('#bl_water_bodies_name').val();
+        bl_water_bodies_distance = $('#bl_water_bodies_distance').val();
+        bl_fmu_name = $('#bl_fmu_name').val();
+        bl_fmu_distance = $('#bl_fmu_distance').val();
+        bl_agricultural_name = $('#bl_agricultural_name').val();
+        bl_agricultural_distance = $('#bl_agricultural_distance').val();
+        bl_settlement_name = $('#bl_settlement_name').val();
+        bl_settlement_distance = $('#bl_settlement_distance').val();
+        bl_road_name = $('#bl_road_name').val();
+        bl_road_distance = $('#bl_road_distance').val();
+        bl_public_infra_name = $('#bl_public_infra_name').val();
+        bl_public_infra_distance = $('#bl_public_infra_distance').val();
+        bl_school_name = $('#bl_school_name').val();
+        bl_school_distance = $('#bl_school_distance').val();
+        bl_heritage_name = $('#bl_heritage_name').val();
+        bl_heritage_distance = $('#bl_heritage_distance').val();
+        bl_tourist_facility_name = $('#bl_tourist_facility_name').val();
+        bl_tourist_facility_distance = $('#bl_tourist_facility_distance').val();
+        bl_impt_installation_name = $('#bl_impt_installation_name').val();
+        bl_impt_installation_distance = $('#bl_impt_installation_distance').val();
+        bl_industries_name = $('#bl_industries_name').val();
+        bl_industries_distance = $('#bl_industries_distance').val();
+        bl_others = $('#bl_others').val();
+        bl_others_name = $('#bl_others_name').val();
+        bl_others_distance = $('#bl_others_distance').val();
+
+        if(bl_protected_area_name == "")
+        {
+            $('#bl_protected_area_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_protected_area_nameErrorMsg').show();
+            $('#bl_protected_area_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_protected_area_name').focus();
+        }
+        else if(bl_protected_area_distance == "")
+        {
+            $('#bl_protected_area_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_protected_area_distanceErrorMsg').show();
+            $('#bl_protected_area_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_protected_area_distance').focus();
+        }
+        else if(bl_migratory_route_name == "")
+        {
+            $('#bl_migratory_route_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_migratory_route_nameErrorMsg').show();
+            $('#bl_migratory_route_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_migratory_route_name').focus();
+        }
+        else if(bl_migratory_route_distance == "")
+        {
+            $('#bl_migratory_route_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_migratory_route_distanceErrorMsg').show();
+            $('#bl_migratory_route_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_migratory_route_distance').focus();
+        }
+        else if(bl_wetland_name == "")
+        {
+            $('#bl_wetland_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_wetland_nameErrorMsg').show();
+            $('#bl_wetland_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_wetland_name').focus();
+        }
+        else if(bl_wetland_distance == "")
+        {
+            $('#bl_wetland_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_wetland_distanceErrorMsg').show();
+            $('#bl_wetland_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_wetland_distance').focus();
+        }
+        else if(bl_water_bodies_name == "")
+        {
+            $('#bl_water_bodies_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_water_bodies_nameErrorMsg').show();
+            $('#bl_water_bodies_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_water_bodies_name').focus();
+        }
+        else if(bl_water_bodies_distance == "")
+        {
+            $('#bl_water_bodies_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_water_bodies_distanceErrorMsg').show();
+            $('#bl_water_bodies_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_water_bodies_distance').focus();
+        }
+        else if(bl_fmu_name == "")
+        {
+            $('#bl_fmu_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_fmu_nameErrorMsg').show();
+            $('#bl_fmu_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_fmu_name').focus();
+        }
+        else if(bl_fmu_distance == "")
+        {
+            $('#bl_fmu_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_fmu_distanceErrorMsg').show();
+            $('#bl_fmu_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_fmu_distance').focus();
+        }
+        else if(bl_agricultural_name == "")
+        {
+            $('#bl_agricultural_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_agricultural_nameErrorMsg').show();
+            $('#bl_agricultural_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_agricultural_name').focus();
+        }
+        else if(bl_agricultural_distance == "")
+        {
+            $('#bl_agricultural_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_agricultural_distanceErrorMsg').show();
+            $('#bl_agricultural_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_agricultural_distance').focus();
+        }
+        else if(bl_settlement_name == "")
+        {
+            $('#bl_settlement_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_settlement_nameErrorMsg').show();
+            $('#bl_settlement_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_settlement_name').focus();
+        }
+        else if(bl_settlement_distance == "")
+        {
+            $('#bl_settlement_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_settlement_distanceErrorMsg').show();
+            $('#bl_settlement_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_settlement_distance').focus();
+        }
+        else if(bl_road_name == "")
+        {
+            $('#bl_road_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_road_nameErrorMsg').show();
+            $('#bl_road_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_road_name').focus();
+        }
+        else if(bl_road_distance == "")
+        {
+            $('#bl_road_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_road_distanceErrorMsg').show();
+            $('#bl_road_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_road_distance').focus();
+        }
+        else if(bl_public_infra_name == "")
+        {
+            $('#bl_public_infra_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_public_infra_nameErrorMsg').show();
+            $('#bl_public_infra_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_public_infra_name').focus();
+        }
+        else if(bl_public_infra_distance == "")
+        {
+            $('#bl_public_infra_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_public_infra_distanceErrorMsg').show();
+            $('#bl_public_infra_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_public_infra_distance').focus();
+        }
+        else if(bl_school_name == "")
+        {
+            $('#bl_school_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_school_nameErrorMsg').show();
+            $('#bl_school_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_school_name').focus();
+        }
+        else if(bl_school_distance == "")
+        {
+            $('#bl_school_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_school_distanceErrorMsg').show();
+            $('#bl_school_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_school_distance').focus();
+        }
+        else if(bl_heritage_name == "")
+        {
+            $('#bl_heritage_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_heritage_nameErrorMsg').show();
+            $('#bl_heritage_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_heritage_name').focus();
+        }
+        else if(bl_heritage_distance == "")
+        {
+            $('#bl_heritage_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_heritage_distanceErrorMsg').show();
+            $('#bl_heritage_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_heritage_distance').focus();
+        }
+        else if(bl_tourist_facility_name == "")
+        {
+            $('#bl_tourist_facility_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_tourist_facility_nameErrorMsg').show();
+            $('#bl_tourist_facility_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_tourist_facility_name').focus();
+        }
+        else if(bl_tourist_facility_distance == "")
+        {
+            $('#bl_tourist_facility_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_tourist_facility_distanceErrorMsg').show();
+            $('#bl_tourist_facility_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_tourist_facility_distance').focus();
+        }
+        else if(bl_impt_installation_name == "")
+        {
+            $('#bl_impt_installation_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_impt_installation_nameErrorMsg').show();
+            $('#bl_impt_installation_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_impt_installation_name').focus();
+        }
+        else if(bl_impt_installation_distance == "")
+        {
+            $('#bl_impt_installation_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_impt_installation_distanceErrorMsg').show();
+            $('#bl_impt_installation_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_impt_installation_distance').focus();
+        }
+        else if(bl_industries_name == "")
+        {
+            $('#bl_industries_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_industries_nameErrorMsg').show();
+            $('#bl_industries_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_industries_name').focus();
+        }
+        else if(bl_industries_distance == "")
+        {
+            $('#bl_industries_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_industries_distanceErrorMsg').show();
+            $('#bl_industries_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_industries_distance').focus();
+        }
+        else if(bl_others == "")
+        {
+            $('#bl_othersErrorMsg').html("Select Slope/Gradient");
+            $('#bl_othersErrorMsg').show();
+            $('#bl_othersErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_others').focus();
+        }
+        else if(bl_others_name == "")
+        {
+            $('#bl_others_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_others_nameErrorMsg').show();
+            $('#bl_others_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_others_name').focus();
+        }
+        else if(bl_others_distance == "")
+        {
+            $('#bl_others_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_others_distanceErrorMsg').show();
+            $('#bl_others_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_others_distance').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_terrain_baseline_details' %}",
+                data : $('#terrain_baseline_form').serialize(),
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $('#terrain_baseline_application_successMsg').html("Added Successfully");
+                        $('#terrain_baseline_application_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#terrain_baseline_application_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            $("#ProjectDetailsBtn").removeAttr("disabled");
+                            $("#collapseProjectDetails").addClass("show");
+                            $("#collapseTwo").removeClass("show");
+                        }, 2000);
+                    }
+                    else
+                    {
+                        $('#terrain_baseline_application_errorMsg').html("Please Check And Submit Again");
+                        $('#terrain_baseline_application_errorMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#terrain_baseline_application_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
+                }
+            });
+        }
+    }
+
+    function save_general_project_details()
+    {
+        let project_objective = $('#project_objective').val();
+        let project_beneficiaries = $('#project_beneficiaries').val();
+        let proposed_route_reason = $('#proposed_route_reason').val();
+        let project_cost = $('#project_cost').val();
+        let project_duration = $('#project_duration').val();
+        let right_of_way = $('#right_of_way').val();
+        let length_of_transmission = $('#length_of_transmission').val();
+        let transmission_voltage_level = $('#transmission_voltage_level').val();
+        let starting_point_transmission = $('#starting_point_transmission').val();
+        let transmission_termination_point = $('#transmission_termination_point').val();
+        let construction_substation = $("input[name=construction_substation]:checked").length;
+        let construction_substation_value = $("input[name=water_required]:checked").val();
+        let transmission_numbers = $('#transmission_numbers').val();
+        let transmission_area = $('#transmission_area').val();
+        let location_transmission = $('#location_transmission').val();
+
+        if(project_objective == "")
+        {
+            $('#project_objectiveErrorMsg').html("Enter Project Objective");
+            $('#project_objectiveErrorMsg').show();
+            $('#project_objectiveErrorMsg').delay(2000).fadeOut('slow');
+            $('#project_objective').focus();
+        }
+        else if(project_beneficiaries == "")
+        {
+            $('#project_beneficiariesErrorMsg').html("Enter Project Beneficiaries");
+            $('#project_beneficiariesErrorMsg').show();
+            $('#project_beneficiariesErrorMsg').delay(2000).fadeOut('slow');
+            $('#project_beneficiaries').focus();
+        }
+        else if(proposed_route_reason == "")
+        {
+            $('#proposed_route_reasonErrorMsg').html("Enter Project Route");
+            $('#proposed_route_reasonErrorMsg').show();
+            $('#proposed_route_reasonErrorMsg').delay(2000).fadeOut('slow');
+            $('#proposed_route_reason').focus();
+        }
+        else if(project_cost == "")
+        {
+            $('#project_costErrorMsg').html("Enter Project Cost");
+            $('#project_costErrorMsg').show();
+            $('#project_costErrorMsg').delay(2000).fadeOut('slow');
+            $('#project_cost').focus();
+        }
+        else if(project_duration == "")
+        {
+            $('#project_durationErrorMsg').html("Enter Project Duration");
+            $('#project_durationErrorMsg').show();
+            $('#project_durationErrorMsg').delay(2000).fadeOut('slow');
+            $('#project_duration').focus();
+        }
+        else if(right_of_way == "")
+        {
+            $('#right_of_wayErrorMsg').html("Enter Right of Way");
+            $('#right_of_wayErrorMsg').show();
+            $('#right_of_wayErrorMsg').delay(2000).fadeOut('slow');
+            $('#right_of_way').focus();
+        }
+        else if(length_of_transmission == "")
+        {
+            $('#length_of_transmissionErrorMsg').html("Enter Length of Transmission/Distribution Line");
+            $('#length_of_transmissionErrorMsg').show();
+            $('#length_of_transmissionErrorMsg').delay(2000).fadeOut('slow');
+            $('#length_of_transmission').focus();
+        }
+        else if(transmission_voltage_level == "")
+        {
+            $('#transmission_voltage_levelErrorMsg').html("Enter Voltage Level");
+            $('#transmission_voltage_levelErrorMsg').show();
+            $('#transmission_voltage_levelErrorMsg').delay(2000).fadeOut('slow');
+            $('#transmission_voltage_level').focus();
+        }
+        else if(starting_point_transmission == "")
+        {
+            $('#starting_point_transmissionErrorMsg').html("Enter Starting Point/Tapping Point");
+            $('#starting_point_transmissionErrorMsg').show();
+            $('#starting_point_transmissionErrorMsg').delay(2000).fadeOut('slow');
+            $('#starting_point_transmission').focus();
+        }
+        else if(transmission_termination_point == "")
+        {
+            $('#transmission_termination_pointErrorMsg').html("Enter Termination Point");
+            $('#transmission_termination_pointErrorMsg').show();
+            $('#transmission_termination_pointErrorMsg').delay(2000).fadeOut('slow');
+            $('#transmission_termination_point').focus();
+        }
+        else if(construction_substation < 1)
+        {
+            $('#construction_substationErrorMsg').html("Choose One");
+            $('#construction_substationErrorMsg').show();
+            $('#construction_substationErrorMsg').delay(2000).fadeOut('slow');
+            $('#construction_substation').focus();
+        }
+        else if(construction_substation == 'Yes' && transmission_numbers == "")
+        {
+            $('#transmission_numbersErrorMsg').html("Enter Numbers");
+            $('#transmission_numbersErrorMsg').show();
+            $('#transmission_numbersErrorMsg').delay(2000).fadeOut('slow');
+            $('#transmission_numbers').focus();
+        }
+        else if(construction_substation == 'Yes' && transmission_area == "")
+        {
+            $('#transmission_numbersErrorMsg').html("Enter Area");
+            $('#transmission_numbersErrorMsg').show();
+            $('#transmission_numbersErrorMsg').delay(2000).fadeOut('slow');
+            $('#transmission_numbers').focus();
+        }
+        else if(construction_substation == 'Yes' && location_transmission == "")
+        {
+            $('#location_transmissionErrorMsg').html("Enter Location");
+            $('#location_transmissionErrorMsg').show();
+            $('#location_transmissionErrorMsg').delay(2000).fadeOut('slow');
+            $('#location_transmission').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_project_details' %}",
+                data : $('#project_details_form').serialize(),
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $('#project_details_successMsg').html("Saved Successfully");
+                        $('#project_details_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#project_details_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            $("#collapseSixBtn").removeAttr("disabled");
+                            $("#collapseSix").addClass("show");
+                            $("#collapseProjectDetails").removeClass("show");
+                        }, 2000);
+                    }
+                    else
+                    {
+                        $('#project_details_errorMsg').html("Please Check And Submit Again");
+                        $('#project_details_errorMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#project_details_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
+                }
+            });
+        }
+    }
+
+    function save_power_line()
+    {
+        $('#power_line_successMsg').html("Saved Successfully");
+        $('#power_line_successMsg').show();
+        setTimeout(function()
+        {
+            $('#power_line_successMsg').delay(2000).fadeOut('slow');
+        }, 2000);
+        setTimeout(function() {
+            $("#collapseFourBtn").removeAttr("disabled");
+            $("#collapseFour").addClass("show");
+            $("#collapseSix").removeClass("show");
+        }, 2000);
+    }
+
+    function save_general_water_requirement()
+    {
+        let water_excavated_muck = $("input[name=water_excavated_muck]:checked").length;
+        let water_required = $("input[name=water_required]:checked").length;
+        let water_required_value = $("input[name=water_required]:checked").val();
+        let water_provided_by = $("input[name=water_provided_by]:checked").length;
+        let water_raw_material_source = $('#water_raw_material_source').val();
+        let water_raw_material_qty_day = $('#water_raw_material_qty_day').val();
+        let water_raw_material_recycle_day = $('#water_raw_material_recycle_day').val();
+        let water_cleaning_source = $('#water_cleaning_source').val();
+        let water_cleaning_qty_day = $('#water_cleaning_qty_day').val();
+        let water_cleaning_recycle_day = $('#water_cleaning_recycle_day').val();
+        let water_process_source = $('#water_process_source').val();
+        let water_process_qty_day = $('#water_process_qty_day').val();
+        let water_process_recycle_day = $('#water_process_recycle_day').val();
+        let water_domestic_source = $('#water_domestic_source').val();
+        let water_domestic_qty_day = $('#water_domestic_qty_day').val();
+        let water_domestic_recycle_day = $('#water_domestic_recycle_day').val();
+        let water_dust_compression_source = $('#water_dust_compression_source').val();
+        let water_dust_compression_qty_day = $('#water_dust_compression_qty_day').val();
+        let water_dust_compression_recycle_day = $('#water_dust_compression_recycle_day').val();
+        let water_others_name = $('#water_others_name').val();
+        let water_others_source = $('#water_others_source').val();
+        let water_others_qty_day = $('#water_others_qty_day').val();
+
+        if(water_excavated_muck < 1)
+        {
+            $('#water_excavated_muckErrorMsg').html("Please Select One.");
+            $('#water_excavated_muckErrorMsg').show();
+            $('#water_excavated_muckErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_excavated_muck').focus();
+        }
+        else if(water_required < 1)
+        {
+            $('#water_requiredErrorMsg').html("Please Select One.");
+            $('#water_requiredErrorMsg').show();
+            $('#water_requiredErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_required').focus();
+        }
+        else if(water_required_value == 'Yes' && water_raw_material_source == "")
+        {
+            $('#water_raw_material_sourceErrorMsg').html("Please Select One.");
+            $('#water_raw_material_sourceErrorMsg').show();
+            $('#water_raw_material_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_raw_material_source').focus();
+        }
+        else if(water_required_value == 'Yes' && water_raw_material_qty_day == "")
+        {
+            $('#water_raw_material_qty_dayErrorMsg').html("Please Select One.");
+            $('#water_raw_material_qty_dayErrorMsg').show();
+            $('#water_raw_material_qty_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_raw_material_qty_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_raw_material_recycle_day == "")
+        {
+            $('#water_raw_material_recycle_dayErrorMsg').html("Please Select One.");
+            $('#water_raw_material_recycle_dayErrorMsg').show();
+            $('#water_raw_material_recycle_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_raw_material_recycle_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_cleaning_source == "")
+        {
+            $('#water_cleaning_sourceErrorMsg').html("Please Select One.");
+            $('#water_cleaning_sourceErrorMsg').show();
+            $('#water_cleaning_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_cleaning_source').focus();
+        }
+        else if(water_required_value == 'Yes' && water_cleaning_qty_day == "")
+        {
+            $('#water_cleaning_qty_dayErrorMsg').html("Please Select One.");
+            $('#water_cleaning_qty_dayErrorMsg').show();
+            $('#water_cleaning_qty_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_cleaning_qty_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_cleaning_recycle_day == "")
+        {
+            $('#water_cleaning_recycle_dayErrorMsg').html("Please Select One.");
+            $('#water_cleaning_recycle_dayErrorMsg').show();
+            $('#water_cleaning_recycle_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_cleaning_recycle_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_process_source == "")
+        {
+            $('#water_process_sourceErrorMsg').html("Please Select One.");
+            $('#water_process_sourceErrorMsg').show();
+            $('#water_process_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_process_source').focus();
+        }
+        else if(water_required_value == 'Yes' && water_process_qty_day == "")
+        {
+            $('#water_process_qty_dayErrorMsg').html("Please Select One.");
+            $('#water_process_qty_dayErrorMsg').show();
+            $('#water_process_qty_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_process_qty_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_process_recycle_day == "")
+        {
+            $('#water_process_recycle_dayErrorMsg').html("Please Select One.");
+            $('#water_process_recycle_dayErrorMsg').show();
+            $('#water_process_recycle_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_process_recycle_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_domestic_source == "")
+        {
+            $('#water_domestic_sourceErrorMsg').html("Please Select One.");
+            $('#water_domestic_sourceErrorMsg').show();
+            $('#water_domestic_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_domestic_source').focus();
+        }
+        else if(water_required_value == 'Yes' && water_domestic_qty_day == "")
+        {
+            $('#water_domestic_qty_dayErrorMsg').html("Please Select One.");
+            $('#water_domestic_qty_dayErrorMsg').show();
+            $('#water_domestic_qty_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_domestic_qty_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_dust_compression_source == "")
+        {
+            $('#water_dust_compression_sourceErrorMsg').html("Please Select One.");
+            $('#water_dust_compression_sourceErrorMsg').show();
+            $('#water_dust_compression_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_dust_compression_source').focus();
+        }
+        else if(water_required_value == 'Yes' && water_dust_compression_qty_day == "")
+        {
+            $('#water_dust_compression_qty_dayErrorMsg').html("Please Select One.");
+            $('#water_dust_compression_qty_dayErrorMsg').show();
+            $('#water_dust_compression_qty_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_dust_compression_qty_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_dust_compression_recycle_day == "")
+        {
+            $('#water_dust_compression_recycle_dayErrorMsg').html("Please Select One.");
+            $('#water_dust_compression_recycle_dayErrorMsg').show();
+            $('#water_dust_compression_recycle_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_dust_compression_recycle_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_others_name == "")
+        {
+            $('#water_others_nameErrorMsg').html("Please Select One.");
+            $('#water_others_nameErrorMsg').show();
+            $('#water_others_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_others_name').focus();
+        }
+        else if(water_required_value == 'Yes' && water_others_source == "")
+        {
+            $('#water_others_sourceErrorMsg').html("Please Select One.");
+            $('#water_others_sourceErrorMsg').show();
+            $('#water_others_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_others_source').focus();
+        }
+        else if(water_required_value == 'Yes' && water_others_qty_day == "")
+        {
+            $('#water_others_qty_dayErrorMsg').html("Please Select One.");
+            $('#water_others_qty_dayErrorMsg').show();
+            $('#water_others_qty_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_others_qty_day').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_general_water_requirement' %}",
+                data : $('#water_requirement_form').serialize(),
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $('#water_requirement_application_successMsg').html("Saved Successfully");
+                        $('#water_requirement_application_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#water_requirement_application_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            $("#collapseFiveBtn").removeAttr("disabled");
+                            $("#collapseFive").addClass("show");
+                            $("#collapseFour").removeClass("show");
+                        }, 2000);
+                    }
+                    else
+                    {
+                        $('#water_requirement_application_errorMsg').html("Please Check And Submit Again");
+                        $('#water_requirement_application_errorMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#water_requirement_application_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
+                }
+            });
+        }
+    }
+
+    function save_anc_approach_road_details()
+    {
+
+        let anc_road_required = $("input[name=anc_road_required]:checked").length;
+        let anc_road_required_value = $("input[name=anc_road_required]:checked").val();
+        let anc_road_length = $('#anc_road_length').val();
+        let anc_road_start_point = $('#anc_road_start_point').val();
+        let anc_road_end_point  = $('#anc_road_end_point').val();
+        let anc_road_blast_required= $("input[name=anc_road_required]:checked").length;
+        let anc_road_blast_required_value = $("input[name=anc_road_required]:checked").val();
+        let anc_road_blast_type = $('#anc_road_blast_type').val();
+        let anc_road_blast_qty = $('#anc_road_blast_qty').val();
+        let anc_road_blast_location = $('#anc_road_blast_location').val();
+        let anc_road_blast_frequency_time = $('#anc_road_blast_frequency_time').val();
+
+        if(anc_road_required < 1)
+        {
+            $('#anc_road_requiredErrorMsg').html("Please Select One.");
+            $('#anc_road_requiredErrorMsg').show();
+            $('#anc_road_requiredErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_required').focus();
+        }
+        else if(anc_road_required_value == 'Yes' && anc_road_length == "")
+        {
+            $('#anc_road_lengthErrorMsg').html("Enter Length of road in km.");
+            $('#anc_road_lengthErrorMsg').show();
+            $('#anc_road_lengthErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_length').focus();
+        }
+        else if(water_required_value == 'Yes' && anc_road_start_point == "")
+        {
+            $('#anc_road_start_pointErrorMsg').html("Enter Starting Point.");
+            $('#anc_road_start_pointErrorMsg').show();
+            $('#anc_road_start_pointErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_start_point').focus();
+        }
+        else if(water_required_value == 'Yes' && anc_road_end_point == "")
+        {
+            $('#anc_road_end_pointErrorMsg').html("Enter Termination Point.");
+            $('#anc_road_end_pointErrorMsg').show();
+            $('#anc_road_end_pointErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_end_point').focus();
+        }
+        else if( anc_road_blast_required < 1)
+        {
+            $('#anc_road_blast_requiredErrorMsg').html("Enter Termination Point.");
+            $('#anc_road_blast_requiredErrorMsg').show();
+            $('#anc_road_blast_requiredErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_blast_required').focus();
+        }
+        else if(anc_road_blast_required_value == 'Yes' && anc_road_blast_type == "")
+        {
+            $('#anc_road_blast_typeErrorMsg').html("Mention type of blasting.");
+            $('#anc_road_blast_typeErrorMsg').show();
+            $('#anc_road_blast_typeErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_blast_type').focus();
+        }
+        else if(anc_road_blast_required_value == 'Yes' && anc_road_blast_qty == "")
+        {
+            $('#anc_road_blast_qtyErrorMsg').html("Enter Type and quantity of explosive to be used.");
+            $('#anc_road_blast_qtyErrorMsg').show();
+            $('#anc_road_blast_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_blast_qty').focus();
+        }
+        else if(anc_road_blast_required_value == 'Yes' && anc_road_blast_location == "")
+        {
+            $('#anc_road_blast_locationErrorMsg').html("Mention location (s) where blasting is required.");
+            $('#anc_road_blast_locationErrorMsg').show();
+            $('#anc_road_blast_locationErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_blast_location').focus();
+        }
+        else if(anc_road_blast_required_value == 'Yes' && anc_road_blast_frequency_time == "")
+        {
+            $('#anc_road_blast_frequency_timeErrorMsg').html("Enter Frequency and timing of blasting per day.");
+            $('#anc_road_blast_frequency_timeErrorMsg').show();
+            $('#anc_road_blast_frequency_timeErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_blast_frequency_time').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_anc_approach_road_details' %}",
+                data : $('#ancillary_approach_road_form').serialize(),
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $('#anc_approach_road_successMsg').html("Saved Successfully");
+                        $('#anc_approach_road_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#anc_approach_road_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            $("#headingSixBtn").removeAttr("disabled");
+                            $("#collapseSix").addClass("show");
+                            $("#collapseFive").removeClass("show");
+                        }, 2000);
+                    }
+                    else
+                    {
+                        $('#anc_approach_road_errorMsg').html("Please Check And Submit Again");
+                        $('#anc_approach_road_errorMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#anc_approach_road_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
+                }
+            });
+        }
+    }
+
+    function save_general_anc_other()
+    {
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'save_anc_other_details' %}",
+            data : $('#anc_others_form').serialize(),
+            success : function(data)
+            {
+                if(data.message == 'success')
+                {
+                    $('#anc_others_successMsg').html("Saved Successfully");
+                    $('#anc_others_successMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#anc_others_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $("#headingEightBtn").removeAttr("disabled");
+                        $("#collapseEight").addClass("show");
+                        $("#collapseSeven").removeClass("show");
+                    }, 2000);
+                }
+                else
+                {
+                    $('#anc_others_errorMsg').html("Please Check And Submit Again");
+                    $('#anc_others_errorMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#anc_others_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
+            }
+        });
+    }
+
+    function save_solid_waste_details()
+    {
+        let en_impact_allocated_budget = $('#en_impact_allocated_budget').val();
+        let en_impact_hazardous_waste_list = $('#en_impact_hazardous_waste_list').val();
+        let en_impact_hazardous_waste_source = $('#en_impact_hazardous_waste_source').val();
+        let en_impact_hazardous_waste_qty_annum = $('#en_impact_hazardous_waste_qty_annum').val();
+        let en_impact_hazardous_waste_mgt_plan = $('#en_impact_hazardous_waste_mgt_plan').val();
+        let en_impact_non_hazardous_waste_list = $('#en_impact_non_hazardous_waste_list').val();
+        let en_impact_non_hazardous_waste_source = $('#en_impact_non_hazardous_waste_source').val();
+        let en_impact_non_hazardous_waste_qty_annum = $('#en_impact_non_hazardous_waste_qty_annum').val();
+        let en_impact_non_hazardous_waste_mgt_plan = $('#en_impact_non_hazardous_waste_mgt_plan').val();
+        let en_impact_medical_waste_list = $('#en_impact_medical_waste_list').val();
+        let en_impact_medical_waste_source = $('#en_impact_medical_waste_source').val();
+        let en_impact_medical_waste_qty_annum = $('#en_impact_medical_waste_qty_annum').val();
+        let en_impact_medical_waste_mgt_plan = $('#en_impact_medical_waste_mgt_plan').val();
+        let en_impact_ewaste_list = $('#en_impact_ewaste_list').val();
+        let en_impact_ewaste_source = $('#en_impact_ewaste_source').val();
+        let en_impact_ewaste_qty_annum = $('#en_impact_ewaste_qty_annum').val();
+        let en_impact_ewaste_mgt_plan = $('#en_impact_ewaste_mgt_plan').val();
+        let en_impact_others_waste_list = $('#en_impact_others_waste_list').val();
+        let en_impact_others_waste_source = $('#en_impact_others_waste_source').val();
+        let en_impact_others_waste_qty_annum = $('#en_impact_others_waste_qty_annum').val();
+        let en_impact_others_waste_mgt_plan = $('#en_impact_others_waste_mgt_plan').val();
+
+        if(en_impact_allocated_budget == "")
+        {
+            $('#en_impact_allocated_budgetErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_allocated_budgetErrorMsg').show();
+            $('#en_impact_allocated_budgetErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_allocated_budget').focus();
+        }
+        else if(en_impact_hazardous_waste_list == "")
+        {
+            $('#en_impact_hazardous_waste_listErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_hazardous_waste_listErrorMsg').show();
+            $('#en_impact_hazardous_waste_listErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_hazardous_waste_list').focus();
+        }
+        else if(en_impact_hazardous_waste_source == "")
+        {
+            $('#en_impact_hazardous_waste_sourceErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_hazardous_waste_sourceErrorMsg').show();
+            $('#en_impact_hazardous_waste_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_hazardous_waste_source').focus();
+        }
+        else if(en_impact_hazardous_waste_qty_annum == "")
+        {
+            $('#en_impact_hazardous_waste_qty_annumErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_hazardous_waste_qty_annumErrorMsg').show();
+            $('#en_impact_hazardous_waste_qty_annumErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_hazardous_waste_qty_annum').focus();
+        }
+        else if(en_impact_hazardous_waste_mgt_plan == "")
+        {
+            $('#en_impact_hazardous_waste_mgt_planErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_hazardous_waste_mgt_planErrorMsg').show();
+            $('#en_impact_hazardous_waste_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_hazardous_waste_mgt_plan').focus();
+        }
+        else if(en_impact_non_hazardous_waste_list == "")
+        {
+            $('#en_impact_non_hazardous_waste_listErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_non_hazardous_waste_listErrorMsg').show();
+            $('#en_impact_non_hazardous_waste_listErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_non_hazardous_waste_list').focus();
+        }
+        else if(en_impact_non_hazardous_waste_source == "")
+        {
+            $('#en_impact_non_hazardous_waste_sourceErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_non_hazardous_waste_sourceErrorMsg').show();
+            $('#en_impact_non_hazardous_waste_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_non_hazardous_waste_source').focus();
+        }
+        else if(en_impact_non_hazardous_waste_qty_annum == "")
+        {
+            $('#en_impact_non_hazardous_waste_qty_annumErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_non_hazardous_waste_qty_annumErrorMsg').show();
+            $('#en_impact_non_hazardous_waste_qty_annumErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_non_hazardous_waste_qty_annum').focus();
+        }
+        else if(en_impact_non_hazardous_waste_mgt_plan == "")
+        {
+            $('#en_impact_non_hazardous_waste_mgt_planErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_non_hazardous_waste_mgt_planErrorMsg').show();
+            $('#en_impact_non_hazardous_waste_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_non_hazardous_waste_mgt_plan').focus();
+        }
+        else if(en_impact_medical_waste_list == "")
+        {
+            $('#en_impact_medical_waste_listErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_medical_waste_listErrorMsg').show();
+            $('#en_impact_medical_waste_listErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_medical_waste_list').focus();
+        }
+        else if(en_impact_medical_waste_source == "")
+        {
+            $('#en_impact_medical_waste_sourceErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_medical_waste_sourceErrorMsg').show();
+            $('#en_impact_medical_waste_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_medical_waste_source').focus();
+        }
+        else if(en_impact_medical_waste_qty_annum == "")
+        {
+            $('#en_impact_medical_waste_qty_annumErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_medical_waste_qty_annumErrorMsg').show();
+            $('#en_impact_medical_waste_qty_annumErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_medical_waste_qty_annum').focus();
+        }
+        else if(en_impact_medical_waste_mgt_plan == "")
+        {
+            $('#en_impact_medical_waste_mgt_planErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_medical_waste_mgt_planErrorMsg').show();
+            $('#en_impact_medical_waste_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_medical_waste_mgt_plan').focus();
+        }
+        else if(en_impact_ewaste_list == "")
+        {
+            $('#en_impact_ewaste_listErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_ewaste_listErrorMsg').show();
+            $('#en_impact_ewaste_listErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_ewaste_list').focus();
+        }
+        else if(en_impact_ewaste_source == "")
+        {
+            $('#en_impact_ewaste_sourceErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_ewaste_sourceErrorMsg').show();
+            $('#en_impact_ewaste_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_ewaste_source').focus();
+        }
+        else if(en_impact_ewaste_qty_annum == "")
+        {
+            $('#en_impact_ewaste_qty_annumErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_ewaste_qty_annumErrorMsg').show();
+            $('#en_impact_ewaste_qty_annumErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_ewaste_qty_annum').focus();
+        }
+        else if(en_impact_ewaste_mgt_plan == "")
+        {
+            $('#en_impact_ewaste_mgt_planErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_ewaste_mgt_planErrorMsg').show();
+            $('#en_impact_ewaste_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_ewaste_mgt_plan').focus();
+        }
+        else if(en_impact_others_waste_list == "")
+        {
+            $('#en_impact_others_waste_listErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_others_waste_listErrorMsg').show();
+            $('#en_impact_others_waste_listErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_others_waste_list').focus();
+        }
+        else if(en_impact_others_waste_source == "")
+        {
+            $('#en_impact_others_waste_sourceErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_others_waste_sourceErrorMsg').show();
+            $('#en_impact_others_waste_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_others_waste_source').focus();
+        }
+        else if(en_impact_others_waste_qty_annum == "")
+        {
+            $('#en_impact_others_waste_qty_annumErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_others_waste_qty_annumErrorMsg').show();
+            $('#en_impact_others_waste_qty_annumErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_others_waste_qty_annum').focus();
+        }
+        else if(en_impact_others_waste_mgt_plan == "")
+        {
+            $('#en_impact_others_waste_mgt_planErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_others_waste_mgt_planErrorMsg').show();
+            $('#en_impact_others_waste_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_others_waste_mgt_plan').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_solid_waste_details' %}",
+                data : $('#solid_waste_form').serialize(),
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $('#solid_waste_successMsg').html("Saved Successfully");
+                        $('#solid_waste_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#solid_waste_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            $("#headingNineBtn").removeAttr("disabled");
+                            $("#collapseNine").addClass("show");
+                            $("#collapseEight").removeClass("show");
+                        }, 2000);
+                    }
+                    else
+                    {
+                        $('#solid_waste_errorMsg').html("Please Check And Submit Again");
+                        $('#solid_waste_errorMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#solid_waste_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
+                }
+            });
+        }
+    }
+
+    function save_noise_level_details()
+    {
+        let en_noise_ind_area_day = $('#en_noise_ind_area_day').val();
+        let en_noise_ind_area_night = $('#en_noise_ind_area_night').val();
+        let en_noise_ind_area_mgt_plan = $('#en_noise_ind_area_mgt_plan').val();
+        let en_noise_mixed_area_day = $('#en_noise_mixed_area_day').val();
+        let en_noise_mixed_area_night = $('#en_noise_mixed_area_night').val();
+        let en_noise_mixed_area_mgt_plan = $('#en_noise_mixed_area_mgt_plan').val();
+        let en_noise_sen_area_day = $('#en_noise_sen_area_day').val();
+        let en_noise_sen_area_night = $('#en_noise_sen_area_night').val();
+        let en_noise_sen_area_mgt_plan = $('#en_noise_sen_area_mgt_plan').val();
+
+        if(en_noise_ind_area_day == "")
+        {
+            $('#en_noise_ind_area_dayErrorMsg').html("Enter Name of Project");
+            $('#en_noise_ind_area_dayErrorMsg').show();
+            $('#en_noise_ind_area_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_noise_ind_area_day').focus();
+        }
+        else if(en_noise_ind_area_night == "")
+        {
+            $('#en_noise_ind_area_nightErrorMsg').html("Enter Business Type");
+            $('#en_noise_ind_area_nightErrorMsg').show();
+            $('#en_noise_ind_area_nightErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_noise_ind_area_night').focus();
+        }
+        else if(en_noise_ind_area_mgt_plan == "")
+        {
+            $('#en_noise_ind_area_mgt_planErrorMsg').html("Enter CID");
+            $('#en_noise_ind_area_mgt_planErrorMsg').show();
+            $('#en_noise_ind_area_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_noise_ind_area_mgt_plan').focus();
+        }
+        else if(en_noise_mixed_area_day == "")
+        {
+            $('#en_noise_mixed_area_dayErrorMsg').html("Enter CID");
+            $('#en_noise_mixed_area_dayErrorMsg').show();
+            $('#en_noise_mixed_area_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_noise_mixed_area_day').focus();
+        }
+        else if(en_noise_mixed_area_night == "")
+        {
+            $('#en_noise_mixed_area_nightErrorMsg').html("Enter CID");
+            $('#en_noise_mixed_area_nightErrorMsg').show();
+            $('#en_noise_mixed_area_nightErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_noise_mixed_area_night').focus();
+        }
+        else if(en_noise_mixed_area_mgt_plan == "")
+        {
+            $('#en_noise_mixed_area_mgt_planErrorMsg').html("Enter CID");
+            $('#en_noise_mixed_area_mgt_planErrorMsg').show();
+            $('#en_noise_mixed_area_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_noise_mixed_area_mgt_plan').focus();
+        }
+        else if(en_noise_sen_area_day == "")
+        {
+            $('#en_noise_sen_area_dayErrorMsg').html("Enter CID");
+            $('#en_noise_sen_area_dayErrorMsg').show();
+            $('#en_noise_sen_area_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_noise_sen_area_day').focus();
+        }
+        else if(en_noise_sen_area_night == "")
+        {
+            $('#en_noise_sen_area_nightErrorMsg').html("Enter CID");
+            $('#en_noise_sen_area_nightErrorMsg').show();
+            $('#en_noise_sen_area_nightErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_noise_sen_area_night').focus();
+        }
+        else if(en_noise_sen_area_mgt_plan == "")
+        {
+            $('#en_noise_sen_area_mgt_planErrorMsg').html("Enter CID");
+            $('#en_noise_sen_area_mgt_planErrorMsg').show();
+            $('#en_noise_sen_area_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_noise_sen_area_mgt_plan').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_noise_level_details' %}",
+                data : $('#noise_level_form').serialize(),
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $('#noise_level_successMsg').html("Saved Successfully");
+                        $('#noise_level_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#noise_level_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            $("#otherImpactsBtn").removeAttr("disabled");
+                            $("#collapseOtherImpacts").addClass("show");
+                            $("#collapseTwelve").removeClass("show");
+                        }, 2000);
+                    }
+                    else
+                    {
+                        $('#noise_level_errorMsg').html("Please Check And Submit Again");
+                        $('#noise_level_errorMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#noise_level_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
+                }
+            });
+        }
+    }
+
+    function save_other_impact_details()
+    {
+        let en_other_impact_odour_source = $('#en_other_impact_odour_source').val();
+        let en_other_impact_odour_qty = $('#en_other_impact_odour_qty').val();
+        let en_other_impact_odour_mgt_plan = $('#en_other_impact_odour_mgt_plan').val();
+        let en_other_impact_fugutive_source = $('#en_other_impact_fugutive_source').val();
+        let en_other_impact_fugutive_qty = $('#en_other_impact_fugutive_qty').val();
+        let en_other_impact_fugutive_mgt_plan = $('#en_other_impact_fugutive_mgt_plan').val();
+        let en_other_impact_slope_source = $('#en_other_impact_slope_source').val();
+        let en_other_impact_slope_qty = $('#en_other_impact_slope_qty').val();
+        let en_other_impact_slope_mgt_plan = $('#en_other_impact_slope_mgt_plan').val();
+        let en_other_impact_aesthetic_source = $('#en_other_impact_aesthetic_source').val();
+        let en_other_impact_aesthetic_qty = $('#en_other_impact_aesthetic_qty').val();
+        let en_other_impact_aesthetic_mgt_plan = $('#en_other_impact_aesthetic_mgt_plan').val();
+        let en_other_impact_mucks_source = $('#en_other_impact_mucks_source').val();
+        let en_other_impact_mucks_qty = $('#en_other_impact_mucks_qty').val();
+        let en_other_impact_mucks_mgt_plan = $('#en_other_impact_mucks_mgt_plan').val();
+        let en_other_impact_sewerage_source = $('#en_other_impact_sewerage_source').val();
+        let en_other_impact_sewerage_qty = $('#en_other_impact_sewerage_qty').val();
+        let en_other_impact_sewerage_mgt_plan = $('#en_other_impact_sewerage_mgt_plan').val();
+        let en_other_impact_erosion_source = $('#en_other_impact_erosion_source').val();
+        let en_other_impact_erosion_qty = $('#en_other_impact_erosion_qty').val();
+        let en_other_impact_erosion_mgt_plan = $('#en_other_impact_erosion_mgt_plan').val();
+        let en_other_impact_storm_water_source = $('#en_other_impact_storm_water_source').val();
+        let en_other_impact_storm_water_qty = $('#en_other_impact_storm_water_qty').val();
+        let en_other_impact_storm_water_mgt_plan = $('#en_other_impact_storm_water_mgt_plan').val();
+        let en_other_impact_habitat_source = $('#en_other_impact_habitat_source').val();
+        let en_other_impact_habitat_qty = $('#en_other_impact_habitat_qty').val();
+        let en_other_impact_habitat_mgt_plan = $('#en_other_impact_habitat_mgt_plan').val();
+        let en_other_impact_socio_source = $('#en_other_impact_socio_source').val();
+        let en_other_impact_socio_qty = $('#en_other_impact_socio_qty').val();
+        let en_other_impact_socio_mgt_plan = $('#en_other_impact_socio_mgt_plan').val();
+        let en_other_impact_water_source_source = $('#en_other_impact_water_source_source').val();
+        let en_other_impact_water_source_qty = $('#en_other_impact_water_source_qty').val();
+        let en_other_impact_water_source_mgt_plan = $('#en_other_impact_water_source_mgt_plan').val();
+        let en_other_impact_other_source = $('#en_other_impact_other_source').val();
+        let en_other_impact_other_qty = $('#en_other_impact_other_qty').val();
+        let en_other_impact_other_mgt_plan = $('#en_other_impact_other_mgt_plan').val();
+
+        if(en_other_impact_odour_source == "")
+        {
+            $('#en_other_impact_odour_sourceErrorMsg').html("Enter Name of Project");
+            $('#en_other_impact_odour_sourceErrorMsg').show();
+            $('#en_other_impact_odour_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_odour_source').focus();
+        }
+        else if(en_other_impact_odour_qty == "")
+        {
+            $('#en_other_impact_odour_qtyErrorMsg').html("Enter Business Type");
+            $('#en_other_impact_odour_qtyErrorMsg').show();
+            $('#en_other_impact_odour_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_odour_qty').focus();
+        }
+        else if(en_other_impact_odour_mgt_plan == "")
+        {
+            $('#en_other_impact_odour_mgt_planErrorMsg').html("Enter CID");
+            $('#en_other_impact_odour_mgt_planErrorMsg').show();
+            $('#en_other_impact_odour_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_odour_mgt_plan').focus();
+        }
+        else if(en_other_impact_fugutive_source == "")
+        {
+            $('#en_other_impact_fugutive_sourceErrorMsg').html("Enter CID");
+            $('#en_other_impact_fugutive_sourceErrorMsg').show();
+            $('#en_other_impact_fugutive_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_fugutive_source').focus();
+        }
+        else if(en_other_impact_fugutive_qty == "")
+        {
+            $('#en_other_impact_fugutive_qtyErrorMsg').html("Enter CID");
+            $('#en_other_impact_fugutive_qtyErrorMsg').show();
+            $('#en_other_impact_fugutive_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_fugutive_qty').focus();
+        }
+        else if(en_other_impact_fugutive_mgt_plan == "")
+        {
+            $('#en_other_impact_fugutive_mgt_planErrorMsg').html("Enter CID");
+            $('#en_other_impact_fugutive_mgt_planErrorMsg').show();
+            $('#en_other_impact_fugutive_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_fugutive_mgt_plan').focus();
+        }
+        else if(en_other_impact_slope_source == "")
+        {
+            $('#en_other_impact_slope_sourceErrorMsg').html("Enter CID");
+            $('#en_other_impact_slope_sourceErrorMsg').show();
+            $('#en_other_impact_slope_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_slope_source').focus();
+        }
+        else if(en_other_impact_slope_qty == "")
+        {
+            $('#en_other_impact_slope_qtyErrorMsg').html("Enter CID");
+            $('#en_other_impact_slope_qtyErrorMsg').show();
+            $('#en_other_impact_slope_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_slope_qty').focus();
+        }
+        else if(en_other_impact_slope_mgt_plan == "")
+        {
+            $('#en_other_impact_slope_mgt_planErrorMsg').html("Enter CID");
+            $('#en_other_impact_slope_mgt_planErrorMsg').show();
+            $('#en_other_impact_slope_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_slope_mgt_plan').focus();
+        }
+        else if(en_other_impact_aesthetic_source == "")
+        {
+            $('#en_other_impact_aesthetic_sourceErrorMsg').html("Enter CID");
+            $('#en_other_impact_aesthetic_sourceErrorMsg').show();
+            $('#en_other_impact_aesthetic_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_aesthetic_source').focus();
+        }
+        else if(en_other_impact_aesthetic_qty == "")
+        {
+            $('#en_other_impact_aesthetic_qtyErrorMsg').html("Enter CID");
+            $('#en_other_impact_aesthetic_qtyErrorMsg').show();
+            $('#en_other_impact_aesthetic_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_aesthetic_qty').focus();
+        }
+        else if(en_other_impact_aesthetic_mgt_plan == "")
+        {
+            $('#en_other_impact_aesthetic_mgt_planErrorMsg').html("Enter CID");
+            $('#en_other_impact_aesthetic_mgt_planErrorMsg').show();
+            $('#en_other_impact_aesthetic_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_aesthetic_mgt_plan').focus();
+        }
+        else if(en_other_impact_mucks_source == "")
+        {
+            $('#en_other_impact_mucks_sourceErrorMsg').html("Enter CID");
+            $('#en_other_impact_mucks_sourceErrorMsg').show();
+            $('#en_other_impact_mucks_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_mucks_source').focus();
+        }
+        else if(en_other_impact_mucks_qty == "")
+        {
+            $('#en_other_impact_mucks_qtyErrorMsg').html("Enter CID");
+            $('#en_other_impact_mucks_qtyErrorMsg').show();
+            $('#en_other_impact_mucks_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_mucks_qty').focus();
+        }
+        else if(en_other_impact_mucks_mgt_plan == "")
+        {
+            $('#en_other_impact_mucks_mgt_planErrorMsg').html("Enter CID");
+            $('#en_other_impact_mucks_mgt_planErrorMsg').show();
+            $('#en_other_impact_mucks_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_mucks_mgt_plan').focus();
+        }
+        else if(en_other_impact_sewerage_source == "")
+        {
+            $('#en_other_impact_sewerage_sourceErrorMsg').html("Enter CID");
+            $('#en_other_impact_sewerage_sourceErrorMsg').show();
+            $('#en_other_impact_sewerage_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_sewerage_source').focus();
+        }
+        else if(en_other_impact_sewerage_qty == "")
+        {
+            $('#en_other_impact_sewerage_qtyErrorMsg').html("Enter CID");
+            $('#en_other_impact_sewerage_qtyErrorMsg').show();
+            $('#en_other_impact_sewerage_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_sewerage_qty').focus();
+        }
+        else if(en_other_impact_sewerage_mgt_plan == "")
+        {
+            $('#en_other_impact_sewerage_mgt_planErrorMsg').html("Enter CID");
+            $('#en_other_impact_sewerage_mgt_planErrorMsg').show();
+            $('#en_other_impact_sewerage_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_sewerage_mgt_plan').focus();
+        }
+        else if(en_other_impact_erosion_source == "")
+        {
+            $('#en_other_impact_erosion_sourceErrorMsg').html("Enter CID");
+            $('#en_other_impact_erosion_sourceErrorMsg').show();
+            $('#en_other_impact_erosion_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_erosion_source').focus();
+        }
+        else if(en_other_impact_erosion_qty == "")
+        {
+            $('#en_other_impact_erosion_qtyErrorMsg').html("Enter CID");
+            $('#en_other_impact_erosion_qty').show();
+            $('#en_other_impact_erosion_qty').delay(2000).fadeOut('slow');
+            $('#en_other_impact_erosion_qty').focus();
+        }
+        else if(en_other_impact_erosion_mgt_plan == "")
+        {
+            $('#en_other_impact_erosion_mgt_planErrorMsg').html("Enter CID");
+            $('#en_other_impact_erosion_mgt_planErrorMsg').show();
+            $('#en_other_impact_erosion_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_erosion_mgt_plan').focus();
+        }
+        else if(en_other_impact_storm_water_source == "")
+        {
+            $('#en_other_impact_storm_water_sourceErrorMsg').html("Enter CID");
+            $('#en_other_impact_storm_water_sourceErrorMsg').show();
+            $('#en_other_impact_storm_water_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_storm_water_source').focus();
+        }
+        else if(en_other_impact_storm_water_qty == "")
+        {
+            $('#en_other_impact_storm_water_qtyErrorMsg').html("Enter CID");
+            $('#en_other_impact_storm_water_qtyErrorMsg').show();
+            $('#en_other_impact_storm_water_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_storm_water_qty').focus();
+        }
+        else if(en_other_impact_storm_water_mgt_plan == "")
+        {
+            $('#en_other_impact_storm_water_mgt_planErrorMsg').html("Enter CID");
+            $('#en_other_impact_storm_water_mgt_planErrorMsg').show();
+            $('#en_other_impact_storm_water_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_storm_water_mgt_plan').focus();
+        }
+        else if(en_other_impact_habitat_source == "")
+        {
+            $('#en_other_impact_habitat_sourceErrorMsg').html("Enter CID");
+            $('#en_other_impact_habitat_sourceErrorMsg').show();
+            $('#en_other_impact_habitat_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_habitat_source').focus();
+        }
+        else if(en_other_impact_habitat_qty == "")
+        {
+            $('#en_other_impact_habitat_qtyErrorMsg').html("Enter CID");
+            $('#en_other_impact_habitat_qtyErrorMsg').show();
+            $('#en_other_impact_habitat_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_habitat_qty').focus();
+        }
+        else if(en_other_impact_habitat_mgt_plan == "")
+        {
+            $('#en_other_impact_habitat_mgt_planErrorMsg').html("Enter CID");
+            $('#en_other_impact_habitat_mgt_planErrorMsg').show();
+            $('#en_other_impact_habitat_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_habitat_mgt_plan').focus();
+        }
+        else if(en_other_impact_socio_source == "")
+        {
+            $('#en_other_impact_socio_sourceErrorMsg').html("Enter CID");
+            $('#en_other_impact_socio_sourceErrorMsg').show();
+            $('#en_other_impact_socio_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_socio_source').focus();
+        }
+        else if(en_other_impact_socio_qty == "")
+        {
+            $('#en_other_impact_socio_qtyErrorMsg').html("Enter CID");
+            $('#en_other_impact_socio_qtyErrorMsg').show();
+            $('#en_other_impact_socio_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_socio_qty').focus();
+        }
+        else if(en_other_impact_socio_mgt_plan == "")
+        {
+            $('#en_other_impact_socio_mgt_planErrorMsg').html("Enter CID");
+            $('#en_other_impact_socio_mgt_planErrorMsg').show();
+            $('#en_other_impact_socio_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_socio_mgt_plan').focus();
+        }
+        else if(en_other_impact_water_source_source == "")
+        {
+            $('#en_other_impact_water_source_sourceErrorMsg').html("Enter CID");
+            $('#en_other_impact_water_source_sourceErrorMsg').show();
+            $('#en_other_impact_water_source_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_water_source_source').focus();
+        }
+        else if(en_other_impact_water_source_qty == "")
+        {
+            $('#en_other_impact_water_source_qtyErrorMsg').html("Enter CID");
+            $('#en_other_impact_water_source_qtyErrorMsg').show();
+            $('#en_other_impact_water_source_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_water_source_qty').focus();
+        }
+        else if(en_other_impact_water_source_mgt_plan == "")
+        {
+            $('#en_other_impact_water_source_mgt_planErrorMsg').html("Enter CID");
+            $('#en_other_impact_water_source_mgt_planErrorMsg').show();
+            $('#en_other_impact_water_source_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_water_source_mgt_plan').focus();
+        }
+        else if(en_other_impact_other_source == "")
+        {
+            $('#en_other_impact_other_sourceErrorMsg').html("Enter CID");
+            $('#en_other_impact_other_sourceErrorMsg').show();
+            $('#en_other_impact_other_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_other_source').focus();
+        }
+        else if(en_other_impact_other_qty == "")
+        {
+            $('#en_other_impact_other_qtyErrorMsg').html("Enter CID");
+            $('#en_other_impact_other_qtyErrorMsg').show();
+            $('#en_other_impact_other_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_other_qty').focus();
+        }
+        else if(en_other_impact_other_mgt_plan == "")
+        {
+            $('#en_other_impact_other_mgt_planErrorMsg').html("Enter CID");
+            $('#en_other_impact_other_mgt_planErrorMsg').show();
+            $('#en_other_impact_other_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_other_impact_other_mgt_plan').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_other_impact_details' %}",
+                data : $('#other_impact_form').serialize(),
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $('#other_impact_successMsg').html("Saved Successfully");
+                        $('#other_impact_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#other_impact_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            $("#headingAttachmentBtn").removeAttr("disabled");
+                            $("#collapseAttachment").addClass("show");
+                            $("#collapseOtherImpacts").removeClass("show");
+                        }, 2000);
+                    }
+                    else
+                    {
+                        $('#other_impact_errorMsg').html("Please Check And Submit Again");
+                        $('#other_impact_errorMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#other_impact_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
+                }
+            });
+        }
+    }
+
+
+    function save_general_attachment_details()
+    {
+        $('#general_attachment_successMsg').html("Saved Successfully");
+        $('#general_attachment_successMsg').show();
+        setTimeout(function()
+        {
+            $('#general_attachment_successMsg').delay(2000).fadeOut('slow');
+        }, 2000);
+        setTimeout(function() {
+            $("#headingDisclaimerBtn").removeAttr("disabled");
+            $("#collapseDisclaimer").addClass("show");
+            $("#collapseAttachment").removeClass("show");
+        }, 2000);
+    }
+
+    function submit_transmission_application()
+    {
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'submit_transmission_application' %}",
+            data : $('#transmission_submit_form').serialize(),
+            success : function(data)
+            {
+                if(data.message == 'success')
+                {
+                    $('#transmission_submit_successMsg').html("Application Submitted Successfully");
+                    $('#transmission_submit_successMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#transmission_submit_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        location.reload()
+                    }, 2000);
+                }
+                else if(data.message == 'not submitted')
+                {
+                    $('#iee_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
+                    $('#iee_submit_errorMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
+                else
+                {
+                    $('#transmission_submit_errorMsg').html("Please Check And Submit Again");
+                    $('#transmission_submit_errorMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#transmission_submit_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
+            }
+        });
+    }
+
+    function add_machine_tool_details()
+    {
+        let application_no = $('#application_no').val();
+        let machine_tool = $('#machine_tool').val();
+        let machine_tool_qty = $('#machine_tool_qty').val();
+        let  machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
+
+        if(machine_tool == "")
+        {
+            $('#machine_toolErrorMsg').html("Enter Machine/Tool/Equipment");
+            $('#machine_toolErrorMsg').show();
+            $('#machine_toolErrorMsg').delay(2000).fadeOut('slow');
+            $('#machine_tool').focus();
+        }
+        else if(machine_tool_qty == "")
+        {
+            $('#machine_tool_qtyErrorMsg').html("Enter Qty");
+            $('#machine_tool_qtyErrorMsg').show();
+            $('#machine_tool_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#machine_tool_qty').focus();
+        }
+        else if(machine_tool_installed_capacity == "")
+        {
+            $('#machine_tool_installed_capacityErrorMsg').html("Enter Installed Capacity");
+            $('#machine_tool_installed_capacityErrorMsg').show();
+            $('#machine_tool_installed_capacityErrorMsg').delay(2000).fadeOut('slow');
+            $('#machine_tool_installed_capacity').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'add_machine_tool_details' %}",
+                data : {'application_no':application_no,'machine_tool':machine_tool,'machine_tool_qty':machine_tool_qty,'machine_tool_installed_capacity':machine_tool_installed_capacity},
+                success : function(responseText)
+                {
+                    $('#machine_tool_SuccessMsg').html("Add Successful");
+                    $('#machine_tool_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#machine_tool_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#machine_equipment_tool_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#machine_details_div').html(responseText);
+                    }, 2000);
+                    $('#machine_equipment_tool_form')[0].reset();
+                }
+            });
+        }
+    }
+
+    function machine_equipment_populate(record_id, application_no, machine_name, qty, installed_capacity)
+    {
+        $('#edit_machine_tool_record_id').val(record_id)
+        $('#edit_machine_tool_app_no').val(application_no)
+        $('#edit_machine_tool').val(machine_name);
+        $('#edit_machine_tool_qty').val(qty);
+        $('#edit_machine_tool_installed_capacity').val(installed_capacity);
+        $('#edit_machine_equipment_tool_modal').modal('show');
+    }
+
+    function update_machine_equipment_populate(record_id, application_no, machine_name, qty, installed_capacity)
+    {
+        let record_id = $('#edit_machine_tool_record_id').val();
+        let application_no = $('#edit_machine_tool_app_no').val();
+        let machine_tool = $('#edit_machine_tool').val();
+        let qty = $('#edit_machine_tool_qty').val();
+        let machine_tool_installed_capacity = $('#edit_machine_tool_installed_capacity').val();
+
+        if(machine_tool == "")
+        {
+            $('#edit_machine_toolErrorMsg').html("Enter Machine/Tool/Equipment");
+            $('#edit_machine_toolErrorMsg').show();
+            $('#edit_machine_toolErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_machine_tool').focus();
+        }
+        else if(machine_tool_qty == "")
+        {
+            $('#edit_machine_tool_qtyErrorMsg').html("Enter Qty");
+            $('#edit_machine_tool_qtyErrorMsg').show();
+            $('#edit_machine_tool_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_machine_tool_qty').focus();
+        }
+        else if(machine_tool_installed_capacity == "")
+        {
+            $('#edit_machine_tool_installed_capacityErrorMsg').html("Enter Installed Capacity");
+            $('#edit_machine_tool_installed_capacityErrorMsg').show();
+            $('#edit_machine_tool_installed_capacityErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_machine_tool_installed_capacity').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_machine_tool_details' %}",
+                data : {'record_id':record_id, 'application_no':application_no,'machine_tool':machine_tool,'machine_tool_qty':machine_tool_qty,'machine_tool_installed_capacity':machine_tool_installed_capacity},
+                success : function(responseText)
+                {
+                    $('#edit_machine_tool_SuccessMsg').html("Add Successful");
+                    $('#edit_machine_tool_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#edit_machine_tool_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_machine_equipment_tool_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#machine_details_div').html(responseText);
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function populate_delete_machine_equipment(record_id, application_no)
+    {
+        $('#delete_machine_tool_record_id').val(record_id);
+        $('#delete_machine_tool_app_no').val(application_no);
+        $('#delete_machine_equipment_tool_modal').modal('show');
+    }
+
+    function delete_machine_tool_details()
+    {
+        $('#delete_machine_tool_record_id').val();
+        $('#delete_machine_tool_app_no').val();
+
+        $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'delete_machine_tool_details' %}",
+                data : {'record_id':record_id, 'application_no':application_no},
+                success : function(responseText)
+                {
+                    $('#delete_machine_tool_SuccessMsg').html("Add Successful");
+                    $('#delete_machine_tool_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#delete_machine_tool_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#delete_machine_equipment_tool_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#machine_details_div').html(responseText);
+                    }, 2000);
+                }
+            });
+    }
+
+    function add_raw_material_details()
+    {
+        let application_no = $('#application_no').val();
+        let raw_material = $('#raw_material').val();
+        let raw_material_qty = $('#raw_material_qty').val();
+        let raw_material_source = $('#raw_material_source').val();
+        let raw_material_storage_method = $('#raw_material_storage_method').val();
+
+        if(raw_material == "")
+        {
+            $('#raw_materialErrorMsg').html("Enter Raw Material");
+            $('#raw_materialErrorMsg').show();
+            $('#raw_materialErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material').focus();
+        }
+        else if(raw_material_qty == "")
+        {
+            $('#raw_material_qtyErrorMsg').html("Enter Qty");
+            $('#raw_material_qtyErrorMsg').show();
+            $('#raw_material_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material_qty').focus();
+        }
+        else if(raw_material_source == "")
+        {
+            $('#raw_material_sourceErrorMsg').html("Enter Source");
+            $('#raw_material_sourceErrorMsg').show();
+            $('#raw_material_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material_source').focus();
+        }
+        else if(raw_material_storage_method == "")
+        {
+            $('#raw_material_storage_methodErrorMsg').html("Select Storage Method");
+            $('#raw_material_storage_methodErrorMsg').show();
+            $('#raw_material_storage_methodErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material_storage_method').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'add_raw_materials' %}",
+                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method},
+                success : function(responseText)
+                {
+                    $('#raw_material_SuccessMsg').html("Add Successful");
+                    $('#raw_material_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#raw_material_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#raw_materials_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#raw_materials_div').html(responseText);
+                    }, 2000);
+                    $('#raw_materials_form')[0].reset();
+                }
+            });
+        }
+    }
+
+    function raw_materials_details_edit(record_id, application_no, raw_material, qty, source, storage_method)
+    {
+        $('#edit_raw_material_record_id').val(record_id);
+        $('#edit_raw_material_app_no').val(application_no);
+        $('#edit_raw_material').val(raw_material);
+        $('#edit_raw_material_qty').val(qty);
+        $('#edit_raw_material_source').val(source);
+        $('#edit_raw_material_storage_method').val(storage_method);
+        $('#edit_raw_materials_modal').modal('show');
+    }
+
+    function update_raw_material_details()
+    {
+        let record_id = $('#edit_raw_material_record_id').val();
+        let application_no = $('#edit_raw_material_app_no').val();
+        let raw_material = $('#edit_raw_material').val();
+        let raw_material_qty = $('#edit_raw_material_qty').val();
+        let raw_material_source = $('#edit_raw_material_source').val();
+        let raw_material_storage_method = $('#edit_raw_material_storage_method').val();
+
+        if(raw_material == "")
+        {
+            $('#raw_materialErrorMsg').html("Enter Raw Material");
+            $('#raw_materialErrorMsg').show();
+            $('#raw_materialErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material').focus();
+        }
+        else if(raw_material_qty == "")
+        {
+            $('#raw_material_qtyErrorMsg').html("Enter Qty");
+            $('#raw_material_qtyErrorMsg').show();
+            $('#raw_material_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material_qty').focus();
+        }
+        else if(raw_material_source == "")
+        {
+            $('#raw_material_sourceErrorMsg').html("Enter Source");
+            $('#raw_material_sourceErrorMsg').show();
+            $('#raw_material_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material_source').focus();
+        }
+        else if(raw_material_storage_method == "")
+        {
+            $('#raw_material_storage_methodErrorMsg').html("Select Storage Method");
+            $('#raw_material_storage_methodErrorMsg').show();
+            $('#raw_material_storage_methodErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material_storage_method').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_raw_materials' %}",
+                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method},
+                success : function(responseText)
+                {
+                    $('#edit_raw_material_SuccessMsg').html("Add Successful");
+                    $('#edit_raw_material_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#edit_raw_material_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_raw_materials_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#raw_materials_div').html(responseText);
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function populate_delete_machine_equipment(record_id, application_no)
+    {
+        $('#delete_raw_material_record_id').val(record_id);
+        $('#delete_raw_material_app_no').val(application_no);
+        $('#delete_raw_material_modal').modal('show');
+    }
+
+    function delete_raw_material_details()
+    {
+        let record_id = $('#delete_raw_material_record_id').val();
+        let application_no = $('#delete_raw_material_app_no').val();
+
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_raw_materials' %}",
+            data : {'record_id':record_id, 'application_no':application_no},
+            success : function(responseText)
+            {
+                $('#delete_raw_material_SuccessMsg').html("Add Successful");
+                $('#delete_raw_material_SuccessMsg').show();
+                setTimeout(function()
+                {
+                    $('#delete_raw_material_SuccessMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#delete_raw_material_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#raw_materials_div').html(responseText);
+                }, 2000);
+            }
+        });
+    }
+
+    function add_partner_details()
+    {
+        let application_no = $('#application_no').val();
+        let partner_type = $('#partner_type').val();
+        let partner_type_name = $('#partner_type_name').val();
+        let partner_type_address = $('#partner_type_address').val();
+
+        if(partner_type == "")
+        {
+            $('#partner_typeErrorMsg').html("Enter Partner Type");
+            $('#partner_typeErrorMsg').show();
+            $('#partner_typeErrorMsg').delay(2000).fadeOut('slow');
+            $('#partner_type').focus();
+        }
+        else if(partner_type_name == "")
+        {
+            $('#partner_type_nameErrorMsg').html("Enter Name");
+            $('#partner_type_nameErrorMsg').show();
+            $('#partner_type_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#partner_type_name').focus();
+        }
+        else if(partner_type_address == "")
+        {
+            $('#partner_type_addressErrorMsg').html("Enter Address");
+            $('#partner_type_addressErrorMsg').show();
+            $('#partner_type_addressErrorMsg').delay(2000).fadeOut('slow');
+            $('#partner_type_address').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'add_product_details' %}",
+                data : {'application_no':application_no,'partner_type':partner_type,'partner_type_name':partner_type_name,'partner_type_address':partner_type_address},
+                success : function(responseText)
+                {
+                    $('#partner_type_SuccessMsg').html("Add Successful");
+                    $('#partner_type_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#partner_type_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#partner_details_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#partner_details_div').html(responseText);
+                    }, 2000);
+                    $('#partner_details_form')[0].reset();
+                }
+            });
+        }
+    }
+
+    function populate_delete_partner_details(record_id, application_no)
+    {
+        $('#delete_partner_record_id').val(record_id);
+        $('#delete_partner_app_no').val(application_no);
+        $('#delete_partner_details_modal').modal('show');
+    }
+
+    function delete_partner_details()
+    {
+        let record_id = $('#delete_partner_details_record_id').val();
+        let application_no = $('#delete_partner_details_app_no').val();
+
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_partner_details' %}",
+            data : {'record_id':record_id, 'application_no':application_no},
+            success : function(responseText)
+            {
+                $('#delete_raw_material_SuccessMsg').html("Add Successful");
+                $('#delete_raw_material_SuccessMsg').show();
+                setTimeout(function()
+                {
+                    $('#delete_raw_material_SuccessMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#delete_raw_material_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#raw_materials_div').html(responseText);
+                }, 2000);
+            }
+        });
+    }
+
+    function save_transmission_application()
+    {
+        let project_name = $('#project_name').val();
+        let project_category = $('#project_category').val();
+        let applicant_name = $('#applicant_name').val();
+        let address = $('#address').val();
+        let cid = $('#cid').val();
+        let cid_length = $('#cid').val().length;
+        let contact_no = $('#contact_no').val();
+        let contact_no_length = $('#contact_no').val().length;
+        let email = $('#email').val();
+        let industry_type = $('#industry_type').val();
+        let establishment_type = $('#establishment_type').val();
+        let industry_classification = $('#industry_classification').val();
+        let dzongkhag_code = $('#dzo_throm').val();
+        let gewog_code = $('#gewog').val();
+        let village_code = $('#vil_chiwog').val();
+        let location_name = $('#location_name').val();
+        let industrial_area_acre = $('#industrial_area_acre').val();
+        let state_reserve_forest_acre = $('#state_reserve_forest_acre').val();
+        let private_area_acre = $('#private_area_acre').val();
+        let others_area_acre = $('#others_area_acre').val();
+        let total_build_up_area = $('#total_build_up_area').val();
+        
+
+        if(project_name == "")
+        {
+            $('#project_nameErrorMsg').html("Enter Name of Project");
+            $('#project_nameErrorMsg').show();
+            $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#project_name').focus();
+        }
+        else if(project_category == "")
+        {
+            $('#project_categoryErrorMsg').html("Enter Business Type");
+            $('#project_categoryErrorMsg').show();
+            $('#project_categoryErrorMsg').delay(2000).fadeOut('slow');
+            $('#project_category').focus();
+        }
+        else if(cid == "")
+        {
+            $('#cidErrorMsg').html("Enter CID");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            $('#cid').focus();
+        }
+        else if(cid_length < 11)
+        {
+            $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            $('#cid').focus();
+        }
+        else if(applicant_name == "")
+        {
+            $('#applicant_nameErrorMsg').html("Enter Name of The Applicant");
+            $('#applicant_nameErrorMsg').show();
+            $('#applicant_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#applicant_name').focus();
+        }
+        else if(address == "")
+        {
+            $('#addressErrorMsg').html("Enter Address");
+            $('#addressErrorMsg').show();
+            $('#addressErrorMsg').delay(2000).fadeOut('slow');
+            $('#address').focus();
+        }
+        else if(contact_no == "")
+        {
+            $('#contact_noErrorMsg').html("Enter Contact No");
+            $('#contact_noErrorMsg').show();
+            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
+            $('#contact_no').focus();
+        }
+        else if(contact_no_length < 8)
+        {
+            $('#contact_noErrorMsg').html("Cannot Be Less Than Eight Digits");
+            $('#contact_noErrorMsg').show();
+            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
+            $('#contact_no').focus();
+        }
+        else if(email == "")
+        {
+            $('#emailErrorMsg').html("Enter Email");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+            $('#email').focus();
+        }
+        else if(industry_type == "")
+        {
+            $('#industry_typeErrorMsg').html("Enter Industry Type");
+            $('#industry_typeErrorMsg').show();
+            $('#industry_typeErrorMsg').delay(2000).fadeOut('slow');
+            $('#industry_type').focus();
+        }
+        else if(establishment_type == "")
+        {
+            $('#establishment_typeErrorMsg').html("Enter Establishment Type");
+            $('#establishment_typeErrorMsg').show();
+            $('#establishment_typeErrorMsg').delay(2000).fadeOut('slow');
+            $('#establishment_type').focus();
+        }
+        else if(industry_classification == "")
+        {
+            $('#industry_classificationErrorMsg').html("Enter Classification of Industry");
+            $('#industry_classificationErrorMsg').show();
+            $('#industry_classificationErrorMsg').delay(2000).fadeOut('slow');
+            $('#industry_classification').focus();
+        }
+        else if(dzongkhag_code == "")
+        {
+            $('#dzo_thromErrorMsg').html("Select Dzongkhag");
+            $('#dzo_thromErrorMsg').show();
+            $('#dzo_thromErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzo_throm').focus();
+        }
+        else if(gewog_code == "")
+        {
+            $('#gewogErrorMsg').html("Select Gewog");
+            $('#gewogErrorMsg').show();
+            $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+            $('#gewog').focus();
+        }
+        else if(village_code == "")
+        {
+            $('#vil_chiwogErrorMsg').html("Select Village");
+            $('#vil_chiwogErrorMsg').show();
+            $('#vil_chiwogErrorMsg').delay(2000).fadeOut('slow');
+            $('#vil_chiwog').focus();
+        }
+        else if(location_name == "")
+        {
+            $('#location_nameErrorMsg').html("Enter Name of The Particular Project Site");
+            $('#location_nameErrorMsg').show();
+            $('#location_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#location_name').focus();
+        }
+        else if(industrial_area_acre == "")
+        {
+            $('#industrial_area_acreErrorMsg').html("Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)");
+            $('#industrial_area_acreErrorMsg').show();
+            $('#industrial_area_acreErrorMsg').delay(2000).fadeOut('slow');
+            $('#industrial_area_acre').focus();
+        }
+        else if(industrial_area_acre == "")
+        {
+            $('#industrial_area_acreErrorMsg').html("Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)");
+            $('#industrial_area_acreErrorMsg').show();
+            $('#industrial_area_acreErrorMsg').delay(2000).fadeOut('slow');
+            $('#industrial_area_acre').focus();
+        }
+        else if(state_reserve_forest_acre == "")
+        {
+            $('#state_reserve_forest_acreErrorMsg').html("Enter State Reserve Forest Area");
+            $('#state_reserve_forest_acreErrorMsg').show();
+            $('#state_reserve_forest_acreErrorMsg').delay(2000).fadeOut('slow');
+            $('#state_reserve_forest_acre').focus();
+        }
+        else if(private_area_acre == "")
+        {
+            $('#private_area_acreErrorMsg').html("Enter Private Area");
+            $('#private_area_acreErrorMsg').show();
+            $('#private_area_acreErrorMsg').delay(2000).fadeOut('slow');
+            $('#private_area_acre').focus();
+        }
+        else if(others_area_acre == "")
+        {
+            $('#others_area_acreErrorMsg').html("Enter Others");
+            $('#others_area_acreErrorMsg').show();
+            $('#others_area_acreErrorMsg').delay(2000).fadeOut('slow');
+            $('#others_area_acre').focus();
+        }
+        else if(total_build_up_area == "")
+        {
+            $('#total_build_up_areaErrorMsg').html("Enter Total Build Up Area");
+            $('#total_build_up_areaErrorMsg').show();
+            $('#total_build_up_areaErrorMsg').delay(2000).fadeOut('slow');
+            $('#total_build_up_area').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_iee_application' %}",
+                data : $('#transmission_application_form').serialize(),
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $('#application_form_successMsg').html("Saved Successfully");
+                        $('#application_form_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#application_form_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            $("#headingTwoBtn").removeAttr("disabled");
+                            $("#collapseTwo").addClass("show");
+                            $("#collapseOne").removeClass("show");
+                            $('#proposed_location_justification').focus();
+                        }, 2000);
+                    }
+                    else
+                    {
+                        $('#application_form_errorMsg').html("Please Check And Submit Again");
+                        $('#application_form_errorMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#application_form_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
+                }
+            });
+        }
+    }
+
+
+    function save_transmission_attachment()
+    {
+        let file_length = document.getElementById("transmission_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#transmission_attachErrorMsg').html("Please Choose A Attachment");
+            $('#transmission_attachErrorMsg').show();
+            $('#transmission_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var fileName = document.getElementById('transmission_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('transmission_attach').files[0];
+            fd.append('transmission_attach', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_transmission_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_transmission_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#transmission_attachment_modal').modal('hide');
+                                $('#transmission_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#transmission_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#transmission_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#transmission_attachErrorMsg').show();
+                        $('#transmission_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+        }
+    }
+
+    function save_power_line_details()
+    {
+        let application_no = $('#application_no').val();
+        let line_chainage_from = $('#line_chainage_from').val();
+        let line_chainage_to = $('#line_chainage_to').val();
+        let land_type = $('#land_type').val();
+        let terrain = $('#terrain').val();
+        let tower_type = $('#tower_type').val();
+        let no_of_tower = $('#no_of_tower').val();
+        let row = $('#row').val();
+        let area_required = $('#area_required').val();
+
+        if(line_chainage_from == "")
+        {
+            $('#line_chainage_fromErrorMsg').html("Enter Transmission line Chainage From");
+            $('#line_chainage_fromErrorMsg').show();
+            $('#line_chainage_fromErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(line_chainage_to == "")
+        {
+            $('#line_chainage_toErrorMsg').html("Enter Transmission line Chainage To");
+            $('#line_chainage_toErrorMsg').show();
+            $('#line_chainage_toErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(land_type == "")
+        {
+            $('#land_typeErrorMsg').html("Enter Land Type");
+            $('#land_typeErrorMsg').show();
+            $('#land_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(terrain == "")
+        {
+            $('#terrainErrorMsg').html("Select One ");
+            $('#terrainErrorMsg').show();
+            $('#terrainErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(tower_type == "")
+        {
+            $('#tower_typeErrorMsg').html("Enter Type of Tower");
+            $('#tower_typeErrorMsg').show();
+            $('#tower_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(no_of_tower == "")
+        {
+            $('#no_of_towerErrorMsg').html("Enter No. of Towers");
+            $('#no_of_towerErrorMsg').show();
+            $('#no_of_towerErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(row == "")
+        {
+            $('#rowErrorMsg').html("Enter Right of way");
+            $('#rowErrorMsg').show();
+            $('#rowErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(area_required == "")
+        {
+            $('#area_requiredErrorMsg').html("Enter Area Required");
+            $('#area_requiredErrorMsg').show();
+            $('#area_requiredErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_anc_power_line_details' %}",
+                data : {'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                success : function(responseText)
+                {
+                    $('#power_line_successMsg').html("Power Line Details Added Successfully");
+                    $('#power_line_successMsg').show();
+                    $('#power_line_successMsg').delay(2000).fadeOut('slow');
+                    setTimeout(function() {
+                        $('#anc_power_line_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_power_line_form')[0].reset();
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function populate_power_line_details(record_id, application_no, line_chainage_from, line_chainage_to, land_type, terrain, tower_type, no_of_tower, row, area_required)
+    {
+        $('#edit_anc_record_id').val(record_id);
+        $('#edit_anc_application_no').val(application_no);
+        $('#edit_line_chainage_from').val(line_chainage_from);
+        $('#edit_line_chainage_to').val(line_chainage_to);
+        $('#edit_land_type').val(land_type);
+        $('#edit_terrain').val(terrain);
+        $('#edit_tower_type').val(tower_type);
+        $('#edit_no_of_tower').val(no_of_tower);
+        $('#edit_row').val(row);
+        $('#edit_area_required').val(area_required);
+        $('#edit_anc_power_line_modal').modal('show');
+    }
+
+    function populate_delete_power_line(record_id, application_no)
+    {
+        $('#delete_anc_record_id').val(record_id);
+        $('#delete_anc_record_id').val(application_no);
+        $('#delete_anc_power_line_modal').modal('show');
+    }
+
+    function delete_power_line_details()
+    {
+        record_id =$('#delete_anc_record_id').val();
+        application_no =$('#delete_anc_record_id').val();
+
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_anc_power_line_details' %}",
+            data : {'record_id':record_id,'application_no':application_no},
+            success : function(responseText)
+            {
+                $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
+                $('#delete_power_line_successMsg').show();
+                $('#delete_power_line_successMsg').delay(2000).fadeOut('slow');
+                setTimeout(function() {
+                    $('#delete_anc_power_line_modal').modal('hide');
+                }, 2000);
+            }
+        });
+    }
+
+    function update_power_line_details()
+    {
+        record_id = $('#edit_anc_record_id').val();
+        application_no = $('#edit_anc_application_no').val();
+        line_chainage_from = $('#edit_line_chainage_from').val();
+        line_chainage_to = $('#edit_line_chainage_to').val();
+        land_type = $('#edit_land_type').val();
+        terrain = $('#edit_terrain').val();
+        tower_type = $('#edit_tower_type').val();
+        no_of_tower = $('#edit_no_of_tower').val();
+        row = $('#edit_row').val();
+        area_required = $('#edit_area_required').val();
+
+        if(line_chainage_from == "")
+        {
+            $('#line_chainage_fromErrorMsg').html("Enter Transmission line Chainage From");
+            $('#line_chainage_fromErrorMsg').show();
+            $('#line_chainage_fromErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(line_chainage_to == "")
+        {
+            $('#line_chainage_toErrorMsg').html("Enter Transmission line Chainage To");
+            $('#line_chainage_toErrorMsg').show();
+            $('#line_chainage_toErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(land_type == "")
+        {
+            $('#land_typeErrorMsg').html("Enter Land Type");
+            $('#land_typeErrorMsg').show();
+            $('#land_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(terrain == "")
+        {
+            $('#terrainErrorMsg').html("Select One ");
+            $('#terrainErrorMsg').show();
+            $('#terrainErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(tower_type == "")
+        {
+            $('#tower_typeErrorMsg').html("Enter Type of Tower");
+            $('#tower_typeErrorMsg').show();
+            $('#tower_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(no_of_tower == "")
+        {
+            $('#no_of_towerErrorMsg').html("Enter No. of Towers");
+            $('#no_of_towerErrorMsg').show();
+            $('#no_of_towerErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(row == "")
+        {
+            $('#rowErrorMsg').html("Enter Right of way");
+            $('#rowErrorMsg').show();
+            $('#rowErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(area_required == "")
+        {
+            $('#area_requiredErrorMsg').html("Enter Area Required");
+            $('#area_requiredErrorMsg').show();
+            $('#area_requiredErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_anc_power_line_details' %}",
+                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                success : function(responseText)
+                {
+                    $('#edit_power_line_successMsg').html("Power Line Details Updated Successfully");
+                    $('#edit_power_line_successMsg').show();
+                    $('#edit_power_line_successMsg').delay(2000).fadeOut('slow');
+                    setTimeout(function() {
+                        $('#edit_anc_power_line_modal').modal('hide');
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function calculate_area_required()
+    {
+        let line_chainage_from_val = 0;
+        let line_chainage_to_val = 0;
+        let line_chainage_from = $('#line_chainage_from').val();
+        let line_chainage_to = $('#line_chainage_to').val();
+        let row = $('#row').val();
+
+        if(line_chainage_from == "")
+        {
+            line_chainage_from = line_chainage_from_val;
+        }
+        else
+        {
+            line_chainage_to = line_chainage_to_val;
+        }
+        let sum_line_chainage = line_chainage_from + line_chainage_to ;
+        let total = row * sum_line_chainage;
+        $('#area_required').val(total);
+    }
+
+    function calculate_edit_area_required()
+    {
+        let line_chainage_from_val = 0;
+        let line_chainage_to_val = 0;
+        let line_chainage_from = $('#edit_line_chainage_from').val();
+        let line_chainage_to = $('#edit_line_chainage_to').val();
+        let row = $('#edit_row').val();
+
+        if(line_chainage_from == "")
+        {
+            line_chainage_from = line_chainage_from_val;
+        }
+        else
+        {
+            line_chainage_to = line_chainage_to_val;
+        }
+        let sum_line_chainage = line_chainage_from + line_chainage_to ;
+        let total = row * sum_line_chainage;
+        $('#edit_area_required').val(total);
+    }
+
+    function save_anc_road_details()
+    {
+        application_no = $('#application_no').val();
+        road_line_chainage_from = $('#road_line_chainage_from').val();
+        road_line_chainage_to = $('#road_line_chainage_to').val();
+        road_land_type = $('#road_land_type').val();
+        road_terrain = $('#road_terrain').val();
+        road_width = $('#road_width').val();
+        road_row = $('#road_row').val();
+        road_area_required = $('#road_area_required').val();
+
+        if(road_line_chainage_from == "")
+        {
+            $('#road_line_chainage_fromErrorMsg').html("Enter Road Chainage From");
+            $('#road_line_chainage_fromErrorMsg').show();
+            $('#road_line_chainage_fromErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(road_line_chainage_to == "")
+        {
+            $('#road_line_chainage_toErrorMsg').html("Enter Road Chainage To");
+            $('#road_line_chainage_toErrorMsg').show();
+            $('#road_line_chainage_toErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(road_land_type == "")
+        {
+            $('#road_land_typeErrorMsg').html("Enter Land Type");
+            $('#road_land_typeErrorMsg').show();
+            $('#road_land_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(terrain == "")
+        {
+            $('#road_terrainErrorMsg').html("Select One ");
+            $('#road_terrainErrorMsg').show();
+            $('#road_terrainErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(road_width == "")
+        {
+            $('#road_widthErrorMsg').html("Enter Road Width");
+            $('#road_widthErrorMsg').show();
+            $('#road_widthErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(road_row == "")
+        {
+            $('#road_rowErrorMsg').html("Enter Right of way");
+            $('#road_rowErrorMsg').show();
+            $('#road_rowErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(road_area_required == "")
+        {
+            $('#road_area_requiredErrorMsg').html("Enter Area Required");
+            $('#road_area_requiredErrorMsg').show();
+            $('#road_area_requiredErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_anc_road_details' %}",
+                data : {'application_no':application_no,'road_line_chainage_from':road_line_chainage_from,'road_line_chainage_to':road_line_chainage_to,'road_land_type':road_land_type,'road_terrain':road_terrain,'road_width':road_width,'road_row':road_row,'road_area_required':road_area_required},
+                success : function(responseText)
+                {
+                    $('#road_successMsg').html("Approach Road Details Added Successfully");
+                    $('#road_successMsg').show();
+                    $('#road_successMsg').delay(2000).fadeOut('slow');
+                    setTimeout(function() {
+                        $('#anc_approach_road_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_approach_road_form')[0].reset();
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function populate_approach_road_details(record_id, application_no, line_chainage_from, line_chainage_to, land_type, terrain, road_width, row, area_required)
+    {
+        $('#edit_anc_road_record_id').val(record_id);
+        $('#edit_anc_road_application_no').val(application_no);
+        $('#edit_road_line_chainage_from').val(line_chainage_from);
+        $('#edit_road_line_chainage_to').val(line_chainage_to);
+        $('#edit_road_land_type').val(land_type);
+        $('#edit_road_terrain').val(terrain);
+        $('#edit_road_width').val(road_width);
+        $('#edit_road_row').val(row);
+        $('#edit_road_area_required').val(area_required);
+        $('#edit_anc_approach_road_modal').modal('show');
+    }
+
+    function populate_delete_approach_road(record_id, application_no)
+    {
+        $('#delete_anc_road_record_id').val(record_id);
+        $('#delete_anc_road_application_no').val(application_no);
+        $('#delete_anc_approach_road_modal').modal('show');
+    }
+
+    function delete_anc_road_details()
+    {
+        let record_id =$('#delete_anc_road_record_id').val();
+        let application_no =$('#delete_anc_road_application_no').val();
+
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_anc_road_details' %}",
+            data : {'record_id':record_id,'application_no':application_no},
+            success : function(responseText)
+            {
+                $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
+                $('#delete_power_line_successMsg').show();
+                $('#delete_power_line_successMsg').delay(2000).fadeOut('slow');
+                setTimeout(function() {
+                    $('#delete_anc_approach_road_modal').modal('hide');
+                }, 2000);
+            }
+        });
+    }
+
+    function update_anc_road_details()
+    {
+        record_id = $('#edit_anc_road_record_id').val();
+        application_no = $('#edit_anc_road_application_no').val();
+        line_chainage_from = $('#edit_road_line_chainage_from').val();
+        line_chainage_to = $('#edit_road_line_chainage_to').val();
+        land_type = $('#edit_road_land_type').val();
+        terrain = $('#edit_road_terrain').val();
+        road_width = $('#edit_road_width').val();
+        row = $('#edit_road_row').val();
+        area_required = $('#edit_road_area_required').val();
+
+        if(line_chainage_from == "")
+        {
+            $('#edit_road_line_chainage_fromErrorMsg').html("Enter Transmission line Chainage From");
+            $('#edit_road_line_chainage_fromErrorMsg').show();
+            $('#edit_road_line_chainage_fromErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(line_chainage_to == "")
+        {
+            $('#edit_road_line_chainage_toErrorMsg').html("Enter Transmission line Chainage To");
+            $('#edit_road_line_chainage_toErrorMsg').show();
+            $('#edit_road_line_chainage_toErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(land_type == "")
+        {
+            $('#edit_road_land_typeErrorMsg').html("Select One");
+            $('#edit_road_land_typeErrorMsg').show();
+            $('#edit_road_land_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(terrain == "")
+        {
+            $('#edit_road_terrainErrorMsg').html("Select One ");
+            $('#edit_road_terrainErrorMsg').show();
+            $('#edit_road_terrainErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(road_width == "")
+        {
+            $('#edit_road_widthErrorMsg').html("Enter Type of Tower");
+            $('#edit_road_widthErrorMsg').show();
+            $('#edit_road_widthErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(row == "")
+        {
+            $('#edit_road_rowErrorMsg').html("Enter Type of Tower");
+            $('#edit_road_roweErrorMsg').show();
+            $('#edit_road_rowErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(area_required == "")
+        {
+            $('#edit_road_area_requiredErrorMsg').html("Enter Area Required");
+            $('#edit_road_area_requiredErrorMsg').show();
+            $('#edit_road_area_requiredErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_anc_road_details' %}",
+                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                success : function(responseText)
+                {
+                    $('#edit_road_successMsg').html("Approach Road Details Updated Successfully");
+                    $('#edit_road_successMsg').show();
+                    $('#edit_road_successMsg').delay(2000).fadeOut('slow');
+                    setTimeout(function() {
+                        $('#edit_anc_approach_road_modal').modal('hide');
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function check_excavated_muck(value)
+    {
+        if(value == "Yes")
+        {
+            $('.dump_yard_details').show();
+        }
+        else
+        {
+            $('.dump_yard_details').hide();
+        }
+    }
+
+    function add_final_products_details()
+    {
+        application_no = $('#application_no').val();
+        produce_name = $('#produce_name').val();
+        quantity_annum = $('#quantity_annum').val();
+        storage_method = $('#storage_method').val();
+
+        if(produce_name == "")
+        {
+            $('#produce_nameErrorMsg').html("Enter Name of Produce");
+            $('#produce_nameErrorMsg').show();
+            $('#produce_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#produce_name').focus();
+        }
+        else if(quantity_annum == "")
+        {
+            $('#quantity_annumErrorMsg').html("Enter Installed capacity/quantity per annum");
+            $('#quantity_annumErrorMsg').show();
+            $('#quantity_annumErrorMsg').delay(2000).fadeOut('slow');
+            $('#quantity_annum').focus();
+        }
+        else if(storage_method == "")
+        {
+            $('#storage_methodErrorMsg').html("Enter Method of Storage");
+            $('#storage_methodErrorMsg').show();
+            $('#storage_methodErrorMsg').delay(2000).fadeOut('slow');
+            $('#storage_method').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'add_final_product_details' %}",
+                data : {'application_no':application_no,'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method},
+                success : function(responseText)
+                {
+                    $('#final_products_SuccessMsg').html("Add Successful");
+                    $('#final_products_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#final_products_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#final_products_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#final_products_div').html(responseText);
+                    }, 2000);
+                    $('#final_products_form')[0].reset();
+                }
+            });
+        }
+    }
+
+    function edit_produce_populate(record_id, application_no, produce_name, qty, storage_method)
+    {
+        $('#edit_final_products_record_id').val(record_id)
+        $('#edit_final_products_app_no').val(application_no)
+        $('#edit_produce_name').val(produce_name);
+        $('#edit_final_product_qty').val(qty);
+        $('#edit_final_product_storage_method').val(storage_method);
+        $('#edit_final_products_modal').modal('show');
+    }
+
+    function update_final_product_details()
+    {
+        record_id = $('#edit_final_products_record_id').val();
+        application_no = $('#edit_final_products_app_no').val();
+        produce_name = $('#edit_produce_name').val();
+        quantity_annum = $('#edit_final_product_qty').val();
+        storage_method = $('#edit_final_product_storage_method').val();
+
+        if(produce_name == "")
+        {
+            $('#edit_produce_nameErrorMsg').html("Enter Name of Produce");
+            $('#edit_produce_nameErrorMsg').show();
+            $('#edit_produce_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_produce_name').focus();
+        }
+        else if(quantity_annum == "")
+        {
+            $('#edit_final_product_qtyErrorMsg').html("Enter Installed capacity/quantity per annum");
+            $('#edit_final_product_qtyErrorMsg').show();
+            $('#edit_final_product_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_final_product_qty').focus();
+        }
+        else if(storage_method == "")
+        {
+            $('#edit_final_product_storage_methodErrorMsg').html("Enter Method of Storage");
+            $('#edit_final_product_storage_methodErrorMsg').show();
+            $('#edit_final_product_storage_methodErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_final_product_storage_method').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_final_product_details' %}",
+                data : {'application_no':application_no,'record_id':record_id, 'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method},
+                success : function(responseText)
+                {
+                    $('#edit_final_product_SuccessMsg').html("Update Successful");
+                    $('#edit_final_product_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#edit_final_product_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_final_products_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#final_products_div').html(responseText);
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function populate_delete_produce(record_id, application_no)
+    {
+        $('#delete_final_product_record_id').val(record_id);
+        $('#delete_final_product_app_no').val(application_no);
+        $('#delete_final_product_modal').modal('show');
+    }
+
+    function delete_forestry_produce_details()
+    {
+        $('#delete_final_product_record_id').val();
+        $('#delete_final_product_app_no').val();
+
+        $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'delete_final_product_details' %}",
+                data : {'record_id':record_id, 'application_no':application_no},
+                success : function(responseText)
+                {
+                    $('#delete_final_product_SuccessMsg').html("Add Successful");
+                    $('#delete_final_product_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#delete_final_product_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#delete_final_product_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#final_products_div').html(responseText);
+                    }, 2000);
+                }
+            });
+    }
+
+    function check_construction_substation(value)
+    {
+        if(value == "Yes")
+        {
+            $('.construction_substation_details').show();
+        }
+        else
+        {
+            $('.construction_substation_details').hide();
+        }
+    }
+
+    function check_other_ancillary_facilities(value)
+    {
+        if(value == "Yes")
+        {
+            $('.other_ancillary_facilities').show();
+        }
+        else
+        {
+            $('.other_ancillary_facilities').hide();
+        }
+    }
+
+    function check_anc_other_crushing_unit()
+    {
+        if($('#anc_other_crushing_unit').is(":checked"))
+        {
+            $('.industry_application').show();
+        }
+        else
+        {
+            $('.industry_application').hide();
+        }
+    }
+
+    function check_anc_other_surface_collection()
+    {
+        if($('#anc_other_surface_collection').is(":checked"))
+        {
+            $('.forestry_application').show();
+        }
+        else
+        {
+            $('.forestry_application').hide();
+        }
+    }
+
+    function check_anc_other_ropeway()
+    {
+
+    }
+
+    function check_anc_other_general()
+    {
+        if($('#anc_other_general').is(":checked") || $('#anc_other_mineral').is(":checked"))
+        {
+            $('.general_application').show();
+        }
+        else if($('#anc_other_general').is(":checked") && $('#anc_other_mineral').not(":checked"))
+        {
+            $('.general_application').show();
+        }
+        else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').is(":checked"))
+        {
+            $('.general_application').show();
+        }
+        else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').not(":checked"))
+        {
+            $('.general_application').hide();
+        }
+    }
+
+    function get_total_area_acre()
+    {
+        let industrial_area_acre = $('#industrial_area_acre').val();
+        let state_reserve_forest_acre = $('#state_reserve_forest_acre').val();
+        let private_area_acre = $('#private_area_acre').val();
+        let others_area_acre = $('#others_area_acre').val();
+        let sum = 0;
+        sum += parseFloat(industrial_area_acre) || 0;
+        sum += parseFloat(state_reserve_forest_acre) || 0;
+        sum += parseFloat(private_area_acre) || 0;
+        sum += parseFloat(others_area_acre) || 0;
+
+        $('#total_area_acre').val(sum);
+    }
+</script>
 {% endblock %}

@@ -146,6 +146,8 @@ urlpatterns = [
     
     # Draft Application Details
     path('draft_application_list', views.draft_application_list, name='draft_application_list'),
+    path('view_draft_application_details', views.view_draft_application_details, name='view_draft_application_details'),
 
-
+    # Renewal Application Details
+    path('submit_renew_application', views.submit_renew_application, name='submit_renew_application')
 ]

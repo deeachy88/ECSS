@@ -17,7 +17,6 @@
                             </h2>
                             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
                                 data-bs-parent="#accordionExample">
-                                <input type="text" class="form-control" value="{{identifier}}" id="identifier" name="identifier" style="display:none;">
                                 <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
                                 <div class="accordion-body">
                                     <div class="row">
@@ -387,7 +386,7 @@
                                                 <td>Protected Areas and zonation (multiple use/buffer/core)</td>
                                                 <td>
                                                     <div class="mb-1">
-                                                        <input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="{{ application_details.bl_protected_area_name}" disabled>
+                                                        <input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="{{ application_details.bl_protected_area_name}}" disabled>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -1879,28 +1878,61 @@
                         </div>
                     </div>
                 </div> <!-- end card-body -->
+                <div class="row">
+                    <div class="alert alert-success border-0 rounded-0" role="alert" id="application_form_successMsg" style="display:none">
+                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                    </div>
+                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="application_form_errorMsg" style="display:none">
+                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="text-sm-end">
+                            <a href="#" class="btn btn-success" onclick="submit_renew_application()">
+                            <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
+                        </div>
+                    </div>
+                </div>
             </div> <!-- end card-->
         </div>
     </div>
 {% endfor %}
 <script>
-    $(function() {
-        let identifier = $('#identifier').val();
-
-        if(identifier == 'name_change')
-        {
-            $('#project_name').prop("disabled", false);
-        }
-        else if(identifier == 'ownership_change')
-        {
-            $('#applicant_name').prop("disabled", false);
-        }
-        else
-        {
-            
-        }
-    });
-
+    function submit_renew_application()
+    {
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'submit_renew_application' %}",
+            data : $('#iee_application_form').serialize(),
+            success : function(data)
+            {
+                if(data.message == 'success')
+                {
+                    $('#application_form_successMsg').html("Saved Successfully");
+                    $('#application_form_successMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#application_form_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $("#headingTwoBtn").removeAttr("disabled");
+                        $("#collapseTwo").addClass("show");
+                        $("#collapseOne").removeClass("show");
+                        $('#proposed_location_justification').focus();
+                    }, 2000);
+                }
+                else
+                {
+                    $('#application_form_errorMsg').html("Please Check And Submit Again");
+                    $('#application_form_errorMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#application_form_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
+            }
+        });
+    }
     
 </script>
 {% endblock %}
