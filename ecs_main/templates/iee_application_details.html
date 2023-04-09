@@ -1,12 +1,9 @@
-{% extends 'common_dashboard.html' %}
-{% block content %}
-{% load static %}
 {% for application_details in application_details %}
     <div class="row" xmlns="http://www.w3.org/1999/html">
         <div class="col-xl-12">
             <div class="card mt-1">
                 <div class="card-body">
-                    <h4 class="header-title mb-3"> New Application</h4>
+                    <h4 class="header-title mb-3"> IEE Application Details</h4>
                     <div class="accordion" id="accordionExample">
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingOne">
@@ -15,11 +12,11 @@
                                     General Information
                                 </button>
                             </h2>
-                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
                                 data-bs-parent="#accordionExample">
-                                <input type="text" class="form-control" value="{{status}}" id="status" name="status" style="display:none;">
-                                <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
                                 <div class="accordion-body">
+                                    <input type="text" class="form-control" value="{{status}}" id="status" name="status" style="display:none;">
+                                    <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -629,7 +626,7 @@
                                                 <select class="form-select" name="energy_source" id="energy_source" disabled>
                                                     {% if application_details.energy_source == 'electric' %}
                                                         <option value="electric" selected>Electric</option>
-                                                    {% if application_details.energy_source == 'electric' %}
+                                                    {% elif application_details.energy_source == 'electric' %}
                                                         <option value="coal" selected>Coal</option>
                                                     {% elif application_details.energy_source == 'electric' %}
                                                         <option value="high_speed_diesel" selected>High Speed Diesel</option>
@@ -656,7 +653,7 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingFour">
                                 <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFourBtn"
-                                    data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" disabled>
+                                    data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                                     Water Requirement
                                 </button>
                             </h2>
@@ -821,7 +818,7 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingFive">
                                 <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFiveBtn"
-                                    data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" disabled>
+                                    data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                                     Ancillary:Approach Road
                                 </button>
                             </h2>
@@ -966,7 +963,7 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingSix">
                                 <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSixBtn"
-                                    data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" disabled>
+                                    data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
                                     Ancillary:Power Lines
                                 </button>
                             </h2>
@@ -1109,7 +1106,7 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingEight">
                                 <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
-                                    data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
+                                    data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
                                     Solid Waste
                                 </button>
                             </h2>
@@ -1184,7 +1181,7 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingNine">
                                 <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingNineBtn"
-                                    data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine" disabled>
+                                    data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
                                     Effluent
                                 </button>
                             </h2>
@@ -1517,7 +1514,7 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingEleven">
                                 <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingElevenBtn"
-                                    data-bs-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven" disabled>
+                                    data-bs-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">
                                     Industry Emission
                                 </button>
                             </h2>
@@ -1642,7 +1639,7 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingTwelve">
                                 <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTwelveBtn"
-                                    data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" disabled>
+                                    data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
                                     Noise Level
                                 </button>
                             </h2>
@@ -1695,7 +1692,7 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingOtherImpacts">
                                 <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                    data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                    data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
                                     Other Impacts
                                 </button>
                             </h2>
@@ -1798,7 +1795,7 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingAttachment">
                                 <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
-                                    data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
+                                    data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
                                     File Attachment
                                 </button>
                             </h2>
@@ -1886,62 +1883,64 @@
                                 </button>
                             </h2>
                             <div id="collapseClientDetails" class="accordion-collapse collapse show" aria-labelledby="headingClientDetails" data-bs-parent="#accordionExample">
-                                <form method="post" id="client_form">
-                                    {% csrf_token %}
-                                    <div class="row">
+                                <div class="accordion-body">
+                                    <form method="post" id="client_form">
+                                        {% csrf_token %}
                                         <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Additional Information Letter</label>
-                                                    <textarea class="form-control" id="additional_info" name="additional_info" rows="2">{{application_details.additional_info}}</textarea>
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Additional Information Letter</label>
+                                                        <textarea class="form-control" id="additional_info" name="additional_info" rows="2">{{application_details.additional_info}}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            <div class="col-md-12 eatc_attachment_details" style="display: none;">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title mb-0">EATC Attachment</h5>
+                                                        <div id="cardCollpase7" class="collapse pt-3 show">
+                                                            {% include 'file_attachment_page.html' %}
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-md-12 eatc_attachment_details" style="display: none;">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h5 class="card-title mb-0">EATC Attachment</h5>
-                                                    <div id="cardCollpase7" class="collapse pt-3 show">
-                                                        {% include 'file_attachment_page.html' %}
+                                            <div class="alert alert-success border-0 rounded-0" role="alert" id="client_application_successMsg" style="display:none">
+                                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                            </div>
+                                            <div class="alert alert-danger border-0 rounded-0" role="alert" id="client_application_errorMsg" style="display:none">
+                                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3 ALS_button" style="display:none;">
+                                                    <div class="text-sm-end">
+                                                        <a href="#" class="btn btn-success" onclick="forwardApplication('ALS')">
+                                                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 FEATC_button" style="display:none;">
+                                                    <div class="text-sm-end">
+                                                        <a href="#" class="btn btn-success" onclick="forwardApplication('FEATC')">
+                                                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 RSS_button" style="display:none;">
+                                                    <div class="text-sm-end">
+                                                        <a href="#" class="btn btn-success" onclick="forwardApplication('RSS')">
+                                                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 LUS_button" style="display:none;">
+                                                    <div class="text-sm-end">
+                                                        <a href="#" class="btn btn-success" onclick="forwardApplication('LUS')">
+                                                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="alert alert-success border-0 rounded-0" role="alert" id="client_application_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                        </div>
-                                        <div class="alert alert-danger border-0 rounded-0" role="alert" id="client_application_errorMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3 ALS_button" style="display:none;">
-                                                <div class="text-sm-end">
-                                                    <a href="#" class="btn btn-success" onclick="forwardApplication('ALS')">
-                                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 FEATC_button" style="display:none;">
-                                                <div class="text-sm-end">
-                                                    <a href="#" class="btn btn-success" onclick="forwardApplication('FEATC')">
-                                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 RSS_button" style="display:none;">
-                                                <div class="text-sm-end">
-                                                    <a href="#" class="btn btn-success" onclick="forwardApplication('RSS')">
-                                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 LUS_button" style="display:none;">
-                                                <div class="text-sm-end">
-                                                    <a href="#" class="btn btn-success" onclick="forwardApplication('LUS')">
-                                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                         </div>
 
@@ -1953,74 +1952,76 @@
                                 </button>
                             </h2>
                             <div id="VerifiersDetails" class="accordion-collapse collapse show" aria-labelledby="headingVerifiersDetails" data-bs-parent="#accordionExample">
-                                <form method="post" id="verifier_form">
-                                    {% csrf_token %}
-                                    <div class="row forwardTo">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Forward To</label>
-                                                <select class="form-control" name="forward_to"  id="forward_to">
-                                                    <option value="">--SELECT REVIEWER--</option>
-                                                    {% for reviewer_list in reviewer_list %}
-                                                            <option value="{{ reviewer_list.Login_Id }}">{{ reviewer_list.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div id="forward_toErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="row verifier_additional_info_letter" style="display: none;">
+                                <div class="accordion-body">
+                                    <form method="post" id="verifier_form">
+                                        {% csrf_token %}
+                                        <div class="row forwardTo">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label fw-bold">Additional Information Letter</label>
-                                                    <textarea class="form-control" id="additional_info" name="additional_info" rows="2">{{application_details.additional_info}}</textarea>
+                                                    <label class="form-label fw-bold">Forward To</label>
+                                                    <select class="form-control" name="forward_to"  id="forward_to">
+                                                        <option value="">--SELECT REVIEWER--</option>
+                                                        {% for reviewer_list in reviewer_list %}
+                                                            <option value="{{ reviewer_list.login_id }}">{{ reviewer_list.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
                                                 </div>
+                                                <div id="forward_toErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-md-12 ec_draft_div" style="display: none;">
-                                            <div class="col-md-12">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <div class="card-widgets mb-3">
-                                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#ec_draft_details_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                                        </div>
-                                                        <div class="collapse pt-3 show">
-                                                            <div id="ec_draft_details_div">
-                                                                {% include 'ec_draft_details.html' %}
+                                            <div class="row verifier_additional_info_letter" style="display: none;">
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Additional Information Letter</label>
+                                                        <textarea class="form-control" id="additional_info" name="additional_info" rows="2">{{application_details.additional_info}}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            <div class="col-md-12 ec_draft_div" style="display: none;">
+                                                <div class="col-md-12">
+                                                    <div class="card">
+                                                        <div class="card-body">
+                                                            <div class="card-widgets mb-3">
+                                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#ec_draft_details_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                            </div>
+                                                            <div class="collapse pt-3 show">
+                                                                <div id="ec_draft_details_div">
+                                                                    {% include 'ec_draft_details.html' %}
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="alert alert-success border-0 rounded-0" role="alert" id="verifier_application_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                        </div>
-                                        <div class="alert alert-danger border-0 rounded-0" role="alert" id="verifier_application_errorMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3 R_button" style="display:none;">
-                                                <div class="text-sm-end">
-                                                    <a href="#" class="btn btn-success" onclick="forwardApplication('R')">
-                                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Reviewer </a>
+                                            <div class="alert alert-success border-0 rounded-0" role="alert" id="verifier_application_successMsg" style="display:none">
+                                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                            </div>
+                                            <div class="alert alert-danger border-0 rounded-0" role="alert" id="verifier_application_errorMsg" style="display:none">
+                                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                            </div>
+                                            <div class="col-lg-6 mt-3">
+                                                <div class="mb-3 R_button" style="display:none;">
+                                                    <div class="text-sm-end">
+                                                        <a href="#" class="btn btn-success" onclick="forwardApplication('R')">
+                                                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Reviewer </a>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 ALA_button" style="display:none;">
+                                                    <div class="text-sm-end">
+                                                        <a href="#" class="btn btn-success" onclick="forwardApplication('ALA')">
+                                                            <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Approve </a>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 ALR_button" style="display:none;">
+                                                    <div class="text-sm-end">
+                                                        <a href="#" class="btn btn-danger" onclick="forwardApplication('ALR')">
+                                                            <i class="uil uil-multiply me-1"></i> Reject </a>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="mb-3 ALA_button" style="display:none;">
-                                                <div class="text-sm-end">
-                                                    <a href="#" class="btn btn-success" onclick="forwardApplication('ALA')">
-                                                        <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Approve </a>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 ALR_button" style="display:none;">
-                                                <div class="text-sm-end">
-                                                    <a href="#" class="btn btn-danger" onclick="forwardApplication('ALR')">
-                                                        <i class="uil uil-multiply me-1"></i> Reject </a>
-                                                </div>
-                                            </div>
                                         </div>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                         </div>
     
@@ -2028,177 +2029,179 @@
                             <h2 class="accordion-header" id="headingReviewerDetails">
                                 <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReviewerDetails"
                                     aria-expanded="true" aria-controls="collapseDetails">
-                                    Verifier Details
+                                    ReviewerDetails
                                 </button>
                             </h2>
                             <div id="ReviewerDetails" class="accordion-collapse collapse show" aria-labelledby="headingReviewerDetails" data-bs-parent="#accordionExample">
-                                <form method="post" id="reviewer_form">
-                                    {% csrf_token %}
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Is The Information Complete?</label>
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio3" name="information" class="form-check-input"  value="Yes" onclick="check_information_radio(this.value)">
-                                                        <label class="form-check-label" for="customRadio3">Yes</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio4" name="information" class="form-check-input"  value="No" onclick="check_information_radio(this.value)">
-                                                        <label class="form-check-label" for="customRadio4">No</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div id="informationErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="row additional_info_letter" style="display: none;">
+                                <div class="accordion-body">
+                                    <form method="post" id="reviewer_form">
+                                        {% csrf_token %}
+                                        <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label fw-bold">Additional Information Letter</label>
-                                                    <textarea class="form-control" id="additional_info" name="additional_info" rows="2"></textarea>
-                                                </div>
-                                            </div>
-                                            <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="row additional_payment_info" style="display: none;">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Is There Additional Payment?</label>
+                                                    <label class="form-label fw-bold">Is The Information Complete?</label>
                                                     <div class="mt-2">
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" id="customRadio3" name="addtional_payment" class="form-check-input"  value="Yes" onclick="check_eatc_addtional_payment(this.value)">
+                                                            <input type="radio" id="customRadio3" name="information" class="form-check-input"  value="Yes" onclick="check_information_radio(this.value)">
                                                             <label class="form-check-label" for="customRadio3">Yes</label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" id="customRadio4" name="addtional_payment" class="form-check-input"  value="No" onclick="check_eatc_addtional_payment(this.value)">
+                                                            <input type="radio" id="customRadio4" name="information" class="form-check-input"  value="No" onclick="check_information_radio(this.value)">
                                                             <label class="form-check-label" for="customRadio4">No</label>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div id="informationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-md-12 eatc_attachment_div" style="display: none;">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <div class="card-widgets">
-                                                        <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#eatc_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            <div class="row additional_info_letter" style="display: none;">
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Additional Information Letter</label>
+                                                        <textarea class="form-control" id="additional_info" name="additional_info" rows="2"></textarea>
                                                     </div>
-                                                    <h5 class="card-title mb-0">Attachments</h5>
-                                                    <div id="cardCollpase7" class="collapse pt-3 show">
-                                                        <div id="eatc_file_attachment">
-                                                            {% include 'file_attachment_page.html' %}
+                                                </div>
+                                                <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            <div class="row additional_payment_info" style="display: none;">
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Is There Additional Payment?</label>
+                                                        <div class="mt-2">
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" id="customRadio3" name="addtional_payment" class="form-check-input"  value="Yes" onclick="check_eatc_addtional_payment(this.value)">
+                                                                <label class="form-check-label" for="customRadio3">Yes</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" id="customRadio4" name="addtional_payment" class="form-check-input"  value="No" onclick="check_eatc_addtional_payment(this.value)">
+                                                                <label class="form-check-label" for="customRadio4">No</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            <div class="col-md-12 eatc_attachment_div" style="display: none;">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="card-widgets">
+                                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#eatc_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                        </div>
+                                                        <h5 class="card-title mb-0">Attachments</h5>
+                                                        <div id="cardCollpase7" class="collapse pt-3 show">
+                                                            <div id="eatc_file_attachment">
+                                                                {% include 'file_attachment_page.html' %}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row fines_penalty_div" style="display: none;">
-                                            <div class="col-lg-6">
+                                            <div class="row fines_penalty_div" style="display: none;">
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Is There Fines And Penalties?</label>
+                                                        <div class="mt-2">
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" id="customRadio3" name="fines_penalty" class="form-check-input"  value="Yes" onclick="check_fines_and_penalty(this.value)">
+                                                                <label class="form-check-label" for="customRadio3">Yes</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" id="customRadio4" name="fines_penalty" class="form-check-input"  value="No" onclick="check_fines_and_penalty(this.value)">
+                                                                <label class="form-check-label" for="customRadio4">No</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            
+                                            <div class="row rectification_div" style="display: none;">
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Is There Rectification/on hold/further studies/clarification?</label>
+                                                        <div class="mt-2">
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" id="customRadio3" name="rectification" class="form-check-input"  value="Yes" onclick="check_rectification(this.value)">
+                                                                <label class="form-check-label" for="customRadio3">Yes</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" id="customRadio4" name="rectification" class="form-check-input"  value="No" onclick="check_rectification(this.value)">
+                                                                <label class="form-check-label" for="customRadio4">No</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="rectificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            <div class="col-md-12 lu_attachment_div" style="display: none;">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title mb-0">Attachments</h5>
+                                                        <div id="cardCollpase7" class="collapse pt-3 show">
+                                                                {% include 'file_attachment_page.html' %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 draft_ec_div" style="display: none;">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="card-widgets">
+                                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#draft_ec_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                        </div>
+                                                        <h5 class="card-title mb-0">Attachments</h5>
+                                                        <div id="cardCollpase7" class="collapse pt-3 show">
+                                                            <div id="draft_ec_attachment">
+                                                                {% include 'file_attachment_page.html' %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="alert alert-success border-0 rounded-0" role="alert" id="reviewer_application_successMsg" style="display:none">
+                                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                            </div>
+                                            <div class="alert alert-danger border-0 rounded-0" role="alert" id="reviewer_application_errorMsg" style="display:none">
+                                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                            </div>
+                                            <div class="col-lg-6  mt-3 AL_button">
                                                 <div class="mb-3">
-                                                    <label class="form-label fw-bold">Is There Fines And Penalties?</label>
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" id="customRadio3" name="fines_penalty" class="form-check-input"  value="Yes" onclick="check_fines_and_penalty(this.value)">
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" id="customRadio4" name="fines_penalty" class="form-check-input"  value="No" onclick="check_fines_and_penalty(this.value)">
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                    <div class="text-sm-end">
+                                                        <a href="#" class="btn btn-success" onclick="forwardApplication('AL')">
+                                                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        
-                                        <div class="row rectification_div" style="display: none;">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Is There Rectification/on hold/further studies/clarification?</label>
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" id="customRadio3" name="rectification" class="form-check-input"  value="Yes" onclick="check_rectification(this.value)">
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" id="customRadio4" name="rectification" class="form-check-input"  value="No" onclick="check_rectification(this.value)">
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                            <div class="col-lg-6  mt-3">
+                                                <div class="mb-3 EATC_button" style="display: none;">
+                                                    <div class="text-sm-end">
+                                                        <a href="#" class="btn btn-success" onclick="forwardApplication('EATC')">
+                                                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="rectificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-md-12 lu_attachment_div" style="display: none;">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h5 class="card-title mb-0">Attachments</h5>
-                                                    <div id="cardCollpase7" class="collapse pt-3 show">
-                                                            {% include 'file_attachment_page.html' %}
+                                            <div class="col-lg-6 mt-3">
+                                                <div class="mb-3"></div>
+                                                    <div class="text-sm-end LU_button" style="display:none;">
+                                                        <a href="#" class="btn btn-success" onclick="forwardApplication('LU')">
+                                                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 mt-3 rectification_button" style="display:none;">
+                                                <div class="mb-3"></div>
+                                                    <div class="text-sm-end">
+                                                        <a href="#" class="btn btn-success" onclick="forwardApplication('OH')">
+                                                            <i class="mdi mdi-alert-octagon me-1"></i> On Hold </a>
+                                                        <a href="#" class="btn btn-success" onclick="forwardApplication('RS')">
+                                                            <i class="uil uil-history-alt me-1"></i> Resubmit </a>
+                                                        <a href="#" class="btn btn-success" onclick="forwardApplication('V')">
+                                                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 draft_ec_div" style="display: none;">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <div class="card-widgets">
-                                                        <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#draft_ec_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                                    </div>
-                                                    <h5 class="card-title mb-0">Attachments</h5>
-                                                    <div id="cardCollpase7" class="collapse pt-3 show">
-                                                        <div id="draft_ec_attachment">
-                                                            {% include 'file_attachment_page.html' %}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="alert alert-success border-0 rounded-0" role="alert" id="reviewer_application_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                        </div>
-                                        <div class="alert alert-danger border-0 rounded-0" role="alert" id="reviewer_application_errorMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                        </div>
-                                        <div class="col-lg-6 AL_button">
-                                            <div class="mb-3">
-                                                <div class="text-sm-end">
-                                                    <a href="#" class="btn btn-success" onclick="forwardApplication('AL')">
-                                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3 EATC_button" style="display: none;">
-                                                <div class="text-sm-end">
-                                                    <a href="#" class="btn btn-success" onclick="forwardApplication('EATC')">
-                                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3"></div>
-                                                <div class="text-sm-end LU_button">
-                                                    <a href="#" class="btn btn-success" onclick="forwardApplication('LU')">
-                                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 rectification_button">
-                                            <div class="mb-3"></div>
-                                                <div class="text-sm-end">
-                                                    <a href="#" class="btn btn-success" onclick="forwardApplication('OH')">
-                                                        <i class="mdi mdi-alert-octagon me-1"></i> On Hold </a>
-                                                    <a href="#" class="btn btn-success" onclick="forwardApplication('RS')">
-                                                        <i class="uil uil-history-alt me-1"></i> Resubmit </a>
-                                                    <a href="#" class="btn btn-success" onclick="forwardApplication('V')">
-                                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                         
@@ -2316,12 +2319,12 @@
 <script>
     $(function() {
         let status = $('#status').val();
+        alert(status);
 
         if(status == 'P' || status == 'DEC' || status == 'AL')
         {
             if(status == 'P')
             {
-                
                 $('.R_button').show();
             }
             else if(status == 'AL')
@@ -2392,7 +2395,7 @@
             ({
                 type : "POST",
                 url : "{% url 'forward_application' %}",
-                data : {'application_no':application_no, 'identifier':identifier, 'forward_to':forward_to},
+                data : {'application_no':application_no, 'identifier':identifier, 'forward_to':forward_to, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data)
                 {
                     if(data.message == 'success')
@@ -2428,7 +2431,7 @@
             ({
                 type : "POST",
                 url : "{% url 'forward_application' %}",
-                data : {'application_no':application_no, 'identifier':identifier},
+                data : {'application_no':application_no, 'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data)
                 {
                     if(data.message == 'success')
@@ -2690,4 +2693,3 @@
         }
     }
 </script>
-{% endblock %}

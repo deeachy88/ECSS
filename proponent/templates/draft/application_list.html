@@ -3,7 +3,7 @@
 <div id="application_details">
     <div class="card mt-1">
         <div class="card-body">
-            <h5 class="card-title mb-0 text-right">Application List</h5>
+            <h5 class="card-title mb-0 text-right">Draft Application List</h5>
             <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
                 <i class="ri-check-line me-2"></i>
             </div>
@@ -14,7 +14,6 @@
                             <th scope="col">#</th>
                             <th scope="col">Application No</th>
                             <th scope="col">Service Name</th>
-                            <th scope="col">Application Date</th>
                             <th scope="col">Application Source</th>
                         </tr>
                     </thead>
@@ -22,19 +21,12 @@
                         {% for application_details in application_details %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                {% for payment_details in payment_details %}
-                                    {% if application_details.application_no == payment_details.application_no %}
-                                        {% if payment_details.transaction_date %}
-                                            <td><button type="button" class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.application_no}}','{{application_details.service_id}}','{{application_details.application_source}}')">{{application_details.application_no}}</button></td>
-                                        {% endif %}
-                                    {% endif %}
-                                {% endfor %}
+                                <td><button type="button" class="btn btn-link text-info mb-0" onclick="viewApplicationDetails('{{application_details.application_no}}','{{application_details.service_id}}','{{application_details.application_source}}')">{{application_details.application_no}}</button></td>
                                 {% for service_details in service_details %}
                                     {% if application_details.service_id == service_details.service_id %}
                                         <td>{{service_details.service_name}}</td>
                                     {% endif %}
                                 {% endfor %}
-                                <td>{{application_details.action_date|date:"d-m-Y"}}</td>
                                 <td>{{application_details.application_source}}</td>
                             </tr>
                             {% empty %}
@@ -49,12 +41,12 @@
     </div>
 </div>
 <script>
-    function viewApplicationDetails(application_no,service_id, application_source)
+    function viewApplicationDetails(application_no,service_id,application_source)
     {
         $.ajax({
             type : "GET",
-            url : "{% url 'view_application_details' %}",
-            data :{'application_no':application_no, 'service_id':service_id,'application_source':application_source},
+            url : "{% url 'view_draft_application_details' %}",
+            data :{'application_no':application_no, 'service_id':service_id, 'application_source':application_source},
             success : function(data)
             {
                 $('#application_details').html(data);

@@ -34,6 +34,9 @@ urlpatterns = [
     
 #TOR Details
     path('tor_to_verifier',views.tor_to_verifier, name='tor_to_verifier'),
-    path('approve_tor_application', views.approve_tor_application, name='approve_tor_application')
+    path('approve_tor_application', views.approve_tor_application, name='approve_tor_application'),
+
+# Payment Details
+    path('payment_list', views.payment_list, name='payment_list')
 
 ]

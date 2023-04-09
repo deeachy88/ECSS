@@ -85,7 +85,7 @@ def login(request):
                                 request.session['email'] = check_user.email_id
                                 request.session['login_type'] = check_user.login_type
                                 request.session['login_id'] = check_user.login_id
-                                request.session['ca_authority'] = check_user.agency_id
+                                request.session['ca_authority'] = check_user.agency_code
                                 request.session['dzongkhag_code'] = check_user.dzongkhag_code
                                 return render(request, 'common_dashboard.html')
                         else:
@@ -103,30 +103,28 @@ def login(request):
 
 
 def add_user(request):
-    if request.method == 'POST':
-        name = request.POST['name']
-        gender = request.POST['gender']
-        email = request.POST['email']
-        contact_number = request.POST['contact_number']
-        role = request.POST['role']
-        agency = request.POST['agency']
-        password = get_random_password_string(8)
-        password_value = make_password(password)
-        if role == '1':
-            t_user_master.objects.create(login_type="I", name=name, gender=gender,
-                                         contact_number=contact_number, email_id=email,
-                                         password=password_value, is_active="Y",agency_id=None,
-                                         logical_delete="N", last_login_date=None, created_by=request.session['login_id'],
-                                         created_on=date.today(), modified_by=None, modified_on=None, role_id_id=role)
-        else:
-            t_user_master.objects.create(login_type="I", name=name, gender=gender,
-                                         contact_number=contact_number, email_id=email,
-                                         password=password_value, is_active="Y",agency_id=agency,
-                                         logical_delete="N", last_login_date=None, created_by=request.session['login_id'],
-                                         created_on=date.today(), modified_by=None, modified_on=None, role_id_id=role)
-        details = t_user_master.objects.filter(login_type="I").order_by('login_id')
-        sendmail(request, name, email, password)
-        return redirect(user_master)
+    name = request.POST.get('name')
+    gender = request.POST.get('gender')
+    email = request.POST.get('email')
+    contact_number = request.POST.get('contact_number')
+    role = request.POST.get('role')
+    agency = request.POST.get('agency')
+    password = get_random_password_string(8)
+    password_value = make_password(password)
+    if role == '1':
+        t_user_master.objects.create(login_type="I", name=name, gender=gender,
+                                        contact_number=contact_number, email_id=email,
+                                        password=password_value, is_active="Y",agency_code=None,
+                                        logical_delete="N", last_login_date=None, created_by=request.session['login_id'],
+                                        created_on=date.today(), modified_by=None, modified_on=None, role_id_id=role)
+    else:
+        t_user_master.objects.create(login_type="I", name=name, gender=gender,
+                                        contact_number=contact_number, email_id=email,
+                                        password=password_value, is_active="Y",agency_code=agency,
+                                        logical_delete="N", last_login_date=None, created_by=request.session['login_id'],
+                                        created_on=date.today(), modified_by=None, modified_on=None, role_id_id=role)
+    sendmail(request, name, email, password)
+    return redirect(user_master)
 
 def update_user(request):
     login_id = request.POST.get('editLoginId')
@@ -143,7 +141,7 @@ def update_user(request):
     if role != '1':
         user_details.update(name=name, gender=gender,
                             contact_number=contact_number, email_id=email,
-                            agency_id=agency, modified_by=request.session['login_id'],
+                            agency_code=agency, modified_by=request.session['login_id'],
                             modified_on=date.today(), role_id_id=role)
     else:
         user_details.update(name=name, gender=gender,
@@ -328,15 +326,15 @@ def add_agency_master(request):
     return redirect(agency_master)
 
 def edit_agency_master(request):
-    agency_id = request.POST.get('edit_agency_id')
+    agency_code = request.POST.get('edit_agency_code')
     agency_name = request.POST.get('edit_agency_name')
-    agency_details = t_agency_master.objects.filter(agency_id=agency_id)
+    agency_details = t_agency_master.objects.filter(agency_code=agency_code)
     agency_details.update(agency_name=agency_name)
     return redirect(agency_master)
 
 def delete_agency_master(request):
-    agency_id = request.POST.get('delete_agency_id')
-    agency_details = t_agency_master.objects.filter(agency_id=agency_id)
+    agency_code = request.POST.get('delete_agency_code')
+    agency_details = t_agency_master.objects.filter(agency_code=agency_code)
     agency_details.delete()
     return redirect(agency_master)
 

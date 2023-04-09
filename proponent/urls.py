@@ -138,7 +138,7 @@ urlpatterns = [
     path('name_change', views.name_change, name='name_change'),
     path('ownership_change', views.ownership_change, name='ownership_change'),
     path('technology_change', views.technology_change, name='technology_change'),
-    path('product_change', views.product_change, name='prod uct_change'),
+    path('product_change', views.product_change, name='product_change'),
     path('capacity_change', views.capacity_change, name='capacity_change'),
     path('area_change', views.area_change, name='area_change'),
     path('location_change', views.location_change, name='location_change'),
@@ -147,7 +147,9 @@ urlpatterns = [
     # Draft Application Details
     path('draft_application_list', views.draft_application_list, name='draft_application_list'),
     path('view_draft_application_details', views.view_draft_application_details, name='view_draft_application_details'),
-
+    path('update_draft_application', views.update_draft_application, name='update_draft_application'),
     # Renewal Application Details
-    path('submit_renew_application', views.submit_renew_application, name='submit_renew_application')
+    path('submit_renew_application', views.submit_renew_application, name='submit_renew_application'),
+    
+    
 ]

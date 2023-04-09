@@ -2,7 +2,7 @@ from datetime import date
 from django.shortcuts import render, redirect
 from ecs_main.views import client_application_list
 from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals
-from ecs_admin.models import t_bsic_code, t_competant_authority_master, t_fees_schedule, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_thromde_master, t_village_master
+from ecs_admin.models import t_bsic_code, t_competant_authority_master, t_fees_schedule, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_service_master, t_thromde_master, t_village_master
 # Create your views here.
 from django.db.models import Max
 from django.utils import timezone
@@ -12,13 +12,6 @@ from django.core.files.storage import FileSystemStorage
 
 def new_application(request):
     bsic_details = t_bsic_code.objects.all()
-    for application_details in bsic_details:
-        if request.session['ca_authority'] == 'DEC' | request.session['ca_authority'] == 'THROMDE':
-            t_competant_authority_master.objects.filter()
-        else: 
-            request.session['ca_authority'] = application_details.competent_authority
-            request.session['colour_code'] = application_details.colour_code
-            request.session['service_id'] = application_details.service_id
     return render(request, 'new_application.html',{'bsic_details':bsic_details})
 
 def new_ea_application(request):
@@ -382,320 +375,9 @@ def save_iee_application(request):
             project_no_of_workers=project_no_of_workers,
             project_cost=project_cost,
             project_duration=project_duration,
-            bl_protected_area_name=None,
-            bl_protected_area_distance=None,
-            bl_migratory_route_name=None,
-            bl_migratory_route_distance=None,
-            bl_wetland_name=None,
-            bl_wetland_distance=None,
-            bl_water_bodies_name=None,
-            bl_water_bodies_distance=None,
-            bl_fmu_name=None,
-            bl_fmu_distance=None,
-            bl_agricultural_name=None,
-            bl_agricultural_distance=None,
-            bl_settlement_name=None,
-            bl_settlement_distance=None,
-            bl_road_name=None,
-            bl_road_distance=None,
-            bl_public_infra_name=None,
-            bl_public_infra_distance=None,
-            bl_school_name=None,
-            bl_school_distance=None,
-            bl_heritage_name=None,
-            bl_heritage_distance=None,
-            bl_tourist_facility_name=None,
-            bl_tourist_facility_distance=None,
-            bl_impt_installation_name=None,
-            bl_impt_installation_distance=None,
-            bl_industries_name=None,
-            bl_industries_distance=None,
-            bl_others=None,
-            bl_others_name=None,
-            bl_others_distance=None,
-            technology_used=None,
-            technology_no=None,
-            technology_total_capacity=None,
-            energy_source=None,
-            energy_source_justification=None,
-            water_required=None,
-            water_raw_material_source=None,
-            water_raw_material_qty_day=None,
-            water_raw_material_recycle_day=None,
-            water_cleaning_source=None,
-            water_cleaning_qty_day=None,
-            water_cleaning_recycle_day=None,
-            water_process_source=None,
-            water_process_qty_day=None,
-            water_process_recycle_day=None,
-            water_domestic_source=None,
-            water_domestic_qty_day=None,
-            water_domestic_recycle_day=None,
-            water_dust_compression_source=None,
-            water_dust_compression_qty_day=None,
-            water_dust_compression_recycle_day=None,
-            water_others_name=None,
-            water_others_source=None,
-            water_others_qty_day=None,
-            water_others_recycle_day=None,
-            water_provide_by_iestate=None,
-            water_downstream_users=None,
-            water_flow_rate_lean=None,
-            water_source_distance=None,
-            anc_road_required=None,
-            anc_road_length=None,
-            anc_road_start_point=None,
-            anc_road_end_point=None,
-            anc_road_blast_required=None,
-            anc_road_blast_type=None,
-            anc_road_blast_qty=None,
-            anc_road_blast_location=None,
-            anc_road_blast_frequency_time=None,
-            anc_power_line_required=None,
-            anc_power_line_voltage=None,
-            anc_power_line_length=None,
-            anc_power_line_start_point=None,
-            anc_power_line_end_point=None,
-            anc_power_line_storing_method=None,
-            anc_other_required=None,
-            anc_other_crushing_unit=None,
-            anc_other_surface_collection=None,
-            anc_other_ground_water=None,
-            anc_other_mineral=None,
-            anc_other_general=None,
-            en_impact_allocated_budget=None,
-            en_impact_hazardous_waste_list=None,
-            en_impact_hazardous_waste_source=None,
-            en_impact_hazardous_waste_qty_annum=None,
-            en_impact_hazardous_waste_mgt_plan=None,
-            en_impact_non_hazardous_waste_list=None,
-            en_impact_non_hazardous_waste_source=None,
-            en_impact_non_hazardous_waste_qty_annum=None,
-            en_impact_non_hazardous_waste_mgt_plan=None,
-            en_impact_medical_waste_list=None,
-            en_impact_medical_waste_source=None,
-            en_impact_medical_waste_qty_annum=None,
-            en_impact_medical_waste_mgt_plan=None,
-            en_impact_ewaste_list=None,
-            en_impact_ewaste_source=None,
-            en_impact_ewaste_qty_annum=None,
-            en_impact_ewaste_mgt_plan=None,
-            en_impact_others_waste_list=None,
-            en_impact_others_waste_source=None,
-            en_impact_others_waste_qty_annum=None,
-            en_impact_others_waste_mgt_plan=None,
-            en_waste_water_generate=None,
-            waste_water_nh3n_source=None,
-            waste_water_nh3n_discharge=None,
-            waste_water_nh3n_treatment=None,
-            waste_water_nh3n_name_location=None,
-            waste_water_arsenic_source=None,
-            waste_water_arsenic_discharge=None,
-            waste_water_arsenic_treatment=None,
-            waste_water_arsenic_name_location=None,
-            waste_water_bod_source=None,
-            waste_water_bod_discharge=None,
-            waste_water_bod_treatment=None,
-            waste_water_bod_name_location=None,
-            waste_water_boron_source=None,
-            waste_water_boron_discharge=None,
-            waste_water_boron_treatment=None,
-            waste_water_boron_name_location=None,
-            waste_water_cadmium_source=None,
-            waste_water_cadmium_discharge=None,
-            waste_water_cadmium_treatment=None,
-            waste_water_cadmium_name_location=None,
-            waste_water_cod_source=None,
-            waste_water_cod_discharge=None,
-            waste_water_cod_treatment=None,
-            waste_water_cod_name_location=None,
-            waste_water_cloride_source=None,
-            waste_water_cloride_discharge=None,
-            waste_water_cloride_treatment=None,
-            waste_water_cloride_name_location=None,
-            waste_water_chromium_source=None,
-            waste_water_chromium_discharge=None,
-            waste_water_chromium_treatment=None,
-            waste_water_chromium_name_location=None,
-            waste_water_chromium_hex_source=None,
-            waste_water_chromium_hex_discharge=None,
-            waste_water_chromium_hex_treatment=None,
-            waste_water_chromium_hex_name_location=None,
-            waste_water_copper_source=None,
-            waste_water_copper_discharge=None,
-            waste_water_copper_treatment=None,
-            waste_water_copper_name_location=None,
-            waste_water_cyanide_source=None,
-            waste_water_cyanide_discharge=None,
-            waste_water_cyanide_treatment=None,
-            waste_water_cyanide_name_location=None,
-            waste_water_floride_source=None,
-            waste_water_floride_discharge=None,
-            waste_water_floride_treatment=None,
-            waste_water_floride_name_location=None,
-            waste_water_phosphate_source=None,
-            waste_water_phosphate_discharge=None,
-            waste_water_phosphate_treatment=None,
-            waste_water_phosphate_name_location=None,
-            waste_water_nitrate_source=None,
-            waste_water_nitrate_discharge=None,
-            waste_water_nitrate_treatment=None,
-            waste_water_nitrate_name_location=None,
-            waste_water_iron_source=None,
-            waste_water_iron_discharge=None,
-            waste_water_iron_treatment=None,
-            waste_water_iron_name_location=None,
-            waste_water_lead_source=None,
-            waste_water_lead_discharge=None,
-            waste_water_lead_treatment=None,
-            waste_water_lead_name_location=None,
-            waste_water_manganese_source=None,
-            waste_water_manganese_discharge=None,
-            waste_water_manganese_treatment=None,
-            waste_water_manganese_name_location=None,
-            waste_water_mercury_source=None,
-            waste_water_mercury_discharge=None,
-            waste_water_mercury_treatment=None,
-            waste_water_mercury_name_location=None,
-            waste_water_nickel_source=None,
-            waste_water_nickel_discharge=None,
-            waste_water_nickel_treatment=None,
-            waste_water_nickel_name_location=None,
-            waste_water_oil_source=None,
-            waste_water_oil_discharge=None,
-            waste_water_oil_treatment=None,
-            waste_water_oil_name_location=None,
-            waste_water_ph_source=None,
-            waste_water_ph_discharge=None,
-            waste_water_ph_treatment=None,
-            waste_water_ph_name_location=None,
-            waste_water_phenolic_source=None,
-            waste_water_phenolic_discharge=None,
-            waste_water_phenolic_treatment=None,
-            waste_water_phenolic_name_location=None,
-            waste_water_selenium_source=None,
-            waste_water_selenium_discharge=None,
-            waste_water_selenium_treatment=None,
-            waste_water_selenium_name_location=None,
-            waste_water_so4_source=None,
-            waste_water_so4_discharge=None,
-            waste_water_so4_treatment=None,
-            waste_water_so4_name_location=None,
-            waste_water_s_source=None,
-            waste_water_s_discharge=None,
-            waste_water_s_treatment=None,
-            waste_water_s_name_location=None,
-            waste_water_tds_source=None,
-            waste_water_tds_discharge=None,
-            waste_water_tds_treatment=None,
-            waste_water_tds_name_location=None,
-            waste_water_tss_source=None,
-            waste_water_tss_discharge=None,
-            waste_water_tss_treatment=None,
-            waste_water_tss_name_location=None,
-            waste_water_temp_source=None,
-            waste_water_temp_discharge=None,
-            waste_water_temp_treatment=None,
-            waste_water_temp_name_location=None,
-            waste_water_tkn_source=None,
-            waste_water_tkn_discharge=None,
-            waste_water_tkn_treatment=None,
-            waste_water_tkn_name_location=None,
-            waste_water_residual_cloride_source=None,
-            waste_water_residual_cloride_discharge=None,
-            waste_water_residual_cloride_treatment=None,
-            waste_water_residual_cloride_name_location=None,
-            waste_water_zinc_source=None,
-            waste_water_zinc_discharge=None,
-            waste_water_zinc_treatment=None,
-            waste_water_zinc_name_location=None,
-            waste_water_ammonia_source=None,
-            waste_water_ammonia_discharge=None,
-            waste_water_ammonia_treatment=None,
-            waste_water_ammonia_name_location=None,
-            waste_water_colour_source=None,
-            waste_water_colour_discharge=None,
-            waste_water_colour_treatment=None,
-            waste_water_colour_name_location=None,
-            waste_water_treatment_plant_capacity=None,
-            waste_water_qty_per_annum=None,
-            waste_water_treatment_plant_etp=None,
-            waste_water_treatment_sludge_qty=None,
-            waste_water_treatment_plant_name_location=None,
-            en_industry_emission_generate=None,
-            en_spm_emission_expected=None,
-            en_so2_emission_expected=None,
-            en_nox_emission_expected=None,
-            en_co_emission_expected=None,
-            en_fluoride_emission_expected=None,
-            en_pol_control_device_stack_height=None,
-            en_pol_control_device_stack_diameter=None,
-            en_pol_control_device_dimension=None,
-            en_pol_control_device_volume=None,
-            en_pol_control_device_temp=None,
-            en_air_pollution_control_device_capacity=None,
-            en_air_pollution_control_pcd_dimension=None,
-            en_noise_ind_area_day=None,
-            en_noise_ind_area_night=None,
-            en_noise_ind_area_mgt_plan=None,
-            en_noise_sen_area_day=None,
-            en_noise_sen_area_night=None,
-            en_noise_sen_area_mgt_plan=None,
-            en_noise_mixed_area_day=None,
-            en_noise_mixed_area_night=None,
-            en_noise_mixed_area_mgt_plan=None,
-            en_other_impact_odour_source=None,
-            en_other_impact_odour_qty=None,
-            en_other_impact_odour_mgt_plan=None,
-            en_other_impact_fugutive_source=None,
-            en_other_impact_fugutive_qty=None,
-            en_other_impact_fugutive_mgt_plan=None,
-            en_other_impact_slope_source=None,
-            en_other_impact_slope_qty=None,
-            en_other_impact_slope_mgt_plan=None,
-            en_other_impact_aesthetic_source=None,
-            en_other_impact_aesthetic_qty=None,
-            en_other_impact_aesthetic_mgt_plan=None,
-            en_other_impact_mucks_source=None,
-            en_other_impact_mucks_qty=None,
-            en_other_impact_mucks_mgt_plan=None,
-            en_other_impact_sewerage_source=None,
-            en_other_impact_sewerage_qty=None,
-            en_other_impact_sewerage_mgt_plan=None,
-            en_other_impact_erosion_source=None,
-            en_other_impact_erosion_qty=None,
-            en_other_impact_erosion_mgt_plan=None,
-            en_other_impact_storm_water_source=None,
-            en_other_impact_storm_water_qty=None,
-            en_other_impact_storm_water_mgt_plan=None,
-            en_other_impact_habitat_source=None,
-            en_other_impact_habitat_qty=None,
-            en_other_impact_habitat_mgt_plan=None,
-            en_other_impact_socio_source=None,
-            en_other_impact_socio_qty=None,
-            en_other_impact_socio_mgt_plan=None,
-            en_other_impact_water_source_source=None,
-            en_other_impact_water_source_qty=None,
-            en_other_impact_water_source_mgt_plan=None,
-            en_other_impact_other_source=None,
-            en_other_impact_other_qty=None,
-            en_other_impact_other_mgt_plan=None,
-            fee=None,
-            assigned_to=None,
-            assigned_date=None,
-            assigned_by=None,
-            inspection_date=None,
-            inspection_team=None,
-            recommendation=None,
-            ec_type=None,
-            ec_reference_no=None,
-            ec_approve_date=None,
-            ec_approval_committee=None,
-            fines_penalties=None,
             application_status='P',
-            resubmit_remarks=None,
-            resubmit_date=None,
-            service_id=request.session['service_id']
+            service_id=request.session['service_id'],
+            application_source='ECSS'
             )
         t_workflow_dtls.objects.create(application_no=application_no, 
                                         service_id=request.session['service_id'],
@@ -708,7 +390,8 @@ def save_iee_application(request):
                                         assigned_role_name=None,
                                         result=None,
                                         ca_authority=request.session['ca_authority'],
-                                        dzongkhag_thromde_id=dzongkhag_code
+                                        dzongkhag_thromde_id=dzongkhag_code,
+                                        application_source='ECSS'
                                     )
         data['message'] = "success"
     except Exception as e:
@@ -1303,13 +986,13 @@ def save_industry_emission_details(request):
         en_nox_emission_expected = request.POST.get('en_nox_emission_expected')
         en_co_emission_expected = request.POST.get('en_co_emission_expected')
         en_fluoride_emission_expected = request.POST.get('en_fluoride_emission_expected')
-        en_pol_control_device_stack_heicht = request.POST.get('en_pol_control_device_stack_heicht')
+        en_pol_control_device_stack_height = request.POST.get('en_pol_control_device_stack_height')
         en_pol_control_device_stack_diameter = request.POST.get('en_pol_control_device_stack_diameter')
-        en_pol_control_device_dimention = request.POST.get('en_pol_control_device_dimention')
+        en_pol_control_device_dimension = request.POST.get('en_pol_control_device_dimension')
         en_pol_control_device_volume = request.POST.get('en_pol_control_device_volume')
         en_pol_control_device_temp = request.POST.get('en_pol_control_device_temp')
         en_air_pollution_control_device_capacity = request.POST.get('en_air_pollution_control_device_capacity')
-        en_air_pollution_control_pcd_dimention = request.POST.get('en_air_pollution_control_pcd_dimention')
+        en_air_pollution_control_pcd_dimension = request.POST.get('en_air_pollution_control_pcd_dimention')
 
 
         industry_emission_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -1319,17 +1002,18 @@ def save_industry_emission_details(request):
                                          en_nox_emission_expected=en_nox_emission_expected,
                                          en_co_emission_expected=en_co_emission_expected,
                                          en_fluoride_emission_expected=en_fluoride_emission_expected,
-                                         en_pol_control_device_stack_heicht=en_pol_control_device_stack_heicht,
+                                         en_pol_control_device_stack_height=en_pol_control_device_stack_height,
                                          en_pol_control_device_stack_diameter=en_pol_control_device_stack_diameter,
-                                         en_pol_control_device_dimention=en_pol_control_device_dimention,
+                                         en_pol_control_device_dimension=en_pol_control_device_dimension,
                                          en_pol_control_device_volume=en_pol_control_device_volume,
                                          en_pol_control_device_temp=en_pol_control_device_temp,
                                          en_air_pollution_control_device_capacity=en_air_pollution_control_device_capacity,
-                                         en_air_pollution_control_pcd_dimention=en_air_pollution_control_pcd_dimention,
+                                         en_air_pollution_control_pcd_dimension=en_air_pollution_control_pcd_dimension,
                                          )
         data['message'] = "success"
         return JsonResponse(data)
-    except:
+    except Exception as e:
+        print('An error occurred:', e)
         data['message'] = "failure"
         return JsonResponse(data)
 
@@ -1458,8 +1142,10 @@ def submit_iee_application(request):
         if(ancillary_count > 0):
             data['message'] = "not submitted"
         else:
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(action_date=date.today())
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.now())
+            workflow_dtls.update(action_date=date.today())
             insert_payment_details(application_no)
             data['message'] = "success"
     except Exception as e:
@@ -1584,10 +1270,12 @@ def get_application_service_id(request):
     broad_activity_code = request.GET.get('broad_activity_code')
     specific_activity_code = request.GET.get('specific_activity_code')
     category = request.GET.get('category')
-    print(broad_activity_code)
 
     category_details = t_bsic_code.objects.filter(broad_activity_code=broad_activity_code,specific_activity_code=specific_activity_code,category=category)
     for cat_details in category_details:
+        request.session['ca_authority'] = cat_details.competent_authority
+        request.session['colour_code'] = cat_details.colour_code
+        request.session['service_id'] = cat_details.service_id
         data['service_id'] = cat_details.service_id
         data['colour_code'] = cat_details.colour_code
         data['competant_authority'] = cat_details.competent_authority
@@ -1701,8 +1389,8 @@ def save_anc_road_details(request):
     row = request.POST.get('road_row')
     area_required = request.POST.get('road_area_required')
 
-    t_ec_industries_t6_ancillary_road.objects.create(application_no=application_no,line_chainage_from=line_chainage_from,
-                                                           line_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
+    t_ec_industries_t6_ancillary_road.objects.create(application_no=application_no,road_chainage_from=line_chainage_from,
+                                                           road_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
                                                            road_width=road_width,row=row,area_required=area_required)
     anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by('record_id')
     return render('anc_approach_road_details.html', {'anc_road_details':anc_road_details})
@@ -2156,8 +1844,10 @@ def submit_ea_application(request):
         if(ancillary_count > 0):
             data['message'] = "not submitted"
         else:
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(action_date=date.today())
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.now())
+            workflow_dtls.update(action_date=date.today())
             insert_payment_details(application_no)
             data['message'] = "success"
     except Exception as e:
@@ -2508,10 +2198,16 @@ def submit_transmission_application(request):
     data = dict()
     try:
         application_no = request.POST.get('transmission_disclaimer_application_no')
-        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-        workflow_dtls.update(action_date=date.now())
-        insert_payment_details(application_no)
-        data['message'] = "success"
+        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+        if(ancillary_count > 0):
+            data['message'] = "not submitted"
+        else:
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(action_date=date.today())
+            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+            workflow_dtls.update(action_date=date.today())
+            insert_payment_details(application_no)
+            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -2526,8 +2222,10 @@ def submit_general_application(request):
         if(ancillary_count > 0):
             data['message'] = "not submitted"
         else:
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(action_date=date.today())
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.now())
+            workflow_dtls.update(action_date=date.today())
             insert_payment_details(application_no)
             data['message'] = "success"
     except Exception as e:
@@ -2583,7 +2281,7 @@ def save_tor_form(request):
             t_workflow_dtls.objects.create(application_no=application_no, 
                                             service_id=request.session['service_id'],
                                             application_status='P',
-                                            action_date=date.now(),
+                                            action_date=date.today(),
                                             actor_id=request.session['login_id'],
                                             actor_name=request.session['name'],
                                             assigned_user_id=None,
@@ -2597,7 +2295,7 @@ def save_tor_form(request):
             t_workflow_dtls.objects.create(application_no=application_no, 
                                             service_id=request.session['service_id'],
                                             application_status='P',
-                                            action_date=date.now(),
+                                            action_date=date.today(),
                                             actor_id=request.session['login_id'],
                                             actor_name=request.session['name'],
                                             assigned_user_id=None,
@@ -2631,87 +2329,26 @@ def insert_payment_details(application_no):
 
     workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
     for work_details in workflow_details:
-        service_id = work_details.service_code
+        service_id = work_details.service_id
 
     for application in main_application_details:
         industry_classification = application.industry_classification
         power_generation = application.power_generation
         road_length = application.road_length
 
-    if service_id == '1' & industry_classification == 'small':
-        fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
-        for fees_details in fees_details:
-            main_amount = fees_details.rate + fees_details.application_fee
-    elif service_id == '1' & industry_classification == 'medium':
-        fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
-        for fees_details in fees_details:
-            main_amount = fees_details.rate + fees_details.application_fee
-    elif service_id == '1' & industry_classification == 'large':
-        fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
-        for fees_details in fees_details:
-            main_amount = fees_details.rate + fees_details.application_fee
-    elif service_id == '1' & industry_classification == 'cottage':
-        fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
-        for fees_details in fees_details:
-            main_amount = fees_details.rate + fees_details.application_fee
-    elif service_id == '2':
-        fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-        for fees_details in fees_details:
-            main_amount = (fees_details.rate * power_generation) + fees_details.application_fee
-    elif service_id == '3':
-        fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-        for fees_details in fees_details:
-            main_amount = (fees_details.rate * road_length) + fees_details.application_fee
-    elif service_id == '4':
-        fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-        for fees_details in fees_details:
-            main_amount = (fees_details.rate * length_of_transmission) + fees_details.application_fee
-    elif service_id == '5':
-        fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-        for fees_details in fees_details:
-            main_amount = fees_details.rate  + fees_details.application_fee
-    elif service_id == '6':
-        fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-        for fees_details in fees_details:
-            main_amount = fees_details.rate  + fees_details.application_fee
-    elif service_id == '7':
-        fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-        for fees_details in fees_details:
-            main_amount = (fees_details.rate * total_area_acre) + fees_details.application_fee
-    elif service_id == '8':
-        fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-        for fees_details in fees_details:
-            main_amount = (fees_details.rate * total_area_acre) * fees_details.application_fee
-    elif service_id == '9':
-        fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-        for fees_details in fees_details:
-            main_amount = fees_details.rate + fees_details.application_fee
-    elif service_id == '10':
-        fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-        for fees_details in fees_details:
-            main_amount = fees_details.rate + fees_details.application_fee
-
-    if ancillary_application_details_count > 0:
-        ancillary_application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,application_type='Ancillary')
-        
-        for ancillary_application in ancillary_application_details:
-            industry_classification = ancillary_application.industry_classification
-            power_generation = ancillary_application.power_generation
-            road_length = ancillary_application.road_length
-        
-        if service_id == '1' & industry_classification == 'small':
+        if service_id == '1' and industry_classification == 'Small':
             fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
             for fees_details in fees_details:
                 main_amount = fees_details.rate + fees_details.application_fee
-        elif service_id == '1' & industry_classification == 'medium':
+        elif service_id == '1' and industry_classification == 'Medium':
             fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
             for fees_details in fees_details:
                 main_amount = fees_details.rate + fees_details.application_fee
-        elif service_id == '1' & industry_classification == 'large':
+        elif service_id == '1' and industry_classification == 'Large':
             fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
             for fees_details in fees_details:
                 main_amount = fees_details.rate + fees_details.application_fee
-        elif service_id == '1' & industry_classification == 'cottage':
+        elif service_id == '1' and industry_classification == 'Cottage':
             fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
             for fees_details in fees_details:
                 main_amount = fees_details.rate + fees_details.application_fee
@@ -2747,17 +2384,75 @@ def insert_payment_details(application_no):
             fees_details = t_fees_schedule.objects.filter(service_id=service_id)
             for fees_details in fees_details:
                 main_amount = fees_details.rate + fees_details.application_fee
-    
-    total_amount = main_amount + ancillary_amount
+        elif service_id == '10':
+            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+            for fees_details in fees_details:
+                main_amount = fees_details.rate + fees_details.application_fee
 
-    payment_details = t_payment_details.objects.create(application_no=application_no)
-    payment_details.update(
-        application_type= application.application_type,
-        application_no=application_no,
-        application_date=application.application_date, 
-        proponent_name=application.applicant_name,
-        amount=total_amount
-    )
+        if ancillary_application_details_count > 0:
+            ancillary_application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,application_type='Ancillary')
+            
+            for ancillary_application in ancillary_application_details:
+                industry_classification = ancillary_application.industry_classification
+                power_generation = ancillary_application.power_generation
+                road_length = ancillary_application.road_length
+            
+            if service_id == '1' and industry_classification == 'Small':
+                fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
+                for fees_details in fees_details:
+                    main_amount = fees_details.rate + fees_details.application_fee
+            elif service_id == '1' and industry_classification == 'Medium':
+                fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
+                for fees_details in fees_details:
+                    main_amount = fees_details.rate + fees_details.application_fee
+            elif service_id == '1' and industry_classification == 'Large':
+                fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
+                for fees_details in fees_details:
+                    main_amount = fees_details.rate + fees_details.application_fee
+            elif service_id == '1' and industry_classification == 'Cottage':
+                fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
+                for fees_details in fees_details:
+                    main_amount = fees_details.rate + fees_details.application_fee
+            elif service_id == '2':
+                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                for fees_details in fees_details:
+                    main_amount = (fees_details.rate * power_generation) + fees_details.application_fee
+            elif service_id == '3':
+                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                for fees_details in fees_details:
+                    main_amount = (fees_details.rate * road_length) + fees_details.application_fee
+            elif service_id == '4':
+                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                for fees_details in fees_details:
+                    main_amount = (fees_details.rate * length_of_transmission) + fees_details.application_fee
+            elif service_id == '5':
+                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                for fees_details in fees_details:
+                    main_amount = fees_details.rate  + fees_details.application_fee
+            elif service_id == '6':
+                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                for fees_details in fees_details:
+                    main_amount = fees_details.rate  + fees_details.application_fee
+            elif service_id == '7':
+                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                for fees_details in fees_details:
+                    main_amount = (fees_details.rate * total_area_acre) + fees_details.application_fee
+            elif service_id == '8':
+                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                for fees_details in fees_details:
+                    main_amount = (fees_details.rate * total_area_acre) * fees_details.application_fee
+            elif service_id == '9':
+                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                for fees_details in fees_details:
+                    main_amount = fees_details.rate + fees_details.application_fee
+        
+        total_amount = main_amount + ancillary_amount
+
+        t_payment_details.objects.create(application_no=application_no,
+            application_type= application.application_type,
+            application_date=application.application_date, 
+            proponent_name=application.applicant_name,
+            amount=total_amount)
     return redirect(new_iee_application)
 
 
@@ -2860,6 +2555,7 @@ def save_road_application(request):
             bl_others=bl_others,
             bl_others_name=bl_others_name,
             bl_others_distance=bl_others_distance,
+            application_status='P',
             service_id=request.session['service_id']
             )
         t_workflow_dtls.objects.create(application_no=application_no, 
@@ -2929,6 +2625,7 @@ def save_general_application(request):
             private_area_acre=private_area_acre,
             others_area_acre=others_area_acre,
             total_area_acre=total_area_acre,
+            application_status='P',
             service_id=request.session['service_id']
             )
         t_workflow_dtls.objects.create(application_no=application_no, 
@@ -3002,6 +2699,7 @@ def save_forest_application(request):
             max_evacuation_depth=max_evacuation_depth,
             terrain_elevation=terrain_elevation,
             terrain_slope=terrain_slope,
+            application_status='P',
             service_id=request.session['service_id']
             )
         t_workflow_dtls.objects.create(application_no=application_no, 
@@ -3031,8 +2729,10 @@ def submit_forest_application(request):
         if(ancillary_count > 0):
             data['message'] = "not submitted"
         else:
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(action_date=date.today())
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.now())
+            workflow_dtls.update(action_date=date.today())
             insert_payment_details(application_no)
             data['message'] = "success"
     except Exception as e:
@@ -3095,6 +2795,7 @@ def save_ground_water_application(request):
             land_form=land_form,
             terrain_elevation=terrain_elevation,
             terrain_slope=terrain_slope,
+            application_status='P',
             service_id=request.session['service_id']
             )
         t_workflow_dtls.objects.create(application_no=application_no, 
@@ -3147,8 +2848,10 @@ def submit_ground_water_application(request):
         if(ancillary_count > 0):
             data['message'] = "not submitted"
         else:
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(action_date=date.today())
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.now())
+            workflow_dtls.update(action_date=date.today())
             insert_payment_details(application_no)
             data['message'] = "success"
     except Exception as e:
@@ -3211,6 +2914,7 @@ def save_quarry_application(request):
             green_belt_area=green_belt_area,
             terrain_elevation=terrain_elevation,
             terrain_slope=terrain_slope,
+            application_status='P',
             service_id=request.session['service_id']
             )
         t_workflow_dtls.objects.create(application_no=application_no, 
@@ -3240,8 +2944,10 @@ def submit_quarry_application(request):
         if(ancillary_count > 0):
             data['message'] = "not submitted"
         else:
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(action_date=date.today())
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.now())
+            workflow_dtls.update(action_date=date.today())
             insert_payment_details(application_no)
             data['message'] = "success"
     except Exception as e:
@@ -3396,8 +3102,10 @@ def submit_road_application(request):
         if(ancillary_count > 0):
             data['message'] = "not submitted"
         else:
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(action_date=date.today())
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.now())
+            workflow_dtls.update(action_date=date.today())
             insert_payment_details(application_no)
             data['message'] = "success"
     except Exception as e:
@@ -3452,6 +3160,7 @@ def save_energy_application(request):
             private_area_acre=private_area_acre,
             others_area_acre=others_area_acre,
             total_area_acre=total_area_acre,
+            application_status='P',
             service_id=request.session['service_id']
             )
         t_workflow_dtls.objects.create(application_no=application_no, 
@@ -3481,8 +3190,10 @@ def submit_energy_application(request):
         if(ancillary_count > 0):
             data['message'] = "not submitted"
         else:
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(action_date=date.today())
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.now())
+            workflow_dtls.update(action_date=date.today())
             insert_payment_details(application_no)
             data['message'] = "success"
     except Exception as e:
@@ -3537,6 +3248,7 @@ def save_tourism_application(request):
             private_area_acre=private_area_acre,
             others_area_acre=others_area_acre,
             total_area_acre=total_area_acre,
+            application_status='P',
             service_id=request.session['service_id']
             )
         t_workflow_dtls.objects.create(application_no=application_no, 
@@ -3620,8 +3332,10 @@ def submit_tourism_application(request):
         if(ancillary_count > 0):
             data['message'] = "not submitted"
         else:
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(action_date=date.today())
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.now())
+            workflow_dtls.update(action_date=date.today())
             insert_payment_details(application_no)
             data['message'] = "success"
     except Exception as e:
@@ -3853,13 +3567,14 @@ def get_other_modification_details(request):
     
 # Draft Application Details
 def draft_application_list(request):
-    application_list = t_ec_industries_t1_general.objects.filter(application_status='P',form_type='Main Activity',action_date__isnull=True)
-    return render(request, 'draft/application_list',{'application_list':application_list})
+    application_details = t_ec_industries_t1_general.objects.filter(application_status='P',form_type='Main Activity',action_date__isnull=True)
+    service_details = t_service_master.objects.all()
+    return render(request, 'draft/application_list.html',{'application_details':application_details, 'service_details':service_details})
 
 def view_draft_application_details(request):
-    application_no = request.POST.get('application_no')
-    service_id = request.POST.get('service_id')
-    application_source = request.POST.get('application_source')
+    application_no = request.GET.get('application_no')
+    service_id = request.GET.get('service_id')
+    application_source = request.GET.get('application_source')
     status = None
 
     if service_id == '1':
@@ -3882,27 +3597,27 @@ def view_draft_application_details(request):
             
             return render(request, 'draft/ea_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials, 'status':status,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details,'ancillary_details':ancillary_details})
+                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details,'ancillary_details':ancillary_details,'service_id':service_id})
         else:
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
-            partner_details = t_ec_industries_t2_partner_details.objects.all()
-            machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-            project_product = t_ec_industries_t4_project_product.objects.all()
-            raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-            ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-            power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
-            forest_produce = t_ec_industries_t8_forest_produce
-            products_by_products = t_ec_industries_t9_products_by_products
-            hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals
+            partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
+            machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
+            project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
+            raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
+            ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
+            power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
+            forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
+            products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
+            hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
             ec_details = t_ec_industries_t11_ec_details.objects.all()
             
             return render(request, 'draft/iee_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details})
+                                                        'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '2':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -3922,7 +3637,7 @@ def view_draft_application_details(request):
         
         return render(request, 'draft/energy_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog,
-                                                     'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details})
+                                                     'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '3':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -3942,7 +3657,7 @@ def view_draft_application_details(request):
         
         return render(request, 'draft/road_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details})
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '4':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -3962,7 +3677,7 @@ def view_draft_application_details(request):
         
         return render(request, 'draft/transmission_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details})
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '5':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -3982,7 +3697,7 @@ def view_draft_application_details(request):
         
         return render(request, 'draft/tourism_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details})
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '6':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -4002,7 +3717,7 @@ def view_draft_application_details(request):
         
         return render(request, 'draft/ground_water_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details})
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '7':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -4022,7 +3737,7 @@ def view_draft_application_details(request):
         
         return render(request, 'draft/forest_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details})
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '8':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -4042,7 +3757,7 @@ def view_draft_application_details(request):
         
         return render(request, 'draft/quarry_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details})
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '9':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -4062,8 +3777,73 @@ def view_draft_application_details(request):
         
         return render(request, 'draft/general_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details})
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     
+def update_draft_application(request):
+    application_no = request.POST.get(application_no)
+    service_id = request.POST.get('service_id')
+    application_no = request.POST.get('application_no')
+    project_name = request.POST.get('project_name')
+    project_category = request.POST.get('project_category')
+    applicant_name = request.POST.get('applicant_name')
+    application_type = request.POST.get('application_type')
+    address = request.POST.get('address')
+    cid = request.POST.get('cid')
+    contact_no = request.POST.get('contact_no')
+    email = request.POST.get('email')
+    focal_person = request.POST.get('focal_person')
+    industry_type = request.POST.get('industry_type')
+    establishment_type = request.POST.get('establishment_type')
+    industry_classification = request.POST.get('industry_classification')
+    dzongkhag_code = request.POST.get('dzo_throm')
+    gewog_code = request.POST.get('gewog')
+    village_code = request.POST.get('vil_chiwog')
+    location_name = request.POST.get('location_name')
+    industrial_area_acre = request.POST.get('industrial_area_acre')
+    state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
+    private_area_acre = request.POST.get('private_area_acre')
+    others_area_acre = request.POST.get('others_area_acre')
+    total_area_acre = request.POST.get('total_area_acre')
+    green_area_acre = request.POST.get('green_area_acre')
+    production_process_flow = request.POST.get('production_process_flow')
+    project_objective = request.POST.get('project_objective')
+    project_no_of_workers = request.POST.get('project_no_of_workers')
+    project_cost = request.POST.get('project_cost')
+    project_duration = request.POST.get('project_duration')
+
+    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+
+    if service_id == '1':
+        application_details.update(
+            application_no=application_no,
+            application_type=application_type,
+            project_name=project_name,
+            project_category=project_category,
+            applicant_name=applicant_name,
+            address=address,
+            cid=cid,
+            contact_no=contact_no,
+            email=email,
+            focal_person=focal_person,
+            industry_type=industry_type,
+            establishment_type=establishment_type,
+            industry_classification=industry_classification,
+            dzongkhag_code=dzongkhag_code,
+            gewog_code=gewog_code,
+            village_code=village_code,
+            location_name=location_name,
+            industrial_area_acre=industrial_area_acre,
+            state_reserve_forest_acre=state_reserve_forest_acre,
+            private_area_acre=private_area_acre,
+            others_area_acre=others_area_acre,
+            total_area_acre=total_area_acre,
+            green_area_acre=green_area_acre,
+            production_process_flow=production_process_flow,
+            project_objective=project_objective,
+            project_no_of_workers=project_no_of_workers,
+            project_cost=project_cost,
+            project_duration=project_duration,
+            )
 
 def submit_renew_application(request):
     return redirect(client_application_list)

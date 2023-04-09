@@ -118,14 +118,7 @@
                 {
                     service_id = data.service_id;
                     colour_code = data.colour_code;
-
-                    if(colour_code == 'Red')
-                    {
-                        $('#successMsg').html("You need to Draft TOR And Submit.");
-                        $('#successMsg').show();
-                        $('#successMsg').delay(2000).fadeOut('slow');
-                    }
-                    else if(colour_code == 'Green')
+                    if(colour_code == 'Green')
                     {
                         $('#successMsg').html("No need For Environment Clearance.");
                         $('#successMsg').show();
@@ -147,11 +140,11 @@
                         }
                         else if(service_id == '7')
                         {
-                            window.location.href = '/tor_form';
+                            window.location.href = '/new_forestry_application';
                         }
                         else if(service_id == '0')
                         {
-                            window.location.href = '/new_iee_application';
+                            window.location.href = '/tor_form';
                         }
                         else
                         {

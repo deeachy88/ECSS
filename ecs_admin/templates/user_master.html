@@ -35,9 +35,9 @@
                                     <td>{{user.email_id}}</td>
                                     <td>{{user.contact_number}}</td>
                                     <td>{{user.role_id}}</td>
-                                    {% if user.agency_id %}
+                                    {% if user.agency_code %}
                                         {% for agency in agency %}
-                                            {% if user.agency_id == agency.competent_authority_id %}
+                                            {% if user.agency_code == agency.competent_authority %}
                                                 <td>{{ agency.remarks }}</td>
                                             {% endif %}
                                         {% endfor %}
@@ -52,7 +52,7 @@
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Activate')"><i class="uil uil-unlock"></i></button>
                                             {% endif %}
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit"
-                                                     onclick="populateEditForm('{{user.login_id}}', '{{user.name}}', '{{user.gender}}', '{{user.email_id}}','{{user.contact_number}}', '{{user.role_id_id}}', '{{user.agency_id_id}}')"><i class="mdi mdi-square-edit-outline"></i> </button>
+                                                     onclick="populateEditForm('{{user.login_id}}', '{{user.name}}', '{{user.gender}}', '{{user.email_id}}','{{user.contact_number}}', '{{user.role_id_id}}', '{{user.agency_code_id}}')"><i class="mdi mdi-square-edit-outline"></i> </button>
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Reset Password" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Reset')"><i class="uil-key-skeleton"></i></button>
                                         </div>
                                     </td>
@@ -120,7 +120,7 @@
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Role</label>
-                                <select id="role" name="role" class="form-select">
+                                <select id="role" name="role" class="form-select" onchange="check_role_id(this.value)">
                                     <option value="">--SELECT ROLE--</option>
                                     {% for role in role %}
                                         <option value="{{ role.role_id }}">{{ role.role_name }}</option>
@@ -129,13 +129,13 @@
                             </div>
                             <div id="roleErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 com_auth_div">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Agency</label>
                                 <select id="agency" name="agency" class="form-select">
                                     <option value="">--SELECT COMPETENT AUTHORITY--</option>
                                     {% for agency in agency %}
-                                        <option value="{{ agency.competent_authority_id }}">{{ agency.remarks }}</option>
+                                        <option value="{{ agency.competent_authority }}">{{ agency.remarks }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -208,7 +208,7 @@
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Role</label>
-                                <select id="edit_role" name="edit_role" class="form-select">
+                                <select id="edit_role" name="edit_role" class="form-select" onchange="check_edit_role_id(this.value)">
                                     <option value="">--SELECT ROLE--</option>
                                     {% for role in role %}
                                         <option value="{{ role.role_id }}">{{ role.role_name }}</option>
@@ -217,13 +217,13 @@
                             </div>
                             <div id="edit_roleErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                         </div>
-                        <div class="col-lg-6 agency_div" style="display:none;">
+                        <div class="col-lg-6 edit_com_auth_div">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Agency</label>
                                 <select id="edit_agency" name="edit_agency" class="form-select">
-                                    <option value="">--SELECT AGENCY--</option>
+                                    <option value="">--SELECT COMPETENT AUTHORITY--</option>
                                     {% for agency in agency %}
-                                        <option value="{{ agency.competent_authority_id }}">{{ agency.remarks }}</option>
+                                        <option value="{{ agency.competent_authority }}">{{ agency.remarks }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -241,6 +241,30 @@
     </div><!-- /.modal -->
 </form>
 <script>
+    function check_role_id(value)
+    {
+        if(value == '1')
+        {
+            $('.com_auth_div').hide();
+        }
+        else
+        {
+            $('.com_auth_div').show();
+        }
+    }
+
+    function check_edit_role_id(value)
+    {
+        if(value == '1')
+        {
+            $('.edit_com_auth_div').hide();
+        }
+        else
+        {
+            $('.edit_com_auth_div').show();
+        }
+    }
+
 function validate_email_id(emailId)
 {
     let pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
@@ -324,7 +348,7 @@ function save_users()
             $('#roleErrorMsg').show();
             $('#roleErrorMsg').delay(2000).fadeOut('slow');
         }
-        else if(agency == "")
+        else if(role != "1" && agency == "")
         {
             $('#agencyErrorMsg').html("Select Agency.");
             $('#agencyErrorMsg').show();
@@ -454,11 +478,11 @@ function populateEditForm(loginId, name, gender, emailId, contactNumber, roleId,
     $('#edit_role').val(roleId);
     if(roleId == '1')
     {
-        $('.agency_div').hide();
+        $('.edit_com_auth_div').hide();
     }
     else
     {
-        $('.agency_div').show();
+        $('.edit_com_auth_div').show();
         $('#edit_agency').val(roleId);
     }
     

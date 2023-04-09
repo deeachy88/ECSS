@@ -137,7 +137,7 @@ class t_user_master(models.Model):
     login_type = models.TextField(default=None, blank=True, null=True)
     name = models.CharField(max_length=200, default=None, blank=True, null=True)
     agency_type = models.CharField(max_length=50, default=None, blank=True, null=True)
-    agency_id = models.IntegerField(default=None, blank=True, null=True)
+    agency_code = models.CharField(max_length=50, default=None, blank=True, null=True)
     gender = models.CharField(max_length=1, blank=True, null=True)
     contact_number = models.IntegerField(default=None, blank=True, null=True)
     email_id = models.EmailField(default=None, blank=True, null=True)
