@@ -82,12 +82,7 @@ function viewECIssuedList()
             $('#toDateErrorMsg').show();
             $('#toDateErrorMsg').delay(3000).fadeOut('slow');
         }
-        <!--else if(service_id == "")
-        {
-            $('#serviceErrorMsg').html("Select Service.");
-            $('#serviceErrorMsg').show();
-            $('#serviceErrorMsg').delay(3000).fadeOut('slow');
-        }-->
+
         else
         {
             var fDate = moment(from_date, "DD.MM.YYYY").format("YYYY-MM-DD");
