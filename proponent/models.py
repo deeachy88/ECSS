@@ -472,7 +472,6 @@ class t_ec_industries_t1_general(models.Model):
     resubmit_date = models.DateField(default=None, blank=True, null=True)
     service_id = models.IntegerField(default=None, blank=True, null=True)
 
-
 class t_ec_industries_t2_partner_details(models.Model):
     record_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100,default=None, blank=True, null=True)
@@ -557,43 +556,6 @@ class t_ec_industries_t11_ec_details(models.Model):
     ec_heading = models.CharField(max_length=250,default=None, blank=True, null=True)
     ec_content = models.TextField(default=None, blank=True, null=True)
 
-class t_inspection_monitoring_t1(models.Model):
-    record_id = models.AutoField(primary_key=True)
-    application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
-    inspection_type = models.CharField(max_length=100, default=None, blank=True, null=True)
-    ec_clearance_no = models.CharField(max_length=100, default=None, blank=True, null=True)
-    proponent_name = models.CharField(max_length=100, default=None, blank=True, null=True)
-    address = models.CharField(max_length=100, default=None, blank=True, null=True)
-    inspection_date = models.DateField(default=None, blank=True, null=True)
-    inspection_reason = models.CharField(max_length=20, default=None, blank=True, null=True)
-    observation = models.TextField(default=None, blank=True, null=True)
-    team_leader = models.CharField(max_length=10, default=None, blank=True, null=True)
-    team_members = models.CharField(max_length=10, default=None, blank=True, null=True)
-    remarks = models.TextField(default=None, blank=True, null=True)
-    fines_penalties = models.CharField(max_length=3, default=None, blank=True, null=True)
-    status = models.CharField(max_length=100, default=None, blank=True, null=True)
-
-
-class t_report_submission_t1(models.Model):
-    record_id = models.AutoField(primary_key=True)
-    report_type = models.CharField(max_length=100, default=None, blank=True, null=True)
-    ec_clearance_no = models.CharField(max_length=100, default=None, blank=True, null=True)
-    proponent_name = models.CharField(max_length=100, default=None, blank=True, null=True)
-    address = models.CharField(max_length=250, default=None, blank=True, null=True)
-    submission_date = models.DateField(default=None, blank=True, null=True)
-    report_year = models.TextField(default=None, blank=True, null=True)
-    report_type = models.CharField(max_length=100, default=None, blank=True, null=True)
-    Initiatives_undertaken = models.TextField(default=None, blank=True, null=True)
-    remarks = models.TextField(default=None, blank=True, null=True)
-
-class t_report_submission_t2(models.Model):
-    record_id = models.AutoField(primary_key=True)
-    precord_id = models.ForeignKey(t_report_submission_t1, on_delete=models.CASCADE, null=True, blank=True)
-    ec_clearance_no = models.CharField(max_length=100, default=None, blank=True, null=True)
-    ec_terms = models.TextField(default=None, blank=True, null=True)
-    action_undertaken = models.TextField(default=None, blank=True, null=True)
-    remarks = models.TextField(default=None, blank=True, null=True)
-
 class t_ec_renewal_t1(models.Model):
     record_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
@@ -607,7 +569,7 @@ class t_ec_renewal_t1(models.Model):
 
 class t_ec_renewal_t2(models.Model):
     record_id = models.AutoField(primary_key=True)
-    precord_id = models.ForeignKey(t_report_submission_t1, on_delete=models.CASCADE, null=True, blank=True)
+    #precord_id = models.ForeignKey(t_report_submission_t1, on_delete=models.CASCADE, null=True, blank=True)
     ec_terms = models.TextField(default=None, blank=True, null=True)
     action_undertaken = models.TextField(default=None, blank=True, null=True)
     remarks = models.TextField(default=None, blank=True, null=True)
@@ -669,3 +631,27 @@ class t_workflow_dtls_audit(models.Model):
     ca_authority = models.CharField(max_length=100, default=None, blank=True, null=True)
     dzongkhag_thromde_id = models.CharField(max_length=100, default=None, blank=True, null=True)
     result = models.CharField(max_length=250, default=None, blank=True, null=True)
+
+# ReportSubmission
+class t_report_submission_t1(models.Model):
+    record_id = models.AutoField(primary_key=True)
+    report_type = models.CharField(max_length=100, blank=True, null=True)
+    report_reference_no = models.CharField(max_length=100, blank=True, null=True)
+    ec_clearance_no = models.CharField(max_length=100, blank=True, null=True)
+    ca_authority = models.IntegerField(blank=True, null=True)
+    proponent_name = models.CharField(max_length=100, blank=True, null=True)
+    address = models.CharField(max_length=250, blank=True, null=True)
+    submission_date = models.DateField(default=None, blank=True, null=True)
+    submission_year = models.IntegerField(blank=True, null=True)
+    initiatives_undertaken = models.TextField(default=None, blank=True, null=True)
+    remarks = models.TextField(default=None, blank=True, null=True)
+    report_status = models.CharField(max_length=20, blank=True, null=True)
+    created_by = models.CharField(max_length=100, blank=True, null=True)
+    created_date = models.DateField(blank=True, null=True)
+
+class t_report_submission_t2(models.Model):
+    record_id = models.AutoField(primary_key=True)
+    report_reference_no = models.CharField(max_length=100, blank=True, null=True)
+    ec_terms = models.TextField(default=None, blank=True, null=True)
+    action_taken = models.TextField(default=None, blank=True, null=True)
+    remarks = models.TextField(default=None, blank=True, null=True)

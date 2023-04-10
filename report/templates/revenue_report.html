@@ -1,55 +1,47 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
-<div id="CertificateDetails">
+<div id="RevenueDetails">
     <div class="animated fadeIn">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Report.</h4>
+                        <h4 class="card-title">Report</h4>
                     </div>
                     <div class="card-body">
-                        <h4 class="card-title">Revenue Report.</h4>
+                        <h4 class="card-title">Revenue Report</h4>
                         <div class="table-responsive">
-                            <table id="Revenue_Report_Table" class="table table-striped table-bordered">
-                                <thead>
+                        <table id="ec_reject_table" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Proponent</th>
+                                    <th scope="col">EC Type</th>
+                                    <th scope="col">EC Number</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Transaction Number</th>
+                                    <th scope="col">Transaction date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ec_list in ec_list %}
                                     <tr>
-                                        <th scope="col">Sl No.</th>
-                                        <th scope="col">Service Name</th>
-                                        <th scope="col">Applicant Id</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Payment Type</th>
-                                        <th scope="col">Receipt No</th>
-                                        <th scope="col">Receipt Date</th>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ec_list.proponent_name}}</td>
+                                        <td>{{ec_list.applicant_type}}</td>
+                                        <td>{{ec_list.ec_no}}</td>
+                                        <td>{{ec_list.amount}}</td>
+                                        <td>{{ec_list.transaction_no}}</td>
+                                        <td>{{ec_list.transaction_date}}</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {% for revenue_details in revenue_details %}
-                                        <tr>
-                                            <td>{{ forloop.counter }}</td>
-                                            {% for service_details in service_details %}
-                                                {% if revenue_details.service_id == service_details.Service_Code %}
-                                                    <td>{{service_details.Service_Name}}</td>
-                                                {% endif %}
-                                            {% endfor %}
-                                            {% for workflow_details in workflow_details %}
-                                                {% if revenue_details.application_no == workflow_details.application_no %}
-                                                    <td>{{workflow_details.applicant_id}}</td>
-                                                {% endif %}
-                                            {% endfor %}
-                                            <td>{{revenue_details.amount}}</td>
-                                            <td>{{revenue_details.payment_type}}</td>
-                                            <td>{{revenue_details.receipt_no}}</td>
-                                            <td>{{revenue_details.receipt_date}}</td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                          <td colspan="9" class="text-center">No Data</td>
-                                        </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="7" class="text-center">No Data</td>
+                                    </tr>
                                     {% endfor %}
-                                </tbody>
-                            </table>
+                            </tbody>
+                        </table>
                         </div>
                     </div>
                 </div>
@@ -58,9 +50,9 @@
     </div>
 </div>
 <script>
-    $(function ()
+    $(document).ready(function()
         {
-            $("#Revenue_Report_Table").DataTable({
+            $("#ec_reject_table").DataTable({
                 dom: 'Bfrtip',
                 buttons: [
                     {

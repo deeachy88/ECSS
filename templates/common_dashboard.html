@@ -208,6 +208,32 @@
                                     </ul>
                                 </div>
                             </li>
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarAdminReports" aria-expanded="false" aria-controls="sidebarAdminReports" class="side-nav-link">
+                                    <i class="uil-clipboard-alt"></i>
+                                    <span> Report </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarAdminReports">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="{% url 'ec_report_form' %}">1. List of EC Issued</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'ec_reject_report_form' %}">2. List of EC Rejected</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'ec_pending_report_form' %}">3. List of Pending Application</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'land_use_report_form' %}">4. Land Use Report</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'revenue_report_form' %}">5. Revenue Report</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
                         </ul>
                     {% elif request.session.role == 'Verifier' %}
                         <ul class="side-nav">
@@ -219,7 +245,6 @@
                                     <span> Home </span>
                                 </a>
                             </li>
-
                             <li class="side-nav-item">
                                 <a href="{% url 'verify_application_list' %}" class="side-nav-link">
                                     <i class="uil-home-alt"></i>
@@ -231,12 +256,12 @@
                                 </a>
                             </li>
                             <li class="side-nav-item">
-                                <a data-bs-toggle="collapse" href="#sidebarMasters" aria-expanded="false" aria-controls="sidebarMasters" class="side-nav-link">
+                                <a data-bs-toggle="collapse" href="#sidebarInspection" aria-expanded="false" aria-controls="sidebarInspection" class="side-nav-link">
                                     <i class="uil-clipboard-alt"></i>
                                     <span> Manage Inspection </span>
                                     <span class="menu-arrow"></span>
                                 </a>
-                                <div class="collapse" id="sidebarMasters">
+                                <div class="collapse" id="sidebarInspection">
                                     <ul class="side-nav-second-level">
                                         <li>
                                             <a href="{% url 'inspection_list' %}">Inspection/Monitoring</a>
@@ -244,7 +269,46 @@
                                     </ul>
                                 </div>
                             </li>
-                            
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarViewReports" aria-expanded="false" aria-controls="sidebarViewReports" class="side-nav-link">
+                                    <i class="uil-clipboard-alt"></i>
+                                    <span> Report Submission </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarViewReports">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="{% url 'report_list' %}">View Reports</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarVerifierReports" aria-expanded="false" aria-controls="sidebarVerifierReports" class="side-nav-link">
+                                    <i class="uil-clipboard-alt"></i>
+                                    <span> Report </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarVerifierReports">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="{% url 'ec_report_form' %}">1. List of EC Issued</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'ec_reject_report_form' %}">2. List of EC Rejected</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'ec_pending_report_form' %}">3. List of Pending Application</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'land_use_report_form' %}">4. Land Use Report</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'revenue_report_form' %}">5. Revenue Report</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
                         </ul>
                     {% elif request.session.role == 'Reviewer' %}
                         <ul class="side-nav">
@@ -266,6 +330,32 @@
                                         </span> -->
                                     </span>
                                 </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarReviewerReports" aria-expanded="false" aria-controls="sidebarReviewerReports" class="side-nav-link">
+                                    <i class="uil-clipboard-alt"></i>
+                                    <span> Report </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarReviewerReports">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="{% url 'ec_report_form' %}">1. List of EC Issued</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'ec_reject_report_form' %}">2. List of EC Rejected</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'ec_pending_report_form' %}">3. List of Pending Application</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'land_use_report_form' %}">4. Land Use Report</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'revenue_report_form' %}">5. Revenue Report</a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
                         </ul>
                     {% else %}
@@ -338,6 +428,20 @@
                                         </li>
                                         <li>
                                             <a href="{% url 'location_change' %}">Location Change</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarReportSubmission" aria-expanded="false" aria-controls="sidebarReportSubmission" class="side-nav-link">
+                                    <i class="uil-clipboard-alt"></i>
+                                    <span> Report Submission </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarReportSubmission">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="{% url 'report_list' %}">View Reports</a>
                                         </li>
                                     </ul>
                                 </div>

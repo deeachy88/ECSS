@@ -149,5 +149,27 @@ urlpatterns = [
     path('view_draft_application_details', views.view_draft_application_details, name='view_draft_application_details'),
 
     # Renewal Application Details
-    path('submit_renew_application', views.submit_renew_application, name='submit_renew_application')
+    path('submit_renew_application', views.submit_renew_application, name='submit_renew_application'),
+
+
+#ReportSubmission
+    path('report_list', views.report_list, name='report_list'),
+    path('view_report_details', views.view_report_details, name='view_report_details'),
+    path('viewDraftReport/<str:report_reference_no>', views.viewDraftReport, name='viewDraftReport'),
+
+    path('report_submission_form', views.report_submission_form, name='report_submission_form'),
+    path('save_report_submission', views.save_report_submission, name='save_report_submission'),
+    path('load_report_submission_details', views.load_report_submission_details, name='load_report_submission_details'),
+    path('update_report_submission', views.update_report_submission, name='update_report_submission'),
+    path('save_report_details', views.save_report_details, name='save_report_details'),
+    path('delete_report_details', views.delete_report_details, name='delete_report_details'),
+    path('load_report_attachment_details', views.load_report_attachment_details, name='load_report_attachment_details'),
+    path('add_report_file', views.add_report_file, name='add_report_file'),
+    path('add_report_file_name', views.add_report_file_name, name='add_report_file_name'),
+    path('delete_report_file', views.delete_report_file, name='delete_report_file'),
+    path('submit_report_form', views.submit_report_form, name='submit_report_form'),
+    path('acknowledge_report', views.acknowledge_report, name='acknowledge_report'),
+
+
+
 ]

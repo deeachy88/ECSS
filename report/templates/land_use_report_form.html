@@ -3,11 +3,11 @@
 {% block content %}
 {% load static %}
 
-<div id="RevenueDetails">
+<div id="LandUseDetails">
     <form id="certificateReportForm">
         <div class="card">
             <div class="card-header">
-                <strong class="card-title">Revenue Report Form</strong>
+                <strong class="card-title">Land Use Details Report Form</strong>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -30,13 +30,13 @@
                         <div class="alert alert-danger" id="toDateErrorMsg" style="display:none"></div>
                     </div>
                 </div>
-                <!--<div class="row">
+                <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
                             <div class="form-group">
                                 <label class="form-label">Category <font color="red">*</font></label>
                                 <select id="service_id" name="service_id" class="form-select">
-                                    <option value="ALL">&#45;&#45;SELECT ALL&#45;&#45;</option>
+                                    <option value="ALL">--SELECT ALL--</option>
                                     {% for service_list in service_list %}
                                         <option value="{{ service_list.service_id }}">{{ service_list.service_name }}</option>
                                     {% endfor %}
@@ -45,7 +45,20 @@
                         </div>
                         <div class="alert alert-danger" id="serviceErrorMsg" style="display:none"></div>
                     </div>
-                </div>-->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label class="form-label">Dzongkhag <font color="red">*</font></label>
+                                <select id="dzongkhag_code" name="dzongkhag_code" class="form-select">
+                                    <option value="ALL">--SELECT ALL--</option>
+                                    {% for dzongkhag_list in dzongkhag_list %}
+                                        <option value="{{ dzongkhag_list.dzongkhag_code }}">{{ dzongkhag_list.dzongkhag_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
@@ -69,6 +82,7 @@ function viewECIssuedList()
         var from_date = $('#fromDate').val();
         var to_date = $('#toDate').val();
         var service_id = $('#service_id').val();
+        var dzongkhag_code = $('#dzongkhag_code').val();
 
         if(from_date == "")
         {
@@ -82,26 +96,32 @@ function viewECIssuedList()
             $('#toDateErrorMsg').show();
             $('#toDateErrorMsg').delay(3000).fadeOut('slow');
         }
-        <!--else if(service_id == "")
+        else if(service_id == "")
         {
             $('#serviceErrorMsg').html("Select Service.");
             $('#serviceErrorMsg').show();
             $('#serviceErrorMsg').delay(3000).fadeOut('slow');
-        }-->
+        }
         else
         {
             var fDate = moment(from_date, "DD.MM.YYYY").format("YYYY-MM-DD");
             var tDate = moment(to_date, "DD.MM.YYYY").format("YYYY-MM-DD");
              $.ajax({
                     type : "GET",
-                    url : "{% url 'revenue_report' %}",
-                    data :{'from_date':from_date,'to_date':to_date, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    url : "{% url 'land_use_report' %}",
+                    data :{'from_date':from_date,'to_date':to_date, 'service_id':service_id, 'dzongkhag_code':dzongkhag_code, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(data)
                     {
-                    $('#RevenueDetails').html(data);
+                    $('#LandUseDetails').html(data);
                     }
                 });
         }
     }
 </script>
 {% endblock %}
+</title>
+</head>
+<body>
+
+</body>
+</html>

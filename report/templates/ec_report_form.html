@@ -36,7 +36,7 @@
                             <div class="form-group">
                                 <label class="form-label">Category <font color="red">*</font></label>
                                 <select id="service_id" name="service_id" class="form-select">
-                                    <option value="">--SELECT Category--</option>
+                                    <option value="ALL">--SELECT ALL--</option>
                                     {% for service_list in service_list %}
                                         <option value="{{ service_list.service_id }}">{{ service_list.service_name }}</option>
                                     {% endfor %}
@@ -48,37 +48,50 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <div class="form-group">
+                                <label class="form-label">Competent Authority <font color="red">*</font></label>
+                                <select id="ca_authority" name="ca_authority" class="form-select">
+                                    <option value="ALL">--SELECT ALL--</option>
+                                    {% for ca_list in ca_list %}
+                                        <option value="{{ ca_list.competent_authority_id }}">{{ ca_list.remarks }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="form-group">
                                 <label class="form-label">Dzongkhag <font color="red">*</font></label>
                                 <select id="dzongkhag_code" name="dzongkhag_code" class="form-select">
-                                    <option value="ALL">--SELECT ALL--</option>
+                                    <option value="ALL">&#45;&#45;SELECT ALL&#45;&#45;</option>
                                     {% for dzongkhag_list in dzongkhag_list %}
                                         <option value="{{ dzongkhag_list.dzongkhag_code }}">{{ dzongkhag_list.dzongkhag_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
                 <div class="row">
-                    <div class="col-md-6">
+                    <!--<div class="col-md-6">
                         <div class="mb-3">
                             <div class="form-group">
                                 <label class="form-label">Competent Authority <font color="red">*</font></label>
                                 <select id="ca_authority" name="ca_authority" class="form-select">
-                                    <option value="ALL">--SELECT ALL--</option>
+                                    <option value="ALL">&#45;&#45;SELECT ALL&#45;&#45;</option>
                                     {% for ca_list in ca_list %}
                                         <option value="{{ ca_list.competent_authority }}">{{ ca_list.competent_authority }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
+                    </div>-->
+                    <!--<div class="col-md-6">
                         <div class="mb-3">
                             <div class="form-group">
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
                 <div class="row">
                     <div class="col-md-6">
@@ -104,7 +117,7 @@ function viewECIssuedList()
         var to_date = $('#toDate').val();
         var service_id = $('#service_id').val();
         var ca_authority = $('#ca_authority').val();
-        var dzongkhag_code = $('#dzongkhag_code').val();
+        // var dzongkhag_code = $('#dzongkhag_code').val();
 
         if(from_date == "")
         {
@@ -131,7 +144,7 @@ function viewECIssuedList()
              $.ajax({
                     type : "GET",
                     url : "{% url 'view_ec_list' %}",
-                    data :{'from_date':from_date,'to_date':to_date, 'service_id':service_id, 'ca_authority':ca_authority, 'dzongkhag_code':dzongkhag_code, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    data :{'from_date':from_date,'to_date':to_date, 'service_id':service_id, 'ca_authority':ca_authority, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(data)
                     {
                     $('#ECDetails').html(data);
