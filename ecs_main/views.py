@@ -475,7 +475,7 @@ def forward_application(request):
             workflow_details.update(application_status='ALA', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id=None,assigned_role_name=None)
             return redirect(verify_application_list)
         elif identifier == 'ALR':
-            workflow_details.update(application_status='ALA', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id=None,assigned_role_name=None)
+            workflow_details.update(application_status='ALR', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id=None,assigned_role_name=None)
             return redirect(verify_application_list)
         elif identifier == 'ALS':
             workflow_details.update(application_status='ALS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')

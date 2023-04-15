@@ -342,14 +342,10 @@ def save_iee_application(request):
         project_cost = request.POST.get('project_cost')
         project_duration = request.POST.get('project_duration')
 
-        t_ec_industries_t1_general.objects.create(
-            application_no=application_no,
-            application_date=None,
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        if application_details.exists():
+            application_details.update(
             application_type=application_type,
-            form_type='Main Activity',
-            ca_authority=request.session['ca_authority'],
-            applicant_id=request.session['email'],
-            colour_code=request.session['colour_code'],
             project_name=project_name,
             project_category=project_category,
             applicant_name=applicant_name,
@@ -376,24 +372,60 @@ def save_iee_application(request):
             project_no_of_workers=project_no_of_workers,
             project_cost=project_cost,
             project_duration=project_duration,
-            application_status='P',
-            service_id=request.session['service_id'],
-            application_source='ECSS'
             )
-        t_workflow_dtls.objects.create(application_no=application_no, 
-                                        service_id=request.session['service_id'],
-                                        application_status='P',
-                                        action_date=None,
-                                        actor_id=request.session['login_id'],
-                                        actor_name=request.session['name'],
-                                        assigned_user_id=None,
-                                        assigned_role_id=None,
-                                        assigned_role_name=None,
-                                        result=None,
-                                        ca_authority=request.session['ca_authority'],
-                                        dzongkhag_thromde_id=dzongkhag_code,
-                                        application_source='ECSS'
-                                    )
+        else:
+            t_ec_industries_t1_general.objects.create(
+                application_no=application_no,
+                application_date=None,
+                application_type=application_type,
+                form_type='Main Activity',
+                ca_authority=request.session['ca_authority'],
+                applicant_id=request.session['email'],
+                colour_code=request.session['colour_code'],
+                project_name=project_name,
+                project_category=project_category,
+                applicant_name=applicant_name,
+                address=address,
+                cid=cid,
+                contact_no=contact_no,
+                email=email,
+                focal_person=focal_person,
+                industry_type=industry_type,
+                establishment_type=establishment_type,
+                industry_classification=industry_classification,
+                dzongkhag_code=dzongkhag_code,
+                gewog_code=gewog_code,
+                village_code=village_code,
+                location_name=location_name,
+                industrial_area_acre=industrial_area_acre,
+                state_reserve_forest_acre=state_reserve_forest_acre,
+                private_area_acre=private_area_acre,
+                others_area_acre=others_area_acre,
+                total_area_acre=total_area_acre,
+                green_area_acre=green_area_acre,
+                production_process_flow=production_process_flow,
+                project_objective=project_objective,
+                project_no_of_workers=project_no_of_workers,
+                project_cost=project_cost,
+                project_duration=project_duration,
+                application_status='P',
+                service_id=request.session['service_id'],
+                application_source='ECSS'
+                )
+            t_workflow_dtls.objects.create(application_no=application_no, 
+                                            service_id=request.session['service_id'],
+                                            application_status='P',
+                                            action_date=None,
+                                            actor_id=request.session['login_id'],
+                                            actor_name=request.session['name'],
+                                            assigned_user_id=None,
+                                            assigned_role_id=None,
+                                            assigned_role_name=None,
+                                            result=None,
+                                            ca_authority=request.session['ca_authority'],
+                                            dzongkhag_thromde_id=dzongkhag_code,
+                                            application_source='ECSS'
+                                        )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -2506,7 +2538,9 @@ def save_road_application(request):
         bl_others_name = request.POST.get('bl_others_name')
         bl_others_distance = request.POST.get('bl_others_distance')
         
-        t_ec_industries_t1_general.objects.create(
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        if application_details.exists():
+            application_details.update(
             application_no=application_no,
             application_date=None,
             application_type=application_type,
@@ -2556,22 +2590,74 @@ def save_road_application(request):
             bl_others=bl_others,
             bl_others_name=bl_others_name,
             bl_others_distance=bl_others_distance,
-            application_status='P',
-            service_id=request.session['service_id']
             )
-        t_workflow_dtls.objects.create(application_no=application_no, 
-                                        service_id=request.session['service_id'],
-                                        application_status='P',
-                                        action_date=None,
-                                        actor_id=request.session['login_id'],
-                                        actor_name=request.session['name'],
-                                        assigned_user_id=None,
-                                        assigned_role_id=None,
-                                        assigned_role_name=None,
-                                        result=None,
-                                        ca_authority=request.session['ca_authority'],
-                                        dzongkhag_thromde_id=dzongkhag_code
-                                    )
+        else:
+            t_ec_industries_t1_general.objects.create(
+                application_no=application_no,
+                application_date=None,
+                application_type=application_type,
+                form_type='Main Activity',
+                ca_authority=request.session['ca_authority'],
+                applicant_id=request.session['email'],
+                colour_code=request.session['colour_code'],
+                project_name=project_name,
+                project_category=project_category,
+                applicant_name=applicant_name,
+                address=address,
+                cid=cid,
+                contact_no=contact_no,
+                email=email,
+                focal_person=focal_person,
+                dzongkhag_code=dzongkhag_code,
+                gewog_code=gewog_code,
+                village_code=village_code,
+                bl_protected_area_name=bl_protected_area_name,
+                bl_protected_area_distance=bl_protected_area_distance,
+                bl_migratory_route_name=bl_migratory_route_name,
+                bl_migratory_route_distance=bl_migratory_route_distance,
+                bl_wetland_name=bl_wetland_name,
+                bl_wetland_distance=bl_wetland_distance,
+                bl_water_bodies_name=bl_water_bodies_name,
+                bl_water_bodies_distance=bl_water_bodies_distance,
+                bl_fmu_name=bl_fmu_name,
+                bl_fmu_distance=bl_fmu_distance,
+                bl_agricultural_name=bl_agricultural_name,
+                bl_agricultural_distance=bl_agricultural_distance,
+                bl_settlement_name=bl_settlement_name,
+                bl_settlement_distance=bl_settlement_distance,
+                bl_road_name=bl_road_name,
+                bl_road_distance=bl_road_distance,
+                bl_public_infra_name=bl_public_infra_name,
+                bl_public_infra_distance=bl_public_infra_distance,
+                bl_school_name=bl_school_name,
+                bl_school_distance=bl_school_distance,
+                bl_heritage_name=bl_heritage_name,
+                bl_heritage_distance=bl_heritage_distance,
+                bl_tourist_facility_name=bl_tourist_facility_name,
+                bl_tourist_facility_distance=bl_tourist_facility_distance,
+                bl_impt_installation_name=bl_impt_installation_name,
+                bl_impt_installation_distance=bl_impt_installation_distance,
+                bl_industries_name=bl_industries_name,
+                bl_industries_distance=bl_industries_distance,
+                bl_others=bl_others,
+                bl_others_name=bl_others_name,
+                bl_others_distance=bl_others_distance,
+                application_status='P',
+                service_id=request.session['service_id']
+                )
+            t_workflow_dtls.objects.create(application_no=application_no, 
+                                            service_id=request.session['service_id'],
+                                            application_status='P',
+                                            action_date=None,
+                                            actor_id=request.session['login_id'],
+                                            actor_name=request.session['name'],
+                                            assigned_user_id=None,
+                                            assigned_role_id=None,
+                                            assigned_role_name=None,
+                                            result=None,
+                                            ca_authority=request.session['ca_authority'],
+                                            dzongkhag_thromde_id=dzongkhag_code
+                                        )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -2601,15 +2687,10 @@ def save_general_application(request):
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
         
-        
-        t_ec_industries_t1_general.objects.create(
-            application_no=application_no,
-            application_date=None,
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        if application_details.exists():
+            application_details.update(
             application_type=application_type,
-            form_type='Main Activity',
-            ca_authority=request.session['ca_authority'],
-            applicant_id=request.session['email'],
-            colour_code=request.session['colour_code'],
             project_name=project_name,
             project_category=project_category,
             applicant_name=applicant_name,
@@ -2626,22 +2707,48 @@ def save_general_application(request):
             private_area_acre=private_area_acre,
             others_area_acre=others_area_acre,
             total_area_acre=total_area_acre,
-            application_status='P',
-            service_id=request.session['service_id']
             )
-        t_workflow_dtls.objects.create(application_no=application_no, 
-                                        service_id=request.session['service_id'],
-                                        application_status='P',
-                                        action_date=None,
-                                        actor_id=request.session['login_id'],
-                                        actor_name=request.session['name'],
-                                        assigned_user_id=None,
-                                        assigned_role_id=None,
-                                        assigned_role_name=None,
-                                        result=None,
-                                        ca_authority=request.session['ca_authority'],
-                                        dzongkhag_thromde_id=dzongkhag_code
-                                    )
+        else:
+            t_ec_industries_t1_general.objects.create(
+                application_no=application_no,
+                application_date=None,
+                application_type=application_type,
+                form_type='Main Activity',
+                ca_authority=request.session['ca_authority'],
+                applicant_id=request.session['email'],
+                colour_code=request.session['colour_code'],
+                project_name=project_name,
+                project_category=project_category,
+                applicant_name=applicant_name,
+                address=address,
+                cid=cid,
+                contact_no=contact_no,
+                email=email,
+                focal_person=focal_person,
+                dzongkhag_code=dzongkhag_code,
+                gewog_code=gewog_code,
+                village_code=village_code,
+                industrial_area_acre=industrial_area_acre,
+                state_reserve_forest_acre=state_reserve_forest_acre,
+                private_area_acre=private_area_acre,
+                others_area_acre=others_area_acre,
+                total_area_acre=total_area_acre,
+                application_status='P',
+                service_id=request.session['service_id']
+                )
+            t_workflow_dtls.objects.create(application_no=application_no, 
+                                            service_id=request.session['service_id'],
+                                            application_status='P',
+                                            action_date=None,
+                                            actor_id=request.session['login_id'],
+                                            actor_name=request.session['name'],
+                                            assigned_user_id=None,
+                                            assigned_role_id=None,
+                                            assigned_role_name=None,
+                                            result=None,
+                                            ca_authority=request.session['ca_authority'],
+                                            dzongkhag_thromde_id=dzongkhag_code
+                                        )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -2673,49 +2780,73 @@ def save_forest_application(request):
         max_evacuation_depth = request.POST.get('max_evacuation_depth')
         terrain_elevation = request.POST.get('terrain_elevation')
         terrain_slope = request.POST.get('terrain_slope')
-        
-        t_ec_industries_t1_general.objects.create(
-            application_no=application_no,
-            application_date=None,
-            application_type='Main Activity',
-            ca_authority=request.session['ca_authority'],
-            applicant_id=request.session['email'],
-            colour_code=request.session['colour_code'],
-            project_name=project_name,
-            project_category=project_category,
-            applicant_name=applicant_name,
-            address=address,
-            cid=cid,
-            contact_no=contact_no,
-            email=email,
-            focal_person=focal_person,
-            dzongkhag_code=dzongkhag_code,
-            gewog_code=gewog_code,
-            village_code=village_code,
-            industrial_area_acre=industrial_area_acre,
-            state_reserve_forest_acre=state_reserve_forest_acre,
-            private_area_acre=private_area_acre,
-            others_area_acre=others_area_acre,
-            total_area_acre=total_area_acre,
-            max_evacuation_depth=max_evacuation_depth,
-            terrain_elevation=terrain_elevation,
-            terrain_slope=terrain_slope,
-            application_status='P',
-            service_id=request.session['service_id']
-            )
-        t_workflow_dtls.objects.create(application_no=application_no, 
-                                        service_id=request.session['service_id'],
-                                        application_status='P',
-                                        action_date=None,
-                                        actor_id=request.session['login_id'],
-                                        actor_name=request.session['name'],
-                                        assigned_user_id=None,
-                                        assigned_role_id=None,
-                                        assigned_role_name=None,
-                                        result=None,
-                                        ca_authority=request.session['ca_authority'],
-                                        dzongkhag_thromde_id=dzongkhag_code
-                                    )
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        if application_details.exists():
+            application_details.update(
+                project_name=project_name,
+                project_category=project_category,
+                applicant_name=applicant_name,
+                address=address,
+                cid=cid,
+                contact_no=contact_no,
+                email=email,
+                focal_person=focal_person,
+                dzongkhag_code=dzongkhag_code,
+                gewog_code=gewog_code,
+                village_code=village_code,
+                industrial_area_acre=industrial_area_acre,
+                state_reserve_forest_acre=state_reserve_forest_acre,
+                private_area_acre=private_area_acre,
+                others_area_acre=others_area_acre,
+                total_area_acre=total_area_acre,
+                max_evacuation_depth=max_evacuation_depth,
+                terrain_elevation=terrain_elevation,
+                terrain_slope=terrain_slope,
+                )
+        else:
+            t_ec_industries_t1_general.objects.create(
+                application_no=application_no,
+                application_date=None,
+                application_type='Main Activity',
+                ca_authority=request.session['ca_authority'],
+                applicant_id=request.session['email'],
+                colour_code=request.session['colour_code'],
+                project_name=project_name,
+                project_category=project_category,
+                applicant_name=applicant_name,
+                address=address,
+                cid=cid,
+                contact_no=contact_no,
+                email=email,
+                focal_person=focal_person,
+                dzongkhag_code=dzongkhag_code,
+                gewog_code=gewog_code,
+                village_code=village_code,
+                industrial_area_acre=industrial_area_acre,
+                state_reserve_forest_acre=state_reserve_forest_acre,
+                private_area_acre=private_area_acre,
+                others_area_acre=others_area_acre,
+                total_area_acre=total_area_acre,
+                max_evacuation_depth=max_evacuation_depth,
+                terrain_elevation=terrain_elevation,
+                terrain_slope=terrain_slope,
+                application_status='P',
+                service_id=request.session['service_id']
+                )
+            t_workflow_dtls.objects.create(application_no=application_no, 
+                                            service_id=request.session['service_id'],
+                                            application_status='P',
+                                            action_date=None,
+                                            actor_id=request.session['login_id'],
+                                            actor_name=request.session['name'],
+                                            assigned_user_id=None,
+                                            assigned_role_id=None,
+                                            assigned_role_name=None,
+                                            result=None,
+                                            ca_authority=request.session['ca_authority'],
+                                            dzongkhag_thromde_id=dzongkhag_code
+                                        )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -2767,51 +2898,77 @@ def save_ground_water_application(request):
         land_form = request.POST.get('land_form')
         terrain_elevation = request.POST.get('terrain_elevation')
         terrain_slope = request.POST.get('terrain_slope')
-        
-        t_ec_industries_t1_general.objects.create(
-            application_no=application_no,
-            application_date=None,
-            application_type=application_type,
-            form_type='Main Activity',
-            ca_authority=request.session['ca_authority'],
-            applicant_id=request.session['email'],
-            colour_code=request.session['colour_code'],
-            project_name=project_name,
-            project_category=project_category,
-            applicant_name=applicant_name,
-            address=address,
-            cid=cid,
-            contact_no=contact_no,
-            email=email,
-            focal_person=focal_person,
-            dzongkhag_code=dzongkhag_code,
-            gewog_code=gewog_code,
-            village_code=village_code,
-            industrial_area_acre=industrial_area_acre,
-            state_reserve_forest_acre=state_reserve_forest_acre,
-            private_area_acre=private_area_acre,
-            others_area_acre=others_area_acre,
-            total_area_acre=total_area_acre,
-            max_evacuation_depth=max_evacuation_depth,
-            land_form=land_form,
-            terrain_elevation=terrain_elevation,
-            terrain_slope=terrain_slope,
-            application_status='P',
-            service_id=request.session['service_id']
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        if application_details.exists():
+            application_details.update(
+                application_type=application_type,
+                project_name=project_name,
+                project_category=project_category,
+                applicant_name=applicant_name,
+                address=address,
+                cid=cid,
+                contact_no=contact_no,
+                email=email,
+                focal_person=focal_person,
+                dzongkhag_code=dzongkhag_code,
+                gewog_code=gewog_code,
+                village_code=village_code,
+                industrial_area_acre=industrial_area_acre,
+                state_reserve_forest_acre=state_reserve_forest_acre,
+                private_area_acre=private_area_acre,
+                others_area_acre=others_area_acre,
+                total_area_acre=total_area_acre,
+                max_evacuation_depth=max_evacuation_depth,
+                land_form=land_form,
+                terrain_elevation=terrain_elevation,
+                terrain_slope=terrain_slope,
             )
-        t_workflow_dtls.objects.create(application_no=application_no, 
-                                        service_id=request.session['service_id'],
-                                        application_status='P',
-                                        action_date=None,
-                                        actor_id=request.session['login_id'],
-                                        actor_name=request.session['name'],
-                                        assigned_user_id=None,
-                                        assigned_role_id=None,
-                                        assigned_role_name=None,
-                                        result=None,
-                                        ca_authority=request.session['ca_authority'],
-                                        dzongkhag_thromde_id=dzongkhag_code
-                                    )
+        else:
+            t_ec_industries_t1_general.objects.create(
+                application_no=application_no,
+                application_date=None,
+                application_type=application_type,
+                form_type='Main Activity',
+                ca_authority=request.session['ca_authority'],
+                applicant_id=request.session['email'],
+                colour_code=request.session['colour_code'],
+                project_name=project_name,
+                project_category=project_category,
+                applicant_name=applicant_name,
+                address=address,
+                cid=cid,
+                contact_no=contact_no,
+                email=email,
+                focal_person=focal_person,
+                dzongkhag_code=dzongkhag_code,
+                gewog_code=gewog_code,
+                village_code=village_code,
+                industrial_area_acre=industrial_area_acre,
+                state_reserve_forest_acre=state_reserve_forest_acre,
+                private_area_acre=private_area_acre,
+                others_area_acre=others_area_acre,
+                total_area_acre=total_area_acre,
+                max_evacuation_depth=max_evacuation_depth,
+                land_form=land_form,
+                terrain_elevation=terrain_elevation,
+                terrain_slope=terrain_slope,
+                application_status='P',
+                service_id=request.session['service_id']
+                )
+            t_workflow_dtls.objects.create(application_no=application_no, 
+                                            service_id=request.session['service_id'],
+                                            application_status='P',
+                                            action_date=None,
+                                            actor_id=request.session['login_id'],
+                                            actor_name=request.session['name'],
+                                            assigned_user_id=None,
+                                            assigned_role_id=None,
+                                            assigned_role_name=None,
+                                            result=None,
+                                            ca_authority=request.session['ca_authority'],
+                                            dzongkhag_thromde_id=dzongkhag_code
+                                        )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -2886,51 +3043,77 @@ def save_quarry_application(request):
         green_belt_area = request.POST.get('max_evacuation_depth')
         terrain_elevation = request.POST.get('terrain_elevation')
         terrain_slope = request.POST.get('terrain_slope')
-        
-        t_ec_industries_t1_general.objects.create(
-            application_no=application_no,
-            application_date=None,
-            application_type=application_type,
-            form_type='Main Activity',
-            ca_authority=request.session['ca_authority'],
-            applicant_id=request.session['email'],
-            colour_code=request.session['colour_code'],
-            project_name=project_name,
-            project_category=project_category,
-            applicant_name=applicant_name,
-            address=address,
-            cid=cid,
-            contact_no=contact_no,
-            email=email,
-            focal_person=focal_person,
-            dzongkhag_code=dzongkhag_code,
-            gewog_code=gewog_code,
-            village_code=village_code,
-            industrial_area_acre=industrial_area_acre,
-            state_reserve_forest_acre=state_reserve_forest_acre,
-            private_area_acre=private_area_acre,
-            others_area_acre=others_area_acre,
-            total_area_acre=total_area_acre,
-            actual_mineable_area=actual_mineable_area,
-            green_belt_area=green_belt_area,
-            terrain_elevation=terrain_elevation,
-            terrain_slope=terrain_slope,
-            application_status='P',
-            service_id=request.session['service_id']
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        if application_details.exists():
+            application_details.update(
+                application_type=application_type,
+                project_name=project_name,
+                project_category=project_category,
+                applicant_name=applicant_name,
+                address=address,
+                cid=cid,
+                contact_no=contact_no,
+                email=email,
+                focal_person=focal_person,
+                dzongkhag_code=dzongkhag_code,
+                gewog_code=gewog_code,
+                village_code=village_code,
+                industrial_area_acre=industrial_area_acre,
+                state_reserve_forest_acre=state_reserve_forest_acre,
+                private_area_acre=private_area_acre,
+                others_area_acre=others_area_acre,
+                total_area_acre=total_area_acre,
+                actual_mineable_area=actual_mineable_area,
+                green_belt_area=green_belt_area,
+                terrain_elevation=terrain_elevation,
+                terrain_slope=terrain_slope,
             )
-        t_workflow_dtls.objects.create(application_no=application_no, 
-                                        service_id=request.session['service_id'],
-                                        application_status='P',
-                                        action_date=None,
-                                        actor_id=request.session['login_id'],
-                                        actor_name=request.session['name'],
-                                        assigned_user_id=None,
-                                        assigned_role_id=None,
-                                        assigned_role_name=None,
-                                        result=None,
-                                        ca_authority=request.session['ca_authority'],
-                                        dzongkhag_thromde_id=dzongkhag_code
-                                    )
+        else:
+            t_ec_industries_t1_general.objects.create(
+                application_no=application_no,
+                application_date=None,
+                application_type=application_type,
+                form_type='Main Activity',
+                ca_authority=request.session['ca_authority'],
+                applicant_id=request.session['email'],
+                colour_code=request.session['colour_code'],
+                project_name=project_name,
+                project_category=project_category,
+                applicant_name=applicant_name,
+                address=address,
+                cid=cid,
+                contact_no=contact_no,
+                email=email,
+                focal_person=focal_person,
+                dzongkhag_code=dzongkhag_code,
+                gewog_code=gewog_code,
+                village_code=village_code,
+                industrial_area_acre=industrial_area_acre,
+                state_reserve_forest_acre=state_reserve_forest_acre,
+                private_area_acre=private_area_acre,
+                others_area_acre=others_area_acre,
+                total_area_acre=total_area_acre,
+                actual_mineable_area=actual_mineable_area,
+                green_belt_area=green_belt_area,
+                terrain_elevation=terrain_elevation,
+                terrain_slope=terrain_slope,
+                application_status='P',
+                service_id=request.session['service_id']
+                )
+            t_workflow_dtls.objects.create(application_no=application_no, 
+                                            service_id=request.session['service_id'],
+                                            application_status='P',
+                                            action_date=None,
+                                            actor_id=request.session['login_id'],
+                                            actor_name=request.session['name'],
+                                            assigned_user_id=None,
+                                            assigned_role_id=None,
+                                            assigned_role_name=None,
+                                            result=None,
+                                            ca_authority=request.session['ca_authority'],
+                                            dzongkhag_thromde_id=dzongkhag_code
+                                        )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -3137,14 +3320,10 @@ def save_energy_application(request):
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
         
-        t_ec_industries_t1_general.objects.create(
-            application_no=application_no,
-            application_date=None,
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        if application_details.exists():
+            application_details.update(
             application_type=application_type,
-            form_type='Main Activity',
-            ca_authority=request.session['ca_authority'],
-            applicant_id=request.session['email'],
-            colour_code=request.session['colour_code'],
             project_name=project_name,
             project_category=project_category,
             applicant_name=applicant_name,
@@ -3161,22 +3340,48 @@ def save_energy_application(request):
             private_area_acre=private_area_acre,
             others_area_acre=others_area_acre,
             total_area_acre=total_area_acre,
-            application_status='P',
-            service_id=request.session['service_id']
             )
-        t_workflow_dtls.objects.create(application_no=application_no, 
-                                        service_id=request.session['service_id'],
-                                        application_status='P',
-                                        action_date=None,
-                                        actor_id=request.session['login_id'],
-                                        actor_name=request.session['name'],
-                                        assigned_user_id=None,
-                                        assigned_role_id=None,
-                                        assigned_role_name=None,
-                                        result=None,
-                                        ca_authority=request.session['ca_authority'],
-                                        dzongkhag_thromde_id=dzongkhag_code
-                                    )
+        else:
+            t_ec_industries_t1_general.objects.create(
+                application_no=application_no,
+                application_date=None,
+                application_type=application_type,
+                form_type='Main Activity',
+                ca_authority=request.session['ca_authority'],
+                applicant_id=request.session['email'],
+                colour_code=request.session['colour_code'],
+                project_name=project_name,
+                project_category=project_category,
+                applicant_name=applicant_name,
+                address=address,
+                cid=cid,
+                contact_no=contact_no,
+                email=email,
+                focal_person=focal_person,
+                dzongkhag_code=dzongkhag_code,
+                gewog_code=gewog_code,
+                village_code=village_code,
+                industrial_area_acre=industrial_area_acre,
+                state_reserve_forest_acre=state_reserve_forest_acre,
+                private_area_acre=private_area_acre,
+                others_area_acre=others_area_acre,
+                total_area_acre=total_area_acre,
+                application_status='P',
+                service_id=request.session['service_id']
+                )
+            t_workflow_dtls.objects.create(application_no=application_no, 
+                                            service_id=request.session['service_id'],
+                                            application_status='P',
+                                            action_date=None,
+                                            actor_id=request.session['login_id'],
+                                            actor_name=request.session['name'],
+                                            assigned_user_id=None,
+                                            assigned_role_id=None,
+                                            assigned_role_name=None,
+                                            result=None,
+                                            ca_authority=request.session['ca_authority'],
+                                            dzongkhag_thromde_id=dzongkhag_code
+                                        )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -3225,14 +3430,10 @@ def save_tourism_application(request):
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
         
-        t_ec_industries_t1_general.objects.create(
-            application_no=application_no,
-            application_date=None,
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        if application_details.exists():
+            application_details.update(
             application_type=application_type,
-            form_type='Main Activity',
-            ca_authority=request.session['ca_authority'],
-            applicant_id=request.session['email'],
-            colour_code=request.session['colour_code'],
             project_name=project_name,
             project_category=project_category,
             applicant_name=applicant_name,
@@ -3249,22 +3450,48 @@ def save_tourism_application(request):
             private_area_acre=private_area_acre,
             others_area_acre=others_area_acre,
             total_area_acre=total_area_acre,
-            application_status='P',
-            service_id=request.session['service_id']
             )
-        t_workflow_dtls.objects.create(application_no=application_no, 
-                                        service_id=request.session['service_id'],
-                                        application_status='P',
-                                        action_date=None,
-                                        actor_id=request.session['login_id'],
-                                        actor_name=request.session['name'],
-                                        assigned_user_id=None,
-                                        assigned_role_id=None,
-                                        assigned_role_name=None,
-                                        result=None,
-                                        ca_authority=request.session['ca_authority'],
-                                        dzongkhag_thromde_id=dzongkhag_code
-                                    )
+        else:
+            t_ec_industries_t1_general.objects.create(
+                application_no=application_no,
+                application_date=None,
+                application_type=application_type,
+                form_type='Main Activity',
+                ca_authority=request.session['ca_authority'],
+                applicant_id=request.session['email'],
+                colour_code=request.session['colour_code'],
+                project_name=project_name,
+                project_category=project_category,
+                applicant_name=applicant_name,
+                address=address,
+                cid=cid,
+                contact_no=contact_no,
+                email=email,
+                focal_person=focal_person,
+                dzongkhag_code=dzongkhag_code,
+                gewog_code=gewog_code,
+                village_code=village_code,
+                industrial_area_acre=industrial_area_acre,
+                state_reserve_forest_acre=state_reserve_forest_acre,
+                private_area_acre=private_area_acre,
+                others_area_acre=others_area_acre,
+                total_area_acre=total_area_acre,
+                application_status='P',
+                service_id=request.session['service_id']
+                )
+            t_workflow_dtls.objects.create(application_no=application_no, 
+                                            service_id=request.session['service_id'],
+                                            application_status='P',
+                                            action_date=None,
+                                            actor_id=request.session['login_id'],
+                                            actor_name=request.session['name'],
+                                            assigned_user_id=None,
+                                            assigned_role_id=None,
+                                            assigned_role_name=None,
+                                            result=None,
+                                            ca_authority=request.session['ca_authority'],
+                                            dzongkhag_thromde_id=dzongkhag_code
+                                        )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)

@@ -10,8 +10,7 @@ urlpatterns = [
     path('new_forestry_application', views.new_forestry_application, name='new_forestry_application'),
     path('new_general_application', views.new_general_application, name='new_general_application'),
     path('new_ground_water_application', views.new_ground_water_application, name='new_ground_water_application'),
-    
-    
+       
     path('add_machine_tool_details', views.add_machine_tool_details, name='add_machine_tool_details'),
     path('update_machine_tool_details', views.update_machine_tool_details, name='update_machine_tool_details'),
     path('delete_machine_tool_details', views.delete_machine_tool_details, name='delete_machine_tool_details'),
@@ -148,13 +147,11 @@ urlpatterns = [
     path('draft_application_list', views.draft_application_list, name='draft_application_list'),
     path('view_draft_application_details', views.view_draft_application_details, name='view_draft_application_details'),
     path('update_draft_application', views.update_draft_application, name='update_draft_application'),
+    
     # Renewal Application Details
     path('submit_renew_application', views.submit_renew_application, name='submit_renew_application'),
     
-    ,
-
-
-#ReportSubmission
+    #Report Submission
     path('report_list', views.report_list, name='report_list'),
     path('view_report_details', views.view_report_details, name='view_report_details'),
     path('viewDraftReport/<str:report_reference_no>', views.viewDraftReport, name='viewDraftReport'),
@@ -171,7 +168,5 @@ urlpatterns = [
     path('delete_report_file', views.delete_report_file, name='delete_report_file'),
     path('submit_report_form', views.submit_report_form, name='submit_report_form'),
     path('acknowledge_report', views.acknowledge_report, name='acknowledge_report'),
-
-
 
 ]

@@ -1,7 +1,6 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-{% load static %}
 {% for application_details in application_details %}
 <div class="row">
     <div class="col-xl-12">
@@ -25,295 +24,298 @@
                                     <p class="mb-0">Note 3: The completed EA form shall be the basis to determine the requirement of detailed Environment Assessment (EA). If detailed EA is required, applicant will be notified to submit Terms of Reference for the project. </p>
                                     <p class="mb-0">Note 4: The application shall be subjected to Fee Schedules to cover the cost of administering the Environmental Assessment Act 2000.</p>
                                 </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Name of Project</label>
-                                            <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" disabled>
+                                    <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" style="display:none;">
+                                    <input type="text" class="form-control" value="{{application_details.service_id}}" name="service_id" style="display:none;">
+                                    <input type="text" class="form-control" value="Draft" name="identifier" style="display:none;">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Name of Project</label>
+                                                <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" disabled>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Business Type</label>
-                                            <input type="text" name="project_category" class="form-control" id="project_category" value="{{ application_details.project_category }}" disabled>
-                                        </div>
-                                        <div id="project_categoryErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">CID</label>
-                                            <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" value="{{ application_details.cid }}" disabled>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Business Type</label>
+                                                <input type="text" name="project_category" class="form-control" id="project_category" value="{{ application_details.project_category }}" disabled>
+                                            </div>
+                                            <div id="project_categoryErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Applicant Name</label>
-                                            <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
-                                        </div>
-                                        <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Address</label>
-                                            <input type="text" name="address" class="form-control" id="address" value="{{ application_details.address }}" disabled>
-                                        </div>
-                                        <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Contact No</label>
-                                            <input type="number" min="1"  name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{ application_details.contact_no }}" disabled>
-                                        </div>
-                                        <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Email</label>
-                                            <input type="email" name="email" class="form-control" id="email" value="{{ application_details.email }}" disabled>
-                                        </div>
-                                        <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
-                                            <textarea class="form-control" id="focal_person" name="focal_person" rows="3" disabled>{{ application_details.focal_person }}</textarea>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">CID</label>
+                                                <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" value="{{ application_details.cid }}" disabled>
+                                            </div>
+                                            <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div id="focal_personErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Industry Type</label>
-                                            
-                                            <input type="text" name="industry_type" class="form-control" id="industry_type"  value="{{ application_details.industry_type }}" disabled>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Applicant Name</label>
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
+                                            </div>
+                                            <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div id="industry_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Establishment Type</label>
-                                            <input type="text" name="establishment_type" class="form-control" id="establishment_type" value="{{ application_details.establishment_type}}" disabled>
-                                        </div>
-                                        <div id="establishment_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Classification of Industry</label>
-                                            <select class="form-control" name="industry_classification" id="industry_classification" disabled>
-                                                {% if application_details.industry_classification == 'Small' %}
-                                                    <option value="Small" selected>Small</option>
-                                                {% elif application_details.industry_classification == 'cottage' %}
-                                                    <option value="Cottage" selected>Cottage</option>
-                                                {% else %}
-                                                    <option selected>Large</option>
-                                                {% endif %}
-                                            </select> 
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Address</label>
+                                                <input type="text" name="address" class="form-control" id="address" value="{{ application_details.address }}" disabled>
+                                            </div>
+                                            <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Dzongkhag/Thromde</label>
-                                            <select class="form-select" name="dzo_throm"  id="dzo_throm" disabled>
-                                                {% for dzongkhag in dzongkhag %}
-                                                    <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
-                                                        {{ dzongkhag.dzongkhag_name }}
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Contact No</label>
+                                                <input type="number" min="1"  name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{ application_details.contact_no }}" disabled>
+                                            </div>
+                                            <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Email</label>
+                                                <input type="email" name="email" class="form-control" id="email" value="{{ application_details.email }}" disabled>
+                                            </div>
+                                            <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
+                                                <textarea class="form-control" id="focal_person" name="focal_person" rows="3" disabled>{{ application_details.focal_person }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div id="focal_personErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Industry Type</label>
+                                                
+                                                <input type="text" name="industry_type" class="form-control" id="industry_type"  value="{{ application_details.industry_type }}" disabled>
+                                            </div>
+                                            <div id="industry_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Establishment Type</label>
+                                                <input type="text" name="establishment_type" class="form-control" id="establishment_type" value="{{ application_details.establishment_type}}" disabled>
+                                            </div>
+                                            <div id="establishment_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Classification of Industry</label>
+                                                <select class="form-control" name="industry_classification" id="industry_classification" disabled>
+                                                    {% if application_details.industry_classification == 'Small' %}
+                                                        <option value="Small" selected>Small</option>
+                                                    {% elif application_details.industry_classification == 'cottage' %}
+                                                        <option value="Cottage" selected>Cottage</option>
+                                                    {% else %}
+                                                        <option selected>Large</option>
+                                                    {% endif %}
+                                                </select> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Dzongkhag/Thromde</label>
+                                                <select class="form-select" name="dzo_throm"  id="dzo_throm" disabled>
+                                                    {% for dzongkhag in dzongkhag %}
+                                                        <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                            {{ dzongkhag.dzongkhag_name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Gewog</label>
+                                                <select class="form-select" name="gewog" id="gewog" disabled>
+                                                    {% for gewog in gewog %}
+                                                        <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                            {{ gewog.gewog_name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Village/Chiwog</label>
+                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog" disabled>
+                                                    {% for village in village %}
+                                                    <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                        {{ village.village_name }}
                                                     </option>
-                                                {% endfor %}
-                                            </select>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Gewog</label>
-                                            <select class="form-select" name="gewog" id="gewog" disabled>
-                                                {% for gewog in gewog %}
-                                                    <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
-                                                        {{ gewog.gewog_name }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                                <input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Village/Chiwog</label>
-                                            <select class="form-select" name="vil_chiwog" id="vil_chiwog" disabled>
-                                                {% for village in village %}
-                                                <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
-                                                    {{ village.village_name }}
-                                                </option>
-                                                {% endfor %}
-                                            </select>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
+                                                <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{ application_details.industrial_area_acre }}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">State Forest Reserve (acres)</label>
+                                                <input type="number" min="0" name="state_reserve_forest_acre" class="form-control" id="state_reserve_forest_acre" value="{{ application_details.state_reserve_forest_acre }}" disabled>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Name of Particular Project Site</label>
-                                            <input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Private Area (acres)</label>
+                                                <input type="number" min="0" name="private_area_acre" class="form-control" id="private_area_acre" value="{{ application_details.private_area_acre }}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Others Specify (acres)</label>
+                                                <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" value="{{ application_details.others_area_acre }}" disabled>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
-                                            <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{ application_details.industrial_area_acre }}" disabled>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Total land area required (acre)</label>
+                                                <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" value="{{ application_details.total_area_acre }}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Total Green Space (acre)</label>
+                                                <input type="text" name="green_area_acre" class="form-control" id="green_area_acre" value="{{ application_details.green_area_acre }}" disabled>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">State Forest Reserve (acres)</label>
-                                            <input type="number" min="0" name="state_reserve_forest_acre" class="form-control" id="state_reserve_forest_acre" value="{{ application_details.state_reserve_forest_acre }}" disabled>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Brief Description of Production and Process Flow</label>
+                                                <textarea class="form-control" name="production_process_flow" id="production_process_flow" rows="3" disabled>{{ application_details.production_process_flow }}</textarea>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Private Area (acres)</label>
-                                            <input type="number" min="0" name="private_area_acre" class="form-control" id="private_area_acre" value="{{ application_details.private_area_acre }}" disabled>
-                                        </div>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Details of Machine/Equipment/Tools
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Others Specify (acres)</label>
-                                            <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" value="{{ application_details.others_area_acre }}" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Total land area required (acre)</label>
-                                            <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" value="{{ application_details.total_area_acre }}" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Total Green Space (acre)</label>
-                                            <input type="text" name="green_area_acre" class="form-control" id="green_area_acre" value="{{ application_details.green_area_acre }}" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Brief Description of Production and Process Flow</label>
-                                            <textarea class="form-control" name="production_process_flow" id="production_process_flow" rows="3" disabled>{{ application_details.production_process_flow }}</textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Details of Machine/Equipment/Tools
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="collapse pt-3 show">
-                                                <div id="machine_details_div">
-                                                    {% include 'details_machine_equipment_tool.html' %}
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="collapse pt-3 show">
+                                                    <div id="machine_details_div">
+                                                        {% include 'details_machine_equipment_tool.html' %}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Details
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Project Objective</label>
-                                            <input type="text" name="project_objective" class="form-control" id="project_objective" value="{{ application_details.project_objective }}" disabled>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Details
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Project Objective</label>
+                                                <input type="text" name="project_objective" class="form-control" id="project_objective" value="{{ application_details.project_objective }}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Number of Workers To Be Employed</label>
+                                                <input type="number" min="1" name="project_no_of_workers" class="form-control" id="project_no_of_workers" value="{{ application_details.project_no_of_workers }}" disabled>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Number of Workers To Be Employed</label>
-                                            <input type="number" min="1" name="project_no_of_workers" class="form-control" id="project_no_of_workers" value="{{ application_details.project_no_of_workers }}" disabled>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Project Cost</label>
+                                                <input type="number" min="0" name="project_cost" class="form-control" id="project_cost" value="{{ application_details.project_cost }}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Project Duration</label>
+                                                <input type="text" name="project_duration" class="form-control" id="project_duration" value="{{ application_details.project_duration }}" disabled>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Project Cost</label>
-                                            <input type="number" min="0" name="project_cost" class="form-control" id="project_cost" value="{{ application_details.project_cost }}" disabled>
-                                        </div>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Provide information for final products in the table below
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Project Duration</label>
-                                            <input type="text" name="project_duration" class="form-control" id="project_duration" value="{{ application_details.project_duration }}" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Provide information for final products in the table below
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="collapse pt-3 show">
-                                                <div id="final_products_div">
-                                                    {% include 'final_products.html' %}
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="collapse pt-3 show">
+                                                    <div id="final_products_div">
+                                                        {% include 'final_products.html' %}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> List of raw materials, source and storage methods
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="collapse pt-3 show">
-                                                <div id="raw_materials_div">
-                                                    {% include 'raw_materials.html' %}
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> List of raw materials, source and storage methods
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="collapse pt-3 show">
+                                                    <div id="raw_materials_div">
+                                                        {% include 'raw_materials.html' %}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Partner’s Details if Joint Ownership
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="collapse pt-3 show">
-                                                <div id="partner_details_div">
-                                                    {% include 'partner_details.html' %}
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Partner’s Details if Joint Ownership
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="collapse pt-3 show">
+                                                    <div id="partner_details_div">
+                                                        {% include 'partner_details.html' %}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                                 
                                 <div class="alert alert-success border-0 rounded-0" role="alert" id="application_form_successMsg" style="display:none">
                                     <i class="uil-folder-heart me-1 h4 align-middle"></i>
@@ -1896,6 +1898,7 @@
     </div>
 </div>
 {% endfor %}
+
 <form method="post" id="machine_equipment_tool_form">
 {% csrf_token %}
 <div class="modal fade" id="machine_equipment_tool_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"

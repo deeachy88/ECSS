@@ -2029,7 +2029,7 @@
                             <h2 class="accordion-header" id="headingReviewerDetails">
                                 <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReviewerDetails"
                                     aria-expanded="true" aria-controls="collapseDetails">
-                                    ReviewerDetails
+                                    Reviewer Details
                                 </button>
                             </h2>
                             <div id="ReviewerDetails" class="accordion-collapse collapse show" aria-labelledby="headingReviewerDetails" data-bs-parent="#accordionExample">
@@ -2388,7 +2388,7 @@
     {
         let application_no = $('#application_no').val();
 
-        if(identifier == 'R')
+        if(identifier == 'R' || identifier == 'ALS')
         {
             let forward_to = $('#forward_to').val();
             $.ajax
@@ -2467,13 +2467,14 @@
     {
         if(value == 'Yes')
         {
-            $('.additional_info_letter').show();
-            $('.additional_payment_info').hide();
+            $('.additional_payment_info').show();
+            $('.additional_info_letter').hide();
         }
         else
         {
-            $('.additional_payment_info').show();
-            $('.additional_info_letter').hide();
+            
+            $('.additional_info_letter').show();
+            $('.additional_payment_info').hide();
         }
     }
 
