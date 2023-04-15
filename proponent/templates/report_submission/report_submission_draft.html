@@ -1,0 +1,502 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+    option
+    {
+        background-color: white !important;
+    }
+    form, input, select, textarea{
+        color: black !important;
+    }
+</style>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Report Submission</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" id="report_submission_form">
+            {% csrf_token %}
+            {% for report_details in report_details %}
+            <input type="hidden" name="record_id" id="record_id">
+            <div class="row justify-content-left">
+                <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Report Submission Form</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_details()">Report Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content mt-2 mb-3" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div id="applicant_details">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Report Type <font color="red">*</font></label>
+                                    <select class="form-control form-control" id="report_type" name="report_type">
+                                        <option value="">-SELECT-</option>
+                                        <option value="1st Quarter">1st Quarter</option>
+                                        <option value="2nd Quarter">2nd Quarter</option>
+                                        <option value="3rd Quarter">3rd Quarter</option>
+                                        <option value="4th Quarter">4th Quarter</option>
+                                        <option value="Annual">Annual</option>
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="report_typeErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Submission Year <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="submission_year" value="{{report_details.submission_year}}" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="submission_year" maxlength="4" onkeypress="return isNumberKey(event)" onchange="checkYear(this.value)">
+
+                                </div>
+                                <div class="alert alert-danger" id="submission_yearErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Submission Date <font color="red">*</font></label>
+                                    <input type="date" name="submission_date" id="submission_date" class="form-control date-picker flatpickr-input active" value="{{report_details.submission_date}}">
+                                </div>
+                                <div class="alert alert-danger" id="submission_dateErrorMsg" style="display:none"></div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label fw-bold">EC Number</label>
+                                    <select id="ec_clearance_no" name="ec_clearance_no" class="form-select" onchange="get_ec_details(this.value)">
+                                        <option value="">--EC Number--</option>
+                                        {% for ec_details in ec_details %}
+                                            <option value="{{ ec_details.ec_reference_no }}">{{ ec_details.ec_reference_no }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="ec_clearance_noErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Proponent <font color="red">*</font></label>
+                                    <input type="hidden" name="ca_authority" id="ca_authority" class="form-control" value="{{report_details.ca_authority}}">
+                                    <input type="text" name="proponent_name" id="proponent_name" class="form-control" value="{{report_details.proponent_name}}">
+                                </div>
+                                <div class="alert alert-danger" id="proponent_nameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                               <div class="form-group">
+                                    <label class="form-label">Address <font color="red">*</font></label>
+                                    <input type="text" name="address" id="address" class="form-control" value="{{report_details.address}}">
+                                </div>
+                                <div class="alert alert-danger" id="addressErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                             <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks <font color="red">*</font></label>
+                                    <textarea class="form-control" id="remarks" name="remarks">{{report_details.remarks}}</textarea>
+                                </div>
+                                <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Save SuccessFul
+                        </div>
+                        <div class="card-action">
+                            <button type="button" class="btn btn-primary" onclick="save_report()">Save & Next</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="pills-details">
+                    <div id="report_details">
+                        {% include 'report_submission/report_submitted_details.html' %}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                    <div id="fileAttach">
+                        {% include 'report_submission/report_file_attachment.html' %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </form>
+    </div>
+</div>
+<form method="post" id="details_form">
+    {% csrf_token %}
+    <input type="hidden" id="refNo" name="refNo">
+    <div class="modal fade" id="details_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <label>EC Terms <font color="red">*</font></label>
+                                        <textarea class="form-control" name="ec_terms" id="ec_terms"></textarea>
+                                        <div class="alert alert-danger" id="ec_termsErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <label>Action Taken <font color="red">*</font></label>
+                                        <textarea class="form-control" name="action_taken" id="action_taken"></textarea>
+                                        <div class="alert alert-danger" id="action_takenErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <label>Remarks <font color="red">*</font></label>
+                                        <textarea class="form-control" name="detail_remarks" id="detail_remarks"></textarea>
+                                        <div class="alert alert-danger" id="detail_remarksErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="saveMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Save SuccessFul
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_report_details()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<form method="post" id="attachment_form" enctype="multipart/form-data">
+{% csrf_token %}
+    <input type="hidden" name="attachment_refNo" id="attachment_refNo">
+    <div class="modal fade" id="attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">Attach File(s) if Any</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="document" id="document" accept=".png,.jpg,.jpeg,.gif,.pdf,.docx,.doc">
+                                        <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_report_attachment()"> Upload </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+function save_report()
+{
+    var record_id = $('#record_id').val();
+    var report_type = $('#report_type').val();
+    var ec_clearance_no = $('#ec_clearance_no').val();
+    var proponent_name = $('#proponent_name').val();
+    var address = $('#address').val();
+    var submission_year = $('#submission_year').val();
+    var submission_date = $('#submission_date').val();
+    var remarks = $('#remarks').val();
+
+    if(report_type == "")
+    {
+        $('#report_typeErrorMsg').html("Select Report Type");
+        $('#report_typeErrorMsg').show();
+        $('#report_typeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(submission_year == "")
+    {
+        $('#submission_yearErrorMsg').html("Enter Submission Year.");
+        $('#submission_yearErrorMsg').show();
+        $('#submission_yearErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(submission_date == "")
+    {
+        $('#submission_dateErrorMsg').html("Enter Submission Date.");
+        $('#submission_dateErrorMsg').show();
+        $('#submission_dateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(ec_clearance_no == "")
+    {
+        $('#ec_clearance_noErrorMsg').html("Select Environment Clearance No.");
+        $('#ec_clearance_noErrorMsg').show();
+        $('#ec_clearance_noErrorMsg').delay(2000).fadeOut('slow');
+    }
+
+    else if(record_id == "")
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_report_submission' %}",
+            data : $('#report_submission_form').serialize(),
+            success : function(data)
+            {
+                url : "{% url 'load_report_submission_details' %}",
+                $('#record_id').val(data.refNo);
+                $('#refNo').val(data.refNo);
+                $('#attachment_refNo').val(data.refNo);
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 1500);
+                setTimeout(function() {
+                    $('#pills-details').tab('show');
+                    $('#report_details_card').show();
+                }, 1500);
+            }
+        });
+    }
+    else if(record_id != "")
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_report_submission' %}",
+            data : $('#report_submission_form').serialize(),
+            success : function(data)
+            {
+                $('#record_id').val(data.refNo);
+                $('#refNo').val(data.refNo);
+                $('#attachment_refNo').val(data.refNo);
+                $('#submitMsg').show();
+                url : "{% url 'load_report_submission_details' %}",
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 1500);
+                setTimeout(function() {
+                    $('#pills-details').tab('show');
+                    $('#report_details_card').show();
+                }, 1500);
+            }
+        });
+    }
+}
+
+function loadDetails()
+{
+    var refNo = $('#record_id').val();
+    if(refNo == "")
+        {
+            $("#pills-home-tab").prop('disabled', false);
+            $("#pills-profile-file").prop('disabled', false);
+            $('#pills-details').prop('disabled', false);
+        }
+    else if(refNo != "")
+        {
+            $("#pills-home").prop('disabled', false);
+            $("#pills-profile-file").prop('disabled', false);
+            $('#pills-details').prop('disabled', false);
+        }
+}
+
+function load_details()
+{
+    var refNo = $('#refNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_report_submission_details' %}",
+        data :{'refNo':refNo},
+        success : function(response)
+        {
+            $('#report_details').html(response);
+        }
+    });
+}
+
+function load_attachment_details()
+{
+    var refNo = $('#record_id').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_report_attachment_details' %}",
+        data :{'refNo':refNo},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
+        }
+    });
+}
+
+function save_report_attachment()
+{
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
+    {
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        var appNo = $('#record_id').val();
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        fd.append('appNo', appNo);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
+            {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+        $.ajax({
+            type : "POST",
+            url : "{% url 'add_report_file' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+                if (data.form_is_valid)
+                {
+                    var refNo = $('#record_id').val();
+                    var file_url = data.file_url
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'add_report_file_name' %}",
+                        data : {'refNo':refNo , 'filename':fileName, 'file_url':file_url},
+                        success : function(responseText)
+                        {
+                            $('#details_model').modal('hide');
+                            $('#attachmentModal').modal('hide');
+                            $('#file-attachment').html(responseText);
+                            $('.modal-backdrop').remove();
+
+                        }
+                    });
+                }else
+                {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                }
+            }
+        });
+    }
+}
+
+function save_report_details()
+{
+    var ec_terms = $('#ec_terms').val();
+    var action_taken = $('#action_taken').val();
+    var detail_remarks = $('#detail_remarks').val();
+
+    if(ec_terms == "")
+    {
+        $('#ec_termsErrorMsg').html("Enter EC Terms");
+        $('#ec_termsErrorMsg').show();
+        $('#ec_termsErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(action_taken == "")
+    {
+        $('#action_takenErrorMsg').html("Enter Action Taken");
+        $('#action_takenErrorMsg').show();
+        $('#action_takenErrorMsg').delay(2000).fadeOut('slow');
+    }
+
+    else{
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_report_details' %}",
+            data : $('#details_form').serialize(),
+            success : function(responseText)
+            {
+                $('#saveMsg').show();
+                setTimeout(function() {
+                    $("#saveMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function() {
+                    $('#report_submitted_details').html(responseText);
+                    $('#details_model').modal('hide');
+                    $('#pills-details').tab('show');
+                    $('#attachment_details_card').show();
+                }, 3000);
+            }
+        });
+    }
+}
+
+function show_details_model()
+{
+    $('#details_model').modal('show');
+}
+
+function isNumberKey(evt)
+{
+   var charCode = (evt.which) ? evt.which : event.keyCode
+   if( (charCode > 47 && charCode <58) || charCode == 46 )
+       return true;
+   else
+	return false;
+}
+
+
+function checkYear(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+    var length = value.length;
+
+    if (length <4){
+        $('#submission_yearErrorMsg').html("Year must be 4 digit.");
+        $('#submission_yearErrorMsg').show();
+        $('#submission_yearErrorMsg').delay(1500).fadeOut('slow');
+        $('#submission_year').val("");
+    }
+    else if(firstDigit != 2){
+        $('#submission_yearErrorMsg').html("Must Start with either 2.");
+        $('#submission_yearErrorMsg').show();
+        $('#submission_yearErrorMsg').delay(2000).fadeOut('slow');
+        $('#submission_yearErrorMsg').val("");
+    }
+}
+
+function get_ec_details(ec_clearance_no)
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'load_ec_details' %}",
+                data :{'ec_reference_no':ec_clearance_no},
+                success : function(data)
+                {
+                    $('#proponent_name').val(data.applicant_name);
+                    $('#address').val(data.address);
+                    $('#ca_authority').val(data.ca_authority);
+                }
+            });
+        }
+</script>
+{% endblock %}

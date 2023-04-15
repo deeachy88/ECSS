@@ -77,7 +77,7 @@
               <!--Body-->
           <div class="modal-body mx-4">
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Inspection Type</label>
                         <select type="text" name="inspection_type" class="form-control" id="inspection_type">
@@ -88,73 +88,78 @@
                     </div>
                     <div class="alert alert-danger" id="inspection_typeErrorMsg" style="display:none"></div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Inspection Date</label>
                         <input type="date" class="form-control" id="inspection_date" name="inspection_date">
                     </div>
                     <div class="alert alert-danger" id="inspection_dateErrorMsg" style="display:none"></div>
                 </div>
-
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold">EC Number</label>
                         <select id="ec_clearance_no" name="ec_clearance_no" class="form-select" onchange="get_ec_details(this.value)">
-                                    <option value="">--EC Number--</option>
-                                    {% for ec_details in ec_details %}
-                                        <option value="{{ ec_details.ec_reference_no }}">{{ ec_details.ec_reference_no }}</option>
-                                    {% endfor %}
-                                </select>
+                            <option value="">--EC Number--</option>
+                            {% for ec_details in ec_details %}
+                                <option value="{{ ec_details.ec_reference_no }}">{{ ec_details.ec_reference_no }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="alert alert-danger" id="ec_clearance_noErrorMsg" style="display:none"></div>
                 </div>
-                <div class="col-lg-6">
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Proponent Name</label>
                         <input type="text" name="proponent_name" class="form-control" id="proponent_name" >
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Project Name</label>
                         <input type="text" name="project_name" class="form-control" id="project_name">
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Address</label>
                         <input type="text" name="address" class="form-control" id="address">
                     </div>
                 </div>
-                <div class="col-lg-6">
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Reason for Inspection</label>
-                        <input type="text" name="inspection_reason" class="form-control" id="inspection_reason">
+                        <textarea name="inspection_reason" class="form-control" id="inspection_reason"></textarea>
                     </div>
                     <div class="alert alert-danger" id="inspection_reasonErrorMsg" style="display:none"></div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Observation</label>
-                        <input type="text" name="observation" class="form-control" id="observation">
+                        <textarea name="observation" class="form-control" id="observation"></textarea>
                     </div>
                     <div class="alert alert-danger" id="observationErrorMsg" style="display:none"></div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Team Leader</label>
                         <input type="text" name="team_leader" class="form-control" id="team_leader">
                     </div>
                     <div class="alert alert-danger" id="team_leaderErrorMsg" style="display:none"></div>
                 </div>
-                <div class="col-lg-6">
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Team Members</label>
-                        <input type="text" name="team_members" class="form-control" id="team_members">
+                        <textarea name="team_members" class="form-control" id="team_members"></textarea>
                     </div>
                     <div class="alert alert-danger" id="team_membersErrorMsg" style="display:none"></div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Status</label>
                         <select type="text" name="inspection_status" class="form-control" id="inspection_status">
@@ -165,8 +170,7 @@
                     </div>
                     <div class="alert alert-danger" id="inspection_statusErrorMsg" style="display:none"></div>
                 </div>
-
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Fines and Penalties</label>
                         <select type="text" name="fines_penalties" class="form-control" id="fines_penalties">
@@ -177,14 +181,16 @@
                     </div>
                     <div class="alert alert-danger" id="fines_penaltiesErrorMsg" style="display:none"></div>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Remarks</label>
-                        <input type="text" name="remarks" class="form-control" id="remarks">
+                        <textarea name="remarks" class="form-control" id="remarks"></textarea>
                     </div>
                     <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                 </div>
-              </div>
+            </div>
               <div class="alert alert-success" id="inspection_SuccessMsg" style="display:none"></div>
               <div class="modal-footer flex-center justify-content-center">
                 <button type="button" class="btn btn-sm btn-primary" onclick="add_inspection_details()">Add</button>
@@ -232,7 +238,6 @@ function add_inspection_details()
         let inspection_date = $('#inspection_date').val();
         let inspection_reason = $('#inspection_reason').val();
         let ec_clearance_no = $('#ec_clearance_no').val();
-        let login_id = $('#login_id').val();
         let proponent_name = $('#proponent_name').val();
         let project_name = $('#project_name').val();
         let address = $('#address').val();

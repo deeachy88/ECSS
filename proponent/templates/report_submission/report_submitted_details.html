@@ -1,0 +1,64 @@
+<div class="card">
+    <div class="card-header">
+        <div class="card-head-row">
+            <div class="card-tools pull-right">
+                <button type="button" class="btn btn-light" onclick="show_details_model()">Add Report Details</button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">EC Terms</th>
+                    <th scope="col">Action Taken</th>
+                    <th scope="col">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report_submission in report_submission %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{report_submission.ec_terms}}</td>
+                        <td>{{report_submission.action_taken}}</td>
+                        <td>{{report_submission.remarks}}</td>
+                        <td>
+                            <button type="button"
+                                class="btn btn-danger btn-sm" onclick="DeleteReportDetails('{{ report_submission.record_id }}')">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="8" class="text-center">No Data</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="card-head-row">
+    <button type="button" class="btn btn-success" onclick="save_next()">Save & Next</button>
+</div>
+<script>
+function save_next()
+{
+    $('#pills-tab a:last').tab('show');
+}
+
+function DeleteReportDetails(record_id)
+{
+    var refNo = $('#refNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'delete_report_details' %}",
+        data :{'refNo':refNo , 'record_id': record_id},
+        success : function(responseText)
+        {
+            $('#details').html(responseText);
+        }
+    });
+}
+</script>

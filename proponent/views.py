@@ -1,9 +1,10 @@
 from datetime import date
 from django.shortcuts import render, redirect
 from ecs_main.views import client_application_list
-from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals
-from ecs_admin.models import t_bsic_code, t_competant_authority_master, t_fees_schedule, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_service_master, t_thromde_master, t_village_master
+from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals, t_report_submission_t1, t_report_submission_t2
+from ecs_admin.models import t_user_master, t_bsic_code, t_competant_authority_master, t_fees_schedule, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_service_master, t_thromde_master, t_village_master
 # Create your views here.
+from datetime import datetime
 from django.db.models import Max
 from django.utils import timezone
 from django.http import JsonResponse
@@ -3847,3 +3848,209 @@ def update_draft_application(request):
 
 def submit_renew_application(request):
     return redirect(client_application_list)
+
+
+# ReportSubmission
+
+def report_list(request):
+    login_type = request.session['login_type']
+    login_id = request.session['email']
+
+    if login_type == 'C':
+        report_list = t_report_submission_t1.objects.filter(created_by=login_id).values().order_by('submission_date')
+    elif login_type == 'I':
+        ca_authority = request.session['ca_authority']
+        report_list = t_report_submission_t1.objects.filter(ca_authority=ca_authority).exclude(report_status='Pending').values().order_by('submission_date')
+
+
+    user_list = t_user_master.objects.all()
+    ec_details = t_ec_industries_t1_general.objects.all()
+    return render(request, 'report_submission/report_list.html', {'report_list':report_list, 'user_list':user_list, 'ec_details':ec_details})
+
+def view_report_details(request):
+    report_reference_no = request.GET.get('report_reference_no')
+    report_details = t_report_submission_t1.objects.filter(report_reference_no=report_reference_no)
+    details = t_report_submission_t2.objects.filter(report_reference_no=report_reference_no)
+    file_attach = t_file_attachment.objects.filter(application_no=report_reference_no)
+    return render(request, 'report_submission/report_details.html',
+                  {'report_details':report_details, 'details':details, 'file_attach':file_attach})
+
+def viewDraftReport(request, report_reference_no):
+    applicant = request.session['email']
+    ec_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False, applicant_id=applicant)
+    report_details = t_report_submission_t1.objects.filter(report_reference_no=report_reference_no)
+    details = t_report_submission_t2.objects.filter(report_reference_no=report_reference_no)
+    file_attach = t_file_attachment.objects.filter(application_no=report_reference_no)
+    return render(request, 'report_submission/report_submission_draft.html',
+                  {'report_details':report_details, 'details':details, 'ec_details':ec_details, 'file_attach':file_attach})
+
+def report_submission_form(request):
+    applicant = request.session['email']
+    ec_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False,applicant_id=applicant)
+    return render(request, 'report_submission/report_submission.html', {'ec_details': ec_details})
+
+def save_report_submission(request):
+    data = dict()
+    service_code = 'rpt'
+    reference_no = get_report_submission_ref_no(request, service_code)
+    submission_year = request.POST.get('submission_year')
+    submission_date = request.POST.get('submission_date')
+    ec_clearance_no = request.POST.get('ec_clearance_no')
+    ca_authority = request.POST.get('ca_authority')
+    proponent_name = request.POST.get('proponent_name')
+    address = request.POST.get('address')
+    remarks = request.POST.get('remarks')
+    report_type = request.POST.get('report_type')
+    created_on = datetime.now()
+    login_id = request.session['email']
+
+    t_report_submission_t1.objects.create(
+        report_type=report_type,
+        report_reference_no=reference_no,
+        submission_year=submission_year,
+        submission_date=submission_date,
+        ec_clearance_no=ec_clearance_no,
+        ca_authority=ca_authority,
+        proponent_name=proponent_name,
+        address=address,
+        remarks=remarks,
+        created_by=login_id,
+        created_date=created_on,
+        report_status='Pending',
+    )
+    data['refNo'] = reference_no
+    return JsonResponse(data)
+
+def get_report_submission_ref_no(request, service_code):
+    last_reference_no = t_report_submission_t1.objects.aggregate(Max('report_reference_no'))
+    lastRefNo = last_reference_no['report_reference_no__max']
+    if not lastRefNo:
+        year = timezone.now().year
+        newRefNo = service_code + "-" + str(year) + "-" + "0001"
+    else:
+        substring = str(lastRefNo)[9:13]
+        substring = int(substring) + 1
+        RefNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newRefNo = service_code + "-" + str(year) + "-" + RefNo
+    return newRefNo
+
+def update_report_submission(request):
+    data = dict()
+    reference_no = request.POST.get('report_reference_no')
+    submission_year = request.POST.get('submission_year')
+    submission_date = request.POST.get('submission_date')
+    ec_clearance_no = request.POST.get('ec_clearance_no')
+    ca_authority = request.POST.get('ca_authority')
+    proponent_name = request.POST.get('proponent_name')
+    address = request.POST.get('address')
+    remarks = request.POST.get('remarks')
+    report_type = request.POST.get('report_type')
+    login_id = request.session['login_id']
+
+    application_details = t_report_submission_t1.objects.filter(report_reference_no=reference_no)
+
+    application_details.update(submission_year=submission_year, submission_date=submission_date,
+                               ec_clearance_no=ec_clearance_no, ca_authority=ca_authority,
+                               proponent_name=proponent_name, address=address,
+                               remarks=remarks, report_type=report_type, created_by=login_id)
+
+    data['refNo'] = reference_no
+    return JsonResponse(data)
+
+def load_report_submission_details(request):
+    reference_no = request.GET.get('refNo')
+    print(reference_no)
+    report_submission = t_report_submission_t2.objects.filter(report_reference_no=reference_no)
+    return render(request, 'report_submission/report_submitted_details.html',
+                  {'report_submission': report_submission})
+
+def save_report_details(request):
+    reference_no = request.POST.get('refNo')
+    ec_terms = request.POST.get('ec_terms')
+    action_taken = request.POST.get('action_taken')
+    remarks = request.POST.get('detail_remarks')
+    t_report_submission_t2.objects.create(
+        report_reference_no=reference_no,
+        ec_terms=ec_terms,
+        action_taken=action_taken,
+        remarks=remarks)
+
+    report_submission = t_report_submission_t2.objects.filter(report_reference_no=reference_no)
+    return render(request, 'report_submission/report_submitted_details.html',
+                  {'report_submission': report_submission})
+
+def delete_report_details(request):
+    record_id = request.GET.get('record_id')
+    reference_no = request.GET.get('refNo')
+    record = t_report_submission_t2.objects.filter(record_id=record_id)
+    record.delete()
+    report_submission = t_report_submission_t2.objects.filter(report_reference_no=reference_no)
+    return render(request, 'report_submission/report_submitted_details.html',
+                  {'report_submission': report_submission})
+
+def load_report_attachment_details(request):
+    referenceNo = request.GET.get('refNo')
+    attachment_details = t_file_attachment.objects.filter(application_no=referenceNo)
+    return render(request, 'report_submission/report_file_attachment.html',
+                  {'file_attach': attachment_details})
+
+def add_report_file(request):
+    data = dict()
+    myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ecs_main")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(
+            timezone.now().year) + "/ecs_main" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def add_report_file_name(request):
+    app_no = request.POST.get('refNo')
+    fileName = request.POST.get('filename')
+    Applicant_Id = request.session['email']
+    file_url = request.POST.get('file_url')
+    Role_Id = request.session['Role_Id']
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+    t_file_attachment.objects.create(application_no=app_no, applicant_id=Applicant_Id,
+                                     role_id=Role_Id, file_path=file_url, attachment=fileName)
+    file_attach = t_file_attachment.objects.filter(application_no=app_no)
+    return render(request, 'report_submission/report_file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_report_file(request):
+    file_id = request.GET.get('file_id')
+    referenceNo = request.GET.get('refNo')
+    file = t_file_attachment.objects.filter(pk=file_id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ecs_main")
+        fs.delete(str(fileName))
+    file.delete()
+    file_attach = t_file_attachment.objects.filter(application_no=referenceNo)
+    return render(request, 'report_submission/report_file_attachment.html', {'file_attach': file_attach})
+
+
+def submit_report_form(request):
+    reference_no = request.POST.get('record_id')
+    created_on = datetime.now()
+    details = t_report_submission_t1.objects.filter(report_reference_no=reference_no)
+    details.update(created_date=created_on, report_status='Submitted')
+
+    return redirect(report_list)
+
+def acknowledge_report(request):
+    report_reference_no = request.GET.get('report_reference_no')
+    details = t_report_submission_t1.objects.filter(report_reference_no=report_reference_no)
+    details.update(report_status='Acknowledged')
+
+    return redirect(report_list)
+
+#EndReportSubmission
