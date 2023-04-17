@@ -132,7 +132,8 @@ urlpatterns = [
     # Common 
     path('save_project_details', views.save_project_details, name='save_project_details'),
     path('ec_renewal', views.ec_renewal, name='ec_renewal'),
-
+    path('ec_renewal_details', views.ec_renewal_details, name='ec_renewal_details'),
+ 
     #Other Modifications
     path('name_change', views.name_change, name='name_change'),
     path('ownership_change', views.ownership_change, name='ownership_change'),

@@ -472,6 +472,7 @@ class t_ec_industries_t1_general(models.Model):
     resubmit_date = models.DateField(default=None, blank=True, null=True)
     service_id = models.IntegerField(default=None, blank=True, null=True)
     application_source = models.CharField(max_length=20,default=None, blank=True, null=True)
+    service_type = models.CharField(max_length=100,default=None, blank=True, null=True)
 
 class t_ec_industries_t2_partner_details(models.Model):
     record_id = models.AutoField(primary_key=True)

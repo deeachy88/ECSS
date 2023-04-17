@@ -341,47 +341,19 @@ def save_iee_application(request):
         project_no_of_workers = request.POST.get('project_no_of_workers')
         project_cost = request.POST.get('project_cost')
         project_duration = request.POST.get('project_duration')
+        identifier = request.POST.get('identifier')
 
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        if application_details.exists():
-            application_details.update(
-            application_type=application_type,
-            project_name=project_name,
-            project_category=project_category,
-            applicant_name=applicant_name,
-            address=address,
-            cid=cid,
-            contact_no=contact_no,
-            email=email,
-            focal_person=focal_person,
-            industry_type=industry_type,
-            establishment_type=establishment_type,
-            industry_classification=industry_classification,
-            dzongkhag_code=dzongkhag_code,
-            gewog_code=gewog_code,
-            village_code=village_code,
-            location_name=location_name,
-            industrial_area_acre=industrial_area_acre,
-            state_reserve_forest_acre=state_reserve_forest_acre,
-            private_area_acre=private_area_acre,
-            others_area_acre=others_area_acre,
-            total_area_acre=total_area_acre,
-            green_area_acre=green_area_acre,
-            production_process_flow=production_process_flow,
-            project_objective=project_objective,
-            project_no_of_workers=project_no_of_workers,
-            project_cost=project_cost,
-            project_duration=project_duration,
-            )
-        else:
-            t_ec_industries_t1_general.objects.create(
-                application_no=application_no,
-                application_date=None,
+        if(identifier == 'NC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(project_name=project_name)
+        elif(identifier == 'OC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(applicant_name=applicant_name)
+        elif(identifier == 'DR'): # This is For Draft Applications
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            if application_details.exists():
+                application_details.update(
                 application_type=application_type,
-                form_type='Main Activity',
-                ca_authority=request.session['ca_authority'],
-                applicant_id=request.session['email'],
-                colour_code=request.session['colour_code'],
                 project_name=project_name,
                 project_category=project_category,
                 applicant_name=applicant_name,
@@ -408,24 +380,100 @@ def save_iee_application(request):
                 project_no_of_workers=project_no_of_workers,
                 project_cost=project_cost,
                 project_duration=project_duration,
-                application_status='P',
-                service_id=request.session['service_id'],
-                application_source='ECSS'
                 )
-            t_workflow_dtls.objects.create(application_no=application_no, 
-                                            service_id=request.session['service_id'],
-                                            application_status='P',
-                                            action_date=None,
-                                            actor_id=request.session['login_id'],
-                                            actor_name=request.session['name'],
-                                            assigned_user_id=None,
-                                            assigned_role_id=None,
-                                            assigned_role_name=None,
-                                            result=None,
-                                            ca_authority=request.session['ca_authority'],
-                                            dzongkhag_thromde_id=dzongkhag_code,
-                                            application_source='ECSS'
-                                        )
+            else:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type=application_type,
+                    form_type='Main Activity',
+                    ca_authority=request.session['ca_authority'],
+                    applicant_id=request.session['email'],
+                    colour_code=request.session['colour_code'],
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    industry_type=industry_type,
+                    establishment_type=establishment_type,
+                    industry_classification=industry_classification,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    location_name=location_name,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    green_area_acre=green_area_acre,
+                    production_process_flow=production_process_flow,
+                    project_objective=project_objective,
+                    project_no_of_workers=project_no_of_workers,
+                    project_cost=project_cost,
+                    project_duration=project_duration,
+                    application_status='P',
+                    service_id=request.session['service_id'],
+                    application_source='ECSS'
+                    )
+        else:
+            t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type=application_type,
+                    form_type='Main Activity',
+                    ca_authority=request.session['ca_authority'],
+                    applicant_id=request.session['email'],
+                    colour_code=request.session['colour_code'],
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    industry_type=industry_type,
+                    establishment_type=establishment_type,
+                    industry_classification=industry_classification,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    location_name=location_name,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    green_area_acre=green_area_acre,
+                    production_process_flow=production_process_flow,
+                    project_objective=project_objective,
+                    project_no_of_workers=project_no_of_workers,
+                    project_cost=project_cost,
+                    project_duration=project_duration,
+                    application_status='P',
+                    service_id=request.session['service_id'],
+                    application_source='ECSS'
+                    )
+            
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                        service_id=request.session['service_id'],
+                                        application_status='P',
+                                        action_date=None,
+                                        actor_id=request.session['login_id'],
+                                        actor_name=request.session['name'],
+                                        assigned_user_id=None,
+                                        assigned_role_id=None,
+                                        assigned_role_name=None,
+                                        result=None,
+                                        ca_authority=request.session['ca_authority'],
+                                        dzongkhag_thromde_id=dzongkhag_code,
+                                        application_source='ECSS'
+                                    )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -1965,6 +2013,11 @@ def save_project_details(request):
     return JsonResponse(data)
 
 def ec_renewal(request):
+    application_details = t_ec_industries_t1_general.objects.filter(applicant_id=request.session['email'],ec_expiry_date__gt=date.today())
+    service_details = t_service_master.objects.all()
+    return render(request, 'renewal.html',{'application_details':application_details,'service_details':service_details})
+
+def ec_renewal_details(request):
     ec_no = request.GET.get('ec_no')
     service_id = None
     application_no = None
@@ -2537,60 +2590,116 @@ def save_road_application(request):
         bl_others = request.POST.get('bl_others')
         bl_others_name = request.POST.get('bl_others_name')
         bl_others_distance = request.POST.get('bl_others_distance')
-        
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        if application_details.exists():
-            application_details.update(
-            application_no=application_no,
-            application_date=None,
-            application_type=application_type,
-            form_type='Main Activity',
-            ca_authority=request.session['ca_authority'],
-            applicant_id=request.session['email'],
-            colour_code=request.session['colour_code'],
-            project_name=project_name,
-            project_category=project_category,
-            applicant_name=applicant_name,
-            address=address,
-            cid=cid,
-            contact_no=contact_no,
-            email=email,
-            focal_person=focal_person,
-            dzongkhag_code=dzongkhag_code,
-            gewog_code=gewog_code,
-            village_code=village_code,
-            bl_protected_area_name=bl_protected_area_name,
-            bl_protected_area_distance=bl_protected_area_distance,
-            bl_migratory_route_name=bl_migratory_route_name,
-            bl_migratory_route_distance=bl_migratory_route_distance,
-            bl_wetland_name=bl_wetland_name,
-            bl_wetland_distance=bl_wetland_distance,
-            bl_water_bodies_name=bl_water_bodies_name,
-            bl_water_bodies_distance=bl_water_bodies_distance,
-            bl_fmu_name=bl_fmu_name,
-            bl_fmu_distance=bl_fmu_distance,
-            bl_agricultural_name=bl_agricultural_name,
-            bl_agricultural_distance=bl_agricultural_distance,
-            bl_settlement_name=bl_settlement_name,
-            bl_settlement_distance=bl_settlement_distance,
-            bl_road_name=bl_road_name,
-            bl_road_distance=bl_road_distance,
-            bl_public_infra_name=bl_public_infra_name,
-            bl_public_infra_distance=bl_public_infra_distance,
-            bl_school_name=bl_school_name,
-            bl_school_distance=bl_school_distance,
-            bl_heritage_name=bl_heritage_name,
-            bl_heritage_distance=bl_heritage_distance,
-            bl_tourist_facility_name=bl_tourist_facility_name,
-            bl_tourist_facility_distance=bl_tourist_facility_distance,
-            bl_impt_installation_name=bl_impt_installation_name,
-            bl_impt_installation_distance=bl_impt_installation_distance,
-            bl_industries_name=bl_industries_name,
-            bl_industries_distance=bl_industries_distance,
-            bl_others=bl_others,
-            bl_others_name=bl_others_name,
-            bl_others_distance=bl_others_distance,
-            )
+        identifier = request.POST.get('identifier')
+
+        if(identifier == 'NC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(project_name=project_name)
+        elif(identifier == 'OC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(applicant_name=applicant_name)
+        elif(identifier == 'DR'): # This is For Draft Applications
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            if application_details.exists():
+                application_details.update(
+                    application_type=application_type,
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    bl_protected_area_name=bl_protected_area_name,
+                    bl_protected_area_distance=bl_protected_area_distance,
+                    bl_migratory_route_name=bl_migratory_route_name,
+                    bl_migratory_route_distance=bl_migratory_route_distance,
+                    bl_wetland_name=bl_wetland_name,
+                    bl_wetland_distance=bl_wetland_distance,
+                    bl_water_bodies_name=bl_water_bodies_name,
+                    bl_water_bodies_distance=bl_water_bodies_distance,
+                    bl_fmu_name=bl_fmu_name,
+                    bl_fmu_distance=bl_fmu_distance,
+                    bl_agricultural_name=bl_agricultural_name,
+                    bl_agricultural_distance=bl_agricultural_distance,
+                    bl_settlement_name=bl_settlement_name,
+                    bl_settlement_distance=bl_settlement_distance,
+                    bl_road_name=bl_road_name,
+                    bl_road_distance=bl_road_distance,
+                    bl_public_infra_name=bl_public_infra_name,
+                    bl_public_infra_distance=bl_public_infra_distance,
+                    bl_school_name=bl_school_name,
+                    bl_school_distance=bl_school_distance,
+                    bl_heritage_name=bl_heritage_name,
+                    bl_heritage_distance=bl_heritage_distance,
+                    bl_tourist_facility_name=bl_tourist_facility_name,
+                    bl_tourist_facility_distance=bl_tourist_facility_distance,
+                    bl_impt_installation_name=bl_impt_installation_name,
+                    bl_impt_installation_distance=bl_impt_installation_distance,
+                    bl_industries_name=bl_industries_name,
+                    bl_industries_distance=bl_industries_distance,
+                    bl_others=bl_others,
+                    bl_others_name=bl_others_name,
+                    bl_others_distance=bl_others_distance,
+                    )
+            else:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type=application_type,
+                    form_type='Main Activity',
+                    ca_authority=request.session['ca_authority'],
+                    applicant_id=request.session['email'],
+                    colour_code=request.session['colour_code'],
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    bl_protected_area_name=bl_protected_area_name,
+                    bl_protected_area_distance=bl_protected_area_distance,
+                    bl_migratory_route_name=bl_migratory_route_name,
+                    bl_migratory_route_distance=bl_migratory_route_distance,
+                    bl_wetland_name=bl_wetland_name,
+                    bl_wetland_distance=bl_wetland_distance,
+                    bl_water_bodies_name=bl_water_bodies_name,
+                    bl_water_bodies_distance=bl_water_bodies_distance,
+                    bl_fmu_name=bl_fmu_name,
+                    bl_fmu_distance=bl_fmu_distance,
+                    bl_agricultural_name=bl_agricultural_name,
+                    bl_agricultural_distance=bl_agricultural_distance,
+                    bl_settlement_name=bl_settlement_name,
+                    bl_settlement_distance=bl_settlement_distance,
+                    bl_road_name=bl_road_name,
+                    bl_road_distance=bl_road_distance,
+                    bl_public_infra_name=bl_public_infra_name,
+                    bl_public_infra_distance=bl_public_infra_distance,
+                    bl_school_name=bl_school_name,
+                    bl_school_distance=bl_school_distance,
+                    bl_heritage_name=bl_heritage_name,
+                    bl_heritage_distance=bl_heritage_distance,
+                    bl_tourist_facility_name=bl_tourist_facility_name,
+                    bl_tourist_facility_distance=bl_tourist_facility_distance,
+                    bl_impt_installation_name=bl_impt_installation_name,
+                    bl_impt_installation_distance=bl_impt_installation_distance,
+                    bl_industries_name=bl_industries_name,
+                    bl_industries_distance=bl_industries_distance,
+                    bl_others=bl_others,
+                    bl_others_name=bl_others_name,
+                    bl_others_distance=bl_others_distance,
+                    application_status='P',
+                    service_id=request.session['service_id']
+                    )
         else:
             t_ec_industries_t1_general.objects.create(
                 application_no=application_no,
@@ -2645,19 +2754,19 @@ def save_road_application(request):
                 application_status='P',
                 service_id=request.session['service_id']
                 )
-            t_workflow_dtls.objects.create(application_no=application_no, 
-                                            service_id=request.session['service_id'],
-                                            application_status='P',
-                                            action_date=None,
-                                            actor_id=request.session['login_id'],
-                                            actor_name=request.session['name'],
-                                            assigned_user_id=None,
-                                            assigned_role_id=None,
-                                            assigned_role_name=None,
-                                            result=None,
-                                            ca_authority=request.session['ca_authority'],
-                                            dzongkhag_thromde_id=dzongkhag_code
-                                        )
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                    service_id=request.session['service_id'],
+                                    application_status='P',
+                                    action_date=None,
+                                    actor_id=request.session['login_id'],
+                                    actor_name=request.session['name'],
+                                    assigned_user_id=None,
+                                    assigned_role_id=None,
+                                    assigned_role_name=None,
+                                    result=None,
+                                    ca_authority=request.session['ca_authority'],
+                                    dzongkhag_thromde_id=dzongkhag_code
+                                )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -2686,28 +2795,65 @@ def save_general_application(request):
         private_area_acre = request.POST.get('private_area_acre')
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
-        
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        if application_details.exists():
-            application_details.update(
-            application_type=application_type,
-            project_name=project_name,
-            project_category=project_category,
-            applicant_name=applicant_name,
-            address=address,
-            cid=cid,
-            contact_no=contact_no,
-            email=email,
-            focal_person=focal_person,
-            dzongkhag_code=dzongkhag_code,
-            gewog_code=gewog_code,
-            village_code=village_code,
-            industrial_area_acre=industrial_area_acre,
-            state_reserve_forest_acre=state_reserve_forest_acre,
-            private_area_acre=private_area_acre,
-            others_area_acre=others_area_acre,
-            total_area_acre=total_area_acre,
-            )
+
+        identifier = request.POST.get('identifier')
+
+        if(identifier == 'NC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(project_name=project_name)
+        elif(identifier == 'OC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(applicant_name=applicant_name)
+        elif(identifier == 'DR'): # This is For Draft Applications
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            if application_details.exists():
+                application_details.update(
+                application_type=application_type,
+                project_name=project_name,
+                project_category=project_category,
+                applicant_name=applicant_name,
+                address=address,
+                cid=cid,
+                contact_no=contact_no,
+                email=email,
+                focal_person=focal_person,
+                dzongkhag_code=dzongkhag_code,
+                gewog_code=gewog_code,
+                village_code=village_code,
+                industrial_area_acre=industrial_area_acre,
+                state_reserve_forest_acre=state_reserve_forest_acre,
+                private_area_acre=private_area_acre,
+                others_area_acre=others_area_acre,
+                total_area_acre=total_area_acre,
+                )
+            else:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type=application_type,
+                    form_type='Main Activity',
+                    ca_authority=request.session['ca_authority'],
+                    applicant_id=request.session['email'],
+                    colour_code=request.session['colour_code'],
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    application_status='P',
+                    service_id=request.session['service_id']
+                    )
         else:
             t_ec_industries_t1_general.objects.create(
                 application_no=application_no,
@@ -2736,19 +2882,21 @@ def save_general_application(request):
                 application_status='P',
                 service_id=request.session['service_id']
                 )
-            t_workflow_dtls.objects.create(application_no=application_no, 
-                                            service_id=request.session['service_id'],
-                                            application_status='P',
-                                            action_date=None,
-                                            actor_id=request.session['login_id'],
-                                            actor_name=request.session['name'],
-                                            assigned_user_id=None,
-                                            assigned_role_id=None,
-                                            assigned_role_name=None,
-                                            result=None,
-                                            ca_authority=request.session['ca_authority'],
-                                            dzongkhag_thromde_id=dzongkhag_code
-                                        )
+            
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                        service_id=request.session['service_id'],
+                                        application_status='P',
+                                        action_date=None,
+                                        actor_id=request.session['login_id'],
+                                        actor_name=request.session['name'],
+                                        assigned_user_id=None,
+                                        assigned_role_id=None,
+                                        assigned_role_name=None,
+                                        result=None,
+                                        ca_authority=request.session['ca_authority'],
+                                        dzongkhag_thromde_id=dzongkhag_code,
+                                        application_source='ECSS'
+                                    )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -2780,30 +2928,68 @@ def save_forest_application(request):
         max_evacuation_depth = request.POST.get('max_evacuation_depth')
         terrain_elevation = request.POST.get('terrain_elevation')
         terrain_slope = request.POST.get('terrain_slope')
+        identifier = request.POST.get('identifier')
 
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        if application_details.exists():
-            application_details.update(
-                project_name=project_name,
-                project_category=project_category,
-                applicant_name=applicant_name,
-                address=address,
-                cid=cid,
-                contact_no=contact_no,
-                email=email,
-                focal_person=focal_person,
-                dzongkhag_code=dzongkhag_code,
-                gewog_code=gewog_code,
-                village_code=village_code,
-                industrial_area_acre=industrial_area_acre,
-                state_reserve_forest_acre=state_reserve_forest_acre,
-                private_area_acre=private_area_acre,
-                others_area_acre=others_area_acre,
-                total_area_acre=total_area_acre,
-                max_evacuation_depth=max_evacuation_depth,
-                terrain_elevation=terrain_elevation,
-                terrain_slope=terrain_slope,
-                )
+        if(identifier == 'NC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(project_name=project_name)
+        elif(identifier == 'OC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(applicant_name=applicant_name)
+        elif(identifier == 'DR'): # This is For Draft Applications
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            if application_details.exists():
+                application_details.update(
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    max_evacuation_depth=max_evacuation_depth,
+                    terrain_elevation=terrain_elevation,
+                    terrain_slope=terrain_slope,
+                    )
+            else:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type='Main Activity',
+                    ca_authority=request.session['ca_authority'],
+                    applicant_id=request.session['email'],
+                    colour_code=request.session['colour_code'],
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    max_evacuation_depth=max_evacuation_depth,
+                    terrain_elevation=terrain_elevation,
+                    terrain_slope=terrain_slope,
+                    application_status='P',
+                    service_id=request.session['service_id']
+                    )
         else:
             t_ec_industries_t1_general.objects.create(
                 application_no=application_no,
@@ -2834,19 +3020,19 @@ def save_forest_application(request):
                 application_status='P',
                 service_id=request.session['service_id']
                 )
-            t_workflow_dtls.objects.create(application_no=application_no, 
-                                            service_id=request.session['service_id'],
-                                            application_status='P',
-                                            action_date=None,
-                                            actor_id=request.session['login_id'],
-                                            actor_name=request.session['name'],
-                                            assigned_user_id=None,
-                                            assigned_role_id=None,
-                                            assigned_role_name=None,
-                                            result=None,
-                                            ca_authority=request.session['ca_authority'],
-                                            dzongkhag_thromde_id=dzongkhag_code
-                                        )
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                        service_id=request.session['service_id'],
+                                        application_status='P',
+                                        action_date=None,
+                                        actor_id=request.session['login_id'],
+                                        actor_name=request.session['name'],
+                                        assigned_user_id=None,
+                                        assigned_role_id=None,
+                                        assigned_role_name=None,
+                                        result=None,
+                                        ca_authority=request.session['ca_authority'],
+                                        dzongkhag_thromde_id=dzongkhag_code
+                                    )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -2898,32 +3084,72 @@ def save_ground_water_application(request):
         land_form = request.POST.get('land_form')
         terrain_elevation = request.POST.get('terrain_elevation')
         terrain_slope = request.POST.get('terrain_slope')
+        identifier = request.POST.get('identifier')
 
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        if application_details.exists():
-            application_details.update(
-                application_type=application_type,
-                project_name=project_name,
-                project_category=project_category,
-                applicant_name=applicant_name,
-                address=address,
-                cid=cid,
-                contact_no=contact_no,
-                email=email,
-                focal_person=focal_person,
-                dzongkhag_code=dzongkhag_code,
-                gewog_code=gewog_code,
-                village_code=village_code,
-                industrial_area_acre=industrial_area_acre,
-                state_reserve_forest_acre=state_reserve_forest_acre,
-                private_area_acre=private_area_acre,
-                others_area_acre=others_area_acre,
-                total_area_acre=total_area_acre,
-                max_evacuation_depth=max_evacuation_depth,
-                land_form=land_form,
-                terrain_elevation=terrain_elevation,
-                terrain_slope=terrain_slope,
-            )
+        if(identifier == 'NC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(project_name=project_name)
+        elif(identifier == 'OC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(applicant_name=applicant_name)
+        elif(identifier == 'DR'): # This is For Draft Applications
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            if application_details.exists():
+                application_details.update(
+                    application_type=application_type,
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    max_evacuation_depth=max_evacuation_depth,
+                    land_form=land_form,
+                    terrain_elevation=terrain_elevation,
+                    terrain_slope=terrain_slope,
+                    )
+            else:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type=application_type,
+                    form_type='Main Activity',
+                    ca_authority=request.session['ca_authority'],
+                    applicant_id=request.session['email'],
+                    colour_code=request.session['colour_code'],
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    max_evacuation_depth=max_evacuation_depth,
+                    land_form=land_form,
+                    terrain_elevation=terrain_elevation,
+                    terrain_slope=terrain_slope,
+                    application_status='P',
+                    service_id=request.session['service_id']
+                    )
         else:
             t_ec_industries_t1_general.objects.create(
                 application_no=application_no,
@@ -2956,19 +3182,20 @@ def save_ground_water_application(request):
                 application_status='P',
                 service_id=request.session['service_id']
                 )
-            t_workflow_dtls.objects.create(application_no=application_no, 
-                                            service_id=request.session['service_id'],
-                                            application_status='P',
-                                            action_date=None,
-                                            actor_id=request.session['login_id'],
-                                            actor_name=request.session['name'],
-                                            assigned_user_id=None,
-                                            assigned_role_id=None,
-                                            assigned_role_name=None,
-                                            result=None,
-                                            ca_authority=request.session['ca_authority'],
-                                            dzongkhag_thromde_id=dzongkhag_code
-                                        )
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                        service_id=request.session['service_id'],
+                                        application_status='P',
+                                        action_date=None,
+                                        actor_id=request.session['login_id'],
+                                        actor_name=request.session['name'],
+                                        assigned_user_id=None,
+                                        assigned_role_id=None,
+                                        assigned_role_name=None,
+                                        result=None,
+                                        ca_authority=request.session['ca_authority'],
+                                        dzongkhag_thromde_id=dzongkhag_code
+                                    )
+        
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -3043,32 +3270,72 @@ def save_quarry_application(request):
         green_belt_area = request.POST.get('max_evacuation_depth')
         terrain_elevation = request.POST.get('terrain_elevation')
         terrain_slope = request.POST.get('terrain_slope')
+        identifier = request.POST.get('identifier')
 
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        if application_details.exists():
-            application_details.update(
-                application_type=application_type,
-                project_name=project_name,
-                project_category=project_category,
-                applicant_name=applicant_name,
-                address=address,
-                cid=cid,
-                contact_no=contact_no,
-                email=email,
-                focal_person=focal_person,
-                dzongkhag_code=dzongkhag_code,
-                gewog_code=gewog_code,
-                village_code=village_code,
-                industrial_area_acre=industrial_area_acre,
-                state_reserve_forest_acre=state_reserve_forest_acre,
-                private_area_acre=private_area_acre,
-                others_area_acre=others_area_acre,
-                total_area_acre=total_area_acre,
-                actual_mineable_area=actual_mineable_area,
-                green_belt_area=green_belt_area,
-                terrain_elevation=terrain_elevation,
-                terrain_slope=terrain_slope,
-            )
+        if(identifier == 'NC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(project_name=project_name)
+        elif(identifier == 'OC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(applicant_name=applicant_name)
+        elif(identifier == 'DR'): # This is For Draft Applications
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            if application_details.exists():
+                application_details.update(
+                    application_type=application_type,
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    actual_mineable_area=actual_mineable_area,
+                    green_belt_area=green_belt_area,
+                    terrain_elevation=terrain_elevation,
+                    terrain_slope=terrain_slope,
+                    )
+            else:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type=application_type,
+                    form_type='Main Activity',
+                    ca_authority=request.session['ca_authority'],
+                    applicant_id=request.session['email'],
+                    colour_code=request.session['colour_code'],
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    actual_mineable_area=actual_mineable_area,
+                    green_belt_area=green_belt_area,
+                    terrain_elevation=terrain_elevation,
+                    terrain_slope=terrain_slope,
+                    application_status='P',
+                    service_id=request.session['service_id']
+                    )
         else:
             t_ec_industries_t1_general.objects.create(
                 application_no=application_no,
@@ -3101,19 +3368,19 @@ def save_quarry_application(request):
                 application_status='P',
                 service_id=request.session['service_id']
                 )
-            t_workflow_dtls.objects.create(application_no=application_no, 
-                                            service_id=request.session['service_id'],
-                                            application_status='P',
-                                            action_date=None,
-                                            actor_id=request.session['login_id'],
-                                            actor_name=request.session['name'],
-                                            assigned_user_id=None,
-                                            assigned_role_id=None,
-                                            assigned_role_name=None,
-                                            result=None,
-                                            ca_authority=request.session['ca_authority'],
-                                            dzongkhag_thromde_id=dzongkhag_code
-                                        )
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                    service_id=request.session['service_id'],
+                                    application_status='P',
+                                    action_date=None,
+                                    actor_id=request.session['login_id'],
+                                    actor_name=request.session['name'],
+                                    assigned_user_id=None,
+                                    assigned_role_id=None,
+                                    assigned_role_name=None,
+                                    result=None,
+                                    ca_authority=request.session['ca_authority'],
+                                    dzongkhag_thromde_id=dzongkhag_code
+                                )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -3319,28 +3586,64 @@ def save_energy_application(request):
         private_area_acre = request.POST.get('private_area_acre')
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
-        
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        if application_details.exists():
-            application_details.update(
-            application_type=application_type,
-            project_name=project_name,
-            project_category=project_category,
-            applicant_name=applicant_name,
-            address=address,
-            cid=cid,
-            contact_no=contact_no,
-            email=email,
-            focal_person=focal_person,
-            dzongkhag_code=dzongkhag_code,
-            gewog_code=gewog_code,
-            village_code=village_code,
-            industrial_area_acre=industrial_area_acre,
-            state_reserve_forest_acre=state_reserve_forest_acre,
-            private_area_acre=private_area_acre,
-            others_area_acre=others_area_acre,
-            total_area_acre=total_area_acre,
-            )
+        identifier = request.POST.get('identifier')
+
+        if(identifier == 'NC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(project_name=project_name)
+        elif(identifier == 'OC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(applicant_name=applicant_name)
+        elif(identifier == 'DR'): # This is For Draft Applications
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            if application_details.exists():
+                application_details.update(
+                    application_type=application_type,
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    )
+            else:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type=application_type,
+                    form_type='Main Activity',
+                    ca_authority=request.session['ca_authority'],
+                    applicant_id=request.session['email'],
+                    colour_code=request.session['colour_code'],
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    application_status='P',
+                    service_id=request.session['service_id']
+                    )
         else:
             t_ec_industries_t1_general.objects.create(
                 application_no=application_no,
@@ -3369,19 +3672,19 @@ def save_energy_application(request):
                 application_status='P',
                 service_id=request.session['service_id']
                 )
-            t_workflow_dtls.objects.create(application_no=application_no, 
-                                            service_id=request.session['service_id'],
-                                            application_status='P',
-                                            action_date=None,
-                                            actor_id=request.session['login_id'],
-                                            actor_name=request.session['name'],
-                                            assigned_user_id=None,
-                                            assigned_role_id=None,
-                                            assigned_role_name=None,
-                                            result=None,
-                                            ca_authority=request.session['ca_authority'],
-                                            dzongkhag_thromde_id=dzongkhag_code
-                                        )
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                    service_id=request.session['service_id'],
+                                    application_status='P',
+                                    action_date=None,
+                                    actor_id=request.session['login_id'],
+                                    actor_name=request.session['name'],
+                                    assigned_user_id=None,
+                                    assigned_role_id=None,
+                                    assigned_role_name=None,
+                                    result=None,
+                                    ca_authority=request.session['ca_authority'],
+                                    dzongkhag_thromde_id=dzongkhag_code
+                                )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -3429,28 +3732,64 @@ def save_tourism_application(request):
         private_area_acre = request.POST.get('private_area_acre')
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
-        
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        if application_details.exists():
-            application_details.update(
-            application_type=application_type,
-            project_name=project_name,
-            project_category=project_category,
-            applicant_name=applicant_name,
-            address=address,
-            cid=cid,
-            contact_no=contact_no,
-            email=email,
-            focal_person=focal_person,
-            dzongkhag_code=dzongkhag_code,
-            gewog_code=gewog_code,
-            village_code=village_code,
-            industrial_area_acre=industrial_area_acre,
-            state_reserve_forest_acre=state_reserve_forest_acre,
-            private_area_acre=private_area_acre,
-            others_area_acre=others_area_acre,
-            total_area_acre=total_area_acre,
-            )
+        identifier = request.POST.get('identifier')
+
+        if(identifier == 'NC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(project_name=project_name)
+        elif(identifier == 'OC'):
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(applicant_name=applicant_name)
+        elif(identifier == 'DR'): # This is For Draft Applications
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            if application_details.exists():
+                application_details.update(
+                    application_type=application_type,
+                        project_name=project_name,
+                        project_category=project_category,
+                        applicant_name=applicant_name,
+                        address=address,
+                        cid=cid,
+                        contact_no=contact_no,
+                        email=email,
+                        focal_person=focal_person,
+                        dzongkhag_code=dzongkhag_code,
+                        gewog_code=gewog_code,
+                        village_code=village_code,
+                        industrial_area_acre=industrial_area_acre,
+                        state_reserve_forest_acre=state_reserve_forest_acre,
+                        private_area_acre=private_area_acre,
+                        others_area_acre=others_area_acre,
+                        total_area_acre=total_area_acre
+                    )
+            else:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type=application_type,
+                    form_type='Main Activity',
+                    ca_authority=request.session['ca_authority'],
+                    applicant_id=request.session['email'],
+                    colour_code=request.session['colour_code'],
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    application_status='P',
+                    service_id=request.session['service_id']
+                    )
         else:
             t_ec_industries_t1_general.objects.create(
                 application_no=application_no,
@@ -3479,19 +3818,19 @@ def save_tourism_application(request):
                 application_status='P',
                 service_id=request.session['service_id']
                 )
-            t_workflow_dtls.objects.create(application_no=application_no, 
-                                            service_id=request.session['service_id'],
-                                            application_status='P',
-                                            action_date=None,
-                                            actor_id=request.session['login_id'],
-                                            actor_name=request.session['name'],
-                                            assigned_user_id=None,
-                                            assigned_role_id=None,
-                                            assigned_role_name=None,
-                                            result=None,
-                                            ca_authority=request.session['ca_authority'],
-                                            dzongkhag_thromde_id=dzongkhag_code
-                                        )
+        t_workflow_dtls.objects.create(application_no=application_no, 
+                                    service_id=request.session['service_id'],
+                                    application_status='P',
+                                    action_date=None,
+                                    actor_id=request.session['login_id'],
+                                    actor_name=request.session['name'],
+                                    assigned_user_id=None,
+                                    assigned_role_id=None,
+                                    assigned_role_name=None,
+                                    result=None,
+                                    ca_authority=request.session['ca_authority'],
+                                    dzongkhag_thromde_id=dzongkhag_code
+                                )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -3576,49 +3915,60 @@ def submit_tourism_application(request):
 def name_change(request):
     workflow_details = t_workflow_dtls.objects.filter(application_status='A')
     application_details = t_ec_industries_t1_general.objects.all()
-
-    return (request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details})
+    
+    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details, 'identifier':'NC'})
 
 def ownership_change(request):
     workflow_details = t_workflow_dtls.objects.filter(application_status='A')
     application_details = t_ec_industries_t1_general.objects.all()
 
-    return (request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details})
+    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details, 'identifier':'OC'})
 
 def technology_change(request):
     workflow_details = t_workflow_dtls.objects.filter(application_status='A', service_id__in=['1', '2', '6'])
     application_details = t_ec_industries_t1_general.objects.all()
 
-    return (request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details})
+    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details, 'identifier':'TC'})
 
 def product_change(request):
     workflow_details = t_workflow_dtls.objects.filter(application_status='A', service_id='1')
     application_details = t_ec_industries_t1_general.objects.all()
 
-    return (request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details})
+    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details, 'identifier':'OC'})
 
 def capacity_change(request):
     workflow_details = t_workflow_dtls.objects.exclude(application_status='A', service_id='3')
     application_details = t_ec_industries_t1_general.objects.all()
 
-    return (request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details})
+    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details, 'identifier':'CC'})
 
 def area_change(request):
     workflow_details = t_workflow_dtls.objects.filter(application_status='A')
     application_details = t_ec_industries_t1_general.objects.all()
 
-    return (request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details})
+    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details, 'identifier':'AC'})
 
 def location_change(request):
     workflow_details = t_workflow_dtls.objects.filter(application_status='A')
     application_details = t_ec_industries_t1_general.objects.all()
 
-    return (request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details})
+    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details, 'identifier':'LC'})
 
 def get_other_modification_details(request):
     ec_reference_no = request.GET.get('ec_reference_no')
-    service_id = request.GET.get('service_id')
-    application_source = request.POST.get('application_source')
+    service_id = None
+    app_no = None
+    application_source = None
+    identifier = request.GET.get('identifier')
+
+    app_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+    for app_details in app_details:
+        service_id = app_details.service_id
+        app_no = app_details.application_no
+
+    work_details = t_workflow_dtls.objects.filter(application_no=app_no)
+    for work_details in work_details:
+        application_source = work_details.application_source
     
     if service_id == '1':
         if application_source == 'IBLS':
@@ -3635,10 +3985,10 @@ def get_other_modification_details(request):
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
-            identifier = 'OM'
 
-            return render(request, 'renewal/ea_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials, 'status':status,
-                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+            return render(request, 'renewal/ea_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
         else:
             application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
             partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3653,9 +4003,9 @@ def get_other_modification_details(request):
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
-            identifier = 'OM'
-            return render(request, 'renewal/iee_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+            return render(request, 'renewal/iee_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 
+                                                        'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '2':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3670,9 +4020,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        identifier = 'OM'
         return render(request, 'renewal/energy_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog,
+                                                     'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '3':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3687,9 +4037,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        identifier = 'OM'
-        return render(request, 'renewal/road_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+        return render(request, 'renewal/road_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog,
+                                                       'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '4':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3704,9 +4054,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        identifier = 'OM'
-        return render(request, 'renewal/transmission_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+        return render(request, 'renewal/transmission_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog,
+                                                       'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '5':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3721,9 +4071,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        identifier = 'OM'
-        return render(request, 'renewal/tourism_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+        return render(request, 'renewal/tourism_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '6':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3738,9 +4088,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        identifier = 'OM'
-        return render(request, 'renewal/ground_water_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+        return render(request, 'renewal/ground_water_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '7':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3755,9 +4105,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        identifier = 'OM'
-        return render(request, 'renewal/forest_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+        return render(request, 'renewal/forest_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '8':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3772,9 +4122,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        identifier = 'OM'
-        return render(request, 'renewal/quarry_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+        return render(request, 'renewal/quarry_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     elif service_id == '9':
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -3789,9 +4139,9 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        identifier = 'OM'
-        return render(request, 'renewal/general_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
+        return render(request, 'renewal/general_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'identifier':identifier, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
     
 # Draft Application Details
 def draft_application_list(request):

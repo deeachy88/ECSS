@@ -3,15 +3,27 @@
 <div id="other_modification_details">
     <div class="card mt-1">
         <div class="card-body">
-            <h5 class="card-title mb-0 text-right">EC Renewal</h5>
-            <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
-                <i class="ri-check-line me-2"></i>
-            </div>
+            {% if identifier == 'NC' %}
+                <h5 class="card-title mb-0 text-right">Name Change</h5>
+            {% elif identifier == 'OC' %}
+                <h5 class="card-title mb-0 text-right">Ownership Change</h5>
+            {% elif identifier == 'TC' %}
+                <h5 class="card-title mb-0 text-right">Technology Change</h5>
+            {% elif identifier == 'PC' %}
+                <h5 class="card-title mb-0 text-right">Product Change</h5>
+            {% elif identifier == 'CC' %}
+                <h5 class="card-title mb-0 text-right">Capacity Change</h5>
+            {% elif identifier == 'AC' %}
+                <h5 class="card-title mb-0 text-right">Area Change</h5>
+            {% else %}
+                <h5 class="card-title mb-0 text-right">Location Change</h5>
+            {% endif %}
             <div id="cardCollpase1" class="collapse pt-3 show">
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <form id="other_modification_form" method="post">
+                                <input type="hidden" id="identifier" value="{{identifier}}">
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Enter EC Number" name="ec_no" id="ec_no">
                                     <span class="input-group-btn input-group-append">

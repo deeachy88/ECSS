@@ -1,6 +1,6 @@
 {% extends 'common_dashboard.html' %}
 {% block content %}
-<div id="application_details">
+<div id="ec_renewal_details">
     <div class="card mt-1">
         <div class="card-body">
             <h5 class="card-title mb-0 text-right">EC Renewal</h5>
@@ -8,36 +8,46 @@
                 <i class="ri-check-line me-2"></i>
             </div>
             <div id="cardCollpase1" class="collapse pt-3 show">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="mb-3">
-                            <form id="ec_renewal_form" method="post">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Enter EC Number/Application No" name="ec_no" id="ec_no">
-                                    <span class="input-group-btn input-group-append">
-                                        <button class="btn btn-primary" type="button" onclick="getECDetails()">
-                                            <i class="uil uil-arrow-right"></i>
-                                        </button>
-                                    </span>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                <table id="alternative-page-datatable" class="table dt-responsive nowrap w-100">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Application No</th>
+                            <th scope="col">Service Name</th>
+                            <th scope="col">Application Source</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for application_details in application_details %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><button type="button" class="btn btn-link text-info mb-0" onclick="getECDetails('{{application_details.application_no}}','{{application_details.service_id}}','{{application_details.application_source}}')">{{application_details.application_no}}</button></td>
+                                {% for service_details in service_details %}
+                                    {% if application_details.service_id == service_details.service_id %}
+                                        <td>{{service_details.service_name}}</td>
+                                    {% endif %}
+                                {% endfor %}
+                                <td>{{application_details.application_source}}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No Data</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
-<div id="ec_renewal_details" style="display:none;">
 
-</div>
 <script>
-    function getECDetails()
+    function getECDetails(application_no,service_id,application_source)
     {
         $.ajax({
             type : "GET",
             url : "{% url 'ec_renewal' %}",
-            data :$('#ec_renewal_form').serialize(),
+            data :{'application_no':application_no, 'service_id':service_id, 'application_source':application_source},
             success : function(data)
             {
                 $('#ec_renewal_details').html(data);
