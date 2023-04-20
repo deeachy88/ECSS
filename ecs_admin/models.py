@@ -117,12 +117,6 @@ class t_location_field_office_mapping(models.Model):
     dzongkhag_code = models.ForeignKey(t_dzongkhag_master, on_delete=models.CASCADE, null=True, blank=True)
     competent_authority_id = models.IntegerField(default=None, blank=True, null=True)
 
-class t_app_status_master(models.Model):
-    status_id = models.AutoField(primary_key=True)
-    status_name = models.CharField(max_length=100)
-    status_type = models.CharField(max_length=20)
-    status_type_short_desc = models.CharField(max_length=200)
-
 class t_user_type_master(models.Model):
     user_type_id = models.AutoField(primary_key=True)
     user_type = models.CharField(max_length=250)

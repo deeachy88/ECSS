@@ -115,7 +115,7 @@ def add_user(request):
         t_user_master.objects.create(login_type="I", name=name, gender=gender,
                                         contact_number=contact_number, email_id=email,
                                         password=password_value, is_active="Y",agency_code=None,
-                                        logical_delete="N", last_login_date=None, created_by=request.session['login_id'],
+                                        logical_delete="N", last_login_date=None, created_by=None,
                                         created_on=date.today(), modified_by=None, modified_on=None, role_id_id=role)
     else:
         t_user_master.objects.create(login_type="I", name=name, gender=gender,
@@ -856,11 +856,19 @@ def manage_client(request):
         reg_clients.update(is_active="Y")
         reg_clients.update(password=password_value)
         accept_mail(request, name, email_id, password)
-        return redirect(new_client_registration)
     elif identifier == 'Reject':
         reg_clients.update(accept_reject="R")
         reject_mail(request, name, email_id)
-        return redirect(new_client_registration)
+    elif identifier == 'Reset':
+        password = get_random_password_string(8)
+        password_value = make_password(password)
+        reg_clients.update(password=password_value)
+        send_reset_pass_mail(name, email_id, password)
+    elif identifier == 'Activate':
+        reg_clients.update(is_active='Y')
+    elif identifier == 'Activate':
+        reg_clients.update(is_active='N')
+    return redirect(new_client_registration)
 
 def accept_mail(request, name, email_id, password):
     subject = 'Client Accepted'

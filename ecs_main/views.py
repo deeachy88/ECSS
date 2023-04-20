@@ -46,7 +46,7 @@ def view_application_details(request):
     workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
     for work_details in workflow_details:
         status = work_details.application_status
-        print(status)
+        print(application_no)
         if service_id == '1':
             if application_source == 'IBLS':
                 application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
@@ -108,7 +108,7 @@ def view_application_details(request):
             ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
             reviewer_list = t_user_master.objects.filter(role_id='3')
             return render(request, 'energy_application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog,
+                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog,'status':status,
                                                         'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details})
         elif service_id == '3':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)

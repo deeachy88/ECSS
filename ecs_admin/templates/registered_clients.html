@@ -37,11 +37,11 @@
                                                 {% csrf_token %}
                                                 <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="View" onclick="view_client_details('{{ client.proponent_type }}','{{client.proponent_name}}','{{client.address}}','{{client.contact_person}}','{{client.email_id}}','{{client.contact_number}}','{{client.dzongkhag_code}}','{{client.gewog_code}}','{{client.village_code}}')"><i class="mdi mdi-account-eye"></i></button>
                                                 {% if client.is_active == "Y" %}
-                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Deactivate" onclick="client_manage('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Deactivate')"><i class="uil uil-lock-alt"></i></button>
+                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Deactivate" onclick="client_manage('{{ client.login_id }}','{{client.email_id}}','{{client.name}}','Deactivate')"><i class="uil uil-lock-alt"></i></button>
                                                 {% else %}
-                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="client_manage('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Activate')"><i class="uil uil-unlock"></i></button>
+                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="client_manage('{{ client.login_id }}','{{client.email_id}}','{{client.name}}','Activate')"><i class="uil uil-unlock"></i></button>
                                                 {% endif %}
-                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Reset Password" onclick="client_manage('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Reset')"><i class="uil-key-skeleton"></i></button>
+                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Reset Password" onclick="client_manage('{{ client.login_id }}','{{client.email_id}}','{{client.name}}','Reset')"><i class="uil-key-skeleton"></i></button>
                                             </form>
                                         </div>
                                     </td>
