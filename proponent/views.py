@@ -1219,16 +1219,22 @@ def submit_iee_application(request):
     data = dict()
     try:
         application_no = request.POST.get('iee_disclaimer_application_no')
-        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-        if(ancillary_count > 0):
-            data['message'] = "not submitted"
-        else:
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(action_date=date.today())
+        identifier = request.POST.get('disc_identifier')
+        if identifier == 'OC' or identifier == 'NC':
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
             workflow_dtls.update(action_date=date.today())
-            insert_payment_details(application_no)
             data['message'] = "success"
+        else:
+            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+            if(ancillary_count > 0):
+                data['message'] = "not submitted"
+            else:
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                application_details.update(action_date=date.today())
+                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                workflow_dtls.update(action_date=date.today())
+                insert_payment_details(application_no)
+                data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -1921,16 +1927,22 @@ def submit_ea_application(request):
     data = dict()
     try:
         application_no = request.POST.get('ea_disclaimer_application_no')
-        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-        if(ancillary_count > 0):
-            data['message'] = "not submitted"
-        else:
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(action_date=date.today())
+        identifier = request.POST.get('disc_identifier')
+        if identifier == 'OC' or identifier == 'NC':
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
             workflow_dtls.update(action_date=date.today())
-            insert_payment_details(application_no)
             data['message'] = "success"
+        else:
+            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+            if(ancillary_count > 0):
+                data['message'] = "not submitted"
+            else:
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                application_details.update(action_date=date.today())
+                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                workflow_dtls.update(action_date=date.today())
+                insert_payment_details(application_no)
+                data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -2284,16 +2296,22 @@ def submit_transmission_application(request):
     data = dict()
     try:
         application_no = request.POST.get('transmission_disclaimer_application_no')
-        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-        if(ancillary_count > 0):
-            data['message'] = "not submitted"
-        else:
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(action_date=date.today())
+        identifier = request.POST.get('disc_identifier')
+        if identifier == 'OC' or identifier == 'NC':
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
             workflow_dtls.update(action_date=date.today())
-            insert_payment_details(application_no)
             data['message'] = "success"
+        else:
+            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+            if(ancillary_count > 0):
+                data['message'] = "not submitted"
+            else:
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                application_details.update(action_date=date.today())
+                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                workflow_dtls.update(action_date=date.today())
+                insert_payment_details(application_no)
+                data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -2304,16 +2322,22 @@ def submit_general_application(request):
     data = dict()
     try:
         application_no = request.POST.get('general_disclaimer_application_no')
-        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-        if(ancillary_count > 0):
-            data['message'] = "not submitted"
-        else:
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(action_date=date.today())
+        identifier = request.POST.get('disc_identifier')
+        if identifier == 'OC' or identifier == 'NC':
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
             workflow_dtls.update(action_date=date.today())
-            insert_payment_details(application_no)
             data['message'] = "success"
+        else:
+            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+            if(ancillary_count > 0):
+                data['message'] = "not submitted"
+            else:
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                application_details.update(action_date=date.today())
+                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                workflow_dtls.update(action_date=date.today())
+                insert_payment_details(application_no)
+                data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3042,17 +3066,23 @@ def save_forest_application(request):
 def submit_forest_application(request):
     data = dict()
     try:
-        application_no = request.POST.get('transmission_disclaimer_application_no')
-        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-        if(ancillary_count > 0):
-            data['message'] = "not submitted"
-        else:
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(action_date=date.today())
+        application_no = request.POST.get('forest_disclaimer_application_no')
+        identifier = request.POST.get('disc_identifier')
+        if identifier == 'OC' or identifier == 'NC':
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
             workflow_dtls.update(action_date=date.today())
-            insert_payment_details(application_no)
             data['message'] = "success"
+        else:
+            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+            if(ancillary_count > 0):
+                data['message'] = "not submitted"
+            else:
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                application_details.update(action_date=date.today())
+                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                workflow_dtls.update(action_date=date.today())
+                insert_payment_details(application_no)
+                data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3229,16 +3259,22 @@ def submit_ground_water_application(request):
     data = dict()
     try:
         application_no = request.POST.get('ground_water_disclaimer_application_no')
-        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-        if(ancillary_count > 0):
-            data['message'] = "not submitted"
-        else:
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(action_date=date.today())
+        identifier = request.POST.get('disc_identifier')
+        if identifier == 'OC' or identifier == 'NC':
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
             workflow_dtls.update(action_date=date.today())
-            insert_payment_details(application_no)
             data['message'] = "success"
+        else:
+            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+            if(ancillary_count > 0):
+                data['message'] = "not submitted"
+            else:
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                application_details.update(action_date=date.today())
+                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                workflow_dtls.update(action_date=date.today())
+                insert_payment_details(application_no)
+                data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3390,17 +3426,23 @@ def save_quarry_application(request):
 def submit_quarry_application(request):
     data = dict()
     try:
-        application_no = request.POST.get('transmission_disclaimer_application_no')
-        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-        if(ancillary_count > 0):
-            data['message'] = "not submitted"
-        else:
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(action_date=date.today())
+        application_no = request.POST.get('quarry_disclaimer_application_no')
+        identifier = request.POST.get('disc_identifier')
+        if identifier == 'OC' or identifier == 'NC':
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
             workflow_dtls.update(action_date=date.today())
-            insert_payment_details(application_no)
             data['message'] = "success"
+        else:
+            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+            if(ancillary_count > 0):
+                data['message'] = "not submitted"
+            else:
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                application_details.update(action_date=date.today())
+                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                workflow_dtls.update(action_date=date.today())
+                insert_payment_details(application_no)
+                data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3548,17 +3590,23 @@ def road_project_details_two(request):
 def submit_road_application(request):
     data = dict()
     try:
-        application_no = request.POST.get('transmission_disclaimer_application_no')
-        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-        if(ancillary_count > 0):
-            data['message'] = "not submitted"
-        else:
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(action_date=date.today())
+        application_no = request.POST.get('road_disclaimer_application_no')
+        identifier = request.POST.get('disc_identifier')
+        if identifier == 'OC' or identifier == 'NC':
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
             workflow_dtls.update(action_date=date.today())
-            insert_payment_details(application_no)
             data['message'] = "success"
+        else:
+            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+            if(ancillary_count > 0):
+                data['message'] = "not submitted"
+            else:
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                application_details.update(action_date=date.today())
+                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                workflow_dtls.update(action_date=date.today())
+                insert_payment_details(application_no)
+                data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3694,17 +3742,23 @@ def save_energy_application(request):
 def submit_energy_application(request):
     data = dict()
     try:
-        application_no = request.POST.get('transmission_disclaimer_application_no')
-        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-        if(ancillary_count > 0):
-            data['message'] = "not submitted"
-        else:
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(action_date=date.today())
+        application_no = request.POST.get('energy_disclaimer_application_no')
+        identifier = request.POST.get('disc_identifier')
+        if identifier == 'OC' or identifier == 'NC':
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
             workflow_dtls.update(action_date=date.today())
-            insert_payment_details(application_no)
             data['message'] = "success"
+        else:
+            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+            if(ancillary_count > 0):
+                data['message'] = "not submitted"
+            else:
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                application_details.update(action_date=date.today())
+                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                workflow_dtls.update(action_date=date.today())
+                insert_payment_details(application_no)
+                data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3894,17 +3948,23 @@ def save_tourism_sewerage_details(request):
 def submit_tourism_application(request):
     data = dict()
     try:
-        application_no = request.POST.get('transmission_disclaimer_application_no')
-        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-        if(ancillary_count > 0):
-            data['message'] = "not submitted"
-        else:
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(action_date=date.today())
+        application_no = request.POST.get('tourism_disclaimer_application_no')
+        identifier = request.POST.get('disc_identifier')
+        if identifier == 'OC' or identifier == 'NC':
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
             workflow_dtls.update(action_date=date.today())
-            insert_payment_details(application_no)
             data['message'] = "success"
+        else:
+            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+            if(ancillary_count > 0):
+                data['message'] = "not submitted"
+            else:
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                application_details.update(action_date=date.today())
+                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                workflow_dtls.update(action_date=date.today())
+                insert_payment_details(application_no)
+                data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -4424,7 +4484,19 @@ def update_draft_application(request):
             )
 
 def submit_renew_application(request):
-    return redirect(client_application_list)
+    data = dict()
+    try:
+        application_no = request.POST.get('tourism_disclaimer_application_no')
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        application_details.update(action_date=date.today())
+        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+        workflow_dtls.update(action_date=date.today())
+        #insert_payment_details(application_no)
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
 
 
 # ReportSubmission
