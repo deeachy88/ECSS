@@ -342,6 +342,7 @@ def save_iee_application(request):
         project_cost = request.POST.get('project_cost')
         project_duration = request.POST.get('project_duration')
         identifier = request.POST.get('identifier')
+        ec_reference_no = request.POST.get('ec_reference_no')
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -420,6 +421,46 @@ def save_iee_application(request):
                     service_id=request.session['service_id'],
                     application_source='ECSS'
                     )
+        elif identifier== 'TC' or identifier== 'PC' or identifier == 'LC' or identifier == 'CC':
+            application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+            for app_det in application_details:
+                t_ec_industries_t1_general.objects.create(
+                        application_no=application_no,
+                        application_type=application_type,
+                        form_type='Main Activity',
+                        ca_authority=app_det.ca_authority,
+                        applicant_id=request.session['email'],
+                        colour_code=app_det.colour_code,
+                        project_name=project_name,
+                        project_category=project_category,
+                        applicant_name=applicant_name,
+                        address=address,
+                        cid=cid,
+                        contact_no=contact_no,
+                        email=email,
+                        focal_person=focal_person,
+                        industry_type=industry_type,
+                        establishment_type=establishment_type,
+                        industry_classification=industry_classification,
+                        dzongkhag_code=dzongkhag_code,
+                        gewog_code=gewog_code,
+                        village_code=village_code,
+                        location_name=location_name,
+                        industrial_area_acre=industrial_area_acre,
+                        state_reserve_forest_acre=state_reserve_forest_acre,
+                        private_area_acre=private_area_acre,
+                        others_area_acre=others_area_acre,
+                        total_area_acre=total_area_acre,
+                        green_area_acre=green_area_acre,
+                        production_process_flow=production_process_flow,
+                        project_objective=project_objective,
+                        project_no_of_workers=project_no_of_workers,
+                        project_cost=project_cost,
+                        project_duration=project_duration,
+                        application_status='P',
+                        service_id=app_det.service_id,
+                        application_source='ECSS'
+                        )
         else:
             t_ec_industries_t1_general.objects.create(
                     application_no=application_no,
@@ -2591,6 +2632,7 @@ def save_road_application(request):
         bl_others_name = request.POST.get('bl_others_name')
         bl_others_distance = request.POST.get('bl_others_distance')
         identifier = request.POST.get('identifier')
+        ec_reference_no = request.POST.get('ec_reference_no')
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -2700,6 +2742,62 @@ def save_road_application(request):
                     application_status='P',
                     service_id=request.session['service_id']
                     )
+        elif identifier== 'TC' or identifier== 'PC' or identifier == 'LC' or identifier == 'CC':
+            application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+            for app_det in application_details:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type=application_type,
+                    form_type='Main Activity',
+                    ca_authority=app_det.ca_authority,
+                    applicant_id=request.session['email'],
+                    colour_code=app_det.colour_code,
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    bl_protected_area_name=bl_protected_area_name,
+                    bl_protected_area_distance=bl_protected_area_distance,
+                    bl_migratory_route_name=bl_migratory_route_name,
+                    bl_migratory_route_distance=bl_migratory_route_distance,
+                    bl_wetland_name=bl_wetland_name,
+                    bl_wetland_distance=bl_wetland_distance,
+                    bl_water_bodies_name=bl_water_bodies_name,
+                    bl_water_bodies_distance=bl_water_bodies_distance,
+                    bl_fmu_name=bl_fmu_name,
+                    bl_fmu_distance=bl_fmu_distance,
+                    bl_agricultural_name=bl_agricultural_name,
+                    bl_agricultural_distance=bl_agricultural_distance,
+                    bl_settlement_name=bl_settlement_name,
+                    bl_settlement_distance=bl_settlement_distance,
+                    bl_road_name=bl_road_name,
+                    bl_road_distance=bl_road_distance,
+                    bl_public_infra_name=bl_public_infra_name,
+                    bl_public_infra_distance=bl_public_infra_distance,
+                    bl_school_name=bl_school_name,
+                    bl_school_distance=bl_school_distance,
+                    bl_heritage_name=bl_heritage_name,
+                    bl_heritage_distance=bl_heritage_distance,
+                    bl_tourist_facility_name=bl_tourist_facility_name,
+                    bl_tourist_facility_distance=bl_tourist_facility_distance,
+                    bl_impt_installation_name=bl_impt_installation_name,
+                    bl_impt_installation_distance=bl_impt_installation_distance,
+                    bl_industries_name=bl_industries_name,
+                    bl_industries_distance=bl_industries_distance,
+                    bl_others=bl_others,
+                    bl_others_name=bl_others_name,
+                    bl_others_distance=bl_others_distance,
+                    application_status='P',
+                    service_id=app_det.service_id
+                )
         else:
             t_ec_industries_t1_general.objects.create(
                 application_no=application_no,
@@ -2797,6 +2895,7 @@ def save_general_application(request):
         total_area_acre = request.POST.get('total_area_acre')
 
         identifier = request.POST.get('identifier')
+        ec_reference_no = request.POST.get('ec_reference_no')
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -2853,6 +2952,36 @@ def save_general_application(request):
                     total_area_acre=total_area_acre,
                     application_status='P',
                     service_id=request.session['service_id']
+                    )
+        elif identifier== 'TC' or identifier== 'PC' or identifier == 'LC' or identifier == 'CC':
+            application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+            for app_det in application_details:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type=application_type,
+                    form_type='Main Activity',
+                    ca_authority=app_det.ca_authority,
+                    applicant_id=request.session['email'],
+                    colour_code=app_det.colour_code,
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    application_status='P',
+                    service_id=app_det.service_id
                     )
         else:
             t_ec_industries_t1_general.objects.create(
@@ -2929,6 +3058,7 @@ def save_forest_application(request):
         terrain_elevation = request.POST.get('terrain_elevation')
         terrain_slope = request.POST.get('terrain_slope')
         identifier = request.POST.get('identifier')
+        ec_reference_no = request.POST.get('ec_reference_no')
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -2990,6 +3120,38 @@ def save_forest_application(request):
                     application_status='P',
                     service_id=request.session['service_id']
                     )
+        elif identifier== 'TC' or identifier== 'PC' or identifier == 'LC' or identifier == 'CC':
+            application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+            for app_det in application_details:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type='Main Activity',
+                    ca_authority=app_det.ca_authority,
+                    applicant_id=request.session['email'],
+                    colour_code=app_det.colour_code,
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    max_evacuation_depth=max_evacuation_depth,
+                    terrain_elevation=terrain_elevation,
+                    terrain_slope=terrain_slope,
+                    application_status='P',
+                    service_id=app_det.service_id
+                )
         else:
             t_ec_industries_t1_general.objects.create(
                 application_no=application_no,
@@ -3085,6 +3247,7 @@ def save_ground_water_application(request):
         terrain_elevation = request.POST.get('terrain_elevation')
         terrain_slope = request.POST.get('terrain_slope')
         identifier = request.POST.get('identifier')
+        ec_reference_no = request.POST.get('ec_reference_no')
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -3150,6 +3313,40 @@ def save_ground_water_application(request):
                     application_status='P',
                     service_id=request.session['service_id']
                     )
+        elif identifier== 'TC' or identifier== 'PC' or identifier == 'LC' or identifier == 'CC':
+            application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+            for app_det in application_details:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type=application_type,
+                    form_type='Main Activity',
+                    ca_authority=app_det.ca_authority,
+                    applicant_id=request.session['email'],
+                    colour_code=app_det.colour_code,
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    max_evacuation_depth=max_evacuation_depth,
+                    land_form=land_form,
+                    terrain_elevation=terrain_elevation,
+                    terrain_slope=terrain_slope,
+                    application_status='P',
+                    service_id=app_det.service_id
+                )
         else:
             t_ec_industries_t1_general.objects.create(
                 application_no=application_no,
@@ -3271,6 +3468,7 @@ def save_quarry_application(request):
         terrain_elevation = request.POST.get('terrain_elevation')
         terrain_slope = request.POST.get('terrain_slope')
         identifier = request.POST.get('identifier')
+        ec_reference_no = request.POST.get('ec_reference_no')
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -3336,6 +3534,40 @@ def save_quarry_application(request):
                     application_status='P',
                     service_id=request.session['service_id']
                     )
+        elif identifier== 'TC' or identifier== 'PC' or identifier == 'LC' or identifier == 'CC':
+            application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+            for app_det in application_details:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type=application_type,
+                    form_type='Main Activity',
+                    ca_authority=app_det.ca_authority,
+                    applicant_id=request.session['email'],
+                    colour_code=app_det.colour_code,
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    actual_mineable_area=actual_mineable_area,
+                    green_belt_area=green_belt_area,
+                    terrain_elevation=terrain_elevation,
+                    terrain_slope=terrain_slope,
+                    application_status='P',
+                    service_id=app_det.service_id
+                )
         else:
             t_ec_industries_t1_general.objects.create(
                 application_no=application_no,
@@ -3587,6 +3819,7 @@ def save_energy_application(request):
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
         identifier = request.POST.get('identifier')
+        ec_reference_no = request.POST.get('ec_reference_no')
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -3644,6 +3877,36 @@ def save_energy_application(request):
                     application_status='P',
                     service_id=request.session['service_id']
                     )
+        elif identifier== 'TC' or identifier== 'PC' or identifier == 'LC' or identifier == 'CC':
+            application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+            for app_det in application_details:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type=application_type,
+                    form_type='Main Activity',
+                    ca_authority=app_det.ca_authority,
+                    applicant_id=request.session['email'],
+                    colour_code=app_det.colour_code,
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    application_status='P',
+                    service_id=app_det.service_id
+                )
         else:
             t_ec_industries_t1_general.objects.create(
                 application_no=application_no,
@@ -3733,6 +3996,7 @@ def save_tourism_application(request):
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
         identifier = request.POST.get('identifier')
+        ec_reference_no = request.POST.get('ec_reference_no')
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -3790,6 +4054,36 @@ def save_tourism_application(request):
                     application_status='P',
                     service_id=request.session['service_id']
                     )
+        elif identifier== 'TC' or identifier== 'PC' or identifier == 'LC' or identifier == 'CC':
+            application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+            for app_det in application_details:
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=None,
+                    application_type=application_type,
+                    form_type='Main Activity',
+                    ca_authority=app_det.ca_authority,
+                    applicant_id=request.session['email'],
+                    colour_code=app_det.colour_code,
+                    project_name=project_name,
+                    project_category=project_category,
+                    applicant_name=applicant_name,
+                    address=address,
+                    cid=cid,
+                    contact_no=contact_no,
+                    email=email,
+                    focal_person=focal_person,
+                    dzongkhag_code=dzongkhag_code,
+                    gewog_code=gewog_code,
+                    village_code=village_code,
+                    industrial_area_acre=industrial_area_acre,
+                    state_reserve_forest_acre=state_reserve_forest_acre,
+                    private_area_acre=private_area_acre,
+                    others_area_acre=others_area_acre,
+                    total_area_acre=total_area_acre,
+                    application_status='P',
+                    service_id=app_det.service_id
+                )
         else:
             t_ec_industries_t1_general.objects.create(
                 application_no=application_no,
@@ -3913,44 +4207,51 @@ def submit_tourism_application(request):
 
 #Other Modifications
 def name_change(request):
+    applicant = request.session['email']
     workflow_details = t_workflow_dtls.objects.filter(application_status='A')
-    application_details = t_ec_industries_t1_general.objects.all()
+    application_details = t_ec_industries_t1_general.objects.all(application_status='A',applicant_id=applicant)
     
     return render(request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details, 'identifier':'NC'})
 
 def ownership_change(request):
+    applicant = request.session['email']
     workflow_details = t_workflow_dtls.objects.filter(application_status='A')
-    application_details = t_ec_industries_t1_general.objects.all()
+    application_details = t_ec_industries_t1_general.objects.all(application_status='A',applicant_id=applicant)
 
     return render(request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details, 'identifier':'OC'})
 
 def technology_change(request):
+    applicant = request.session['email']
     workflow_details = t_workflow_dtls.objects.filter(application_status='A', service_id__in=['1', '2', '6'])
-    application_details = t_ec_industries_t1_general.objects.all()
+    application_details = t_ec_industries_t1_general.objects.all(application_status='A',applicant_id=applicant)
 
     return render(request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details, 'identifier':'TC'})
 
 def product_change(request):
+    applicant = request.session['email']
     workflow_details = t_workflow_dtls.objects.filter(application_status='A', service_id='1')
-    application_details = t_ec_industries_t1_general.objects.all()
+    application_details = t_ec_industries_t1_general.objects.all(application_status='A',applicant_id=applicant)
 
     return render(request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details, 'identifier':'OC'})
 
 def capacity_change(request):
+    applicant = request.session['email']
     workflow_details = t_workflow_dtls.objects.exclude(application_status='A', service_id='3')
-    application_details = t_ec_industries_t1_general.objects.all()
+    application_details = t_ec_industries_t1_general.objects.all(application_status='A',applicant_id=applicant)
 
     return render(request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details, 'identifier':'CC'})
 
 def area_change(request):
+    applicant = request.session['email']
     workflow_details = t_workflow_dtls.objects.filter(application_status='A')
-    application_details = t_ec_industries_t1_general.objects.all()
+    application_details = t_ec_industries_t1_general.objects.all(application_status='A',applicant_id=applicant)
 
     return render(request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details, 'identifier':'AC'})
 
 def location_change(request):
+    applicant = request.session['email']
     workflow_details = t_workflow_dtls.objects.filter(application_status='A')
-    application_details = t_ec_industries_t1_general.objects.all()
+    application_details = t_ec_industries_t1_general.objects.all(application_status='A',applicant_id=applicant)
 
     return render(request, 'other_modification_details.html', {'workflow_details':workflow_details, 'application_details':application_details, 'identifier':'LC'})
 
