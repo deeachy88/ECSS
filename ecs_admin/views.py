@@ -1,6 +1,7 @@
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 from django.utils import timezone
+import requests,json
 
 from ecs_admin.models import t_competant_authority_master, t_user_master, t_security_question_master, t_role_master, t_service_master, \
     t_fees_schedule, t_bsic_code, t_forgot_password, \
@@ -1095,3 +1096,35 @@ def publications(request):
     return render(request, 'publications.html', {'file_attachment': file_attachment,
                                                  'publication_details': publication_details})
 
+# CITIZEN DETAILS
+def check_cid_exists(request):
+    data = dict()
+    cid = request.GET.get('cid')
+    message_count = t_user_master.objects.filter(cid=cid, login_type='C').count()
+    if message_count > 0:
+        data['count'] = message_count
+    else:
+        BASE_URL = 'https://staging-datahub-apim.dit.gov.bt/dcrc_individualcitizendetailapi/1.0.0/citizendata/' + cid
+        token = get_auth_token()
+        headers = {'Authorization': "Bearer {}".format(token)}
+        response = requests.get(BASE_URL, headers=headers, verify=False)
+        print(response.json())
+        data['response'] = response.json()
+    return JsonResponse(data)
+
+
+def get_auth_token():
+    """
+    get an auth token
+    """
+    credentials = {'client_id': 'Nx0tb25S3l87K6SmxnoTS_3FRjca',
+                   'client_secret': 'UiHRV8fI6iMX4iQwIfVSiEG7AeUa',
+                   'grant_type': 'client_credentials'}
+
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+
+    res = requests.post('https://stg-sso.dit.gov.bt/oauth2/token', params=credentials,
+                        headers=headers,verify=False)
+
+    json = res.json()
+    return json["access_token"]

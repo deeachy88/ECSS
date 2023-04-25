@@ -105,7 +105,9 @@ urlpatterns = [
     path('add_bsic_code_master', views.add_bsic_code_master, name='add_bsic_code_master'),
     path('get_bsic_code_details/<int:bsic_id>', views.get_bsic_code_details, name='get_bsic_code_details'),
     path('edit_bsic_code_master', views.edit_bsic_code_master, name='edit_bsic_code_master'),
-    path('delete_bsic_code_master', views.delete_bsic_code_master, name='delete_bsic_code_master')
+    path('delete_bsic_code_master', views.delete_bsic_code_master, name='delete_bsic_code_master'),
+
+    path('check_cid_exists', views.check_cid_exists, name='check_cid_exists'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

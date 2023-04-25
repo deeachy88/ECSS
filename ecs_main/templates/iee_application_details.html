@@ -2053,10 +2053,10 @@
                                         <div class="card-widgets">
                                             <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#draft_ec_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                         </div>
-                                        <h5 class="card-title mb-0">Attachments</h5>
+                                        <h5 class="card-title mb-0">EC Draft</h5>
                                         <div id="cardCollpase7" class="collapse pt-3 show">
-                                            <div id="draft_ec_attachment">
-                                                {% include 'file_attachment_page.html' %}
+                                            <div id="draft_ec_details">
+                                                {% include 'ec_details.html' %}
                                             </div>
                                         </div>
                                     </div>
@@ -2326,10 +2326,19 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">EC Draft Attach</label>
-                        <input type="file" name="draft_ec_attach" class="form-control" id="draft_ec_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                        <label class="form-label fw-bold">EC Heading</label>
+                        <input type="text" name="ec_heading" class="form-control" id="ec_heading">
                     </div>
-                    <div class="alert alert-danger" id="draft_ec_attachrrorMsg" style="display:none"></div>
+                    <div class="alert alert-danger" id="ec_headingErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">EC Terms</label>
+                        <input type="text" name="ec_terms" class="form-control" id="ec_terms">
+                    </div>
+                    <div class="alert alert-danger" id="ec_termsErrorMsg" style="display:none"></div>
                 </div>
             </div>
           </div>
@@ -2533,6 +2542,7 @@
         }
         
     }
+    
     function save_ec_draft()
     {
         let file_length = document.getElementById("draft_ec_attach");

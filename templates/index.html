@@ -281,7 +281,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Proponent Type</label>
-                    <select id="proponent_type" name="proponent_type" class="form-select">
+                    <select id="proponent_type" name="proponent_type" class="form-select" onchange="show_details(this.value)">
                         <option value="">--SELECT--</option>
                         {% for proponent_type in proponent_type %}
                             <option value="{{ proponent_type.proponent_type_id }}">{{ proponent_type.proponent_type_name }}</option>
@@ -289,6 +289,13 @@
                     </select>
                 </div>
                 <div id="proponent_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+            </div>
+            <div class="col-lg-6 cid_details" style="display: none;">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">CID</label>
+                    <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onchange="getCitizenDetails(this.value)">
+                </div>
+                <div id="cidErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
@@ -340,8 +347,9 @@
                             <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
                         {% endfor %}
                     </select>
+                    <input type="text" id="i_dzongkhag" name="i_dzongkhag" class="form-control" style="display: none;" disabled>
                 </div>
-                <div id="dzongkhagErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                <div id="dzongkhagErrorMsg" class="alert alert-danger" role="alert"  style="display: none;"></div>
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
@@ -352,6 +360,7 @@
                             <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
                         {% endfor %}
                     </select>
+                    <input type="text" id="i_gewog" name="i_gewog" class="form-control" style="display: none;" disabled>
                 </div>
                 <div id="gewogErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
             </div>
@@ -366,6 +375,7 @@
                             <option value="{{ village.village_code }}">{{ village.village_name }}</option>
                         {% endfor %}
                     </select>
+                    <input type="text" id="i_village" name="i_village" class="form-control" style="display: none;" disabled>
                 </div>
                 <div id="villageErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
             </div>
@@ -721,6 +731,83 @@
 			}
 		});
     }
+
+    function show_details(value)
+    {
+        if (value=="4")
+        {
+            $('#dzongkhag').hide();
+            $('#gewog').hide();
+            $('#village').hide();
+            $('.cid_details').show();
+            $('#i_dzongkhag').show();
+            $('#i_gewog').show();
+            $('#i_village').show();
+        }
+        else
+        {
+            $('#dzongkhag').show();
+            $('#gewog').show();
+            $('#village').show();
+            $('.cid_details').hide();
+            $('#i_dzongkhag').hide();
+            $('#i_gewog').hide();
+            $('#i_village').hide();
+        }
+    }
+    function getCitizenDetails(cid)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'check_cid_exists' %}",
+            data :{'cid':cid},
+            success : function(data)
+            {
+                if(data.count > 0)
+                {
+                    $('#cid').val("");
+                    $('#i_proponent_name').val("");
+                    $('#i_dzongkhag').val("");
+                    $('#i_gewog').val("");
+                    $('#i_village').val("");
+                    $('#cidErrorMsg').html("CID Already Exists.Try With Another one");
+                    $('#cidErrorMsg').show();
+                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    const myObj =data.response;
+                    alert(myObj);
+                    if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+                    {
+                        $('#cid').val("");
+                        $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                        $('#cidErrorMsg').show();
+                        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                        var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                        var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                        if (middleName == null)
+                        {
+                            middleName = "";
+                        }
+                        var CitizenName = firstName + " " + middleName + " " + lastName;
+                        var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+                        var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+                        var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+                        $('#i_proponent_name').val(CitizenName);
+                        $('#i_dzongkhag').val(dzongkhagName);
+                        $('#i_gewog').val(gewogName);
+                        $('#i_village').val(villageName);
+                    }
+                }
+            }
+        });
+    }
+
     </script>
 </body>
 </html>

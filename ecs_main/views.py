@@ -510,33 +510,6 @@ def forward_application(request):
         data['message'] = "failure"
     return JsonResponse(data)
 
-
-def save_draft_ec_attachment(request):
-    data = dict()
-    draft_ec_attach = request.FILES['draft_ec_attach']
-    app_no = request.POST.get('application_no')
-    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + draft_ec_attach.name
-    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/EC/")
-    if fs.exists(file_name):
-        data['form_is_valid'] = False
-    else:
-        fs.save(file_name, draft_ec_attach)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/EC" + "/" + file_name
-        data['form_is_valid'] = True
-        data['file_url'] = file_url
-        data['file_name'] = file_name
-    return JsonResponse(data)
-
-def save_draft_ec_attachment_details(request):
-    file_name = request.POST.get('filename')
-    file_url = request.POST.get('file_url')
-    application_no = request.POST.get('application_no')
-
-    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='DEC')
-    file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='DEC')
-
-    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
-
 def save_lu_attachment(request):
     data = dict()
     lu_attach = request.FILES['lu_attach']
@@ -563,6 +536,15 @@ def save_lu_attachment_details(request):
 
     return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
 
+def save_draft_ec_details(request):
+    application_no = request.POST.get('application_no')
+    ec_heading = request.POST.get('ec_heading')
+    ec_terms = request.POST.get('ec_terms')
+
+    t_ec_industries_t11_ec_details.objects.create(application_no=application_no, ec_heading=ec_heading, ec_terms=ec_terms)
+    ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
+
+    return render(request, 'ec_draft_details.html', {'ec_details':ec_details})
 
 # Inspection Report
 def inspection_list(request):

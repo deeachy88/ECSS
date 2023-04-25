@@ -15,9 +15,7 @@ urlpatterns = [
     path('validate_receipt_no', views.validate_receipt_no, name='validate_receipt_no'),
     path('save_eatc_attachment', views.save_eatc_attachment, name='save_eatc_attachment'),
     path('save_eatc_attachment_details', views.save_eatc_attachment_details, name='save_eatc_attachment_details'),
-    path('save_draft_ec_attachment', views.save_draft_ec_attachment, name='save_draft_ec_attachment'),
-    path('save_draft_ec_attachment_details', views.save_draft_ec_attachment_details, name='save_draft_ec_attachment_details'),
-    path('save_lu_attachment', views.save_lu_attachment, name='save_lu_attachment'),
+    path('save_draft_ec_details', views.save_draft_ec_details, name='save_draft_ec_details'),
     path('save_lu_attachment_details', views.save_lu_attachment_details, name='save_lu_attachment_details'),
 
 #InspectionMonitoring
