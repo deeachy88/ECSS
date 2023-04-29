@@ -1,0 +1,996 @@
+<div class="card mt-1">
+    <div class="card-body">
+        <h5 class="card-title mb-0 text-right">EC Renewal Details</h5>
+        <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
+            <i class="ri-check-line me-2"></i>
+        </div>
+        <div id="cardCollpase1" class="collapse pt-3 show">
+            {% for application_details in application_details %} 
+            <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Name of Project</label>
+                            <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Applicant Name</label>
+                            <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
+                        </div>
+                        <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Address</label>
+                            <input type="text" name="address" class="form-control" id="address" value="{{ application_details.address }}" disabled>
+                        </div>
+                        <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Contact No</label>
+                            <input type="number" min="1"  name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{ application_details.contact_no }}" disabled>
+                        </div>
+                        <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Email</label>
+                            <input type="email" name="email" class="form-control" id="email" value="{{ application_details.email }}" disabled>
+                        </div>
+                        <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
+                            <textarea class="form-control" id="focal_person" name="focal_person" rows="3" disabled>{{ application_details.focal_person }}</textarea>
+                        </div>
+                    </div>
+                    <div id="focal_personErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
+                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Dzongkhag/Thromde</label>
+                            <select class="form-select" name="dzo_throm"  id="dzo_throm" disabled>
+                                {% for dzongkhag in dzongkhag %}
+                                    <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                        {{ dzongkhag.dzongkhag_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Gewog</label>
+                            <select class="form-select" name="gewog" id="gewog" disabled>
+                                {% for gewog in gewog %}
+                                    <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                        {{ gewog.gewog_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Village/Chiwog</label>
+                            <select class="form-select" name="vil_chiwog" id="vil_chiwog" disabled>
+                                {% for village in village %}
+                                <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                    {{ village.village_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Name of Particular Project Site</label>
+                            <input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                    <i class="uil-folder-heart me-1 h4 align-middle"></i> EC Details
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">EC Reference No</label>
+                            <input type="text" name="ec_reference_no" class="form-control" id="ec_reference_no" value="{{ application_details.ec_reference_no }}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">EC Issue Date</label>
+                            <input type="text" name="ec_approve_date" class="form-control" id="ec_approve_date" value="{{ application_details.ec_approve_date }}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">EC Expiry Date</label>
+                            <input type="text" name="ec_expiry_date" class="form-control" id="ec_expiry_date" value="{{ application_details.ec_expiry_date }}" disabled>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="alert alert-warning border-0 rounded-0" role="alert">
+                <i class="uil-folder-heart me-1 h4 align-middle"></i> Description of the compliance to EC terms and conditions
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-0"></h5>
+                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                <div id="renewal_file_attachment">
+                                    {% include 'ec_details.html' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Any other initiatives undertaken other than stipulated in the EC </label>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Remarks </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-widgets">
+                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#renewal_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                        </div>
+                        <h5 class="card-title mb-0">Attachments</h5>
+                        <div id="cardCollpase7" class="collapse pt-3 show">
+                            <div id="renewal_file_attachment">
+                                {% include 'file_attachment_page.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-body" id="reviewer_details_accordian" style="display:none;">
+    <div class="alert alert-primary">Reviewer Details</div>
+        <form method="post" id="reviewer_form">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Is The Information Complete?</label>
+                        <div class="mt-2">
+                            <div class="form-check form-check-inline">
+                                <input type="radio" id="customRadio3" name="information" class="form-check-input"  value="Yes" onclick="check_information_radio(this.value)">
+                                <label class="form-check-label" for="customRadio3">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" id="customRadio4" name="information" class="form-check-input"  value="No" onclick="check_information_radio(this.value)">
+                                <label class="form-check-label" for="customRadio4">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="informationErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
+                <div class="row additional_info_letter" style="display: none;">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Additional Information Letter</label>
+                            <textarea class="form-control" id="additional_info" name="additional_info" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
+                <div class="row additional_payment_info" style="display: none;">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Is There Additional Payment?</label>
+                            <div class="mt-2">
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" id="customRadio3" name="addtional_payment" class="form-check-input"  value="Yes" onclick="check_eatc_addtional_payment(this.value)">
+                                    <label class="form-check-label" for="customRadio3">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" id="customRadio4" name="addtional_payment" class="form-check-input"  value="No" onclick="check_eatc_addtional_payment(this.value)">
+                                    <label class="form-check-label" for="customRadio4">No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
+                <div class="col-md-12 eatc_attachment_div" style="display: none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-widgets">
+                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#eatc_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                            </div>
+                            <h5 class="card-title mb-0">Attachments</h5>
+                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                <div id="eatc_file_attachment">
+                                    {% include 'file_attachment_page.html' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row fines_penalty_div" style="display: none;">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Is There Fines And Penalties?</label>
+                            <div class="mt-2">
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" id="customRadio3" name="fines_penalty" class="form-check-input"  value="Yes" onclick="check_fines_and_penalty(this.value)">
+                                    <label class="form-check-label" for="customRadio3">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" id="customRadio4" name="fines_penalty" class="form-check-input"  value="No" onclick="check_fines_and_penalty(this.value)">
+                                    <label class="form-check-label" for="customRadio4">No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
+                
+                <div class="row rectification_div" style="display: none;">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Is There Rectification/on hold/further studies/clarification?</label>
+                            <div class="mt-2">
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" id="customRadio3" name="rectification" class="form-check-input"  value="Yes" onclick="check_rectification(this.value)">
+                                    <label class="form-check-label" for="customRadio3">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" id="customRadio4" name="rectification" class="form-check-input"  value="No" onclick="check_rectification(this.value)">
+                                    <label class="form-check-label" for="customRadio4">No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="rectificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
+                <div class="col-md-12 lu_attachment_div" style="display: none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-0">Attachments</h5>
+                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                    {% include 'file_attachment_page.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 draft_ec_div" style="display: none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-widgets">
+                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#draft_ec_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                            </div>
+                            <h5 class="card-title mb-0">EC Draft</h5>
+                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                <div id="draft_ec_details">
+                                    {% include 'ec_details.html' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-success border-0 rounded-0" role="alert" id="reviewer_application_successMsg" style="display:none">
+                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+            </div>
+            <div class="alert alert-danger border-0 rounded-0" role="alert" id="reviewer_application_errorMsg" style="display:none">
+                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+            </div>
+            <div class="row  mt-3 AL_button">
+                <div class="mb-3">
+                    <a href="#" class="btn btn-success" onclick="forwardApplication('AL')">
+                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
+                </div>
+            </div>
+            <div class="row  mt-3">
+                <div class="mb-3 EATC_button" style="display: none;">
+                    <a href="#" class="btn btn-success" onclick="forwardApplication('EATC')">
+                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="mb-3"></div>
+                    <div class="LU_button" style="display:none;">
+                        <a href="#" class="btn btn-success" onclick="forwardApplication('LU')">
+                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3 rectification_button" style="display:none;">
+                <div class="mb-3">
+                    <a href="#" class="btn btn-success" onclick="forwardApplication('OH')">
+                        <i class="mdi mdi-alert-octagon me-1"></i> On Hold </a>
+                    <a href="#" class="btn btn-success" onclick="forwardApplication('RS')">
+                        <i class="uil uil-history-alt me-1"></i> Resubmit </a>
+                    <a href="#" class="btn btn-success" onclick="forwardApplication('V')">
+                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="card-body" id="client_details_accordian" style="display:none;">
+    <div class="alert alert-primary">Client Details</div>
+        <form method="post" id="client_form">
+            {% csrf_token %}
+            <div class="row">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Additional Information Letter</label>
+                            <textarea class="form-control" id="additional_info" name="additional_info" rows="2">{{application_details.additional_info}}</textarea>
+                        </div>
+                    </div>
+                    <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
+                <div class="col-md-12 eatc_attachment_details" style="display: none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-0">EATC Attachment</h5>
+                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                {% include 'file_attachment_page.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-success border-0 rounded-0" role="alert" id="client_application_successMsg" style="display:none">
+                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                </div>
+                <div class="alert alert-danger border-0 rounded-0" role="alert" id="client_application_errorMsg" style="display:none">
+                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3 ALS_button" style="display:none;">
+                        <div class="text-sm-end">
+                            <a href="#" class="btn btn-success" onclick="forwardApplication('ALS')">
+                                <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                        </div>
+                    </div>
+                    <div class="mb-3 FEATC_button" style="display:none;">
+                        <div class="text-sm-end">
+                            <a href="#" class="btn btn-success" onclick="forwardApplication('FEATC')">
+                                <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                        </div>
+                    </div>
+                    <div class="mb-3 RSS_button" style="display:none;">
+                        <div class="text-sm-end">
+                            <a href="#" class="btn btn-success" onclick="forwardApplication('RSS')">
+                                <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                        </div>
+                    </div>
+                    <div class="mb-3 LUS_button" style="display:none;">
+                        <div class="text-sm-end">
+                            <a href="#" class="btn btn-success" onclick="forwardApplication('LUS')">
+                                <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="card-body" id="client_details_accordian" style="display:none;">
+    <div class="alert alert-primary">Verifier Details</div>
+        <form method="post" id="verifier_form">
+            {% csrf_token %}
+            <div class="row forwardTo">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Forward To</label>
+                        <select class="form-control" name="forward_to"  id="forward_to">
+                            <option value="">--SELECT REVIEWER--</option>
+                            {% for reviewer_list in reviewer_list %}
+                                <option value="{{ reviewer_list.login_id }}">{{ reviewer_list.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="forward_toErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
+                <div class="row verifier_additional_info_letter" style="display: none;">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Additional Information Letter</label>
+                            <textarea class="form-control" id="additional_info" name="additional_info" rows="2">{{application_details.additional_info}}</textarea>
+                        </div>
+                    </div>
+                    <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
+                <div class="col-md-12 ec_draft_div" style="display: none;">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-widgets mb-3">
+                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#ec_draft_details_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                </div>
+                                <div class="collapse pt-3 show">
+                                    <div id="ec_draft_details_div">
+                                        {% include 'ec_draft_details.html' %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">EC Expiry Date</label>
+                                <input type="text" name="ec_expiry_date" class="form-control" id="ec_expiry_date" value="{{ application_details.project_name }}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-success border-0 rounded-0" role="alert" id="verifier_application_successMsg" style="display:none">
+                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                </div>
+                <div class="alert alert-danger border-0 rounded-0" role="alert" id="verifier_application_errorMsg" style="display:none">
+                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                </div>
+                <div class="col-lg-6 mt-3">
+                    <div class="mb-3 R_button" style="display:none;">
+                        <div class="text-sm-end">
+                            <a href="#" class="btn btn-success" onclick="forwardApplication('R')">
+                                <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Reviewer </a>
+                        </div>
+                    </div>
+                    <div class="mb-3 ALA_button" style="display:none;">
+                        <div class="text-sm-end">
+                            <a href="#" class="btn btn-success" onclick="forwardApplication('ALA')">
+                                <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Approve </a>
+                        </div>
+                    </div>
+                    <div class="mb-3 ALR_button" style="display:none;">
+                        <div class="text-sm-end">
+                            <a href="#" class="btn btn-danger" onclick="forwardApplication('ALR')">
+                                <i class="uil uil-multiply me-1"></i> Reject </a>
+                        </div>
+                    </div>
+                    <div class="mb-3 approveButton" style="display:none;">
+                        <div class="text-sm-end">
+                            <a href="#" class="btn btn-danger" onclick="forwardApplication('A')">
+                                <i class="uil uil-multiply me-1"></i> Approve </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <form method="post" id="eatc_attachment_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal fade" id="eatc_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Attach</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Attachment</label>
+                            <input type="file" name="eatc_attach" class="form-control" id="eatc_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                        </div>
+                        <div class="alert alert-danger" id="eatc_attachErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="save_eatc_attachment()">Add</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+    </form>
+    
+    <form method="post" id="lu_attachment_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal fade" id="lu_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Attach</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Attachment</label>
+                            <input type="file" name="lu_attach" class="form-control" id="lu_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                        </div>
+                        <div class="alert alert-danger" id="lu_attachErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="save_lu_attachment()">Add</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+    </form>
+
+    <form method="post" id="draft_ec_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal fade" id="draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;EC Draft</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">EC Heading</label>
+                            <input type="text" name="ec_heading" class="form-control" id="ec_heading">
+                        </div>
+                        <div class="alert alert-danger" id="ec_headingErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">EC Terms</label>
+                            <input type="text" name="ec_terms" class="form-control" id="ec_terms">
+                        </div>
+                        <div class="alert alert-danger" id="ec_termsErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+                <div class="alert alert-success border-0 rounded-0" role="alert" id="ec_draft_successMsg" style="display:none">
+                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                </div>
+                <div class="alert alert-danger border-0 rounded-0" role="alert" id="ec_draft_errorMsg" style="display:none">
+                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                </div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="save_ec_draft()">Add</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+    </form>
+    <script>
+        $(function() {
+            let status = $('#status').val();
+    
+            if(status == 'P' || status == 'DEC' || status == 'AL')
+            {
+                if(status == 'P')
+                {
+                    $('.R_button').show();
+                }
+                else if(status == 'AL')
+                {
+                    $('.verifier_additional_info_letter').show();
+                    $('.ALR_button').show();
+                    $('.ALA_button').show();
+                }
+                else if(status == 'DEC')
+                {
+                    $('.forwardTo').hide();
+                    $('.approveButton').show();
+                    $('.ec_draft_div').show();
+                }
+                $('#verifier_details_accordian').show();
+                
+            }
+            else if(status == 'R' || status == 'ALS' || status == 'FEATC' || status == 'RSS' || status == 'LUS')
+            {
+                if(status == 'R')
+                {
+                    $('input[name="information"]').focus();
+                    $('.AL_button').show();
+                    
+                }
+                else if(status == 'ALS')
+                {
+                    $('.EATC_button').show();
+                }
+                else if(status == 'FEATC')
+                {
+                    $('.rectification_button').show();
+                }
+                else if(status == 'LUS')
+                {
+                    $('.LU_button').show();
+                    $('.lu_attachment_div').show();
+                }
+                
+                $('#reviewer_details_accordian').show();
+                
+            }
+            else if(status == 'ALR' || status == 'ALA' || status == 'EATC' || status == 'RS' || status == 'LU')
+            {
+                if(status == 'ALR' || status == 'ALA')
+                {
+                    $('.ALS_button').show();
+                }
+                else if(status == 'EATC')
+                {
+                    $('.FEATC_button').show();
+                }
+                else if(status == 'RS')
+                {
+                    $('.RSS_button').show();
+                }
+                else if(status == 'LU')
+                {
+                    $('.LUS_button').show();
+                }
+                $('#client_details_accordian').show();
+                $('#client_details_accordian').focus();
+            }
+        });
+    
+        function forwardApplication(identifier)
+        {
+            let application_no = $('#application_no').val();
+    
+            if(identifier == 'R' || identifier == 'ALS')
+            {
+                let forward_to = $('#forward_to').val();
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'forward_application' %}",
+                    data : {'application_no':application_no, 'identifier':identifier, 'forward_to':forward_to, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    success : function(data)
+                    {
+                        if(data.message == 'success')
+                        {
+                            $('#verifier_application_successMsg').html("Application Forwarded Successfully");
+                            $('#verifier_application_successMsg').show();
+                            setTimeout(function()
+                            {
+                                $('#verifier_application_successMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+                            setTimeout(function() {
+                                location.reload();
+                            }, 2000);
+                        }
+                        else
+                        {
+                            $('#verifier_application_errorMsg').html("Please Check And Try Again");
+                            $('#verifier_application_errorMsg').show();
+                            setTimeout(function()
+                            {
+                                $('#verifier_application_errorMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+                            setTimeout(function() {
+                                location.reload();
+                            }, 2000);
+                        }
+                    }
+                });
+            }
+            else
+            {
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'forward_application' %}",
+                    data : {'application_no':application_no, 'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    success : function(data)
+                    {
+                        if(data.message == 'success')
+                        {
+                            $('#verifier_application_successMsg').html("Application Forwarded Successfully");
+                            $('#verifier_application_successMsg').show();
+                            setTimeout(function()
+                            {
+                                $('#verifier_application_successMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+                            setTimeout(function() {
+                                location.reload();
+                            }, 2000);
+                        }
+                        else
+                        {
+                            $('#verifier_application_errorMsg').html("Please Check And Try Again");
+                            $('#verifier_application_errorMsg').show();
+                            setTimeout(function()
+                            {
+                                $('#verifier_application_errorMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+                            setTimeout(function() {
+                                location.reload();
+                            }, 2000);
+                        }
+                    }
+                });
+            }
+        }
+    
+        function check_information_radio(value)
+        {
+            if(value == 'Yes')
+            {
+                $('.additional_payment_info').show();
+                $('.additional_info_letter').hide();
+            }
+            else
+            {
+                
+                $('.additional_info_letter').show();
+                $('.additional_payment_info').hide();
+            }
+        }
+    
+        function check_eatc_addtional_payment(value)
+        {
+            if(value == 'Yes')
+            {
+                $('.eatc_attachment_div').hide();
+            }
+            else
+            {
+                $('.eatc_attachment_div').show();
+            }
+        }
+    
+        function check_fines_and_penalty(value)
+        {
+            if(value == 'No')
+            {
+                $('.lu_attachment_div').show();
+            }
+            else
+            { 
+                $('.lu_attachment_div').hide();
+            }
+            
+        }
+        
+        function save_ec_draft()
+        {
+            let application_no = $('#application_no').val();
+            let ec_heading = $('#ec_heading').val();
+            let ec_terms = $('#ec_terms').val();
+
+            if(ec_heading == "")
+            {
+                $('#ec_headingErrorMsg').html("Enter EC Heading");
+                $('#ec_headingErrorMsg').show();
+                $('#ec_headingErrorMsg').delay(2000).fadeOut('slow');
+                $('#ec_heading').focus();
+            }
+            else if(ec_terms == "")
+            {
+                $('#ec_termsErrorMsg').html("Enter EC Terms");
+                $('#ec_termsErrorMsg').show();
+                $('#ec_termsErrorMsg').delay(2000).fadeOut('slow');
+                $('#ec_terms').focus();
+            }
+            else
+            {
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'save_draft_ec_details' %}",
+                    data : {'application_no':application_no, 'ec_heading':ec_heading,'ec_terms':ec_terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    success : function(data)
+                    {
+                        if(data.message == 'success')
+                        {
+                            $('#ec_draft_successMsg').html("Saved Successfully");
+                            $('#ec_draft_successMsg').show();
+                            setTimeout(function()
+                            {
+                                $('#ec_draft_successMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+                            setTimeout(function() {
+                                location.reload();
+                            }, 2000);
+                        }
+                        else
+                        {
+                            $('#ec_draft_errorMsg').html("Please Check And Try Again");
+                            $('#ec_draft_errorMsg').show();
+                            setTimeout(function()
+                            {
+                                $('#ec_draft_errorMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+                            setTimeout(function() {
+                                location.reload();
+                            }, 2000);
+                        }
+                    }
+                });
+            }
+            
+        }
+        function save_eatc_attachment()
+        {
+            let file_length = document.getElementById("eatc_attach");
+            if(file_length.value.length < 1)
+            {
+                $('#eatc_attachErrorMsg').html("Please Choose A Attachment");
+                $('#eatc_attachErrorMsg').show();
+                $('#eatc_attachErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                let application_no = $('#application_no').val();
+                var fileName = document.getElementById('eatc_attach').files[0].name;
+                var fd = new FormData();
+                var file = document.getElementById('eatc_attach').files[0];
+                fd.append('eatc_attach', file);
+                fd.append('application_no', application_no);
+                token_value=$("input[name=csrfmiddlewaretoken]").val();
+                $.ajaxSetup
+                ({
+                    beforeSend: function(xhr, settings)
+                    {
+                    xhr.setRequestHeader("X-CSRFToken", token_value);
+                    }
+                });
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'save_eatc_attachment' %}",
+                    data : fd,
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    success : function(data)
+                    {
+                        if (data.form_is_valid)
+                        {
+                            let file_url = data.file_url;
+                            let application_no = $('#application_no').val();
+                            $.ajax
+                            ({
+                                type : "POST",
+                                url : "{% url 'save_eatc_attachment_details' %}",
+                                data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                                success : function(responseText)
+                                {
+                                    $('#eatc_attachment_modal').modal('hide');
+                                    $('#eatc_file_attachment').html(responseText);
+                                    $('.modal-backdrop').remove();
+                                    $('#eatc_attachment_form')[0].reset();
+                                }
+                            });
+                        }
+                        else
+                        {
+                            $('#eatc_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                            $('#eatc_attachErrorMsg').show();
+                            $('#eatc_attachErrorMsg').delay(2000).fadeOut('slow');
+                        }
+                    }
+                });
+            }
+        }
+    
+    
+        function save_lu_attachment()
+        {
+            let file_length = document.getElementById("lu_attach");
+            if(file_length.value.length < 1)
+            {
+                $('#lu_attachErrorMsg').html("Please Choose A Attachment");
+                $('#lu_attachErrorMsg').show();
+                $('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                let application_no = $('#application_no').val();
+                var fileName = document.getElementById('lu_attach').files[0].name;
+                var fd = new FormData();
+                var file = document.getElementById('lu_attach').files[0];
+                fd.append('lu_attach', file);
+                fd.append('application_no', application_no);
+                token_value=$("input[name=csrfmiddlewaretoken]").val();
+                $.ajaxSetup
+                ({
+                    beforeSend: function(xhr, settings)
+                    {
+                    xhr.setRequestHeader("X-CSRFToken", token_value);
+                    }
+                });
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'save_lu_attachment' %}",
+                    data : fd,
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    success : function(data)
+                    {
+                        if (data.form_is_valid)
+                        {
+                            let file_url = data.file_url;
+                            let application_no = $('#application_no').val();
+                            $.ajax
+                            ({
+                                type : "POST",
+                                url : "{% url 'save_lu_attachment_details' %}",
+                                data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                                success : function(responseText)
+                                {
+                                    $('#lu_attachment_modal').modal('hide');
+                                    $('#lu_file_attachment').html(responseText);
+                                    $('.modal-backdrop').remove();
+                                    $('#lu_attachment_form')[0].reset();
+                                }
+                            });
+                        }
+                        else
+                        {
+                            $('#lu_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                            $('#lu_attachErrorMsg').show();
+                            $('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
+                        }
+                    }
+                });
+            }
+        }
+    </script>   
+
+                    

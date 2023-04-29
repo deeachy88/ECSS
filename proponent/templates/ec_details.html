@@ -1,0 +1,24 @@
+<table id="basic-datatable" class="table dt-responsive nowrap w-100">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Terms and Condition of the EC</th>
+            <th>Action/activities undertaken/implemented to achieve compliance including evidence, wherever applicable</th>
+            <th>Remarks</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ec_details in ec_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{application_details.ec_heading}} - {{application_details.ec_terms}}</td>
+                <td><textarea class="form-control" rows="2" name="action_undertaken" disabled></textarea></td>
+                <td><textarea class="form-control" rows="2" name="remarks" disabled></textarea></td>
+                <td><a href="#" onclick="show_ec_details_modal('{{ application_details.record_id}}','{{application_details.ec_heading}} - {{application_details.ec_terms}}')" class="btn btn-primary ms-2">
+                        <i class="mdi mdi-autorenew"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

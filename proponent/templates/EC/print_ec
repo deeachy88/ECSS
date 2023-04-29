@@ -1,0 +1,73 @@
+<div class="card">
+    <div class="card-title text-center">
+        <a href="#"><img class="img-responsive" src="{% static 'assets/images/nec_header.png' %}" style="width:90%;"/></a>
+    </div>
+    <div class="card-body">
+        <div class="row justify-content-between">
+            {% for application_details in application_details %}
+                <h6>{{ec_details.ec_reference_no}}</h6>
+                <h6>{{ec_details.ec_approved_date}}</h6>
+            {% endfor %}
+        </div>
+        <div class="row text-center">
+            <h4>ENVIRONMENT CLEARNACE</h4>
+        </div>
+        <p>
+            {% for application_details in application_details %}
+                In accordance with Section 34.1 of the Environmental Assessment Act 2000 and 
+                Section 34 of the Water Act 2011, this Environmental Clearance (EC) is hereby
+                issued/renewed to --{{application_details.applicant_name}}— for the development/development
+                and operation of ---{{application_details.project_classification}}---in State Reserve Forest Land/Private Land
+                or/Industrial estate measuring----{{application_details.total_area_acre}} (Acre)--- located at -----{{application_details.address}}
+                along with  --ancillary facilities (If applicable)--road (Km), labour colony, bridge,
+                transmission line,--- under --{{application_details.gewog}} and {{application_details.dzongkhag}} with
+                the following terms and conditions:
+            {% endfor %}
+        </p>
+        <p>
+            <table class="table table-centered table-borderless mb-0">
+                <thead>
+                    {% for ec_details in ec_details %}
+                        <tr>
+                            <th colspan="2">{{ec_details.ec_heading}}</th>
+                        </tr>
+                    {% endfor %}    
+                </thead>
+                <tbody>
+                    {% for ec_details in ec_details %}
+                        <tr>
+                            <td>{{ec_details.ec_terms}}</td>
+                        </tr>
+                    {% endfor %}    
+                </tbody>
+            </table>
+        </p>
+        <p>
+            The holder may adopt best practices in executing these terms and conditions to
+            avoid adverse environmental impacts.
+        </p> 
+        <p>
+            Failure to comply with any of the above terms and conditions shall constitute an
+            offence and the proponent shall be liable in accordance to the Environmental
+            Assessment Act 2000 and/or existing environmental laws.
+        </p>
+        <p>
+            Validity:
+            {% for application_details in application_details %}
+                This EC is issued with validity from {{application_details.ec_approved_date}}
+                until {{application_details.ec_approved_date}}
+                only for the activity name/production/manufacturing of (Product name) with an 
+                installed capacity ----------and------{product/byproduct name  (if any)}.
+                This Environmental Clearance is issued solely pursuant to the Environmental
+                Assessment Act, 2000 and its Regulations and in no way intends to overrule
+                or alter the provisions of any law or rules in force. 
+                The Holder of this EC shall be responsible to adhere to the 
+                requirements under other laws and the
+                issuing authority assumes no liability 
+                resulting from non-compliance or omission of any laws or rules.
+            {% endfor %}
+            </p>    
+             
+
+    </div>
+</div>

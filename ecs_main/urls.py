@@ -9,7 +9,6 @@ urlpatterns = [
     path('reviewer_application_list', views.reviewer_application_list, name='reviewer_application_list'),
     path('view_application_details', views.view_application_details, name='view_application_details'),
     path('forward_application', views.forward_application, name='forward_application'),
-    path('approve_application', views.approve_application, name='approve_application'),
     path('resubmit_application', views.resubmit_application, name='resubmit_application'),
     path('update_payment_details', views.update_payment_details, name='update_payment_details'),
     path('validate_receipt_no', views.validate_receipt_no, name='validate_receipt_no'),

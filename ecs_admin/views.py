@@ -185,8 +185,8 @@ def sendmail(request, name, email, password):
     message = "Dear " + name + " Login Id has been created for ECS System. Your Login Id is " \
               + email + " And Password is " + password + ""
     recipient_list = [email]
-    send_mail(subject, message, 'sparkletechnology2019@gmail.com', recipient_list, fail_silently=False,
-              auth_user='sparkletechnology2019@gmail.com', auth_password='ypohpmxhdlmidwgm',
+    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
               connection=None, html_message=None)
 
 
@@ -876,8 +876,8 @@ def accept_mail(request, name, email_id, password):
     message = "Dear " + name + " Your Registration for ECS System Is Accepted. Your Login Id is " \
               + email_id + " And Password is " + password + ""
     recipient_list = [email_id]
-    send_mail(subject, message, 'sparkletechnology2019@gmail.com', recipient_list, fail_silently=False,
-              auth_user='sparkletechnology2019@gmail.com', auth_password='ypohpmxhdlmidwgm',
+    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
               connection=None, html_message=None)
 
 def reject_mail(request, name, email_id):
@@ -885,8 +885,8 @@ def reject_mail(request, name, email_id):
     message = "Dear " + name + " Your Registration for ECS System Has Been Rejected. Your Login Id is " \
                 ""
     recipient_list = [email_id]
-    send_mail(subject, message, 'sparkletechnology2019@gmail.com', recipient_list, fail_silently=False,
-              auth_user='sparkletechnology2019@gmail.com', auth_password='ypohpmxhdlmidwgm',
+    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
               connection=None, html_message=None)
 
 def send_reset_pass_mail(name, email, password):
@@ -894,8 +894,8 @@ def send_reset_pass_mail(name, email, password):
     message = "Dear " + name + " Your password has been reset for ECS System. Your Login Id is " \
               + email + " And Password is " + password + ""
     recipient_list = [email]
-    send_mail(subject, message, 'sparkletechnology2019@gmail.com', recipient_list, fail_silently=False,
-              auth_user='sparkletechnology2019@gmail.com', auth_password='ypohpmxhdlmidwgm',
+    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
               connection=None, html_message=None)
 
 def update_first_login_details(request):

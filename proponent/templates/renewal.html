@@ -12,22 +12,22 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
+                            <th scope="col">EC Reference No</th>
                             <th scope="col">Application No</th>
                             <th scope="col">Service Name</th>
-                            <th scope="col">Application Source</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for application_details in application_details %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><button type="button" class="btn btn-link text-info mb-0" onclick="getECDetails('{{application_details.application_no}}','{{application_details.service_id}}','{{application_details.application_source}}')">{{application_details.application_no}}</button></td>
+                                <td><button type="button" class="btn btn-link text-info mb-0" onclick="getECDetails('{{application_details.ec_reference_no}}')">{{application_details.ec_reference_no}}</button></td>
+                                <td>{{application_details.application_no}}</td>
                                 {% for service_details in service_details %}
                                     {% if application_details.service_id == service_details.service_id %}
                                         <td>{{service_details.service_name}}</td>
                                     {% endif %}
                                 {% endfor %}
-                                <td>{{application_details.application_source}}</td>
                             </tr>
                             {% empty %}
                             <tr>
@@ -42,12 +42,12 @@
 </div>
 
 <script>
-    function getECDetails(application_no,service_id,application_source)
+    function getECDetails(ec_reference_no)
     {
         $.ajax({
             type : "GET",
             url : "{% url 'ec_renewal' %}",
-            data :{'application_no':application_no, 'service_id':service_id, 'application_source':application_source},
+            data :{'ec_reference_no':ec_reference_no},
             success : function(data)
             {
                 $('#ec_renewal_details').html(data);

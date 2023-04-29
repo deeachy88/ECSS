@@ -21,6 +21,7 @@
                                 <form method="post" id="transmission_application_form">
                                     {% csrf_token %}
                                     <input type="text" class="form-control" value="{{application_no}}" name="application_no" style="display:none;">
+                                    <input type="text" class="form-control" value="Main Activity" name="form_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -55,14 +56,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">CID</label>
-                                                <input type="text" name="cid" class="form-control" id="cid">
+                                                <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" onchange="getCitizenDetails(this.value)">
                                             </div>
                                             <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of Applicant</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name">
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly>
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -5339,6 +5340,45 @@
         sum += parseFloat(others_area_acre) || 0;
 
         $('#total_area_acre').val(sum);
+    }
+
+    function getCitizenDetails(cid)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'check_cid_exists' %}",
+            data :{'cid':cid},
+            success : function(data)
+            {
+                if(data.count > 0)
+                {
+                    $('#cid').val("");
+                    $('#applicant_name').val("");
+                    $('#cidErrorMsg').html("CID Already Exists.Try With Another one");
+                    $('#cidErrorMsg').show();
+                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    const myObj =data.response;
+                    if(myObj.citizendatas.citizendata == undefined)
+                    {
+                        $('#cid').val("");
+                        $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                        $('#cidErrorMsg').show();
+                        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        var CitizenName = myObj.citizendatas.citizendata[0].Name
+                        var dzongkhagName = myObj.citizendatas.citizendata[0].Dzongkhag_Name
+                        var villageName = myObj.citizendatas.citizendata[0].Gewog_Name
+                        var gewogName = myObj.citizendatas.citizendata[0].Village_Name
+                        $('#applicant_name').val(CitizenName);
+                    }
+                }
+            }
+        });
     }
 </script>
 {% endblock %}

@@ -170,4 +170,8 @@ urlpatterns = [
     path('submit_report_form', views.submit_report_form, name='submit_report_form'),
     path('acknowledge_report', views.acknowledge_report, name='acknowledge_report'),
 
+    #Renewal Details
+    path('save_renew_attachment', views.save_renew_attachment, name='save_renew_attachment'),
+    path('save_renew_attachment_details', views.save_renew_attachment_details, name='save_renew_attachment_details'),
+    path('save_compliance_details', views.save_compliance_details, name='save_compliance_details'),
 ]

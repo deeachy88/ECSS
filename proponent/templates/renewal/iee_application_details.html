@@ -1878,6 +1878,7 @@
                         </div>
                     </div>
                 </div> <!-- end card-body -->
+                
                 <div class="row">
                     <div class="alert alert-success border-0 rounded-0" role="alert" id="application_form_successMsg" style="display:none">
                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
@@ -1896,6 +1897,122 @@
         </div>
     </div>
 {% endfor %}
+
+<div class="card">
+    <div class="alert alert-warning border-0 rounded-0" role="alert">
+        <i class="uil-folder-heart me-1 h4 align-middle"></i> EC Details
+    </div>
+    {% for application_details in application_details %}
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">EC Reference No</label>
+                    <input type="text" class="form-control" value="{{ application_details.e_reference_no }}" disabled>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">EC Issue Date</label>
+                    <input type="text" min="1" name="cid" class="form-control" value="{{ application_details.cid }}" disabled>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">EC Expiry Date</label>
+                    <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" value="{{ application_details.cid }}" disabled>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    <br>
+        <div class="alert alert-warning border-0 rounded-0" role="alert">
+            <i class="uil-folder-heart me-1 h4 align-middle"></i> Description of the compliance to EC terms and conditions
+        </div>
+    <br>
+    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Terms and Condition of the EC</th>
+                <th>Action/activities undertaken/implemented to achieve compliance including evidence, wherever applicable</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ec_terms in ec_terms %}
+                <tr>
+                    <td>Tiger Nixon</td>
+                    <td><textarea class="form-control" rows="2" disabled>{{ application_details.focal_person }}</textarea></td>
+                    <td><textarea class="form-control" rows="2" disabled>{{ application_details.focal_person }}</textarea></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Any other initiatives undertaken other than stipulated in the EC</label>
+                <textarea class="form-control" name="other_initiatives" rows="2" disabled></textarea>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Remarks</label>
+                <textarea class="form-control" name="remarks" rows="2" disabled></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-widgets">
+                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#renew_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                </div>
+                <h5 class="card-title mb-0">Attachments</h5>
+                <div id="cardCollpase7" class="collapse pt-3 show">
+                    <div id="renew_file_attachment">
+                        {% include 'file_attachment_page.html' %}
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+
+<form method="post" id="renew_attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="iee_renew_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Add Attachment</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Attachment</label>
+                        <input type="file" name="renew_attach" class="form-control" id="renew_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                    </div>
+                    <div class="alert alert-danger" id="renew_attachErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="save_renew_attachment()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+
 <script>
     function submit_renew_application()
     {
@@ -1933,6 +2050,5 @@
             }
         });
     }
-    
 </script>
 {% endblock %}

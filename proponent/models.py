@@ -563,17 +563,19 @@ class t_ec_industries_t11_ec_details(models.Model):
 class t_ec_renewal_t1(models.Model):
     record_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
-    ec_referene_no = models.CharField(max_length=100, default=None, blank=True, null=True)
+    ec_reference_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     proponent_name = models.CharField(max_length=100, default=None, blank=True, null=True)
     address = models.CharField(max_length=250, default=None, blank=True, null=True)
-    Initiatives_undertaken = models.TextField(default=None, blank=True, null=True)
+    initiatives_undertaken = models.TextField(default=None, blank=True, null=True)
     fines_penalties = models.CharField(max_length=3, default=None, blank=True, null=True)
     remarks = models.TextField(default=None, blank=True, null=True)
     submission_date = models.DateField(default=None, blank=True, null=True)
+    application_status = models.CharField(max_length=20,default=None, blank=True, null=True)
 
 class t_ec_renewal_t2(models.Model):
     record_id = models.AutoField(primary_key=True)
-    ec_referene_no = models.CharField(max_length=100, default=None, blank=True, null=True)
+    ec_reference_no = models.CharField(max_length=100, default=None, blank=True, null=True)
+    ec_heading = models.CharField(max_length=250,default=None, blank=True, null=True)
     ec_terms = models.TextField(default=None, blank=True, null=True)
     action_undertaken = models.TextField(default=None, blank=True, null=True)
     remarks = models.TextField(default=None, blank=True, null=True)

@@ -740,6 +740,7 @@
             $('#gewog').hide();
             $('#village').hide();
             $('.cid_details').show();
+            $('#proponent_name').attr("disabled", "disabled");
             $('#i_dzongkhag').show();
             $('#i_gewog').show();
             $('#i_village').show();
@@ -749,6 +750,7 @@
             $('#dzongkhag').show();
             $('#gewog').show();
             $('#village').show();
+            $('#proponent_name').removeAttr("disabled");
             $('.cid_details').hide();
             $('#i_dzongkhag').hide();
             $('#i_gewog').hide();
@@ -766,7 +768,7 @@
                 if(data.count > 0)
                 {
                     $('#cid').val("");
-                    $('#i_proponent_name').val("");
+                    $('#proponent_name').val("");
                     $('#i_dzongkhag').val("");
                     $('#i_gewog').val("");
                     $('#i_village').val("");
@@ -777,8 +779,7 @@
                 else
                 {
                     const myObj =data.response;
-                    alert(myObj);
-                    if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+                    if(myObj.citizendatas.citizendata == undefined)
                     {
                         $('#cid').val("");
                         $('#cidErrorMsg').html("Invalid CID.Try With Another one");
@@ -787,18 +788,11 @@
                     }
                     else
                     {
-                        var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-                        var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-                        var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-                        if (middleName == null)
-                        {
-                            middleName = "";
-                        }
-                        var CitizenName = firstName + " " + middleName + " " + lastName;
-                        var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-                        var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-                        var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-                        $('#i_proponent_name').val(CitizenName);
+                        var CitizenName = myObj.citizendatas.citizendata[0].Name
+                        var dzongkhagName = myObj.citizendatas.citizendata[0].Dzongkhag_Name
+                        var villageName = myObj.citizendatas.citizendata[0].Gewog_Name
+                        var gewogName = myObj.citizendatas.citizendata[0].Village_Name
+                        $('#proponent_name').val(CitizenName);
                         $('#i_dzongkhag').val(dzongkhagName);
                         $('#i_gewog').val(gewogName);
                         $('#i_village').val(villageName);
