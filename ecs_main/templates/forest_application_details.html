@@ -641,7 +641,7 @@
 														<select class="form-select" name="energy_source" id="energy_source" disabled>
 															{% if application_details.energy_source == 'electric' %}
 																<option value="electric" selected>Electric</option>
-															{% if application_details.energy_source == 'electric' %}
+															{% elif application_details.energy_source == 'electric' %}
 																<option value="coal" selected>Coal</option>
 															{% elif application_details.energy_source == 'electric' %}
 																<option value="high_speed_diesel" selected>High Speed Diesel</option>
@@ -762,11 +762,11 @@
 														<select class="form-control" id="energy_source" name="energy_source" disabled>
 															{% if application_details.energy_source == 'Electric' %}
 																<option value="Electric">Electric</option>
-															{% if application_details.energy_source == 'Coal' %}    
+															{% elif application_details.energy_source == 'Coal' %}    
 																<option value="Coal">Coal</option>
-															{% if application_details.energy_source == 'High_Speed_Diesel' %}
+															{% elif application_details.energy_source == 'High_Speed_Diesel' %}
 																<option value="High_Speed_Diesel">High speed diesel</option>
-															{% if application_details.energy_source == 'Wood-Fired' %}
+															{% elif application_details.energy_source == 'Wood-Fired' %}
 																<option value="Wood-Fired">Wood-Fired</option>
 															{% else %}
 																<option value="Biomass">Biomass</option>
@@ -1377,7 +1377,7 @@
 								<div class="accordion-item">
 									<h2 class="accordion-header" id="headingOtherImpacts">
 										<button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-											data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+											data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
 											Other Impacts
 										</button>
 									</h2>
@@ -1532,12 +1532,6 @@
 															</div>
 														</div>
 													</div>
-												</div>
-											</div>
-											<div class="row mt-4">
-												<div class="text-sm-end">
-													<a href="#" class="btn btn-success" onclick="save_forest_attachment_details()">
-														<i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
 												</div>
 											</div>
 										</div>
@@ -2222,7 +2216,7 @@
                                                                     <select class="form-select" name="energy_source" id="energy_source" disabled>
                                                                         {% if application_details.energy_source == 'electric' %}
                                                                             <option value="electric" selected>Electric</option>
-                                                                        {% if application_details.energy_source == 'electric' %}
+                                                                        {% elif application_details.energy_source == 'electric' %}
                                                                             <option value="coal" selected>Coal</option>
                                                                         {% elif application_details.energy_source == 'electric' %}
                                                                             <option value="high_speed_diesel" selected>High Speed Diesel</option>
@@ -2368,11 +2362,11 @@
                                                                     <select class="form-control" id="energy_source" name="energy_source" disabled>
                                                                         {% if application_details.energy_source == 'Electric' %}
                                                                             <option value="Electric">Electric</option>
-                                                                        {% if application_details.energy_source == 'Coal' %}    
+                                                                        {% elif application_details.energy_source == 'Coal' %}    
                                                                             <option value="Coal">Coal</option>
-                                                                        {% if application_details.energy_source == 'High_Speed_Diesel' %}
+                                                                        {% elif application_details.energy_source == 'High_Speed_Diesel' %}
                                                                             <option value="High_Speed_Diesel">High speed diesel</option>
-                                                                        {% if application_details.energy_source == 'Wood-Fired' %}
+                                                                        {% elif application_details.energy_source == 'Wood-Fired' %}
                                                                             <option value="Wood-Fired">Wood-Fired</option>
                                                                         {% else %}
                                                                             <option value="Biomass">Biomass</option>
@@ -2695,7 +2689,7 @@
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header" id="headingOtherImpacts">
                                                     <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                                        data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                                        data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
                                                         Other Impacts
                                                     </button>
                                                 </h2>
@@ -2798,7 +2792,7 @@
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header" id="headingAttachment">
                                                     <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
-                                                        data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
+                                                        data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
                                                         File Attachment
                                                     </button>
                                                 </h2>
@@ -3507,7 +3501,7 @@
                                                                     <select class="form-select" name="energy_source" id="energy_source" disabled>
                                                                         {% if application_details.energy_source == 'electric' %}
                                                                             <option value="electric" selected>Electric</option>
-                                                                        {% if application_details.energy_source == 'electric' %}
+                                                                        {% elif application_details.energy_source == 'electric' %}
                                                                             <option value="coal" selected>Coal</option>
                                                                         {% elif application_details.energy_source == 'electric' %}
                                                                             <option value="high_speed_diesel" selected>High Speed Diesel</option>
@@ -3628,11 +3622,11 @@
                                                                     <select class="form-control" id="energy_source" name="energy_source" disabled>
                                                                         {% if application_details.energy_source == 'Electric' %}
                                                                             <option value="Electric">Electric</option>
-                                                                        {% if application_details.energy_source == 'Coal' %}    
+                                                                        {% elif application_details.energy_source == 'Coal' %}    
                                                                             <option value="Coal">Coal</option>
-                                                                        {% if application_details.energy_source == 'High_Speed_Diesel' %}
+                                                                        {% elif application_details.energy_source == 'High_Speed_Diesel' %}
                                                                             <option value="High_Speed_Diesel">High speed diesel</option>
-                                                                        {% if application_details.energy_source == 'Wood-Fired' %}
+                                                                        {% elif application_details.energy_source == 'Wood-Fired' %}
                                                                             <option value="Wood-Fired">Wood-Fired</option>
                                                                         {% else %}
                                                                             <option value="Biomass">Biomass</option>
@@ -4243,7 +4237,7 @@
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header" id="headingOtherImpacts">
                                                     <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                                        data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                                        data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
                                                         Other Impacts
                                                     </button>
                                                 </h2>
@@ -5052,7 +5046,7 @@
                                                                     <select class="form-select" name="energy_source" id="energy_source" disabled>
                                                                         {% if application_details.energy_source == 'electric' %}
                                                                             <option value="electric" selected>Electric</option>
-                                                                        {% if application_details.energy_source == 'electric' %}
+                                                                        {% elif application_details.energy_source == 'electric' %}
                                                                             <option value="coal" selected>Coal</option>
                                                                         {% elif application_details.energy_source == 'electric' %}
                                                                             <option value="high_speed_diesel" selected>High Speed Diesel</option>
@@ -5198,11 +5192,11 @@
                                                                     <select class="form-control" id="energy_source" name="energy_source" disabled>
                                                                         {% if application_details.energy_source == 'Electric' %}
                                                                             <option value="Electric">Electric</option>
-                                                                        {% if application_details.energy_source == 'Coal' %}    
+                                                                        {% elif application_details.energy_source == 'Coal' %}    
                                                                             <option value="Coal">Coal</option>
-                                                                        {% if application_details.energy_source == 'High_Speed_Diesel' %}
+                                                                        {% elif application_details.energy_source == 'High_Speed_Diesel' %}
                                                                             <option value="High_Speed_Diesel">High speed diesel</option>
-                                                                        {% if application_details.energy_source == 'Wood-Fired' %}
+                                                                        {% elif application_details.energy_source == 'Wood-Fired' %}
                                                                             <option value="Wood-Fired">Wood-Fired</option>
                                                                         {% else %}
                                                                             <option value="Biomass">Biomass</option>
@@ -5402,7 +5396,7 @@
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header" id="headingOtherImpacts">
                                                     <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                                        data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                                        data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
                                                         Other Impacts
                                                     </button>
                                                 </h2>
@@ -6202,7 +6196,7 @@
                                                                     <select class="form-select" name="energy_source" id="energy_source" disabled>
                                                                         {% if application_details.energy_source == 'electric' %}
                                                                             <option value="electric" selected>Electric</option>
-                                                                        {% if application_details.energy_source == 'electric' %}
+                                                                        {% elif application_details.energy_source == 'electric' %}
                                                                             <option value="coal" selected>Coal</option>
                                                                         {% elif application_details.energy_source == 'electric' %}
                                                                             <option value="high_speed_diesel" selected>High Speed Diesel</option>
@@ -6348,11 +6342,11 @@
                                                                     <select class="form-control" id="energy_source" name="energy_source" disabled>
                                                                         {% if application_details.energy_source == 'Electric' %}
                                                                             <option value="Electric">Electric</option>
-                                                                        {% if application_details.energy_source == 'Coal' %}    
+                                                                        {% elif application_details.energy_source == 'Coal' %}    
                                                                             <option value="Coal">Coal</option>
-                                                                        {% if application_details.energy_source == 'High_Speed_Diesel' %}
+                                                                        {% elif application_details.energy_source == 'High_Speed_Diesel' %}
                                                                             <option value="High_Speed_Diesel">High speed diesel</option>
-                                                                        {% if application_details.energy_source == 'Wood-Fired' %}
+                                                                        {% elif application_details.energy_source == 'Wood-Fired' %}
                                                                             <option value="Wood-Fired">Wood-Fired</option>
                                                                         {% else %}
                                                                             <option value="Biomass">Biomass</option>
@@ -6675,7 +6669,7 @@
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header" id="headingOtherImpacts">
                                                     <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                                        data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                                        data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
                                                         Other Impacts
                                                     </button>
                                                 </h2>
@@ -6778,7 +6772,7 @@
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header" id="headingAttachment">
                                                     <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
-                                                        data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
+                                                        data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
                                                         File Attachment
                                                     </button>
                                                 </h2>
@@ -6868,12 +6862,26 @@
                     </div>
                 </div>
             </div>
+            {% endfor %}
             <div class="card-body" id="reviewer_details_accordian" style="display:none;">
                 <div class="alert alert-primary">Reviewer Details</div>
                     <form method="post" id="reviewer_form">
                         {% csrf_token %}
-                        <div class="row">
+                        <div class="row additional_info" style="display: none;">
+                            <div class="alert alert-info text-bg-info border-0" role="alert">
+                                <strong>Client Details </strong>
+                            </div>
                             <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Additional Information</label>
+                                    {% for application_details in application_details %}
+                                        <textarea class="form-control" rows="2" readonly>{{application_details.additional_info}}</textarea>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 information_complete_div">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Is The Information Complete?</label>
                                     <div class="mt-2">
@@ -6893,11 +6901,12 @@
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Additional Information Letter</label>
-                                        <textarea class="form-control" id="additional_info" name="additional_info" rows="2"></textarea>
+                                        <textarea class="form-control" id="additional_info_letter" name="additional_info_letter" rows="2"></textarea>
                                     </div>
                                 </div>
                                 <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
                             </div>
+                            
                             <div class="row additional_payment_info" style="display: none;">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
@@ -6925,7 +6934,7 @@
                                         <h5 class="card-title mb-0">Attachments</h5>
                                         <div id="cardCollpase7" class="collapse pt-3 show">
                                             <div id="eatc_file_attachment">
-                                                {% include 'file_attachment_page.html' %}
+                                                {% include 'eatc_attachment_page.html' %}
                                             </div>
                                         </div>
                                     </div>
@@ -6949,7 +6958,16 @@
                                 </div>
                                 <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
                             </div>
-                            
+                            <div class="row rev_resubmit_remarks_div" style="display: none;">
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Report/Clarification</label>
+                                        {% for application_details in application_details %}
+                                            <textarea class="form-control" rows="2" readonly>{{application_details.resubmit_remarks}}</textarea>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row rectification_div" style="display: none;">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
@@ -6968,12 +6986,12 @@
                                 </div>
                                 <div id="rectificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                             </div>
-                            <div class="col-md-12 lu_attachment_div" style="display: none;">
+                            <div class="col-md-12 rev_lu_attachment_div" style="display: none;">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title mb-0">Attachments</h5>
+                                        <h5 class="card-title mb-0">LU Details</h5>
                                         <div id="cardCollpase7" class="collapse pt-3 show">
-                                                {% include 'file_attachment_page.html' %}
+                                                {% include 'lu_attachment_page.html' %}
                                         </div>
                                     </div>
                                 </div>
@@ -6987,7 +7005,7 @@
                                         <h5 class="card-title mb-0">EC Draft</h5>
                                         <div id="cardCollpase7" class="collapse pt-3 show">
                                             <div id="draft_ec_details">
-                                                {% include 'ec_details.html' %}
+                                                {% include 'ec_draft_details.html' %}
                                             </div>
                                         </div>
                                     </div>
@@ -7000,7 +7018,13 @@
                         <div class="alert alert-danger border-0 rounded-0" role="alert" id="reviewer_application_errorMsg" style="display:none">
                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
                         </div>
-                        <div class="row  mt-3 AL_button">
+                        <div class="row  mt-3 ec_draft_button" style="display: none;">
+                            <div class="mb-3">
+                                <a href="#" class="btn btn-success" onclick="forwardApplication('DEC')">
+                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
+                            </div>
+                        </div>
+                        <div class="row  mt-3 AL_button" style="display: none;">
                             <div class="mb-3">
                                 <a href="#" class="btn btn-success" onclick="forwardApplication('AL')">
                                     <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
@@ -7022,12 +7046,8 @@
                         </div>
                         <div class="row mt-3 rectification_button" style="display:none;">
                             <div class="mb-3">
-                                <a href="#" class="btn btn-success" onclick="forwardApplication('OH')">
-                                    <i class="mdi mdi-alert-octagon me-1"></i> On Hold </a>
                                 <a href="#" class="btn btn-success" onclick="forwardApplication('RS')">
                                     <i class="uil uil-history-alt me-1"></i> Resubmit </a>
-                                <a href="#" class="btn btn-success" onclick="forwardApplication('V')">
-                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
                             </div>
                         </div>
                     </form>
@@ -7037,26 +7057,60 @@
                 <div class="alert alert-primary">Client Details</div>
                     <form method="post" id="client_form">
                         {% csrf_token %}
-                        <div class="row">
-                            <div class="row">
+                            <div class="row additional_info_div">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Additional Information Letter</label>
-                                        <textarea class="form-control" id="additional_info" name="additional_info" rows="2">{{application_details.additional_info}}</textarea>
+                                        {% for application_details in application_details %}
+                                            <textarea class="form-control" rows="2" readonly>{{application_details.additional_info_letter}}</textarea>
+                                        {% endfor %}
                                     </div>
                                 </div>
-                                <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Additional Information</label>
+                                            <textarea class="form-control" id="additional_info" name="additional_info" rows="2"></textarea>
+                                    </div>
+                                    <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
                             </div>
+
+                            <div class="row resubmit_remarks_div" style="display: none;">
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Report/Clarification</label>
+                                        <textarea class="form-control" rows="2" id="resubmit_remarks" name="resubmit_remarks"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                                
                             <div class="col-md-12 eatc_attachment_details" style="display: none;">
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title mb-0">EATC Attachment</h5>
                                         <div id="cardCollpase7" class="collapse pt-3 show">
-                                            {% include 'file_attachment_page.html' %}
+                                            {% include 'eatc_attachment_page.html' %}
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-12 client_lu_attachment_div" style="display: none;">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="card-widgets">
+                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#lu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                        </div>
+                                        <h5 class="card-title mb-0">LU Attach</h5>
+                                        <div id="cardCollpase7" class="collapse pt-3 show">
+                                            <div id="lu_file_attachment">
+                                                {% include 'lu_attachment_page.html' %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="alert alert-success border-0 rounded-0" role="alert" id="client_application_successMsg" style="display:none">
                                 <i class="uil-folder-heart me-1 h4 align-middle"></i>
                             </div>
@@ -7089,16 +7143,15 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     </form>
                 </div>
             </div>
-            <div class="card-body" id="client_details_accordian" style="display:none;">
+            <div class="card-body" id="verifier_details_accordian" style="display:none;">
                 <div class="alert alert-primary">Verifier Details</div>
                     <form method="post" id="verifier_form">
                         {% csrf_token %}
-                        <div class="row forwardTo">
-                            <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-6 forwardTo" style="display: none;">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Forward To</label>
                                     <select class="form-control" name="forward_to"  id="forward_to">
@@ -7114,22 +7167,18 @@
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Additional Information Letter</label>
-                                        <textarea class="form-control" id="additional_info" name="additional_info" rows="2">{{application_details.additional_info}}</textarea>
+                                        {% for application_details in application_details %}
+                                            <textarea class="form-control" rows="2" readonly>{{application_details.additional_info_letter}}</textarea>
+                                        {% endfor %}
                                     </div>
                                 </div>
-                                <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
                             </div>
-                            <div class="col-md-12 ec_draft_div" style="display: none;">
+                            <div class="col-md-12 verifier_ec_draft_div" style="display: none;">
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-body">
-                                            <div class="card-widgets mb-3">
-                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#ec_draft_details_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                            </div>
                                             <div class="collapse pt-3 show">
-                                                <div id="ec_draft_details_div">
-                                                    {% include 'ec_draft_details.html' %}
-                                                </div>
+                                                {% include 'ec_draft_details.html' %}
                                             </div>
                                         </div>
                                     </div>
@@ -7138,7 +7187,7 @@
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">EC Expiry Date</label>
-                                            <input type="text" name="ec_expiry_date" class="form-control" id="ec_expiry_date" value="{{ application_details.project_name }}" disabled>
+                                            <input type="date" name="ec_expiry_date" class="form-control" id="ec_expiry_date">
                                         </div>
                                     </div>
                                 </div>
@@ -7149,30 +7198,20 @@
                             <div class="alert alert-danger border-0 rounded-0" role="alert" id="verifier_application_errorMsg" style="display:none">
                                 <i class="uil-folder-heart me-1 h4 align-middle"></i>
                             </div>
-                            <div class="col-lg-6 mt-3">
+                            <div class="row">
                                 <div class="mb-3 R_button" style="display:none;">
-                                    <div class="text-sm-end">
                                         <a href="#" class="btn btn-success" onclick="forwardApplication('R')">
                                             <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Reviewer </a>
-                                    </div>
                                 </div>
                                 <div class="mb-3 ALA_button" style="display:none;">
-                                    <div class="text-sm-end">
                                         <a href="#" class="btn btn-success" onclick="forwardApplication('ALA')">
                                             <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Approve </a>
-                                    </div>
-                                </div>
-                                <div class="mb-3 ALR_button" style="display:none;">
-                                    <div class="text-sm-end">
                                         <a href="#" class="btn btn-danger" onclick="forwardApplication('ALR')">
                                             <i class="uil uil-multiply me-1"></i> Reject </a>
-                                    </div>
                                 </div>
                                 <div class="mb-3 approveButton" style="display:none;">
-                                    <div class="text-sm-end">
-                                        <a href="#" class="btn btn-danger" onclick="forwardApplication('A')">
-                                            <i class="uil uil-multiply me-1"></i> Approve </a>
-                                    </div>
+                                        <a href="#" class="btn btn-success" onclick="forwardApplication('A')">
+                                            <i class="ri-check-line me-1 align-middle font-16"></i> Approve </a>
                                 </div>
                             </div>
                         </div>
@@ -7181,7 +7220,6 @@
             </div>
         </div>
     </div>
-{% endfor %}
 
 <form method="post" id="eatc_attachment_form" enctype="multipart/form-data">
     {% csrf_token %}
@@ -7281,7 +7319,7 @@
                 <div class="col-lg-12">
                     <div class="mb-3">
                         <label class="form-label fw-bold">EC Terms</label>
-                        <input type="text" name="ec_terms" class="form-control" id="ec_terms">
+                        <textarea rows="2" name="ec_terms" class="form-control" id="ec_terms"></textarea>
                     </div>
                     <div class="alert alert-danger" id="ec_termsErrorMsg" style="display:none"></div>
                 </div>
@@ -7303,6 +7341,93 @@
     </div>
 </form>
 
+<form method="post" id="edit_draft_ec_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="edit_draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Edit EC Draft</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <input type="hidden" class="form-control" name="ec_draft_application_no" id="ec_draft_application_no">
+            <input type="hidden" class="form-control" name="ec_draft_record_id" id="ec_draft_record_id">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">EC Heading</label>
+                        <input type="text" name="edit_ec_heading" class="form-control" id="edit_ec_heading">
+                    </div>
+                    <div class="alert alert-danger" id="edit_ec_headingErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">EC Terms</label>
+                        <textarea rows="2" name="edit_ec_terms" class="form-control" id="edit_ec_terms"></textarea>
+                    </div>
+                    <div class="alert alert-danger" id="edit_ec_termsErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+            <div class="alert alert-success border-0 rounded-0" role="alert" id="edit_ec_draft_successMsg" style="display:none">
+                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+            </div>
+            <div class="alert alert-danger border-0 rounded-0" role="alert" id="edit_ec_draft_errorMsg" style="display:none">
+                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+            </div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="update_ec_draft()">Update</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+
+<form method="post" id="delete_draft_ec_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="delete_draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-sm" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Edit EC Draft</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <input type="hidden" class="form-control" name="delete_ec_draft_application_no" id="delete_ec_draft_application_no">
+            <input type="hidden" class="form-control" name="delete_ec_draft_record_id" id="delete_ec_draft_record_id">
+            <p>Are You SUre You Want TO Delete?</p>
+          </div>
+            <div class="alert alert-success border-0 rounded-0" role="alert" id="delete_ec_draft_successMsg" style="display:none">
+                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+            </div>
+            <div class="alert alert-danger border-0 rounded-0" role="alert" id="delete_ec_draft_errorMsg" style="display:none">
+                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+            </div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="delete_ec_draft()">Yes</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">No</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+
 <script>
     $(function() {
         let status = $('#status').val();
@@ -7311,6 +7436,7 @@
         {
             if(status == 'P')
             {
+                $('.forwardTo').show();
                 $('.R_button').show();
             }
             else if(status == 'AL')
@@ -7323,7 +7449,7 @@
             {
                 $('.forwardTo').hide();
                 $('.approveButton').show();
-                $('.ec_draft_div').show();
+                $('.verifier_ec_draft_div').show();
             }
             $('#verifier_details_accordian').show();
             
@@ -7339,15 +7465,26 @@
             else if(status == 'ALS')
             {
                 $('.EATC_button').show();
+                $('.additional_info').show();
             }
             else if(status == 'FEATC')
             {
+                $('.information_complete_div').hide();
+                $('.rectification_div').show();
                 $('.rectification_button').show();
             }
             else if(status == 'LUS')
             {
+                $('.information_complete_div').hide();
+                $('.rev_lu_attachment_div').show();
+                $('.draft_ec_div').show();
+                $('.ec_draft_button').show();
+            }
+            else if(status == 'RSS')
+            {
                 $('.LU_button').show();
-                $('.lu_attachment_div').show();
+                $('.information_complete_div').hide();
+                $('.rev_resubmit_remarks_div').show();
             }
             
             $('#reviewer_details_accordian').show();
@@ -7361,14 +7498,20 @@
             }
             else if(status == 'EATC')
             {
+                $('.eatc_attachment_details').show();
+                $('.additional_info_div').hide();
                 $('.FEATC_button').show();
             }
             else if(status == 'RS')
             {
+                $('.additional_info_div').hide();
+                $('.resubmit_remarks_div').show();
                 $('.RSS_button').show();
             }
             else if(status == 'LU')
             {
+                $('.additional_info_div').hide();
+                $('.client_lu_attachment_div').show();
                 $('.LUS_button').show();
             }
             $('#client_details_accordian').show();
@@ -7379,6 +7522,10 @@
     function forwardApplication(identifier)
     {
         let application_no = $('#application_no').val();
+        let additional_info_letter = $('#additional_info_letter').val();
+        let additional_info = $('#additional_info').val();
+        let resubmit_remarks = $('#resubmit_remarks').val();
+        let ec_expiry_date = $('#ec_expiry_date').val();
 
         if(identifier == 'R' || identifier == 'ALS')
         {
@@ -7387,7 +7534,7 @@
             ({
                 type : "POST",
                 url : "{% url 'forward_application' %}",
-                data : {'application_no':application_no, 'identifier':identifier, 'forward_to':forward_to, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'application_no':application_no, 'identifier':identifier, 'forward_to':forward_to, 'additional_info':additional_info, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data)
                 {
                     if(data.message == 'success')
@@ -7423,7 +7570,7 @@
             ({
                 type : "POST",
                 url : "{% url 'forward_application' %}",
-                data : {'application_no':application_no, 'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'application_no':application_no, 'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}','additional_info_letter':additional_info_letter ,'resubmit_remarks':resubmit_remarks,'ec_expiry_date':ec_expiry_date},
                 success : function(data)
                 {
                     if(data.message == 'success')
@@ -7523,30 +7670,16 @@
                 data : {'application_no':application_no, 'ec_heading':ec_heading,'ec_terms':ec_terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data)
                 {
-                    if(data.message == 'success')
+                    $('#ec_draft_successMsg').html("Saved Successfully");
+                    $('#ec_draft_successMsg').show();
+                    setTimeout(function()
                     {
-                        $('#ec_draft_successMsg').html("Saved Successfully");
-                        $('#ec_draft_successMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#ec_draft_successMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
-                            location.reload();
-                        }, 2000);
-                    }
-                    else
-                    {
-                        $('#ec_draft_errorMsg').html("Please Check And Try Again");
-                        $('#ec_draft_errorMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#ec_draft_errorMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
-                            location.reload();
-                        }, 2000);
-                    }
+                        $('#ec_draft_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('.draft_ec_div').html(responseText);
+                        $('.draft_ec_div').focus();
+                    }, 2000);
                 }
             });
         }
@@ -7679,5 +7812,110 @@
                 }
             });
         }
+    }
+
+    function check_rectification(value)
+    {
+        if(value=="Yes")
+        {
+            $('.rectification_button').show();
+            $('.LU_button').hide();
+        }
+        else
+        {
+            $('.LU_button').show();
+            $('.rectification_button').hide();
+        }
+    }
+
+    function populate_ec_details(record_id, application_no, ec_heading, ec_terms)
+    {
+        $('#ec_draft_record_id').val(record_id);
+        $('#ec_draft_application_no').val(application_no);
+        $('#edit_ec_heading').val(ec_heading);
+        $('#edit_ec_terms').val(ec_terms);
+        
+        $('#edit_draft_ec_modal').modal('show');
+    }
+
+    function populate_delete_ec_details(record_id, application_no)
+    {
+        $('#delete_ec_draft_record_id').val(record_id);
+        $('#delete_ec_draft_application_no').val(application_no);
+        
+        $('#delete_draft_ec_modal').modal('show');
+    }
+
+    function update_ec_draft()
+    {
+        let record_id = $('#ec_draft_record_id').val();
+        let application_no = $('#ec_draft_application_no').val();
+        let ec_heading = $('#edit_ec_heading').val();
+        let ec_terms = $('#edit_ec_terms').val();
+
+        if(ec_heading == "")
+        {
+            $('#edit_ec_headingErrorMsg').html("Enter EC Heading");
+            $('#edit_ec_headingErrorMsg').show();
+            $('#edit_ec_headingErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_ec_heading').focus();
+        }
+        else if(ec_terms == "")
+        {
+            $('#edit_ec_termsErrorMsg').html("Enter EC Terms");
+            $('#edit_ec_termsErrorMsg').show();
+            $('#edit_ec_termsErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_ec_terms').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_draft_ec_details' %}",
+                data : {'record_id':record_id, 'application_no':application_no, 'ec_heading':ec_heading,'ec_terms':ec_terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#edit_ec_draft_successMsg').html("Updated Successfully");
+                    $('#edit_ec_draft_successMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#edit_ec_draft_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_draft_ec_modal').modal('hide');
+                        $('.draft_ec_div').html(responseText);
+                        $('.draft_ec_div').focus();
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function delete_ec_draft()
+    {
+        let record_id = $('#delete_ec_draft_record_id').val();
+        let application_no = $('#delete_ec_draft_application_no').val();
+        
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_draft_ec_details' %}",
+            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#delete_ec_draft_successMsg').html("Deleted Successfully");
+                $('#delete_ec_draft_successMsg').show();
+                setTimeout(function()
+                {
+                    $('#delete_ec_draft_successMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#delete_draft_ec_modal').modal('hide');
+                    $('.draft_ec_div').html(responseText);
+                    $('.draft_ec_div').focus();
+                }, 2000);
+            }
+        });
     }
 </script>

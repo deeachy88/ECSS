@@ -174,4 +174,8 @@ urlpatterns = [
     path('save_renew_attachment', views.save_renew_attachment, name='save_renew_attachment'),
     path('save_renew_attachment_details', views.save_renew_attachment_details, name='save_renew_attachment_details'),
     path('save_compliance_details', views.save_compliance_details, name='save_compliance_details'),
+
+    #EC PRint
+    path('ec_print_list', views.ec_print_list, name='ec_print_list'),
+    path('view_print_details', views.view_print_details, name='view_print_details')
 ]

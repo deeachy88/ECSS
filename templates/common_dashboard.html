@@ -399,7 +399,7 @@
                                 </div>
                             </li>
                             <li class="side-nav-item">
-                                <a href="javascript:void(0);" class="side-nav-link">
+                                <a href="{% url 'client_application_list' %}" class="side-nav-link">
                                     <i class="uil-folder-plus"></i>
                                     <span> Resubmit Application </span>
                                 </a>
@@ -455,6 +455,12 @@
                                         </li>
                                     </ul>
                                 </div>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'ec_print_list' %}" class="side-nav-link">
+                                    <i class="uil-folder-plus"></i>
+                                    <span> EC Print List </span>
+                                </a>
                             </li>
                         </ul>
                     {% endif %}

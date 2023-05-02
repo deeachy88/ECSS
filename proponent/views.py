@@ -1,7 +1,7 @@
 from datetime import date
 from django.shortcuts import render, redirect
-from ecs_main.views import client_application_list
-from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_renewal_t2, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals, t_report_submission_t1, t_report_submission_t2
+from ecs_main.views import client_application_list, payment_list
+from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t12_drainage_details, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_renewal_t2, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals, t_report_submission_t1, t_report_submission_t2
 from ecs_admin.models import t_user_master, t_bsic_code, t_competant_authority_master, t_fees_schedule, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_service_master, t_thromde_master, t_village_master
 # Create your views here.
 from datetime import datetime
@@ -44,11 +44,13 @@ def new_road_application(request):
     raw_materials = t_ec_industries_t5_raw_materials.objects.all()
     ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
     power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    drainage_type = t_ec_industries_t12_drainage_details.objects.all()
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     return render(request, 'road_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
+                                                       'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'drainage_type':drainage_type})
 
 def new_transmission_application(request):
     service_code = 'TRA'
@@ -60,8 +62,12 @@ def new_transmission_application(request):
     raw_materials = t_ec_industries_t5_raw_materials.objects.all()
     ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
     power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
     return render(request, 'transmission_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no})
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
+                                                       'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 
 def new_forestry_application(request):
     service_code = 'FOR'
@@ -70,7 +76,11 @@ def new_forestry_application(request):
     forest_produce = t_ec_industries_t8_forest_produce.objects.all()
     ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
     power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
-    return render(request, 'forest_form.html',{'forest_produce':forest_produce,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no})
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'forest_form.html',{'forest_produce':forest_produce,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
+                                                'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 
 def new_general_application(request):
     service_code = 'GEN'
@@ -82,8 +92,12 @@ def new_general_application(request):
     raw_materials = t_ec_industries_t5_raw_materials.objects.all()
     ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
     power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
     return render(request, 'general_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no})
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
+                                                       'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 
 def new_ground_water_application(request):
     service_code = 'GWA' 
@@ -95,8 +109,12 @@ def new_ground_water_application(request):
     raw_materials = t_ec_industries_t5_raw_materials.objects.all()
     ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
     power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
     return render(request, 'ground_water_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no})
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
+                                                       'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 
 def industry_ancillary_form(request):
     application_no = request.session['application_no']
@@ -508,9 +526,9 @@ def save_iee_application(request):
                                         action_date=None,
                                         actor_id=request.session['login_id'],
                                         actor_name=request.session['name'],
+                                        assigned_user_id=None,
                                         assigned_role_id='2',
                                         assigned_role_name='Verifier',
-                                        assigned_role_name=None,
                                         result=None,
                                         ca_authority=request.session['ca_authority'],
                                         dzongkhag_thromde_id=dzongkhag_code,
@@ -1360,7 +1378,8 @@ def save_industry_ancillary_application(request):
                                         assigned_role_name='Verifier',
                                         result=None,
                                         ca_authority=None,
-                                        dzongkhag_thromde_id=None
+                                        dzongkhag_thromde_id=None,
+                                        application_source='ECSS'
                                     )
         data['message'] = "success"
     except Exception as e:
@@ -2256,6 +2275,7 @@ def save_tor_form(request):
                                             result=None,
                                             ca_authority=request.session['ca_authority'],
                                             dzongkhag_thromde_id=thromde,
+                                            application_source='ECSS'
                                         )
         else:
             t_workflow_dtls.objects.create(application_no=application_no, 
@@ -2269,7 +2289,8 @@ def save_tor_form(request):
                                             assigned_role_name='Verifier',
                                             result=None,
                                             ca_authority=request.session['ca_authority'],
-                                            dzongkhag_thromde_id=dzongkhag
+                                            dzongkhag_thromde_id=dzongkhag,
+                                            application_source='ECSS'
                                         )
         data['message'] = "success"
     except Exception as e:
@@ -2419,7 +2440,7 @@ def insert_payment_details(application_no):
             application_date=application.application_date, 
             proponent_name=application.applicant_name,
             amount=total_amount)
-    return redirect(new_iee_application)
+    return redirect(payment_list)
 
 
 # Road Application Details
@@ -2703,7 +2724,8 @@ def save_road_application(request):
                                     assigned_role_name='Verifier',
                                     result=None,
                                     ca_authority=request.session['ca_authority'],
-                                    dzongkhag_thromde_id=dzongkhag_code
+                                    dzongkhag_thromde_id=dzongkhag_code,
+                                    application_source='ECSS'
                                 )
         data['message'] = "success"
     except Exception as e:
@@ -3040,7 +3062,8 @@ def save_forest_application(request):
                                         assigned_role_name='Verifier',
                                         result=None,
                                         ca_authority=request.session['ca_authority'],
-                                        dzongkhag_thromde_id=dzongkhag_code
+                                        dzongkhag_thromde_id=dzongkhag_code,
+                                        application_source='ECSS'
                                     )
         data['message'] = "success"
     except Exception as e:
@@ -3244,7 +3267,8 @@ def save_ground_water_application(request):
                                         assigned_role_name='Verifier',
                                         result=None,
                                         ca_authority=request.session['ca_authority'],
-                                        dzongkhag_thromde_id=dzongkhag_code
+                                        dzongkhag_thromde_id=dzongkhag_code,
+                                        application_source='ECSS'
                                     )
         
         data['message'] = "success"
@@ -3472,7 +3496,8 @@ def save_quarry_application(request):
                                     assigned_role_name='Verifier',
                                     result=None,
                                     ca_authority=request.session['ca_authority'],
-                                    dzongkhag_thromde_id=dzongkhag_code
+                                    dzongkhag_thromde_id=dzongkhag_code,
+                                    application_source='ECSS'
                                 )
         data['message'] = "success"
     except Exception as e:
@@ -3820,7 +3845,8 @@ def save_energy_application(request):
                                     assigned_role_name='Verifier',
                                     result=None,
                                     ca_authority=request.session['ca_authority'],
-                                    dzongkhag_thromde_id=dzongkhag_code
+                                    dzongkhag_thromde_id=dzongkhag_code,
+                                    application_source='ECSS'
                                 )
         data['message'] = "success"
     except Exception as e:
@@ -4004,7 +4030,8 @@ def save_tourism_application(request):
                                     assigned_role_name='Verifier',
                                     result=None,
                                     ca_authority=request.session['ca_authority'],
-                                    dzongkhag_thromde_id=dzongkhag_code
+                                    dzongkhag_thromde_id=dzongkhag_code,
+                                    application_source='ECSS'
                                 )
         data['message'] = "success"
     except Exception as e:
@@ -4882,4 +4909,15 @@ def save_compliance_details(request):
 
     ec_details = t_ec_industries_t11_ec_details.objects.filter(record_id=ec_terms_id)
     return render(request, 'ec_draft_details.html', {'ec_details': ec_details})
+
+def ec_print_list(request):
+    application_details = t_ec_industries_t1_general.objects.filter(application_status='A')
+    return render(request, 'EC/ec_print_list.html', {'application_details': application_details})
+
+def view_print_details(request):
+    ec_reference_no = request.GET.get('ec_reference_no')
+    application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+    ec_details = t_ec_industries_t11_ec_details.objects.filter(ec_reference_no=ec_reference_no)
+    return render(request, 'EC/print_ec.html', {'application_details': application_details, 'ec_details':ec_details})
+
 

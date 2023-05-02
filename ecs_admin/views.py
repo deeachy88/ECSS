@@ -811,6 +811,10 @@ def client_registration(request):
     dzongkhag = request.POST.get('dzongkhag')
     gewog = request.POST.get('gewog')
     village = request.POST.get('village')
+    i_proponent_name = request.POST.get('I_proponent_name')
+    i_dzongkhag = request.POST.get('i_dzongkhag')
+    i_gewog = request.POST.get('i_gewog')
+    i_village = request.POST.get('i_village')
 
     t_user_master.objects.create(login_type='C', proponent_type=proponent_type, proponent_name=proponent_name,
                                  address=address, contact_person=contact_person, email_id=email,

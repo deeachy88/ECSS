@@ -38,7 +38,7 @@
                                     {% if user.agency_code %}
                                         {% for agency in agency %}
                                             {% if user.agency_code == agency.competent_authority %}
-                                                <td>{{ agency.remarks }}</td>
+                                                <td>{{ agency.competent_authority }}</td>
                                             {% endif %}
                                         {% endfor %}
                                     {% else %}
@@ -52,7 +52,7 @@
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Activate')"><i class="uil uil-unlock"></i></button>
                                             {% endif %}
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit"
-                                                     onclick="populateEditForm('{{user.login_id}}', '{{user.name}}', '{{user.gender}}', '{{user.email_id}}','{{user.contact_number}}', '{{user.role_id_id}}', '{{user.agency_code_id}}')"><i class="mdi mdi-square-edit-outline"></i> </button>
+                                                     onclick="populateEditForm('{{user.login_id}}', '{{user.name}}', '{{user.gender}}', '{{user.email_id}}','{{user.contact_number}}', '{{user.role_id_id}}', '{{user.agency_code}}')"><i class="mdi mdi-square-edit-outline"></i> </button>
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Reset Password" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Reset')"><i class="uil-key-skeleton"></i></button>
                                         </div>
                                     </td>
@@ -483,7 +483,7 @@ function populateEditForm(loginId, name, gender, emailId, contactNumber, roleId,
     else
     {
         $('.edit_com_auth_div').show();
-        $('#edit_agency').val(roleId);
+        $('#edit_agency').val(agencyId);
     }
     
     $('#edit-user-modal').modal('show');

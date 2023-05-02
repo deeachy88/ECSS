@@ -3,7 +3,7 @@
 <div id="application_details">
     <div class="card mt-1">
         <div class="card-body">
-            <h5 class="card-title mb-0 text-right">Application List</h5>
+            <h5 class="card-title mb-0 text-right">EC Print List</h5>
             <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
                 <i class="ri-check-line me-2"></i>
             </div>
@@ -13,33 +13,26 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Application No</th>
+                            <th scope="col">EC Reference No</th>
                             <th scope="col">Service Name</th>
                             <th scope="col">Application Date</th>
-                            <th scope="col">Application Source</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for application_details in application_details %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                {% for payment_details in payment_details %}
-                                    {% if application_details.application_no == payment_details.application_no %}
-                                        {% if payment_details.transaction_date %}
-                                            <td>
-                                                <a href="javascript: void(0);" class="btn btn-outline-primary" onclick="viewApplicationDetails('{{application_details.application_no}}','{{application_details.service_id}}','{{application_details.application_source}}')">{{application_details.application_no}}
-                                                </a>
-                                        {% else %}
-                                            <td>{{application_details.application_no}}</td>
-                                        {% endif %}
-                                    {% endif %}
-                                {% endfor %}
+                                <td>{{application_details.application_no}}</td>
+                                <td>{{application_details.ec_reference_no}}</td>
                                 {% for service_details in service_details %}
                                     {% if application_details.service_id == service_details.service_id %}
                                         <td>{{service_details.service_name}}</td>
                                     {% endif %}
                                 {% endfor %}
-                                <td>{{application_details.action_date|date:"d-m-Y"}}</td>
-                                <td>{{application_details.application_source}}</td>
+                                <td>{{application_details.ec_approve_date|date:"d-m-Y"}}</td>
+                                <td>{{application_details.ec_expiry_date|date:"d-m-Y"}}</td>
+                                <td><button type="button" class="btn btn-sm btn-outline-primary px-1 py-0" onclick="view_print_details('{{application_details.ec_reference_no}}')"> <i class="uil uil-file-copy-alt font-16"></i> </button></td>
                             </tr>
                             {% empty %}
                             <tr>
@@ -53,12 +46,12 @@
     </div>
 </div>
 <script>
-    function viewApplicationDetails(application_no,service_id, application_source)
+    function view_print_details(ec_reference_no)
     {
         $.ajax({
             type : "GET",
-            url : "{% url 'view_application_details' %}",
-            data :{'application_no':application_no, 'service_id':service_id,'application_source':application_source},
+            url : "{% url 'view_print_details' %}",
+            data :{'ec_reference_no':ec_reference_no},
             success : function(data)
             {
                 $('#application_details').html(data);

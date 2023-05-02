@@ -1,0 +1,74 @@
+
+    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">File</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for file_attach in lu_attach %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                    <td>
+                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_attachment('{{ file_attach.file_id }}','{{ file_attach.attachment_type }}','{{ file_attach.document_id }}')"><i class="uil-trash"></i></button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="3" class="text-center">No Data</td>
+                </tr>
+       {% endfor %}
+    </tbody>
+</table>
+<script>
+    function delete_attachment(file_id, attachment_type, document_id)
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'delete_attachment' %}",
+            data :{'file_id':file_id , 'attachment_type': attachment_type, 'document_id':document_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                if(attachment_type == 'M')
+                {
+                    $('#menu_file_attachment').html(responseText);
+                }
+                else if(attachment_type == 'SM')
+                {
+                    $('#sub_menu_file_attachment').html(responseText);
+                }
+                else if(attachment_type == 'H')
+                {
+                    $('#home_page_file_attachment').html(responseText);
+                }
+                else if(attachment_type == 'FO')
+                {
+                    $('#forest_file_attachment').html(responseText);
+                }
+                else if(attachment_type == 'IEE')
+                {
+                    $('#iee_file_attachment').html(responseText);
+                }
+                else if(attachment_type == 'EA')
+                {
+                    $('#ea_file_attachment').html(responseText);
+                }
+                else if(attachment_type == 'GW')
+                {
+                    $('#ground_water_attachment').html(responseText);
+                }
+                else if(attachment_type == 'GEN')
+                {
+                    $('#general_attachment').html(responseText);
+                }
+                else if(attachment_type == 'TRA')
+                {
+                    $('#transmission_attachment').html(responseText);
+                }
+            }
+        });
+    }
+</script>

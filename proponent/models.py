@@ -473,7 +473,9 @@ class t_ec_industries_t1_general(models.Model):
     service_id = models.IntegerField(default=None, blank=True, null=True)
     application_source = models.CharField(max_length=20,default=None, blank=True, null=True)
     service_type = models.CharField(max_length=100,default=None, blank=True, null=True)
-
+    additional_info = models.TextField(max_length=250, default=None, blank=True, null=True)
+    additional_info_letter = models.TextField(max_length=250, default=None, blank=True, null=True)
+    
 class t_ec_industries_t2_partner_details(models.Model):
     record_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100,default=None, blank=True, null=True)
@@ -559,6 +561,12 @@ class t_ec_industries_t11_ec_details(models.Model):
     ec_terms = models.TextField(default=None, blank=True, null=True)
     ec_reference_no = models.CharField(max_length=250,default=None, blank=True, null=True)
 
+class t_ec_industries_t12_drainage_details(models.Model):
+    record_id = models.AutoField(primary_key=True)
+    application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
+    drain_type = models.CharField(max_length=250,default=None, blank=True, null=True)
+    chainage = models.CharField(max_length=250,default=None, blank=True, null=True)
+
 
 class t_ec_renewal_t1(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -613,7 +621,7 @@ class t_workflow_dtls(models.Model):
     instance_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     service_id = models.IntegerField(default=None, blank=True, null=True)
-    application_status = models.CharField(max_length=3, default=None, blank=True, null=True)
+    application_status = models.CharField(max_length=10, default=None, blank=True, null=True)
     action_date = models.DateField(default=None, blank=True, null=True)
     actor_id = models.IntegerField(default=None, blank=True, null=True)
     actor_name = models.CharField(max_length=100, default=None, blank=True, null=True)
