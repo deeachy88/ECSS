@@ -60,7 +60,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Applicant Name</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name">
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly>
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -103,14 +103,24 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Dzongkhag/Thromde</label>
-                                                <input type="text" name="dzo_throm" class="form-control" id="dzo_throm">
+                                                <select class="form-select" name="dzo_throm"  id="dzo_throm" onchange="getGewog(this.value)">
+                                                    <option value="">--SELECT DZONGKHAG--</option>
+                                                    {% for dzongkhag in dzongkhag %}
+                                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="dzo_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Gewog</label>
-                                                <input type="text" name="gewog" class="form-control" id="gewog">
+                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                    <option value="">--SELECT GEWOG--</option>
+                                                    {% for gewog in gewog %}
+                                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -119,7 +129,12 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <input type="text" name="vil_chiwog" class="form-control" id="vil_chiwog">
+                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                    <option value="">--SELECT VILLAGE--</option>
+                                                    {% for village in village %}
+                                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -557,7 +572,7 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <div class="card-widgets mb-3">
-                                                    <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#raw_materials_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#raw_materials_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                                 </div>
                                                 <div class="collapse pt-3 show">
                                                     <div id="raw_materials_div">
@@ -1005,7 +1020,7 @@
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="card-widgets">
-                                                <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#ground_water_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#ground_water_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                             </div>
                                             <h5 class="card-title mb-0">Attachments</h5>
                                             <div id="cardCollpase7" class="collapse pt-3 show">
