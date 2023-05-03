@@ -1,7 +1,3 @@
-{% extends 'common_dashboard.html' %}
-{% load crispy_forms_tags %}
-{% block content %}
-{% load static %}
 <div class="row">
     <div class="col-xl-12">
         <div class="card mt-1">
@@ -21,7 +17,7 @@
                                 <form method="post" id="transmission_application_form">
                                     {% csrf_token %}
                                     <input type="text" class="form-control" value="{{identifier}}" id="identifier" name="identifier" style="display:none;">
-                            <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+                            <input type="text" class="form-control" value="{{application_no}}" name="application_no" id="application_no" style="display:none;">
                             <input type="text" class="form-control" value="{{application_details.ec_reference_no}}" name="ec_reference_no" id="ec_reference_no" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -5343,4 +5339,3 @@
         $('#total_area_acre').val(sum);
     }
 </script>
-{% endblock %}

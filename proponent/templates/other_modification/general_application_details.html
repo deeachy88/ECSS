@@ -1,7 +1,4 @@
-{% extends 'common_dashboard.html' %}
-{% load crispy_forms_tags %}
-{% block content %}
-{% load static %}
+
 {% for application_details in application_details %}
 <div class="row">
     <div class="col-xl-12">
@@ -19,7 +16,7 @@
                         <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
                             data-bs-parent="#accordionExample">
                             <input type="text" class="form-control" value="{{identifier}}" id="identifier" name="identifier" style="display:none;">
-                            <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+                            <input type="text" class="form-control" value="{{application_no}}" name="application_no" id="application_no" style="display:none;">
                             <input type="text" class="form-control" value="{{application_details.ec_reference_no}}" name="ec_reference_no" id="ec_reference_no" style="display:none;">
                             <div class="accordion-body">
                                 <div class="row">
@@ -389,7 +386,7 @@
                                             <td>Protected Areas and zonation (multiple use/buffer/core)</td>
                                             <td>
                                                 <div class="mb-1">
-                                                    <input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="{{ application_details.bl_protected_area_name}" disabled>
+                                                    <input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="{{ application_details.bl_protected_area_name}}" disabled>
                                                 </div>
                                             </td>
                                             <td>
@@ -631,7 +628,7 @@
                                             <select class="form-select" name="energy_source" id="energy_source" disabled>
                                                 {% if application_details.energy_source == 'electric' %}
                                                     <option value="electric" selected>Electric</option>
-                                                {% if application_details.energy_source == 'electric' %}
+                                                {% elif application_details.energy_source == 'electric' %}
                                                     <option value="coal" selected>Coal</option>
                                                 {% elif application_details.energy_source == 'electric' %}
                                                     <option value="high_speed_diesel" selected>High Speed Diesel</option>
@@ -777,11 +774,11 @@
                                             <select class="form-control" id="energy_source" name="energy_source" disabled>
                                                 {% if application_details.energy_source == 'Electric' %}
                                                     <option value="Electric">Electric</option>
-                                                {% if application_details.energy_source == 'Coal' %}    
+                                                {% elif application_details.energy_source == 'Coal' %}    
                                                     <option value="Coal">Coal</option>
-                                                {% if application_details.energy_source == 'High_Speed_Diesel' %}
+                                                {% elif application_details.energy_source == 'High_Speed_Diesel' %}
                                                     <option value="High_Speed_Diesel">High speed diesel</option>
-                                                {% if application_details.energy_source == 'Wood-Fired' %}
+                                                {% elif application_details.energy_source == 'Wood-Fired' %}
                                                     <option value="Wood-Fired">Wood-Fired</option>
                                                 {% else %}
                                                     <option value="Biomass">Biomass</option>
@@ -2068,4 +2065,3 @@
 
     
 </script>
-{% endblock %}

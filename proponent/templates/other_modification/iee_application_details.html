@@ -1,7 +1,3 @@
-{% extends 'common_dashboard.html' %}
-{% load crispy_forms_tags %}
-{% block content %}
-{% load static %}
 {% for application_details in application_details %}
 <div class="row" xmlns="http://www.w3.org/1999/html">
     <div class="col-xl-12">
@@ -22,7 +18,7 @@
                                 <form method="post" id="iee_application_form">
                                     {% csrf_token %}
                                     <input type="text" class="form-control" value="{{identifier}}" id="identifier" name="identifier" style="display:none;">
-                                    <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+                                    <input type="text" class="form-control" value="{{application_no}}" name="application_no" id="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="{{application_details.ec_reference_no}}" name="ec_reference_no" id="ec_reference_no" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -698,7 +694,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="water_requirement_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_details.application_no}}" name="water_requirement_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="water_requirement_application_no">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -7530,4 +7526,3 @@
     }
 
 </script>
-{% endblock %}

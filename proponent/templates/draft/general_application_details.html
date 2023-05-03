@@ -102,14 +102,24 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Dzongkhag/Thromde</label>
-                                                <input type="text" name="dzo_throm" class="form-control" id="dzo_throm">
+                                                <select class="form-select" name="dzo_throm"  id="dzo_throm" onchange="getGewog(this.value)">
+                                                    <option value="">--SELECT DZONGKHAG--</option>
+                                                    {% for dzongkhag in dzongkhag %}
+                                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="dzo_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Gewog</label>
-                                                <input type="text" name="gewog" class="form-control" id="gewog">
+                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                    <option value="">--SELECT GEWOG--</option>
+                                                    {% for gewog in gewog %}
+                                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -118,7 +128,12 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <input type="text" name="vil_chiwog" class="form-control" id="vil_chiwog">
+                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                    <option value="">--SELECT VILLAGE--</option>
+                                                    {% for village in village %}
+                                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -192,7 +207,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingTwoBtn"
-                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" disabled>
                                 Baseline/Existing information
                             </button>
                         </h2>
@@ -359,7 +374,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingProjectDetails">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn">
+                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn" disabled>
                                 Project Details
                             </button>
                         </h2>
@@ -419,7 +434,7 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <div class="card-widgets mb-3">
-                                                    <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#final_products_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#final_products_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                                 </div>
                                                 <div class="collapse pt-3 show">
                                                     <div id="final_products_div">
@@ -495,7 +510,7 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <div class="card-widgets mb-3">
-                                                    <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#dump_yard_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#dump_yard_modal"><i class="mdi mdi-plus me-2"></i>Adds</button>
                                                 </div>
                                                 <div class="collapse pt-3 show">
                                                     <div id="dump_yard_details_div">
@@ -625,7 +640,7 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <div class="card-widgets mb-3">
-                                                    <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#raw_materials_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#raw_materials_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                                 </div>
                                                 <div class="collapse pt-3 show">
                                                     <div id="raw_materials_div">
@@ -654,7 +669,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFive">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFiveBtn"
-                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" disabled>
                                 Ancillary:Approach Road
                             </button>
                         </h2>
@@ -791,7 +806,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSix">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSixBtn"
-                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" disabled>
                                 Ancillary:Power Lines
                             </button>
                         </h2>
@@ -894,7 +909,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSeven">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" id="headingSevenBtn">
+                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" id="headingSevenBtn" disabled>
                                 Ancillary:Others
                             </button>
                         </h2>
@@ -944,7 +959,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingEight">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
-                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
                                 Solid Waste
                             </button>
                         </h2>
@@ -1036,7 +1051,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwelve">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTwelveBtn"
-                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
+                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" disabled>
                                 Noise Level
                             </button>
                         </h2>
@@ -1105,7 +1120,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOtherImpacts">
                             <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
+                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
                                 Other Impacts
                             </button>
                         </h2>
@@ -1224,7 +1239,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingAttachment">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
-                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
+                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
                                 File Attachment
                             </button>
                         </h2>
@@ -1270,7 +1285,7 @@
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="card-widgets">
-                                                <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#general_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#general_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                             </div>
                                             <h5 class="card-title mb-0">Attachments</h5>
                                             <div id="cardCollpase7" class="collapse pt-3 show">
@@ -1342,7 +1357,7 @@
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
                                             <a href="#" class="btn btn-success" onclick="submit_general_application()">
-                                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                                <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
                                         </div>
                                     </div>
                                 </form>
@@ -1354,6 +1369,7 @@
         </div> <!-- end card-->
     </div>
 </div>
+{% endfor %}
 
 <form method="post" id="machine_equipment_tool_form">
 {% csrf_token %}

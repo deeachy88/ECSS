@@ -1,7 +1,3 @@
-{% extends 'common_dashboard.html' %}
-{% load crispy_forms_tags %}
-{% block content %}
-{% load static %}
 {% for application_details in application_details %}
 <div class="row">
     <div class="col-xl-12">
@@ -388,7 +384,7 @@
                                             <td>Protected Areas and zonation (multiple use/buffer/core)</td>
                                             <td>
                                                 <div class="mb-1">
-                                                    <input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="{{ application_details.bl_protected_area_name}" disabled>
+                                                    <input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="{{ application_details.bl_protected_area_name}}" disabled>
                                                 </div>
                                             </td>
                                             <td>
@@ -630,7 +626,7 @@
                                             <select class="form-select" name="energy_source" id="energy_source" disabled>
                                                 {% if application_details.energy_source == 'electric' %}
                                                     <option value="electric" selected>Electric</option>
-                                                {% if application_details.energy_source == 'electric' %}
+                                                {% elif application_details.energy_source == 'electric' %}
                                                     <option value="coal" selected>Coal</option>
                                                 {% elif application_details.energy_source == 'electric' %}
                                                     <option value="high_speed_diesel" selected>High Speed Diesel</option>
@@ -2685,4 +2681,3 @@
         }
     }
 </script>
-{% endblock %}

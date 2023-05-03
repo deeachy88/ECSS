@@ -1566,6 +1566,7 @@
                                 <form method="post" id="iee_submit_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="iee_disclaimer_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="iee_form_type" style="display:none;">
                                     
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="iee_submit_successMsg" style="display:none">
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
