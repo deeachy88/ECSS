@@ -1,7 +1,3 @@
-{% extends 'common_dashboard.html' %}
-{% load crispy_forms_tags %}
-{% block content %}
-{% load static %}
 {% for application_details in application_details %}
 <div class="row">
     <div class="col-xl-12">
@@ -22,6 +18,7 @@
                                 <form method="post" id="forest_application_form">
                                     {% csrf_token %}
                                     <input type="text" class="form-control" value="{{application_no}}" name="application_no" style="display:none;">
+                                    <input type="text" class="form-control" value="Main Activity" name="form_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -56,14 +53,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">CID</label>
-                                                <input type="text" name="cid" class="form-control" id="cid">
+                                                <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" onchange="getCitizenDetails(this.value)">
                                             </div>
                                             <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Applicant Name</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name">
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly>
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -119,7 +116,12 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Classification of Industry</label>
-                                                <input type="text" name="industry_classification" class="form-control" id="industry_classification">
+                                                <select class="form-control" name="industry_classification" id="industry_classification">
+                                                    <option value="">-Select-</option>
+                                                    <option value="Small">Small</option>
+                                                    <option value="Cottage">Cottage</option>
+                                                    <option value="Large">Large</option>
+                                                </select> 
                                             </div>
                                             <div id="industry_classificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -131,14 +133,24 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Dzongkhag/Thromde</label>
-                                                <input type="text" name="dzo_throm" class="form-control" id="dzo_throm">
+                                                <select class="form-select" name="dzo_throm"  id="dzo_throm" onchange="getGewog(this.value)">
+                                                    <option value="">--SELECT DZONGKHAG--</option>
+                                                    {% for dzongkhag in dzongkhag %}
+                                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="dzo_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Gewog</label>
-                                                <input type="text" name="gewog" class="form-control" id="gewog">
+                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                    <option value="">--SELECT GEWOG--</option>
+                                                    {% for gewog in gewog %}
+                                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -147,7 +159,12 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <input type="text" name="vil_chiwog" class="form-control" id="vil_chiwog">
+                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                    <option value="">--SELECT VILLAGE--</option>
+                                                    {% for village in village %}
+                                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -393,7 +410,7 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingForest">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="ProjectDetailsBtn"
                                 data-bs-target="#collapseForest" aria-expanded="false" aria-controls="collapseForest">
                                 Project Details
                             </button>
@@ -705,7 +722,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFive">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFiveBtn"
-                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" disabled>
+                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                                 Ancillary:Approach Road
                             </button>
                         </h2>
@@ -842,7 +859,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSix">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSixBtn"
-                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" disabled>
+                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
                                 Ancillary:Power Lines
                             </button>
                         </h2>
@@ -945,7 +962,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSeven">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSevenBtn"
-                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" disabled>
+                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
                                 Ancillary:Others
                             </button>
                         </h2>
@@ -1008,7 +1025,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingEight">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
-                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
                                 Solid Waste
                             </button>
                         </h2>
@@ -1169,7 +1186,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOtherImpacts">
                             <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
                                 Other Impacts
                             </button>
                         </h2>
@@ -1297,7 +1314,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingAttachment">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
-                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
+                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
                                 File Attachment
                             </button>
                         </h2>
@@ -1359,7 +1376,7 @@
                                 </div>
                                 <div class="row mt-4">
                                     <div class="text-sm-end">
-                                        <a href="#" class="btn btn-success" onclick="save_forest_attachment_form()">
+                                        <a href="#" class="btn btn-success" onclick="forest_attachment_details_save()">
                                             <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
                                     </div>
                                 </div>
@@ -1368,7 +1385,7 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingDisclaimer">
-                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingDisclaimerBtn"
                                 data-bs-target="#collapseDisclaimer" aria-expanded="false" aria-controls="collapseDisclaimer">
                                 Disclaimer
                             </button>
@@ -1399,7 +1416,7 @@
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
                                             <a href="#" class="btn btn-success" onclick="submit_forest_application()">
-                                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                                <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
                                         </div>
                                     </div>
                                 </form>
@@ -2076,6 +2093,44 @@
 </form>
 
 <script>
+    function check_general_water(value)
+    {
+        if(value == 'Yes')
+        {
+            $('.forest_water_details').show();
+        }
+        else
+        {
+            $('.forest_water_details').hide();
+        }
+    }
+
+    function getGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#gewog').html(data);
+            }
+        });
+    }
+
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#vil_chiwog').html(data);
+            }
+        });
+    }
+
     function add_forestry_produce_details()
     {
         application_no = $('#application_no').val();
@@ -2259,11 +2314,11 @@
     {
         if(value == "Yes")
         {
-            $('.approach_road_details').show();
+            $('#approach_road_details').show();
         }
         else
         {
-            $('.approach_road_details').hide();
+            $('#approach_road_details').hide();
         }
     }
 
@@ -2615,6 +2670,21 @@
         }
     }
 
+    function forest_attachment_details_save()
+    {
+        $('#forest_attachment_successMsg').html("Saved Successfully");
+        $('#forest_attachment_successMsg').show();
+        setTimeout(function()
+        {
+            $('#forest_attachment_successMsg').delay(2000).fadeOut('slow');
+        }, 2000);
+        setTimeout(function() {
+            $("#headingDisclaimerBtn").removeAttr("disabled");
+            $("#collapseDisclaimer").addClass("show");
+            $("#collapseAttachment").removeClass("show");
+        }, 2000);
+    }
+    
     function submit_forest_application()
     {
         $.ajax
@@ -3330,7 +3400,7 @@
                         }, 2000);
                         setTimeout(function() {
                             $("#ProjectDetailsBtn").removeAttr("disabled");
-                            $("#collapseProjectDetails").addClass("show");
+                            $("#collapseForest").addClass("show");
                             $("#collapseTwo").removeClass("show");
                         }, 2000);
                     }
@@ -3402,7 +3472,7 @@
             $('#no_of_workersErrorMsg').delay(2000).fadeOut('slow');
             $('#no_of_workers').focus();
         }
-        else if(no_ofmachineries_type_number_workers == "")
+        else if(machineries_type_number == "")
         {
             $('#machineries_type_numberErrorMsg').html("Enter Type & no of Machineriries");
             $('#machineries_type_numberErrorMsg').show();
@@ -3429,7 +3499,7 @@
                         setTimeout(function() {
                             $("#collapseFourBtn").removeAttr("disabled");
                             $("#collapseFour").addClass("show");
-                            $("#collapseProjectDetails").removeClass("show");
+                            $("#collapseForest").removeClass("show");
                         }, 2000);
                     }
                     else
@@ -3688,14 +3758,14 @@
             $('#anc_road_lengthErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_length').focus();
         }
-        else if(water_required_value == 'Yes' && anc_road_start_point == "")
+        else if(anc_road_required_value == 'Yes' && anc_road_start_point == "")
         {
             $('#anc_road_start_pointErrorMsg').html("Enter Starting Point.");
             $('#anc_road_start_pointErrorMsg').show();
             $('#anc_road_start_pointErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_start_point').focus();
         }
-        else if(water_required_value == 'Yes' && anc_road_end_point == "")
+        else if(anc_road_required_value == 'Yes' && anc_road_end_point == "")
         {
             $('#anc_road_end_pointErrorMsg').html("Enter Termination Point.");
             $('#anc_road_end_pointErrorMsg').show();
@@ -4594,6 +4664,42 @@
             $('.general_application').hide();
         }
     }
-    
+    function getCitizenDetails(cid)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'check_cid_exists' %}",
+            data :{'cid':cid},
+            success : function(data)
+            {
+                if(data.count > 0)
+                {
+                    $('#cid').val("");
+                    $('#applicant_name').val("");
+                    $('#cidErrorMsg').html("CID Already Exists.Try With Another one");
+                    $('#cidErrorMsg').show();
+                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    const myObj =data.response;
+                    if(myObj.citizendatas.citizendata == undefined)
+                    {
+                        $('#cid').val("");
+                        $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                        $('#cidErrorMsg').show();
+                        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        var CitizenName = myObj.citizendatas.citizendata[0].Name
+                        var dzongkhagName = myObj.citizendatas.citizendata[0].Dzongkhag_Name
+                        var villageName = myObj.citizendatas.citizendata[0].Gewog_Name
+                        var gewogName = myObj.citizendatas.citizendata[0].Village_Name
+                        $('#applicant_name').val(CitizenName);
+                    }
+                }
+            }
+        });
+    }
 </script>
-{% endblock %}

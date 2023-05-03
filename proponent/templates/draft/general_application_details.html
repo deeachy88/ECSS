@@ -1,6 +1,3 @@
-{% extends 'common_dashboard.html' %}
-{% load crispy_forms_tags %}
-{% block content %}
 {% for application_details in application_details %}
 <div class="row">
     <div class="col-xl-12">
@@ -20,9 +17,8 @@
                             <div class="accordion-body">
                                 <form method="post" id="general_application_form">
                                     {% csrf_token %}
-                                    <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" style="display:none;">
-                                    <input type="text" class="form-control" value="{{application_details.service_id}}" name="service_id" style="display:none;">
-                                    <input type="text" class="form-control" value="Draft" name="identifier" style="display:none;">
+                                    <input type="text" class="form-control" value="{{application_no}}" name="application_no" style="display:none;">
+                                    <input type="text" class="form-control" value="Main Activity" name="form_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -52,14 +48,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">CID</label>
-                                                <input type="text" name="cid" class="form-control" id="cid">
+                                                <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" onchange="getCitizenDetails(this.value)">
                                             </div>
                                             <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of Applicant</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name">
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly> 
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -195,7 +191,7 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingTwoBtn"
                                 data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                 Baseline/Existing information
                             </button>
@@ -363,7 +359,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingProjectDetails">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn" disabled>
+                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn">
                                 Project Details
                             </button>
                         </h2>
@@ -452,7 +448,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn" disabled>
+                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn">
                                 Energy / Water Requirement
                             </button>
                         </h2>
@@ -658,7 +654,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFive">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFiveBtn"
-                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" disabled>
+                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                                 Ancillary:Approach Road
                             </button>
                         </h2>
@@ -795,7 +791,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSix">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSixBtn"
-                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" disabled>
+                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
                                 Ancillary:Power Lines
                             </button>
                         </h2>
@@ -898,7 +894,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSeven">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" id="headingSevenBtn" disabled>
+                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" id="headingSevenBtn">
                                 Ancillary:Others
                             </button>
                         </h2>
@@ -948,7 +944,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingEight">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
-                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
                                 Solid Waste
                             </button>
                         </h2>
@@ -1040,7 +1036,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwelve">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTwelveBtn"
-                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" disabled>
+                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
                                 Noise Level
                             </button>
                         </h2>
@@ -1109,7 +1105,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOtherImpacts">
                             <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
                                 Other Impacts
                             </button>
                         </h2>
@@ -1227,7 +1223,7 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingAttachment">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
                                 data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
                                 File Attachment
                             </button>
@@ -1358,7 +1354,6 @@
         </div> <!-- end card-->
     </div>
 </div>
-{% endfor %}
 
 <form method="post" id="machine_equipment_tool_form">
 {% csrf_token %}
@@ -3115,14 +3110,14 @@
             $('#anc_road_lengthErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_length').focus();
         }
-        else if(water_required_value == 'Yes' && anc_road_start_point == "")
+        else if(anc_road_required_value == 'Yes' && anc_road_start_point == "")
         {
             $('#anc_road_start_pointErrorMsg').html("Enter Starting Point.");
             $('#anc_road_start_pointErrorMsg').show();
             $('#anc_road_start_pointErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_start_point').focus();
         }
-        else if(water_required_value == 'Yes' && anc_road_end_point == "")
+        else if(anc_road_required_value == 'Yes' && anc_road_end_point == "")
         {
             $('#anc_road_end_pointErrorMsg').html("Enter Termination Point.");
             $('#anc_road_end_pointErrorMsg').show();
@@ -5390,5 +5385,43 @@
 
         $('#total_area_acre').val(sum);
     }
+
+    function getCitizenDetails(cid)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'check_cid_exists' %}",
+            data :{'cid':cid},
+            success : function(data)
+            {
+                if(data.count > 0)
+                {
+                    $('#cid').val("");
+                    $('#applicant_name').val("");
+                    $('#cidErrorMsg').html("CID Already Exists.Try With Another one");
+                    $('#cidErrorMsg').show();
+                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    const myObj =data.response;
+                    if(myObj.citizendatas.citizendata == undefined)
+                    {
+                        $('#cid').val("");
+                        $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                        $('#cidErrorMsg').show();
+                        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        var CitizenName = myObj.citizendatas.citizendata[0].Name
+                        var dzongkhagName = myObj.citizendatas.citizendata[0].Dzongkhag_Name
+                        var villageName = myObj.citizendatas.citizendata[0].Gewog_Name
+                        var gewogName = myObj.citizendatas.citizendata[0].Village_Name
+                        $('#applicant_name').val(CitizenName);
+                    }
+                }
+            }
+        });
+    }
 </script>
-{% endblock %}

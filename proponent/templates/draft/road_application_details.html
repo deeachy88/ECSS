@@ -1,6 +1,3 @@
-{% extends 'common_dashboard.html' %}
-{% load crispy_forms_tags %}
-{% block content %}
 {% for application_details in application_details %}
 <div class="row">
     <div class="col-xl-12">
@@ -20,26 +17,23 @@
                             <div class="accordion-body">
                                 <form method="post" id="road_application_form">
                                     {% csrf_token %}
-                                    <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" style="display:none;">
-                                    <input type="text" class="form-control" value="{{application_details.service_id}}" name="service_id" style="display:none;">
-                                    <input type="text" class="form-control" value="Draft" name="identifier" style="display:none;">
+                                    <input type="text" class="form-control" value="{{application_no}}" name="application_no" style="display:none;">
+                                    <input type="text" class="form-control" value="Main Activity" name="form_type" style="display:none;">
                                     <div class="row">
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Name of Project</label>
-                                                    <select class="form-control" id="project_name" name="project_name">
-                                                        <option value="">--SELECT--</option>
-                                                        <option value="Short_Term_Quarry">National Highway Bypass</option>
-                                                        <option value="Long_Term_Quarry">Dzongkhag Road</option>
-                                                        <option value="Long_Term_Quarry">Thromde Road</option>
-                                                        <option value="Long_Term_Quarry">Farm Road</option>
-                                                        <option value="Long_Term_Quarry">Access Road</option>
-                                                        <option value="Others">Others</option>
-                                                    </select>
-                                                </div>
-                                                <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Name of Project</label>
+                                                <select class="form-control" id="project_name" name="project_name">
+                                                    <option value="">--SELECT--</option>
+                                                    <option value="Short_Term_Quarry">National Highway Bypass</option>
+                                                    <option value="Long_Term_Quarry">Dzongkhag Road</option>
+                                                    <option value="Long_Term_Quarry">Thromde Road</option>
+                                                    <option value="Long_Term_Quarry">Farm Road</option>
+                                                    <option value="Long_Term_Quarry">Access Road</option>
+                                                    <option value="Others">Others</option>
+                                                </select>
                                             </div>
+                                            <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -70,7 +64,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">CID</label>
-                                                <input type="text" name="cid" class="form-control" id="cid">
+                                                <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" onchange="getCitizenDetails(this.value)">
                                             </div>
                                             <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -79,7 +73,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Applicant Name</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name">
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly>
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -120,14 +114,24 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Dzongkhag/Thromde</label>
-                                                <input type="text" name="dzo_throm" class="form-control" id="dzo_throm">
+                                                <select class="form-select" name="dzo_throm"  id="dzo_throm" onchange="getGewog(this.value)">
+                                                    <option value="">--SELECT DZONGKHAG--</option>
+                                                    {% for dzongkhag in dzongkhag %}
+                                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="dzo_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Gewog</label>
-                                                <input type="text" name="gewog" class="form-control" id="gewog">
+                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                    <option value="">--SELECT GEWOG--</option>
+                                                    {% for gewog in gewog %}
+                                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -136,7 +140,12 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <input type="text" name="vil_chiwog" class="form-control" id="vil_chiwog">
+                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                    <option value="">--SELECT VILLAGE--</option>
+                                                    {% for village in village %}
+                                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -271,7 +280,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingProjectDetails">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn" disabled>
+                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn">
                                 Project Details
                             </button>
                         </h2>
@@ -579,7 +588,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn" disabled>
+                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn">
                                 Project Details 1
                             </button>
                         </h2>
@@ -694,7 +703,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingProjectTwo">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseProjectTwo" aria-expanded="false" aria-controls="collapseProjectTwo" id="ProjectTwoBtn" disabled>
+                                data-bs-target="#collapseProjectTwo" aria-expanded="false" aria-controls="collapseProjectTwo" id="ProjectTwoBtn">
                                 Project Details 2
                             </button>
                         </h2>
@@ -760,11 +769,11 @@
                                                 <label class="form-label fw-bold">Will the activity require water consumption?</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio3" name="water_required" class="form-check-input" value="Yes" onclick="check_industry_radio(this.value)">
+                                                        <input type="radio" id="customRadio3" name="water_required" class="form-check-input" value="Yes" onclick="check_road_water_radio(this.value)">
                                                         <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_industry_radio(this.value)">
+                                                        <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_road_water_radio(this.value)">
                                                         <label class="form-check-label" for="customRadio4">No</label>
                                                     </div>
                                                 </div>
@@ -880,7 +889,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSeven">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" id="collapseSevenBtn" disabled>
+                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" id="collapseSevenBtn">
                                 Ancillary
                             </button>
                         </h2>
@@ -951,7 +960,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingEight">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
-                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
                                 Solid Waste
                             </button>
                         </h2>
@@ -1043,7 +1052,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwelve">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTwelveBtn"
-                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" disabled>
+                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
                                 Noise Level
                             </button>
                         </h2>
@@ -1112,7 +1121,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOtherImpacts">
                             <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
                                 Other Impacts
                             </button>
                         </h2>
@@ -1240,7 +1249,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingAttachment">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
-                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
+                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
                                 File Attachment
                             </button>
                         </h2>
@@ -1318,9 +1327,9 @@
                         <div id="collapseDisclaimer" class="accordion-collapse collapse" aria-labelledby="headingDisclaimer"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <form method="post" id="iee_submit_form">
+                                <form method="post" id="road_submit_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="iee_disclaimer_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="road_disclaimer_application_no">
                                     
                                     <div class="row industry_application" style="display:none;">
                                         <a href="{% url 'industry_ancillary_form' %}" class="btn btn-danger">
@@ -1351,7 +1360,7 @@
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
                                             <a href="#" class="btn btn-success" onclick="submit_road_application()">
-                                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                                <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
                                         </div>
                                     </div>
                                 </form>
@@ -2075,17 +2084,17 @@
 </form>
 
 <script>
-    function check_industry_radio(value)
+    function check_road_water_radio(value)
     {
         if(value == 'Yes')
         {
-            $('#general_water_details').show();
-            $('#general_water_details_no').hide();
+            $('.general_water_details').show();
+            $('.general_water_details_no').hide();
         }
         else
         {
-            $('#general_water_details_no').show();
-            $('#general_water_details').hide();
+            $('.general_water_details_no').show();
+            $('.general_water_details').hide();
         }
     }
 
@@ -2928,7 +2937,7 @@
             ({
                 type : "POST",
                 url : "{% url 'save_road_application' %}",
-                data : $('#iee_application_form').serialize(),
+                data : $('#road_application_form').serialize(),
                 success : function(data)
                 {
                     if(data.message == 'success')
@@ -3259,27 +3268,28 @@
 
     function save_project_details_two()
     {
-        let water_excavated_muck = $('#water_excavated_muck').val()
-        let water_required = $('#water_required').val()
-        let water_provide_by_iestate = $('#water_provided_by').val()
-        let water_raw_material_source = $('#water_raw_material_source').val()
-        let water_raw_material_qty_day = $('#water_raw_material_qty_day').val()
-        let water_raw_material_recycle_day = $('#water_raw_material_recycle_day').val()
-        let water_cleaning_source = $('#water_cleaning_source').val()
-        let water_cleaning_qty_day = $('#water_cleaning_qty_day').val()
-        let water_cleaning_recycle_day = $('#water_cleaning_recycle_day').val()
-        let water_process_source = $('#water_process_source').val()
-        let water_process_qty_day = $('#water_process_qty_day').val()
-        let water_process_recycle_day = $('#water_process_recycle_day').val()
-        let water_domestic_source = $('#water_domestic_source').val()
-        let water_domestic_qty_day = $('#water_domestic_qty_day').val()
-        let water_domestic_recycle_day = $('#water_domestic_recycle_day').val()
-        let water_dust_compression_source = $('#water_dust_compression_source').val()
-        let water_dust_compression_qty_day = $('#water_dust_compression_qty_day').val()
-        let water_dust_compression_recycle_day = $('#water_dust_compression_recycle_day').val()
-        let water_others_name = $('#water_others_name').val()
-        let water_others_source = $('#water_others_source').val()
-        let water_others_qty_day = $('#water_others_qty_day').val()
+        let water_excavated_muck = $("input[name=water_excavated_muck]:checked").length;
+        let water_required = $("input[name=water_required]:checked").length;
+        let water_required_value = $('#water_required').val();
+        let water_provide_by_iestate = $('#water_provided_by').val();
+        let water_raw_material_source = $('#water_raw_material_source').val();
+        let water_raw_material_qty_day = $('#water_raw_material_qty_day').val();
+        let water_raw_material_recycle_day = $('#water_raw_material_recycle_day').val();
+        let water_cleaning_source = $('#water_cleaning_source').val();
+        let water_cleaning_qty_day = $('#water_cleaning_qty_day').val();
+        let water_cleaning_recycle_day = $('#water_cleaning_recycle_day').val();
+        let water_process_source = $('#water_process_source').val();
+        let water_process_qty_day = $('#water_process_qty_day').val();
+        let water_process_recycle_day = $('#water_process_recycle_day').val();
+        let water_domestic_source = $('#water_domestic_source').val();
+        let water_domestic_qty_day = $('#water_domestic_qty_day').val();
+        let water_domestic_recycle_day = $('#water_domestic_recycle_day').val();
+        let water_dust_compression_source = $('#water_dust_compression_source').val();
+        let water_dust_compression_qty_day = $('#water_dust_compression_qty_day').val();
+        let water_dust_compression_recycle_day = $('#water_dust_compression_recycle_day').val();
+        let water_others_name = $('#water_others_name').val();
+        let water_others_source = $('#water_others_source').val();
+        let water_others_qty_day = $('#water_others_qty_day').val();
 
         if(water_excavated_muck < 1)
         {
@@ -3658,7 +3668,7 @@
 
     function save_anc_other_details()
     {
-        let anc_other_required = $("input[name=anc_road_required]:checked").length;
+        let anc_other_required = $("input[name=anc_other_required]:checked").length;
         let anc_other_required_value = $("input[name=anc_other_required]:checked").val();
         
         if(anc_other_required < 1)
@@ -3894,8 +3904,8 @@
                             $('#solid_waste_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                         setTimeout(function() {
-                            $("#headingNineBtn").removeAttr("disabled");
-                            $("#collapseNine").addClass("show");
+                            $("#headingTwelveBtn").removeAttr("disabled");
+                            $("#collapseTwelve").addClass("show");
                             $("#collapseEight").removeClass("show");
                         }, 2000);
                     }
@@ -4375,7 +4385,7 @@
         ({
             type : "POST",
             url : "{% url 'submit_road_application' %}",
-            data : $('#iee_submit_form').serialize(),
+            data : $('#road_submit_form').serialize(),
             success : function(data)
             {
                 if(data.message == 'success')
@@ -4414,5 +4424,42 @@
             $('.anc_facility_details').hide();
         }
     }
+    function getCitizenDetails(cid)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'check_cid_exists' %}",
+            data :{'cid':cid},
+            success : function(data)
+            {
+                if(data.count > 0)
+                {
+                    $('#cid').val("");
+                    $('#applicant_name').val("");
+                    $('#cidErrorMsg').html("CID Already Exists.Try With Another one");
+                    $('#cidErrorMsg').show();
+                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    const myObj =data.response;
+                    if(myObj.citizendatas.citizendata == undefined)
+                    {
+                        $('#cid').val("");
+                        $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                        $('#cidErrorMsg').show();
+                        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        var CitizenName = myObj.citizendatas.citizendata[0].Name
+                        var dzongkhagName = myObj.citizendatas.citizendata[0].Dzongkhag_Name
+                        var villageName = myObj.citizendatas.citizendata[0].Gewog_Name
+                        var gewogName = myObj.citizendatas.citizendata[0].Village_Name
+                        $('#applicant_name').val(CitizenName);
+                    }
+                }
+            }
+        });
+    }
 </script>
-{% endblock %}
