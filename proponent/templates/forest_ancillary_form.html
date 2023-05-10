@@ -1076,23 +1076,9 @@
                                 <form method="post" id="forest_submit_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="forest_disclaimer_application_no">
-                                    
-                                    <div class="row industry_application" style="display:none;">
-                                        <a href="{% url 'industry_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Industrial projects </a>
-                                    </div>
-                                    
-                                    <div class="row general_application mt-1" style="display:none;">
-                                        <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
-                                    </div>
+                                    <input type="hidden" class="form-control"  value="{{ request.session.service_id }}" name="service_id" id="service_id">
+                                    <input type="text" class="form-control" value="Ancillary" name="anc_identifier" style="display:none;">
 
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="forest_submit_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="forest_submit_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
                                             <a href="#" class="btn btn-success" onclick="submit_forest_application()">
@@ -1523,6 +1509,7 @@
 
     function submit_forest_application()
     {
+        let service_id = $("#service_id").val();
         $.ajax
         ({
             type : "POST",
@@ -1539,7 +1526,31 @@
                         $('#forest_submit_successMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                     setTimeout(function() {
-                        location.reload()
+                        if(service_id == '1')
+                        {
+                            window.location.href = '/new_iee_application';
+                        }
+                        else if(service_id == '3')
+                        {
+                            window.location.href = '/new_road_application';
+                        }
+                        else if(service_id == '4')
+                        {
+                            window.location.href = '/new_transmission_application';
+                        }
+                        else if(service_id == '7')
+                        {
+                            
+                            window.location.href = '/new_forestry_application';
+                        }
+                        else if(service_id == '0')
+                        {
+                            window.location.href = '/tor_form';
+                        }
+                        else
+                        {
+                            window.location.href = '/new_general_application';
+                        }
                     }, 2000);
                 }
                 else

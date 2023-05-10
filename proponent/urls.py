@@ -177,5 +177,5 @@ urlpatterns = [
 
     #EC PRint
     path('ec_print_list', views.ec_print_list, name='ec_print_list'),
-    path('view_print_details', views.view_print_details, name='view_print_details')
+    path('view_print_details', views.view_print_details, name='view_print_details'),
 ]

@@ -46,7 +46,7 @@
     {
         $.ajax({
             type : "GET",
-            url : "{% url 'ec_renewal' %}",
+            url : "{% url 'ec_renewal_details' %}",
             data :{'ec_reference_no':ec_reference_no},
             success : function(data)
             {

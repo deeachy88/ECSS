@@ -13,6 +13,7 @@ from django.db.models import Max
 # Create your views here.
 def verify_application_list(request):
     ca_authority = request.session['ca_authority']
+    print(ca_authority)
     application_list = t_workflow_dtls.objects.filter(application_status='P',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='DEC',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='AL',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)
     service_details = t_service_master.objects.all()
     payment_details = t_payment_details.objects.all()

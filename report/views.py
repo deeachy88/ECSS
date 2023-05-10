@@ -56,18 +56,18 @@ def view_ec_list(request):
 
     if ca_authority == 'ALL' and service_id == 'ALL':
         ec_list = t_ec_industries_t1_general.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                            application_status='Approved').values()
+                                                            application_status='A').values()
     elif ca_authority == 'ALL' and service_id != 'ALL':
         ec_list = t_ec_industries_t1_general.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                            application_status='Approved', service_id=service_id).values()
+                                                            application_status='A', service_id=service_id).values()
     elif ca_authority != 'ALL' and service_id == 'ALL':
         ec_list = t_ec_industries_t1_general.objects.filter(ec_approve_date__range=[from_date, to_date],
                                                             ca_authority=ca_authority,
-                                                            application_status='Approved').values()
+                                                            application_status='A').values()
     elif ca_authority != 'ALL' and service_id != 'ALL':
         ec_list = t_ec_industries_t1_general.objects.filter(ec_approve_date__range=[from_date, to_date],
                                                             ca_authority=ca_authority, service_id=service_id,
-                                                            application_status='Approved').values()
+                                                            application_status='A').values()
 
     return render(request, 'ec_list.html',
                   {'dzongkhag_list': dzongkhag_list, 'ec_list': ec_list, 'ca_list': ca_list})

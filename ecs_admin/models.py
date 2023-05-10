@@ -165,7 +165,7 @@ class t_forgot_password(models.Model):
 class t_menu_master(models.Model):
     menu_id = models.AutoField(primary_key=True)
     menu_name = models.CharField(max_length=250, default=None, blank=True, null=True)
-    menu_content = models.TextField(max_length=250, default=None, blank=True, null=True)
+    menu_content = models.TextField(default=None, blank=True, null=True)
     is_active = models.CharField(max_length=3, default=None, blank=True, null=True)
     has_sub_menu = models.CharField(max_length=3, default=None, blank=True, null=True)
     document_id = models.IntegerField(blank=True, null=True)
@@ -175,7 +175,7 @@ class t_submenu_master(models.Model):
     sub_menu_id = models.AutoField(primary_key=True)
     menu_id = models.IntegerField(blank=True, null=True)
     sub_menu_name = models.CharField(max_length=250, default=None, blank=True, null=True)
-    sub_menu_content = models.CharField(max_length=250, default=None, blank=True, null=True)
+    sub_menu_content = models.TextField(max_length=250, default=None, blank=True, null=True)
     is_active = models.CharField(max_length=3, default=None, blank=True, null=True)
     document_id = models.IntegerField(blank=True, null=True)
     is_deleted = models.CharField(max_length=3, default=None, blank=True, null=True)

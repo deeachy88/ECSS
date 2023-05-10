@@ -105,14 +105,24 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Dzongkhag/Thromde</label>
-                                                <input type="text" name="dzo_throm" class="form-control" id="dzo_throm">
+                                                <select class="form-select" name="dzo_throm"  id="dzo_throm" onchange="getGewog(this.value)">
+                                                    <option value="">--SELECT DZONGKHAG--</option>
+                                                    {% for dzongkhag in dzongkhag %}
+                                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="dzo_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Gewog</label>
-                                                <input type="text" name="gewog" class="form-control" id="gewog">
+                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                    <option value="">--SELECT GEWOG--</option>
+                                                    {% for gewog in gewog %}
+                                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -121,7 +131,12 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <input type="text" name="vil_chiwog" class="form-control" id="vil_chiwog">
+                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                    <option value="">--SELECT VILLAGE--</option>
+                                                    {% for village in village %}
+                                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1019,33 +1034,9 @@
                                 <form method="post" id="general_submit_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no">
-                                    
-                                    <div class="row industry_application" style="display:none;">
-                                        <a href="{% url 'industry_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Industrial projects </a>
-                                    </div>
-                                    
-                                    <div class="row forestry_application mt-1" style="display:none;">
-                                        <a href="{% url 'forest_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Forestry projects </a>
-                                    </div>
-                                    
-                                    <div class="row ground_water_application mt-1" style="display:none;">
-                                        <a href="{% url 'ground_water_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Ground Water projects </a>
-                                    </div>
-                                    
-                                    <div class="row general_application mt-1" style="display:none;">
-                                        <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
-                                    </div>
+                                    <input type="hidden" class="form-control"  value="{{ request.session.service_id }}"  name="service_id" id="service_id">
+                                    <input type="text" class="form-control" value="Ancillary" name="anc_identifier" style="display:none;">
 
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="iee_submit_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="iee_submit_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="general_submit_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
@@ -1053,9 +1044,10 @@
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-2">
+
                                         <div class="text-sm-end">
                                             <a href="#" class="btn btn-success" onclick="submit_general_application()">
-                                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                                <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
                                         </div>
                                     </div>
                                 </form>
@@ -2686,6 +2678,7 @@
 
     function submit_general_application()
     {
+        let service_id = $("#service_id").val();
         $.ajax
         ({
             type : "POST",
@@ -2701,8 +2694,33 @@
                     {
                         $('#general_submit_successMsg').delay(2000).fadeOut('slow');
                     }, 2000);
-                    setTimeout(function() {
-                        location.reload()
+                    setTimeout(function()
+                    {
+                        if(service_id == '1')
+                        {
+                            window.location.href = '/new_iee_application';
+                        }
+                        else if(service_id == '3')
+                        {
+                            window.location.href = '/new_road_application';
+                        }
+                        else if(service_id == '4')
+                        {
+                            window.location.href = '/new_transmission_application';
+                        }
+                        else if(service_id == '7')
+                        {
+                            
+                            window.location.href = '/new_forestry_application';
+                        }
+                        else if(service_id == '0')
+                        {
+                            window.location.href = '/tor_form';
+                        }
+                        else
+                        {
+                            window.location.href = '/new_general_application';
+                        }
                     }, 2000);
                 }
                 else

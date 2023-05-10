@@ -5362,7 +5362,14 @@
 
     function check_anc_other_ropeway()
     {
-
+        if($('#anc_other_ropeway').is(":checked"))
+        {
+            $('.forestry_application').show();
+        }
+        else
+        {
+            $('.forestry_application').hide();
+        }
     }
 
     function check_anc_other_general()

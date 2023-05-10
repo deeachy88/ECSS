@@ -16,13 +16,13 @@
                     {% if menu_details.has_sub_menu == 'Yes' %}
                      <li class="nav-item dropdown mx-lg-1">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{ menu_details.menu_name }} </a>
-                        {% for submenu_details in submenu_details %}
-                            {% if menu_details.menu_id == submenu_details.menu_id %}
-                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            {% for submenu_details in submenu_details %}
+                                {% if menu_details.menu_id == submenu_details.menu_id %}
                                     <li><a class="dropdown-item" href="#" onclick="loadSubMenuPage('{{ submenu_details.sub_menu_id }}')">{{ submenu_details.sub_menu_name }}</a></li>
-                             </ul>
-                            {% endif %}
-                        {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
                      </li>
                     {% else %}
                         <li class="nav-item mx-lg-1">
