@@ -234,6 +234,12 @@
                                     </ul>
                                 </div>
                             </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'application_status_list' %}" class="side-nav-link">
+                                    <i class="uil-folder-plus"></i>
+                                    <span> View Application Status </span>
+                                </a>
+                            </li>
                         </ul>
                     {% elif request.session.role == 'Verifier' %}
                         <ul class="side-nav">
@@ -266,18 +272,10 @@
                                 </a>
                             </li>
                             <li class="side-nav-item">
-                                <a data-bs-toggle="collapse" href="#sidebarMasters" aria-expanded="false" aria-controls="sidebarMasters" class="side-nav-link">
-                                    <i class="uil-clipboard-alt"></i>
-                                    <span> Manage Inspection </span>
-                                    <span class="menu-arrow"></span>
+                                <a href="{% url 'inspection_list' %}" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Manage Inspection/Monitoring </span>
                                 </a>
-                                <div class="collapse" id="sidebarInspection">
-                                    <ul class="side-nav-second-level">
-                                        <li>
-                                            <a href="{% url 'inspection_list' %}">Inspection/Monitoring</a>
-                                        </li>
-                                    </ul>
-                                </div>
                             </li>
                             <li class="side-nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarViewReports" aria-expanded="false" aria-controls="sidebarViewReports" class="side-nav-link">
@@ -318,6 +316,12 @@
                                         </li>
                                     </ul>
                                 </div>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'application_status_list' %}" class="side-nav-link">
+                                    <i class="uil-folder-plus"></i>
+                                    <span> View Application Status </span>
+                                </a>
                             </li>
                         </ul>
                     {% elif request.session.role == 'Reviewer' %}
@@ -366,6 +370,12 @@
                                         </li>
                                     </ul>
                                 </div>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'application_status_list' %}" class="side-nav-link">
+                                    <i class="uil-folder-plus"></i>
+                                    <span> View Application Status </span>
+                                </a>
                             </li>
                         </ul>
                     {% else %}
@@ -460,6 +470,12 @@
                                 <a href="{% url 'ec_print_list' %}" class="side-nav-link">
                                     <i class="uil-folder-plus"></i>
                                     <span> EC Print List </span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'application_status_list' %}" class="side-nav-link">
+                                    <i class="uil-folder-plus"></i>
+                                    <span> View Application Status </span>
                                 </a>
                             </li>
                         </ul>

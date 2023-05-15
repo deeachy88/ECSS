@@ -18,5 +18,8 @@ urlpatterns = [
     path('revenue_report_form', views.revenue_report_form, name='revenue_report_form'),
     path('revenue_report', views.revenue_report, name='revenue_report'),
 
+#Application Status
+    path('application_status_list', views.application_status_list, name='application_status_list'),
+    path('application_status', views.application_status, name='application_status'),
 
 ]
