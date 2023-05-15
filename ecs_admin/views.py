@@ -29,11 +29,11 @@ def home(request):
     homepage_details = t_homepage_master.objects.filter(homepage_id='1')
     pub_file_attachment = t_file_attachment.objects.filter(attachment_type='P')
     down_file_attachment = t_file_attachment.objects.filter(attachment_type='D')
-    form_file_attachment = t_file_attachment.objects.filter(attachment_type='F')
+    form_file_attachment = t_file_attachment.objects.filter(attachment_type='C')
     home_attachment = t_file_attachment.objects.filter(attachment_type='H')
     pub_file_attachment_count = t_file_attachment.objects.filter(attachment_type='P').count()
     down_file_attachment_count = t_file_attachment.objects.filter(attachment_type='D').count()
-    form_file_attachment_count = t_file_attachment.objects.filter(attachment_type='F').count()
+    form_file_attachment_count = t_file_attachment.objects.filter(attachment_type='C').count()
     return render(request, 'index.html',{'proponent_type':proponent_type,'dzongkhag':dzongkhag,
                                          'gewog':gewog,'village':village,'security':security,'menu_details':menu_details,
                                          'submenu_details':submenu_details, 'other_details':other_details,
@@ -988,7 +988,7 @@ def add_publication_attach(request):
     if type == 'publications':
         t_file_attachment.objects.create(file_path=file_url,attachment=attachment_name,document_id=document_id,
                                          attachment_type='P')
-    elif type == 'download':
+    elif type == 'downloads':
         t_file_attachment.objects.create(file_path=file_url, attachment=attachment_name, document_id=document_id,
                                          attachment_type='D')
     else:

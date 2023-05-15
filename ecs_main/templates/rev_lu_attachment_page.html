@@ -8,12 +8,12 @@
         </tr>
     </thead>
     <tbody>
-       {% for file_attach in lu_attach %}
+       {% for rev_lu_attach in rev_lu_attach %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                    <td><a href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a></td>
                     <td>
-                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_attachment('{{ file_attach.file_id }}','{{ file_attach.application_no }}')"><i class="uil-trash"></i></button>
+                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_attachment('{{ rev_lu_attach.file_id }}','{{ rev_lu_attach.application_no }}')"><i class="uil-trash"></i></button>
                     </td>
                 </tr>
                 {% empty %}
@@ -28,11 +28,11 @@
     {
         $.ajax({
             type : "POST",
-            url : "{% url 'delete_lu_attachment' %}",
+            url : "{% url 'delete_rev_lu_attachment' %}",
             data :{'file_id':file_id , 'application_no': application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
-                    $('#lu_file_attachment').html(responseText);
+                $('#rev_lu_file_attachment').html(responseText);
             }
         });
     }

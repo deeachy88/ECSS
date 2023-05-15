@@ -24,14 +24,16 @@
                         <div class="mb-3">
                             <form id="other_modification_form" method="post">
                                 <input type="hidden" name="identifier" id="identifier" value="{{identifier}}">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Enter EC Number" name="ec_reference_no" id="ec_reference_no">
-                                    <span class="input-group-btn input-group-append">
-                                        <button class="btn btn-primary" type="button" onclick="getECDetails()">
-                                            <i class="uil uil-arrow-right"></i>
-                                        </button>
-                                    </span>
-                                </div>
+                                <label class="form-label fw-bold">EC Reference No</label>
+                                <select id="ec_reference_no" name="ec_reference_no" class="form-control">
+                                    <option value="">--SELECT-</option>
+                                    {% for application_details in application_details %}
+                                        <option value="{{ application_details.ec_reference_no }}">{{ application_details.ec_reference_no }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-primary mt-1" type="button" onclick="getECDetails()">
+                                    Submit <i class="uil uil-arrow-right"></i>
+                                </button>
                             </form>
                         </div>
                     </div>

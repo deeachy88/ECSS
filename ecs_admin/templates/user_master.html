@@ -37,8 +37,8 @@
                                     <td>{{user.role_id}}</td>
                                     {% if user.agency_code %}
                                         {% for agency in agency %}
-                                            {% if user.agency_code == agency.competent_authority %}
-                                                <td>{{ agency.competent_authority }}</td>
+                                            {% if user.agency_code == agency.competent_authority_id %}
+                                                <td>{{ agency.remarks }}</td>
                                             {% endif %}
                                         {% endfor %}
                                     {% else %}
@@ -135,7 +135,7 @@
                                 <select id="agency" name="agency" class="form-select">
                                     <option value="">--SELECT COMPETENT AUTHORITY--</option>
                                     {% for agency in agency %}
-                                        <option value="{{ agency.competent_authority }}">{{ agency.remarks }}</option>
+                                        <option value="{{ agency.competent_authority_id }}">{{ agency.remarks }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -223,7 +223,7 @@
                                 <select id="edit_agency" name="edit_agency" class="form-select">
                                     <option value="">--SELECT COMPETENT AUTHORITY--</option>
                                     {% for agency in agency %}
-                                        <option value="{{ agency.competent_authority }}">{{ agency.remarks }}</option>
+                                        <option value="{{ agency.competent_authority_id }}">{{ agency.remarks }}</option>
                                     {% endfor %}
                                 </select>
                             </div>

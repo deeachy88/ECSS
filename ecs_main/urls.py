@@ -19,6 +19,11 @@ urlpatterns = [
     path('delete_draft_ec_details', views.delete_draft_ec_details, name='delete_draft_ec_details'),
     path('save_lu_attachment', views.save_lu_attachment, name='save_lu_attachment'),
     path('save_lu_attachment_details', views.save_lu_attachment_details, name='save_lu_attachment_details'),
+    path('save_rev_lu_attachment', views.save_rev_lu_attachment, name='save_rev_lu_attachment'),
+    path('save_rev_lu_attachment_details', views.save_rev_lu_attachment_details, name='save_rev_lu_attachment_details'),
+    path('delete_rev_lu_attachment', views.delete_rev_lu_attachment, name='delete_rev_lu_attachment'),
+    path('delete_lu_attachment', views.delete_lu_attachment, name='delete_lu_attachment'),
+
 
 #InspectionMonitoring
     path('inspection_list', views.inspection_list, name='inspection_list'),
