@@ -214,3 +214,58 @@ def revenue_report(request):
     # elif service_id != 'ALL':
     #    ec_list = t_ec_industries_t1_general.objects.filter(ec_approve_date__range=[from_date, to_date]).values()
     return render(request, 'revenue_report.html', {'ec_list': ec_list, 'ca_list': ca_list})
+
+#Application Status
+def application_status_list(request):
+
+    login_type = request.session['login_type']
+    ca_list = t_competant_authority_master.objects.all()
+    dzongkhag_list = t_dzongkhag_master.objects.all()
+    application_list = []
+
+    if login_type == 'C':
+        applicant_id = request.session['email']
+    elif login_type == 'I':
+        role = request.session['role']
+        ca_authority = request.session['ca_authority']
+    print(role)
+    print(ca_authority)
+
+    if login_type == 'C':
+        application_list = t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id).values()
+    elif login_type == 'I' and (role == 'Admin' or role == 'NECS Head'):
+        application_list = t_ec_industries_t1_general.objects.all()
+    elif login_type == 'I' and (role == 'Verifier' or role == 'Reviewer'):
+        application_list = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority).values()
+
+    return render(request, 'application_status_list.html', {'ca_list': ca_list, 'dzongkhag_list': dzongkhag_list,
+                                                           'application_list': application_list})
+
+
+def application_status(request):
+    from_date = request.GET.get('from_date')
+    to_date = request.GET.get('to_date')
+    service_id = request.GET.get('service_id')
+    dzongkhag_code = request.GET.get('dzongkhag_code')
+    dzongkhag_list = t_dzongkhag_master.objects.all()
+    ca_list = t_competant_authority_master.objects.all()
+
+    if dzongkhag_code == 'ALL' and service_id == 'ALL':
+        ec_list = t_ec_industries_t1_general.objects.filter(ec_approve_date__range=[from_date, to_date],
+                                                            application_status='Approved').values()
+    elif dzongkhag_code == 'ALL' and service_id != 'ALL':
+        ec_list = t_ec_industries_t1_general.objects.filter(ec_approve_date__range=[from_date, to_date],
+                                                            application_status='Approved',
+                                                            service_id=service_id).values()
+    elif dzongkhag_code != 'ALL' and service_id == 'ALL':
+        ec_list = t_ec_industries_t1_general.objects.filter(ec_approve_date__range=[from_date, to_date],
+                                                            application_status='Approved',
+                                                            dzongkhag_code=dzongkhag_code).values()
+    elif dzongkhag_code != 'ALL' and service_id != 'ALL':
+        ec_list = t_ec_industries_t1_general.objects.filter(ec_approve_date__range=[from_date, to_date],
+                                                            application_status='Approved',
+                                                            dzongkhag_code=dzongkhag_code,
+                                                            service_id=service_id).values()
+
+    return render(request, 'application_status.html',
+                  {'dzongkhag_list': dzongkhag_list, 'ec_list': ec_list, 'ca_list': ca_list})
