@@ -143,6 +143,10 @@
                         </div>
                     </div>
                 </div>
+                <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    Loading...
+                </button>
                 <div class="alert alert-success" id="successMsg" style="display:none"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -231,6 +235,10 @@
                         </div>
                     </div>
                 </div>
+                <button id="editpageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    Loading...
+                </button>
                 <div class="alert alert-success" id="edit_successMsg" style="display:none"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -436,14 +444,14 @@ function update_users()
     }
     else
     {
-        $("#pageloader").show();
+        $("#editpageloader").show();
         $.ajax({
             type : "POST",
             url : "{% url 'update_user' %}",
             data : $('#edit_user_form').serialize(),
             success : function()
             {
-                $("#pageloader").hide();
+                $("#editpageloader").hide();
                 $('#edit_successMsg').html("User Successfully Updated.");
                 $('#edit_successMsg').show();
                 setTimeout(function() {

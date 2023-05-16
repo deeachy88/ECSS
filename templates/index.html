@@ -270,7 +270,7 @@
       <!--Header-->
       <div class="modal-header text-center">
         <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong><i class="fa fa-lock"></i>
-												&nbsp;Client Registration</strong></h3>
+												&nbsp;Proponent Registration</strong></h3>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
       <form method="post" id="client_registration_form">
@@ -347,7 +347,7 @@
                             <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
                         {% endfor %}
                     </select>
-                    <input type="text" id="i_dzongkhag" name="i_dzongkhag" class="form-control" style="display: none;" disabled>
+                    <input type="text" id="i_dzongkhag" name="i_dzongkhag" class="form-control" style="display: none;" readonly>
                 </div>
                 <div id="dzongkhagErrorMsg" class="alert alert-danger" role="alert"  style="display: none;"></div>
             </div>
@@ -360,7 +360,7 @@
                             <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
                         {% endfor %}
                     </select>
-                    <input type="text" id="i_gewog" name="i_gewog" class="form-control" style="display: none;" disabled>
+                    <input type="text" id="i_gewog" name="i_gewog" class="form-control" style="display: none;" readonly>
                 </div>
                 <div id="gewogErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
             </div>
@@ -375,7 +375,7 @@
                             <option value="{{ village.village_code }}">{{ village.village_name }}</option>
                         {% endfor %}
                     </select>
-                    <input type="text" id="i_village" name="i_village" class="form-control" style="display: none;" disabled>
+                    <input type="text" id="i_village" name="i_village" class="form-control" style="display: none;" readonly>
                 </div>
                 <div id="villageErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
             </div>
@@ -461,6 +461,7 @@
         function register_client()
         {
             let proponent_type = $('#proponent_type').val();
+            let cid = $('#cid').val();
             let proponent_name = $('#proponent_name').val();
             let address = $('#proponent_address').val();
             let contact_person = $('#contact_person').val();
@@ -477,6 +478,13 @@
                 $('#proponent_typeErrorMsg').show();
                 $('#proponent_typeErrorMsg').delay(2000).fadeOut('slow');
                 $("#proponent_type").focus();
+            }
+            else if(proponent_type !='4' && cid == "")
+            {
+                $('#cidErrorMsg').html("Enter CID.");
+                $('#cidErrorMsg').show();
+                $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                $("#cid").focus();
             }
             else if(proponent_name == "")
             {
@@ -515,19 +523,19 @@
                 $('#contact_numberErrorMsg').show();
                 $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
             }
-            else if(dzongkhag == "")
+            else if(proponent_type!='4' && dzongkhag == "")
             {
                 $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
                 $('#dzongkhagErrorMsg').show();
                 $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
             }
-            else if(gewog == "")
+            else if(proponent_type!='4' && gewog == "")
             {
                 $('#gewogErrorMsg').html("Select Gewog.");
                 $('#gewogErrorMsg').show();
                 $('#gewogErrorMsg').delay(2000).fadeOut('slow');
             }
-            else if(village == "")
+            else if(proponent_type!='4' && village == "")
             {
                 $('#villageErrorMsg').html("Select Village.");
                 $('#villageErrorMsg').show();
@@ -740,7 +748,7 @@
             $('#gewog').hide();
             $('#village').hide();
             $('.cid_details').show();
-            $('#proponent_name').attr("disabled", "disabled");
+            $('#proponent_name').attr("readonly", "readonly");
             $('#i_dzongkhag').show();
             $('#i_gewog').show();
             $('#i_village').show();
@@ -750,11 +758,11 @@
             $('#dzongkhag').show();
             $('#gewog').show();
             $('#village').show();
-            $('#proponent_name').removeAttr("disabled");
+            $('#proponent_name').removeAttr("readonly");
             $('.cid_details').hide();
             $('#i_dzongkhag').hide();
             $('#i_gewog').hide();
-            $('#i_village').hide();
+            $('#i_village').hide(); 
         }
     }
     function getCitizenDetails(cid)

@@ -6,7 +6,7 @@
     <div class="col-md-12">
         <div class="card mt-1">
             <div class="card-body">
-                <h5 class="card-title mb-0">New Client Registrations</h5>
+                <h5 class="card-title mb-0">New Proponent Registrations</h5>
                 <div class="alert alert-success" id="successMsg" style="display:none"></div>
                 <div id="cardCollpase1" class="collapse pt-3 show">
                     <table id="basic-datatable" class="table dt-responsive nowrap w-100">
@@ -36,7 +36,7 @@
                                         <div class="btn-group btn-group-sm">
                                             <form method="post" id="manage_client_form">
                                                 {% csrf_token %}
-                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="View" onclick="view_client_details('{{ client.proponent_type }}','{{client.proponent_name}}','{{client.address}}','{{client.contact_person}}','{{client.email_id}}','{{client.contact_number}}','{{client.dzongkhag_code}}','{{client.gewog_code}}','{{client.village_code}}')"><i class="mdi mdi-account-eye"></i></button>
+                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="View" onclick="view_client_details('{{ client.proponent_type }}','{{client.proponent_name}}','{{client.address}}','{{client.contact_person}}','{{client.email_id}}','{{client.contact_number}}','{{client.dzongkhag_code}}','{{client.gewog_code}}','{{client.village_code}}','{{client.cid}}','{{client.i_dzongkhag}}','{{client.i_gewog}}','{{client.i_village}}')"><i class="mdi mdi-account-eye"></i></button>
                                                 <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Accept" onclick="client_manage('{{ client.login_id }}','{{client.email_id}}','{{client.proponent_name}}','Accept')"><i class="mdi mdi-account-multiple-check"></i></button>
                                                 <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Reject" onclick="client_manage('{{ client.login_id }}','{{client.email_id}}','{{client.proponent_name}}','Reject')"><i class="mdi mdi-account-multiple-remove"></i></button>
                                             </form>
@@ -47,6 +47,10 @@
                         </tbody>
                     </table>
                 </div>
+                <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    Loading...
+                </button>
             </div>
         </div>
     </div>
@@ -60,7 +64,7 @@
       <!--Header-->
       <div class="modal-header text-center">
         <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Client Registration Details</strong></h3>
+												&nbsp;Proponent Registration Details</strong></h3>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
       <form method="post" id="client_registration_form">
@@ -76,6 +80,12 @@
                             <option value="{{ proponent_type.proponent_type_id }}">{{ proponent_type.proponent_type_name }}</option>
                         {% endfor %}
                     </select>
+                </div>
+            </div>
+            <div class="col-lg-6 cid_div" style="display:none;">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">cid</label>
+                    <input type="text" name="cid" class="form-control" id="cid" disabled>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -122,6 +132,7 @@
                             <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
                         {% endfor %}
                     </select>
+                    <input type="text" name="i_dzongkhag" class="form-control" id="i_dzongkhag" disabled style="display:none">
                 </div>
                 <div id="dzongkhagErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
             </div>
@@ -133,6 +144,7 @@
                             <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
                         {% endfor %}
                     </select>
+                    <input type="text" name="i_gewog" class="form-control" id="i_gewog" disabled style="display:none">
                 </div>
             </div>
         </div>
@@ -145,6 +157,7 @@
                             <option value="{{ village.village_code }}">{{ village.village_name }}</option>
                         {% endfor %}
                     </select>
+                    <input type="text" name="i_village" class="form-control" id="i_village" disabled style="display:none">
                 </div>
             </div>
         </div>
@@ -168,6 +181,7 @@
             data :{'login_id':login_id,'email':email,'name':name,'identifier':identifier,csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(data)
             {
+                $("#pageloader").hide();
                 if(identifier == 'Accept')
                 {
                     $('#successMsg').html("Client Registration Accepted.");
@@ -186,8 +200,30 @@
         });
     }
 
-    function view_client_details(proponent_type,proponent_name,address,contact_person,email,contact_number,dzongkhag_id,gewog_id,village_id)
+    function view_client_details(proponent_type,proponent_name,address,contact_person,email,contact_number,dzongkhag_id,gewog_id,village_id, cid, dzongkhag, gewog, village)
     {
+        if(proponent_type == '4')
+        {
+            $('#proponent_type').val(proponent_type);
+            $('#proponent_name').val(proponent_name);
+            $('#proponent_address').val(address);
+            $('#contact_person').val(contact_person);
+            $('#email').val(email);
+            $('#contact_number').val(contact_number);
+            $('.cid_div').show();
+            $('#cid').val(cid);
+            $('#dzongkhag').hide();
+            $('#gewog').hide();
+            $('#village').hide();
+            $('#i_dzongkhag').show();
+            $('#i_gewog').show();
+            $('#i_village').show();
+            $('#i_dzongkhag').val(dzongkhag);
+            $('#i_gewog').val(gewog);
+            $('#i_village').val(village);
+        }
+        else
+        {
             $('#proponent_type').val(proponent_type);
             $('#proponent_name').val(proponent_name);
             $('#proponent_address').val(address);
@@ -197,6 +233,8 @@
             $('#dzongkhag').val(dzongkhag_id);
             $('#gewog').val(gewog_id);
             $('#village').val(village_id);
+        }
+            
             $('#client_registration_details_modal').modal('show');
     }
 </script>

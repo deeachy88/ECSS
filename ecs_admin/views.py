@@ -808,6 +808,7 @@ def change_mobile_number(request):
 def client_registration(request):
     data = dict()
     proponent_type = request.POST.get('proponent_type')
+    cid = request.POST.get('cid')
     proponent_name = request.POST.get('proponent_name')
     address = request.POST.get('proponent_address')
     contact_person = request.POST.get('contact_person')
@@ -816,17 +817,23 @@ def client_registration(request):
     dzongkhag = request.POST.get('dzongkhag')
     gewog = request.POST.get('gewog')
     village = request.POST.get('village')
-    i_proponent_name = request.POST.get('I_proponent_name')
     i_dzongkhag = request.POST.get('i_dzongkhag')
     i_gewog = request.POST.get('i_gewog')
     i_village = request.POST.get('i_village')
 
-    t_user_master.objects.create(login_type='C', proponent_type=proponent_type, proponent_name=proponent_name,
+    if proponent_type == '4':
+        t_user_master.objects.create(login_type='C', proponent_type=proponent_type,cid=cid, proponent_name=proponent_name,
+                                 address=address, contact_person=contact_person, email_id=email,
+                                 contact_number=contact_number, i_dzongkhag=i_dzongkhag, i_gewog=i_gewog,
+                                 i_village=i_village,is_active="N", logical_delete="N")
+        data['message'] = "registration successful"
+    else:
+        t_user_master.objects.create(login_type='C', proponent_type=proponent_type, proponent_name=proponent_name,
                                  address=address, contact_person=contact_person, email_id=email,
                                  contact_number=contact_number, dzongkhag_code=dzongkhag, gewog_code=gewog,
-                                 village_code=village,is_active="N", logical_delete="N",)
+                                 village_code=village,is_active="N", logical_delete="N")
 
-    data['message'] = "registration successful"
+        data['message'] = "registration successful"
     return JsonResponse(data)
 
 def new_client_registration(request):
