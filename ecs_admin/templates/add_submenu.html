@@ -23,7 +23,7 @@
                 {% csrf_token %}
                 <div class="row">
                     <input type="hidden" class="form-control" id="document_id" value="{{document_id}}"></input>
-                    <div class="col-lg-6">
+                    <div class="col-lg-5">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Menu Name</label>
                             <select id="menu_name" name="menu_name" class="form-select">
@@ -35,7 +35,14 @@
                         </div>
                         <div id="menu_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Sub Menu Order</label>
+                            <input type="text" name="sub_menu_order" class="form-control" id="sub_menu_order">
+                        </div>
+                        <div id="sub_menu_orderErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                    <div class="col-lg-5">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Sub Menu Name</label>
                             <input type="text" name="sub_menu_name" class="form-control" id="sub_menu_name">
@@ -185,6 +192,7 @@
         var myEditor = document.querySelector('#snow-editor')
         var content = myEditor.children[0].innerHTML
         var menu_name = $('#menu_name').val();
+        var sub_menu_order = $('#sub_menu_order').val();
         var sub_menu_name = $('#sub_menu_name').val();
         var document_id = $('#document_id').val();
 
@@ -193,6 +201,12 @@
             $('#menu_nameErrorMsg').html("Select Menu Name.");
             $('#menu_nameErrorMsg').show();
             $('#menu_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(sub_menu_order == "")
+        {
+            $('#sub_menu_orderErrorMsg').html("Enter Sub Menu Order.");
+            $('#sub_menu_orderErrorMsg').show();
+            $('#sub_menu_orderErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(sub_menu_name == "")
         {
@@ -205,7 +219,7 @@
             $.ajax({
                 type : "POST",
                 url : "{% url 'add_submenu_master' %}",
-                data : {'menu_name':menu_name, 'sub_menu_name':sub_menu_name, 'document_id':document_id, 'content':content, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'menu_name':menu_name, 'sub_menu_order':sub_menu_order, 'sub_menu_name':sub_menu_name, 'document_id':document_id, 'content':content, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data)
                 {
                     $('#successMsg').html("Sub Menu Added Successfully");

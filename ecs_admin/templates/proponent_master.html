@@ -6,9 +6,9 @@
     <div class="col-md-12">
         <div class="card mt-1">
             <div class="card-body">
-                <div class="card-widgets">
+                <!--<div class="card-widgets">
                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add_proponent_modal"><i class="mdi mdi-plus-circle me-2"></i>Add</button>
-                </div>
+                </div>-->
                 <h5 class="card-title mb-0">Proponent Type Master</h5>
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
@@ -24,12 +24,12 @@
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{proponent_list.proponent_type_name}}</td>
                                     <td>
-                                        <div class="btn-group btn-group-sm">
+                                        <!--<div class="btn-group btn-group-sm">
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit Agency"
                                                      onclick="populateEditForm('{{proponent_list.proponent_type_id}}', '{{proponent_list.proponent_type_name}}')"><i class="mdi mdi-square-edit-outline"></i> </button>
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Delete Agency"
                                                      onclick="populateDeleteForm('{{proponent_list.proponent_type_id}}', '{{proponent_list.proponent_type_name}}')"><i class="mdi mdi-delete"></i> </button>
-                                        </div>
+                                        </div>-->
                                     </td>
                                 </tr>
                             {% endfor %}

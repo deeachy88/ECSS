@@ -6,30 +6,40 @@
     <div class="col-md-12">
         <div class="card mt-1">
             <div class="card-body">
-                <div class="card-widgets">
+                <!--<div class="card-widgets">
                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add_agency_modal"><i class="mdi mdi-plus-circle me-2"></i>Add</button>
-                </div>
-                <h5 class="card-title mb-0">Agency Master</h5>
+                </div>-->
+                <h5 class="card-title mb-0">Competent Authority Master</h5>
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
                     <table id="basic-datatable" class="table dt-responsive nowrap w-100">
                         <thead>
                             <th>#</th>
-                            <th>Agency</th>
+                            <th>Competent Authority</th>
+                            <th>Type</th>
+                            <th>Dzongkhag</th>
                             <th></th>
                         </thead>
                         <tbody>
                             {% for agency_details in agency_list %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{agency_details.agency_name}}</td>
+                                    <td>{{agency_details.remarks}}</td>
+                                    <td>{{agency_details.competent_authority}}</td>
+                                    <th>
+                                    {% for dzongkhag_list in dzongkhag_list %}
+                                        {% if dzongkhag_list.dzongkhag_code == agency_details.dzongkhag_code_id %}
+                                            {{dzongkhag_list.dzongkhag_name}}
+                                        {% endif %}
+                                    {% endfor %}
+                                    </th>
                                     <td>
-                                        <div class="btn-group btn-group-sm">
+                                        <!--<div class="btn-group btn-group-sm">
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit Agency"
                                                      onclick="populateEditForm('{{agency_details.agency_id}}', '{{agency_details.agency_name}}')"><i class="mdi mdi-square-edit-outline"></i> </button>
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Delete Agency"
                                                      onclick="populateDeleteForm('{{agency_details.agency_id}}', '{{agency_details.agency_name}}')"><i class="mdi mdi-delete"></i> </button>
-                                        </div>
+                                        </div>-->
                                     </td>
                                 </tr>
                             {% endfor %}

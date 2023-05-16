@@ -141,20 +141,20 @@ def ec_pending_list(request):
     ca_list = t_competant_authority_master.objects.all()
 
     if ca_authority == 'ALL' and service_id == 'ALL':
-        ec_list = t_ec_industries_t1_general.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                            application_status='Pending').values()
+        ec_list = t_ec_industries_t1_general.objects.filter(application_date__range=[from_date, to_date],
+                                                            application_status='P').values()
     elif ca_authority == 'ALL' and service_id != 'ALL':
-        ec_list = t_ec_industries_t1_general.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                            application_status='Pending',
+        ec_list = t_ec_industries_t1_general.objects.filter(application_date__range=[from_date, to_date],
+                                                            application_status='P',
                                                             service_id=service_id).values()
     elif ca_authority != 'ALL' and service_id == 'ALL':
-        ec_list = t_ec_industries_t1_general.objects.filter(ec_approve_date__range=[from_date, to_date],
+        ec_list = t_ec_industries_t1_general.objects.filter(application_date__range=[from_date, to_date],
                                                             ca_authority=ca_authority,
-                                                            application_status='Pending').values()
+                                                            application_status='P').values()
     elif ca_authority != 'ALL' and service_id != 'ALL':
-        ec_list = t_ec_industries_t1_general.objects.filter(ec_approve_date__range=[from_date, to_date],
+        ec_list = t_ec_industries_t1_general.objects.filter(application_date__range=[from_date, to_date],
                                                             ca_authority=ca_authority, service_id=service_id,
-                                                            application_status='Pending').values()
+                                                            application_status='P').values()
     return render(request, 'ec_pending_list.html',
                   {'dzongkhag_list': dzongkhag_list, 'ec_list': ec_list, 'ca_list': ca_list})
 
@@ -228,8 +228,6 @@ def application_status_list(request):
     elif login_type == 'I':
         role = request.session['role']
         ca_authority = request.session['ca_authority']
-    print(role)
-    print(ca_authority)
 
     if login_type == 'C':
         application_list = t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id).values()

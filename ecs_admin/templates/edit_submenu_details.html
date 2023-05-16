@@ -13,7 +13,7 @@
                     <div class="row">
                         <input type="hidden" class="form-control" id="edit_document_id" value="{{sub_menu_details.document_id}}">
                         <input type="hidden" class="form-control" id="sub_menu_id" value="{{sub_menu_details.sub_menu_id}}">
-                        <div class="col-lg-6">
+                        <div class="col-lg-5">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Menu Name</label>
                                 <select id="edit_menu_name" name="edit_menu_name" class="form-select">
@@ -25,7 +25,14 @@
                             </div>
                             <div class="alert alert-danger" id="edit_menu_nameErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-2">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Sub Menu Order</label>
+                                <input type="text" name="edit_sub_menu_order" class="form-control" id="edit_sub_menu_order" value="{{sub_menu_details.order}}">
+                            </div>
+                            <div id="edit_sub_menu_orderErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-5">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Sub Menu Name</label>
                                 <input type="text" name="edit_sub_menu_name" class="form-control" id="edit_sub_menu_name" value="{{sub_menu_details.sub_menu_name}}">
@@ -175,6 +182,7 @@
         var myEditor = document.querySelector('#snow-editor')
         var content = myEditor.children[0].innerHTML
         var menu_name = $('#edit_menu_name').val();
+        var sub_menu_order = $('#edit_sub_menu_order').val();
         var sub_menu_name = $('#edit_sub_menu_name').val();
         var document_id = $('#edit_submenu_document_id').val();
         var sub_menu_id = $('#sub_menu_id').val();
@@ -183,6 +191,12 @@
             $('#edit_menu_nameErrorMsg').html("Select Menu Name.");
             $('#edit_menu_nameErrorMsg').show();
             $('#edit_menu_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(sub_menu_order == "")
+        {
+            $('#edit_sub_menu_orderErrorMsg').html("Enter Sub Menu Order.");
+            $('#edit_sub_menu_orderErrorMsg').show();
+            $('#edit_sub_menu_orderErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(sub_menu_name == "")
         {
@@ -195,7 +209,7 @@
             $.ajax({
                 type : "POST",
                 url : "{% url 'update_submenu_details' %}",
-                data : {'menu_name':menu_name,'sub_menu_id':sub_menu_id, 'sub_menu_name':sub_menu_name, 'content':content, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'menu_name':menu_name,'sub_menu_order':sub_menu_order, 'sub_menu_id':sub_menu_id, 'sub_menu_name':sub_menu_name, 'content':content, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data)
                 {
                     $('#edit_successMsg').html("Sub Menu Updated Successfully");

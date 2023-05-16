@@ -23,8 +23,8 @@ def home(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     security = t_security_question_master.objects.all()
-    menu_details = t_menu_master.objects.filter(is_active='Y',is_deleted='N')
-    submenu_details = t_submenu_master.objects.filter(is_active='Y',is_deleted='N')
+    menu_details = t_menu_master.objects.filter(is_active='Y',is_deleted='N').order_by('order')
+    submenu_details = t_submenu_master.objects.filter(is_active='Y',is_deleted='N').order_by('order')
     other_details = t_other_details.objects.filter(is_active='Y',is_deleted='N')
     homepage_details = t_homepage_master.objects.filter(homepage_id='1')
     pub_file_attachment = t_file_attachment.objects.filter(attachment_type='P')
@@ -191,14 +191,14 @@ def sendmail(request, name, email, password):
 
 
 def manage_menu(request):
-    menu_details = t_menu_master.objects.all()
+    menu_details = t_menu_master.objects.all().order_by('order')
     document_id = get_random_document_id_string(5)
     file_attachment = t_file_attachment.objects.all()
     return render(request, 'manage_menu.html',{'menu_details':menu_details,'document_id':document_id,
                                                'file_attachment':file_attachment})
 
 def manage_submenu(request):
-    menu_details = t_menu_master.objects.filter(has_sub_menu="Yes",is_active="Y")
+    menu_details = t_menu_master.objects.filter(has_sub_menu="Yes",is_active="Y").order_by('order')
     sub_menu_details = t_submenu_master.objects.all()
     document_id = get_random_document_id_string(5)
     file_attachment = t_file_attachment.objects.all()
@@ -224,11 +224,12 @@ def add_menu_master(request):
 
 def add_submenu_master(request):
     menu_id = request.POST.get('menu_name')
+    sub_menu_order = request.POST.get('sub_menu_order')
     sub_menu_name = request.POST.get('sub_menu_name')
     sub_menu_content = request.POST.get('content')
     document_id = request.POST.get('document_id')
 
-    t_submenu_master.objects.create(menu_id=menu_id,sub_menu_name=sub_menu_name,sub_menu_content=sub_menu_content,
+    t_submenu_master.objects.create(menu_id=menu_id,order=sub_menu_order,sub_menu_name=sub_menu_name,sub_menu_content=sub_menu_content,
                                     document_id=document_id,is_active='Y', is_deleted='N')
     return redirect(manage_submenu)
 
@@ -239,8 +240,9 @@ def user_master(request):
     return render(request, 'user_master.html', {'users': users, 'role': roles, 'agency':agency})
 
 def agency_master(request):
-    agency_list = t_agency_master.objects.all()
-    return render(request, 'agency_master.html', {'agency_list':agency_list})
+    agency_list = t_competant_authority_master.objects.all().order_by('competent_authority_id')
+    dzongkhag_list = t_dzongkhag_master.objects.all()
+    return render(request, 'agency_master.html', {'agency_list': agency_list, 'dzongkhag_list': dzongkhag_list})
 
 def proponent_master(request):
     proponent_list = t_proponent_type_master.objects.all()
@@ -486,20 +488,22 @@ def delete_attachment(request):
 
 
 def save_menu_details(request):
+    menu_order = request.POST.get('menu_order')
     menu_name = request.POST.get('menu_name')
     has_sub_menu = request.POST.get('has_submenu')
     menu_content = request.POST.get('content')
     document_id = request.POST.get('document_id')
 
     if has_sub_menu == 'Yes':
-        t_menu_master.objects.create(menu_name=menu_name, has_sub_menu=has_sub_menu,is_active='Y',is_deleted='N')
+        t_menu_master.objects.create(menu_name=menu_name, order=menu_order, has_sub_menu=has_sub_menu,is_active='Y',is_deleted='N')
     else:
-        t_menu_master.objects.create(menu_name=menu_name, has_sub_menu=has_sub_menu,menu_content=menu_content,
+        t_menu_master.objects.create(menu_name=menu_name, order=menu_order, has_sub_menu=has_sub_menu,menu_content=menu_content,
                                      document_id=document_id,is_active='Y',is_deleted='N')
     return redirect(manage_menu)
 
 def update_menu_details(request):
     menu_id = request.POST.get('menu_id')
+    menu_order = request.POST.get('menu_order')
     menu_name = request.POST.get('menu_name')
     has_sub_menu = request.POST.get('has_submenu')
     menu_content = request.POST.get('content')
@@ -507,9 +511,9 @@ def update_menu_details(request):
 
     menu_details = t_menu_master.objects.filter(menu_id=menu_id)
     if has_sub_menu == 'Yes':
-        menu_details.update(menu_name=menu_name, has_sub_menu=has_sub_menu)
+        menu_details.update(menu_name=menu_name, order=menu_order, has_sub_menu=has_sub_menu)
     else:
-        menu_details.update(menu_name=menu_name, has_sub_menu=has_sub_menu,menu_content=menu_content,
+        menu_details.update(menu_name=menu_name, order=menu_order, has_sub_menu=has_sub_menu,menu_content=menu_content,
                                      document_id=document_id)
     return redirect(manage_menu)
 
@@ -529,11 +533,12 @@ def manage_menu_details(request):
 def update_submenu_details(request):
     sub_menu_id = request.POST.get('sub_menu_id')
     menu_id = request.POST.get('menu_name')
+    sub_menu_order = request.POST.get('sub_menu_order')
     sub_menu_name = request.POST.get('sub_menu_name')
     sub_menu_content = request.POST.get('content')
 
     menu_details = t_submenu_master.objects.filter(sub_menu_id=sub_menu_id)
-    menu_details.update(menu_id=menu_id, sub_menu_name=sub_menu_name,sub_menu_content=sub_menu_content)
+    menu_details.update(menu_id=menu_id, order=sub_menu_order,sub_menu_name=sub_menu_name,sub_menu_content=sub_menu_content)
     return redirect(manage_submenu)
 
 def manage_submenu_details(request):
