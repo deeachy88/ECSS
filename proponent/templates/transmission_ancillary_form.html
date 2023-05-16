@@ -2813,32 +2813,9 @@
                     {
                         $('#transmission_submit_successMsg').delay(2000).fadeOut('slow');
                     }, 2000);
-                    setTimeout(function() {
-                        if(service_id == '1')
-                        {
-                            window.location.href = '/new_iee_application';
-                        }
-                        else if(service_id == '3')
-                        {
-                            window.location.href = '/new_road_application';
-                        }
-                        else if(service_id == '4')
-                        {
-                            window.location.href = '/new_transmission_application';
-                        }
-                        else if(service_id == '7')
-                        {
-                            
-                            window.location.href = '/new_forestry_application';
-                        }
-                        else if(service_id == '0')
-                        {
-                            window.location.href = '/tor_form';
-                        }
-                        else
-                        {
-                            window.location.href = '/new_general_application';
-                        }
+                    setTimeout(function()
+                    {
+                        window.location.href = '/new_application_form';
                     }, 2000);
                 }
                 else if(data.message == 'not submitted')

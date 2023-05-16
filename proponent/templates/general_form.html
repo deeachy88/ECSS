@@ -109,7 +109,7 @@
                                                     <option value="">--SELECT DZONGKHAG--</option>
                                                     {% for dzongkhag in dzongkhag %}
                                                         <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
-                                                    {% endfor %}
+                                                    {% endfor %} 
                                                 </select>
                                             </div>
                                             <div id="dzo_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -529,11 +529,11 @@
                                                 <label class="form-label fw-bold">Will the activity require water consumption?</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio3" name="water_required" class="form-check-input" value="Yes" onclick="check_forest_water(this.value)">
+                                                        <input type="radio" id="customRadio3" name="water_required" class="form-check-input" value="Yes" onclick="check_general_water(this.value)">
                                                         <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_forest_water(this.value)">
+                                                        <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_general_water(this.value)">
                                                         <label class="form-check-label" for="customRadio4">No</label>
                                                     </div>
                                                 </div>
@@ -2418,15 +2418,15 @@
 </div>
 </form>
 <script>
-    function check_industry_radio(value)
+    function check_general_water(value)
     {
         if(value == 'Yes')
         {
-            $('#industry_water_details').show();
+            $('.general_water_details').show();
         }
         else
         {
-            $('#industry_water_details').hide();
+            $('.general_water_details').hide();
         }
     }
 
@@ -5439,6 +5439,32 @@
                         $('#applicant_name').val(CitizenName);
                     }
                 }
+            }
+        });
+    }
+
+    function getGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#gewog').html(data);
+            }
+        });
+    }
+
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#vil_chiwog').html(data);
             }
         });
     }

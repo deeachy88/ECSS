@@ -16,250 +16,318 @@ def new_application(request):
     return render(request, 'new_application.html',{'bsic_details':bsic_details})
 
 def new_ea_application(request):
-    if request.session['app_type'] != 'New':
-        application_no = t_ec_industries_t1_general.objects.filter(service_id='1').aggregate(Max('application_no'))
-        last_application_no = application_no['application_no__max']
-
-        application_details =   t_ec_industries_t1_general.objects.filter(application_no=last_application_no,form_type='Main Activity')  
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=last_application_no,form_type='Ancillary')
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=last_application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=last_application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=last_application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=last_application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=last_application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=last_application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=last_application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=last_application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=last_application_no)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        
-        return render(request, 'pending_application/industry_ea_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                    'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                    'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ancillary_details':ancillary_details})
-    else:
-        service_code = 'IEA'
-        application_no = get_application_no(request, service_code, '1')
-        request.session['application_no'] = application_no
-        partner_details = t_ec_industries_t2_partner_details.objects.all()
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-        project_product = t_ec_industries_t4_project_product.objects.all()
-        raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        return render(request, 'industry_ea_form.html',
-                    {'partner_details': partner_details, 'machine_equipment': machine_equipment,
-                    'raw_materials': raw_materials,
-                    'project_product': project_product, 'ancillary_road': ancillary_road, 'power_line': power_line,
-                    'application_no': application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+    service_code = 'IEA'
+    application_no = get_application_no(request, service_code, '1')
+    request.session['application_no'] = application_no
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    project_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'industry_ea_form.html',
+                {'partner_details': partner_details, 'machine_equipment': machine_equipment,
+                'raw_materials': raw_materials,
+                'project_product': project_product, 'ancillary_road': ancillary_road, 'power_line': power_line,
+                'application_no': application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 
 def new_road_application(request):
-    if request.session['app_type'] != 'New':
-        application_no = t_ec_industries_t1_general.objects.filter(service_id='3').aggregate(Max('application_no'))
-        last_application_no = application_no['application_no__max']
-
-        application_details =   t_ec_industries_t1_general.objects.filter(application_no=last_application_no,form_type='Main Activity')  
-
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=last_application_no,form_type='Ancillary')
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=last_application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=last_application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=last_application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=last_application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=last_application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=last_application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=last_application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=last_application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=last_application_no)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        ec_details = t_ec_industries_t11_ec_details.objects.all()
-        
-        return render(request, 'pending_application/road_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details})
-    else:
-        service_code = 'ROA'
-        application_no = get_application_no(request, service_code, '3')
-        request.session['application_no'] = application_no
-        partner_details = t_ec_industries_t2_partner_details.objects.all()
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-        project_product = t_ec_industries_t4_project_product.objects.all()
-        raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
-        drainage_type = t_ec_industries_t12_drainage_details.objects.all()
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        return render(request, 'road_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
-                                                        'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'drainage_type':drainage_type})
+    service_code = 'ROA'
+    application_no = get_application_no(request, service_code, '3')
+    request.session['application_no'] = application_no
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    project_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    drainage_type = t_ec_industries_t12_drainage_details.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'road_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                    'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
+                                                    'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'drainage_type':drainage_type})
 
 def new_transmission_application(request):
-    if request.session['app_type'] != 'New':
-        application_no = t_ec_industries_t1_general.objects.filter(service_id='4').aggregate(Max('application_no'))
-        last_application_no = application_no['application_no__max']
-
-        application_details =   t_ec_industries_t1_general.objects.filter(application_no=last_application_no,form_type='Main Activity')  
-
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=last_application_no,form_type='Ancillary')
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=last_application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=last_application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=last_application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=last_application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=last_application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=last_application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=last_application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=last_application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=last_application_no)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        ec_details = t_ec_industries_t11_ec_details.objects.all()
-        
-        return render(request, 'pending_application/transmission_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details})
-    else:
-        service_code = 'TRA'
-        application_no = get_application_no(request, service_code, '4')
-        request.session['application_no'] = application_no
-        partner_details = t_ec_industries_t2_partner_details.objects.all()
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-        project_product = t_ec_industries_t4_project_product.objects.all()
-        raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        return render(request, 'transmission_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
-                                                        'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
-
-def new_forestry_application(request):
-    if request.session['app_type'] != 'New':
-        application_no = t_ec_industries_t1_general.objects.filter(service_id='7').aggregate(Max('application_no'))
-        last_application_no = application_no['application_no__max']
-
-        application_details =   t_ec_industries_t1_general.objects.filter(application_no=last_application_no,form_type='Main Activity')  
-
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=last_application_no,form_type='Ancillary')
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=last_application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=last_application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=last_application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=last_application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=last_application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=last_application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=last_application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=last_application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=last_application_no)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        ec_details = t_ec_industries_t11_ec_details.objects.all()
-        
-        return render(request, 'pending_application/forest_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details})
-    else:
-        service_code = 'FOR'
-        application_no = get_application_no(request, service_code, '7')
-        request.session['application_no'] = application_no
-        forest_produce = t_ec_industries_t8_forest_produce.objects.all()
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        return render(request, 'forest_form.html',{'forest_produce':forest_produce,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
+    service_code = 'TRA'
+    application_no = get_application_no(request, service_code, '4')
+    request.session['application_no'] = application_no
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    project_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'transmission_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                    'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                     'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 
+def new_forestry_application(request):
+    service_code = 'FOR'
+    application_no = get_application_no(request, service_code, '7')
+    request.session['application_no'] = application_no
+    forest_produce = t_ec_industries_t8_forest_produce.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'forest_form.html',{'forest_produce':forest_produce,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
+                                                'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+
 def new_general_application(request):
-    if request.session['app_type'] == 'New':
-        service_code = 'GEN'
-        application_no = get_application_no(request, service_code, '9')
-        request.session['application_no'] = application_no
+    service_code = 'GEN'
+    application_no = get_application_no(request, service_code, '9')
+    request.session['application_no'] = application_no
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    project_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'general_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                    'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
+                                                    'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+
+def new_ground_water_application(request):
+    service_code = 'GWA' 
+    application_no = get_application_no(request, service_code, '6')
+    request.session['application_no'] = application_no
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    project_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'ground_water_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                    'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
+                                                    'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+
+def new_application_form(request):
+    application_no = request.session['application_no']
+    service_id = request.session['service_id']
+
+    application_source = None
+    status = None
+
+    appl_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
+    for appl_details in appl_details:
+        application_source = appl_details.application_source
+
+    if service_id == '1':
+        if application_source == 'IBLS':
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
+            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+            partner_details = t_ec_industries_t2_partner_details.objects.all()
+            machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+            project_product = t_ec_industries_t4_project_product.objects.all()
+            raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+            ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+            power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+            forest_produce = t_ec_industries_t8_forest_produce.objects.all()
+            products_by_products = t_ec_industries_t9_products_by_products.objects.all()
+            hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.all()
+            dzongkhag = t_dzongkhag_master.objects.all()
+            gewog = t_gewog_master.objects.all()
+            village = t_village_master.objects.all()
+            ec_details = t_ec_industries_t11_ec_details.objects.all()
+            
+            return render(request, 'pending_application/ea_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials, 'status':status,
+                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details,'ancillary_details':ancillary_details,'service_id':service_id})
+        else:
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+            partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
+            machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
+            project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
+            raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
+            ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
+            power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
+            forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
+            products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
+            hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
+            dzongkhag = t_dzongkhag_master.objects.all()
+            gewog = t_gewog_master.objects.all()
+            village = t_village_master.objects.all()
+            ec_details = t_ec_industries_t11_ec_details.objects.all()
+            
+            return render(request, 'pending_application/iee_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+                                                        'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+    elif service_id == '2':
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
         project_product = t_ec_industries_t4_project_product.objects.all()
         raw_materials = t_ec_industries_t5_raw_materials.objects.all()
         ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
         power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        return render(request, 'general_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
-                                                        'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
-    else:
-        application_no = t_ec_industries_t1_general.objects.filter(service_id='9').aggregate(Max('application_no'))
-        last_application_no = application_no['application_no__max']
-
-        application_details =   t_ec_industries_t1_general.objects.filter(application_no=last_application_no,form_type='Main Activity')  
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=last_application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=last_application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=last_application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=last_application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=last_application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=last_application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=last_application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=last_application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=last_application_no)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        
-        return render(request, 'pending_application/general_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals})
-        
-
-def new_ground_water_application(request):
-    if request.session['app_type'] != 'New':
-        application_no = t_ec_industries_t1_general.objects.filter(service_id='6').aggregate(Max('application_no'))
-        last_application_no = application_no['application_no__max']
-
-        application_details =   t_ec_industries_t1_general.objects.filter(application_no=last_application_no,form_type='Main Activity')  
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=last_application_no,form_type='Ancillary')
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=last_application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=last_application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=last_application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=last_application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=last_application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=last_application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=last_application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=last_application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=last_application_no)
+        forest_produce = t_ec_industries_t8_forest_produce.objects.all()
+        products_by_products = t_ec_industries_t9_products_by_products.objects.all()
+        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.all()
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         
-        return render(request, 'pending_application/ground_water_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details})
-    else:
-        service_code = 'GWA' 
-        application_no = get_application_no(request, service_code, '6')
-        request.session['application_no'] = application_no
+        return render(request, 'pending_application/energy_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog,
+                                                     'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+    elif service_id == '3':
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
         project_product = t_ec_industries_t4_project_product.objects.all()
         raw_materials = t_ec_industries_t5_raw_materials.objects.all()
         ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
         power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+        forest_produce = t_ec_industries_t8_forest_produce.objects.all()
+        products_by_products = t_ec_industries_t9_products_by_products.objects.all()
+        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.all()
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        return render(request, 'ground_water_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                        'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
-                                                        'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+        ec_details = t_ec_industries_t11_ec_details.objects.all()
+        
+        return render(request, 'pending_application/road_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+    elif service_id == '4':
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        partner_details = t_ec_industries_t2_partner_details.objects.all()
+        machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+        project_product = t_ec_industries_t4_project_product.objects.all()
+        raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+        ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+        power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+        forest_produce = t_ec_industries_t8_forest_produce.objects.all()
+        products_by_products = t_ec_industries_t9_products_by_products.objects.all()
+        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.all()
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        ec_details = t_ec_industries_t11_ec_details.objects.all()
+        
+        return render(request, 'pending_application/transmission_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+    elif service_id == '5':
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        partner_details = t_ec_industries_t2_partner_details.objects.all()
+        machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+        project_product = t_ec_industries_t4_project_product.objects.all()
+        raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+        ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+        power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+        forest_produce = t_ec_industries_t8_forest_produce.objects.all()
+        products_by_products = t_ec_industries_t9_products_by_products.objects.all()
+        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.all()
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        ec_details = t_ec_industries_t11_ec_details.objects.all()
+        
+        return render(request, 'pending_application/tourism_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+    elif service_id == '6':
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        partner_details = t_ec_industries_t2_partner_details.objects.all()
+        machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+        project_product = t_ec_industries_t4_project_product.objects.all()
+        raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+        ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+        power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+        forest_produce = t_ec_industries_t8_forest_produce.objects.all()
+        products_by_products = t_ec_industries_t9_products_by_products.objects.all()
+        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.all()
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        ec_details = t_ec_industries_t11_ec_details.objects.all()
+        
+        return render(request, 'pending_application/ground_water_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+    elif service_id == '7':
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        partner_details = t_ec_industries_t2_partner_details.objects.all()
+        machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+        project_product = t_ec_industries_t4_project_product.objects.all()
+        raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+        ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+        power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+        forest_produce = t_ec_industries_t8_forest_produce.objects.all()
+        products_by_products = t_ec_industries_t9_products_by_products.objects.all()
+        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.all()
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        ec_details = t_ec_industries_t11_ec_details.objects.all()
+        
+        return render(request, 'pending_application/forest_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+    elif service_id == '8':
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        partner_details = t_ec_industries_t2_partner_details.objects.all()
+        machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+        project_product = t_ec_industries_t4_project_product.objects.all()
+        raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+        ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+        power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+        forest_produce = t_ec_industries_t8_forest_produce.objects.all()
+        products_by_products = t_ec_industries_t9_products_by_products.objects.all()
+        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.all()
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        ec_details = t_ec_industries_t11_ec_details.objects.all()
+        
+        return render(request, 'pending_application/quarry_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+    elif service_id == '9':
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        partner_details = t_ec_industries_t2_partner_details.objects.all()
+        machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+        project_product = t_ec_industries_t4_project_product.objects.all()
+        raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+        ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+        power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+        forest_produce = t_ec_industries_t8_forest_produce.objects.all()
+        products_by_products = t_ec_industries_t9_products_by_products.objects.all()
+        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.all()
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        ec_details = t_ec_industries_t11_ec_details.objects.all()
+        
+        return render(request, 'pending_application/general_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                     'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
 
 def industry_ancillary_form(request):
     application_no = request.session['application_no']
@@ -510,7 +578,7 @@ def save_iee_application(request):
         ca_auth = None
 
         if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(ca_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
@@ -1580,7 +1648,6 @@ def get_application_service_id(request):
         request.session['ca_authority'] = cat_details.competent_authority
         request.session['colour_code'] = cat_details.colour_code
         request.session['service_id'] = cat_details.service_id
-        request.session['app_type'] = "New"
         data['service_id'] = cat_details.service_id
         data['colour_code'] = cat_details.colour_code
         data['competant_authority'] = cat_details.competent_authority
@@ -1598,45 +1665,21 @@ def load_village(request):
     return render(request, 'village_list.html', {'village_list': village_list})
 
 def new_iee_application(request):
-    if request.session['app_type'] != 'New':
-        application_no = t_ec_industries_t1_general.objects.filter(service_id='1').aggregate(Max('application_no'))
-        last_application_no = application_no['application_no__max']
-
-        application_details =   t_ec_industries_t1_general.objects.filter(application_no=last_application_no,form_type='Main Activity')  
-
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=last_application_no,form_type='Ancillary')
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=last_application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=last_application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=last_application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=last_application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=last_application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=last_application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=last_application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=last_application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=last_application_no)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        
-        return render(request, 'pending_application/industry_iee_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                    'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                    'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals, 'ancillary_details':ancillary_details})
-    else:
-        service_code = 'IEE'
-        application_no = get_application_no(request, service_code, '1')
-        request.session['application_no'] = application_no
-        partner_details = t_ec_industries_t2_partner_details.objects.all()
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-        final_product = t_ec_industries_t4_project_product.objects.all()
-        raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        return render(request, 'industry_iee_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                        'final_product':final_product,'ancillary_road':ancillary_road, 'power_line':power_line,
-                                                        'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+    service_code = 'IEE'
+    application_no = get_application_no(request, service_code, '1')
+    request.session['application_no'] = application_no
+    partner_details = t_ec_industries_t2_partner_details.objects.all()
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
+    final_product = t_ec_industries_t4_project_product.objects.all()
+    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'industry_iee_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+                                                    'final_product':final_product,'ancillary_road':ancillary_road, 'power_line':power_line,
+                                                    'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 def save_iee_attachment(request):
     data = dict()
     iee_attach = request.FILES['iee_attach']
@@ -2691,7 +2734,7 @@ def save_road_application(request):
         ca_auth = None
 
         if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(ca_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
@@ -2963,7 +3006,7 @@ def save_general_application(request):
         ca_auth = None
 
         if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(ca_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
@@ -3137,7 +3180,7 @@ def save_forest_application(request):
         ca_auth = None
 
         if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(ca_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
@@ -3345,7 +3388,7 @@ def save_ground_water_application(request):
         ca_auth = None
 
         if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(ca_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
@@ -3581,7 +3624,7 @@ def save_quarry_application(request):
         ca_auth = None
 
         if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(ca_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
@@ -3952,7 +3995,7 @@ def save_energy_application(request):
         ca_auth = None
 
         if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(ca_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
@@ -4144,7 +4187,7 @@ def save_tourism_application(request):
         ca_auth = None
 
         if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(ca_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:

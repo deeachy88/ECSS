@@ -10,7 +10,10 @@ urlpatterns = [
     path('new_forestry_application', views.new_forestry_application, name='new_forestry_application'),
     path('new_general_application', views.new_general_application, name='new_general_application'),
     path('new_ground_water_application', views.new_ground_water_application, name='new_ground_water_application'),
-       
+    path('new_application_form', views.new_application_form, name='new_application_form'),
+
+
+
     path('add_machine_tool_details', views.add_machine_tool_details, name='add_machine_tool_details'),
     path('update_machine_tool_details', views.update_machine_tool_details, name='update_machine_tool_details'),
     path('delete_machine_tool_details', views.delete_machine_tool_details, name='delete_machine_tool_details'),
