@@ -28,6 +28,7 @@
             <table id="basic-datatable" class="table dt-responsive nowrap w-100">
                 <thead>
                     <th>#</th>
+                    <th>Menu Order</th>
                     <th>Menu Name</th>
                     <th></th>
                 </thead>
@@ -35,6 +36,7 @@
                     {% for menu_details in menu_details %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
+                            <td>{{menu_details.order}}</td>
                             <td>{{menu_details.menu_name}}</td>
                             <td>
                                 <div class="btn-group btn-group-sm">

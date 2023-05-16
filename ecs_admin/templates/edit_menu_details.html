@@ -13,14 +13,21 @@
                     <input type="hidden" class="form-control" id="edit_document_id" value="{{menu_details.document_id}}">
                     <input type="hidden" class="form-control" id="menu_id" value="{{menu_details.menu_id}}">
                     <input type="hidden" class="form-control" id="menu_has_sub_menu" value="{{menu_details.has_sub_menu}}">
-                    <div class="col-lg-6">
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Menu Order</label>
+                            <textarea class="form-control" name="edit_menu_order" id="edit_menu_order">{{menu_details.order}}</textarea>
+                        </div>
+                        <div class="alert alert-danger" id="edit_menu_orderErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-5">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Menu Name</label>
                             <textarea class="form-control" name="edit_menu_name" id="edit_menu_name">{{menu_details.menu_name}}</textarea>
                         </div>
                         <div class="alert alert-danger" id="edit_menu_nameErrorMsg" style="display:none"></div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-5">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Has Submenu ?</label>
                             <div class="mt-1">
@@ -210,17 +217,24 @@
     {
         var myEditor = document.querySelector('#snow-editor')
         var content = myEditor.children[0].innerHTML
+        var menu_order = $('#edit_menu_order').val();
         var menu_name = $('#edit_menu_name').val();
         var has_submenu = $('input[name="edit_has_submenu"]:checked').val();
         var has_submenu_value = $("input[name=edit_has_submenu]:checked").length;
         var document_id = $('#edit_document_id').val();
         var menu_id = $('#menu_id').val();
 
-        if(menu_name == "")
+        if(menu_order == "")
         {
-            $('#menu_nameErrorMsg').html("Enter Menu Name.");
-            $('#menu_nameErrorMsg').show();
-            $('#menu_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#menu_orderErrorMsg').html("Enter Menu Order.");
+            $('#menu_orderErrorMsg').show();
+            $('#menu_orderErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(has_submenu_value < 1)
+        {
+            $('#has_submenuErrorMsg').html("Choose One.");
+            $('#has_submenuErrorMsg').show();
+            $('#has_submenuErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(has_submenu_value < 1)
         {
@@ -233,7 +247,7 @@
             $.ajax({
                 type : "POST",
                 url : "{% url 'update_menu_details' %}",
-                data : {'menu_name':menu_name, 'has_submenu':has_submenu, 'menu_id':menu_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'menu_name':menu_name, 'menu_order':menu_order, 'has_submenu':has_submenu, 'menu_id':menu_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data)
                 {
                     $('#edit_successMsg').html("Menu Updated Successfully");
@@ -252,7 +266,7 @@
             $.ajax({
                 type : "POST",
                 url : "{% url 'update_menu_details' %}",
-                data : {'menu_name':menu_name,'has_submenu':has_submenu, 'menu_id':menu_id, 'content':content,'document_id':document_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'menu_name':menu_name,'menu_order':menu_order, 'has_submenu':has_submenu, 'menu_id':menu_id, 'content':content,'document_id':document_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data)
                 {
                     $('#edit_successMsg').html("Menu Updated Successfully");

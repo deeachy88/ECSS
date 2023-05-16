@@ -23,14 +23,21 @@
             {% csrf_token %}
                 <div class="row">
                     <input type="hidden" class="form-control" id="document_id" value="{{document_id}}"></input>
-                    <div class="col-lg-6">
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Menu Order</label>
+                            <input type="text" name="menu_order" class="form-control" id="menu_order">
+                        </div>
+                        <div id="menu_orderErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                    <div class="col-lg-5">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Menu Name</label>
                             <input type="text" name="menu_name" class="form-control" id="menu_name">
                         </div>
                         <div id="menu_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-5">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Has Submenu ?</label>
                             <div class="mt-1">
@@ -202,12 +209,19 @@
     {
         var myEditor = document.querySelector('#snow-editor')
         var content = myEditor.children[0].innerHTML
+        var menu_order = $('#menu_order').val();
         var menu_name = $('#menu_name').val();
         var has_submenu = $('input[name="has_submenu"]:checked').val();
         var has_submenu_value = $("input[name=has_submenu]:checked").length;
         var document_id = $('#document_id').val();
 
-        if(menu_name == "")
+        if(menu_order == "")
+        {
+            $('#menu_orderErrorMsg').html("Enter Menu Order.");
+            $('#menu_orderErrorMsg').show();
+            $('#menu_orderErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(menu_name == "")
         {
             $('#menu_nameErrorMsg').html("Enter Menu Name.");
             $('#menu_nameErrorMsg').show();
@@ -224,7 +238,7 @@
             $.ajax({
                 type : "POST",
                 url : "{% url 'save_menu_details' %}",
-                data : {'menu_name':menu_name, 'has_submenu':has_submenu, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'menu_name':menu_name, 'menu_order':menu_order, 'has_submenu':has_submenu, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data)
                 {
                     $('#successMsg').html("Menu Added Successfully");
@@ -243,7 +257,7 @@
             $.ajax({
                 type : "POST",
                 url : "{% url 'save_menu_details' %}",
-                data : {'menu_name':menu_name,'has_submenu':has_submenu, 'content':content,'document_id':document_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'menu_name':menu_name, 'menu_order':menu_order, 'has_submenu':has_submenu, 'content':content,'document_id':document_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data)
                 {
                     $('#successMsg').html("Menu Added Successfully");
