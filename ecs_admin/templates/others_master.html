@@ -99,11 +99,15 @@
             </div>
         </div>
       </div>
+        <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+            Loading...
+        </button>
           <div class="alert alert-success" id="publication_SuccessMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="add_publication_details()">Add</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
+        <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="add_publication_details()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
       </form>
     </div>
     <!--/.Content-->
@@ -128,6 +132,10 @@
                 <div class="alert alert-success" id="edit_successMsg" role="alert" style="display:none;">
                     <i class="ri-check-line me-2"></i>
                 </div>
+                <button id="editpageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    Loading...
+                </button>
                 <div class="alert alert-success" id="edit_publication_SuccessMsg" style="display:none"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -195,6 +203,7 @@
         }
         else
         {
+            $("#pageloader").show();
             let fileName = document.getElementById('publication_document').files[0].name;
             let fd = new FormData();
             let file = document.getElementById('publication_document').files[0];
@@ -229,6 +238,7 @@
                             data : {'document_id':document_id ,'type':type, 'title':title, 'filename':fileName, 'file_url':file_url},
                             success : function(responseText)
                             {
+                                $("#pageloader").hide();
                                 $('#publication_SuccessMsg').html("Add Successful");
                                 $('#publication_SuccessMsg').show();
                                 setTimeout(function()
@@ -304,6 +314,7 @@
         {
             var edit_document_id = $('#edit_document_id').val();
             var edit_publication_title = $('#edit_publication_title').val();
+            $("#editpageloader").show();
             $.ajax
             ({
                 type : "POST",
@@ -311,6 +322,7 @@
                 data : {'document_id':edit_document_id ,'type':type, 'title':title, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
+                    $("#editpageloader").hide();
                     $('#edit_publication_SuccessMsg').html("Update Successful");
                     $('#edit_publication_SuccessMsg').show();
                     setTimeout(function()
@@ -348,6 +360,7 @@
             }
             else
             {
+                $("#editpageloader").show();
                 var fileName = document.getElementById('edit_publication_document').files[0].name;
                 var fd = new FormData();
                 var file = document.getElementById('edit_publication_document').files[0];
@@ -384,6 +397,7 @@
                                 data : {'document_id':edit_document_id ,'type':type, 'title':title, 'filename':fileName, 'file_url':file_url},
                                 success : function(responseText)
                                 {
+                                    $("#editpageloader").hide();
                                     $('#edit_publication_SuccessMsg').html("Publication Updated Successfully");
                                     $('#edit_publication_SuccessMsg').show();
                                     setTimeout(function()
