@@ -75,9 +75,9 @@
                     <label class="form-label fw-bold">Type</label>
                     <select type="text" name="type" class="form-control" id="type">
                         <option value="">--SELECT--</option>
-                        <option value="circulars">Circulars</option>
-                        <option value="publications">Publications</option>
-                        <option value="downloads">Downloads</option>
+                        <option value="Acts and Rules">Acts and Rules</option>
+                        <option value="Notifications">Notifications</option>
+                        <option value="Forms and Others">Forms and Others</option>
                     </select>
                 </div>
                 <div class="alert alert-danger" id="typeErrorMsg" style="display:none"></div>
@@ -180,6 +180,7 @@
     function add_publication_details()
     {
         let type = $('#type').val();
+        alert(type);
         let title = $('#title').val();
         let file_length = document.getElementById("publication_document");
 

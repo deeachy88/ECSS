@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8" />
-        <title>NEC | ECS </title>
+        <title>DECC | Environmental Clearance Services System </title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Deepak" name="author" />
@@ -77,33 +77,14 @@
                         </div> <!-- end card -->
                     </div> <!-- end col -->
                     <div class="col-xl-4 col-lg-5">
-                        {% if form_file_attachment_count > 0 %}
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <h4 class="header-title">Circulars</h4>
-                                    </div>
-                                    <hr>
-                                    <div class="inbox-widget">
-                                        {% for file_attachment in form_file_attachment %}
-                                            <div class="inbox-item">
-                                                <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
-                                            </div>
-                                        {% endfor %}
-                                    </div> <!-- end inbox-widget -->
-                                    {% if form_file_attachment_count > 5 %}
-                                        <div class="text-center mt-1">
-                                            <a href="javascript:void(0);" class="text-danger"><i class="mdi mdi-spin mdi-loading me-1"></i> Load more </a>
-                                        </div>
-                                    {% endif %}
-                                </div> <!-- end card-body-->
-                            </div> <!-- end card -->
-                        {% endif %}
+                            <div class="card-body">
+                                <h4 class="header-title">Live Statistics</h4>
+                            </div>
                         {% if pub_file_attachment_count > 0 %}
                             <div class="card text-center">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-2">
-                                        <h4 class="header-title">Publications</h4>
+                                        <h4 class="header-title">Acts and Rules</h4>
                                     </div>
                                     <hr>
                                     <div class="inbox-widget">
@@ -121,11 +102,34 @@
                                 </div> <!-- end card-body-->
                             </div> <!-- end card -->
                         {% endif %}
+                        {% if form_file_attachment_count > 0 %}
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <h4 class="header-title">Notifications</h4>
+                                    </div>
+                                    <hr>
+                                    <div class="inbox-widget">
+                                        {% for file_attachment in form_file_attachment %}
+                                            <div class="inbox-item">
+                                                <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                            </div>
+                                        {% endfor %}
+                                    </div> <!-- end inbox-widget -->
+                                    {% if form_file_attachment_count > 5 %}
+                                        <div class="text-center mt-1">
+                                            <a href="javascript:void(0);" class="text-danger"><i class="mdi mdi-spin mdi-loading me-1"></i> Load more </a>
+                                        </div>
+                                    {% endif %}
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card -->
+                        {% endif %}
+
                         {% if down_file_attachment_count > 0 %}
                             <div class="card text-center">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-2">
-                                        <h4 class="header-title">Downloads</h4>
+                                        <h4 class="header-title">Forms and Others</h4>
                                     </div>
                                     <hr>
                                     <div class="inbox-widget">

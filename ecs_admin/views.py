@@ -483,6 +483,13 @@ def delete_attachment(request):
             fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/submenu/")
             fs.delete(str(file_name))
         file.delete()
+    elif identifier == 'H':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/homepage/")
+            fs.delete(str(file_name))
+        file.delete()
     file_attach = t_file_attachment.objects.filter(document_id=document_id)
     return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
 
@@ -997,10 +1004,10 @@ def add_publication_attach(request):
     title = request.POST.get('title')
     type = request.POST.get('type')
 
-    if type == 'publications':
+    if type == 'Acts and Rules':
         t_file_attachment.objects.create(file_path=file_url,attachment=attachment_name,document_id=document_id,
                                          attachment_type='P')
-    elif type == 'downloads':
+    elif type == 'Forms and Others':
         t_file_attachment.objects.create(file_path=file_url, attachment=attachment_name, document_id=document_id,
                                          attachment_type='D')
     else:
