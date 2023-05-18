@@ -1,0 +1,93 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+
+<div id="Application_Details">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Live Statistics</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                        <table id="ec_table" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Proponent</th>
+                                    <th scope="col">Proponent Type</th>
+                                    <th scope="col">Project Name</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Application Date</th>
+                                    <th scope="col">EC Number</th>
+                                    <th scope="col">Approve Date</th>
+                                    <th scope="col">Application Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for application_list in application_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{application_list.applicant_name}}</td>
+                                        <td>{{application_list.applicant_type}}</td>
+                                        <td>{{application_list.project_name}}</td>
+                                        <td>{{application_list.address}}</td>
+                                        <td>{{application_list.application_date}}</td>
+                                        <td>{{application_list.ec_reference_no}}</td>
+                                        <td>{{application_list.ec_approve_date}}</td>
+                                        {% if application_list.application_status == 'P' %}
+                                            <td>Pending</td>
+                                        {% elif application_list.application_status == 'A' %}
+                                            <td>Approved</td>
+                                        {% else %}
+                                            <td>None</td>
+                                        {% endif %}
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="9" class="text-center">No Data</td>
+                                    </tr>
+                                    {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function()
+        {
+            $("#ec_table").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'List of Application',
+                        text:'<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Excel'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'List of Application',
+                        text:'<i class="fas fa-file-pdf"></i>',
+                        titleAttr: 'PDF'
+                    },
+                     {
+                        extend: 'print',
+                        title: 'List of Application',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Print'
+                    },
+                ]
+            });
+        }
+    );
+
+</script>
+{% endblock %}

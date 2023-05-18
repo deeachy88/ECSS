@@ -5,18 +5,18 @@
             <div class="mb-3">
                 <label class="form-label fw-bold">Type</label>
                 <select type="text" name="edit_type" class="form-control" value="{{others_details.type}}" id="edit_type">
-                    {% if others_details.type == 'publications'%}
-                    <option value="publications" selected>Publications</option>
-                    <option value="downloads">Downloads</option>
-                    <option value="forms">Forms</option>
-                    {% elif  others_details.type == 'downloads'%}
-                    <option value="publications">Publications</option>
-                    <option value="downloads" selected>Downloads</option>
-                    <option value="forms">Forms</option>
+                    {% if others_details.type == 'Acts and Rules'%}
+                    <option value="Acts and Rules" selected>Acts and Rules</option>
+                    <option value="Notifications">Notifications</option>
+                    <option value="Forms and Others">Forms and Others</option>
+                    {% elif  others_details.type == 'Notifications'%}
+                    <option value="Acts and Rules">Acts and Rules</option>
+                    <option value="Notifications" selected>Notifications</option>
+                    <option value="Forms and Others">Forms and Others</option>
                     {% else %}
-                    <option value="publications">Publications</option>
-                    <option value="downloads">Downloads</option>
-                    <option value="forms" selected>Forms</option>
+                    <option value="Acts and Rules">Acts and Rules</option>
+                    <option value="Notifications">Notifications</option>
+                    <option value="Forms and Others" selected>Forms and Others</option>
                     {% endif %}
                 </select>
             </div>

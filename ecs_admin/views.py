@@ -1003,10 +1003,10 @@ def add_publication_attach(request):
     title = request.POST.get('title')
     type = request.POST.get('type')
 
-    if type == 'publications':
+    if type == 'Acts and Rules':
         t_file_attachment.objects.create(file_path=file_url,attachment=attachment_name,document_id=document_id,
                                          attachment_type='P')
-    elif type == 'downloads':
+    elif type == 'Forms and Others':
         t_file_attachment.objects.create(file_path=file_url, attachment=attachment_name, document_id=document_id,
                                          attachment_type='D')
     else:
