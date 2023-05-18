@@ -332,7 +332,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Contact Number</label>
-                    <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contact_number" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                    <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contact_number" maxlength="8">
                 </div>
                 <div id="mobileErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
             </div>
@@ -461,7 +461,10 @@
         function register_client()
         {
             let proponent_type = $('#proponent_type').val();
-            let cid = $('#cid').val();
+            if(proponent_type ='4')
+            {
+                let cid = $('#cid').val();
+            }
             let proponent_name = $('#proponent_name').val();
             let address = $('#proponent_address').val();
             let contact_person = $('#contact_person').val();
@@ -523,19 +526,19 @@
                 $('#contact_numberErrorMsg').show();
                 $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
             }
-            else if(proponent_type!='4' && dzongkhag == "")
+            else if(proponent_type !='4' && dzongkhag == "")
             {
                 $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
                 $('#dzongkhagErrorMsg').show();
                 $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
             }
-            else if(proponent_type!='4' && gewog == "")
+            else if(proponent_type !='4' && gewog == "")
             {
                 $('#gewogErrorMsg').html("Select Gewog.");
                 $('#gewogErrorMsg').show();
                 $('#gewogErrorMsg').delay(2000).fadeOut('slow');
             }
-            else if(proponent_type!='4' && village == "")
+            else if(proponent_type !='4' && village == "")
             {
                 $('#villageErrorMsg').html("Select Village.");
                 $('#villageErrorMsg').show();

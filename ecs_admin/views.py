@@ -483,6 +483,13 @@ def delete_attachment(request):
             fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/submenu/")
             fs.delete(str(file_name))
         file.delete()
+    elif identifier == 'H':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/homepage/")
+            fs.delete(str(file_name))
+        file.delete()
     file_attach = t_file_attachment.objects.filter(document_id=document_id)
     return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
 
@@ -763,7 +770,7 @@ def save_homepage_attachment_details(request):
     document_id = request.POST.get('document_id')
     file_name = request.POST.get('filename')
     file_url = request.POST.get('file_url')
-
+    print(document_id)
     t_file_attachment.objects.create(document_id=document_id,file_path=file_url,
                                      attachment=file_name,attachment_type='H')
 
@@ -832,7 +839,6 @@ def client_registration(request):
                                  address=address, contact_person=contact_person, email_id=email,
                                  contact_number=contact_number, dzongkhag_code=dzongkhag, gewog_code=gewog,
                                  village_code=village,is_active="N", logical_delete="N")
-
         data['message'] = "registration successful"
     return JsonResponse(data)
 

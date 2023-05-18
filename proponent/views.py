@@ -119,7 +119,6 @@ def new_ground_water_application(request):
 def new_application_form(request):
     application_no = request.session['application_no']
     service_id = request.session['service_id']
-
     application_source = None
     status = None
 
@@ -127,7 +126,7 @@ def new_application_form(request):
     for appl_details in appl_details:
         application_source = appl_details.application_source
 
-    if service_id == '1':
+    if service_id == 1:
         if application_source == 'IBLS':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
             ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -145,7 +144,7 @@ def new_application_form(request):
             village = t_village_master.objects.all()
             ec_details = t_ec_industries_t11_ec_details.objects.all()
             
-            return render(request, 'pending_application/ea_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials, 'status':status,
+            return render(request, 'pending_application/industry_ea_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials, 'status':status,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                         'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details,'ancillary_details':ancillary_details,'service_id':service_id})
         else:
@@ -165,10 +164,10 @@ def new_application_form(request):
             village = t_village_master.objects.all()
             ec_details = t_ec_industries_t11_ec_details.objects.all()
             
-            return render(request, 'pending_application/iee_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+            return render(request, 'pending_application/industry_iee_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                         'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                         'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
-    elif service_id == '2':
+    elif service_id == 2:
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -185,10 +184,10 @@ def new_application_form(request):
         village = t_village_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         
-        return render(request, 'pending_application/energy_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'pending_application/energy_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog,
                                                      'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
-    elif service_id == '3':
+    elif service_id == 3:
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -205,10 +204,10 @@ def new_application_form(request):
         village = t_village_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         
-        return render(request, 'pending_application/road_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+        return render(request, 'pending_application/road_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
-    elif service_id == '4':
+    elif service_id == 4:
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -225,10 +224,10 @@ def new_application_form(request):
         village = t_village_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         
-        return render(request, 'pending_application/transmission_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+        return render(request, 'pending_application/transmission_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
-    elif service_id == '5':
+    elif service_id == 5:
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -245,10 +244,10 @@ def new_application_form(request):
         village = t_village_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         
-        return render(request, 'pending_application/tourism_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+        return render(request, 'pending_application/tourism_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
-    elif service_id == '6':
+    elif service_id == 6:
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -265,10 +264,10 @@ def new_application_form(request):
         village = t_village_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         
-        return render(request, 'pending_application/ground_water_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+        return render(request, 'pending_application/ground_water_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
-    elif service_id == '7':
+    elif service_id == 7:
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -285,10 +284,10 @@ def new_application_form(request):
         village = t_village_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         
-        return render(request, 'pending_application/forest_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+        return render(request, 'pending_application/forest_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
-    elif service_id == '8':
+    elif service_id == 8:
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
@@ -305,11 +304,11 @@ def new_application_form(request):
         village = t_village_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         
-        return render(request, 'pending_application/quarry_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+        return render(request, 'pending_application/quarry_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
-    elif service_id == '9':
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+    elif service_id == 9:
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
         ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
@@ -325,7 +324,7 @@ def new_application_form(request):
         village = t_village_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         
-        return render(request, 'pending_application/general_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+        return render(request, 'pending_application/general_form.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
 
@@ -1906,7 +1905,7 @@ def save_general_attachment_details(request):
 
 def add_final_product_details(request):
     application_no = request.POST.get('application_no')
-    product_name = request.POST.get('product_name')
+    product_name = request.POST.get('produce_name')
     quantity_annum = request.POST.get('quantity_annum')
     storage_method = request.POST.get('storage_method')
 
@@ -2543,7 +2542,6 @@ def save_tor_form(request):
 def insert_payment_details(request,application_no, identifier):
     main_application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,application_type='Main Activity')
     ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,application_type='Ancillary').count()
-    workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
 
     service_id = request.session['service_id']
     industry_classification = None
@@ -2560,55 +2558,55 @@ def insert_payment_details(request,application_no, identifier):
         power_generation = application.power_generation
         road_length = application.road_length
 
-        if service_id == '1' and industry_classification == 'Small':
+        if service_id == 1 and industry_classification == 'Small':
             fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
             for fees_details in fees_details:
                 main_amount = fees_details.rate + fees_details.application_fee
-        elif service_id == '1' and industry_classification == 'Medium':
+        elif service_id == 1 and industry_classification == 'Medium':
             fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
             for fees_details in fees_details:
                 main_amount = fees_details.rate + fees_details.application_fee
-        elif service_id == '1' and industry_classification == 'Large':
+        elif service_id == 1 and industry_classification == 'Large':
             fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
             for fees_details in fees_details:
                 main_amount = fees_details.rate + fees_details.application_fee
-        elif service_id == '1' and industry_classification == 'Cottage':
+        elif service_id == 1 and industry_classification == 'Cottage':
             fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
             for fees_details in fees_details:
                 main_amount = fees_details.rate + fees_details.application_fee
-        elif service_id == '2':
+        elif service_id == 2:
             fees_details = t_fees_schedule.objects.filter(service_id=service_id)
             for fees_details in fees_details:
                 main_amount = (fees_details.rate * power_generation) + fees_details.application_fee
-        elif service_id == '3':
+        elif service_id == 3:
             fees_details = t_fees_schedule.objects.filter(service_id=service_id)
             for fees_details in fees_details:
                 main_amount = (fees_details.rate * road_length) + fees_details.application_fee
-        elif service_id == '4':
+        elif service_id == 4:
             fees_details = t_fees_schedule.objects.filter(service_id=service_id)
             for fees_details in fees_details:
                 main_amount = (fees_details.rate * length_of_transmission) + fees_details.application_fee
-        elif service_id == '5':
+        elif service_id == 5:
             fees_details = t_fees_schedule.objects.filter(service_id=service_id)
             for fees_details in fees_details:
                 main_amount = fees_details.rate  + fees_details.application_fee
-        elif service_id == '6':
+        elif service_id == 6:
             fees_details = t_fees_schedule.objects.filter(service_id=service_id)
             for fees_details in fees_details:
                 main_amount = fees_details.rate  + fees_details.application_fee
-        elif service_id == '7':
+        elif service_id == 7:
             fees_details = t_fees_schedule.objects.filter(service_id=service_id)
             for fees_details in fees_details:
                 main_amount = (fees_details.rate * total_area_acre) + fees_details.application_fee
-        elif service_id == '8':
+        elif service_id == 8:
             fees_details = t_fees_schedule.objects.filter(service_id=service_id)
             for fees_details in fees_details:
                 main_amount = (fees_details.rate * total_area_acre) * fees_details.application_fee
-        elif service_id == '9':
+        elif service_id == 9:
             fees_details = t_fees_schedule.objects.filter(service_id=service_id)
             for fees_details in fees_details:
                 main_amount = fees_details.rate + fees_details.application_fee
-        elif service_id == '10':
+        elif service_id == 10:
             fees_details = t_fees_schedule.objects.filter(service_id=service_id)
             for fees_details in fees_details:
                 main_amount = fees_details.rate + fees_details.application_fee
@@ -2621,54 +2619,54 @@ def insert_payment_details(request,application_no, identifier):
                 power_generation = ancillary_application.power_generation
                 road_length = ancillary_application.road_length
             
-            if service_id == '1' and industry_classification == 'Small':
+            if service_id == 1 and industry_classification == 'Small':
+                fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
+                for fees_details in fees_details:
+                    ancillary_amount = fees_details.rate + fees_details.application_fee
+            elif service_id == 1 and industry_classification == 'Medium':
                 fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
                 for fees_details in fees_details:
                     main_amount = fees_details.rate + fees_details.application_fee
-            elif service_id == '1' and industry_classification == 'Medium':
+            elif service_id == 1 and industry_classification == 'Large':
                 fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
                 for fees_details in fees_details:
-                    main_amount = fees_details.rate + fees_details.application_fee
-            elif service_id == '1' and industry_classification == 'Large':
+                    ancillary_amount = fees_details.rate + fees_details.application_fee
+            elif service_id == 1 and industry_classification == 'Cottage':
                 fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
                 for fees_details in fees_details:
-                    main_amount = fees_details.rate + fees_details.application_fee
-            elif service_id == '1' and industry_classification == 'Cottage':
-                fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
-                for fees_details in fees_details:
-                    main_amount = fees_details.rate + fees_details.application_fee
-            elif service_id == '2':
+                    ancillary_amount = fees_details.rate + fees_details.application_fee
+            elif service_id == 2:
                 fees_details = t_fees_schedule.objects.filter(service_id=service_id)
                 for fees_details in fees_details:
-                    main_amount = (fees_details.rate * power_generation) + fees_details.application_fee
-            elif service_id == '3':
+                    ancillary_amount = (fees_details.rate * power_generation) + fees_details.application_fee
+            elif service_id == 3:
                 fees_details = t_fees_schedule.objects.filter(service_id=service_id)
                 for fees_details in fees_details:
-                    main_amount = (fees_details.rate * road_length) + fees_details.application_fee
-            elif service_id == '4':
+                    ancillary_amount = (fees_details.rate * road_length) + fees_details.application_fee
+            elif service_id == 4:
                 fees_details = t_fees_schedule.objects.filter(service_id=service_id)
                 for fees_details in fees_details:
-                    main_amount = (fees_details.rate * length_of_transmission) + fees_details.application_fee
-            elif service_id == '5':
+                    ancillary_amount = (fees_details.rate * length_of_transmission) + fees_details.application_fee
+            elif service_id == 5:
                 fees_details = t_fees_schedule.objects.filter(service_id=service_id)
                 for fees_details in fees_details:
-                    main_amount = fees_details.rate  + fees_details.application_fee
-            elif service_id == '6':
+                    ancillary_amount = fees_details.rate  + fees_details.application_fee
+            elif service_id == 6:
                 fees_details = t_fees_schedule.objects.filter(service_id=service_id)
                 for fees_details in fees_details:
-                    main_amount = fees_details.rate  + fees_details.application_fee
-            elif service_id == '7':
+                    ancillary_amount = fees_details.rate  + fees_details.application_fee
+            elif service_id == 7:
                 fees_details = t_fees_schedule.objects.filter(service_id=service_id)
                 for fees_details in fees_details:
-                    main_amount = (fees_details.rate * total_area_acre) + fees_details.application_fee
-            elif service_id == '8':
+                    ancillary_amount = (fees_details.rate * total_area_acre) + fees_details.application_fee
+            elif service_id == 8:
                 fees_details = t_fees_schedule.objects.filter(service_id=service_id)
                 for fees_details in fees_details:
-                    main_amount = (fees_details.rate * total_area_acre) * fees_details.application_fee
-            elif service_id == '9':
+                    ancillary_amount = (fees_details.rate * total_area_acre) * fees_details.application_fee
+            elif service_id == 9:
                 fees_details = t_fees_schedule.objects.filter(service_id=service_id)
                 for fees_details in fees_details:
-                    main_amount = fees_details.rate + fees_details.application_fee
+                    ancillary_amount = fees_details.rate + fees_details.application_fee
         
             total_amount = main_amount + ancillary_amount
 

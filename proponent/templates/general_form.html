@@ -466,7 +466,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn">
+                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn" disabled>
                                 Energy / Water Requirement
                             </button>
                         </h2>
@@ -513,7 +513,7 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <div class="card-widgets mb-3">
-                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#dump_yard_modal"><i class="mdi mdi-plus me-2"></i>Adds</button>
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#dump_yard_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                                 </div>
                                                 <div class="collapse pt-3 show">
                                                     <div id="dump_yard_details_div">
@@ -2186,237 +2186,387 @@
 </form>
 
 <form method="post" id="anc_approach_road_form">
-{% csrf_token %}
-<div class="modal fade" id="anc_approach_road_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Add Approach Road Details</strong></h3>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Road Chainage From (m)</label>
-                    <input type="text" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onblur="calculate_road_area_required()">
-                </div>
-                <div class="alert alert-danger" id="road_line_chainage_fromErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Road Chainage To (m)</label>
-                    <input type="text" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onblur="calculate_road_area_required()">
-                </div>
-                <div class="alert alert-danger" id="road_line_chainage_toErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Land Type</label>
-                    <select name="road_land_type" class="form-control" id="road_land_type">
-                        <option value="">--SELECT--</option>
-                        <option value="State Reserve Forest">State Reserve Forest</option>
-                        <option value="Private ">Private </option>
-                        <option value="Protected Area">Protected Area</option>
-                        <option value="Biological Corridor">Biological Corridor</option>
-                        <option value="Institutional Area">Institutional Area</option>
-                        <option value="Others">Others</option>
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="road_land_typeErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
-                    <select name="road_terrain" class="form-control" id="road_terrain">
-                        <option value="">--SELECT--</option>
-                        <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
-                        <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
-                        <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
-                        <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="road_ErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Road Width (m)</label>
-                    <input type="text" name="road_width" class="form-control" id="road_width">
-                </div>
-                <div class="alert alert-danger" id="road_widthErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Right of way (RoW)</label>
-                    <input type="text" name="road_row" class="form-control" id="road_row">
-                </div>
-                <div class="alert alert-danger" id="road_rowErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Area Required (length x RoW)</label>
-                    <input type="text" name="road_area_required" class="form-control" id="road_area_required" readonly="readonly">
-                </div>
-                <div class="alert alert-danger" id="road_area_requiredErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-      </div>
-      <div class="alert alert-success" id="road_successMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="save_anc_road_details()">Add</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-    <!--/.Content-->
-  </div>
-</div>
-</form>
-
-<form method="post" id="edit_anc_approach_road_form">
-{% csrf_token %}
-<div class="modal fade" id="edit_anc_approach_road_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Edit Approach Road Details</strong></h3>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-        <div class="row">
-            <input type="hidden" name="edit_anc_record_id" class="form-control" id="edit_anc_road_record_id">
-            <input type="hidden" name="edit_anc_application_no" class="form-control" id="edit_anc_road_application_no">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Road Chainage From (m)</label>
-                    <input type="text" name="edit_road_line_chainage_from" class="form-control" id="edit_road_line_chainage_from" onblur="calculate_road_area_required()">
-                </div>
-                <div class="alert alert-danger" id="edit_road_line_chainage_fromErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Road Chainage To(m)</label>
-                    <input type="text" name="edit_road_line_chainage_to" class="form-control" id="edit_road_line_chainage_to" onblur="calculate_road_area_required()">
-                </div>
-                <div class="alert alert-danger" id="edit_road_line_chainage_toErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Land Type</label>
-                    <select name="edit_road_land_type" class="form-control" id="edit_road_land_type">
-                        <option value="">--SELECT--</option>
-                        <option value="State Reserve Forest">State Reserve Forest</option>
-                        <option value="Private ">Private </option>
-                        <option value="Protected Area">Protected Area</option>
-                        <option value="Biological Corridor">Biological Corridor</option>
-                        <option value="Institutional Area">Institutional Area</option>
-                        <option value="Others">Others</option>
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="edit_road_land_typeErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
-                    <select name="edit_road_terrain" class="form-control" id="edit_road_terrain">
-                        <option value="">--SELECT--</option>
-                        <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
-                        <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
-                        <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
-                        <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="edit_road_ErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Road Width (m)</label>
-                    <input type="text" name="edit_road_width" class="form-control" id="edit_road_width">
-                </div>
-                <div class="alert alert-danger" id="edit_road_widthErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Right of way (RoW)</label>
-                    <input type="text" name="edit_road_row" class="form-control" id="edit_road_row">
-                </div>
-                <div class="alert alert-danger" id="edit_road_rowErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Area Required (length x RoW)</label>
-                    <input type="text" name="edit_road_area_required" class="form-control" id="edit_road_area_required" readonly="readonly">
-                </div>
-                <div class="alert alert-danger" id="edit_road_area_requiredErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-      </div>
-      <div class="alert alert-success" id="edit_road_successMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="update_anc_road_details()">Update</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-    <!--/.Content-->
-  </div>
-</div>
-</form>
-
-
-<form method="post" id="delete_anc_approach_road_form">
-{% csrf_token %}
-<div class="modal fade" id="delete_anc_approach_road_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Edit Power Line Details</strong></h3>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-          <input type="hidden" name="delete_road_record_id" class="form-control" id="delete_anc_road_record_id">
-          <input type="hidden" name="delete_road_application_no" class="form-control" id="delete_anc_road_application_no">
+    {% csrf_token %}
+    <div class="modal fade" id="anc_approach_road_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Add Approach Road Details</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
             <div class="row">
-                <div class="col-lg-12">
-                    <p>Are You Sure You Want To Delete ? </p>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Road Chainage From (m)</label>
+                        <input type="text" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onchange="calculate_edit_road_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="road_line_chainage_fromErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Road Chainage To (m)</label>
+                        <input type="text" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onchange="calculate_edit_road_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="road_line_chainage_toErrorMsg" style="display:none"></div>
                 </div>
             </div>
-      </div>
-        <div class="alert alert-success" id="delete_road_successMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="delete_anc_road_details()">Delete</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Land Type</label>
+                        <select name="road_land_type" class="form-control" id="road_land_type">
+                            <option value="">--SELECT--</option>
+                            <option value="State Reserve Forest">State Reserve Forest</option>
+                            <option value="Private ">Private </option>
+                            <option value="Protected Area">Protected Area</option>
+                            <option value="Biological Corridor">Biological Corridor</option>
+                            <option value="Institutional Area">Institutional Area</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="road_land_typeErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
+                        <select name="road_terrain" class="form-control" id="road_terrain">
+                            <option value="">--SELECT--</option>
+                            <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
+                            <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
+                            <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
+                            <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="road_ErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Road Width (m)</label>
+                        <input type="text" name="road_width" class="form-control" id="road_width">
+                    </div>
+                    <div class="alert alert-danger" id="road_widthErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Right of way (RoW)</label>
+                        <input type="text" name="road_row" class="form-control" id="road_row" onchange="calculate_edit_road_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="road_rowErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Area Required (length x RoW)</label>
+                        <input type="text" name="road_area_required" class="form-control" id="road_area_required" readonly="readonly">
+                    </div>
+                    <div class="alert alert-danger" id="road_area_requiredErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+          <div class="alert alert-success" id="road_successMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="save_anc_road_details()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
       </div>
     </div>
-    <!--/.Content-->
-  </div>
-</div>
-</form>
+    </form>
+    
+    <form method="post" id="edit_anc_approach_road_form">
+    {% csrf_token %}
+    <div class="modal fade" id="edit_anc_approach_road_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Edit Approach Road Details</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <div class="row">
+                <input type="hidden" name="edit_anc_record_id" class="form-control" id="edit_anc_road_record_id">
+                <input type="hidden" name="edit_anc_application_no" class="form-control" id="edit_anc_road_application_no">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Road Chainage From (m)</label>
+                        <input type="text" name="edit_road_line_chainage_from" class="form-control" id="edit_road_line_chainage_from" onblur="calculate_road_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="edit_road_line_chainage_fromErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Road Chainage To(m)</label>
+                        <input type="text" name="edit_road_line_chainage_to" class="form-control" id="edit_road_line_chainage_to" onblur="calculate_road_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="edit_road_line_chainage_toErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Land Type</label>
+                        <select name="edit_road_land_type" class="form-control" id="edit_road_land_type">
+                            <option value="">--SELECT--</option>
+                            <option value="State Reserve Forest">State Reserve Forest</option>
+                            <option value="Private ">Private </option>
+                            <option value="Protected Area">Protected Area</option>
+                            <option value="Biological Corridor">Biological Corridor</option>
+                            <option value="Institutional Area">Institutional Area</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="edit_road_land_typeErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
+                        <select name="edit_road_terrain" class="form-control" id="edit_road_terrain">
+                            <option value="">--SELECT--</option>
+                            <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
+                            <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
+                            <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
+                            <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="edit_road_ErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Road Width (m)</label>
+                        <input type="text" name="edit_road_width" class="form-control" id="edit_road_width">
+                    </div>
+                    <div class="alert alert-danger" id="edit_road_widthErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Right of way (RoW)</label>
+                        <input type="text" name="edit_road_row" class="form-control" id="edit_road_row" onblur="calculate_road_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="edit_road_rowErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Area Required (length x RoW)</label>
+                        <input type="text" name="edit_road_area_required" class="form-control" id="edit_road_area_required" readonly="readonly">
+                    </div>
+                    <div class="alert alert-danger" id="edit_road_area_requiredErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+          <div class="alert alert-success" id="edit_road_successMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="update_anc_road_details()">Update</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+    </form>
+    
+    
+    <form method="post" id="delete_anc_approach_road_form">
+    {% csrf_token %}
+    <div class="modal fade" id="delete_anc_approach_road_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Edit Power Line Details</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+              <input type="hidden" name="delete_road_record_id" class="form-control" id="delete_anc_road_record_id">
+              <input type="hidden" name="delete_road_application_no" class="form-control" id="delete_anc_road_application_no">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>Are You Sure You Want To Delete ? </p>
+                    </div>
+                </div>
+          </div>
+            <div class="alert alert-success" id="delete_road_successMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="delete_anc_road_details()">Delete</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+    </form>
+
+    <form method="post" id="dumyard_details_form">
+        {% csrf_token %}
+        <div class="modal fade" id="dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Add</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Number of Dumyards</label>
+                            <input type="text" name="dumpyard_number" class="form-control" id="dumpyard_number">
+                        </div>
+                        <div class="alert alert-danger" id="dumpyard_numberErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Capacities of the dumpyards (in MT)</label>
+                            <input type="text" name="dumpyard_capacity" class="form-control" id="dumpyard_capacity">
+                        </div>
+                        <div class="alert alert-danger" id="dumpyard_capacityErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Area of the dumpyard</label>
+                            <input type="text" name="dumpyard_area" class="form-control" id="dumpyard_area">
+                        </div>
+                        <div class="alert alert-danger" id="dumpyard_areaErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Locations of the dumpyard</label>
+                            <input type="text" name="dumpyard_location" class="form-control" id="dumpyard_location">
+                        </div>
+                        <div class="alert alert-danger" id="dumpyard_locationErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+              <div class="alert alert-success" id="dumpyard_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="add_dumpyard_details()">Add</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+        </form>
+        
+        <form method="post" id="edit_dumyard_details_form">
+        {% csrf_token %}
+        <div class="modal fade" id="edit_dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Edit</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Number of Dumyards</label>
+                            <input type="text" name="edit_dumpyard_number" class="form-control" id="edit_dumpyard_number">
+                        </div>
+                        <div class="alert alert-danger" id="edit_dumpyard_numberErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Capacities of the dumpyards (in MT)</label>
+                            <input type="text" name="edit_dumpyard_capacity" class="form-control" id="edit_dumpyard_capacity">
+                        </div>
+                        <div class="alert alert-danger" id="edit_dumpyard_capacityErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Area of the dumpyard</label>
+                            <input type="text" name="edit_dumpyard_area" class="form-control" id="edit_dumpyard_area">
+                        </div>
+                        <div class="alert alert-danger" id="edit_dumpyard_areaErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Locations of the dumpyard</label>
+                            <input type="text" name="edit_dumpyard_location" class="form-control" id="edit_dumpyard_location">
+                        </div>
+                        <div class="alert alert-danger" id="edit_dumpyard_locationErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+                  <div class="alert alert-success" id="edit_dumpyard_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="update_dumpyard_details()">Update</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+        </form>
+        
+        <form method="post" id="delete_dumyard_details_form">
+        {% csrf_token %}
+        <div class="modal fade" id="delete_dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Delete</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <div class="modal-body mx-4">
+                <input type="text" name="delete_forestry_produce_record_id" class="form-control" id="delete_final_product_record_id">
+                <input type="text" name="delete_forestry_produce_app_no" class="form-control" id="delete_final_product_app_no">
+                  <div class="row">
+                    <div class="col-lg-12">
+                        <p>Are You Sure You Want To Delete ? </p>
+                    </div>
+                </div>
+              </div>
+                  <div class="alert alert-success" id="delete_dumpyard_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="delete_dumpyard_details()">Delete</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </form>
 <script>
     function check_general_water(value)
     {
@@ -4983,7 +5133,7 @@
     function add_final_products_details()
     {
         application_no = $('#application_no').val();
-        produce_name = $('#produce_name').val();
+        produce_name = $('#product_name').val();
         quantity_annum = $('#quantity_annum').val();
         storage_method = $('#storage_method').val();
 
@@ -5014,7 +5164,7 @@
             ({
                 type : "POST",
                 url : "{% url 'add_final_product_details' %}",
-                data : {'application_no':application_no,'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method},
+                data : {'application_no':application_no,'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#final_products_SuccessMsg').html("Add Successful");
@@ -5467,6 +5617,36 @@
                 $('#vil_chiwog').html(data);
             }
         });
+    }
+
+    function calculate_road_area_required()
+    {
+        let road_line_chainage_from = $('#road_line_chainage_from').val();
+        let road_line_chainage_to = $('#road_line_chainage_to').val(); 
+        let road_row = $('#road_row').val();
+        let sum = 0;
+        let product = 0;
+
+        sum += parseFloat(road_line_chainage_from) || 0;
+        sum += parseFloat(road_line_chainage_to) || 0;
+        product = parseFloat(sum) * parseFloat(road_row) || 0;
+         
+        $('#road_area_required').val(product);
+    }
+
+    function calculate_edit_road_area_required()
+    {
+        let road_line_chainage_from = $('#road_line_chainage_from').val();
+        let road_line_chainage_to = $('#road_line_chainage_to').val(); 
+        let road_row = $('#road_row').val();
+        let sum = 0;
+        let product = 0;
+
+        sum += parseFloat(road_line_chainage_from) || 0;
+        sum += parseFloat(road_line_chainage_to) || 0;
+        product = parseFloat(sum) * parseFloat(road_row) || 0;
+         
+        $('#road_area_required').val(product);
     }
 </script>
 {% endblock %}

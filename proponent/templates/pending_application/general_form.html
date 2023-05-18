@@ -4471,7 +4471,7 @@
                         $('#general_submit_successMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                     setTimeout(function() {
-                        location.reload()
+                        window.location.href = '/new_application';
                     }, 2000);
                 }
                 else if(data.message == 'not submitted')

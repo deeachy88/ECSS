@@ -567,6 +567,14 @@ class t_ec_industries_t12_drainage_details(models.Model):
     drain_type = models.CharField(max_length=250,default=None, blank=True, null=True)
     chainage = models.CharField(max_length=250,default=None, blank=True, null=True)
 
+class t_ec_industries_t13_dumpyard(models.Model):
+    record_id = models.AutoField(primary_key=True)
+    application_no = models.CharField(max_length=100,default=None, blank=True, null=True)
+    dumpyard_number = models.CharField(max_length=250,default=None, blank=True, null=True)
+    dumpyard_capacity = models.CharField(max_length=100, default=None, blank=True, null=True)
+    dumpyard_area = models.CharField(max_length=100, default=None, blank=True, null=True)
+    dumpyard_location = models.CharField(max_length=100,default=None, blank=True, null=True)
+
 
 class t_ec_renewal_t1(models.Model):
     record_id = models.AutoField(primary_key=True)

@@ -93,7 +93,6 @@ urlpatterns = [
     path('submit_general_application', views.submit_general_application, name='submit_general_application'),
 
     #Transmission Details
-    
     path('submit_transmission_application', views.submit_transmission_application, name='submit_transmission_application'),
 
     #TOR
@@ -101,6 +100,7 @@ urlpatterns = [
     path('save_tor_form', views.save_tor_form, name='save_tor_form'),
 
     # General Application Details
+    path('save_general_info', views.save_general_application, name='save_general_info'),
     path('save_general_info', views.save_general_application, name='save_general_info'),
 
     #Forest Application Details
