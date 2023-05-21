@@ -23,6 +23,48 @@
                                     {% csrf_token %}
                                     <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="Main Activity" name="form_type" style="display:none;">
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
+                                    </div>
+                                    <div class="row">
+                                        <!-- <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">CID</label>
+                                                <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" onchange="getCitizenDetails(this.value)" value="{{application_details.cid}}">
+                                            </div>
+                                            <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div> -->
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Name of Applicant</label>
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly value="{{application_details.applicant_name}}"> 
+                                            </div>
+                                            <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Address</label>
+                                                <input type="text" name="address" class="form-control" id="address" value="{{application_details.address}}">
+                                            </div>
+                                            <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Contact No</label>
+                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{application_details.contact_no}}">
+                                            </div>
+                                            <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Email</label>
+                                                <input type="email" name="email" class="form-control" id="email" value="{{application_details.email}}">
+                                            </div>
+                                            <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -62,50 +104,7 @@
                                             <div id="application_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">CID</label>
-                                                <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" onchange="getCitizenDetails(this.value)" value="{{application_details.cid}}">
-                                            </div>
-                                            <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Applicant</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly value="{{application_details.applicant_name}}"> 
-                                            </div>
-                                            <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Address</label>
-                                                <input type="text" name="address" class="form-control" id="address" value="{{application_details.address}}">
-                                            </div>
-                                            <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Contact No</label>
-                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{application_details.contact_no}}">
-                                            </div>
-                                            <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Email</label>
-                                                <input type="email" name="email" class="form-control" id="email" value="{{application_details.email}}">
-                                            </div>
-                                            <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
+                                    
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -163,7 +162,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of Particular Project Site</label>
-                                                <<input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" >
+                                                <input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" >
                                             </div>
                                             <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -221,7 +220,6 @@
                                                 <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
                                         </div>
                                     </div>
-                                    
                                 </form>
                             </div>
                         </div>
@@ -1788,16 +1786,22 @@
                                     
                                     <div class="row ground_water_application mt-1" style="display:none;">
                                         <a href="{% url 'ground_water_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Ground Water projects </a>
+                                        <i class="mdi mdi-truck-fast me-1"></i> IEE form for Ground Water projects </a>
                                     </div>
                                     
                                     <div class="row general_application mt-1" style="display:none;">
                                         <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
+                                        <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
-
+                                    
+                                    <div class="mt-3">
+                                        <div class="form-check">
+                                            <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
+                                            <label class="form-check-label" for="customCheck1">I herby Agree To all the EC Terms</label>
+                                        </div>
+                                    </div>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="iee_submit_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="alert alert-danger border-0 rounded-0" role="alert" id="iee_submit_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
@@ -1810,7 +1814,7 @@
                                     </div>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
-                                            <a href="#" class="btn btn-success" onclick="submit_general_application()">
+                                            <a href="#" class="btn btn-success" onclick="submit_general_application()" style="display:none;">
                                                 <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
                                         </div>
                                     </div>
@@ -5892,6 +5896,18 @@
                 }
             }
         });
+    }
+
+    function check_terms()
+    {
+        if($("#ec_terms").prop('checked') == true)
+        {
+            $('#gen_submit_btn').show();
+        }
+        else
+        {
+            $('#gen_submit_btn').hide();
+        }
     }
 </script>
 {% endblock %}

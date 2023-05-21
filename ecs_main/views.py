@@ -260,7 +260,7 @@ def view_application_details(request):
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                         'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '9':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
             ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
             partner_details = t_ec_industries_t2_partner_details.objects.all()
             machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
@@ -375,7 +375,7 @@ def send_ec_approve_email(ec_no, email, application_no, service_name):
               "" \
               "Your EC Application For" + service_name + "Has Been Approved. Your " \
               " Application No is " + application_no + " And EC Clearance No is:" + ec_no + \
-              " Please Make Payment. Visit The Nearest EC Office For Payment " 
+              " . " 
     recipient_list = [email]
     send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
               auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
@@ -523,8 +523,11 @@ def forward_application(request):
             application_details.update(ec_reference_no=ec_no, ec_approve_date=date.today(),application_status='A',ec_expiry_date=ec_expiry_date)
 
             ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
-            ec_details.update(ec_reference_no=ec_no)
+            ec_details.update(ec_no=ec_no)
             
+            payment_details = t_payment_details.objects.filter(application_no=application_no)
+            payment_details.update(ec_reference_no=ec_no)
+
             workflow_details.update(assigned_user_id=None)
             workflow_details.update(assigned_role_id=None)
             workflow_details.update(assigned_role_name=None)
@@ -630,10 +633,11 @@ def delete_lu_attachment(request):
 
 def save_draft_ec_details(request):
     application_no = request.POST.get('application_no')
+    ec_type = request.POST.get('ec_type')
     ec_heading = request.POST.get('ec_heading')
     ec_terms = request.POST.get('ec_terms')
 
-    t_ec_industries_t11_ec_details.objects.create(application_no=application_no, ec_heading=ec_heading, ec_terms=ec_terms)
+    t_ec_industries_t11_ec_details.objects.create(application_no=application_no,ec_type=ec_type, ec_heading=ec_heading, ec_terms=ec_terms)
     ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
 
     return render(request, 'ec_draft_details.html', {'ec_details':ec_details})
@@ -641,11 +645,12 @@ def save_draft_ec_details(request):
 def update_draft_ec_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
+    ec_type = request.POST.get('ec_type')
     ec_heading = request.POST.get('ec_heading')
     ec_terms = request.POST.get('ec_terms')
 
     ec_details = t_ec_industries_t11_ec_details.objects.filter(record_id=record_id)
-    ec_details.update(ec_heading=ec_heading, ec_terms=ec_terms)
+    ec_details.update(ec_type=ec_type,ec_heading=ec_heading, ec_terms=ec_terms)
     ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
 
     return render(request, 'ec_draft_details.html', {'ec_details':ec_details})

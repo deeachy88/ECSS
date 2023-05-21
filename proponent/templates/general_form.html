@@ -20,8 +20,50 @@
                             <div class="accordion-body">
                                 <form method="post" id="general_application_form">
                                     {% csrf_token %}
-                                    <input type="text" class="form-control" value="{{application_no}}" name="application_no" style="display:none;">
+                                    <input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="Main Activity" name="form_type" style="display:none;">
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
+                                    </div>
+                                    <div class="row">
+                                        <!-- <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">CID</label>
+                                                <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" onchange="getCitizenDetails(this.value)">
+                                            </div>
+                                            <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div> -->
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Name of Applicant</label>
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
+                                            </div>
+                                            <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Address</label>
+                                                <input type="text" name="address" class="form-control" id="address" value="{{request.session.address}}" readonly>
+                                            </div>
+                                            <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Contact No</label>
+                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{request.session.contact_number}}" readonly>
+                                            </div>
+                                            <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Email</label>
+                                                <input type="email" name="email" class="form-control" id="email" value="{{request.session.email}}" readonly>
+                                            </div>
+                                            <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -30,65 +72,6 @@
                                             </div>
                                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Application Type</label>
-                                                <select class="form-control" id="application_type" name="application_type">
-                                                    <option value="">--SELECT--</option>
-                                                    <option value="New">New</option>
-                                                    <option value="Expansion">Expansion</option>
-                                                    <option value="Relocation">Relocation</option>
-                                                    <option value="Other_Modification">Other Modification</option>
-                                                </select>
-                                            </div>
-                                            <div id="application_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">CID</label>
-                                                <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" onchange="getCitizenDetails(this.value)">
-                                            </div>
-                                            <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Applicant</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly> 
-                                            </div>
-                                            <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Address</label>
-                                                <input type="text" name="address" class="form-control" id="address">
-                                            </div>
-                                            <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Contact No</label>
-                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8">
-                                            </div>
-                                            <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Email</label>
-                                                <input type="email" name="email" class="form-control" id="email">
-                                            </div>
-                                            <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
@@ -262,86 +245,86 @@
                                             <tr>
                                                 <td>a)</td>
                                                 <td>Protected Areas and zonation (multiple use/buffer/core)</td>
-                                                <td><input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name"></td>
-                                                <td><input type="text" name="bl_protected_area_distance" class="form-control col-lg-6" id="bl_protected_area_distance"></td>
+                                                <td><input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_protected_area_distance" class="form-control col-lg-6" id="bl_protected_area_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>b)</td>
                                                 <td>Migratory route/habitat/key biodiversity areas</td>
-                                                <td><input type="text" name="bl_migratory_route_name" class="form-control col-lg-6" id="bl_migratory_route_name"></td>
-                                                <td><input type="text" name="bl_migratory_route_distance" class="form-control col-lg-6" id="bl_migratory_route_distance"></td>
+                                                <td><input type="text" name="bl_migratory_route_name" class="form-control col-lg-6" id="bl_migratory_route_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_migratory_route_distance" class="form-control col-lg-6" id="bl_migratory_route_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>c)</td>
                                                 <td>Wetland/catchment area</td>
-                                                <td><input type="text" name="bl_wetland_name" class="form-control col-lg-6" id="bl_wetland_name"></td>
-                                                <td><input type="text" name="bl_wetland_distance" class="form-control col-lg-6" id="bl_wetland_distance"></td>
+                                                <td><input type="text" name="bl_wetland_name" class="form-control col-lg-6" id="bl_wetland_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_wetland_distance" class="form-control col-lg-6" id="bl_wetland_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>d)</td>
                                                 <td>Water bodies/resources/source (rivers, streams, springs, lakes, etc.)</td>
-                                                <td><input type="text" name="bl_water_bodies_name" class="form-control col-lg-6" id="bl_water_bodies_name"></td>
-                                                <td><input type="text" name="bl_water_bodies_distance" class="form-control col-lg-6" id="bl_water_bodies_distance"></td>
+                                                <td><input type="text" name="bl_water_bodies_name" class="form-control col-lg-6" id="bl_water_bodies_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_water_bodies_distance" class="form-control col-lg-6" id="bl_water_bodies_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>e)</td>
                                                 <td>FMUs/Community forests/private forests</td>
-                                                <td><input type="text" name="bl_fmu_name" class="form-control col-lg-6" id="bl_fmu_name"></td>
-                                                <td><input type="text" name="bl_fmu_distance" class="form-control col-lg-6" id="bl_fmu_distance"></td>
+                                                <td><input type="text" name="bl_fmu_name" class="form-control col-lg-6" id="bl_fmu_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_fmu_distance" class="form-control col-lg-6" id="bl_fmu_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>f)</td>
                                                 <td>Agricultural lands/private lands</td>
-                                                <td><input type="text" name="bl_agricultural_name" class="form-control col-lg-6" id="bl_agricultural_name"></td>
-                                                <td><input type="text" name="bl_agricultural_distance" class="form-control col-lg-6" id="bl_agricultural_distance"></td>
+                                                <td><input type="text" name="bl_agricultural_name" class="form-control col-lg-6" id="bl_agricultural_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_agricultural_distance" class="form-control col-lg-6" id="bl_agricultural_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>g)</td>
                                                 <td>Settlements</td>
-                                                <td><input type="text" name="bl_settlement_name" class="form-control col-lg-6" id="bl_settlement_name"></td>
-                                                <td><input type="text" name="bl_settlement_distance" class="form-control col-lg-6" id="bl_settlement_distance"></td>
+                                                <td><input type="text" name="bl_settlement_name" class="form-control col-lg-6" id="bl_settlement_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_settlement_distance" class="form-control col-lg-6" id="bl_settlement_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>h)</td>
                                                 <td>Roads</td>
-                                                <td><input type="text" name="bl_road_name" class="form-control col-lg-6" id="bl_road_name"></td>
-                                                <td><input type="text" name="bl_road_distance" class="form-control col-lg-6" id="bl_road_distance"></td>
+                                                <td><input type="text" name="bl_road_name" class="form-control col-lg-6" id="bl_road_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_road_distance" class="form-control col-lg-6" id="bl_road_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>i)</td>
                                                 <td>Public infrastructures (irrigation canals/drinking water supply/Powerlines/Telecommunication towers, etc)</td>
-                                                <td><input type="text" name="bl_public_infra_name" class="form-control col-lg-6" id="bl_public_infra_name"></td>
-                                                <td><input type="text" name="bl_public_infra_distance" class="form-control col-lg-6" id="bl_public_infra_distance"></td>
+                                                <td><input type="text" name="bl_public_infra_name" class="form-control col-lg-6" id="bl_public_infra_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_public_infra_distance" class="form-control col-lg-6" id="bl_public_infra_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>j)</td>
                                                 <td>Schools/Institutions/Hospitals/BHUs</td>
-                                                <td><input type="text" name="bl_school_name" class="form-control col-lg-6" id="bl_school_name"></td>
-                                                <td><input type="text" name="bl_school_distance" class="form-control col-lg-6" id="bl_school_distance"></td>
+                                                <td><input type="text" name="bl_school_name" class="form-control col-lg-6" id="bl_school_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_school_distance" class="form-control col-lg-6" id="bl_school_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>k)</td>
                                                 <td>Heritage/religious/archaeological /cultural sites</td>
-                                                <td><input type="text" name="bl_heritage_name" class="form-control col-lg-6" id="bl_heritage_name"></td>
-                                                <td><input type="text" name="bl_heritage_distance" class="form-control col-lg-6" id="bl_heritage_distance"></td>
+                                                <td><input type="text" name="bl_heritage_name" class="form-control col-lg-6" id="bl_heritage_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_heritage_distance" class="form-control col-lg-6" id="bl_heritage_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>l)</td>
                                                 <td>Tourist facilities/tourism sites/ Nature recreation sites</td>
-                                                <td><input type="text" name="bl_tourist_facility_name" class="form-control col-lg-6" id="bl_tourist_facility_name"></td>
-                                                <td><input type="text" name="bl_tourist_facility_distance" class="form-control col-lg-6" id="bl_tourist_facility_distance"></td>
+                                                <td><input type="text" name="bl_tourist_facility_name" class="form-control col-lg-6" id="bl_tourist_facility_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_tourist_facility_distance" class="form-control col-lg-6" id="bl_tourist_facility_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>l)</td>
                                                 <td>Important installations (early warning systems, weather stations, flood mitigation activities, etc.)</td>
-                                                <td><input type="text" name="bl_impt_installation_name" class="form-control col-lg-6" id="bl_impt_installation_name"></td>
-                                                <td><input type="text" name="bl_impt_installation_distance" class="form-control col-lg-6" id="bl_impt_installation_distance"></td>
+                                                <td><input type="text" name="bl_impt_installation_name" class="form-control col-lg-6" id="bl_impt_installation_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_impt_installation_distance" class="form-control col-lg-6" id="bl_impt_installation_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>l)</td>
                                                 <td>Industries</td>
-                                                <td><input type="text" name="bl_industries_name" class="form-control col-lg-6" id="bl_industries_name"></td>
-                                                <td><input type="text" name="bl_industries_distance" class="form-control col-lg-6" id="bl_industries_distance"></td>
+                                                <td><input type="text" name="bl_industries_name" class="form-control col-lg-6" id="bl_industries_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_industries_distance" class="form-control col-lg-6" id="bl_industries_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>o)</td>
@@ -349,12 +332,12 @@
                                                     <div class="row">
                                                         <label for="bl_others" class="col-sm-4 col-form-label">Others Specify</label>
                                                         <div class="col-sm-8">
-                                                            <input type="text" class="form-control" id="bl_others" name="bl_others">
+                                                            <input type="text" class="form-control" id="bl_others" name="bl_others" value="N/A">
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td><input type="text" name="bl_others_name" class="form-control col-lg-6" id="bl_others_name"></td>
-                                                <td><input type="text" name="bl_others_distance" class="form-control col-lg-6" id="bl_others_distance"></td>
+                                                <td><input type="text" name="bl_others_name" class="form-control col-lg-6" id="bl_others_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_others_distance" class="form-control col-lg-6" id="bl_others_distance" value="0"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -513,7 +496,7 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <div class="card-widgets mb-3">
-                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#dump_yard_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#dumyard_details_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                                 </div>
                                                 <div class="collapse pt-3 show">
                                                     <div id="dump_yard_details_div">
@@ -557,49 +540,49 @@
                                                     <tr>
                                                         <td>1</td>
                                                         <td>Water as raw material</td>
-                                                        <td><input type="text" name="water_raw_material_source" class="form-control col-lg-6" id="water_raw_material_source"></td>
-                                                        <td><input type="text" name="water_raw_material_qty_day" class="form-control col-lg-6" id="water_raw_material_qty_day"></td>
-                                                        <td><input type="text" name="water_raw_material_recycle_day" class="form-control col-lg-6" id="water_raw_material_recycle_day"></td>
+                                                        <td><input type="text" name="water_raw_material_source" class="form-control col-lg-6" id="water_raw_material_source" value="N/A"></td>
+                                                        <td><input type="text" name="water_raw_material_qty_day" class="form-control col-lg-6" id="water_raw_material_qty_day" value="0"></td>
+                                                        <td><input type="text" name="water_raw_material_recycle_day" class="form-control col-lg-6" id="water_raw_material_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>2</td>
                                                         <td>Raw material and finished product cleaning/washing</td>
-                                                        <td><input type="text" name="water_cleaning_source" class="form-control col-lg-6" id="water_cleaning_source"></td>
-                                                        <td><input type="text" name="water_cleaning_qty_day" class="form-control col-lg-6" id="water_cleaning_qty_day"></td>
-                                                        <td><input type="text" name="water_cleaning_recycle_day" class="form-control col-lg-6" id="water_cleaning_recycle_day"></td>
+                                                        <td><input type="text" name="water_cleaning_source" class="form-control col-lg-6" id="water_cleaning_source"  value="N/A"></td>
+                                                        <td><input type="text" name="water_cleaning_qty_day" class="form-control col-lg-6" id="water_cleaning_qty_day"  value="0"></td>
+                                                        <td><input type="text" name="water_cleaning_recycle_day" class="form-control col-lg-6" id="water_cleaning_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>3</td>
                                                         <td>Process (cooling/boiler use)</td>
-                                                        <td><input type="text" name="water_process_source" class="form-control col-lg-6" id="water_process_source"></td>
-                                                        <td><input type="text" name="water_process_qty_day" class="form-control col-lg-6" id="water_process_qty_day"></td>
-                                                        <td><input type="text" name="water_process_recycle_day" class="form-control col-lg-6" id="water_process_recycle_day"></td>
+                                                        <td><input type="text" name="water_process_source" class="form-control col-lg-6" id="water_process_source" value="N/A"></td>
+                                                        <td><input type="text" name="water_process_qty_day" class="form-control col-lg-6" id="water_process_qty_day" value="0"></td>
+                                                        <td><input type="text" name="water_process_recycle_day" class="form-control col-lg-6" id="water_process_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>4</td>
                                                         <td>Domestic (Drinking and sanitation)</td>
-                                                        <td><input type="text" name="water_domestic_source" class="form-control col-lg-6" id="water_domestic_source"></td>
-                                                        <td><input type="text" name="water_domestic_qty_day" class="form-control col-lg-6" id="water_domestic_qty_day"></td>
-                                                        <td><input type="text" name="water_domestic_recycle_day" class="form-control col-lg-6" id="water_domestic_recycle_day"></td>
+                                                        <td><input type="text" name="water_domestic_source" class="form-control col-lg-6" id="water_domestic_source"  value="N/A"></td>
+                                                        <td><input type="text" name="water_domestic_qty_day" class="form-control col-lg-6" id="water_domestic_qty_day"  value="0"></td>
+                                                        <td><input type="text" name="water_domestic_recycle_day" class="form-control col-lg-6" id="water_domestic_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>5</td>
                                                         <td>Dust suppression</td>
-                                                        <td><input type="text" name="water_dust_compression_source" class="form-control col-lg-6" id="water_dust_compression_source"></td>
-                                                        <td><input type="text" name="water_dust_compression_qty_day" class="form-control col-lg-6" id="water_dust_compression_qty_day"></td>
-                                                        <td><input type="text" name="water_dust_compression_recycle_day" class="form-control col-lg-6" id="water_dust_compression_recycle_day"></td>
+                                                        <td><input type="text" name="water_dust_compression_source" class="form-control col-lg-6" id="water_dust_compression_source"  value="N/A"></td>
+                                                        <td><input type="text" name="water_dust_compression_qty_day" class="form-control col-lg-6" id="water_dust_compression_qty_day" value="0"></td>
+                                                        <td><input type="text" name="water_dust_compression_recycle_day" class="form-control col-lg-6" id="water_dust_compression_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>6</td>
                                                         <td>Others, specify </td>
-                                                        <td><input type="text" name="water_others_name" class="form-control col-lg-6" id="water_others_name"></td>
-                                                        <td><input type="text" name="water_others_source" class="form-control col-lg-6" id="water_others_source"></td>
-                                                        <td><input type="text" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day"></td>
+                                                        <td><input type="text" name="water_others_name" class="form-control col-lg-6" id="water_others_name"  value="N/A"></td>
+                                                        <td><input type="text" name="water_others_source" class="form-control col-lg-6" id="water_others_source" value="0"></td>
+                                                        <td><input type="text" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3" align="center">Total quantity of water to be consumed</td>
-                                                        <td><input type="text" name="total_water_consumption" id="total_water_consumption" class="form-control col-lg-6"></td>
-                                                        <td><input type="text" name="total_water_recycled" id="total_water_recycled" class="form-control col-lg-6"></td>
+                                                        <td><input type="text" name="total_water_consumption" id="total_water_consumption" class="form-control col-lg-6" value="0"></td>
+                                                        <td><input type="text" name="total_water_recycled" id="total_water_recycled" class="form-control col-lg-6" value="0"></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -609,7 +592,7 @@
                                     <div class="alert alert-primary border-0 rounded-0 general_water_details" role="alert" style="display: none;">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide the following information on water source
                                     </div>
-                                    <div class="row forest_water_details" style="display: none;">
+                                    <div class="row general_water_details" style="display: none;">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Information on downstream users, if any</label>
@@ -1343,6 +1326,13 @@
                                     <div class="row general_application mt-1" style="display:none;">
                                         <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <div class="form-check">
+                                            <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
+                                            <label class="form-check-label" for="customCheck1">I herby Agree To all the EC Terms</label>
+                                        </div>
                                     </div>
 
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="iee_submit_successMsg" style="display:none">
@@ -2492,6 +2482,8 @@
               </div>
               <!--Body-->
               <div class="modal-body mx-4">
+                <input type="hidden" id="dumpyard_record_id" name="dumpyard_record_id">
+                <input type="hidden" id="dumpyard_application_no" name="dumpyard_application_no">
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="mb-3">
@@ -2550,8 +2542,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
               </div>
               <div class="modal-body mx-4">
-                <input type="text" name="delete_forestry_produce_record_id" class="form-control" id="delete_final_product_record_id">
-                <input type="text" name="delete_forestry_produce_app_no" class="form-control" id="delete_final_product_app_no">
+                <input type="text" name="delete_dumpyard_record_id" class="form-control" id="delete_dumpyard_record_id">
+                <input type="text" name="delete_dumpyard_application_no" class="form-control" id="delete_dumpyard_application_no">
                   <div class="row">
                     <div class="col-lg-12">
                         <p>Are You Sure You Want To Delete ? </p>
@@ -3292,7 +3284,7 @@
             $('#anc_road_end_pointErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_end_point').focus();
         }
-        else if( anc_road_blast_required < 1)
+        else if(anc_road_blast_required < 1)
         {
             $('#anc_road_blast_requiredErrorMsg').html("Enter Termination Point.");
             $('#anc_road_blast_requiredErrorMsg').show();
@@ -5288,11 +5280,8 @@
     function save_general_info()
     {
         let project_name = $('#project_name').val();
-        let application_type = $('#application_type').val();
         let applicant_name = $('#applicant_name').val();
         let address = $('#address').val();
-        let cid = $('#cid').val();
-        let cid_length = $('#cid').val().length;
         let contact_no = $('#contact_no').val();
         let contact_no_length = $('#contact_no').val().length;
         let email = $('#email').val();
@@ -5317,27 +5306,6 @@
             $('#project_nameErrorMsg').show();
             $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
             $('#project_name').focus();
-        }
-        else if(application_type == "")
-        {
-            $('#application_typeErrorMsg').html("Enter Application Type");
-            $('#application_typeErrorMsg').show();
-            $('#application_typeErrorMsg').delay(2000).fadeOut('slow');
-            $('#application_type').focus();
-        }
-        else if(cid == "")
-        {
-            $('#cidErrorMsg').html("Enter CID");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
-        }
-        else if(cid_length < 11)
-        {
-            $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
         }
         else if(applicant_name == "")
         {
@@ -5647,6 +5615,191 @@
         product = parseFloat(sum) * parseFloat(road_row) || 0;
          
         $('#road_area_required').val(product);
+    }
+
+    function add_dumpyard_details()
+    {
+        let application_no = $('#application_no').val();
+        let dumpyard_number = $('#dumpyard_number').val();
+        let dumpyard_capacity = $('#dumpyard_capacity').val();
+        let dumpyard_area = $('#dumpyard_area').val();
+        let dumpyard_location = $('#dumpyard_location').val();
+        
+        if(dumpyard_number == "")
+        {
+            $('#dumpyard_numberErrorMsg').html("Enter Dumpyard Number");
+            $('#dumpyard_numberErrorMsg').show();
+            $('#dumpyard_numberErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_number').focus();
+        }
+        else if(dumpyard_capacity == "")
+        {
+            $('#dumpyard_capacityErrorMsg').html("Enter Dumpyard Capacity");
+            $('#dumpyard_capacityErrorMsg').show();
+            $('#dumpyard_capacityErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_capacity').focus();
+        }
+        else if(dumpyard_area == "")
+        {
+            $('#dumpyard_areaErrorMsg').html("Enter Dumpyard Area");
+            $('#dumpyard_areaErrorMsg').show();
+            $('#dumpyard_areaErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_area').focus();
+        }
+        else if(dumpyard_location == "")
+        {
+            $('#dumpyard_locationErrorMsg').html("Enter Dumpyard Location");
+            $('#dumpyard_locationErrorMsg').show();
+            $('#dumpyard_locationErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_location').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'add_dumpyard_details' %}",
+                data : {'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#dumpyard_SuccessMsg').html("Add Successful");
+                    $('#dumpyard_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#dumyard_details_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#dump_yard_details_div').html(responseText);
+                    }, 2000);
+                    $('#dumyard_details_form')[0].reset();
+                }
+            });
+        }
+    }
+
+    populate_dumpyard_data(record_id, application_no, dumpyard_number, dumpyard_capacity, dumpyard_area, dumpyard_location)
+    {
+        $('#dumpyard_record_id').val(record_id);
+        $('#dumpyard_application_no').val(application_no);
+        $('#edit_dumpyard_number').val(dumpyard_number);
+        $('#edit_dumpyard_capacity').val(dumpyard_capacity);
+        $('#edit_dumpyard_area').val(dumpyard_area);
+        $('#edit_dumpyard_location').val(dumpyard_location);
+        
+        $('#edit_dumyard_details_modal').modal('show');
+    }
+
+    function update_dumpyard_details()
+    {
+        let record_id = $('#dumyard_record_id').val();
+        let application_no = $('#dumyard_application_no').val();
+        let dumpyard_number = $('#edit_dumpyard_number').val();
+        let dumpyard_capacity = $('#edit_dumpyard_capacity').val();
+        let dumpyard_area = $('#edit_dumpyard_area').val();
+        let dumpyard_location = $('#edit_dumpyard_location').val();
+        
+        if(dumpyard_number == "")
+        {
+            $('#edit_dumpyard_numberErrorMsg').html("Enter Dumpyard Number");
+            $('#edit_dumpyard_numberErrorMsg').show();
+            $('#edit_dumpyard_numberErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_number').focus();
+        }
+        else if(dumpyard_capacity == "")
+        {
+            $('#edit_dumpyard_capacityErrorMsg').html("Enter Dumpyard Capacity");
+            $('#edit_dumpyard_capacityErrorMsg').show();
+            $('#edit_dumpyard_capacityErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_capacity').focus();
+        }
+        else if(dumpyard_area == "")
+        {
+            $('#edit_dumpyard_areaErrorMsg').html("Enter Dumpyard Area");
+            $('#edit_dumpyard_areaErrorMsg').show();
+            $('#edit_dumpyard_areaErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_area').focus();
+        }
+        else if(dumpyard_location == "")
+        {
+            $('#edit_dumpyard_locationErrorMsg').html("Enter Dumpyard Location");
+            $('#edit_dumpyard_locationErrorMsg').show();
+            $('#edit_dumpyard_locationErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_location').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_dumpyard_details' %}",
+                data : {'record_id':record_id,'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#edit_dumpyard_SuccessMsg').html("Update Successful");
+                    $('#edit_dumpyard_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#edit_dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_dumyard_details_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#dump_yard_details_div').html(responseText);
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    populate_delete_dumpyard_data(record_id, application_no)
+    {
+        $('#delete_dumpyard_record_id').val(record_id);
+        $('#delete_dumpyard_application_no').val(application_no);
+        $('#delete_dumyard_details_modal').modal('hide');
+    }
+
+    function delete_dumpyard_details()
+    {
+        let record_id = $('#delete_dumpyard_record_id').val();
+        let application_no = $('#delete_dumpyard_application_no').val();
+
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_dumpyard_details' %}",
+            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#delete_dumpyard_SuccessMsg').html("Delete Successful");
+                $('#delete_dumpyard_SuccessMsg').show();
+                setTimeout(function()
+                {
+                    $('#delete_dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#delete_dumyard_details_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#dump_yard_details_div').html(responseText);
+                }, 2000);
+            }
+        });
+    }
+
+    function check_terms()
+    {
+        if($("#ec_terms").prop('checked') == true)
+        {
+            $('#gen_submit_btn').show();
+        }
+        else
+        {
+            $('#gen_submit_btn').hide();
+        }
     }
 </script>
 {% endblock %}

@@ -365,7 +365,7 @@
                                                     <h5 class="card-title mb-2"></h5>
                                                     <div id="cardCollpase1" class="collapse pt-3 show">
                                                         <div id="anc_approach_road_details">
-                                                            {% include 'anc_approach_road_details.html' %}
+                                                            {% include 'approach_road_details.html' %}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1867,77 +1867,115 @@
         </div>
         <!--Body-->
         <div class="modal-body mx-4">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Road Chainage From (m)</label>
-                    <input type="text" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onchange="calculate_edit_road_area_required()">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Road Chainage From (m)</label>
+                        <input type="text" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onchange="calculate_edit_road_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="road_line_chainage_fromErrorMsg" style="display:none"></div>
                 </div>
-                <div class="alert alert-danger" id="road_line_chainage_fromErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Road Chainage To (m)</label>
-                    <input type="text" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onchange="calculate_edit_road_area_required()">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Road Chainage To (m)</label>
+                        <input type="text" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onchange="calculate_edit_road_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="road_line_chainage_toErrorMsg" style="display:none"></div>
                 </div>
-                <div class="alert alert-danger" id="road_line_chainage_toErrorMsg" style="display:none"></div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Land Type</label>
-                    <select name="road_land_type" class="form-control" id="road_land_type">
-                        <option value="">--SELECT--</option>
-                        <option value="State Reserve Forest">State Reserve Forest</option>
-                        <option value="Private ">Private </option>
-                        <option value="Protected Area">Protected Area</option>
-                        <option value="Biological Corridor">Biological Corridor</option>
-                        <option value="Institutional Area">Institutional Area</option>
-                        <option value="Others">Others</option>
-                    </select>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Land Type</label>
+                        <select name="road_land_type" class="form-control" id="road_land_type">
+                            <option value="">--SELECT--</option>
+                            <option value="State Reserve Forest">State Reserve Forest</option>
+                            <option value="Private ">Private </option>
+                            <option value="Protected Area">Protected Area</option>
+                            <option value="Biological Corridor">Biological Corridor</option>
+                            <option value="Institutional Area">Institutional Area</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="road_land_typeErrorMsg" style="display:none"></div>
                 </div>
-                <div class="alert alert-danger" id="road_land_typeErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
-                    <select name="road_terrain" class="form-control" id="road_terrain">
-                        <option value="">--SELECT--</option>
-                        <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
-                        <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
-                        <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
-                        <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
-                    </select>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
+                        <select name="road_terrain" class="form-control" id="road_terrain">
+                            <option value="">--SELECT--</option>
+                            <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
+                            <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
+                            <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
+                            <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="road_ErrorMsg" style="display:none"></div>
                 </div>
-                <div class="alert alert-danger" id="road_ErrorMsg" style="display:none"></div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Road Width (m)</label>
-                    <input type="text" name="road_width" class="form-control" id="road_width">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Road Width (m)</label>
+                        <input type="text" name="road_width" class="form-control" id="road_width">
+                    </div>
+                    <div class="alert alert-danger" id="road_widthErrorMsg" style="display:none"></div>
                 </div>
-                <div class="alert alert-danger" id="road_widthErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Right of way (RoW)</label>
-                    <input type="text" name="road_row" class="form-control" id="road_row" onchange="calculate_edit_road_area_required()">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Right of way (RoW)</label>
+                        <input type="text" name="road_row" class="form-control" id="road_row" onchange="calculate_edit_road_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="road_rowErrorMsg" style="display:none"></div>
                 </div>
-                <div class="alert alert-danger" id="road_rowErrorMsg" style="display:none"></div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Area Required (length x RoW)</label>
-                    <input type="text" name="road_area_required" class="form-control" id="road_area_required" readonly="readonly">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Area Required (length x RoW)</label>
+                        <input type="text" name="road_area_required" class="form-control" id="road_area_required" readonly="readonly">
+                    </div>
+                    <div class="alert alert-danger" id="road_area_requiredErrorMsg" style="display:none"></div>
                 </div>
-                <div class="alert alert-danger" id="road_area_requiredErrorMsg" style="display:none"></div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Dzongkhag</label>
+                        <select class="form-select" name="roaddzonkhag"  id="roaddzonkhag" onchange="getRoadGewog(this.value)">
+                            <option value="">--SELECT DZONGKHAG--</option>
+                            {% for dzongkhag in dzongkhag %}
+                                <option value="{{ dzongkhag.dzongkhag_name }}">{{ dzongkhag.dzongkhag_name }}</option>
+                            {% endfor %} 
+                        </select>
+                    </div>
+                    <div id="roaddzonkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Gewog</label>
+                        <select class="form-select" name="roadgewog" id="roadgewog" onchange="getRoadVillage(this.value)">
+                            <option value="">--SELECT GEWOG--</option>
+                            {% for gewog in gewog %}
+                                <option value="{{ gewog.gewog_name }}">{{ gewog.gewog_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="roadgewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Village/Chiwog</label>
+                        <select class="form-select" name="roadvillage" id="roadvillage">
+                            <option value="">--SELECT VILLAGE--</option>
+                            {% for village in village %}
+                            <option value="{{ village.village_name }}">{{ village.village_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="roadvillageErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
+            </div>
         </div>
         <div class="alert alert-success" id="road_successMsg" style="display:none"></div>
         <div class="modal-footer flex-center justify-content-center">
@@ -2036,6 +2074,44 @@
                     <input type="text" name="edit_road_area_required" class="form-control" id="edit_road_area_required" readonly="readonly">
                 </div>
                 <div class="alert alert-danger" id="edit_road_area_requiredErrorMsg" style="display:none"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Dzongkhag</label>
+                    <select class="form-select" name="edit_roaddzongkhag"  id="edit_roaddzongkhag" onchange="getEditRoadGewog(this.value)">
+                        <option value="">--SELECT DZONGKHAG--</option>
+                        {% for dzongkhag in dzongkhag %}
+                            <option value="{{ dzongkhag.dzongkhag_name }}">{{ dzongkhag.dzongkhag_name }}</option>
+                        {% endfor %} 
+                    </select>
+                </div>
+                <div id="edit_roaddzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Gewog</label>
+                    <select class="form-select" name="edit_roadgewog" id="edit_roadgewog" onchange="getEditRoadVillage(this.value)">
+                        <option value="">--SELECT GEWOG--</option>
+                        {% for gewog in gewog %}
+                            <option value="{{ gewog.gewog_name }}">{{ gewog.gewog_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="edit_roadgewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Village/Chiwog</label>
+                    <select class="form-select" name="edit_roadvillage" id="edit_roadvillage">
+                        <option value="">--SELECT VILLAGE--</option>
+                        {% for village in village %}
+                        <option value="{{ village.village_name }}">{{ village.village_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="edit_roadvillageErrorMsg" class="alert alert-danger" style="display: none;"></div>
             </div>
         </div>
         </div>
@@ -3473,6 +3549,9 @@
         road_width = $('#road_width').val();
         road_row = $('#road_row').val();
         road_area_required = $('#road_area_required').val();
+        roaddzonkhag = $('#roaddzonkhag').val();
+        roadgewog = $('#roadgewog').val();
+        roadvillage = $('#roadvillage').val();
 
         if(road_line_chainage_from == "")
         {
@@ -3516,13 +3595,31 @@
             $('#road_area_requiredErrorMsg').show();
             $('#road_area_requiredErrorMsg').delay(2000).fadeOut('slow');
         }
-        else
+        else if(roaddzonkhag == "")
+        {
+            $('#roaddzonkhagErrorMsg').html("Choose One");
+            $('#roaddzonkhagErrorMsg').show();
+            $('#roaddzonkhagErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(roadgewog == "")
+        {
+            $('#roadgewogErrorMsg').html("Choose One");
+            $('#roadgewogErrorMsg').show();
+            $('#roadgewogErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(roadvillage == "")
+        {
+            $('#roadvillageErrorMsg').html("Choose One");
+            $('#roadvillageErrorMsg').show();
+            $('#roadvillageErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else 
         {
             $.ajax
             ({
                 type : "POST",
                 url : "{% url 'save_anc_road_details' %}",
-                data : {'application_no':application_no,'road_line_chainage_from':road_line_chainage_from,'road_line_chainage_to':road_line_chainage_to,'road_land_type':road_land_type,'road_terrain':road_terrain,'road_width':road_width,'road_row':road_row,'road_area_required':road_area_required},
+                data : {'application_no':application_no,'road_line_chainage_from':road_line_chainage_from,'road_line_chainage_to':road_line_chainage_to,'road_land_type':road_land_type,'road_terrain':road_terrain,'road_width':road_width,'road_row':road_row,'road_area_required':road_area_required, 'dzonkhag':roaddzonkhag, 'gewog':roadgewog,'village':roadvillage, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#road_successMsg').html("Approach Road Details Added Successfully");
@@ -3539,7 +3636,7 @@
         }
     }
 
-    function populate_approach_road_details(record_id, application_no, line_chainage_from, line_chainage_to, land_type, terrain, road_width, row, area_required)
+    function populate_approach_road_details(record_id, application_no, line_chainage_from, line_chainage_to, land_type, terrain, road_width, row, area_required, dzo, gewog, village)
     {
         $('#edit_anc_road_record_id').val(record_id);
         $('#edit_anc_road_application_no').val(application_no);
@@ -3550,6 +3647,10 @@
         $('#edit_road_width').val(road_width);
         $('#edit_road_row').val(row);
         $('#edit_road_area_required').val(area_required);
+        $('#edit_roaddzongkhag').val(dzo);
+        $('#edit_roadgewog').val(gewog);
+        $('#edit_roadvillage').val(village);
+
         $('#edit_anc_approach_road_modal').modal('show');
     }
 
@@ -3569,7 +3670,7 @@
         ({
             type : "POST",
             url : "{% url 'delete_anc_road_details' %}",
-            data : {'record_id':record_id,'application_no':application_no},
+            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
@@ -3593,6 +3694,9 @@
         road_width = $('#edit_road_width').val();
         row = $('#edit_road_row').val();
         area_required = $('#edit_road_area_required').val();
+        dzongkhag = $('#edit_roaddzongkhag').val(dzo);
+        gewog = $('#edit_roadgewog').val(gewog);
+        village = $('#edit_roadvillage').val(village);
 
         if(line_chainage_from == "")
         {
@@ -3636,13 +3740,31 @@
             $('#edit_road_area_requiredErrorMsg').show();
             $('#edit_road_area_requiredErrorMsg').delay(2000).fadeOut('slow');
         }
+        else if(dzongkahg == "")
+        {
+            $('#edit_roaddzongkhagErrorMsg').html("Choose One");
+            $('#edit_roaddzongkhagErrorMsg').show();
+            $('#edit_roaddzongkhagErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(gewog == "")
+        {
+            $('#edit_roadgewogErrorMsg').html("Choose One");
+            $('#edit_roadgewogErrorMsg').show();
+            $('#edit_roadgewogErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(village == "")
+        {
+            $('#edit_roadvillageErrorMsg').html("Choose One");
+            $('#edit_roadvillageErrorMsg').show();
+            $('#edit_roadvillageErrorMsg').delay(2000).fadeOut('slow');
+        }
         else
         {
             $.ajax
             ({
                 type : "POST",
                 url : "{% url 'update_anc_road_details' %}",
-                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required,'dzongkhag':dzongkahg, 'gewog':gewog, 'village':village, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_road_successMsg').html("Approach Road Details Updated Successfully");
@@ -4461,6 +4583,84 @@
                         $('#applicant_name').val(CitizenName);
                     }
                 }
+            }
+        });
+    }
+
+    function getGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#gewog').html(data);
+            }
+        });
+    }
+
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#vil_chiwog').html(data);
+            }
+        });
+    }
+
+    function getRoadGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#roadgewog').html(data);
+            }
+        });
+    }
+
+    function getRoadVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#roadvillage').html(data);
+            }
+        });
+    }
+
+    function getEditRoadGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#edit_roadgewog').html(data);
+            }
+        });
+    }
+
+    function getEditRoadVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#edit_roadvillage').html(data);
             }
         });
     }

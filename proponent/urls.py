@@ -101,7 +101,6 @@ urlpatterns = [
 
     # General Application Details
     path('save_general_info', views.save_general_application, name='save_general_info'),
-    path('save_general_info', views.save_general_application, name='save_general_info'),
 
     #Forest Application Details
     path('save_forest_application', views.save_forest_application, name='save_forest_application'),
@@ -181,4 +180,10 @@ urlpatterns = [
     #EC PRint
     path('ec_print_list', views.ec_print_list, name='ec_print_list'),
     path('view_print_details', views.view_print_details, name='view_print_details'),
+
+    #Dumpyard Details
+    path('add_dumpyard_details', views.add_dumpyard_details, name='add_dumpyard_details'),
+    path('update_dumpyard_details', views.update_dumpyard_details, name='update_dumpyard_details'),
+    path('delete_dumpyard_details', views.delete_dumpyard_details, name='delete_dumpyard_details'),
+
 ]

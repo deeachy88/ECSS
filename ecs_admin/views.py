@@ -94,6 +94,8 @@ def login(request):
                             request.session['email'] = check_user.email_id
                             request.session['login_type'] = check_user.login_type
                             request.session['login_id'] = check_user.login_id
+                            request.session['address'] = check_user.address
+                            request.session['contact_number'] = check_user.contact_number
                             return render(request, 'common_dashboard.html')
                 else:
                     _message = 'User ID or Password Not Matching.'

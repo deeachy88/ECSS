@@ -33,6 +33,49 @@
                                         <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
                                         <input type="text" class="form-control" value="{{application_details.form_type}}" name="form_type" id="form_type" style="display:none;">
                                         <div class="accordion-body">
+                                            
+                                            <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                                <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
+                                            </div>
+                                            <div class="row">
+                                                <!-- <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">CID</label>
+                                                        <input type="number" min="1" name="cid" class="form-control" disabled id="cid" maxlength="11"  value="{{application_details.cid}}">
+                                                    </div>
+                                                    <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                </div> -->
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Name of Applicant</label>
+                                                        <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly value="{{application_details.applicant_name}}"> 
+                                                    </div>
+                                                    <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Address</label>
+                                                        <input type="text" name="address" class="form-control" id="address" disabled value="{{application_details.address}}">
+                                                    </div>
+                                                    <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Contact No</label>
+                                                        <input type="number" name="contact_no" class="form-control" id="contact_no" disabled maxlength="8" value="{{application_details.contact_no}}">
+                                                    </div>
+                                                    <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Email</label>
+                                                        <input type="email" name="email" class="form-control" id="email" disabled value="{{application_details.email}}">
+                                                    </div>
+                                                    <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                </div>
+                                            </div>
                                             <div class="row">
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
@@ -58,50 +101,6 @@
                                                         </select>
                                                     </div>
                                                     <div id="application_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                                </div>
-                                            </div>
-                                            <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                                <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-bold">CID</label>
-                                                        <input type="number" min="1" name="cid" class="form-control" disabled id="cid" maxlength="11"  value="{{application_details.cid}}">
-                                                    </div>
-                                                    <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-bold">Name of Applicant</label>
-                                                        <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly value="{{application_details.applicant_name}}"> 
-                                                    </div>
-                                                    <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-bold">Address</label>
-                                                        <input type="text" name="address" class="form-control" id="address" disabled value="{{application_details.address}}">
-                                                    </div>
-                                                    <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-bold">Contact No</label>
-                                                        <input type="number" name="contact_no" class="form-control" id="contact_no" disabled maxlength="8" value="{{application_details.contact_no}}">
-                                                    </div>
-                                                    <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-bold">Email</label>
-                                                        <input type="email" name="email" class="form-control" id="email" disabled value="{{application_details.email}}">
-                                                    </div>
-                                                    <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -1465,7 +1464,7 @@
                         </div> <!-- end preview-->
                         <div class="tab-pane" id="bordered-tabs-code" role="tabpanel">
                             <ul class="nav nav-tabs nav-bordered mb-3" role="tablist">
-                                {% if anc_other_mineral == 'Yes' or anc_other_general == 'Yes' %}
+                                {% if application_details.anc_other_mineral == 'Yes' or application_details.anc_other_general == 'Yes' %}
                                     <li class="nav-item" role="presentation">
                                         <a href="#anc-gen" data-bs-toggle="tab" aria-expanded="false" class="nav-link" aria-selected="false" tabindex="-1" role="tab">
                                             <i class="mdi mdi-home-variant d-md-none d-block"></i>
@@ -1473,7 +1472,7 @@
                                         </a>
                                     </li>
                                 {% endif %}
-                                {% if anc_other_ground_water == 'Yes' %}
+                                {% if application_details.anc_other_ground_water == 'Yes' %}
                                     <li class="nav-item" role="presentation">
                                         <a href="#anc-gw" data-bs-toggle="tab" aria-expanded="true" class="nav-link active" aria-selected="true" role="tab">
                                             <i class="mdi mdi-account-circle d-md-none d-block"></i>
@@ -1481,7 +1480,7 @@
                                         </a>
                                     </li>
                                 {% endif %}
-                                {% if anc_other_surface_collection == 'Yes' %}
+                                {% if application_details.anc_other_surface_collection == 'Yes' %}
                                     <li class="nav-item" role="presentation">
                                         <a href="#anc-for" data-bs-toggle="tab" aria-expanded="false" class="nav-link" aria-selected="false" tabindex="-1" role="tab">
                                             <i class="mdi mdi-settings-outline d-md-none d-block"></i>
@@ -1489,7 +1488,7 @@
                                         </a>
                                     </li>
                                 {% endif %}
-                                {% if anc_other_crushing_unit == 'Yes' %}
+                                {% if application_details.anc_other_crushing_unit == 'Yes' %}
                                     <li class="nav-item" role="presentation">
                                         <a href="#anc-ind" data-bs-toggle="tab" aria-expanded="false" class="nav-link" aria-selected="false" tabindex="-1" role="tab">
                                             <i class="mdi mdi-settings-outline d-md-none d-block"></i>
@@ -1500,7 +1499,7 @@
                             </ul>
 
                             <div class="tab-content">
-                                {% if anc_other_mineral == 'Yes' or anc_other_general == 'Yes' %}
+                                {% if application_details.anc_other_mineral == 'Yes' or application_details.anc_other_general == 'Yes' %}
                                     <div class="tab-pane" id="anc-ind" role="tabpanel">
                                         <div class="accordion" id="accordionExample">
                                             <div class="accordion-item">
@@ -2785,7 +2784,7 @@
                                         </div>
                                     </div>
                                 {% endif %}
-                                {% if anc_other_ground_water == 'Yes' %}
+                                {% if application_details.anc_other_ground_water == 'Yes' %}
                                     <div class="tab-pane" id="anc-for" role="tabpanel">
                                         <div class="accordion" id="accordionExample">
                                             <div class="accordion-item">
@@ -4330,7 +4329,7 @@
                                         </div> 
                                     </div>
                                 {% endif %}
-                                {% if anc_other_surface_collection == 'Yes' %}
+                                {% if application_details.anc_other_surface_collection == 'Yes' %}
                                     <div class="tab-pane" id="anc-gw" role="tabpanel">
                                         <div class="accordion" id="accordionExample">
                                             <div class="accordion-item">
@@ -5480,7 +5479,8 @@
                                         </div>    
                                     </div>
                                 {% endif %}
-                                {% if anc_other_crushing_unit == 'Yes' %}
+                                {% if application_details.anc_other_crushing_unit == 'Yes' %}
+                                {% for application_details in ancillary_details %}
                                     <div class="tab-pane" id="anc-gen" role="tabpanel">
                                         <div class="accordion" id="accordionExample">
                                             <div class="accordion-item">
@@ -6764,6 +6764,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {% endfor %}
                                 {% endif %}
                             </div>                                          
                         </div>
@@ -6839,7 +6840,7 @@
                             <div class="card-widgets">
                                 <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#eatc_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                             </div>
-                            <h5 class="card-title mb-0">EATC Attach</h5>
+                            <h5 class="card-title mb-0">Attach Committee And Field Verification Paper</h5>
                             <div id="cardCollpase7" class="collapse pt-3 show">
                                 <div id="eatc_file_attachment">
                                     {% include 'eatc_attachment_page.html' %}
@@ -6901,7 +6902,7 @@
                             <div class="card-widgets">
                                 <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#rev_lu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                             </div>
-                            <h5 class="card-title mb-0">LU Attach</h5>
+                            <h5 class="card-title mb-0">Legal Undertaking Attach</h5>
                             <div id="cardCollpase7" class="collapse pt-3 show">
                                 <div id="rev_lu_file_attachment">
                                     {% include 'rev_lu_attachment_page.html' %}
@@ -7082,7 +7083,7 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">Additional Information Letter</label>
                             {% for application_details in application_details %}
-                                <textarea class="form-control" rows="2" readonly>{{application_details.additional_info_letter}}</textarea>
+                                <textarea class="form-control" rows="2">{{application_details.additional_info_letter}}</textarea>
                             {% endfor %}
                         </div>
                     </div>
@@ -7119,9 +7120,9 @@
                     </div>
                     <div class="mb-3 ALA_button" style="display:none;">
                             <a href="#" class="btn btn-success" onclick="forwardApplication('ALA')">
-                                <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Approve </a>
+                                <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Additional Information Required </a>
                             <a href="#" class="btn btn-danger" onclick="forwardApplication('ALR')">
-                                <i class="uil uil-multiply me-1"></i> Reject </a>
+                                <i class="uil uil-multiply me-1"></i> Additional Information Not Required </a>
                     </div>
                     <div class="mb-3 approveButton" style="display:none;">
                             <a href="#" class="btn btn-success" onclick="forwardApplication('A')">
@@ -7258,6 +7259,18 @@ aria-hidden="true">
 <div class="row">
     <div class="col-lg-6">
         <div class="mb-3">
+            <label class="form-label fw-bold">Type</label>
+            <select class="form-control" id="ec_type" name="ec_type" onchange="check_ec_draft_type(this.value)">
+                <option>-SELECT-</option>
+                <option value="Header">Header</option>
+                <option value="Footer">Footer</option>
+                <option value="Terms">Terms</option>
+            </select>
+        </div>
+        <div class="alert alert-danger" id="ec_headingErrorMsg" style="display:none"></div>
+    </div>
+    <div class="col-lg-6 heading_div" style="display:none">
+        <div class="mb-3">
             <label class="form-label fw-bold">EC Heading</label>
             <input type="text" name="ec_heading" class="form-control" id="ec_heading">
         </div>
@@ -7309,6 +7322,18 @@ aria-hidden="true">
 <input type="hidden" class="form-control" name="ec_draft_record_id" id="ec_draft_record_id">
 <div class="row">
     <div class="col-lg-6">
+        <div class="mb-3">
+            <label class="form-label fw-bold">Type</label>
+            <select class="form-control" id="ec_type" name="ec_type" onchange="check_edit_ec_draft_type(this.value)">
+                <option>-SELECT-</option>
+                <option value="Header">Header</option>
+                <option value="Footer">Footer</option>
+                <option value="Terms">Terms</option>
+            </select>
+        </div>
+        <div class="alert alert-danger" id="ec_headingErrorMsg" style="display:none"></div>
+    </div>
+    <div class="col-lg-6 edit_heading_div" style="display:none">
         <div class="mb-3">
             <label class="form-label fw-bold">EC Heading</label>
             <input type="text" name="edit_ec_heading" class="form-control" id="edit_ec_heading">
@@ -7973,5 +7998,29 @@ success : function(responseText)
     }, 2000);
 }
 });
+}
+
+function check_ec_draft_type(value)
+{
+    if(value=="Terms")
+    {
+        $('.heading_div').show();
+    }
+    else
+    {
+        $('.heading_div').hide();
+    }
+}
+
+function check_edit_ec_draft_type(value)
+{
+    if(value=="Terms")
+    {
+        $('.edit_heading_div').show();
+    }
+    else
+    {
+        $('.edit_heading_div').hide();
+    }
 }
 </script>
