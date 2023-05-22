@@ -531,7 +531,7 @@ def forward_application(request):
             workflow_details.update(application_status='AP')
 
             t_payment_details.objects.create(application_no=application_no,
-                            application_type='AP'
+                            application_type='AP',
                             application_date=date.today(), 
                             proponent_name=request.session['name'],
                             amount=addtional_payment_amount,
