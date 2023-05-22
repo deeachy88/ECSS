@@ -1925,9 +1925,9 @@ def add_final_product_details(request):
 def update_final_product_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
-    product_name = request.POST.get('edit_product_name')
-    quantity_annum = request.POST.get('edit_quantity_annum')
-    storage_method = request.POST.get('edit_final_product_storage_method')
+    product_name = request.POST.get('produce_name')
+    quantity_annum = request.POST.get('quantity_annum')
+    storage_method = request.POST.get('storage_method')
 
     final_product_details = t_ec_industries_t4_project_product.objects.filter(record_id=record_id)
     final_product_details.update(product_name=product_name, quantity_annum=quantity_annum, storage_method=storage_method)
@@ -2460,6 +2460,8 @@ def submit_general_application(request):
             else:
                 ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
                 if(ancillary_count > 0):
+                    data['message'] = "not submitted"
+                elif(ancillary_count < 0):
                     data['message'] = "not submitted"
                 else:
                     application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')

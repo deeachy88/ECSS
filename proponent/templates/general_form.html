@@ -4385,7 +4385,7 @@
             ({
                 type : "POST",
                 url : "{% url 'add_raw_materials' %}",
-                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method},
+                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#raw_material_SuccessMsg').html("Add Successful");
@@ -4460,7 +4460,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_raw_materials' %}",
-                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method},
+                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_raw_material_SuccessMsg').html("Add Successful");
@@ -4496,7 +4496,7 @@
         ({
             type : "POST",
             url : "{% url 'delete_raw_materials' %}",
-            data : {'record_id':record_id, 'application_no':application_no},
+            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_raw_material_SuccessMsg').html("Add Successful");
@@ -4733,7 +4733,7 @@
             ({
                 type : "POST",
                 url : "{% url 'save_anc_power_line_details' %}",
-                data : {'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                data : {'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#power_line_successMsg').html("Power Line Details Added Successfully");
@@ -4781,7 +4781,7 @@
         ({
             type : "POST",
             url : "{% url 'delete_anc_power_line_details' %}",
-            data : {'record_id':record_id,'application_no':application_no},
+            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
@@ -4861,7 +4861,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_anc_power_line_details' %}",
-                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_power_line_successMsg').html("Power Line Details Updated Successfully");
@@ -4976,7 +4976,7 @@
             ({
                 type : "POST",
                 url : "{% url 'save_anc_road_details' %}",
-                data : {'application_no':application_no,'road_line_chainage_from':road_line_chainage_from,'road_line_chainage_to':road_line_chainage_to,'road_land_type':road_land_type,'road_terrain':road_terrain,'road_width':road_width,'road_row':road_row,'road_area_required':road_area_required},
+                data : {'application_no':application_no,'road_line_chainage_from':road_line_chainage_from,'road_line_chainage_to':road_line_chainage_to,'road_land_type':road_land_type,'road_terrain':road_terrain,'road_width':road_width,'road_row':road_row,'road_area_required':road_area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#road_successMsg').html("Approach Road Details Added Successfully");
@@ -5023,7 +5023,7 @@
         ({
             type : "POST",
             url : "{% url 'delete_anc_road_details' %}",
-            data : {'record_id':record_id,'application_no':application_no},
+            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
@@ -5096,7 +5096,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_anc_road_details' %}",
-                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_road_successMsg').html("Approach Road Details Updated Successfully");
