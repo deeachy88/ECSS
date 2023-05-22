@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from ecs_admin.views import bsic_master
-from proponent.models import t_ec_industries_t10_hazardous_chemicals, t_ec_industries_t11_ec_details, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_industries_t9_products_by_products, t_fines_penalties, t_payment_details, t_workflow_dtls
+from proponent.models import t_ec_industries_t10_hazardous_chemicals, t_ec_industries_t11_ec_details, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_industries_t9_products_by_products, t_fines_penalties, t_payment_details, t_workflow_dtls, t_workflow_dtls_audit
 from ecs_admin.models import t_bsic_code, t_dzongkhag_master, t_file_attachment, t_gewog_master, t_role_master, t_service_master, t_thromde_master, t_user_master, t_village_master
 from ecs_main.models import t_inspection_monitoring_t1
 from django.utils import timezone
@@ -13,7 +13,6 @@ from django.db.models import Max
 # Create your views here.
 def verify_application_list(request):
     ca_authority = request.session['ca_authority']
-    print(ca_authority)
     application_list = t_workflow_dtls.objects.filter(application_status='P',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='DEC',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='AL',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)
     service_details = t_service_master.objects.all()
     payment_details = t_payment_details.objects.all()
@@ -350,9 +349,17 @@ def update_payment_details(request):
     amount = request.POST.get('amount')
     instrument_no = request.POST.get('instrument_no')
     transaction_date = request.POST.get('transaction_date')
-    payment_details = t_payment_details.objects.filter(application_no=application_no)
-    payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
+    payment_details = t_payment_details.objects.filter(application_no=application_no, application_type='AP')
+    if payment_details.exists():
+        payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
                                instrument_no=instrument_no, transaction_date=transaction_date)
+        work_details = t_workflow_dtls_audit.objects.filter(application_no=application_no)
+        work_details.update(application_status='LU')
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+        application_details.update(application_status='LU')
+    else:
+        payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
+                                instrument_no=instrument_no, transaction_date=transaction_date)
     return redirect(payment_list)
 
 def get_ec_no(request):
@@ -524,6 +531,7 @@ def forward_application(request):
             workflow_details.update(application_status='AP')
 
             t_payment_details.objects.create(application_no=application_no,
+                            application_type='AP'
                             application_date=date.today(), 
                             proponent_name=request.session['name'],
                             amount=addtional_payment_amount,
