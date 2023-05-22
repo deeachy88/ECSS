@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th>#</th>
+            <th>Type</th>
             <th>Heading</th>
             <th>Content </th>
             <th></th>
@@ -11,11 +12,12 @@
         {% for ec_details in ec_details %}
             <tr>
                 <td>{{ forloop.counter }}</td>
+                <td>{{ec_details.ec_type}}</td>
                 <td>{{ec_details.ec_heading}}</td>
                 <td>{{ec_details.ec_terms}}</td>
                 <td>
                     <div class="btn-group btn-group-sm">
-                        <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="populate_ec_details('{{ec_details.record_id}}','{{ec_details.application_no}}','{{ec_details.ec_heading}}','{{ec_details.ec_terms}}')"><i class="mdi mdi-square-edit-outline"></i></a>
+                        <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="populate_ec_details('{{ec_details.record_id}}','{{ec_details.application_no}}','{{ec_details.ec_type}}','{{ec_details.ec_heading}}','{{ec_details.ec_terms}}')"><i class="mdi mdi-square-edit-outline"></i></a>
                         <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_ec_details('{{ec_details.record_id}}','{{ec_details.application_no}}')"><i class="uil-trash"></i></button>
                     </div>
                 </td>

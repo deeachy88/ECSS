@@ -710,7 +710,7 @@
                                         <div class="col-lg-12">
                                             <div class="card mt-1">
                                                 <div class="card-body">
-                                                    <div class="card-widgets">
+                                                    <div class="card-widgets mb-3">
                                                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#anc_approach_road_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                                     </div>
                                                     <h5 class="card-title mb-2"></h5>
@@ -863,7 +863,7 @@
                                         <div class="col-lg-12">
                                             <div class="card mt-1">
                                                 <div class="card-body">
-                                                    <div class="card-widgets">
+                                                    <div class="card-widgets mb-3">
                                                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#anc_power_line_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                                     </div>
                                                     <h5 class="card-title mb-2"></h5>
@@ -1327,11 +1327,17 @@
                                         <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
-
+                                    <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
+                                    <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
+                                    <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
+                                    <p class="text-wrap">3.	Application Outcome: Submission of this application does not guarantee acceptance or approval. The final decision rests with the appropriate authorities, and we reserve the right to reject any application without providing any reason.</p>
+                                    <p class="text-wrap">4.	Disclaimer of Liability: To the extent permitted by law, we disclaim all liability for any loss, damage, or injury arising out of or related to your use of this online application form or reliance on any information provided herein. We shall not be responsible for any technical errors, interruptions, or inaccuracies that may occur during the application process.</p>
+                                    <p class="text-wrap">5.	Modification or Termination: We reserve the right to modify, suspend, or terminate this online application form at any time without prior notice. We may also update or change the terms and conditions of this disclaimer without notice.</p>
+                                    <p class="text-wrap">Please review this disclaimer carefully before submitting your application. If you do not agree with any part of this disclaimer, please refrain from using this online application form.</p>
                                     <div class="mt-3">
                                         <div class="form-check">
                                             <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
-                                            <label class="form-check-label" for="customCheck1">I herby Agree To all the EC Terms</label>
+                                            <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
                                         </div>
                                     </div>
 
@@ -1347,6 +1353,10 @@
                                     <div class="alert alert-danger border-0 rounded-0" role="alert" id="general_submit_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
+                                    <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                        Loading...
+                                    </button>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
                                             <a href="#" id="gen_submit_btn" class="btn btn-success" onclick="submit_general_application()" style="display:none;">
@@ -2194,14 +2204,14 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Chainage From (m)</label>
-                        <input type="text" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onchange="calculate_edit_road_area_required()">
+                        <input type="text" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onchange="calculate_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="road_line_chainage_fromErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Chainage To (m)</label>
-                        <input type="text" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onchange="calculate_edit_road_area_required()">
+                        <input type="text" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onchange="calculate_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="road_line_chainage_toErrorMsg" style="display:none"></div>
                 </div>
@@ -2247,7 +2257,7 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Right of way (RoW)</label>
-                        <input type="text" name="road_row" class="form-control" id="road_row" onchange="calculate_edit_road_area_required()">
+                        <input type="text" name="road_row" class="form-control" id="road_row" onchange="calculate_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="road_rowErrorMsg" style="display:none"></div>
                 </div>
@@ -2294,14 +2304,14 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Chainage From (m)</label>
-                        <input type="text" name="edit_road_line_chainage_from" class="form-control" id="edit_road_line_chainage_from" onblur="calculate_road_area_required()">
+                        <input type="text" name="edit_road_line_chainage_from" class="form-control" id="edit_road_line_chainage_from" onblur="calculate_edit_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="edit_road_line_chainage_fromErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Chainage To(m)</label>
-                        <input type="text" name="edit_road_line_chainage_to" class="form-control" id="edit_road_line_chainage_to" onblur="calculate_road_area_required()">
+                        <input type="text" name="edit_road_line_chainage_to" class="form-control" id="edit_road_line_chainage_to" onblur="calculate_edit_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="edit_road_line_chainage_toErrorMsg" style="display:none"></div>
                 </div>
@@ -2347,7 +2357,7 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Right of way (RoW)</label>
-                        <input type="text" name="edit_road_row" class="form-control" id="edit_road_row" onblur="calculate_road_area_required()">
+                        <input type="text" name="edit_road_row" class="form-control" id="edit_road_row" onblur="calculate_edit_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="edit_road_rowErrorMsg" style="display:none"></div>
                 </div>
@@ -4148,6 +4158,7 @@
 
     function submit_general_application()
     {
+        $("#pageloader").show();
         $.ajax
         ({
             type : "POST",
@@ -4155,6 +4166,7 @@
             data : $('#general_submit_form').serialize(),
             success : function(data)
             {
+                $("#pageloader").hide();
                 if(data.message == 'success')
                 {
                     $('#general_submit_successMsg').html("Application Submitted Successfully");
@@ -5055,7 +5067,7 @@
 
     function update_anc_road_details()
     {
-        record_id = $('#edit_anc_road_record_id').val();
+        record_id = $('#edit_anc_record_id').val();
         application_no = $('#edit_anc_road_application_no').val();
         line_chainage_from = $('#edit_road_line_chainage_from').val();
         line_chainage_to = $('#edit_road_line_chainage_to').val();
@@ -5624,9 +5636,9 @@
 
     function calculate_edit_road_area_required()
     {
-        let road_line_chainage_from = $('#road_line_chainage_from').val();
-        let road_line_chainage_to = $('#road_line_chainage_to').val(); 
-        let road_row = $('#road_row').val();
+        let road_line_chainage_from = $('#edit_road_line_chainage_from').val();
+        let road_line_chainage_to = $('#edit_road_line_chainage_to').val(); 
+        let road_row = $('#edit_road_row').val();
         let sum = 0;
         let product = 0;
 
@@ -5634,7 +5646,7 @@
         sum += parseFloat(road_line_chainage_to) || 0;
         product = parseFloat(sum) * parseFloat(road_row) || 0;
          
-        $('#road_area_required').val(product);
+        $('#edit_road_area_required').val(product);
     }
 
     function add_dumpyard_details()
@@ -5714,8 +5726,8 @@
 
     function update_dumpyard_details()
     {
-        let record_id = $('#dumyard_record_id').val();
-        let application_no = $('#dumyard_application_no').val();
+        let record_id = $('#dumpyard_record_id').val();
+        let application_no = $('#dumpyard_application_no').val();
         let dumpyard_number = $('#edit_dumpyard_number').val();
         let dumpyard_capacity = $('#edit_dumpyard_capacity').val();
         let dumpyard_area = $('#edit_dumpyard_area').val();

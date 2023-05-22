@@ -5300,11 +5300,12 @@ def add_dumpyard_details(request):
 
 def update_dumpyard_details(request):
     record_id = request.POST.get('record_id')
+    print(record_id)
     application_no = request.POST.get('application_no')
     dumpyard_number = request.POST.get('dumpyard_number')
     dumpyard_capacity = request.POST.get('dumpyard_capacity')
     dumpyard_area = request.POST.get('dumpyard_area')
-    dumpyard_location =request.POST.get('dumpyard_location')
+    dumpyard_location = request.POST.get('dumpyard_location')
 
     dumpyard = t_ec_industries_t13_dumpyard.objects.filter(record_id=record_id)
     dumpyard.update(dumpyard_number=dumpyard_number,dumpyard_capacity=dumpyard_capacity,dumpyard_area=dumpyard_area,dumpyard_location=dumpyard_location)

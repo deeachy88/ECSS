@@ -323,6 +323,12 @@
                                     <span> View Application Status </span>
                                 </a>
                             </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'ec_print_list' %}" class="side-nav-link">
+                                    <i class="uil-folder-plus"></i>
+                                    <span> EC Print List </span>
+                                </a>
+                            </li>
                         </ul>
                     {% elif request.session.role == 'Reviewer' %}
                         <ul class="side-nav">
@@ -339,6 +345,16 @@
                                 <a href="{% url 'reviewer_application_list' %}" class="side-nav-link">
                                     <i class="uil-home-alt"></i>
                                     <span> Application List
+                                        <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            99+
+                                        </span> -->
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'payment_list' %}" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Payment List 
                                         <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                             99+
                                         </span> -->
@@ -375,6 +391,12 @@
                                 <a href="{% url 'application_status_list' %}" class="side-nav-link">
                                     <i class="uil-folder-plus"></i>
                                     <span> View Application Status </span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'ec_print_list' %}" class="side-nav-link">
+                                    <i class="uil-folder-plus"></i>
+                                    <span> EC Print List </span>
                                 </a>
                             </li>
                         </ul>

@@ -15,22 +15,22 @@ def verify_application_list(request):
     ca_authority = request.session['ca_authority']
     application_list = t_workflow_dtls.objects.filter(application_status='P',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='DEC',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='AL',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)
     service_details = t_service_master.objects.all()
-    payment_details = t_payment_details.objects.all()
+    payment_details = t_payment_details.objects.all().exclude(application_type='AP')
     return render(request, 'application_list.html',{'application_details':application_list, 'service_details':service_details, 'payment_details':payment_details})
 
 def client_application_list(request):
     login_id = request.session['login_id']
     application_list = t_workflow_dtls.objects.filter(application_status='ALR', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='ALA', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='EATC', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='RS', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='LU', action_date__isnull=False)
     service_details = t_service_master.objects.all()
-    payment_details = t_payment_details.objects.all()
+    payment_details = t_payment_details.objects.all().exclude(application_type='AP')
     return render(request, 'application_list.html',{'application_details':application_list, 'service_details':service_details, 'payment_details':payment_details})
 
 def reviewer_application_list(request):
     ca_authority = request.session['ca_authority']
     login_id = request.session['login_id']
-    application_list = t_workflow_dtls.objects.filter(application_status='R',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='ALS',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='FEATC',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='RSS',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='LUS',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority)
+    application_list = t_workflow_dtls.objects.filter(application_status='R',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='ALS',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='FEATC',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='RSS',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='LUS',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='APP',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority)
     service_details = t_service_master.objects.all()
-    payment_details = t_payment_details.objects.all()
+    payment_details = t_payment_details.objects.all().exclude(application_type='AP')
     return render(request, 'application_list.html', {'application_details':application_list, 'service_details':service_details, 'payment_details':payment_details})
 
 def payment_list(request):
@@ -261,19 +261,19 @@ def view_application_details(request):
         elif service_id == '9':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
             ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
-            partner_details = t_ec_industries_t2_partner_details.objects.all()
-            machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-            project_product = t_ec_industries_t4_project_product.objects.all()
-            raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-            ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-            power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
-            forest_produce = t_ec_industries_t8_forest_produce
-            products_by_products = t_ec_industries_t9_products_by_products
-            hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals
+            partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
+            machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
+            project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
+            raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
+            ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
+            power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
+            forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
+            products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
+            hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
-            ec_details = t_ec_industries_t11_ec_details.objects.all()
+            ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
             reviewer_list = t_user_master.objects.filter(role_id='3', agency_code=ca_auth)
             eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
@@ -353,11 +353,12 @@ def update_payment_details(request):
     if payment_details.exists():
         payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
                                instrument_no=instrument_no, transaction_date=transaction_date)
-        work_details = t_workflow_dtls_audit.objects.filter(application_no=application_no)
-        work_details.update(application_status='LU')
+        work_details = t_workflow_dtls.objects.filter(application_no=application_no)
+        work_details.update(application_status='APP')
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
-        application_details.update(application_status='LU')
+        application_details.update(application_status='APP')
     else:
+        payment_details = t_payment_details.objects.filter(application_no=application_no)
         payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
                                 instrument_no=instrument_no, transaction_date=transaction_date)
     return redirect(payment_list)
@@ -369,7 +370,7 @@ def get_ec_no(request):
         year = timezone.now().year
         newECNo = "EC" + "-" + str(year) + "-" + "0001"
     else:
-        substring = str(lastECNo)[13:17]
+        substring = str(lastECNo)[9:12]
         substring = int(substring) + 1
         ecNo = str(substring).zfill(4)
         year = timezone.now().year
@@ -573,10 +574,10 @@ def forward_application(request):
             application_details.update(ec_reference_no=ec_no, ec_approve_date=date.today(),application_status='A',ec_expiry_date=ec_expiry_date)
 
             ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
-            ec_details.update(ec_no=ec_no)
+            ec_details.update(ec_reference_no=ec_no)
             
             payment_details = t_payment_details.objects.filter(application_no=application_no)
-            payment_details.update(ec_reference_no=ec_no)
+            payment_details.update(ec_no=ec_no)
 
             workflow_details.update(assigned_user_id=None)
             workflow_details.update(assigned_role_id=None)
@@ -595,7 +596,6 @@ def forward_application(request):
                         send_ec_approve_email(ec_no, emailId, application_no, service_name)
                         data['message'] = "success"
                         data['redirect_to'] = "verify_application_list"
-        
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -688,7 +688,7 @@ def save_draft_ec_details(request):
     ec_terms = request.POST.get('ec_terms')
 
     t_ec_industries_t11_ec_details.objects.create(application_no=application_no,ec_type=ec_type, ec_heading=ec_heading, ec_terms=ec_terms)
-    ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
+    ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no).order_by('record_id')
 
     return render(request, 'ec_draft_details.html', {'ec_details':ec_details})
 
@@ -701,7 +701,7 @@ def update_draft_ec_details(request):
 
     ec_details = t_ec_industries_t11_ec_details.objects.filter(record_id=record_id)
     ec_details.update(ec_type=ec_type,ec_heading=ec_heading, ec_terms=ec_terms)
-    ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
+    ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no).order_by('record_id')
 
     return render(request, 'ec_draft_details.html', {'ec_details':ec_details})
 
@@ -711,7 +711,7 @@ def delete_draft_ec_details(request):
 
     ec_details = t_ec_industries_t11_ec_details.objects.filter(record_id=record_id)
     ec_details.delete()
-    ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
+    ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no).order_by('record_id')
 
     return render(request, 'ec_draft_details.html', {'ec_details':ec_details})
 

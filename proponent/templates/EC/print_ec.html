@@ -14,10 +14,10 @@
         <a href="#"><img class="img-responsive" src="{% static 'assets/images/ec_header.png' %}" style="width:90%;"/></a>
     </div>
     <div class="card-body">
-        <div class="row justify-content-between">
+        <div class="row">
             {% for application_details in application_details %}
-                <h6>{{ec_details.ec_reference_no}}</h6>
-                <h6>{{ec_details.ec_approved_date}}</h6>
+                <h6 class="justify-content-left pull-left">{{application_details.ec_reference_no}}</h6>
+                <h6 class="justify-content-right pull-right">{{application_details.ec_approve_date}}</h6>
             {% endfor %}
         </div>
         <div class="row text-center">
