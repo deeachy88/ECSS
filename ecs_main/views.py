@@ -369,6 +369,19 @@ def get_ec_no(request):
         newECNo ="EC" + "-" + str(year) + "-" + ecNo
     return newECNo
 
+def send_ec_ap_email(ec_no, email, application_no, service_name, addtional_payment_amount):
+    subject = 'APPLICATION APPROVED'
+    message = "Dear Sir," \
+              "" \
+              "Your EC Application For" + service_name + "Has Additional Payment. Your " \
+              " Amount is " + str(addtional_payment_amount) + " Please Make Payment To Proceed Further"\
+              " . " 
+    recipient_list = [email]
+    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
+              connection=None, html_message=None)
+    
+
 def send_ec_approve_email(ec_no, email, application_no, service_name):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir," \
@@ -497,6 +510,35 @@ def forward_application(request):
             workflow_details.update(application_status='RSS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
+        elif identifier == 'AP':
+            addtional_payment_amount = request.POST.get('addtional_payment_amount')
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(application_status='AP')
+
+            workflow_details.update(assigned_user_id=None)
+            workflow_details.update(assigned_role_id=None)
+            workflow_details.update(assigned_role_name=None)
+            workflow_details.update(action_date=date.today())
+            workflow_details.update(actor_id=request.session['login_id'])
+            workflow_details.update(actor_name=request.session['name'])
+            workflow_details.update(application_status='AP')
+
+            t_payment_details.objects.create(application_no=application_no,
+                            application_date=date.today(), 
+                            proponent_name=request.session['name'],
+                            amount=addtional_payment_amount,
+                            account_head_code='131370080')
+
+            for work_details in workflow_details:
+                service_id = work_details.service_id
+                service_details = t_service_master.objects.filter(service_id=service_id)
+                for service in service_details:
+                    service_name = service.service_name
+                    for email_id in application_details:
+                        emailId = email_id.email
+                        send_ec_ap_email(ec_no, emailId, application_no, service_name,addtional_payment_amount)
+                        data['message'] = "success"
+                        data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'LU':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             for app_details in application_details:

@@ -1719,7 +1719,7 @@ def save_anc_power_line_details(request):
                                                            line_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
                                                            tower_type=tower_type,no_of_tower=no_of_tower,row=row,area_required=area_required)
     anc_power_line_details = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no).order_by('record_id')
-    return render('anc_power_line_details.html', {'anc_power_line_details':anc_power_line_details})
+    return render(request,'anc_power_line_details.html', {'anc_power_line_details':anc_power_line_details})
 
 def update_anc_power_line_details(request):
     record_id = request.POST.get('record_id')
@@ -1738,7 +1738,7 @@ def update_anc_power_line_details(request):
                                                            line_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
                                                            tower_type=tower_type,no_of_tower=no_of_tower,row=row,area_required=area_required)
     anc_power_line_details = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no).order_by('record_id')
-    return render('anc_power_line_details.html', {'anc_power_line_details':anc_power_line_details})
+    return render(request,'anc_power_line_details.html', {'anc_power_line_details':anc_power_line_details})
 
 def delete_anc_power_line_details(request):
     record_id = request.POST.get('record_id')
@@ -1759,15 +1759,15 @@ def save_anc_road_details(request):
     road_width = request.POST.get('road_width')
     row = request.POST.get('road_row')
     area_required = request.POST.get('road_area_required')
-    dzongkhag = request.POST.get('dzongkhag')
-    gewog = request.POST.get('gewog')
-    village = request.POST.get('village')
+    # dzongkhag = request.POST.get('dzongkhag')
+    # gewog = request.POST.get('gewog')
+    # village = request.POST.get('village')
 
     t_ec_industries_t6_ancillary_road.objects.create(application_no=application_no,road_chainage_from=line_chainage_from,
-                                                           road_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
-                                                           road_width=road_width,row=row,area_required=area_required, dzongkhag=dzongkhag, gewog=gewog,village=village)
+                                                    road_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
+                                                    road_width=road_width,row=row,area_required=area_required)
     anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by('record_id')
-    return render('approach_road_details.html', {'anc_road_details':anc_road_details})
+    return render(request,'anc_approach_road_details.html', {'anc_road_details':anc_road_details})
 
 def update_anc_road_details(request):
     record_id = request.POST.get('record_id')
@@ -1779,17 +1779,13 @@ def update_anc_road_details(request):
     road_width = request.POST.get('road_width')
     row = request.POST.get('row')
     area_required = request.POST.get('area_required')
-    dzongkhag = request.POST.get('dzongkhag')
-    gewog = request.POST.get('gewog')
-    village = request.POST.get('village')
 
     road_details = t_ec_industries_t6_ancillary_road.objects.filter(record_id=record_id)
     road_details.update(application_no=application_no,line_chainage_from=line_chainage_from,
                        line_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
-                       road_width=road_width,row=row,area_required=area_required,
-                       dzongkhag=dzongkhag, gewog=gewog,village=village)
+                       road_width=road_width,row=row,area_required=area_required)
     anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by('record_id')
-    return render('anc_approach_road_details.html', {'anc_road_details':anc_road_details})
+    return render(request,'anc_approach_road_details.html', {'anc_road_details':anc_road_details})
 
 def delete_anc_road_details(request):
     record_id = request.POST.get('record_id')

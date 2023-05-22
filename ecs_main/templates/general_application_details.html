@@ -6834,6 +6834,20 @@
                     </div>
                     <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
                 </div>
+                <div class="col-md-12 addtional_payment_div" style="display: none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-widgets">
+                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#eatc_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                            </div>
+                            <h5 class="card-title mb-0">Addional Payment</h5>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Addional Payable Amount</label>
+                                <input type="text" name="addtional_payment_amount" class="form-control" id="addtional_payment_amount"> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-12 eatc_attachment_div" style="display: none;">
                     <div class="card">
                         <div class="card-body">
@@ -6942,6 +6956,12 @@
             <div class="row  mt-3 AL_button" style="display: none;">
                 <div class="mb-3">
                     <a href="#" class="btn btn-success" onclick="forwardApplication('AL')">
+                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                </div>
+            </div>
+            <div class="row mt-3 additonal_payment_button" style="display: none;">
+                <div class="mb-3">
+                    <a href="#" class="btn btn-success" onclick="forwardApplication('AP')">
                         <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
                 </div>
             </div>
@@ -7636,11 +7656,17 @@ if(value == 'Yes')
 {
     $('.eatc_attachment_div').hide();
     $('.rev_lu_attachment_div').hide();
+    $('.addtional_payment_div').show();
+    $('.additonal_payment_button').show();
+    $('.LU_button').hide();
 }
 else
 {
     $('.eatc_attachment_div').show();
     $('.rev_lu_attachment_div').show();
+    $('.addtional_payment_div').hide();
+    $('.additonal_payment_button').hide();
+    $('.LU_button').show();
 }
 }
 

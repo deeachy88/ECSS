@@ -706,7 +706,7 @@
                                             <div id="anc_road_end_pointErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="row" id="approach_road_details" style="display: none;">
+                                    <div class="row" id="approach_road_details_table" style="display: none;">
                                         <div class="col-lg-12">
                                             <div class="card mt-1">
                                                 <div class="card-body">
@@ -2262,7 +2262,7 @@
                 </div>
             </div>
           </div>
-          <div class="alert alert-success" id="road_successMsg" style="display:none"></div>
+          <div class="alert alert-success" id="anc_road_successMsg" style="display:none"></div>
           <div class="modal-footer flex-center justify-content-center">
             <button type="button" class="btn btn-sm btn-primary" onclick="save_anc_road_details()">Add</button>
             <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
@@ -2577,10 +2577,12 @@
         if(value == 'Yes')
         {
             $('#approach_road_details').show();
+            $('#approach_road_details_table').show();
         }
         else
         {
             $('#approach_road_details').hide();
+            $('#approach_road_details_table').hide();
         }
     }
 
@@ -4743,6 +4745,9 @@
                         $('#anc_power_line_modal').modal('hide');
                     }, 2000);
                     setTimeout(function() {
+                        $('#anc_power_line_details').html(responseText);
+                    }, 2000);
+                    setTimeout(function() {
                         $('#anc_power_line_form')[0].reset();
                     }, 2000);
                 }
@@ -4789,6 +4794,9 @@
                 $('#delete_power_line_successMsg').delay(2000).fadeOut('slow');
                 setTimeout(function() {
                     $('#delete_anc_power_line_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#anc_power_line_details').html(responseText);
                 }, 2000);
             }
         });
@@ -4869,6 +4877,9 @@
                     $('#edit_power_line_successMsg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#edit_anc_power_line_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_power_line_details').html(responseText);
                     }, 2000);
                 }
             });
@@ -4979,11 +4990,14 @@
                 data : {'application_no':application_no,'road_line_chainage_from':road_line_chainage_from,'road_line_chainage_to':road_line_chainage_to,'road_land_type':road_land_type,'road_terrain':road_terrain,'road_width':road_width,'road_row':road_row,'road_area_required':road_area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
-                    $('#road_successMsg').html("Approach Road Details Added Successfully");
-                    $('#road_successMsg').show();
-                    $('#road_successMsg').delay(2000).fadeOut('slow');
+                    $('#anc_road_successMsg').html("Approach Road Details Added Successfully");
+                    $('#anc_road_successMsg').show();
+                    $('#anc_road_successMsg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#anc_approach_road_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_approach_road_details').html(responseText);
                     }, 2000);
                     setTimeout(function() {
                         $('#anc_approach_road_form')[0].reset();
@@ -5031,6 +5045,9 @@
                 $('#delete_power_line_successMsg').delay(2000).fadeOut('slow');
                 setTimeout(function() {
                     $('#delete_anc_approach_road_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#anc_approach_road_details').html(responseText);
                 }, 2000);
             }
         });
@@ -5104,6 +5121,9 @@
                     $('#edit_road_successMsg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#edit_anc_approach_road_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_approach_road_details').html(responseText);
                     }, 2000);
                 }
             });
