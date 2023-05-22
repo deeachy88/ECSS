@@ -469,8 +469,6 @@ def delete_attachment(request):
     file_id = request.POST.get('file_id')
     identifier = request.POST.get('attachment_type')
     document_id = request.POST.get('document_id')
-    print(file_id)
-    print(identifier)
     if identifier == 'M':
         file = t_file_attachment.objects.filter(file_id=file_id)
         for file in file:
@@ -494,6 +492,8 @@ def delete_attachment(request):
         file.delete()
     file_attach = t_file_attachment.objects.filter(document_id=document_id)
     return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
+
+
 
 
 def save_menu_details(request):

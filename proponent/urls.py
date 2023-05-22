@@ -52,8 +52,8 @@ urlpatterns = [
     path('add_final_product_details', views.add_final_product_details, name='add_final_product_details'),
     path('update_final_product_details', views.update_final_product_details, name='update_final_product_details'),
     path('delete_final_product_details', views.delete_final_product_details, name='delete_final_product_details'),
-    path('save_transmission_attachment', views.save_general_attachment, name='save_transmission_attachment'),
-    path('save_transmission_attachment_details', views.save_general_attachment_details, name='save_transmission_attachment_details'),
+    path('save_transmission_attachment', views.save_transmission_attachment, name='save_transmission_attachment'),
+    path('save_transmission_attachment_details', views.save_transmission_attachment_details, name='save_transmission_attachment_details'),
     path('save_iee_application', views.save_iee_application, name='save_iee_application'),
     path('save_terrain_baseline_details', views.save_terrain_baseline_details, name='save_terrain_baseline_details'),
     path('save_water_requirement_details', views.save_water_requirement_details, name='save_water_requirement_details'),
@@ -185,5 +185,7 @@ urlpatterns = [
     path('add_dumpyard_details', views.add_dumpyard_details, name='add_dumpyard_details'),
     path('update_dumpyard_details', views.update_dumpyard_details, name='update_dumpyard_details'),
     path('delete_dumpyard_details', views.delete_dumpyard_details, name='delete_dumpyard_details'),
+
+    path('delete_application_attachment', views.delete_application_attachment, name='delete_application_attachment'),
 
 ]

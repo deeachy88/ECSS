@@ -9,7 +9,7 @@ from django.db.models import Max
 from django.utils import timezone
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
-
+from django.core.mail import send_mail
 
 def new_application(request):
     bsic_details = t_bsic_code.objects.all()
@@ -1767,7 +1767,7 @@ def save_anc_road_details(request):
                                                            road_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
                                                            road_width=road_width,row=row,area_required=area_required, dzongkhag=dzongkhag, gewog=gewog,village=village)
     anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by('record_id')
-    return render('anc_approach_road_details.html', {'anc_road_details':anc_road_details})
+    return render('approach_road_details.html', {'anc_road_details':anc_road_details})
 
 def update_anc_road_details(request):
     record_id = request.POST.get('record_id')
@@ -1858,7 +1858,7 @@ def save_forest_attachment_details(request):
     t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='FO')
     file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='FO')
 
-    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
 
 def save_ground_water_attachment(request):
     data = dict()
@@ -1883,7 +1883,7 @@ def save_ground_water_attachment_details(request):
     t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='GW')
     file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='GW')
 
-    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
 
 def save_general_attachment(request):
     data = dict()
@@ -1908,7 +1908,7 @@ def save_general_attachment_details(request):
     t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='GEN')
     file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='GEN')
 
-    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
 
 def add_final_product_details(request):
     application_no = request.POST.get('application_no')
@@ -2003,7 +2003,7 @@ def save_transmission_attachment_details(request):
     t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='TRA')
     file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='TRA')
 
-    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
 
 
 #EA Details
@@ -2440,11 +2440,16 @@ def submit_general_application(request):
         application_no = request.POST.get('general_disclaimer_application_no')
         identifier = request.POST.get('anc_identifier')
         service_id = None
+        main_amount = 0 
+        ancillary_amount = 0
+        total_amount = 0
+        application_type = None
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
         application_details.update(action_date=date.today())
         for application_details in application_details:
             service_id = application_details.service_id
+            application_type = application_details.application_type
 
         if identifier == 'Ancillary':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
@@ -2468,15 +2473,35 @@ def submit_general_application(request):
                     application_details.update(action_date=date.today())
                     workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
                     workflow_dtls.update(action_date=date.today())
-
-                    insert_payment_details(request, application_no,'131370003', 'new_general_application')
+                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                    for fees_details in fees_details:
+                        main_amount = int(fees_details.rate)
+                        main_amount += int(fees_details.application_fee)
+                        ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                        if ancillary_application_details_count > 0:
+                            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                            for fees_details in fees_details:
+                                ancillary_amount = fees_details.rate
+                                total_amount = main_amount + ancillary_amount
+                        else:
+                            total_amount=main_amount
+                        insert_app_payment_details(request, application_no,'131370003', 'new_general_application',total_amount,application_type)
+                        send_payment_mail(request.session['name'],request.session['email'], total_amount)
                     data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
     return JsonResponse(data)
 
-
+def send_payment_mail(name, email_id, amount):
+    subject = 'Application Submitted'
+    message = "Dear " + name + " Your Application for ECS System Is Submitted. Please Make A Payment of " \
+              + str(amount) + ""
+    recipient_list = [email_id]
+    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
+              connection=None, html_message=None)
+    
 #TOR
 def tor_form(request):
     service_code = 'TOR'
@@ -2556,6 +2581,14 @@ def save_tor_form(request):
         data['message'] = "failure"
     return JsonResponse(data)
 
+def insert_app_payment_details(request,application_no,account_head, identifier,total_amount,application_type):
+    t_payment_details.objects.create(application_no=application_no,
+            application_type=application_type,
+            application_date=date.today(), 
+            proponent_name=request.session['name'],
+            amount=total_amount,
+            account_head_code=account_head)
+    return redirect(identifier)
 
 def insert_payment_details(request,application_no,account_head, identifier):
     main_application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
@@ -2687,6 +2720,7 @@ def insert_payment_details(request,application_no,account_head, identifier):
                     ancillary_amount = fees_details.rate
         
         total_amount = main_amount + ancillary_amount
+        print(total_amount)
 
         t_payment_details.objects.create(application_no=application_no,
             application_type= application.application_type,
@@ -5291,3 +5325,18 @@ def delete_dumpyard_details(request):
     dumpyard_details = t_ec_industries_t13_dumpyard.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'dump_yard_details.html', {'dumpyard_details': dumpyard_details})
+
+def delete_application_attachment(request):
+    file_id = request.POST.get('file_id')
+    identifier = request.POST.get('attachment_type')
+    application_no = request.POST.get('application_no')
+    
+    if identifier == 'GEN':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/GEN/")
+            fs.delete(str(file_name))
+        file.delete()
+    file_attach = t_file_attachment.objects.filter(application_no=application_no)
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})

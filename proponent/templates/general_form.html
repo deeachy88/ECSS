@@ -706,7 +706,7 @@
                                             <div id="anc_road_end_pointErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" id="approach_road_details" style="display: none;">
                                         <div class="col-lg-12">
                                             <div class="card mt-1">
                                                 <div class="card-body">
@@ -859,7 +859,7 @@
                                             <div id="anc_power_line_storing_methodErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="row power_line_details_table" style="display: none;">
+                                    <div class="row power_line_details" style="display: none;">
                                         <div class="col-lg-12">
                                             <div class="card mt-1">
                                                 <div class="card-body">
@@ -982,38 +982,38 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Hazardous Waste</td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_list" id="en_impact_hazardous_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_source" id="en_impact_hazardous_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_qty_annum" id="en_impact_hazardous_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_mgt_plan" id="en_impact_hazardous_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_list" id="en_impact_hazardous_waste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_source" id="en_impact_hazardous_waste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_qty_annum" id="en_impact_hazardous_waste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_mgt_plan" id="en_impact_hazardous_waste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Non-Hazardous Waste</td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_list" id="en_impact_non_hazardous_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_source" id="en_impact_non_hazardous_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_qty_annum" id="en_impact_non_hazardous_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_mgt_plan" id="en_impact_non_hazardous_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_list" id="en_impact_non_hazardous_waste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_source" id="en_impact_non_hazardous_waste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_qty_annum" id="en_impact_non_hazardous_waste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_mgt_plan" id="en_impact_non_hazardous_waste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Medical</td>
-                                                    <td><input type="text" name="en_impact_medical_waste_list" id="en_impact_medical_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_source" id="en_impact_medical_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_qty_annum" id="en_impact_medical_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_mgt_plan" id="en_impact_medical_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_list" id="en_impact_medical_waste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_source" id="en_impact_medical_waste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_qty_annum" id="en_impact_medical_waste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_mgt_plan" id="en_impact_medical_waste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>E-waste</td>
-                                                    <td><input type="text" name="en_impact_ewaste_list" id="en_impact_ewaste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_ewaste_source" id="en_impact_ewaste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_ewaste_qty_annum" id="en_impact_ewaste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_ewaste_mgt_plan" id="en_impact_ewaste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_ewaste_list" id="en_impact_ewaste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_ewaste_source" id="en_impact_ewaste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_ewaste_qty_annum" id="en_impact_ewaste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_ewaste_mgt_plan" id="en_impact_ewaste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Others</td>
-                                                    <td><input type="text" name="en_impact_others_waste_list" id="en_impact_others_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_others_waste_source" id="en_impact_others_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_others_waste_qty_annum" id="en_impact_others_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_others_waste_mgt_plan" id="en_impact_others_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_others_waste_list" id="en_impact_others_waste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_others_waste_source" id="en_impact_others_waste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_others_waste_qty_annum" id="en_impact_others_waste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_others_waste_mgt_plan" id="en_impact_others_waste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1066,23 +1066,23 @@
                                                 <tr>
                                                     <td>Industrial Area</td>
                                                     <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_ind_area_day" id="en_noise_ind_area_day" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_ind_area_night" id="en_noise_ind_area_night" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_ind_area_mgt_plan" id="en_noise_ind_area_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_noise_ind_area_day" id="en_noise_ind_area_day" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_ind_area_night" id="en_noise_ind_area_night" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_ind_area_mgt_plan" id="en_noise_ind_area_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Mixed Area</td>
                                                     <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_mixed_area_day" id="en_noise_mixed_area_day" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_mixed_area_night" id="en_noise_mixed_area_night" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_mixed_area_mgt_plan" id="en_noise_mixed_area_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_noise_mixed_area_day" id="en_noise_mixed_area_day" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_mixed_area_night" id="en_noise_mixed_area_night" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_mixed_area_mgt_plan" id="en_noise_mixed_area_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Sensitive Area</td>
                                                     <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_sen_area_day" id="en_noise_sen_area_day" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_sen_area_night" id="en_noise_sen_area_night" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_sen_area_mgt_plan" id="en_noise_sen_area_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_noise_sen_area_day" id="en_noise_sen_area_day" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_sen_area_night" id="en_noise_sen_area_night" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_sen_area_mgt_plan" id="en_noise_sen_area_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1133,75 +1133,75 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Odour</td>
-                                                    <td><input type="text" name="en_other_impact_odour_source" id="en_other_impact_odour_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_odour_qty" id="en_other_impact_odour_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_odour_mgt_plan" id="en_other_impact_odour_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_odour_source" id="en_other_impact_odour_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_odour_qty" id="en_other_impact_odour_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_odour_mgt_plan" id="en_other_impact_odour_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Fugitive emission</td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_source" id="en_other_impact_fugutive_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_qty" id="en_other_impact_fugutive_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_mgt_plan" id="en_other_impact_fugutive_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_fugutive_source" id="en_other_impact_fugutive_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_fugutive_qty" id="en_other_impact_fugutive_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_fugutive_mgt_plan" id="en_other_impact_fugutive_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Slope instability</td>
-                                                    <td><input type="text" name="en_other_impact_slope_source" id="en_other_impact_slope_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_slope_qty" id="en_other_impact_slope_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_slope_mgt_plan" id="en_other_impact_slope_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_slope_source" id="en_other_impact_slope_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_slope_qty" id="en_other_impact_slope_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_slope_mgt_plan" id="en_other_impact_slope_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Aesthetic</td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_source" id="en_other_impact_aesthetic_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_qty" id="en_other_impact_aesthetic_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_mgt_plan" id="en_other_impact_aesthetic_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_aesthetic_source" id="en_other_impact_aesthetic_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_aesthetic_qty" id="en_other_impact_aesthetic_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_aesthetic_mgt_plan" id="en_other_impact_aesthetic_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Excavated mucks</td>
-                                                    <td><input type="text" name="en_other_impact_mucks_source" id="en_other_impact_mucks_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_mucks_qty" id="en_other_impact_mucks_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_mucks_mgt_plan" id="en_other_impact_mucks_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_mucks_source" id="en_other_impact_mucks_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_mucks_qty" id="en_other_impact_mucks_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_mucks_mgt_plan" id="en_other_impact_mucks_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Sewerage generation</td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_source" id="en_other_impact_sewerage_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_qty" id="en_other_impact_sewerage_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_mgt_plan" id="en_other_impact_sewerage_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_sewerage_source" id="en_other_impact_sewerage_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_sewerage_qty" id="en_other_impact_sewerage_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_sewerage_mgt_plan" id="en_other_impact_sewerage_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Surface Run-off/Erosion</td>
-                                                    <td><input type="text" name="en_other_impact_erosion_source" id="en_other_impact_erosion_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_erosion_qty" id="en_other_impact_erosion_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_erosion_mgt_plan" id="en_other_impact_erosion_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_erosion_source" id="en_other_impact_erosion_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_erosion_qty" id="en_other_impact_erosion_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_erosion_mgt_plan" id="en_other_impact_erosion_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Storm water</td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_source" id="en_other_impact_storm_water_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_qty" id="en_other_impact_storm_water_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_mgt_plan" id="en_other_impact_storm_water_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_storm_water_source" id="en_other_impact_storm_water_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_storm_water_qty" id="en_other_impact_storm_water_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_storm_water_mgt_plan" id="en_other_impact_storm_water_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Loss of habitat</td>
-                                                    <td><input type="text" name="en_other_impact_habitat_source" id="en_other_impact_habitat_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_habitat_qty" id="en_other_impact_habitat_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_habitat_mgt_plan" id="en_other_impact_habitat_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_habitat_source" id="en_other_impact_habitat_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_habitat_qty" id="en_other_impact_habitat_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_habitat_mgt_plan" id="en_other_impact_habitat_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Socio-economic issues</td>
-                                                    <td><input type="text" name="en_other_impact_socio_source" id="en_other_impact_socio_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_socio_qty" id="en_other_impact_socio_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_socio_mgt_plan" id="en_other_impact_socio_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_socio_source" id="en_other_impact_socio_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_socio_qty" id="en_other_impact_socio_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_socio_mgt_plan" id="en_other_impact_socio_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Impact on water resources</td>
-                                                    <td><input type="text" name="en_other_impact_water_source_source" id="en_other_impact_water_source_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_water_source_qty" id="en_other_impact_water_source_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_water_source_mgt_plan" id="en_other_impact_water_source_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_water_source_source" id="en_other_impact_water_source_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_water_source_qty" id="en_other_impact_water_source_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_water_source_mgt_plan" id="en_other_impact_water_source_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Other environmental impacts</td>
-                                                    <td><input type="text" name="en_other_impact_other_source" id="en_other_impact_other_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_other_qty" id="en_other_impact_other_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_other_mgt_plan" id="en_other_impact_other_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_other_source" id="en_other_impact_other_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_other_qty" id="en_other_impact_other_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_other_mgt_plan" id="en_other_impact_other_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1349,7 +1349,7 @@
                                     </div>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
-                                            <a href="#" class="btn btn-success" onclick="submit_general_application()">
+                                            <a href="#" id="gen_submit_btn" class="btn btn-success" onclick="submit_general_application()" style="display:none;">
                                                 <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
                                         </div>
                                     </div>
@@ -1791,12 +1791,12 @@
       </div>
       <!--Body-->
       <div class="modal-body mx-4">
-        <input type="text" name="edit_raw_material_record_id" class="form-control" id="edit_raw_material_record_id">
-        <input type="text" name="edit_raw_material_app_no" class="form-control" id="edit_raw_material_app_no">
+        <input type="hidden" name="edit_raw_material_record_id" class="form-control" id="edit_raw_material_record_id">
+        <input type="hidden" name="edit_raw_material_app_no" class="form-control" id="edit_raw_material_app_no">
         <div class="row">
             <div class="col-lg-6">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">List of raw materials(Najor) </label>
+                    <label class="form-label fw-bold">List of raw materials(Major) </label>
                     <input type="text" name="edit_raw_material" class="form-control" id="edit_raw_material">
                 </div>
                 <div class="alert alert-danger" id="edit_raw_materialErrorMsg" style="display:none"></div>
@@ -5222,7 +5222,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_final_product_details' %}",
-                data : {'application_no':application_no,'record_id':record_id, 'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method},
+                data : {'application_no':application_no,'record_id':record_id, 'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_final_product_SuccessMsg').html("Update Successful");
@@ -5258,7 +5258,7 @@
             ({
                 type : "POST",
                 url : "{% url 'delete_final_product_details' %}",
-                data : {'record_id':record_id, 'application_no':application_no},
+                data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#delete_final_product_SuccessMsg').html("Add Successful");
@@ -5680,7 +5680,7 @@
         }
     }
 
-    populate_dumpyard_data(record_id, application_no, dumpyard_number, dumpyard_capacity, dumpyard_area, dumpyard_location)
+    function populate_dumpyard_data(record_id, application_no, dumpyard_number, dumpyard_capacity, dumpyard_area, dumpyard_location)
     {
         $('#dumpyard_record_id').val(record_id);
         $('#dumpyard_application_no').val(application_no);
