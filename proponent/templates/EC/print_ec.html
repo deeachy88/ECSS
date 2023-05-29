@@ -14,13 +14,13 @@
         <a href="#"><img class="img-responsive" src="{% static 'assets/images/ec_header.png' %}" style="width:90%;"/></a>
     </div>
     <div class="card-body">
-        <div class="row">
+        <div class="d-flex justify-content-between">
             {% for application_details in application_details %}
-                <h6 class="justify-content-left pull-left">{{application_details.ec_reference_no}}</h6>
-                <h6 class="justify-content-right pull-right">{{application_details.ec_approve_date}}</h6>
+                <h5>{{application_details.ec_reference_no}}</h5>
+                <h5>{{application_details.ec_approve_date}}</h5>
             {% endfor %}
         </div>
-        <div class="row text-center">
+        <div class="d-flex justify-content-center">
             <h4>ENVIRONMENT CLEARNACE</h4>
         </div>
         <p>

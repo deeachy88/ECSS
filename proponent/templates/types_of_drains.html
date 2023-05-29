@@ -15,7 +15,7 @@
                 <td>{{drainage_type.chainage}}</td>
                 <td>
                     <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="edit_drain_type_populate('{{drainage_type.record_id}}','{{drainage_type.application_no}}','{{drainage_type.drain_type}}','{{drainage_type.chainage}}')"><i class="mdi mdi-square-edit-outline"></i></button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="drain_type_populate('{{drainage_type.record_id}}','{{drainage_type.application_no}}','{{drainage_type.drain_type}}','{{drainage_type.chainage}}')"><i class="mdi mdi-square-edit-outline"></i></button>
                         <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_drain_type('{{drainage_type.record_id}}','{{drainage_type.application_no}}')"><i class="uil-trash"></i></button>
                     </div>
                 </td>

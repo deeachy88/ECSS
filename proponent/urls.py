@@ -120,7 +120,14 @@ urlpatterns = [
     path('road_project_details', views.road_project_details, name='road_project_details'),
     path('road_project_details_one', views.road_project_details_one, name='road_project_details_one'),
     path('road_project_details_two', views.road_project_details_two, name='road_project_details_two'),
+    path('save_approach_road_details', views.save_approach_road_details, name='save_approach_road_details'),
+    path('update_approach_road_details', views.update_approach_road_details, name='update_approach_road_details'),
+    path('delete_approach_road_details', views.delete_approach_road_details, name='delete_approach_road_details'),
     path('submit_road_application', views.submit_road_application, name='submit_road_application'),
+    path('add_types_of_drain', views.add_types_of_drain, name='add_types_of_drain'),
+    path('update_types_of_drain', views.update_types_of_drain, name='update_types_of_drain'),
+    path('delete_types_of_drain', views.delete_types_of_drain, name='delete_types_of_drain'),
+
 
     #Energy Application Details
     path('save_energy_application', views.save_energy_application, name='save_energy_application'),

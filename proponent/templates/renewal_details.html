@@ -7,8 +7,8 @@
         <div id="cardCollpase1" class="collapse pt-3 show">
             <form method="post" id="renewal_form">
             {% csrf_token %}
-            <input type="text" class="form-control" value="{{application_no}}" name="application_no" style="display:none;">
                 {% for application_details in application_details %} 
+                <input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
@@ -178,7 +178,7 @@
                             <h5 class="card-title mb-0">Attachments</h5>
                             <div id="cardCollpase7" class="collapse pt-3 show">
                                 <div id="renewal_file_attachment">
-                                    {% include 'file_attachment_page.html' %}
+                                    {% include 'application_attachment_page.html' %}
                                 </div>
                             </div>
                         </div>
@@ -220,7 +220,7 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Attachment</label>
-                        <input type="file" name="renewal_attach" class="form-control" id="renewal_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                        <input type="file" name="renewal_attach" class="form-control" id="renewal_attach" accept=".png,.jpg,.jpeg,.pdf,.doc,.docx">
                     </div>
                     <div class="alert alert-danger" id="renewal_attachErrorMsg" style="display:none"></div>
                 </div>
@@ -329,21 +329,21 @@
         });
     }
 
-    function save_renew_attachment()
+    function save_renewal_attachment()
     {
-        let file_length = document.getElementById("renew_attach");
+        let file_length = document.getElementById("renewal_attach");
         if(file_length.value.length < 1)
         {
-            $('#renew_attachErrorMsg').html("Please Choose A Attachment");
-            $('#renew_attachErrorMsg').show();
-            $('#renew_attachErrorMsg').delay(2000).fadeOut('slow');
+            $('#renewal_attachErrorMsg').html("Please Choose A Attachment");
+            $('#renewal_attachErrorMsg').show();
+            $('#renewal_attachErrorMsg').delay(2000).fadeOut('slow');
         }
         else
         {
-            var fileName = document.getElementById('renew_attach').files[0].name;
+            var fileName = document.getElementById('renewal_attach').files[0].name;
             var fd = new FormData();
-            var file = document.getElementById('renew_attach').files[0];
-            fd.append('renew_attach', file);
+            var file = document.getElementById('renewal_attach').files[0];
+            fd.append('renewal_attach', file);
             token_value=$("input[name=csrfmiddlewaretoken]").val();
             $.ajaxSetup
             ({
@@ -373,18 +373,18 @@
                             data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
                             success : function(responseText)
                             {
-                                $('#renew_attachment_modal').modal('hide');
-                                $('#renew_file_attachment').html(responseText);
+                                $('#renewal_attachment_modal').modal('hide');
+                                $('#renewal_file_attachment').html(responseText);
                                 $('.modal-backdrop').remove();
-                                $('#renew_attachment_form')[0].reset();
+                                $('#renewal_attachment_form')[0].reset();
                             }
                         });
                     }
                     else
                     {
-                        $('#renew_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                        $('#renew_attachErrorMsg').show();
-                        $('#renew_attachErrorMsg').delay(2000).fadeOut('slow');
+                        $('#renewal_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#renewal_attachErrorMsg').show();
+                        $('#renewal_attachErrorMsg').delay(2000).fadeOut('slow');
                     }
                 }
             });

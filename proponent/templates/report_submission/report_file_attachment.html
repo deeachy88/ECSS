@@ -2,7 +2,7 @@
     <div class="card-header">
         <div class="card-head-row">
             <div class="card-tools">
-                <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="show_attachmentModal()">
+                <a href="#" class="btn btn-info btn-border btn-round btn-sm" data-bs-toggle="modal" data-bs-target="#attachmentModal">
                     <span class="btn-label">
                         <i class="fa fa-print"></i>
                     </span>
@@ -22,20 +22,17 @@
             </thead>
             <tbody>
                {% for file_attach in file_attach %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
-                            <td>
-                                <button type="button"
-                                    class="btn btn-danger btn-sm" onclick="DeleteReportAttachment('{{ file_attach.file_id }}')">
-                                    <i class="zmdi zmdi-delete"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                          <td colspan="3" class="text-center">No Data</td>
-                        </tr>
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                        <td>
+                            <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="DeleteReportAttachment('{{ file_attach.file_id }}')"><i class="uil-trash"></i></button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">No Data</td>
+                    </tr>
                {% endfor %}
             </tbody>
         </table>
@@ -69,7 +66,7 @@ function DeleteReportAttachment(id)
         data :{'refNo':refNo , 'file_id': id},
         success : function(responseText)
         {
-            $('#file-attachment').html(responseText);
+            $('#fileAttach').html(responseText);
         }
     });
 }

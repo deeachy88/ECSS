@@ -26,13 +26,6 @@
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
                                     </div>
                                     <div class="row">
-                                        <!-- <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">CID</label>
-                                                <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" onchange="getCitizenDetails(this.value)">
-                                            </div>
-                                            <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div> -->
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of Applicant</label>
@@ -4477,7 +4470,7 @@
                 data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
-                    $('#edit_raw_material_SuccessMsg').html("Add Successful");
+                    $('#edit_raw_material_SuccessMsg').html("Update Successful");
                     $('#edit_raw_material_SuccessMsg').show();
                     setTimeout(function()
                     {
@@ -5787,7 +5780,7 @@
         }
     }
 
-    populate_delete_dumpyard_data(record_id, application_no)
+    function populate_delete_dumpyard_data(record_id, application_no)
     {
         $('#delete_dumpyard_record_id').val(record_id);
         $('#delete_dumpyard_application_no').val(application_no);

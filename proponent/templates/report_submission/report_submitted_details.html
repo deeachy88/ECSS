@@ -2,7 +2,7 @@
     <div class="card-header">
         <div class="card-head-row">
             <div class="card-tools pull-right">
-                <button type="button" class="btn btn-light" onclick="show_details_model()">Add Report Details</button>
+                <button type="button" class="btn btn-light"  data-bs-toggle="modal" data-bs-target="#details_model">Add Report Details</button>
             </div>
         </div>
     </div>
@@ -24,10 +24,7 @@
                         <td>{{report_submission.action_taken}}</td>
                         <td>{{report_submission.remarks}}</td>
                         <td>
-                            <button type="button"
-                                class="btn btn-danger btn-sm" onclick="DeleteReportDetails('{{ report_submission.record_id }}')">
-                                <i class="zmdi zmdi-delete"></i>
-                            </button>
+                            <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="DeleteReportDetails('{{ report_submission.record_id }}')"><i class="uil-trash"></i></button>
                         </td>
                     </tr>
                     {% empty %}
@@ -45,7 +42,10 @@
 <script>
 function save_next()
 {
-    $('#pills-tab a:last').tab('show');
+    $('.nav-tabs a[href="#settings-b1"]').tab('show');
+    $('#disco').removeClass('show');
+    $('#disco').removeClass('active');
+    $('#file_attachment_tab').removeClass('disabled');
 }
 
 function DeleteReportDetails(record_id)
@@ -57,7 +57,7 @@ function DeleteReportDetails(record_id)
         data :{'refNo':refNo , 'record_id': record_id},
         success : function(responseText)
         {
-            $('#details').html(responseText);
+            $('#report_details').html(responseText);
         }
     });
 }

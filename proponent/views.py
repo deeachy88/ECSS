@@ -576,12 +576,18 @@ def save_iee_application(request):
         form_type = request.POST.get('form_type')
         ca_auth = None
 
-        if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+        if request.session['ca_auth'] == 'DEC':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
+        elif request.session['ca_auth'] == 'THROMDE':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
-            ca_auth = request.session['ca_authority']
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(project_name=project_name)
@@ -1644,12 +1650,12 @@ def get_application_service_id(request):
 
     category_details = t_bsic_code.objects.filter(broad_activity_code=broad_activity_code,specific_activity_code=specific_activity_code,category=category)
     for cat_details in category_details:
-        request.session['ca_authority'] = cat_details.competent_authority
+        request.session['ca_auth'] = cat_details.competent_authority
         request.session['colour_code'] = cat_details.colour_code
         request.session['service_id'] = cat_details.service_id
         data['service_id'] = cat_details.service_id
         data['colour_code'] = cat_details.colour_code
-        data['competant_authority'] = cat_details.competent_authority
+        data['ca_auth'] = cat_details.competent_authority
     return JsonResponse(data)
 
 # IEE DETAILS
@@ -1797,6 +1803,95 @@ def delete_anc_road_details(request):
         'record_id')
     return render(request, 'anc_approach_road_details.html', {'anc_road_details': anc_road_details})
 
+def save_approach_road_details(request):
+    application_no = request.POST.get('application_no')
+    line_chainage_from = request.POST.get('road_line_chainage_from')
+    line_chainage_to = request.POST.get('road_line_chainage_to')
+    land_type = request.POST.get('road_land_type')
+    road_terrain = request.POST.get('road_terrain')
+    road_width = request.POST.get('road_width')
+    row = request.POST.get('road_row')
+    area_required = request.POST.get('road_area_required')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
+
+    t_ec_industries_t6_ancillary_road.objects.create(application_no=application_no,road_chainage_from=line_chainage_from,
+                                                    road_chainage_to=line_chainage_to,land_type=land_type,terrain=road_terrain,
+                                                    road_width=road_width,row=row,area_required=area_required,dzongkhag=dzongkhag,gewog=gewog,village=village)
+    anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by('record_id')
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request,'approach_road_details.html', {'anc_road_details':anc_road_details, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+
+def update_approach_road_details(request):
+    record_id = request.POST.get('record_id')
+    application_no = request.POST.get('application_no')
+    line_chainage_from = request.POST.get('line_chainage_from')
+    line_chainage_to = request.POST.get('line_chainage_to')
+    land_type = request.POST.get('land_type')
+    terrain = request.POST.get('terrain')
+    road_width = request.POST.get('road_width')
+    row = request.POST.get('row')
+    area_required = request.POST.get('area_required')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
+
+    road_details = t_ec_industries_t6_ancillary_road.objects.filter(record_id=record_id)
+    road_details.update(application_no=application_no,line_chainage_from=line_chainage_from,
+                       line_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
+                       road_width=road_width,row=row,area_required=area_required,dzongkhag=dzongkhag,gewog=gewog,village=village)
+    anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by('record_id')
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request,'approach_road_details.html', {'anc_road_details':anc_road_details, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+
+def delete_approach_road_details(request):
+    record_id = request.POST.get('record_id')
+    application_no = request.POST.get('application_no')
+
+    road_details = t_ec_industries_t6_ancillary_road.objects.filter(record_id=record_id)
+    road_details.delete()
+    anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by(
+        'record_id')
+    return render(request, 'approach_road_details.html', {'anc_road_details': anc_road_details})
+
+def add_types_of_drain(request):
+    application_no = request.POST.get('application_no')
+    drain_type = request.POST.get('drain_type')
+    chainage = request.POST.get('chainage')
+
+    t_ec_industries_t12_drainage_details.objects.create(application_no=application_no,drain_type=drain_type,chainage=chainage)
+    drainage_type = t_ec_industries_t12_drainage_details.objects.filter(application_no=application_no).order_by(
+        'record_id')
+    return render(request, 'types_of_drains.html', {'drainage_type': drainage_type})
+
+def update_types_of_drain(request):
+    record_id = request.POST.get('record_id')
+    application_no = request.POST.get('application_no')
+    drain_type = request.POST.get('drain_type')
+    chainage = request.POST.get('chainage')
+
+    drain_details = t_ec_industries_t12_drainage_details.objects.filter(record_id=record_id)
+
+    drain_details.update(drain_type=drain_type,chainage=chainage)
+    drainage_type = t_ec_industries_t12_drainage_details.objects.filter(application_no=application_no).order_by(
+        'record_id')
+    return render(request, 'types_of_drains.html', {'drainage_type': drainage_type})
+
+def delete_types_of_drain(request):
+    record_id = request.POST.get('record_id')
+    application_no = request.POST.get('application_no')
+
+    road_details = t_ec_industries_t12_drainage_details.objects.filter(record_id=record_id)
+    road_details.delete()
+    drainage_type = t_ec_industries_t12_drainage_details.objects.filter(application_no=application_no).order_by(
+        'record_id')
+    return render(request, 'types_of_drains.html', {'drainage_type': drainage_type})
+
 def add_forestry_produce_details(request):
     application_no = request.POST.get('application_no')
     produce_name = request.POST.get('produce_name')
@@ -1804,7 +1899,7 @@ def add_forestry_produce_details(request):
     storage_method = request.POST.get('storage_method')
 
     t_ec_industries_t8_forest_produce.objects.create(application_no=application_no, produce_name=produce_name,
-                                                    qty=qty, storage_method=storage_method)
+                                                    qty=quantity_annum, storage_method=storage_method)
     forestry_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'forestry_produce.html', {'forestry_produce': forestry_produce})
@@ -1817,7 +1912,7 @@ def update_forestry_produce_details(request):
     storage_method = request.POST.get('storage_method')
 
     forestry_produce_details = t_ec_industries_t8_forest_produce.objects.filter(record_id=record_id)
-    forestry_produce_details.update(produce_name=produce_name, qty=qty, storage_method=storage_method)
+    forestry_produce_details.update(produce_name=produce_name, qty=quantity_annum, storage_method=storage_method)
     forestry_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'forestry_produce.html', {'forestry_produce': forestry_produce})
@@ -2312,16 +2407,17 @@ def save_project_details(request):
     return JsonResponse(data)
 
 def ec_renewal(request):
-    application_details = t_ec_industries_t1_general.objects.filter(applicant_id=request.session['email'],ec_expiry_date__lt=date.today(), form_type="Main Activity" , application_status=None)
+    application_details = t_ec_industries_t1_general.objects.filter(applicant_id=request.session['email'],ec_expiry_date__lt=date.today(), form_type="Main Activity")
+    renewal_details = t_ec_renewal_t2.objects.filter(application_status=None)
     service_details = t_service_master.objects.all()
-    return render(request, 'renewal.html',{'application_details':application_details,'service_details':service_details})
+    return render(request, 'renewal.html',{'application_details':application_details,'renewal_details':renewal_details,'service_details':service_details})
 
 def ec_renewal_details(request):
     ec_reference_no = request.GET.get('ec_reference_no')
     service_code = 'REN'
     application_no = get_application_no(request, service_code, '10')
     application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no,form_type="Main Activity")
-    ec_data = t_ec_industries_t11_ec_details.objects.filter(ec_reference_no=ec_reference_no)
+    ec_data = t_ec_industries_t11_ec_details.objects.filter(ec_reference_no=ec_reference_no,ec_type='Terms')
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -2727,7 +2823,7 @@ def insert_payment_details(request,application_no,account_head, identifier):
     return redirect(identifier)
 
 
-def insert_renewal_payment_details(application_no,ec_reference_no,service_id,account_head, identifier):
+def insert_renewal_payment_details(request,application_no,ec_reference_no,service_id,account_head, identifier):
     main_application_details = t_payment_details.objects.filter(ec_no=ec_reference_no,account_head_code='131370003')
 
     main_amount = 0
@@ -2801,12 +2897,18 @@ def save_road_application(request):
         form_type = request.POST.get('form_type')
         ca_auth = None
 
-        if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+        if request.session['ca_auth'] == 'DEC':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
+        elif request.session['ca_auth'] == 'THROMDE':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
-            ca_auth = request.session['ca_authority']
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -3071,12 +3173,18 @@ def save_general_application(request):
         form_type = request.POST.get('form_type')
         ca_auth = None
 
-        if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+        if request.session['ca_auth'] == 'DEC':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
+        elif request.session['ca_auth'] == 'THROMDE':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
-            ca_auth = request.session['ca_authority']
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -3240,13 +3348,19 @@ def save_forest_application(request):
         ec_reference_no = request.POST.get('ec_reference_no')
         form_type = request.POST.get('form_type')
         ca_auth = None
-
-        if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+        
+        if request.session['ca_auth'] == 'DEC':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
+        elif request.session['ca_auth'] == 'THROMDE':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
-            ca_auth = request.session['ca_authority']
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -3397,22 +3511,56 @@ def submit_forest_application(request):
     data = dict()
     try:
         application_no = request.POST.get('forest_disclaimer_application_no')
-        identifier = request.POST.get('disc_identifier')
-        if identifier == 'OC' or identifier == 'NC':
+        identifier = request.POST.get('anc_identifier')
+        service_id = None
+        main_amount = 0 
+        ancillary_amount = 0
+        total_amount = 0
+        application_type = None
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
+        application_details.update(action_date=date.today())
+        for application_details in application_details:
+            service_id = application_details.service_id
+            application_type = application_details.application_type
+
+        if identifier == 'Ancillary':
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
+            application_details.update(action_date=date.today())
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
             workflow_dtls.update(action_date=date.today())
             data['message'] = "success"
         else:
-            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-            if(ancillary_count > 0):
-                data['message'] = "not submitted"
-            else:
-                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-                application_details.update(action_date=date.today())
+            if identifier == 'OC' or identifier == 'NC':
                 workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
                 workflow_dtls.update(action_date=date.today())
-                insert_payment_details(request, application_no,'131370003', 'new_forestry_application')
                 data['message'] = "success"
+            else:
+                ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+                if(ancillary_count > 0):
+                    data['message'] = "not submitted"
+                elif(ancillary_count < 0):
+                    data['message'] = "not submitted"
+                else:
+                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                    application_details.update(action_date=date.today())
+                    workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                    workflow_dtls.update(action_date=date.today())
+                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                    for fees_details in fees_details:
+                        main_amount = int(fees_details.rate)
+                        main_amount += int(fees_details.application_fee)
+                        ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                        if ancillary_application_details_count > 0:
+                            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                            for fees_details in fees_details:
+                                ancillary_amount = fees_details.rate
+                                total_amount = main_amount + ancillary_amount
+                        else:
+                            total_amount=main_amount
+                        insert_app_payment_details(request, application_no,'131370003', 'new_general_application',total_amount,application_type)
+                        send_payment_mail(request.session['name'],request.session['email'], total_amount)
+                    data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3449,12 +3597,18 @@ def save_ground_water_application(request):
         form_type = request.POST.get('form_type')
         ca_auth = None
 
-        if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+        if request.session['ca_auth'] == 'DEC':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
+        elif request.session['ca_auth'] == 'THROMDE':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
-            ca_auth = request.session['ca_authority']
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -3685,12 +3839,18 @@ def save_quarry_application(request):
         form_type = request.POST.get('form_type')
         ca_auth = None
 
-        if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+        if request.session['ca_auth'] == 'DEC':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
+        elif request.session['ca_auth'] == 'THROMDE':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
-            ca_auth = request.session['ca_authority']
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(project_name=project_name)
@@ -4056,12 +4216,18 @@ def save_energy_application(request):
         form_type = request.POST.get('ec_reference_no')
         ca_auth = None
 
-        if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+        if request.session['ca_auth'] == 'DEC':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
+        elif request.session['ca_auth'] == 'THROMDE':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
-            ca_auth = request.session['ca_authority']
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -4248,12 +4414,18 @@ def save_tourism_application(request):
         form_type = request.POST.get('form_type')
         ca_auth = None
 
-        if request.session['ca_authority'] == 'DEC' or 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_authority'], dzongkhag_code_id=dzongkhag_code)
+        if request.session['ca_auth'] == 'DEC':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
+        elif request.session['ca_auth'] == 'THROMDE':
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
             for auth_details in auth_details:
                 ca_auth = auth_details.competent_authority_id
         else:
-            ca_auth = request.session['ca_authority']
+            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+            for auth_details in auth_details:
+                ca_auth = auth_details.competent_authority_id
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -4998,17 +5170,21 @@ def submit_renew_application(request):
     data = dict()
     try:
         auth = None
+        total_amount = 0
+        amount = 0
         ec_reference_no = request.POST.get('ec_reference_no')
         application_no = request.POST.get('application_no')
         initiatives_undertaken = request.POST.get('initiatives_undertaken')
-        remarks = request.POST.get('remarks')
+        remarks = request.POST.get('initiatives_undertaken_remarks')
 
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
         renew_details = t_ec_renewal_t1.objects.filter(ec_reference_no=ec_reference_no)
         renew_details_one = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)
 
-        renew_details.update(application_status='P',action_date=date.today())
+        renew_details.update(application_status='P',action_date=date.today(),submission_date=date.today())
         renew_details_one.update(application_status='P',action_date=date.today())
+
+        main_application_details = t_payment_details.objects.filter(ec_no=ec_reference_no,account_head_code='131370003')
 
         for application_details in application_details:
             auth = application_details.ca_authority
@@ -5024,7 +5200,19 @@ def submit_renew_application(request):
                                             ca_authority=auth,
                                             application_source='ECSS'
                                         )
-            insert_renewal_payment_details(request, application_no, ec_reference_no,'10', '131370002', 'submit_renew_application')
+        fees_details = t_fees_schedule.objects.filter(service_id='10')
+        for main_application_details in main_application_details:
+            amount = main_application_details.amount
+        for fees_details in fees_details:
+            total_amount = (fees_details.rate * amount)/100 + fees_details.application_fee
+            
+        t_payment_details.objects.create(application_no=application_no,
+            application_type= 'Renewal',
+            application_date=date.today(), 
+            proponent_name=request.session['name'],
+            amount=total_amount,
+            account_head_code='131370002')
+        send_payment_mail(request.session['name'],request.session['email'], total_amount)
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -5197,12 +5385,10 @@ def add_report_file(request):
 def add_report_file_name(request):
     app_no = request.POST.get('refNo')
     fileName = request.POST.get('filename')
-    Applicant_Id = request.session['email']
     file_url = request.POST.get('file_url')
-    Role_Id = request.session['Role_Id']
-    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
-    t_file_attachment.objects.create(application_no=app_no, applicant_id=Applicant_Id,
-                                     role_id=Role_Id, file_path=file_url, attachment=fileName)
+    
+    t_file_attachment.objects.create(application_no=app_no,
+                                     file_path=file_url, attachment=fileName)
     file_attach = t_file_attachment.objects.filter(application_no=app_no)
     return render(request, 'report_submission/report_file_attachment.html', {'file_attach': file_attach})
 
@@ -5212,7 +5398,7 @@ def delete_report_file(request):
     referenceNo = request.GET.get('refNo')
     file = t_file_attachment.objects.filter(pk=file_id)
     for file in file:
-        fileName = file.Attachment
+        fileName = file.attachment
         fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ecs_main")
         fs.delete(str(fileName))
     file.delete()
@@ -5240,7 +5426,7 @@ def acknowledge_report(request):
 # Renewal Details
 def save_renew_attachment(request):
     data = dict()
-    ea_attach = request.FILES['renew_attach']
+    ea_attach = request.FILES['renewal_attach']
     file_name = ea_attach.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ECR/")
     if fs.exists(file_name):
@@ -5257,10 +5443,10 @@ def save_renew_attachment_details(request):
     file_name = request.POST.get('filename')
     file_url = request.POST.get('file_url')
     application_no = request.POST.get('application_no')
-    t_file_attachment.objects.create(application_no=application_no, file_path=file_url, attachment=file_name,attachment_type='EA')
+    t_file_attachment.objects.create(application_no=application_no, file_path=file_url, attachment=file_name,attachment_type='ECR')
     file_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='ECR')
 
-    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
 
 
 def save_compliance_details(request):
@@ -5333,6 +5519,13 @@ def delete_application_attachment(request):
         for file in file:
             file_name = file.attachment
             fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/GEN/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'ECR':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ECR/")
             fs.delete(str(file_name))
         file.delete()
     file_attach = t_file_attachment.objects.filter(application_no=application_no)

@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from ecs_admin.views import bsic_master
-from proponent.models import t_ec_industries_t10_hazardous_chemicals, t_ec_industries_t11_ec_details, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_industries_t9_products_by_products, t_fines_penalties, t_payment_details, t_workflow_dtls, t_workflow_dtls_audit
+from proponent.models import t_ec_industries_t10_hazardous_chemicals, t_ec_industries_t11_ec_details, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_industries_t9_products_by_products, t_ec_renewal_t1, t_ec_renewal_t2, t_fines_penalties, t_payment_details, t_workflow_dtls, t_workflow_dtls_audit
 from ecs_admin.models import t_bsic_code, t_dzongkhag_master, t_file_attachment, t_gewog_master, t_role_master, t_service_master, t_thromde_master, t_user_master, t_village_master
 from ecs_main.models import t_inspection_monitoring_t1
 from django.utils import timezone
@@ -282,13 +282,19 @@ def view_application_details(request):
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                         'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '10':
-            ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='REN')
+            renewal_details_one = t_ec_renewal_t1.objects.filter(application_no=application_no)
+            for renewal_details_one in renewal_details_one:
+                application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=renewal_details_one.ec_reference_no,form_type='Main Activity')
+            renewal_details_two = t_ec_renewal_t2.objects.filter(application_no=application_no)
+            file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='ECR')
             reviewer_list = t_user_master.objects.filter(role_id='3')
+            dzongkhag = t_dzongkhag_master.objects.all()
+            gewog = t_gewog_master.objects.all()
+            village = t_village_master.objects.all()
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
             rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
-            return render(request, 'renewal_application_details.html',{'ec_details':ec_details,'application_details':application_details,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
+            return render(request, 'renewal_application_details.html',{'application_details':application_details,'renewal_details_one':renewal_details_one,'status':status,
+                                                                       'dzongkhag':dzongkhag,'gewog':gewog,'village':village,'renewal_details_two':renewal_details_two,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '0':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             dzongkhag = t_dzongkhag_master.objects.all()
@@ -355,8 +361,12 @@ def update_payment_details(request):
                                instrument_no=instrument_no, transaction_date=transaction_date)
         work_details = t_workflow_dtls.objects.filter(application_no=application_no)
         work_details.update(application_status='APP')
+        work_details.update(assigned_role_id='3')
+        work_details.update(assigned_role_name='Reviewer')
+        work_details.update(action_date=date.today())
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
         application_details.update(application_status='APP')
+        application_details.update(action_date=date.today())
     else:
         payment_details = t_payment_details.objects.filter(application_no=application_no)
         payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,

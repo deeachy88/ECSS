@@ -19,16 +19,16 @@
                     </thead>
                     <tbody>
                         {% for application_details in application_details %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td><button type="button" class="btn btn-link text-info mb-0" onclick="getECDetails('{{application_details.ec_reference_no}}')">{{application_details.ec_reference_no}}</button></td>
-                                <td>{{application_details.application_no}}</td>
-                                {% for service_details in service_details %}
-                                    {% if application_details.service_id == service_details.service_id %}
-                                        <td>{{service_details.service_name}}</td>
-                                    {% endif %}
-                                {% endfor %}
-                            </tr>
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td><button type="button" class="btn btn-link text-info mb-0" onclick="getECDetails('{{application_details.ec_reference_no}}')">{{application_details.ec_reference_no}}</button></td>
+                                        <td>{{application_details.application_no}}</td>
+                                        {% for service_details in service_details %}
+                                            {% if application_details.service_id == service_details.service_id %}
+                                                <td>{{service_details.service_name}}</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tr>
                             {% empty %}
                             <tr>
                                 <td colspan="5" class="text-center">No Data</td>

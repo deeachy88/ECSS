@@ -1,5 +1,5 @@
 
-    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+<table id="basic-datatable" class="table dt-responsive nowrap w-100">
     <thead>
         <tr>
             <th scope="col">#</th>
@@ -55,6 +55,10 @@
                 else if(attachment_type == 'TRA')
                 {
                     $('#transmission_attachment').html(responseText);
+                }
+                else if(attachment_type == 'ECR')
+                {
+                    $('#renew_file_attachment').html(responseText);
                 }
             }
         });

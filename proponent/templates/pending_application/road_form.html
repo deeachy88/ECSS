@@ -21,43 +21,78 @@
                             <div class="accordion-body">
                                 <form method="post" id="road_application_form">
                                     {% csrf_token %}
-                                    <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" style="display:none;">
-                                    <input type="text" class="form-control" value="Main Activity" name="form_type" style="display:none;">
+                                    <input type="text" class="form-control" value="{{application_no}}" name="application_no" id="application_no" style="display:none;">
+                                    <input type="text" class="form-control" value="DR" name="identifier" style="display:none;">
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Name of Applicant</label>
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
+                                            </div>
+                                            <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Address</label>
+                                                <input type="text" name="address" class="form-control" id="address" value="{{request.session.address}}" readonly>
+                                            </div>
+                                            <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Contact No</label>
+                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{request.session.contact_number}}" readonly>
+                                            </div>
+                                            <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Email</label>
+                                                <input type="email" name="email" class="form-control" id="email" value="{{request.session.email}}" readonly>
+                                            </div>
+                                            <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of Project</label>
                                                 <select class="form-control" id="project_name" name="project_name">
                                                     <option value="">--SELECT--</option>
-                                                    {% if application_details.project_name == "National_Highway_Bypass" %}
+                                                    {% if application_details.project_name == 'National_Highway_Bypass' %}
                                                     <option value="National_Highway_Bypass" selected>National Highway Bypass</option>
                                                     <option value="Dzongkhag_Road">Dzongkhag Road</option>
                                                     <option value="Thromde_Road">Thromde Road</option>
                                                     <option value="Farm_Road">Farm Road</option>
                                                     <option value="Access_Road">Access Road</option>
                                                     <option value="Others">Others</option>
-                                                    {% if application_details.project_name == "Dzongkhag_Road" %}
+                                                    {% elif application_details.project_name == 'Dzongkhag_Road' %}
                                                     <option value="National_Highway_Bypass">National Highway Bypass</option>
                                                     <option value="Dzongkhag_Road" selected>Dzongkhag Road</option>
                                                     <option value="Thromde_Road">Thromde Road</option>
                                                     <option value="Farm_Road">Farm Road</option>
                                                     <option value="Access_Road">Access Road</option>
                                                     <option value="Others">Others</option>
-                                                    {% if application_details.project_name == "Thromde_Road" %}
+                                                    {% elif application_details.project_name == 'Thromde_Road' %}
                                                     <option value="National_Highway_Bypass">National Highway Bypass</option>
                                                     <option value="Dzongkhag_Road">Dzongkhag Road</option>
                                                     <option value="Thromde_Road" selected>Thromde Road</option>
                                                     <option value="Farm_Road">Farm Road</option>
                                                     <option value="Access_Road">Access Road</option>
                                                     <option value="Others">Others</option>
-                                                    {% if application_details.project_name == "Farm_Road" %}
+                                                    {% if application_details.project_name == 'Farm_Road' %}
                                                     <option value="National_Highway_Bypass">National Highway Bypass</option>
                                                     <option value="Dzongkhag_Road">Dzongkhag Road</option>
                                                     <option value="Thromde_Road">Thromde Road</option>
                                                     <option value="Farm_Road" selected>Farm Road</option>
                                                     <option value="Access_Road">Access Road</option>
                                                     <option value="Others">Others</option>
-                                                    {% if application_details.project_name == "Access_Road" %}
+                                                    {% elif application_details.project_name == 'Access_Road' %}
                                                     <option value="National_Highway_Bypass">National Highway Bypass</option>
                                                     <option value="Dzongkhag_Road">Dzongkhag Road</option>
                                                     <option value="Thromde_Road">Thromde Road</option>
@@ -76,88 +111,15 @@
                                             </div>
                                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Application Type</label>
-                                                <select class="form-control" id="application_type" name="application_type">
-                                                    <option value="">--SELECT--</option>
-                                                    {% if application_details.application_type == "New" %}
-                                                        <option value="New" selected>New</option>
-                                                        <option value="Expansion">Expansion</option>
-                                                        <option value="Relocation">Relocation</option>
-                                                        <option value="Other_Modification">Other Modification</option>
-                                                    {% elif application_details.application_type == "Expansion" %}
-                                                        <option value="New">New</option>
-                                                        <option value="Expansion" selected>Expansion</option>
-                                                        <option value="Relocation">Relocation</option>
-                                                        <option value="Other_Modification">Other Modification</option>
-                                                    {% elif application_details.application_type == "Relocation" %}
-                                                        <option value="New">New</option>
-                                                        <option value="Expansion">Expansion</option>
-                                                        <option value="Relocation" selected>Relocation</option>
-                                                        <option value="Other_Modification">Other Modification</option>
-                                                    {% else %}
-                                                        <option value="New">New</option>
-                                                        <option value="Expansion">Expansion</option>
-                                                        <option value="Relocation">Relocation</option>
-                                                        <option value="Other_Modification" selected>Other Modification</option>
-                                                    {% endif %}
-                                                </select>
-                                            </div>
-                                            <div id="application_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">CID</label>
-                                                <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" onchange="getCitizenDetails(this.value)" value="{{application_details.cid}}">
-                                            </div>
-                                            <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Applicant</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly value="{{application_details.applicant_name}}"> 
-                                            </div>
-                                            <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Address</label>
-                                                <input type="text" name="address" class="form-control" id="address" value="{{application_details.address}}">
-                                            </div>
-                                            <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Contact No</label>
-                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{application_details.contact_no}}">
-                                            </div>
-                                            <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Email</label>
-                                                <input type="email" name="email" class="form-control" id="email" value="{{application_details.email}}">
-                                            </div>
-                                            <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
-                                                <textarea class="form-control" name="focal_person" id="focal_person" rows="3">{{application_details.focal_person}}</textarea>
+                                                <textarea class="form-control" id="focal_person" name="focal_person" rows="3">{{application_details.focal_person}}</textarea>
                                             </div>
                                         </div>
+                                        <div id="focal_personErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -347,7 +309,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="project_details_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_details.application_no}}" name="project_details_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="project_details_application_no">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -358,26 +320,26 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">State the reason for selecting the proposed route/alignment in view of the other possible alternatives </label>
-                                                <input type="text" name="proposed_route_reason" class="form-control" id="proposed_route_reason" value="{{application_details.proposed_route_reason}}">
+                                                <label class="form-label fw-bold">Number of workers to be employed</label>
+                                                <input type="text" name="no_of_workers" class="form-control" id="no_of_workers" value="{{application_details.no_of_workers}}">
                                             </div>
-                                            <div id="proposed_route_reasonErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                     <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Project Output</label>
+                                                <input type="text" name="project_output" class="form-control" id="project_output" value="{{application_details.project_output}}">
+                                            </div>
+                                            <div id="project_outputErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Cost(Nu)</label>
                                                 <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}">
                                             </div>
                                             <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Project Duration</label>
-                                                <input type="text" name="project_duration" class="form-control" id="project_duration" value="{{application_details.project_duration}}">
-                                            </div>
-                                            <div id="project_durationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -414,13 +376,13 @@
                                         <div class="col-lg-12">
                                             <div class="card mt-1">
                                                 <div class="card-body">
-                                                    <div class="card-widgets">
+                                                    <div class="card-widgets mb-3">
                                                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#anc_approach_road_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                                     </div>
                                                     <h5 class="card-title mb-2"></h5>
                                                     <div id="cardCollpase1" class="collapse pt-3 show">
                                                         <div id="anc_approach_road_details">
-                                                            {% include 'anc_approach_road_details.html' %}
+                                                            {% include 'approach_road_details.html' %}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -655,12 +617,12 @@
                             <div class="accordion-body">
                                 <form method="post" id="project_details_one_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_details.application_no}}" name="project_details_one_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="project_details_one_application_no">
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="card mt-1">
                                                 <div class="card-body">
-                                                    <div class="card-widgets">
+                                                    <div class="card-widgets mb-3">
                                                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#types_of_drains_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                                     </div>
                                                     <h5 class="card-title mb-2"></h5>
@@ -678,10 +640,10 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Blasting Required?</label>
-                                                {% if application_details.blast_required == "Yes" %}
+                                                {% if application_details.blast_required == 'Yes' %}
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="blast_required" class="form-check-input" value="Yes" onclick="check_blasting_radio(this.value)" checked>
+                                                        <input type="radio" name="blast_required" class="form-check-input" value="Yes" checked onclick="check_blasting_radio(this.value)">
                                                         <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
@@ -696,7 +658,7 @@
                                                         <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="blast_required" class="form-check-input" value="No" onclick="check_blasting_radio(this.value)" checked>
+                                                        <input type="radio" name="blast_required" class="form-check-input" value="No" checked onclick="check_blasting_radio(this.value)">
                                                         <label class="form-check-label" for="customRadio4">No</label>
                                                     </div>
                                                 </div>
@@ -705,8 +667,7 @@
                                             <div id="blast_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    {% if application_details.blast_required == "Yes" %}
-                                    <div class="row">
+                                    {% if application_details.blast_required == 'Yes' %}
                                         <table>
                                             <tbody>
                                                 <tr>
@@ -747,7 +708,7 @@
                                                     <td>
                                                         <div class="row">
                                                             <div class="col-sm-8">
-                                                                <input type="text" class="form-control" id="blast_frequency" name="blast_frequency"  value="{{application_details.blast_frequency}}">
+                                                                <input type="text" class="form-control" id="blast_frequency" name="blast_frequency" value="{{application_details.blast_frequency}}">
                                                             </div>
                                                             <div id="blast_frequencyErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                                         </div>
@@ -755,7 +716,6 @@
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    </div>
                                     {% endif %}
                                     <div class="row blasting_details" style="display: none;">
                                         <table>
@@ -835,17 +795,16 @@
                             <div class="accordion-body">
                                 <form method="post" id="project_details_two_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_details.application_no}}" name="project_details_two_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="project_details_two_application_no">
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <div class="card mt-1">
+                                            <div class="card">
                                                 <div class="card-body">
-                                                    <div class="card-widgets">
-                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#types_of_drains_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                    <div class="card-widgets mb-3">
+                                                        <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#raw_materials_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                                     </div>
-                                                    <h5 class="card-title mb-2"></h5>
-                                                    <div id="cardCollpase1" class="collapse pt-3 show">
-                                                        <div id="types_of_drains_details">
+                                                    <div class="collapse pt-3 show">
+                                                        <div id="raw_materials_div">
                                                             {% include 'raw_materials.html' %}
                                                         </div>
                                                     </div>
@@ -901,11 +860,11 @@
                                             </div>
                                         </div>
                                     {% endif %}
-                                    <div class="col-md-12 dump_yard_details" style="display:none;">
+                                    <div class="col-md-12" id="dump_yard_details" style="display:none;">
                                         <div class="card">
                                             <div class="card-body">
                                                 <div class="card-widgets mb-3">
-                                                    <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#dump_yard_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#dump_yard_modal"><i class="mdi mdi-plus me-2"></i>Adds</button>
                                                 </div>
                                                 <div class="collapse pt-3 show">
                                                     <div id="dump_yard_details_div">
@@ -943,7 +902,7 @@
                                                     </div>
                                                 {% endif %}
                                             </div>
-                                            <div id="waterErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="water_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                     {% if application_details.water_required == "Yes" %}
@@ -1040,25 +999,6 @@
                                                 <div id="water_source_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                         </div>
-                                        <br>
-                                        <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Provide the list of raw materials, source, transportation and storage methods in table below
-                                        </div>
-                                        <br>
-                                        <div class="col-md-12">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <div class="card-widgets mb-3">
-                                                        <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#raw_materials_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                                    </div>
-                                                    <div class="collapse pt-3 show">
-                                                        <div id="raw_materials_div">
-                                                            {% include 'raw_materials.html' %}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     {% endif %}
 
                                     <div class="row general_water_details" style="display: none;">
@@ -1125,11 +1065,7 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <br>
-                                    <div class="alert alert-primary border-0 rounded-0 general_water_details" role="alert" style="display: none;">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide the following information on water source
-                                    </div>
-                                    <div class="row general_water_details" style="display: none;">
+                                    <div class="row general_water_details_no" style="display: none;">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Information on downstream users, if any</label>
@@ -1145,7 +1081,7 @@
                                             <div id="water_flow_rate_leanErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="row general_water_details" style="display: none;">
+                                    <div class="row general_water_details_no" style="display: none;">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Distance from source to the project site (meters)</label>
@@ -1154,7 +1090,6 @@
                                             <div id="water_source_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <br>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="project_details_two_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
@@ -1183,33 +1118,33 @@
                             <div class="accordion-body">
                                 <form method="post" id="anc_others_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_details.application_no}}" name="others_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="others_application_no">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
                                                 {% if application_details.anc_other_required == "Yes" %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)">
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" checked onclick="check_anc_facility(this.value)">
+                                                        <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)">
+                                                        <label class="form-check-label" for="customRadio4">No</label>
+                                                    </div>
+                                                </div>
                                                 {% else %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)">
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)">
+                                                        <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No" checked onclick="check_anc_facility(this.value)">
+                                                        <label class="form-check-label" for="customRadio4">No</label>
+                                                    </div>
+                                                </div>
                                                 {% endif %}
                                             </div>
                                             <div id="anc_other_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -1220,30 +1155,36 @@
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                         </div>
                                         <br>
+                                        {% if application_details.anc_other_crushing_unit == "Yes" %}
                                         <div class="form-check anc_facility_details" role="alert">
                                             <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_general()">
                                             <label class="form-check-label">Bridge</label>
                                         </div>
+                                        {% endif %}
+                                        {% if application_details.anc_other_surface_collection == "Yes" %}
                                         <div class="form-check anc_facility_details" role="alert">
                                             <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" onclick="check_anc_other_crushing_unit()">
                                             <label class="form-check-label">Crushing Plant</label>
                                         </div>
-                                        <div class="form-check anc_facility_details" role="alert">
-                                            <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" onclick="check_anc_other_crushing_unit()">
-                                            <label class="form-check-label">Asphalt Plant</label>
-                                        </div>
+                                        {% endif %}
+                                        {% if application_details.anc_other_ground_water == "Yes" %}
                                         <div class="form-check anc_facility_details" role="alert">
                                             <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" onclick="check_anc_other_ground_water()">
                                             <label class="form-check-label">Concrete Batching Plant</label>
                                         </div>
+                                        {% endif %}
+                                        {% if application_details.anc_other_surface_collection == "Yes" %}
                                         <div class="form-check anc_facility_details" role="alert">
                                             <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" onclick="check_anc_other_surface_collection()">
                                             <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
                                         </div>
+                                        {% endif %}
+                                        {% if application_details.anc_other_general == "Yes" %}
                                         <div class="form-check anc_facility_details" role="alert">
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()">
                                             <label class="form-check-label">Others</label>
                                         </div>
+                                        {% endif %}
                                     {% endif %}
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_others_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
@@ -1264,7 +1205,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingEight">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
-                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" >
                                 Solid Waste
                             </button>
                         </h2>
@@ -1273,12 +1214,12 @@
                             <div class="accordion-body">
                                 <form method="post" id="solid_waste_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="solid_waste_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_details.application_no}}" name="solid_waste_application_no">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Provide an allocated budget for the management plan proposed</label>
-                                                <input type="text" name="en_impact_allocated_budget" class="form-control" id="en_impact_allocated_budget">
+                                                <input type="text" name="en_impact_allocated_budget" class="form-control" id="en_impact_allocated_budget" value="{{application_details.en_impact_allocated_budget}}">
                                             </div>
                                             <div id="en_impact_allocated_budgetErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1301,38 +1242,38 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Hazardous Waste</td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_list" id="en_impact_hazardous_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_source" id="en_impact_hazardous_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_qty_annum" id="en_impact_hazardous_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_mgt_plan" id="en_impact_hazardous_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_list" id="en_impact_hazardous_waste_list" class="form-control col-lg-6" value="{{application_details.en_impact_hazardous_waste_list}}" ></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_source" id="en_impact_hazardous_waste_source" class="form-control col-lg-6" value="{{application_details.en_impact_hazardous_waste_source}}" ></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_qty_annum" id="en_impact_hazardous_waste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_hazardous_waste_qty_annum}}" ></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_mgt_plan" id="en_impact_hazardous_waste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_hazardous_waste_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Non-Hazardous Waste</td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_list" id="en_impact_non_hazardous_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_source" id="en_impact_non_hazardous_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_qty_annum" id="en_impact_non_hazardous_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_mgt_plan" id="en_impact_non_hazardous_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_list" id="en_impact_non_hazardous_waste_list" class="form-control col-lg-6" value="{{application_details.en_impact_non_hazardous_waste_list}}" ></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_source" id="en_impact_non_hazardous_waste_source" class="form-control col-lg-6" value="{{application_details.en_impact_non_hazardous_waste_source}}" ></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_qty_annum" id="en_impact_non_hazardous_waste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_non_hazardous_waste_qty_annum}}" ></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_mgt_plan" id="en_impact_non_hazardous_waste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_non_hazardous_waste_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Medical</td>
-                                                    <td><input type="text" name="en_impact_medical_waste_list" id="en_impact_medical_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_source" id="en_impact_medical_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_qty_annum" id="en_impact_medical_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_mgt_plan" id="en_impact_medical_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_list" id="en_impact_medical_waste_list" class="form-control col-lg-6" value="{{application_details.en_impact_medical_waste_list}}" ></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_source" id="en_impact_medical_waste_source" class="form-control col-lg-6" value="{{application_details.en_impact_medical_waste_source}}" ></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_qty_annum" id="en_impact_medical_waste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_medical_waste_qty_annum}}" ></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_mgt_plan" id="en_impact_medical_waste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_medical_waste_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>E-waste</td>
-                                                    <td><input type="text" name="en_impact_ewaste_list" id="en_impact_ewaste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_ewaste_source" id="en_impact_ewaste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_ewaste_qty_annum" id="en_impact_ewaste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_ewaste_mgt_plan" id="en_impact_ewaste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_ewaste_list" id="en_impact_ewaste_list" class="form-control col-lg-6" value="{{application_details.en_impact_ewaste_list}}" ></td>
+                                                    <td><input type="text" name="en_impact_ewaste_source" id="en_impact_ewaste_source" class="form-control col-lg-6" value="{{application_details.en_impact_ewaste_source}}" ></td>
+                                                    <td><input type="text" name="en_impact_ewaste_qty_annum" id="en_impact_ewaste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_ewaste_qty_annum}}" ></td>
+                                                    <td><input type="text" name="en_impact_ewaste_mgt_plan" id="en_impact_ewaste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_ewaste_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Others</td>
-                                                    <td><input type="text" name="en_impact_others_waste_list" id="en_impact_others_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_others_waste_source" id="en_impact_others_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_others_waste_qty_annum" id="en_impact_others_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_others_waste_mgt_plan" id="en_impact_others_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_others_waste_list" id="en_impact_others_waste_list" class="form-control col-lg-6" value="{{application_details.en_impact_others_waste_list}}" ></td>
+                                                    <td><input type="text" name="en_impact_others_waste_source" id="en_impact_others_waste_source" class="form-control col-lg-6" value="{{application_details.en_impact_others_waste_source}}" ></td>
+                                                    <td><input type="text" name="en_impact_others_waste_qty_annum" id="en_impact_others_waste_qty_annum" class="form-control col-lg-6" value="{{application_details.en_impact_others_waste_qty_annum}}" ></td>
+                                                    <td><input type="text" name="en_impact_others_waste_mgt_plan" id="en_impact_others_waste_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_impact_others_waste_mgt_plan}}" ></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1356,7 +1297,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwelve">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTwelveBtn"
-                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" disabled>
+                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" >
                                 Noise Level
                             </button>
                         </h2>
@@ -1365,7 +1306,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="noise_level_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="noise_level_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_details.application_no}}" name="noise_level_application_no">
                                     <div class="alert alert-primary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide maximum noise level at the project boundary during operation along with its management plan
                                     </div>
@@ -1385,23 +1326,23 @@
                                                 <tr>
                                                     <td>Industrial Area</td>
                                                     <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_ind_area_day" id="en_noise_ind_area_day" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_ind_area_night" id="en_noise_ind_area_night" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_ind_area_mgt_plan" id="en_noise_ind_area_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_noise_ind_area_day" id="en_noise_ind_area_day" class="form-control col-lg-6" value="{{application_details.en_air_pollution_control_pcd_dimention}}" ></td>
+                                                    <td><input type="text" name="en_noise_ind_area_night" id="en_noise_ind_area_night" class="form-control col-lg-6" value="{{application_details.en_air_pollution_control_pcd_dimention}}" ></td>
+                                                    <td><input type="text" name="en_noise_ind_area_mgt_plan" id="en_noise_ind_area_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_air_pollution_control_pcd_dimention}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Mixed Area</td>
                                                     <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_mixed_area_day" id="en_noise_mixed_area_day" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_mixed_area_night" id="en_noise_mixed_area_night" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_mixed_area_mgt_plan" id="en_noise_mixed_area_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_noise_mixed_area_day" id="en_noise_mixed_area_day" class="form-control col-lg-6" value="{{application_details.en_noise_mixed_area_day}}" ></td>
+                                                    <td><input type="text" name="en_noise_mixed_area_night" id="en_noise_mixed_area_night" class="form-control col-lg-6" value="{{application_details.en_noise_mixed_area_night}}" ></td>
+                                                    <td><input type="text" name="en_noise_mixed_area_mgt_plan" id="en_noise_mixed_area_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_noise_mixed_area_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Sensitive Area</td>
                                                     <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_sen_area_day" id="en_noise_sen_area_day" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_sen_area_night" id="en_noise_sen_area_night" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_sen_area_mgt_plan" id="en_noise_sen_area_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_noise_sen_area_day" id="en_noise_sen_area_day" class="form-control col-lg-6" value="{{application_details.en_noise_sen_area_day}}" ></td>
+                                                    <td><input type="text" name="en_noise_sen_area_night" id="en_noise_sen_area_night" class="form-control col-lg-6" value="{{application_details.en_noise_sen_area_night}}" ></td>
+                                                    <td><input type="text" name="en_noise_sen_area_mgt_plan" id="en_noise_sen_area_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_noise_sen_area_mgt_plan}}" ></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1425,7 +1366,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOtherImpacts">
                             <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" >
                                 Other Impacts
                             </button>
                         </h2>
@@ -1434,7 +1375,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="other_impact_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="other_impact_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_details.application_no}}" name="other_impact_application_no">
                                     <div class="alert alert-secondary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Other impacts during construction and operation of Plant and from ancillary activities such as road and power line along with its management plan.
                                     </div>
@@ -1452,87 +1393,78 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Odour</td>
-                                                    <td><input type="text" name="en_other_impact_odour_source" id="en_other_impact_odour_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_odour_qty" id="en_other_impact_odour_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_odour_mgt_plan" id="en_other_impact_odour_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_odour_source" id="en_other_impact_odour_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_odour_source}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_odour_qty" id="en_other_impact_odour_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_odour_qty}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_odour_mgt_plan" id="en_other_impact_odour_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_odour_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Fugitive emission</td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_source" id="en_other_impact_fugutive_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_qty" id="en_other_impact_fugutive_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_mgt_plan" id="en_other_impact_fugutive_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_fugutive_source" id="en_other_impact_fugutive_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_fugutive_source}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_fugutive_qty" id="en_other_impact_fugutive_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_fugutive_qty}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_fugutive_mgt_plan" id="en_other_impact_fugutive_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_fugutive_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Slope instability</td>
-                                                    <td><input type="text" name="en_other_impact_slope_source" id="en_other_impact_slope_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_slope_qty" id="en_other_impact_slope_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_slope_mgt_plan" id="en_other_impact_slope_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_slope_source" id="en_other_impact_slope_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_slope_source}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_slope_qty" id="en_other_impact_slope_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_slope_qty}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_slope_mgt_plan" id="en_other_impact_slope_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_slope_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Aesthetic</td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_source" id="en_other_impact_aesthetic_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_qty" id="en_other_impact_aesthetic_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_mgt_plan" id="en_other_impact_aesthetic_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_aesthetic_source" id="en_other_impact_aesthetic_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_aesthetic_source}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_aesthetic_qty" id="en_other_impact_aesthetic_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_aesthetic_qty}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_aesthetic_mgt_plan" id="en_other_impact_aesthetic_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_aesthetic_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Excavated mucks</td>
-                                                    <td><input type="text" name="en_other_impact_mucks_source" id="en_other_impact_mucks_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_mucks_qty" id="en_other_impact_mucks_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_mucks_mgt_plan" id="en_other_impact_mucks_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_mucks_source" id="en_other_impact_mucks_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_mucks_source}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_mucks_qty" id="en_other_impact_mucks_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_mucks_qty}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_mucks_mgt_plan" id="en_other_impact_mucks_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_mucks_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Sewerage generation</td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_source" id="en_other_impact_sewerage_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_qty" id="en_other_impact_sewerage_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_mgt_plan" id="en_other_impact_sewerage_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_sewerage_source" id="en_other_impact_sewerage_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_sewerage_source}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_sewerage_qty" id="en_other_impact_sewerage_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_sewerage_qty}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_sewerage_mgt_plan" id="en_other_impact_sewerage_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_sewerage_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Surface Run-off/Erosion</td>
-                                                    <td><input type="text" name="en_other_impact_erosion_source" id="en_other_impact_erosion_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_erosion_qty" id="en_other_impact_erosion_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_erosion_mgt_plan" id="en_other_impact_erosion_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_erosion_source" id="en_other_impact_erosion_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_erosion_source}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_erosion_qty" id="en_other_impact_erosion_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_erosion_qty}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_erosion_mgt_plan" id="en_other_impact_erosion_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_erosion_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Storm water</td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_source" id="en_other_impact_storm_water_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_qty" id="en_other_impact_storm_water_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_mgt_plan" id="en_other_impact_storm_water_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_storm_water_source" id="en_other_impact_storm_water_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_storm_water_source}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_storm_water_qty" id="en_other_impact_storm_water_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_storm_water_qty}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_storm_water_mgt_plan" id="en_other_impact_storm_water_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_storm_water_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Loss of habitat</td>
-                                                    <td><input type="text" name="en_other_impact_habitat_source" id="en_other_impact_habitat_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_habitat_qty" id="en_other_impact_habitat_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_habitat_mgt_plan" id="en_other_impact_habitat_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_habitat_source" id="en_other_impact_habitat_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_habitat_source}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_habitat_qty" id="en_other_impact_habitat_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_habitat_qty}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_habitat_mgt_plan" id="en_other_impact_habitat_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_habitat_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Socio-economic issues</td>
-                                                    <td><input type="text" name="en_other_impact_socio_source" id="en_other_impact_socio_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_socio_qty" id="en_other_impact_socio_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_socio_mgt_plan" id="en_other_impact_socio_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_socio_source" id="en_other_impact_socio_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_socio_source}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_socio_qty" id="en_other_impact_socio_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_socio_qty}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_socio_mgt_plan" id="en_other_impact_socio_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_socio_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Impact on water resources</td>
-                                                    <td><input type="text" name="en_other_impact_water_source_source" id="en_other_impact_water_source_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_water_source_qty" id="en_other_impact_water_source_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_water_source_mgt_plan" id="en_other_impact_water_source_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_water_source_source" id="en_other_impact_water_source_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_water_source_source}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_water_source_qty" id="en_other_impact_water_source_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_water_source_qty}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_water_source_mgt_plan" id="en_other_impact_water_source_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_water_source_mgt_plan}}" ></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Other environmental impacts</td>
-                                                    <td><input type="text" name="en_other_impact_other_source" id="en_other_impact_other_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_other_qty" id="en_other_impact_other_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_other_mgt_plan" id="en_other_impact_other_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_other_source" id="en_other_impact_other_source" class="form-control col-lg-6" value="{{application_details.en_other_impact_other_source}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_other_qty" id="en_other_impact_other_qty" class="form-control col-lg-6" value="{{application_details.en_other_impact_other_qty}}" ></td>
+                                                    <td><input type="text" name="en_other_impact_other_mgt_plan" id="en_other_impact_other_mgt_plan" class="form-control col-lg-6" value="{{application_details.en_other_impact_other_mgt_plan}}" ></td>
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Management Plan</label>
-                                                <textarea class="form-control" rows="3" name="en_other_impact_other_mgt_plan" id="en_other_impact_other_mgt_plan"></textarea>
-                                            </div>
-                                            <div class="alert alert-danger" id="en_other_impact_other_mgt_planErrorMsg" style="display:none"></div>
-                                        </div>
                                     </div>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="other_impact_successMsg" style="display:none">
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
@@ -1654,7 +1586,19 @@
                                         <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
-
+                                    <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
+                                    <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
+                                    <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
+                                    <p class="text-wrap">3.	Application Outcome: Submission of this application does not guarantee acceptance or approval. The final decision rests with the appropriate authorities, and we reserve the right to reject any application without providing any reason.</p>
+                                    <p class="text-wrap">4.	Disclaimer of Liability: To the extent permitted by law, we disclaim all liability for any loss, damage, or injury arising out of or related to your use of this online application form or reliance on any information provided herein. We shall not be responsible for any technical errors, interruptions, or inaccuracies that may occur during the application process.</p>
+                                    <p class="text-wrap">5.	Modification or Termination: We reserve the right to modify, suspend, or terminate this online application form at any time without prior notice. We may also update or change the terms and conditions of this disclaimer without notice.</p>
+                                    <p class="text-wrap">Please review this disclaimer carefully before submitting your application. If you do not agree with any part of this disclaimer, please refrain from using this online application form.</p>
+                                    <div class="mt-3">
+                                        <div class="form-check">
+                                            <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
+                                            <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
+                                        </div>
+                                    </div>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="road_submit_successMsg" style="display:none">
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
@@ -2169,77 +2113,115 @@
         </div>
         <!--Body-->
         <div class="modal-body mx-4">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Road Chainage From (m)</label>
-                    <input type="text" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onchange="calculate_edit_road_area_required()">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Road Chainage From (m)</label>
+                        <input type="text" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onchange="calculate_road_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="road_line_chainage_fromErrorMsg" style="display:none"></div>
                 </div>
-                <div class="alert alert-danger" id="road_line_chainage_fromErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Road Chainage To (m)</label>
-                    <input type="text" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onchange="calculate_edit_road_area_required()">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Road Chainage To (m)</label>
+                        <input type="text" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onchange="calculate_road_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="road_line_chainage_toErrorMsg" style="display:none"></div>
                 </div>
-                <div class="alert alert-danger" id="road_line_chainage_toErrorMsg" style="display:none"></div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Land Type</label>
-                    <select name="road_land_type" class="form-control" id="road_land_type">
-                        <option value="">--SELECT--</option>
-                        <option value="State Reserve Forest">State Reserve Forest</option>
-                        <option value="Private ">Private </option>
-                        <option value="Protected Area">Protected Area</option>
-                        <option value="Biological Corridor">Biological Corridor</option>
-                        <option value="Institutional Area">Institutional Area</option>
-                        <option value="Others">Others</option>
-                    </select>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Land Type</label>
+                        <select name="road_land_type" class="form-control" id="road_land_type">
+                            <option value="">--SELECT--</option>
+                            <option value="State Reserve Forest">State Reserve Forest</option>
+                            <option value="Private ">Private </option>
+                            <option value="Protected Area">Protected Area</option>
+                            <option value="Biological Corridor">Biological Corridor</option>
+                            <option value="Institutional Area">Institutional Area</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="road_land_typeErrorMsg" style="display:none"></div>
                 </div>
-                <div class="alert alert-danger" id="road_land_typeErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
-                    <select name="road_terrain" class="form-control" id="road_terrain">
-                        <option value="">--SELECT--</option>
-                        <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
-                        <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
-                        <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
-                        <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
-                    </select>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
+                        <select name="road_terrain" class="form-control" id="road_terrain">
+                            <option value="">--SELECT--</option>
+                            <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
+                            <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
+                            <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
+                            <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="road_ErrorMsg" style="display:none"></div>
                 </div>
-                <div class="alert alert-danger" id="road_ErrorMsg" style="display:none"></div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Road Width (m)</label>
-                    <input type="text" name="road_width" class="form-control" id="road_width">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Road Width (m)</label>
+                        <input type="text" name="road_width" class="form-control" id="road_width">
+                    </div>
+                    <div class="alert alert-danger" id="road_widthErrorMsg" style="display:none"></div>
                 </div>
-                <div class="alert alert-danger" id="road_widthErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Right of way (RoW)</label>
-                    <input type="text" name="road_row" class="form-control" id="road_row" onchange="calculate_edit_road_area_required()">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Right of way (RoW)</label>
+                        <input type="text" name="road_row" class="form-control" id="road_row" onchange="calculate_road_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="road_rowErrorMsg" style="display:none"></div>
                 </div>
-                <div class="alert alert-danger" id="road_rowErrorMsg" style="display:none"></div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Area Required (length x RoW)</label>
-                    <input type="text" name="road_area_required" class="form-control" id="road_area_required" readonly="readonly">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Area Required (length x RoW)</label>
+                        <input type="text" name="road_area_required" class="form-control" id="road_area_required" readonly="readonly">
+                    </div>
+                    <div class="alert alert-danger" id="road_area_requiredErrorMsg" style="display:none"></div>
                 </div>
-                <div class="alert alert-danger" id="road_area_requiredErrorMsg" style="display:none"></div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Dzongkhag</label>
+                        <select class="form-select" name="roaddzonkhag"  id="roaddzonkhag" onchange="getRoadGewog(this.value)">
+                            <option value="">--SELECT DZONGKHAG--</option>
+                            {% for dzongkhag in dzongkhag %}
+                                <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                            {% endfor %} 
+                        </select>
+                    </div>
+                    <div id="roaddzonkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Gewog</label>
+                        <select class="form-select" name="roadgewog" id="roadgewog" onchange="getRoadVillage(this.value)">
+                            <option value="">--SELECT GEWOG--</option>
+                            {% for gewog in gewog %}
+                                <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="roadgewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Village/Chiwog</label>
+                        <select class="form-select" name="roadvillage" id="roadvillage">
+                            <option value="">--SELECT VILLAGE--</option>
+                            {% for village in village %}
+                            <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="roadvillageErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                </div>
+            </div>
         </div>
         <div class="alert alert-success" id="road_successMsg" style="display:none"></div>
         <div class="modal-footer flex-center justify-content-center">
@@ -2339,6 +2321,44 @@
                 </div>
                 <div class="alert alert-danger" id="edit_road_area_requiredErrorMsg" style="display:none"></div>
             </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Dzongkhag</label>
+                    <select class="form-select" name="edit_roaddzongkhag"  id="edit_roaddzongkhag" onchange="getEditRoadGewog(this.value)">
+                        <option value="">--SELECT DZONGKHAG--</option>
+                        {% for dzongkhag in dzongkhag %}
+                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                        {% endfor %} 
+                    </select>
+                </div>
+                <div id="edit_roaddzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Gewog</label>
+                    <select class="form-select" name="edit_roadgewog" id="edit_roadgewog" onchange="getEditRoadVillage(this.value)">
+                        <option value="">--SELECT GEWOG--</option>
+                        {% for gewog in gewog %}
+                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="edit_roadgewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Village/Chiwog</label>
+                    <select class="form-select" name="edit_roadvillage" id="edit_roadvillage">
+                        <option value="">--SELECT VILLAGE--</option>
+                        {% for village in village %}
+                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="edit_roadvillageErrorMsg" class="alert alert-danger" style="display: none;"></div>
+            </div>
         </div>
         </div>
         <div class="alert alert-success" id="edit_road_successMsg" style="display:none"></div>
@@ -2385,6 +2405,280 @@
     <!--/.Content-->
     </div>
 </div>
+</form>
+
+<form method="post" id="types_of_drains_form">
+    {% csrf_token %}
+    <div class="modal fade" id="types_of_drains_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Add</strong></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Type of Drain </label>
+                        <input type="text" name="drain_type" class="form-control" id="drain_type">
+                    </div>
+                    <div class="alert alert-danger" id="drain_typeErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Chainage</label>
+                        <input type="text" name="chainage" class="form-control" id="chainage">
+                    </div>
+                    <div class="alert alert-danger" id="chainageErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+          <div class="alert alert-success" id="types_of_drains_SuccessMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="add_type_of_drain()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+    
+<form method="post" id="edit_types_of_drains_form">
+    {% csrf_token %}
+    <div class="modal fade" id="edit_types_of_drains_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Update</strong></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <input type="hidden" name="edit_drain_record_id" class="form-control" id="edit_drain_record_id">
+            <input type="hidden" name="'#edit_drain_app_no'" class="form-control" id="'#edit_drain_app_no'">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Type of Drain </label>
+                        <input type="text" name="edit_drain_type" class="form-control" id="edit_drain_type">
+                    </div>
+                    <div class="alert alert-danger" id="edit_drain_typeErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Chainage</label>
+                        <input type="text" name="edit_chainage" class="form-control" id="edit_chainage">
+                    </div>
+                    <div class="alert alert-danger" id="edit_chainageErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+              <div class="alert alert-success" id="edit_types_of_drains_SuccessMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="update_types_of_drains_details()">Update</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+    
+<form method="post" id="delete_types_of_drains_form">
+    {% csrf_token %}
+    <div class="modal fade" id="delete_types_of_drains_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Delete</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+              <input type="hidden" name="delete_drain_record_id" class="form-control" id="delete_drain_record_id">
+              <input type="hidden" name="delete_drain_application_no" class="form-control" id="delete_drain_application_no">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>Are You Sure You Want To Delete ? </p>
+                    </div>
+                </div>
+          </div>
+            <div class="alert alert-success" id="delete_drain_successMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="delete_drain_details()">Delete</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+
+<form method="post" id="dumyard_details_form">
+    {% csrf_token %}
+    <div class="modal fade" id="dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Add</strong></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Number of Dumyards</label>
+                        <input type="text" name="dumpyard_number" class="form-control" id="dumpyard_number">
+                    </div>
+                    <div class="alert alert-danger" id="dumpyard_numberErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Capacities of the dumpyards (in MT)</label>
+                        <input type="text" name="dumpyard_capacity" class="form-control" id="dumpyard_capacity">
+                    </div>
+                    <div class="alert alert-danger" id="dumpyard_capacityErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Area of the dumpyard</label>
+                        <input type="text" name="dumpyard_area" class="form-control" id="dumpyard_area">
+                    </div>
+                    <div class="alert alert-danger" id="dumpyard_areaErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Locations of the dumpyard</label>
+                        <input type="text" name="dumpyard_location" class="form-control" id="dumpyard_location">
+                    </div>
+                    <div class="alert alert-danger" id="dumpyard_locationErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+          <div class="alert alert-success" id="dumpyard_SuccessMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="add_dumpyard_details()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+    </form>
+    
+    <form method="post" id="edit_dumyard_details_form">
+    {% csrf_token %}
+    <div class="modal fade" id="edit_dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Edit</strong></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <input type="hidden" id="dumpyard_record_id" name="dumpyard_record_id">
+            <input type="hidden" id="dumpyard_application_no" name="dumpyard_application_no">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Number of Dumyards</label>
+                        <input type="text" name="edit_dumpyard_number" class="form-control" id="edit_dumpyard_number">
+                    </div>
+                    <div class="alert alert-danger" id="edit_dumpyard_numberErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Capacities of the dumpyards (in MT)</label>
+                        <input type="text" name="edit_dumpyard_capacity" class="form-control" id="edit_dumpyard_capacity">
+                    </div>
+                    <div class="alert alert-danger" id="edit_dumpyard_capacityErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Area of the dumpyard</label>
+                        <input type="text" name="edit_dumpyard_area" class="form-control" id="edit_dumpyard_area">
+                    </div>
+                    <div class="alert alert-danger" id="edit_dumpyard_areaErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Locations of the dumpyard</label>
+                        <input type="text" name="edit_dumpyard_location" class="form-control" id="edit_dumpyard_location">
+                    </div>
+                    <div class="alert alert-danger" id="edit_dumpyard_locationErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+              <div class="alert alert-success" id="edit_dumpyard_SuccessMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="update_dumpyard_details()">Update</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+    </form>
+    
+<form method="post" id="delete_dumyard_details_form">
+    {% csrf_token %}
+    <div class="modal fade" id="delete_dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Delete</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <div class="modal-body mx-4">
+            <input type="text" name="delete_dumpyard_record_id" class="form-control" id="delete_dumpyard_record_id">
+            <input type="text" name="delete_dumpyard_application_no" class="form-control" id="delete_dumpyard_application_no">
+              <div class="row">
+                <div class="col-lg-12">
+                    <p>Are You Sure You Want To Delete ? </p>
+                </div>
+            </div>
+          </div>
+              <div class="alert alert-success" id="delete_dumpyard_SuccessMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="delete_dumpyard_details()">Delete</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 </form>
 
 <script>
@@ -2465,11 +2759,6 @@
         }
     }
 
-    function save_terrain_baseline_details()
-    {
-
-
-    }
 
     function add_machine_tool_details()
     {
@@ -2891,11 +3180,8 @@
     function save_road_application()
     {
         let project_name = $('#project_name').val();
-        let application_type = $('#application_type').val();
         let applicant_name = $('#applicant_name').val();
         let address = $('#address').val();
-        let cid = $('#cid').val();
-        let cid_length = $('#cid').val().length;
         let contact_no = $('#contact_no').val();
         let contact_no_length = $('#contact_no').val().length;
         let email = $('#email').val();
@@ -2936,31 +3222,10 @@
 
         if(project_name == "")
         {
-            $('#project_nameErrorMsg').html("Enter Name of Project");
+            $('#project_nameErrorMsg').html("Select Name of Project");
             $('#project_nameErrorMsg').show();
             $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
             $('#project_name').focus();
-        }
-        else if(project_category == "")
-        {
-            $('#project_categoryErrorMsg').html("Enter Business Type");
-            $('#project_categoryErrorMsg').show();
-            $('#project_categoryErrorMsg').delay(2000).fadeOut('slow');
-            $('#project_category').focus();
-        }
-        else if(cid == "")
-        {
-            $('#cidErrorMsg').html("Enter CID");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
-        }
-        else if(cid_length < 11)
-        {
-            $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
         }
         else if(applicant_name == "")
         {
@@ -3775,6 +4040,9 @@
         road_width = $('#road_width').val();
         road_row = $('#road_row').val();
         road_area_required = $('#road_area_required').val();
+        dzongkhag = $('#roaddzonkhag').val();
+        gewog = $('#roadgewog').val();
+        village = $('#roadvillage').val();
 
         if(road_line_chainage_from == "")
         {
@@ -3794,7 +4062,7 @@
             $('#road_land_typeErrorMsg').show();
             $('#road_land_typeErrorMsg').delay(2000).fadeOut('slow');
         }
-        else if(terrain == "")
+        else if(road_terrain == "")
         {
             $('#road_terrainErrorMsg').html("Select One ");
             $('#road_terrainErrorMsg').show();
@@ -3818,20 +4086,41 @@
             $('#road_area_requiredErrorMsg').show();
             $('#road_area_requiredErrorMsg').delay(2000).fadeOut('slow');
         }
+        else if(dzongkhag == "")
+        {
+            $('#roaddzonkhagErrorMsg').html("Choose One");
+            $('#roaddzonkhagErrorMsg').show();
+            $('#roaddzonkhagErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(gewog == "")
+        {
+            $('#roadgewogErrorMsg').html("Choose One");
+            $('#roadgewogErrorMsg').show();
+            $('#roadgewogErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(village == "")
+        {
+            $('#roadvillageErrorMsg').html("Choose One");
+            $('#roadvillageErrorMsg').show();
+            $('#roadvillageErrorMsg').delay(2000).fadeOut('slow');
+        }
         else
         {
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_anc_road_details' %}",
-                data : {'application_no':application_no,'road_line_chainage_from':road_line_chainage_from,'road_line_chainage_to':road_line_chainage_to,'road_land_type':road_land_type,'road_terrain':road_terrain,'road_width':road_width,'road_row':road_row,'road_area_required':road_area_required},
+                url : "{% url 'save_approach_road_details' %}",
+                data : {'application_no':application_no,'road_line_chainage_from':road_line_chainage_from,'road_line_chainage_to':road_line_chainage_to,'road_land_type':road_land_type,'road_terrain':road_terrain,'road_width':road_width,'road_row':road_row,'road_area_required':road_area_required,'dzongkhag':dzongkhag,'gewog':gewog,'village':village, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
-                    $('#road_successMsg').html("Approach Road Details Added Successfully");
-                    $('#road_successMsg').show();
-                    $('#road_successMsg').delay(2000).fadeOut('slow');
+                    $('#anc_road_successMsg').html("Approach Road Details Added Successfully");
+                    $('#anc_road_successMsg').show();
+                    $('#anc_road_successMsg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#anc_approach_road_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_approach_road_details').html(responseText);
                     }, 2000);
                     setTimeout(function() {
                         $('#anc_approach_road_form')[0].reset();
@@ -3841,7 +4130,7 @@
         }
     }
 
-    function populate_approach_road_details(record_id, application_no, line_chainage_from, line_chainage_to, land_type, terrain, road_width, row, area_required)
+    function populate_approach_road_details(record_id, application_no, line_chainage_from, line_chainage_to, land_type, terrain, road_width, row, area_required, dzongkhag, gewog, village)
     {
         $('#edit_anc_road_record_id').val(record_id);
         $('#edit_anc_road_application_no').val(application_no);
@@ -3852,6 +4141,10 @@
         $('#edit_road_width').val(road_width);
         $('#edit_road_row').val(row);
         $('#edit_road_area_required').val(area_required);
+        $('#edit_roaddzongkhag').val(dzongkhag);
+        $('#edit_roadgewog').val(gewog);
+        $('#edit_roadvillage').val(village);
+
         $('#edit_anc_approach_road_modal').modal('show');
     }
 
@@ -3870,8 +4163,8 @@
         $.ajax
         ({
             type : "POST",
-            url : "{% url 'delete_anc_road_details' %}",
-            data : {'record_id':record_id,'application_no':application_no},
+            url : "{% url 'delete_approach_road_details' %}",
+            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
@@ -3880,13 +4173,16 @@
                 setTimeout(function() {
                     $('#delete_anc_approach_road_modal').modal('hide');
                 }, 2000);
+                setTimeout(function() {
+                    $('#anc_approach_road_details').html(responseText);
+                }, 2000);
             }
         });
     }
 
     function update_anc_road_details()
     {
-        record_id = $('#edit_anc_road_record_id').val();
+        record_id = $('#edit_anc_record_id').val();
         application_no = $('#edit_anc_road_application_no').val();
         line_chainage_from = $('#edit_road_line_chainage_from').val();
         line_chainage_to = $('#edit_road_line_chainage_to').val();
@@ -3895,6 +4191,9 @@
         road_width = $('#edit_road_width').val();
         row = $('#edit_road_row').val();
         area_required = $('#edit_road_area_required').val();
+        dzongkhag = $('#edit_roaddzongkhag').val(dzo);
+        gewog = $('#edit_roadgewog').val(gewog);
+        village = $('#edit_roadvillage').val(village);
 
         if(line_chainage_from == "")
         {
@@ -3938,13 +4237,31 @@
             $('#edit_road_area_requiredErrorMsg').show();
             $('#edit_road_area_requiredErrorMsg').delay(2000).fadeOut('slow');
         }
+        else if(dzongkhag == "")
+        {
+            $('#edit_roaddzongkhagErrorMsg').html("Choose One");
+            $('#edit_roaddzongkhagErrorMsg').show();
+            $('#edit_roaddzongkhagErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(gewog == "")
+        {
+            $('#edit_roadgewogErrorMsg').html("Choose One");
+            $('#edit_roadgewogErrorMsg').show();
+            $('#edit_roadgewogErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(village == "")
+        {
+            $('#edit_roadvillageErrorMsg').html("Choose One");
+            $('#edit_roadvillageErrorMsg').show();
+            $('#edit_roadvillageErrorMsg').delay(2000).fadeOut('slow');
+        }
         else
         {
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'update_anc_road_details' %}",
-                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                url : "{% url 'update_approach_road_details' %}",
+                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required,'dzongkhag':dzongkhag,'gewog':gewog,'village':village, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_road_successMsg').html("Approach Road Details Updated Successfully");
@@ -3952,6 +4269,9 @@
                     $('#edit_road_successMsg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#edit_anc_approach_road_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_approach_road_details').html(responseText);
                     }, 2000);
                 }
             });
@@ -3962,11 +4282,11 @@
     {
         if(value == "Yes")
         {
-            $('.dump_yard_details').show();
+            $('#dump_yard_details').show();
         }
         else
         {
-            $('.dump_yard_details').hide();
+            $('#dump_yard_details').hide();
         }
     }
 
@@ -4701,7 +5021,7 @@
                         $('#road_submit_successMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                     setTimeout(function() {
-                        window.location.href = '/new_application';
+                        location.reload()
                     }, 2000);
                 }
                 else
@@ -4767,49 +5087,425 @@
         });
     }
 
-    function check_anc_other_crushing_unit()
+    function getGewog(dzongkhag_id)
     {
-        if($('#anc_other_crushing_unit').is(":checked"))
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#gewog').html(data);
+            }
+        });
+    }
+
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#vil_chiwog').html(data);
+            }
+        });
+    }
+
+    function getRoadGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#roadgewog').html(data);
+            }
+        });
+    }
+
+    function getRoadVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#roadvillage').html(data);
+            }
+        });
+    }
+
+    function getEditRoadGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#edit_roadgewog').html(data);
+            }
+        });
+    }
+
+    function getEditRoadVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#edit_roadvillage').html(data);
+            }
+        });
+    }
+
+    function calculate_road_area_required()
+    {
+        let road_line_chainage_from = $('#road_line_chainage_from').val();
+        let road_line_chainage_to = $('#road_line_chainage_to').val(); 
+        let road_row = $('#road_row').val();
+        let sum = 0;
+        let product = 0;
+
+        sum += parseFloat(road_line_chainage_from) || 0;
+        sum += parseFloat(road_line_chainage_to) || 0;
+        product = parseFloat(sum) * parseFloat(road_row) || 0;
+         
+        $('#road_area_required').val(product);
+    }
+
+    function calculate_edit_road_area_required()
+    {
+        let road_line_chainage_from = $('#edit_road_line_chainage_from').val();
+        let road_line_chainage_to = $('#edit_road_line_chainage_to').val(); 
+        let road_row = $('#edit_road_row').val();
+        let sum = 0;
+        let product = 0;
+
+        sum += parseFloat(road_line_chainage_from) || 0;
+        sum += parseFloat(road_line_chainage_to) || 0;
+        product = parseFloat(sum) * parseFloat(road_row) || 0;
+         
+        $('#edit_road_area_required').val(product);
+    }
+
+    function add_type_of_drain()
+    {
+        application_no = $('#application_no').val();
+        drain_type = $(drain_type).val();
+        chainage = $('#chainage').val();
+        
+
+        if(drain_type == "")
         {
-            $('.industry_application').show();
+            $('#drain_typeErrorMsg').html("Enter Raw Material");
+            $('#drain_typeErrorMsg').show();
+            $('#drain_typeErrorMsg').delay(2000).fadeOut('slow');
+            $('#drain_type').focus();
+        }
+        else if(chainage == "")
+        {
+            $('#chainageErrorMsg').html("Enter Qty");
+            $('#chainageErrorMsg').show();
+            $('#chainageErrorMsg').delay(2000).fadeOut('slow');
+            $('#chainage').focus();
         }
         else
         {
-            $('.industry_application').hide();
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'add_types_of_drain' %}",
+                data : {'application_no':application_no,'drain_type':drain_type,'chainage':chainage, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#types_of_drains_SuccessMsg').html("Add Successful");
+                    $('#types_of_drains_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#types_of_drains_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#types_of_drains_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#types_of_drains_details').html(responseText);
+                    }, 2000);
+                    $('#types_of_drains_form')[0].reset();
+                }
+            });
         }
     }
 
-    function check_anc_other_surface_collection()
+    function drain_type_populate(record_id, application_no, drain_type, chainage)
     {
-        if($('#anc_other_surface_collection').is(":checked"))
+        $('#edit_drain_record_id').val(record_id);
+        $('#edit_drain_app_no').val(application_no);
+        $('#edit_drain_type').val(drain_type);
+        $('#edit_chainage').val(chainage);
+        $('#edit_types_of_drains_modal').modal('show');
+    }
+
+    function update_raw_material_details()
+    {
+        record_id = $('#edit_drain_record_id').val();
+        application_no = $('#edit_drain_app_no').val();
+        drain_type = $(edit_drain_type).val();
+        chainage = $('#edit_chainage').val();
+        
+
+        if(drain_type == "")
         {
-            $('.forestry_application').show();
+            $('#drain_typeErrorMsg').html("Enter Raw Material");
+            $('#drain_typeErrorMsg').show();
+            $('#drain_typeErrorMsg').delay(2000).fadeOut('slow');
+            $('#drain_type').focus();
+        }
+        else if(chainage == "")
+        {
+            $('#chainageErrorMsg').html("Enter Qty");
+            $('#chainageErrorMsg').show();
+            $('#chainageErrorMsg').delay(2000).fadeOut('slow');
+            $('#chainage').focus();
         }
         else
         {
-            $('.forestry_application').hide();
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_types_of_drain' %}",
+                data : {'application_no':application_no,'drain_type':drain_type,'chainage':chainage, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#edit_types_of_drains_SuccessMsg').html("Update Successful");
+                    $('#edit_types_of_drains_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#edit_types_of_drains_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_types_of_drains_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#types_of_drains_details').html(responseText);
+                    }, 2000);
+                }
+            });
         }
     }
 
-    function check_anc_other_general()
+    function populate_delete_drain_type(record_id, application_no)
     {
-        if($('#anc_other_general').is(":checked") || $('#anc_other_mineral').is(":checked"))
+        $('#delete_drain_record_id').val(record_id);
+        $('#delete_drain_application_no').val(application_no);
+        $('#delete_types_of_drains_modal').modal('show');
+    }
+
+    function delete_raw_material_details()
+    {
+        record_id = $('#delete_raw_material_record_id').val();
+        application_no = $('#delete_raw_material_app_no').val();
+
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_types_of_drain' %}",
+            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#delete_drain_successMsg').html("Add Successful");
+                $('#delete_drain_successMsg').show();
+                setTimeout(function()
+                {
+                    $('#delete_drain_successMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#delete_types_of_drains_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $(types_of_drains_details).html(responseText);
+                }, 2000);
+            }
+        });
+    }
+
+    function add_dumpyard_details()
+    {
+        let application_no = $('#application_no').val();
+        let dumpyard_number = $('#dumpyard_number').val();
+        let dumpyard_capacity = $('#dumpyard_capacity').val();
+        let dumpyard_area = $('#dumpyard_area').val();
+        let dumpyard_location = $('#dumpyard_location').val();
+        
+        if(dumpyard_number == "")
         {
-            $('.general_application').show();
+            $('#dumpyard_numberErrorMsg').html("Enter Dumpyard Number");
+            $('#dumpyard_numberErrorMsg').show();
+            $('#dumpyard_numberErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_number').focus();
         }
-        else if($('#anc_other_general').is(":checked") && $('#anc_other_mineral').not(":checked"))
+        else if(dumpyard_capacity == "")
         {
-            $('.general_application').show();
+            $('#dumpyard_capacityErrorMsg').html("Enter Dumpyard Capacity");
+            $('#dumpyard_capacityErrorMsg').show();
+            $('#dumpyard_capacityErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_capacity').focus();
         }
-        else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').is(":checked"))
+        else if(dumpyard_area == "")
         {
-            $('.general_application').show();
+            $('#dumpyard_areaErrorMsg').html("Enter Dumpyard Area");
+            $('#dumpyard_areaErrorMsg').show();
+            $('#dumpyard_areaErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_area').focus();
         }
-        else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').not(":checked"))
+        else if(dumpyard_location == "")
         {
-            $('.general_application').hide();
+            $('#dumpyard_locationErrorMsg').html("Enter Dumpyard Location");
+            $('#dumpyard_locationErrorMsg').show();
+            $('#dumpyard_locationErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_location').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'add_dumpyard_details' %}",
+                data : {'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#dumpyard_SuccessMsg').html("Add Successful");
+                    $('#dumpyard_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#dumyard_details_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#dump_yard_details_div').html(responseText);
+                    }, 2000);
+                    $('#dumyard_details_form')[0].reset();
+                }
+            });
         }
     }
 
+    function populate_dumpyard_data(record_id, application_no, dumpyard_number, dumpyard_capacity, dumpyard_area, dumpyard_location)
+    {
+        $('#dumpyard_record_id').val(record_id);
+        $('#dumpyard_application_no').val(application_no);
+        $('#edit_dumpyard_number').val(dumpyard_number);
+        $('#edit_dumpyard_capacity').val(dumpyard_capacity);
+        $('#edit_dumpyard_area').val(dumpyard_area);
+        $('#edit_dumpyard_location').val(dumpyard_location);
+        
+        $('#edit_dumyard_details_modal').modal('show');
+    }
+
+    function update_dumpyard_details()
+    {
+        let record_id = $('#dumpyard_record_id').val();
+        let application_no = $('#dumpyard_application_no').val();
+        let dumpyard_number = $('#edit_dumpyard_number').val();
+        let dumpyard_capacity = $('#edit_dumpyard_capacity').val();
+        let dumpyard_area = $('#edit_dumpyard_area').val();
+        let dumpyard_location = $('#edit_dumpyard_location').val();
+        
+        if(dumpyard_number == "")
+        {
+            $('#edit_dumpyard_numberErrorMsg').html("Enter Dumpyard Number");
+            $('#edit_dumpyard_numberErrorMsg').show();
+            $('#edit_dumpyard_numberErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_number').focus();
+        }
+        else if(dumpyard_capacity == "")
+        {
+            $('#edit_dumpyard_capacityErrorMsg').html("Enter Dumpyard Capacity");
+            $('#edit_dumpyard_capacityErrorMsg').show();
+            $('#edit_dumpyard_capacityErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_capacity').focus();
+        }
+        else if(dumpyard_area == "")
+        {
+            $('#edit_dumpyard_areaErrorMsg').html("Enter Dumpyard Area");
+            $('#edit_dumpyard_areaErrorMsg').show();
+            $('#edit_dumpyard_areaErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_area').focus();
+        }
+        else if(dumpyard_location == "")
+        {
+            $('#edit_dumpyard_locationErrorMsg').html("Enter Dumpyard Location");
+            $('#edit_dumpyard_locationErrorMsg').show();
+            $('#edit_dumpyard_locationErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_location').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_dumpyard_details' %}",
+                data : {'record_id':record_id,'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#edit_dumpyard_SuccessMsg').html("Update Successful");
+                    $('#edit_dumpyard_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#edit_dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_dumyard_details_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#dump_yard_details_div').html(responseText);
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function populate_delete_dumpyard_data(record_id, application_no)
+    {
+        $('#delete_dumpyard_record_id').val(record_id);
+        $('#delete_dumpyard_application_no').val(application_no);
+        $('#delete_dumyard_details_modal').modal('hide');
+    }
+
+    function delete_dumpyard_details()
+    {
+        let record_id = $('#delete_dumpyard_record_id').val();
+        let application_no = $('#delete_dumpyard_application_no').val();
+
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_dumpyard_details' %}",
+            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#delete_dumpyard_SuccessMsg').html("Delete Successful");
+                $('#delete_dumpyard_SuccessMsg').show();
+                setTimeout(function()
+                {
+                    $('#delete_dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#delete_dumyard_details_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#dump_yard_details_div').html(responseText);
+                }, 2000);
+            }
+        });
+    }
 </script>
 {% endblock %}
