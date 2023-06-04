@@ -1787,8 +1787,8 @@ def update_anc_road_details(request):
     area_required = request.POST.get('area_required')
 
     road_details = t_ec_industries_t6_ancillary_road.objects.filter(record_id=record_id)
-    road_details.update(application_no=application_no,line_chainage_from=line_chainage_from,
-                       line_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
+    road_details.update(application_no=application_no,road_chainage_from=line_chainage_from,
+                       road_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
                        road_width=road_width,row=row,area_required=area_required)
     anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by('record_id')
     return render(request,'anc_approach_road_details.html', {'anc_road_details':anc_road_details})
