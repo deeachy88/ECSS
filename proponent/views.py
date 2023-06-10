@@ -923,26 +923,30 @@ def save_anc_approach_road_details(request):
     try:
         application_no = request.POST.get('approach_road_application_no')
         anc_road_required = request.POST.get('anc_road_required')
-        anc_road_length = request.POST.get('anc_road_length')
-        anc_road_start_point = request.POST.get('anc_road_start_point')
-        anc_road_end_point = request.POST.get('anc_road_end_point')
         anc_road_blast_required = request.POST.get('anc_road_blast_required')
-        anc_road_blast_type = request.POST.get('anc_road_blast_type')
-        anc_road_blast_qty = request.POST.get('anc_road_blast_qty')
-        anc_road_blast_location = request.POST.get('anc_road_blast_location')
-        anc_road_blast_frequency_time = request.POST.get('anc_road_blast_frequency_time')
+        if anc_road_required == 'Yes':
+            anc_road_length = request.POST.get('anc_road_length')
+            anc_road_start_point = request.POST.get('anc_road_start_point')
+            anc_road_end_point = request.POST.get('anc_road_end_point')
+            anc_road_blast_type = request.POST.get('anc_road_blast_type')
+            anc_road_blast_qty = request.POST.get('anc_road_blast_qty')
+            anc_road_blast_location = request.POST.get('anc_road_blast_location')
+            anc_road_blast_frequency_time = request.POST.get('anc_road_blast_frequency_time')
 
-        approach_road_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        approach_road_details.update(anc_road_required=anc_road_required,
-                                     anc_road_length=anc_road_length,
-                                     anc_road_start_point=anc_road_start_point,
-                                     anc_road_end_point=anc_road_end_point,
-                                     anc_road_blast_required=anc_road_blast_required,
-                                     anc_road_blast_type=anc_road_blast_type,
-                                     anc_road_blast_qty=anc_road_blast_qty,
-                                     anc_road_blast_location=anc_road_blast_location,
-                                     anc_road_blast_frequency_time=anc_road_blast_frequency_time
-                                     )
+            approach_road_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            approach_road_details.update(anc_road_required=anc_road_required,
+                                        anc_road_length=anc_road_length,
+                                        anc_road_start_point=anc_road_start_point,
+                                        anc_road_end_point=anc_road_end_point,
+                                        anc_road_blast_required=anc_road_blast_required,
+                                        anc_road_blast_type=anc_road_blast_type,
+                                        anc_road_blast_qty=anc_road_blast_qty,
+                                        anc_road_blast_location=anc_road_blast_location,
+                                        anc_road_blast_frequency_time=anc_road_blast_frequency_time
+                                        )
+        else:
+            approach_road_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            approach_road_details.update(anc_road_required=anc_road_required,anc_road_blast_required=anc_road_blast_required)
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -954,20 +958,24 @@ def save_anc_power_line_form(request):
     try:
         application_no = request.POST.get('power_line_application_no')
         anc_power_line_required = request.POST.get('anc_power_line_required')
-        anc_power_line_voltage = request.POST.get('anc_power_line_voltage')
-        anc_power_line_length = request.POST.get('anc_power_line_length')
-        anc_power_line_start_point = request.POST.get('anc_power_line_start_point')
-        anc_power_line_end_point = request.POST.get('anc_power_line_end_point')
-        anc_power_line_storing_method = request.POST.get('anc_power_line_storing_method')
+        if anc_power_line_required == 'Yes':
+            anc_power_line_voltage = request.POST.get('anc_power_line_voltage')
+            anc_power_line_length = request.POST.get('anc_power_line_length')
+            anc_power_line_start_point = request.POST.get('anc_power_line_start_point')
+            anc_power_line_end_point = request.POST.get('anc_power_line_end_point')
+            anc_power_line_storing_method = request.POST.get('anc_power_line_storing_method')
 
-        power_line_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        power_line_details.update(anc_power_line_required=anc_power_line_required,
-                                  anc_power_line_voltage=anc_power_line_voltage,
-                                  anc_power_line_length=anc_power_line_length,
-                                  anc_power_line_start_point=anc_power_line_start_point,
-                                  anc_power_line_end_point=anc_power_line_end_point,
-                                  anc_power_line_storing_method=anc_power_line_storing_method
-                                  )
+            power_line_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            power_line_details.update(anc_power_line_required=anc_power_line_required,
+                                    anc_power_line_voltage=anc_power_line_voltage,
+                                    anc_power_line_length=anc_power_line_length,
+                                    anc_power_line_start_point=anc_power_line_start_point,
+                                    anc_power_line_end_point=anc_power_line_end_point,
+                                    anc_power_line_storing_method=anc_power_line_storing_method
+                                    )
+        else:
+            power_line_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            power_line_details.update(anc_power_line_required=anc_power_line_required)
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)

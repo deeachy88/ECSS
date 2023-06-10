@@ -1,0 +1,39 @@
+
+<table id="basic-datatable" class="table dt-responsive nowrap w-100">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">File</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for file_attach in ai_attach %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                    <td>
+                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_ai_attachment('{{ file_attach.file_id }}','{{ file_attach.application_no }}')"><i class="uil-trash"></i></button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="3" class="text-center">No Data</td>
+                </tr>
+       {% endfor %}
+    </tbody>
+</table>
+<script>
+    function delete_ai_attachment(file_id,application_no)
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'delete_ai_attachment' %}",
+            data :{'file_id':file_id , 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#ai_file_attachment').html(responseText);
+            }
+        });
+    }
+</script>

@@ -23,6 +23,9 @@ urlpatterns = [
     path('save_rev_lu_attachment_details', views.save_rev_lu_attachment_details, name='save_rev_lu_attachment_details'),
     path('delete_rev_lu_attachment', views.delete_rev_lu_attachment, name='delete_rev_lu_attachment'),
     path('delete_lu_attachment', views.delete_lu_attachment, name='delete_lu_attachment'),
+    path('save_ai_attachment', views.save_ai_attachment, name='save_ai_attachment'),
+    path('save_ai_attachment_details', views.save_ai_attachment_details, name='save_ai_attachment_details'),
+    path('delete_ai_attachment', views.delete_ai_attachment, name='delete_ai_attachment'),
 
 
 #InspectionMonitoring

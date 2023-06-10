@@ -680,6 +680,46 @@ def delete_rev_lu_attachment(request):
     rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='RLU')
     return render(request, 'rev_lu_attachment_page.html', {'rev_lu_attach':rev_lu_attach})
 
+def save_ai_attachment(request):
+    data = dict()
+    ai_attach = request.FILES['ai_attach']
+    app_no = request.POST.get('application_no')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + ai_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/AI/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, ai_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/AI" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_ai_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('application_no')
+
+    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='AI')
+    ai_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='AI')
+
+    return render(request, 'ai_attachment_page.html', {'ai_attach': ai_attach})
+
+def delete_ai_attachment(request):
+    file_id = request.POST.get('file_id')
+    application_no = request.POST.get('application_no')
+
+    file = t_file_attachment.objects.filter(file_id=file_id)
+    for file in file:
+        file_name = file.attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/AI")
+        fs.delete(str(file_name))
+    file.delete()
+
+    rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='AI')
+    return render(request, 'rev_lu_attachment_page.html', {'rev_lu_attach':rev_lu_attach})
+
 def delete_lu_attachment(request):
     file_id = request.POST.get('file_id')
     application_no = request.POST.get('application_no')
