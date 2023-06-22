@@ -13,7 +13,6 @@ urlpatterns = [
     path('new_application_form', views.new_application_form, name='new_application_form'),
 
 
-
     path('add_machine_tool_details', views.add_machine_tool_details, name='add_machine_tool_details'),
     path('update_machine_tool_details', views.update_machine_tool_details, name='update_machine_tool_details'),
     path('delete_machine_tool_details', views.delete_machine_tool_details, name='delete_machine_tool_details'),

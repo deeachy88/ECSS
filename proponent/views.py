@@ -1512,26 +1512,72 @@ def submit_iee_application(request):
     try:
         application_no = request.POST.get('iee_disclaimer_application_no')
         identifier = request.POST.get('disc_identifier')
-        iee_form_type = request.POST.get('iee_form_type')
+        service_id = None
+        main_amount = 0 
+        ancillary_amount = 0
+        total_amount = 0
+        application_type = None
+        anc_other_crushing_unit = None
+        anc_other_surface_collection = None
+        anc_other_ground_water = None
+        anc_other_mineral = None
+        anc_other_general = None
+        anc_other_transmission = None
 
-        if identifier == 'OC' or identifier == 'NC':
-            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.today())
-            data['message'] = "success"
-        elif iee_form_type == 'Ancillary':
-            data['message'] = "success"
-            return redirect(view_draft_application_details)
-        else:
-            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-            if(ancillary_count > 0):
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
+        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        for application_details in application_details:
+            service_id = application_details.service_id
+            application_type = application_details.application_type
+            anc_other_crushing_unit = application_details.anc_other_crushing_unit
+            anc_other_surface_collection = application_details.anc_other_surface_collection
+            anc_other_ground_water = application_details.anc_other_ground_water
+            anc_other_mineral = application_details.anc_other_mineral
+            anc_other_general = application_details.anc_other_general
+            anc_other_transmission = application_details.anc_other_transmission
+
+        if anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or anc_other_general == 'Yes' or anc_other_transmission == 'Yes':
+            if anc_details == 0:
                 data['message'] = "not submitted"
             else:
-                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
                 application_details.update(action_date=date.today())
-                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                workflow_dtls.update(action_date=date.today())
-                insert_payment_details(request, application_no,'131370003', 'new_iee_application')
-                data['message'] = "success"
+                if identifier == 'Ancillary':
+                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
+                    application_details.update(action_date=date.today())
+                    workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                    workflow_dtls.update(action_date=date.today())
+                    data['message'] = "success"
+                else:
+                    if identifier == 'OC' or identifier == 'NC':
+                        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                        workflow_dtls.update(action_date=date.today())
+                        data['message'] = "success"
+                    else:
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+                        if(ancillary_count > 0):
+                            data['message'] = "not submitted"
+                        elif(ancillary_count < 0):
+                            data['message'] = "not submitted"
+                        else:
+                            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                            application_details.update(action_date=date.today())
+                            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                            workflow_dtls.update(action_date=date.today())
+                            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                            for fees_details in fees_details:
+                                main_amount = int(fees_details.rate)
+                                main_amount += int(fees_details.application_fee)
+                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                                if ancillary_application_details_count > 0:
+                                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                                    for fees_details in fees_details:
+                                        ancillary_amount = fees_details.rate
+                                        total_amount = main_amount + ancillary_amount
+                                else:
+                                    total_amount=main_amount
+                                insert_app_payment_details(request, application_no,'131370003', 'new_iee_application',total_amount,application_type)
+                                send_payment_mail(request.session['name'],request.session['email'], total_amount)
+                            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -2318,25 +2364,77 @@ def submit_ea_application(request):
     try:
         application_no = request.POST.get('ea_disclaimer_application_no')
         identifier = request.POST.get('disc_identifier')
-        if identifier == 'OC' or identifier == 'NC':
-            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.today())
-            data['message'] = "success"
-        else:
-            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-            if(ancillary_count > 0):
+        service_id = None
+        main_amount = 0 
+        ancillary_amount = 0
+        total_amount = 0
+        application_type = None
+        anc_other_crushing_unit = None
+        anc_other_surface_collection = None
+        anc_other_ground_water = None
+        anc_other_mineral = None
+        anc_other_general = None
+        anc_other_transmission = None
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
+        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        for application_details in application_details:
+            service_id = application_details.service_id
+            application_type = application_details.application_type
+            anc_other_crushing_unit = application_details.anc_other_crushing_unit
+            anc_other_surface_collection = application_details.anc_other_surface_collection
+            anc_other_ground_water = application_details.anc_other_ground_water
+            anc_other_mineral = application_details.anc_other_mineral
+            anc_other_general = application_details.anc_other_general
+            anc_other_transmission = application_details.anc_other_transmission
+
+        if anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or anc_other_general == 'Yes' or anc_other_transmission == 'Yes':
+            if anc_details == 0:
                 data['message'] = "not submitted"
             else:
-                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
                 application_details.update(action_date=date.today())
-                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                workflow_dtls.update(action_date=date.today())
-                insert_payment_details(request, application_no,'131370003', 'new_ea_application')
-                data['message'] = "success"
+                if identifier == 'Ancillary':
+                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
+                    application_details.update(action_date=date.today())
+                    workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                    workflow_dtls.update(action_date=date.today())
+                    data['message'] = "success"
+                else:
+                    if identifier == 'OC' or identifier == 'NC':
+                        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                        workflow_dtls.update(action_date=date.today())
+                        data['message'] = "success"
+                    else:
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+                        if(ancillary_count > 0):
+                            data['message'] = "not submitted"
+                        elif(ancillary_count < 0):
+                            data['message'] = "not submitted"
+                        else:
+                            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                            application_details.update(action_date=date.today())
+                            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                            workflow_dtls.update(action_date=date.today())
+                            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                            for fees_details in fees_details:
+                                main_amount = int(fees_details.rate)
+                                main_amount += int(fees_details.application_fee)
+                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                                if ancillary_application_details_count > 0:
+                                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                                    for fees_details in fees_details:
+                                        ancillary_amount = fees_details.rate
+                                        total_amount = main_amount + ancillary_amount
+                                else:
+                                    total_amount=main_amount
+                                insert_app_payment_details(request, application_no,'131370003', 'new_ea_application',total_amount,application_type)
+                                send_payment_mail(request.session['name'],request.session['email'], total_amount)
+                            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
     return JsonResponse(data)
+
 
 #Common Details
 def save_project_details(request):
@@ -2511,27 +2609,79 @@ def save_general_water_requirement(request):
 def submit_transmission_application(request):
     data = dict()
     try:
-        application_no = request.POST.get('transmission_disclaimer_application_no')
+        application_no = request.POST.get('ea_disclaimer_application_no')
         identifier = request.POST.get('disc_identifier')
-        if identifier == 'OC' or identifier == 'NC':
-            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.today())
-            data['message'] = "success"
-        else:
-            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-            if(ancillary_count > 0):
+        service_id = None
+        main_amount = 0 
+        ancillary_amount = 0
+        total_amount = 0
+        application_type = None
+        anc_other_crushing_unit = None
+        anc_other_surface_collection = None
+        anc_other_ground_water = None
+        anc_other_mineral = None
+        anc_other_general = None
+        anc_other_transmission = None
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
+        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        for application_details in application_details:
+            service_id = application_details.service_id
+            application_type = application_details.application_type
+            anc_other_crushing_unit = application_details.anc_other_crushing_unit
+            anc_other_surface_collection = application_details.anc_other_surface_collection
+            anc_other_ground_water = application_details.anc_other_ground_water
+            anc_other_mineral = application_details.anc_other_mineral
+            anc_other_general = application_details.anc_other_general
+            anc_other_transmission = application_details.anc_other_transmission
+
+        if anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or anc_other_general == 'Yes' or anc_other_transmission == 'Yes':
+            if anc_details == 0:
                 data['message'] = "not submitted"
             else:
-                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
                 application_details.update(action_date=date.today())
-                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                workflow_dtls.update(action_date=date.today())
-                insert_payment_details(request, application_no,'131370003', 'new_transmission_application')
-                data['message'] = "success"
+                if identifier == 'Ancillary':
+                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
+                    application_details.update(action_date=date.today())
+                    workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                    workflow_dtls.update(action_date=date.today())
+                    data['message'] = "success"
+                else:
+                    if identifier == 'OC' or identifier == 'NC':
+                        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                        workflow_dtls.update(action_date=date.today())
+                        data['message'] = "success"
+                    else:
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+                        if(ancillary_count > 0):
+                            data['message'] = "not submitted"
+                        elif(ancillary_count < 0):
+                            data['message'] = "not submitted"
+                        else:
+                            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                            application_details.update(action_date=date.today())
+                            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                            workflow_dtls.update(action_date=date.today())
+                            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                            for fees_details in fees_details:
+                                main_amount = int(fees_details.rate)
+                                main_amount += int(fees_details.application_fee)
+                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                                if ancillary_application_details_count > 0:
+                                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                                    for fees_details in fees_details:
+                                        ancillary_amount = fees_details.rate
+                                        total_amount = main_amount + ancillary_amount
+                                else:
+                                    total_amount=main_amount
+                                insert_app_payment_details(request, application_no,'131370003', 'new_transmission_application',total_amount,application_type)
+                                send_payment_mail(request.session['name'],request.session['email'], total_amount)
+                            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
     return JsonResponse(data)
+
 
 #General Application Details
 def submit_general_application(request):
@@ -2544,50 +2694,68 @@ def submit_general_application(request):
         ancillary_amount = 0
         total_amount = 0
         application_type = None
+        anc_other_crushing_unit = None
+        anc_other_surface_collection = None
+        anc_other_ground_water = None
+        anc_other_mineral = None
+        anc_other_general = None
+        anc_other_transmission = None
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-        application_details.update(action_date=date.today())
+        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        print(anc_details)
         for application_details in application_details:
             service_id = application_details.service_id
             application_type = application_details.application_type
+            anc_other_crushing_unit = application_details.anc_other_crushing_unit
+            anc_other_surface_collection = application_details.anc_other_surface_collection
+            anc_other_ground_water = application_details.anc_other_ground_water
+            anc_other_mineral = application_details.anc_other_mineral
+            anc_other_general = application_details.anc_other_general
+            anc_other_transmission = application_details.anc_other_transmission
 
-        if identifier == 'Ancillary':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
-            application_details.update(action_date=date.today())
-            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.today())
-            data['message'] = "success"
-        else:
-            if identifier == 'OC' or identifier == 'NC':
-                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                workflow_dtls.update(action_date=date.today())
-                data['message'] = "success"
+        if anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or anc_other_general == 'Yes' or anc_other_transmission == 'Yes':
+            if anc_details == 0:
+                data['message'] = "not submitted"
             else:
-                ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-                if(ancillary_count > 0):
-                    data['message'] = "not submitted"
-                elif(ancillary_count < 0):
-                    data['message'] = "not submitted"
-                else:
-                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                application_details.update(action_date=date.today())
+                if identifier == 'Ancillary':
+                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
                     application_details.update(action_date=date.today())
                     workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
                     workflow_dtls.update(action_date=date.today())
-                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                    for fees_details in fees_details:
-                        main_amount = int(fees_details.rate)
-                        main_amount += int(fees_details.application_fee)
-                        ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
-                        if ancillary_application_details_count > 0:
+                    data['message'] = "success"
+                else:
+                    if identifier == 'OC' or identifier == 'NC':
+                        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                        workflow_dtls.update(action_date=date.today())
+                        data['message'] = "success"
+                    else:
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+                        if(ancillary_count > 0):
+                            data['message'] = "not submitted"
+                        elif(ancillary_count < 0):
+                            data['message'] = "not submitted"
+                        else:
+                            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                            application_details.update(action_date=date.today())
+                            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                            workflow_dtls.update(action_date=date.today())
                             fees_details = t_fees_schedule.objects.filter(service_id=service_id)
                             for fees_details in fees_details:
-                                ancillary_amount = fees_details.rate
-                                total_amount = main_amount + ancillary_amount
-                        else:
-                            total_amount=main_amount
-                        insert_app_payment_details(request, application_no,'131370003', 'new_general_application',total_amount,application_type)
-                        send_payment_mail(request.session['name'],request.session['email'], total_amount)
-                    data['message'] = "success"
+                                main_amount = int(fees_details.rate)
+                                main_amount += int(fees_details.application_fee)
+                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                                if ancillary_application_details_count > 0:
+                                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                                    for fees_details in fees_details:
+                                        ancillary_amount = fees_details.rate
+                                        total_amount = main_amount + ancillary_amount
+                                else:
+                                    total_amount=main_amount
+                                insert_app_payment_details(request, application_no,'131370003', 'new_general_application',total_amount,application_type)
+                                send_payment_mail(request.session['name'],request.session['email'], total_amount)
+                            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3527,48 +3695,59 @@ def submit_forest_application(request):
         application_type = None
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-        application_details.update(action_date=date.today())
+        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+
         for application_details in application_details:
             service_id = application_details.service_id
             application_type = application_details.application_type
+            anc_other_crushing_unit = application_details.anc_other_crushing_unit
+            anc_other_surface_collection = application_details.anc_other_surface_collection
+            anc_other_ground_water = application_details.anc_other_ground_water
+            anc_other_mineral = application_details.anc_other_mineral
+            anc_other_general = application_details.anc_other_general
+            anc_other_transmission = application_details.anc_other_transmission
 
-        if identifier == 'Ancillary':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
-            application_details.update(action_date=date.today())
-            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.today())
-            data['message'] = "success"
-        else:
-            if identifier == 'OC' or identifier == 'NC':
-                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                workflow_dtls.update(action_date=date.today())
-                data['message'] = "success"
+        if anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or anc_other_general == 'Yes' or anc_other_transmission == 'Yes':
+            if anc_details == 0:
+                data['message'] = "not submitted"
             else:
-                ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-                if(ancillary_count > 0):
-                    data['message'] = "not submitted"
-                elif(ancillary_count < 0):
-                    data['message'] = "not submitted"
-                else:
-                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                if identifier == 'Ancillary':
+                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
                     application_details.update(action_date=date.today())
                     workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
                     workflow_dtls.update(action_date=date.today())
-                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                    for fees_details in fees_details:
-                        main_amount = int(fees_details.rate)
-                        main_amount += int(fees_details.application_fee)
-                        ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
-                        if ancillary_application_details_count > 0:
+                    data['message'] = "success"
+                else:
+                    if identifier == 'OC' or identifier == 'NC':
+                        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                        workflow_dtls.update(action_date=date.today())
+                        data['message'] = "success"
+                    else:
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+                        if(ancillary_count > 0):
+                            data['message'] = "not submitted"
+                        elif(ancillary_count < 0):
+                            data['message'] = "not submitted"
+                        else:
+                            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                            application_details.update(action_date=date.today())
+                            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                            workflow_dtls.update(action_date=date.today())
                             fees_details = t_fees_schedule.objects.filter(service_id=service_id)
                             for fees_details in fees_details:
-                                ancillary_amount = fees_details.rate
-                                total_amount = main_amount + ancillary_amount
-                        else:
-                            total_amount=main_amount
-                        insert_app_payment_details(request, application_no,'131370003', 'new_general_application',total_amount,application_type)
-                        send_payment_mail(request.session['name'],request.session['email'], total_amount)
-                    data['message'] = "success"
+                                main_amount = int(fees_details.rate)
+                                main_amount += int(fees_details.application_fee)
+                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                                if ancillary_application_details_count > 0:
+                                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                                    for fees_details in fees_details:
+                                        ancillary_amount = fees_details.rate
+                                        total_amount = main_amount + ancillary_amount
+                                else:
+                                    total_amount=main_amount
+                                insert_app_payment_details(request, application_no,'131370003', 'new_general_application',total_amount,application_type)
+                                send_payment_mail(request.session['name'],request.session['email'], total_amount)
+                            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3794,27 +3973,79 @@ def save_ground_water_requirement(request):
 def submit_ground_water_application(request):
     data = dict()
     try:
-        application_no = request.POST.get('ground_water_disclaimer_application_no')
+        application_no = request.POST.get('ea_disclaimer_application_no')
         identifier = request.POST.get('disc_identifier')
-        if identifier == 'OC' or identifier == 'NC':
-            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.today())
-            data['message'] = "success"
-        else:
-            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-            if(ancillary_count > 0):
+        service_id = None
+        main_amount = 0 
+        ancillary_amount = 0
+        total_amount = 0
+        application_type = None
+        anc_other_crushing_unit = None
+        anc_other_surface_collection = None
+        anc_other_ground_water = None
+        anc_other_mineral = None
+        anc_other_general = None
+        anc_other_transmission = None
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
+        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        for application_details in application_details:
+            service_id = application_details.service_id
+            application_type = application_details.application_type
+            anc_other_crushing_unit = application_details.anc_other_crushing_unit
+            anc_other_surface_collection = application_details.anc_other_surface_collection
+            anc_other_ground_water = application_details.anc_other_ground_water
+            anc_other_mineral = application_details.anc_other_mineral
+            anc_other_general = application_details.anc_other_general
+            anc_other_transmission = application_details.anc_other_transmission
+
+        if anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or anc_other_general == 'Yes' or anc_other_transmission == 'Yes':
+            if anc_details == 0:
                 data['message'] = "not submitted"
             else:
-                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
                 application_details.update(action_date=date.today())
-                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                workflow_dtls.update(action_date=date.today())
-                insert_payment_details(request, application_no,'131370003', 'new_ground_water_application')
-                data['message'] = "success"
+                if identifier == 'Ancillary':
+                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
+                    application_details.update(action_date=date.today())
+                    workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                    workflow_dtls.update(action_date=date.today())
+                    data['message'] = "success"
+                else:
+                    if identifier == 'OC' or identifier == 'NC':
+                        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                        workflow_dtls.update(action_date=date.today())
+                        data['message'] = "success"
+                    else:
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+                        if(ancillary_count > 0):
+                            data['message'] = "not submitted"
+                        elif(ancillary_count < 0):
+                            data['message'] = "not submitted"
+                        else:
+                            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                            application_details.update(action_date=date.today())
+                            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                            workflow_dtls.update(action_date=date.today())
+                            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                            for fees_details in fees_details:
+                                main_amount = int(fees_details.rate)
+                                main_amount += int(fees_details.application_fee)
+                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                                if ancillary_application_details_count > 0:
+                                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                                    for fees_details in fees_details:
+                                        ancillary_amount = fees_details.rate
+                                        total_amount = main_amount + ancillary_amount
+                                else:
+                                    total_amount=main_amount
+                                insert_app_payment_details(request, application_no,'131370003', 'new_ground_water_application',total_amount,application_type)
+                                send_payment_mail(request.session['name'],request.session['email'], total_amount)
+                            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
     return JsonResponse(data)
+
 
 # Quarry Application Details
 def save_quarry_application(request):
@@ -4011,27 +4242,79 @@ def save_quarry_application(request):
 def submit_quarry_application(request):
     data = dict()
     try:
-        application_no = request.POST.get('quarry_disclaimer_application_no')
+        application_no = request.POST.get('ea_disclaimer_application_no')
         identifier = request.POST.get('disc_identifier')
-        if identifier == 'OC' or identifier == 'NC':
-            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.today())
-            data['message'] = "success"
-        else:
-            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-            if(ancillary_count > 0):
+        service_id = None
+        main_amount = 0 
+        ancillary_amount = 0
+        total_amount = 0
+        application_type = None
+        anc_other_crushing_unit = None
+        anc_other_surface_collection = None
+        anc_other_ground_water = None
+        anc_other_mineral = None
+        anc_other_general = None
+        anc_other_transmission = None
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
+        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        for application_details in application_details:
+            service_id = application_details.service_id
+            application_type = application_details.application_type
+            anc_other_crushing_unit = application_details.anc_other_crushing_unit
+            anc_other_surface_collection = application_details.anc_other_surface_collection
+            anc_other_ground_water = application_details.anc_other_ground_water
+            anc_other_mineral = application_details.anc_other_mineral
+            anc_other_general = application_details.anc_other_general
+            anc_other_transmission = application_details.anc_other_transmission
+
+        if anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or anc_other_general == 'Yes' or anc_other_transmission == 'Yes':
+            if anc_details == 0:
                 data['message'] = "not submitted"
             else:
-                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
                 application_details.update(action_date=date.today())
-                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                workflow_dtls.update(action_date=date.today())
-                insert_payment_details(request, application_no,'131370003', 'new_quarry_application')
-                data['message'] = "success"
+                if identifier == 'Ancillary':
+                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
+                    application_details.update(action_date=date.today())
+                    workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                    workflow_dtls.update(action_date=date.today())
+                    data['message'] = "success"
+                else:
+                    if identifier == 'OC' or identifier == 'NC':
+                        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                        workflow_dtls.update(action_date=date.today())
+                        data['message'] = "success"
+                    else:
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+                        if(ancillary_count > 0):
+                            data['message'] = "not submitted"
+                        elif(ancillary_count < 0):
+                            data['message'] = "not submitted"
+                        else:
+                            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                            application_details.update(action_date=date.today())
+                            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                            workflow_dtls.update(action_date=date.today())
+                            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                            for fees_details in fees_details:
+                                main_amount = int(fees_details.rate)
+                                main_amount += int(fees_details.application_fee)
+                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                                if ancillary_application_details_count > 0:
+                                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                                    for fees_details in fees_details:
+                                        ancillary_amount = fees_details.rate
+                                        total_amount = main_amount + ancillary_amount
+                                else:
+                                    total_amount=main_amount
+                                insert_app_payment_details(request, application_no,'131370003', 'new_quarry_application',total_amount,application_type)
+                                send_payment_mail(request.session['name'],request.session['email'], total_amount)
+                            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
     return JsonResponse(data)
+
 
 # Road Application Details
 def road_project_details(request):
@@ -4373,23 +4656,74 @@ def save_energy_application(request):
 def submit_energy_application(request):
     data = dict()
     try:
-        application_no = request.POST.get('energy_disclaimer_application_no')
+        application_no = request.POST.get('ea_disclaimer_application_no')
         identifier = request.POST.get('disc_identifier')
-        if identifier == 'OC' or identifier == 'NC':
-            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.today())
-            data['message'] = "success"
-        else:
-            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-            if(ancillary_count > 0):
+        service_id = None
+        main_amount = 0 
+        ancillary_amount = 0
+        total_amount = 0
+        application_type = None
+        anc_other_crushing_unit = None
+        anc_other_surface_collection = None
+        anc_other_ground_water = None
+        anc_other_mineral = None
+        anc_other_general = None
+        anc_other_transmission = None
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
+        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        for application_details in application_details:
+            service_id = application_details.service_id
+            application_type = application_details.application_type
+            anc_other_crushing_unit = application_details.anc_other_crushing_unit
+            anc_other_surface_collection = application_details.anc_other_surface_collection
+            anc_other_ground_water = application_details.anc_other_ground_water
+            anc_other_mineral = application_details.anc_other_mineral
+            anc_other_general = application_details.anc_other_general
+            anc_other_transmission = application_details.anc_other_transmission
+
+        if anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or anc_other_general == 'Yes' or anc_other_transmission == 'Yes':
+            if anc_details == 0:
                 data['message'] = "not submitted"
             else:
-                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
                 application_details.update(action_date=date.today())
-                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                workflow_dtls.update(action_date=date.today())
-                insert_payment_details(request, application_no,'131370003', 'submit_energy_application')
-                data['message'] = "success"
+                if identifier == 'Ancillary':
+                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
+                    application_details.update(action_date=date.today())
+                    workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                    workflow_dtls.update(action_date=date.today())
+                    data['message'] = "success"
+                else:
+                    if identifier == 'OC' or identifier == 'NC':
+                        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                        workflow_dtls.update(action_date=date.today())
+                        data['message'] = "success"
+                    else:
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+                        if(ancillary_count > 0):
+                            data['message'] = "not submitted"
+                        elif(ancillary_count < 0):
+                            data['message'] = "not submitted"
+                        else:
+                            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                            application_details.update(action_date=date.today())
+                            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                            workflow_dtls.update(action_date=date.today())
+                            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                            for fees_details in fees_details:
+                                main_amount = int(fees_details.rate)
+                                main_amount += int(fees_details.application_fee)
+                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                                if ancillary_application_details_count > 0:
+                                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                                    for fees_details in fees_details:
+                                        ancillary_amount = fees_details.rate
+                                        total_amount = main_amount + ancillary_amount
+                                else:
+                                    total_amount=main_amount
+                                insert_app_payment_details(request, application_no,'131370003', 'submit_energy_application ',total_amount,application_type)
+                                send_payment_mail(request.session['name'],request.session['email'], total_amount)
+                            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -4625,23 +4959,74 @@ def save_tourism_sewerage_details(request):
 def submit_tourism_application(request):
     data = dict()
     try:
-        application_no = request.POST.get('tourism_disclaimer_application_no')
+        application_no = request.POST.get('ea_disclaimer_application_no')
         identifier = request.POST.get('disc_identifier')
-        if identifier == 'OC' or identifier == 'NC':
-            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.today())
-            data['message'] = "success"
-        else:
-            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-            if(ancillary_count > 0):
+        service_id = None
+        main_amount = 0 
+        ancillary_amount = 0
+        total_amount = 0
+        application_type = None
+        anc_other_crushing_unit = None
+        anc_other_surface_collection = None
+        anc_other_ground_water = None
+        anc_other_mineral = None
+        anc_other_general = None
+        anc_other_transmission = None
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
+        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        for application_details in application_details:
+            service_id = application_details.service_id
+            application_type = application_details.application_type
+            anc_other_crushing_unit = application_details.anc_other_crushing_unit
+            anc_other_surface_collection = application_details.anc_other_surface_collection
+            anc_other_ground_water = application_details.anc_other_ground_water
+            anc_other_mineral = application_details.anc_other_mineral
+            anc_other_general = application_details.anc_other_general
+            anc_other_transmission = application_details.anc_other_transmission
+
+        if anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or anc_other_general == 'Yes' or anc_other_transmission == 'Yes':
+            if anc_details == 0:
                 data['message'] = "not submitted"
             else:
-                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
                 application_details.update(action_date=date.today())
-                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                workflow_dtls.update(action_date=date.today())
-                insert_payment_details(request, application_no,'131370003', 'submit_tourism_application')
-                data['message'] = "success"
+                if identifier == 'Ancillary':
+                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
+                    application_details.update(action_date=date.today())
+                    workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                    workflow_dtls.update(action_date=date.today())
+                    data['message'] = "success"
+                else:
+                    if identifier == 'OC' or identifier == 'NC':
+                        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                        workflow_dtls.update(action_date=date.today())
+                        data['message'] = "success"
+                    else:
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+                        if(ancillary_count > 0):
+                            data['message'] = "not submitted"
+                        elif(ancillary_count < 0):
+                            data['message'] = "not submitted"
+                        else:
+                            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                            application_details.update(action_date=date.today())
+                            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                            workflow_dtls.update(action_date=date.today())
+                            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                            for fees_details in fees_details:
+                                main_amount = int(fees_details.rate)
+                                main_amount += int(fees_details.application_fee)
+                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                                if ancillary_application_details_count > 0:
+                                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                                    for fees_details in fees_details:
+                                        ancillary_amount = fees_details.rate
+                                        total_amount = main_amount + ancillary_amount
+                                else:
+                                    total_amount=main_amount
+                                insert_app_payment_details(request, application_no,'131370003', 'submit_tourism_application ',total_amount,application_type)
+                                send_payment_mail(request.session['name'],request.session['email'], total_amount)
+                            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
