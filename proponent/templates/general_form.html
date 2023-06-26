@@ -952,7 +952,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Provide an allocated budget for the management plan proposed</label>
-                                                <input type="text" name="en_impact_allocated_budget" class="form-control" id="en_impact_allocated_budget">
+                                                <input type="number" name="en_impact_allocated_budget" class="form-control" id="en_impact_allocated_budget">
                                             </div>
                                             <div id="en_impact_allocated_budgetErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1317,6 +1317,10 @@
                                     </div>
                                     
                                     <div class="row general_application mt-1" style="display:none;">
+                                        <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
+                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
+                                    </div>
+                                    <div class="row mineral_application mt-1" style="display:none;">
                                         <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
@@ -2292,7 +2296,7 @@
           <!--Body-->
           <div class="modal-body mx-4">
             <div class="row">
-                <input type="hidden" name="edit_anc_record_id" class="form-control" id="edit_anc_road_record_id">
+                <input type="hidden" name="edit_anc_app_record_id" class="form-control" id="edit_anc_app_record_id">
                 <input type="hidden" name="edit_anc_application_no" class="form-control" id="edit_anc_road_application_no">
                 <div class="col-lg-6">
                     <div class="mb-3">
@@ -3254,8 +3258,8 @@
         anc_road_length = $('#anc_road_length').val();
         anc_road_start_point = $('#anc_road_start_point').val();
         anc_road_end_point  = $('#anc_road_end_point').val();
-        anc_road_blast_required= $("input[name=anc_road_required]:checked").length;
-        anc_road_blast_required_value = $("input[name=anc_road_required]:checked").val();
+        anc_road_blast_required= $("input[name=anc_road_blast_required]:checked").length;
+        anc_road_blast_required_value = $("input[name=anc_road_blast_required]:checked").val();
         anc_road_blast_type = $('#anc_road_blast_type').val();
         anc_road_blast_qty = $('#anc_road_blast_qty').val();
         anc_road_blast_location = $('#anc_road_blast_location').val();
@@ -5014,7 +5018,7 @@
 
     function populate_approach_road_details(record_id, application_no, line_chainage_from, line_chainage_to, land_type, terrain, road_width, row, area_required)
     {
-        $('#edit_anc_road_record_id').val(record_id);
+        $('#edit_anc_app_record_id').val(record_id);
         $('#edit_anc_road_application_no').val(application_no);
         $('#edit_road_line_chainage_from').val(line_chainage_from);
         $('#edit_road_line_chainage_to').val(line_chainage_to);
@@ -5060,15 +5064,15 @@
 
     function update_anc_road_details()
     {
-        record_id = $('#edit_anc_record_id').val();
-        application_no = $('#edit_anc_road_application_no').val();
-        line_chainage_from = $('#edit_road_line_chainage_from').val();
-        line_chainage_to = $('#edit_road_line_chainage_to').val();
-        land_type = $('#edit_road_land_type').val();
-        terrain = $('#edit_road_terrain').val();
-        road_width = $('#edit_road_width').val();
-        row = $('#edit_road_row').val();
-        area_required = $('#edit_road_area_required').val();
+        let record_id = $('#edit_anc_app_record_id').val();
+        let application_no = $('#edit_anc_road_application_no').val();
+        let line_chainage_from = $('#edit_road_line_chainage_from').val();
+        let line_chainage_to = $('#edit_road_line_chainage_to').val();
+        let land_type = $('#edit_road_land_type').val();
+        let terrain = $('#edit_road_terrain').val();
+        let road_width = $('#edit_road_width').val();
+        let row = $('#edit_road_row').val();
+        let area_required = $('#edit_road_area_required').val();
 
         if(line_chainage_from == "")
         {
@@ -5118,7 +5122,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_anc_road_details' %}",
-                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'road_width':road_width,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_road_successMsg').html("Approach Road Details Updated Successfully");
@@ -5517,18 +5521,22 @@
         if($('#anc_other_general').is(":checked") || $('#anc_other_mineral').is(":checked"))
         {
             $('.general_application').show();
+            $('.mineral_application').show();
         }
         else if($('#anc_other_general').is(":checked") && $('#anc_other_mineral').not(":checked"))
         {
             $('.general_application').show();
+            $('.mineral_application').hide();
         }
         else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').is(":checked"))
         {
-            $('.general_application').show();
+            $('.general_application').hide();
+            $('.mineral_application').show();
         }
         else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').not(":checked"))
         {
             $('.general_application').hide();
+            $('.mineral_application').hide();
         }
     }
 

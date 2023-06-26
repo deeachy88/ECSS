@@ -19,12 +19,12 @@ def new_ea_application(request):
     service_code = 'IEA'
     application_no = get_application_no(request, service_code, '1')
     request.session['application_no'] = application_no
-    partner_details = t_ec_industries_t2_partner_details.objects.all()
-    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-    project_product = t_ec_industries_t4_project_product.objects.all()
-    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
+    project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
+    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -38,13 +38,13 @@ def new_road_application(request):
     service_code = 'ROA'
     application_no = get_application_no(request, service_code, '3')
     request.session['application_no'] = application_no
-    partner_details = t_ec_industries_t2_partner_details.objects.all()
-    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-    project_product = t_ec_industries_t4_project_product.objects.all()
-    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
-    drainage_type = t_ec_industries_t12_drainage_details.objects.all()
+    partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
+    project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
+    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
+    drainage_type = t_ec_industries_t12_drainage_details.objects.filter(application_no=application_no)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -56,12 +56,12 @@ def new_transmission_application(request):
     service_code = 'TRA'
     application_no = get_application_no(request, service_code, '4')
     request.session['application_no'] = application_no
-    partner_details = t_ec_industries_t2_partner_details.objects.all()
-    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-    project_product = t_ec_industries_t4_project_product.objects.all()
-    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
+    project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
+    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -73,9 +73,9 @@ def new_forestry_application(request):
     service_code = 'FOR'
     application_no = get_application_no(request, service_code, '7')
     request.session['application_no'] = application_no
-    forest_produce = t_ec_industries_t8_forest_produce.objects.all()
-    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -86,12 +86,12 @@ def new_general_application(request):
     service_code = 'GEN'
     application_no = get_application_no(request, service_code, '9')
     request.session['application_no'] = application_no
-    partner_details = t_ec_industries_t2_partner_details.objects.all()
-    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-    project_product = t_ec_industries_t4_project_product.objects.all()
-    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
+    project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
+    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -103,12 +103,12 @@ def new_ground_water_application(request):
     service_code = 'GWA' 
     application_no = get_application_no(request, service_code, '6')
     request.session['application_no'] = application_no
-    partner_details = t_ec_industries_t2_partner_details.objects.all()
-    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-    project_product = t_ec_industries_t4_project_product.objects.all()
-    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
+    project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
+    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -576,18 +576,19 @@ def save_iee_application(request):
         form_type = request.POST.get('form_type')
         ca_auth = None
 
-        if request.session['ca_auth'] == 'DEC':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        elif request.session['ca_auth'] == 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        else:
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
+        if identifier !='DR':
+            if request.session['ca_auth'] == 'DEC':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            elif request.session['ca_auth'] == 'THROMDE':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            else:
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(project_name=project_name)
@@ -2703,7 +2704,6 @@ def submit_general_application(request):
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
         anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
-        print(anc_details)
         for application_details in application_details:
             service_id = application_details.service_id
             application_type = application_details.application_type
@@ -2717,45 +2717,42 @@ def submit_general_application(request):
         if anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or anc_other_general == 'Yes' or anc_other_transmission == 'Yes':
             if anc_details == 0:
                 data['message'] = "not submitted"
-            else:
+        else:
+            if identifier == 'Ancillary':
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
                 application_details.update(action_date=date.today())
-                if identifier == 'Ancillary':
-                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
-                    application_details.update(action_date=date.today())
+                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                workflow_dtls.update(action_date=date.today())
+                data['message'] = "success"
+            else:
+                if identifier == 'OC' or identifier == 'NC':
                     workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
                     workflow_dtls.update(action_date=date.today())
                     data['message'] = "success"
                 else:
-                    if identifier == 'OC' or identifier == 'NC':
+                    ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+                    if(ancillary_count > 0):
+                        data['message'] = "not submitted"
+                    else:
+                        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                        application_details.update(action_date=date.today())
                         workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
                         workflow_dtls.update(action_date=date.today())
+                        fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                        for fees_details in fees_details:
+                            main_amount = int(fees_details.rate)
+                            main_amount += int(fees_details.application_fee)
+                            ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                            if ancillary_application_details_count > 0:
+                                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                                for fees_details in fees_details:
+                                    ancillary_amount = fees_details.rate
+                                    total_amount = main_amount + ancillary_amount
+                            else:
+                                total_amount=main_amount
+                            insert_app_payment_details(request, application_no,'131370003', 'new_general_application',total_amount,application_type)
+                            send_payment_mail(request.session['name'],request.session['email'], total_amount)
                         data['message'] = "success"
-                    else:
-                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-                        if(ancillary_count > 0):
-                            data['message'] = "not submitted"
-                        elif(ancillary_count < 0):
-                            data['message'] = "not submitted"
-                        else:
-                            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
-                            application_details.update(action_date=date.today())
-                            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                            workflow_dtls.update(action_date=date.today())
-                            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                            for fees_details in fees_details:
-                                main_amount = int(fees_details.rate)
-                                main_amount += int(fees_details.application_fee)
-                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
-                                if ancillary_application_details_count > 0:
-                                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                                    for fees_details in fees_details:
-                                        ancillary_amount = fees_details.rate
-                                        total_amount = main_amount + ancillary_amount
-                                else:
-                                    total_amount=main_amount
-                                insert_app_payment_details(request, application_no,'131370003', 'new_general_application',total_amount,application_type)
-                                send_payment_mail(request.session['name'],request.session['email'], total_amount)
-                            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3073,18 +3070,19 @@ def save_road_application(request):
         form_type = request.POST.get('form_type')
         ca_auth = None
 
-        if request.session['ca_auth'] == 'DEC':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        elif request.session['ca_auth'] == 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        else:
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
+        if identifier !='DR':
+            if request.session['ca_auth'] == 'DEC':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            elif request.session['ca_auth'] == 'THROMDE':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            else:
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -3349,19 +3347,19 @@ def save_general_application(request):
         form_type = request.POST.get('form_type')
         ca_auth = None
 
-        if request.session['ca_auth'] == 'DEC':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        elif request.session['ca_auth'] == 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        else:
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-
+        if identifier !='DR':
+            if request.session['ca_auth'] == 'DEC':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            elif request.session['ca_auth'] == 'THROMDE':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            else:
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(project_name=project_name)
@@ -3525,18 +3523,19 @@ def save_forest_application(request):
         form_type = request.POST.get('form_type')
         ca_auth = None
         
-        if request.session['ca_auth'] == 'DEC':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        elif request.session['ca_auth'] == 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        else:
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
+        if identifier !='DR':
+            if request.session['ca_auth'] == 'DEC':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            elif request.session['ca_auth'] == 'THROMDE':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            else:
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -3784,18 +3783,19 @@ def save_ground_water_application(request):
         form_type = request.POST.get('form_type')
         ca_auth = None
 
-        if request.session['ca_auth'] == 'DEC':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        elif request.session['ca_auth'] == 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        else:
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
+        if identifier !='DR':
+            if request.session['ca_auth'] == 'DEC':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            elif request.session['ca_auth'] == 'THROMDE':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            else:
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -4078,18 +4078,19 @@ def save_quarry_application(request):
         form_type = request.POST.get('form_type')
         ca_auth = None
 
-        if request.session['ca_auth'] == 'DEC':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        elif request.session['ca_auth'] == 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        else:
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
+        if identifier !='DR':
+            if request.session['ca_auth'] == 'DEC':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            elif request.session['ca_auth'] == 'THROMDE':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            else:
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(project_name=project_name)
@@ -4507,18 +4508,19 @@ def save_energy_application(request):
         form_type = request.POST.get('ec_reference_no')
         ca_auth = None
 
-        if request.session['ca_auth'] == 'DEC':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        elif request.session['ca_auth'] == 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        else:
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
+        if identifier !='DR':
+            if request.session['ca_auth'] == 'DEC':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            elif request.session['ca_auth'] == 'THROMDE':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            else:
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -4756,18 +4758,19 @@ def save_tourism_application(request):
         form_type = request.POST.get('form_type')
         ca_auth = None
 
-        if request.session['ca_auth'] == 'DEC':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        elif request.session['ca_auth'] == 'THROMDE':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
-        else:
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-            for auth_details in auth_details:
-                ca_auth = auth_details.competent_authority_id
+        if identifier !='DR':
+            if request.session['ca_auth'] == 'DEC':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            elif request.session['ca_auth'] == 'THROMDE':
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
+            else:
+                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
+                for auth_details in auth_details:
+                    ca_auth = auth_details.competent_authority_id
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)

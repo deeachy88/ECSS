@@ -1305,6 +1305,11 @@
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
 
+                                    <div class="row mineral_application mt-1" style="display:none;">
+                                        <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
+                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
+                                    </div>
+
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="iee_submit_successMsg" style="display:none">
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
@@ -5368,18 +5373,22 @@
         if($('#anc_other_general').is(":checked") || $('#anc_other_mineral').is(":checked"))
         {
             $('.general_application').show();
+            $('.mineral_application').show();
         }
         else if($('#anc_other_general').is(":checked") && $('#anc_other_mineral').not(":checked"))
         {
             $('.general_application').show();
+            $('.mineral_application').hide();
         }
         else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').is(":checked"))
         {
-            $('.general_application').show();
+            $('.general_application').hide();
+            $('.mineral_application').show();
         }
         else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').not(":checked"))
         {
             $('.general_application').hide();
+            $('.mineral_application').hide();
         }
     }
 

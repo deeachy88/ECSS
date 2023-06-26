@@ -81,8 +81,10 @@
                                                 <select class="form-select" name="dzo_throm"  id="dzo_throm" onchange="getGewog(this.value)">
                                                     <option value="">--SELECT DZONGKHAG--</option>
                                                     {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
-                                                    {% endfor %} 
+                                                        <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                            {{ dzongkhag.dzongkhag_name }}
+                                                        </option>
+                                                    {% endfor %}
                                                 </select>
                                             </div>
                                             <div id="dzo_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -93,7 +95,9 @@
                                                 <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
                                                     <option value="">--SELECT GEWOG--</option>
                                                     {% for gewog in gewog %}
-                                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                            {{ gewog.gewog_name }}
+                                                        </option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -107,7 +111,9 @@
                                                 <select class="form-select" name="vil_chiwog" id="vil_chiwog">
                                                     <option value="">--SELECT VILLAGE--</option>
                                                     {% for village in village %}
-                                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                            {{ village.village_name }}
+                                                        </option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -121,7 +127,7 @@
                                                 <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.project_site}}">
                                             </div>
                                             <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
+                                        </div> 
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -1921,6 +1927,12 @@
                                         <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
+
+                                    <div class="row mineral_application mt-1" style="display:none;">
+                                        <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
+                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
+                                    </div>
+
                                     <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
                                     <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
                                     <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>

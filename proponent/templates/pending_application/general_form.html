@@ -1483,23 +1483,30 @@
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                     </div>
                                     <br>
-                                    
-                                    <div class="form-check">
-                                        <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()">
-                                        <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" onclick="check_anc_other_surface_collection()">
-                                        <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" onclick="check_anc_other_general()">
-                                        <label class="form-check-label">Mineral stockyards outside the project area</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()">
-                                        <label class="form-check-label">Others</label>
-                                    </div>
+                                    {% if application_details.anc_other_crushing_unit == 'Yes' %}
+                                        <div class="form-check">
+                                            <i nput type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()">
+                                            <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                        </div>
+                                    {% endif %}
+                                    {% if application_details.anc_other_surface_collection == 'Yes' %}
+                                        <div class="form-check">
+                                            <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" onclick="check_anc_other_surface_collection()">
+                                            <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                        </div>
+                                    {% endif %}
+                                    {% if application_details.anc_other_mineral == 'Yes' %}
+                                        <div class="form-check">
+                                            <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" onclick="check_anc_other_general()">
+                                            <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                        </div>
+                                    {% endif %}
+                                    {% if application_details.anc_other_general == 'Yes' %}
+                                        <div class="form-check">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()">
+                                            <label class="form-check-label">Others</label>
+                                        </div>
+                                    {% endif %}
 
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_others_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
@@ -1925,6 +1932,12 @@
                                         <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
+
+                                    <div class="row mineral_application mt-1" style="display:none;">
+                                        <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
+                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
+                                    </div>
+
                                     <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
                                     <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
                                     <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
@@ -6116,24 +6129,28 @@
             $('.forestry_application').hide();
         }
     }
-
+ 
     function check_anc_other_general()
     {
         if($('#anc_other_general').is(":checked") || $('#anc_other_mineral').is(":checked"))
         {
             $('.general_application').show();
+            $('.mineral_application').show();
         }
         else if($('#anc_other_general').is(":checked") && $('#anc_other_mineral').not(":checked"))
         {
             $('.general_application').show();
+            $('.mineral_application').hide();
         }
         else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').is(":checked"))
         {
-            $('.general_application').show();
+            $('.general_application').hide();
+            $('.mineral_application').show();
         }
         else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').not(":checked"))
         {
             $('.general_application').hide();
+            $('.mineral_application').hide();
         }
     }
 
