@@ -1,0 +1,77 @@
+<div class="card">
+    <div class="card-header">
+        <div class="card-head-row">
+            <div class="card-tools">
+                <a href="#" class="btn btn-info btn-border btn-round btn-sm" data-bs-toggle="modal" data-bs-target="#attachmentModal">
+                    <span class="btn-label">
+                        <i class="fa fa-print"></i>
+                    </span>
+                    Add
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">File</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+               {% for file_attach in file_attach %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                        <td>
+                            <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="DeleteReportAttachment('{{ file_attach.file_id }}')"><i class="uil-trash"></i></button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">No Data</td>
+                    </tr>
+               {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                                Saved Successfully
+</div>
+<div class="card-action">
+    <button type="button" class="btn btn-success" onclick="save_report_form()">Submit</button>
+</div>
+<script>
+function save_report_form()
+{
+	$.ajax({
+			type : "POST",
+			url : "{% url 'submit_inspection_form' %}",
+			data : $('#inspection_submission_form').serialize(),
+			cache : false,
+			dataType : "html",
+			success : function(responseText)
+			{
+			    $('#submitMsg').show();
+                location.reload()
+			}
+	});
+}
+
+function DeleteReportAttachment(id)
+{
+    var refNo = $('#attachment_refNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'delete_report_file' %}",
+        data :{'refNo':refNo , 'file_id': id},
+        success : function(responseText)
+        {
+            $('#fileAttach').html(responseText);
+        }
+    });
+}
+</script>

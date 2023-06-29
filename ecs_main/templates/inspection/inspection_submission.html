@@ -1,0 +1,418 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+<div class="row" xmlns="http://www.w3.org/1999/html">
+    <div class="col-xl-12">
+        <div class="card mt-1">
+            <div class="card-body">
+                <form method="post" id="report_submission_form">
+                {% csrf_token %}
+                <input type="hidden" name="record_id" id="record_id">
+                <h4 class="header-title mb-3"> Add Inspection/Monitoring Report</h4>
+                <ul class="nav nav-tabs nav-bordered mb-3">
+                    <li class="nav-item">
+                        <a href="#profile-b1" id="report_submission_tab" data-bs-toggle="tab" aria-expanded="true" class="nav-link active">
+                            <i class="mdi mdi-account-circle d-md-none d-block"></i>
+                            <span class="d-none d-md-block">Inspection Report Details</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#settings-b1" id="file_attachment_tab" data-bs-toggle="tab" aria-expanded="false" class="nav-link disabled">
+                            <i class="mdi mdi-settings-outline d-md-none d-block"></i>
+                            <span class="d-none d-md-block">File Attachment</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane show active" id="profile-b1">
+                        <div id="applicant_details">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Inspection Type</label>
+                                        <select type="text" name="inspection_type" class="form-control" id="inspection_type">
+                                            <option value="">--SELECT--</option>
+                                            <option value="Ad hoc">Ad hoc</option>
+                                            <option value="Regular">Regular</option>
+                                        </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="inspection_typeErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Inspection Date</label>
+                                        <input type="date" class="form-control" id="inspection_date" name="inspection_date">
+                                    </div>
+                                    <div class="alert alert-danger" id="inspection_dateErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">EC Number</label>
+                                        <select id="ec_clearance_no" name="ec_clearance_no" class="form-select" onchange="get_ec_details(this.value)">
+                                            <option value="">--EC Number--</option>
+                                            {% for ec_details in ec_details %}
+                                                <option value="{{ ec_details.ec_reference_no }}">{{ ec_details.ec_reference_no }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="ec_clearance_noErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Proponent Name</label>
+                                        <input type="text" name="proponent_name" class="form-control" id="proponent_name" >
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Project Name</label>
+                                        <input type="text" name="project_name" class="form-control" id="project_name">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Address</label>
+                                        <input type="text" name="address" class="form-control" id="address">
+                                        <input type="hidden" name="applicant_id" class="form-control" id="applicant_id">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Reason for Inspection</label>
+                                        <textarea name="inspection_reason" class="form-control" id="inspection_reason"></textarea>
+                                    </div>
+                                    <div class="alert alert-danger" id="inspection_reasonErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Observation</label>
+                                        <textarea name="observation" class="form-control" id="observation"></textarea>
+                                    </div>
+                                    <div class="alert alert-danger" id="observationErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Team Leader</label>
+                                        <input type="text" name="team_leader" class="form-control" id="team_leader">
+                                    </div>
+                                    <div class="alert alert-danger" id="team_leaderErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Team Members</label>
+                                        <textarea name="team_members" class="form-control" id="team_members"></textarea>
+                                    </div>
+                                    <div class="alert alert-danger" id="team_membersErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Status</label>
+                                        <select type="text" name="inspection_status" class="form-control" id="inspection_status">
+                                            <option value="">--SELECT--</option>
+                                            <option value="Non Conformity">Non Conformity</option>
+                                            <option value="No Issue">No Issue</option>
+                                        </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="inspection_statusErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Fines and Penalties</label>
+                                        <select type="text" name="fines_penalties" class="form-control" id="fines_penalties">
+                                            <option value="">--SELECT--</option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="fines_penaltiesErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Remarks</label>
+                                        <textarea name="remarks" class="form-control" id="remarks"></textarea>
+                                    </div>
+                                    <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                                Saved Successfully
+                            </div>
+                            <div class="card-action mt-2">
+                                <button type="button" class="btn btn-primary" onclick="save_report()">Save & Next</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="settings-b1">
+                        <div id="fileAttach">
+                            {% include 'inspection/inspection_file_attachment.html' %}
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="post" id="attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="attachment_refNo" id="attachment_refNo">
+    <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Attach File(s) if Any</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Attach File</label>
+                        <input type="file" name="document" class="form-control" id="document" accept=".png,.jpg,.jpeg,.pdf,.doc,.docx">
+                    </div>
+                    <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="save_report_attachment()">Upload</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+
+<script>
+
+function save_report()
+{
+    var record_id = $('#record_id').val();
+    var inspection_type = $('#inspection_type').val();
+    var inspection_date = $('#inspection_date').val();
+    var inspection_reason = $('#inspection_reason').val();
+    var ec_clearance_no = $('#ec_clearance_no').val();
+    var proponent_name = $('#proponent_name').val();
+    var project_name = $('#project_name').val();
+    var address = $('#address').val();
+    var observation = $('#observation').val();
+    var team_leader = $('#team_leader').val();
+    var team_members = $('#team_members').val();
+    var remarks = $('#remarks').val();
+    var fines_penalties = $('#fines_penalties').val();
+    var inspection_status = $('#inspection_status').val();
+    var record_status = 'Active';
+
+    if(inspection_type == "")
+    {
+        $('#inspection_typeErrorMsg').html("Enter Inspection Type");
+        $('#inspection_typeErrorMsg').show();
+        $('#inspection_typeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(inspection_date == "")
+    {
+        $('#inspection_dateErrorMsg').html("Choose Inspection Date");
+        $('#inspection_dateErrorMsg').show();
+        $('#inspection_dateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(inspection_reason == "")
+    {
+        $('#inspection_reasonErrorMsg').html("Enter Inspection Reason");
+        $('#inspection_reasonErrorMsg').show();
+        $('#inspection_reasonErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(ec_clearance_no == "")
+    {
+        $('#ec_clearance_noErrorMsg').html("Enter Environment Clearance Number");
+        $('#ec_clearance_noErrorMsg').show();
+        $('#ec_clearance_noErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(proponent_name == "")
+    {
+        $('#proponent_nameErrorMsg').html("Proponent Name Cannot Be Empty");
+        $('#proponent_nameErrorMsg').show();
+        $('#proponent_nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(project_name == "")
+    {
+        $('#project_nameErrorMsg').html("Enter Project Name");
+        $('#project_nameErrorMsg').show();
+        $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(address == "")
+    {
+        $('#addressErrorMsg').html("Enter Address");
+        $('#addressErrorMsg').show();
+        $('#addressErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(observation == "")
+    {
+        $('#observationErrorMsg').html("Enter Observation");
+        $('#observationErrorMsg').show();
+        $('#observationErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(team_leader == "")
+    {
+        $('#team_leaderErrorMsg').html("Enter Team Leader");
+        $('#team_leaderErrorMsg').show();
+        $('#team_leaderErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(team_members == "")
+    {
+        $('#team_membersErrorMsg').html("Enter Team Members");
+        $('#team_membersErrorMsg').show();
+        $('#team_membersErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(inspection_status == "")
+    {
+        $('#inspection_statusErrorMsg').html("Select Status");
+        $('#inspection_statusErrorMsg').show();
+        $('#inspection_statusErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(fines_penalties == "")
+    {
+        $('#fines_penaltiesErrorMsg').html("Select Fines & Penalties (Yes/No)");
+        $('#fines_penaltiesErrorMsg').show();
+        $('#fines_penaltiesErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(record_id == "")
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'add_inspection' %}",
+            data : $('#report_submission_form').serialize(),
+            success : function(data)
+            {
+                $('#record_id').val(data.ref_no);
+                $('#refNo').val(data.ref_no);
+                $('#attachment_refNo').val(data.ref_no);
+                $('#submitMsg').show();
+                url : "{% url 'load_inspection_attachment_details' %}",
+                setTimeout(function() {
+                    $('#submitMsg').delay(2500).fadeOut('slow');
+                    $('.nav-tabs a[href="#settings-b1"]').tab('show');
+                    $('#file_attachment_tab').removeClass('show');
+                    $('#file_attachment_tab').removeClass('active');
+                    $('#file_attachment_tab').removeClass('disabled');
+                }, 1500);
+            }
+        });
+   }
+   else if(record_id != "")
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'edit_inspection' %}",
+            data : $('#report_submission_form').serialize(),
+            success : function(data)
+            {
+                $('#submitMsg').html("Add Successful");
+                $('#submitMsg').show();
+                url : "{% url 'load_inspection_attachment_details' %}",
+                setTimeout(function() {
+                    $('#submitMsg').delay(2500).fadeOut('slow');
+                    $('.nav-tabs a[href="#settings-b1"]').tab('show');
+                    $('#file_attachment_tab').removeClass('show');
+                    $('#file_attachment_tab').removeClass('active');
+                    $('#file_attachment_tab').removeClass('disabled');
+                }, 1500);
+            }
+        });
+   }
+}
+
+function get_ec_details(ec_clearance_no)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_ec_details' %}",
+        data :{'ec_reference_no':ec_clearance_no},
+        success : function(data)
+        {
+            $('#proponent_name').val(data.applicant_name);
+            $('#address').val(data.address);
+            $('#project_name').val(data.project_name);
+            $('#ca_authority').val(data.ca_authority);
+            $('#applicant_id').val(data.applicant_id);
+        }
+    });
+}
+
+function save_report_attachment()
+{
+    let file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
+    {
+        $('#fileErrorMsg').html("Please Choose A Attachment");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        let appNo = $('#record_id').val();
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('appNo', appNo);
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
+            {
+            xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'add_report_file' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+                if (data.form_is_valid)
+                {
+                    let file_url = data.file_url;
+                    let refNo = $('#record_id').val();
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'add_report_file_name' %}",
+                        data : {'refNo':refNo, 'filename':fileName, 'file_url':file_url},
+                        success : function(responseText)
+                        {
+                            $('#attachmentModal').modal('hide');
+                            $('#fileAttach').html(responseText);
+                            $('.modal-backdrop').remove();
+                            $('#attachment_form')[0].reset();
+                        }
+                    });
+                }
+                else
+                {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                }
+            }
+        });
+    }
+}
+</script>
+{% endblock %}

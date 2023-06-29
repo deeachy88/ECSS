@@ -9,6 +9,7 @@ from datetime import date
 from django.core.mail import send_mail
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Max
+from datetime import datetime
 
 # Create your views here.
 def verify_application_list(request):
@@ -775,42 +776,75 @@ def inspection_list(request):
     ec_details = t_ec_industries_t1_general.objects.all()
     return render(request, 'inspection/inspection.html', {'inspection_list':inspection_list, 'user_list':user_list, 'ec_details':ec_details})
 
+def view_inspection_details(request):
+    inspection_reference_no = request.GET.get('inspection_reference_no')
+    inspection_details = t_inspection_monitoring_t1.objects.filter(inspection_reference_no=inspection_reference_no)
+    file_attach = t_file_attachment.objects.filter(application_no=inspection_reference_no)
+    return render(request, 'inspection/inspection_details.html',
+                  {'inspection_details':inspection_details, 'file_attach':file_attach})
+
+def inspection_submission_form(request):
+    applicant = request.session['email']
+    ec_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False)
+    return render(request, 'inspection/inspection_submission.html', {'ec_details': ec_details})
+
 def load_ec_details(request):
     data = dict()
     ec_reference_no = request.GET.get('ec_reference_no')
     ec_detail_list = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
     for ec_detail_list in ec_detail_list:
-        data["applicant_name"],data["project_name"],data["address"],data["ca_authority"] = ec_detail_list.applicant_name, ec_detail_list.project_name, ec_detail_list.address, ec_detail_list.ca_authority
+        data["applicant_name"],data["project_name"],data["address"],data["ca_authority"],data["applicant_id"] = ec_detail_list.applicant_name, ec_detail_list.project_name, ec_detail_list.address, ec_detail_list.ca_authority, ec_detail_list.applicant_id
     return JsonResponse(data)
 
 def add_inspection(request):
-    inspection_type = request.GET.get('inspection_type')
-    inspection_date = request.GET.get('inspection_date')
-    inspection_reason = request.GET.get('inspection_reason')
-    ec_clearance_no = request.GET.get('ec_clearance_no')
-    proponent_name = request.GET.get('proponent_name')
-    project_name = request.GET.get('project_name')
-    address = request.GET.get('address')
-    observation = request.GET.get('observation')
-    team_leader = request.GET.get('team_leader')
-    team_members = request.GET.get('team_members')
-    remarks = request.GET.get('remarks')
-    fines_penalties = request.GET.get('fines_penalties')
-    inspection_status = request.GET.get('inspection_status')
-
+    data = dict()
+    service_code = 'ins'
+    reference_no = get_inspection_submission_ref_no(request, service_code)
+    inspection_type = request.POST.get('inspection_type')
+    inspection_date = request.POST.get('inspection_date')
+    inspection_reason = request.POST.get('inspection_reason')
+    ec_clearance_no = request.POST.get('ec_clearance_no')
+    proponent_name = request.POST.get('proponent_name')
+    project_name = request.POST.get('project_name')
+    address = request.POST.get('address')
+    observation = request.POST.get('observation')
+    team_leader = request.POST.get('team_leader')
+    team_members = request.POST.get('team_members')
+    remarks = request.POST.get('remarks')
+    fines_penalties = request.POST.get('fines_penalties')
+    inspection_status = request.POST.get('inspection_status')
+    applicant_id = request.POST.get('applicant_id')
+    print(reference_no)
     t_inspection_monitoring_t1.objects.create(inspection_type=inspection_type, inspection_date=inspection_date,
-                                              inspection_reason=inspection_reason, ec_clearance_no=ec_clearance_no,
-                                              project_name=project_name, proponent_name=proponent_name,
-                                              address=address, observation=observation, team_leader=team_leader,
-                                              team_members=team_members, remarks=remarks,
+                                              inspection_reference_no=reference_no, inspection_reason=inspection_reason,
+                                              ec_clearance_no=ec_clearance_no, project_name=project_name,
+                                              proponent_name=proponent_name, address=address, observation=observation,
+                                              team_leader=team_leader, team_members=team_members, remarks=remarks,
                                               fines_penalties=fines_penalties, status=inspection_status,
+                                              login_id=applicant_id,
                                               updated_by_ca=request.session['login_id'], record_status='Active')
-    return redirect(inspection_list)
+    data['ref_no'] = reference_no
+    return JsonResponse(data)
+
+def load_inspection_attachment_details(request):
+    referenceNo = request.GET.get('attachment_refNo')
+    print(referenceNo)
+    attachment_details = t_file_attachment.objects.filter(application_no=referenceNo)
+    return render(request, 'inspection/inspection_file_attachment.html',
+                  {'file_attach': attachment_details})
 
 def get_inspection_details(request, record_id):
-    inspection_details = t_inspection_monitoring_t1.objects.filter(record_id=record_id)
+    inspection_details = t_inspection_monitoring_t1.objects.filter(inspection_reference_no=record_id)
     ec_details = t_ec_industries_t1_general.objects.all()
-    return render(request, 'inspection/edit_inspection.html', {'inspection_details': inspection_details, 'ec_details':ec_details})
+    return render(request, 'inspection/edit_inspection.html', {'inspection_details': inspection_details,
+                                                               'ec_details': ec_details})
+
+def get_formatted_date(date):
+    if not date:
+        return ''  # handle case when date is empty or None
+
+    formatted_date = date.strftime('%d/%m/%Y')
+    return formatted_date
 
 def edit_inspection(request):
     edit_record_id = request.POST.get('record_id')
@@ -828,7 +862,7 @@ def edit_inspection(request):
     edit_fines_penalties = request.POST.get('fines_penalties')
     edit_inspection_status = request.POST.get('inspection_status')
 
-    inspection_details = t_inspection_monitoring_t1.objects.filter(record_id=edit_record_id)
+    inspection_details = t_inspection_monitoring_t1.objects.filter(inspection_reference_no=edit_record_id)
     inspection_details.update(inspection_type=edit_inspection_type, inspection_date=edit_inspection_date,
                               inspection_reason=edit_inspection_reason, ec_clearance_no=edit_ec_clearance_no,
                               proponent_name=edit_proponent_name, project_name=edit_project_name, address=edit_address,
@@ -836,6 +870,7 @@ def edit_inspection(request):
                               remarks=edit_remarks, fines_penalties=edit_fines_penalties,
                               status=edit_inspection_status, updated_by_ca=request.session['login_id']
                               )
+
     return redirect(inspection_list)
 
 def delete_inspection(request):
@@ -843,6 +878,26 @@ def delete_inspection(request):
     inspection_details = t_inspection_monitoring_t1.objects.filter(record_id=delete_record_id)
     inspection_details.update(record_status='Deleted', updated_by_ca=request.session['login_id'])
     return redirect(inspection_list)
+
+def get_inspection_submission_ref_no(request, service_code):
+    last_reference_no = t_inspection_monitoring_t1.objects.aggregate(Max('inspection_reference_no'))
+    lastRefNo = last_reference_no['inspection_reference_no__max']
+    if not lastRefNo:
+        year = timezone.now().year
+        newRefNo = service_code + "-" + str(year) + "-" + "0001"
+    else:
+        substring = str(lastRefNo)[9:13]
+        substring = int(substring) + 1
+        RefNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newRefNo = service_code + "-" + str(year) + "-" + RefNo
+    return newRefNo
+
+def submit_inspection_form(request):
+    reference_no = request.POST.get('record_id')
+    created_on = datetime.now()
+    details = t_inspection_monitoring_t1.objects.filter(inspection_reference_no=reference_no)
+    details.update(updated_on=created_on)
 
 # EndInspection
 
