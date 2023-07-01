@@ -95,9 +95,10 @@ def new_general_application(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
     return render(request, 'general_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
-                                                    'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+                                                    'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde})
 
 def new_ground_water_application(request):
     service_code = 'GWA' 

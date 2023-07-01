@@ -1,14 +1,16 @@
 {% extends 'common_dashboard.html' %}
 {% block content %}
 <div id="application_details">
-    <div class="card mt-1">
-        <div class="card-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mt-1">
+                <div class="card-body">
             <h5 class="card-title mb-0 text-right">Application List</h5>
             <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
                 <i class="ri-check-line me-2"></i>
             </div>
             <div id="cardCollpase1" class="collapse pt-3 show">
-                <table id="alternative-page-datatable" class="table dt-responsive nowrap w-100">
+                <table id="basic-datatable" class="table dt-responsive nowrap w-100">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -52,7 +54,11 @@
         </div>
     </div>
 </div>
+</div>
+</div>
+
 <script>
+    
     function viewApplicationDetails(application_no,service_id, application_source)
     {
         $.ajax({
