@@ -14,7 +14,7 @@ from datetime import datetime
 # Create your views here.
 def verify_application_list(request):
     ca_authority = request.session['ca_authority']
-    application_list = t_workflow_dtls.objects.filter(application_status='P',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='DEC',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='AL',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)
+    application_list = t_workflow_dtls.objects.filter(application_status='P', assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='DEC',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='AL',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)
     service_details = t_service_master.objects.all()
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
     return render(request, 'application_list.html',{'application_details':application_list, 'service_details':service_details, 'payment_details':payment_details})
@@ -34,10 +34,22 @@ def reviewer_application_list(request):
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
     return render(request, 'application_list.html', {'application_details':application_list, 'service_details':service_details, 'payment_details':payment_details})
 
+# def payment_list(request):
+#     login_id = request.session['login_id']
+#     payment_details = t_payment_details.objects.filter(transaction_no__isnull=True)
+#     service_details = t_service_master.objects.all()
+#     return render(request, 'payment_list.html', {'payment_details': payment_details,'service_details':service_details})
+
 def payment_list(request):
-    payment_details = t_payment_details.objects.filter(transaction_no__isnull=True)
+    login_id = request.session['email']
+    print(login_id)
+    payment_details = t_payment_details.objects.filter(
+        transaction_no__isnull=True,
+        application_no__in=t_ec_industries_t1_general.objects.filter(applicant_id=login_id).values('application_no')
+    )
     service_details = t_service_master.objects.all()
-    return render(request, 'payment_list.html', {'payment_details': payment_details,'service_details':service_details})
+    return render(request, 'payment_list.html',
+                  {'payment_details': payment_details, 'service_details': service_details})
 
 def view_application_details(request):
     application_no = request.GET.get('application_no')

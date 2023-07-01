@@ -9,8 +9,9 @@
             <div class="card mt-1">
                 <div class="card-body">
                     <div class="card-widgets">
-                        <!--<button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add_inspection_modal"><i class="mdi mdi-plus me-2"></i>Add</button>-->
-                        <a type="button" class="btn btn-primary btn-sm" href="{% url 'inspection_submission_form' %}"><i class="mdi mdi-plus me-2"></i>Add</a>
+                        {% if request.session.role != 'Admin' %}
+                            <a type="button" class="btn btn-primary btn-sm" href="{% url 'inspection_submission_form' %}"><i class="mdi mdi-plus me-2"></i>Add</a>
+                        {% endif %}
                     </div>
                     <h5 class="card-title mb-0">List of Inspection Report</h5>
                     <div id="cardCollpase1" class="collapse pt-3 show">
@@ -51,9 +52,11 @@
                                         <td>{{inspection_list.remarks}}</td>-->
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="{% url 'get_inspection_details' inspection_list.inspection_reference_no %}"><i class="mdi mdi-square-edit-outline"></i></a>
-                                                <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Delete Inspection Report"
+                                                {% if request.session.role == 'Admin' %}
+                                                    <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="{% url 'get_inspection_details' inspection_list.inspection_reference_no %}"><i class="mdi mdi-square-edit-outline"></i></a>
+                                                    <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Delete Inspection Report"
                                                          onclick="populateDeleteForm('{{inspection_list.record_id}}', '{{inspection_list.ec_clearance_no}}', '{{inspection_list.project_name}}')"><i class="mdi mdi-delete"></i> </button>
+                                                {% endif %}
                                             </div>
                                         </td>
                                     </tr>

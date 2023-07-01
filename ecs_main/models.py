@@ -37,3 +37,4 @@ class t_application_history(models.Model):
     actor_name = models.CharField(max_length=100, default=None, blank=True, null=True)
     remarks = models.TextField(default=None, blank=True, null=True)
     status = models.CharField(max_length=100, default=None, blank=True, null=True)
+

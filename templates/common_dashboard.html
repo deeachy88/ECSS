@@ -235,11 +235,18 @@
                                 </div>
                             </li>
                             <li class="side-nav-item">
+                                <a href="{% url 'inspection_list' %}" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Manage Inspection/Monitoring </span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
                                 <a href="{% url 'application_status_list' %}" class="side-nav-link">
                                     <i class="uil-folder-plus"></i>
                                     <span> View Application Status </span>
                                 </a>
                             </li>
+
                         </ul>
                     {% elif request.session.role == 'Verifier' %}
                         <ul class="side-nav">
@@ -261,7 +268,6 @@
                                     </span>
                                 </a>
                             </li>
-
                             <li class="side-nav-item">
                                 <a href="{% url 'inspection_list' %}" class="side-nav-link">
                                     <i class="uil-home-alt"></i>
