@@ -9,10 +9,10 @@
 </style>
 <div class="card">
     <div class="card-header">
-        <h4 class="card-title">Report Details</h4>
+        <h4 class="card-title">Inspection and Monitoring Report Details</h4>
     </div>
     <div class="card-body">
-        {% for report_details in report_details %}
+        {% for inspection_details in inspection_details %}
         {% csrf_token %}
             <div class="tab-content mt-2 mb-3" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
@@ -20,83 +20,86 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Report Type: &nbsp;&nbsp;</label> {{ report_details.report_type }}
+                                    <label class="form-label">Inspection Reference No : &nbsp;&nbsp;</label> {{ inspection_details.inspection_reference_no }}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Name of the Proponent: &nbsp;&nbsp;</label> {{ report_details.proponent_name }}
+                                    <label class="form-label">Inspection Type: &nbsp;&nbsp;</label> {{ inspection_details.inspection_type }}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">EC Number: &nbsp;&nbsp;</label> {{ report_details.ec_clearance_no }}
+                                    <label class="form-label">Inspection Date: &nbsp;&nbsp;</label> {{ inspection_details.inspection_date|date:'d-m-Y' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                             <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name of the Proponent: &nbsp;&nbsp;</label> {{ inspection_details.proponent_name }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Project Name: &nbsp;&nbsp;</label> {{ inspection_details.project_name }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Address: &nbsp;&nbsp;</label>{{ inspection_details.address }}
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Address: &nbsp;&nbsp;</label>{{ report_details.address }}
+                                    <label class="form-label">EC Number: &nbsp;&nbsp;</label>{{ inspection_details.ec_clearance_no }}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Submission Date: &nbsp;&nbsp;</label>{{ report_details.submission_date|date:'d-m-Y' }}
+                                    <label class="form-label">Reason for Inspection: &nbsp;&nbsp;</label>{{ inspection_details.inspection_reason }}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Submission Year: &nbsp;&nbsp;</label>{{ report_details.submission_year }}
+                                    <label class="form-label">Observation: &nbsp;&nbsp;</label>{{ inspection_details.observation }}
                                 </div>
                             </div>
+
                         </div>
                         <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Status: &nbsp;&nbsp;</label>{{ inspection_details.status }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Team Leader: &nbsp;&nbsp;</label>{{ inspection_details.team_leader }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Team Members: &nbsp;&nbsp;</label>{{ inspection_details.team_members }}
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Fine & Penalties: &nbsp;&nbsp;</label>{{ inspection_details.fines_penalties }}
+                                </div>
+                            </div>
                             <div class="col-md-8">
                                 <div class="form-group">
-                                    <label class="form-label">Remarks: &nbsp;&nbsp;</label>{{report_details.remarks}}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Report Status: &nbsp;&nbsp;</label>{{report_details.report_status}}
+                                    <label class="form-label">Remarks: &nbsp;&nbsp;</label>{{ inspection_details.remarks }}
                                 </div>
                             </div>
                         </div>
-
                     </div>
-                </div>
-                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Report</span>
-                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
-                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                </div>
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">EC Terms</th>
-                                <th scope="col">Action Taken</th>
-                                <th scope="col">Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for details in details %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{details.ec_terms}}</td>
-                                    <td>{{details.action_taken}}</td>
-                                    <td>{{details.remarks}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="4" class="text-center">No Data</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
                 </div>
                 <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                     <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
@@ -110,7 +113,6 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">File</th>
-                               <!-- <th scope="col">Action</th>-->
                             </tr>
                         </thead>
                         <tbody>

@@ -28,7 +28,7 @@
                             <label class="form-label">Inspection Date</label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="date" name="inspection_date" class="form-control" id="inspection_date" value="{{inspection_details.inspection_date}}">
+                            <input type="date" name="inspection_date" class="form-control" id="inspection_date" value="{{inspection_details.inspection_date}}|date:'d/m/Y'">
                         </div>
                         <div class="alert alert-danger" id="inspection_dateErrorMsg" style="display:none"></div>
                     </div>
@@ -138,7 +138,7 @@
                         <div class="col-sm-9">
                             <input type="text" name="remarks" class="form-control" id="remarks" value="{{inspection_details.remarks}}">
                         </div>
-                        <input type="hidden" class="form-control" id="record_id" value="{{inspection_details.record_id}}">
+                        <input type="hidden" class="form-control" id="inspection_reference_no" value="{{inspection_details.inspection_reference_no}}">
                     </div>
                     {% endfor %}
                     </form>
@@ -156,7 +156,7 @@
 <script>
     function update_inspection_details()
     {
-        var record_id = $('#record_id').val();
+        var record_id = $('#inspection_reference_no').val();
         var inspection_type = $('#inspection_type').val();
         var inspection_date = $('#inspection_date').val();
         var inspection_reason = $('#inspection_reason').val();
@@ -172,6 +172,7 @@
         var fines_penalties = $('#fines_penalties').val();
         var inspection_status = $('#inspection_status').val();
         var record_status = 'Active';
+        alert(record_id);
 
         if(inspection_type == "")
         {
@@ -280,6 +281,19 @@
                 }
             });
         }
+
+    function formatDate(dateString)
+    {
+        if (!dateString) return ''; // handle case when date is empty or undefined
+
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = String(date.getFullYear());
+
+        return `${day}/${month}/${year}`;
+    }
+
 </script>
 {% endblock %}
 

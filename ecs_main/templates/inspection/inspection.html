@@ -2,205 +2,74 @@
 {% load crispy_forms_tags %}
 {% block content %}
 {% load static %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="card mt-1">
-            <div class="card-body">
-                <div class="card-widgets">
-                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add_inspection_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                </div>
-                <h5 class="card-title mb-0">List of Inspection Report</h5>
-                <div id="cardCollpase1" class="collapse pt-3 show">
-                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
-                        <thead>
-                            <th>#</th>
-                            <th>Inspection Type</th>
-                            <th>Inspection Date</th>
-                            <th>Proponent</th>
-                            <th>Project Name</th>
-                            <th>EC Number</th>
-                            <th>Address</th>
-                            <th>Observation</th>
-                            <th>Status</th>
-                            <th>Team Leader</th>
-                            <th>Team Members</th>
-                            <th>Fines</th>
-                            <th>Remarks</th>
-                            <th></th>
-                        </thead>
-                        <tbody>
-                            {% for inspection_list in inspection_list %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{inspection_list.inspection_type}}</td>
-                                    <td>{{inspection_list.inspection_date}}</td>
-                                    <td>{{inspection_list.proponent_name}}</td>
-                                    <td>{{inspection_list.project_name}}</td>
-                                    <td>{{inspection_list.ec_clearance_no}}</td>
-                                    <td>{{inspection_list.address}}</td>
-                                    <td>{{inspection_list.observation}}</td>
-                                    <td>{{inspection_list.status}}</td>
-                                    <td>{{inspection_list.team_leader}}</td>
-                                    <td>{{inspection_list.team_members}}</td>
-                                    <td>{{inspection_list.fines_penalties}}</td>
-                                    <td>{{inspection_list.remarks}}</td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="{% url 'get_inspection_details' inspection_list.record_id %}"><i class="mdi mdi-square-edit-outline"></i></a>
-                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Delete Inspection Report"
-                                                     onclick="populateDeleteForm('{{inspection_list.record_id}}', '{{inspection_list.ec_clearance_no}}', '{{inspection_list.project_name}}')"><i class="mdi mdi-delete"></i> </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+<div id="AppDetails">
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mt-1">
+                <div class="card-body">
+                    <div class="card-widgets">
+                        {% if request.session.role != 'Admin' %}
+                            <a type="button" class="btn btn-primary btn-sm" href="{% url 'inspection_submission_form' %}"><i class="mdi mdi-plus me-2"></i>Add</a>
+                        {% endif %}
+                    </div>
+                    <h5 class="card-title mb-0">List of Inspection Report</h5>
+                    <div id="cardCollpase1" class="collapse pt-3 show">
+                        <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                            <thead>
+                                <th>#</th>
+                                <th>Inspection Reference No</th>
+                                <th>Inspection Type</th>
+                                <th>Inspection Date</th>
+                                <th>Proponent</th>
+                                <th>Project Name</th>
+                                <th>EC Number</th>
+                                <!--<th>Address</th>
+                                <th>Observation</th>
+                                <th>Status</th>
+                                <th>Team Leader</th>
+                                <th>Team Members</th>
+                                <th>Fines</th>
+                                <th>Remarks</th>-->
+                                <th></th>
+                            </thead>
+                            <tbody>
+                                {% for inspection_list in inspection_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td><button class="btn btn-primary btn-link" onclick="viewInspectionDetails('{{inspection_list.inspection_reference_no}}')">{{ inspection_list.inspection_reference_no }}</button></td>
+                                        <td>{{inspection_list.inspection_type}}</td>
+                                        <td>{{inspection_list.inspection_date}}</td>
+                                        <td>{{inspection_list.proponent_name}}</td>
+                                        <td>{{inspection_list.project_name}}</td>
+                                        <td>{{inspection_list.ec_clearance_no}}</td>
+                                        <!--<td>{{inspection_list.address}}</td>
+                                        <td>{{inspection_list.observation}}</td>
+                                        <td>{{inspection_list.status}}</td>
+                                        <td>{{inspection_list.team_leader}}</td>
+                                        <td>{{inspection_list.team_members}}</td>
+                                        <td>{{inspection_list.fines_penalties}}</td>
+                                        <td>{{inspection_list.remarks}}</td>-->
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                {% if request.session.role == 'Admin' %}
+                                                    <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="{% url 'get_inspection_details' inspection_list.inspection_reference_no %}"><i class="mdi mdi-square-edit-outline"></i></a>
+                                                    <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Delete Inspection Report"
+                                                         onclick="populateDeleteForm('{{inspection_list.record_id}}', '{{inspection_list.ec_clearance_no}}', '{{inspection_list.project_name}}')"><i class="mdi mdi-delete"></i> </button>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<form method="post" id="inspection_form" enctype="multipart/form-data">
-{% csrf_token %}
-    <div class="modal fade" id="add_inspection_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-            <!--Content-->
-        <div class="modal-content form-elegant">
-              <!--Header-->
-          <div class="modal-header text-center">
-            <h4 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                        &nbsp;Add Inspection/Monitoring Details</strong></h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-              <!--Body-->
-          <div class="modal-body mx-4">
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Inspection Type</label>
-                        <select type="text" name="inspection_type" class="form-control" id="inspection_type">
-                            <option value="">--SELECT--</option>
-                            <option value="Ad hoc">Ad hoc</option>
-                            <option value="Regular">Regular</option>
-                        </select>
-                    </div>
-                    <div class="alert alert-danger" id="inspection_typeErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Inspection Date</label>
-                        <input type="date" class="form-control" id="inspection_date" name="inspection_date">
-                    </div>
-                    <div class="alert alert-danger" id="inspection_dateErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">EC Number</label>
-                        <select id="ec_clearance_no" name="ec_clearance_no" class="form-select" onchange="get_ec_details(this.value)">
-                            <option value="">--EC Number--</option>
-                            {% for ec_details in ec_details %}
-                                <option value="{{ ec_details.ec_reference_no }}">{{ ec_details.ec_reference_no }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="alert alert-danger" id="ec_clearance_noErrorMsg" style="display:none"></div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Proponent Name</label>
-                        <input type="text" name="proponent_name" class="form-control" id="proponent_name" >
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Project Name</label>
-                        <input type="text" name="project_name" class="form-control" id="project_name">
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Address</label>
-                        <input type="text" name="address" class="form-control" id="address">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Reason for Inspection</label>
-                        <textarea name="inspection_reason" class="form-control" id="inspection_reason"></textarea>
-                    </div>
-                    <div class="alert alert-danger" id="inspection_reasonErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Observation</label>
-                        <textarea name="observation" class="form-control" id="observation"></textarea>
-                    </div>
-                    <div class="alert alert-danger" id="observationErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Team Leader</label>
-                        <input type="text" name="team_leader" class="form-control" id="team_leader">
-                    </div>
-                    <div class="alert alert-danger" id="team_leaderErrorMsg" style="display:none"></div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Team Members</label>
-                        <textarea name="team_members" class="form-control" id="team_members"></textarea>
-                    </div>
-                    <div class="alert alert-danger" id="team_membersErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Status</label>
-                        <select type="text" name="inspection_status" class="form-control" id="inspection_status">
-                            <option value="">--SELECT--</option>
-                            <option value="Non Conformity">Non Conformity</option>
-                            <option value="No Issue">No Issue</option>
-                        </select>
-                    </div>
-                    <div class="alert alert-danger" id="inspection_statusErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Fines and Penalties</label>
-                        <select type="text" name="fines_penalties" class="form-control" id="fines_penalties">
-                            <option value="">--SELECT--</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                        </select>
-                    </div>
-                    <div class="alert alert-danger" id="fines_penaltiesErrorMsg" style="display:none"></div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Remarks</label>
-                        <textarea name="remarks" class="form-control" id="remarks"></textarea>
-                    </div>
-                    <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
-                </div>
-            </div>
-              <div class="alert alert-success" id="inspection_SuccessMsg" style="display:none"></div>
-              <div class="modal-footer flex-center justify-content-center">
-                <button type="button" class="btn btn-sm btn-primary" onclick="add_inspection_details()">Add</button>
-                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-              </div>
-          </div>
-        </div>
-      </div>
-    </div>
-</form>
+</div>
 
 <form method="post" id="InspectionDeleteForm">
     {% csrf_token %}
@@ -232,135 +101,18 @@
 </form>
 
 <script>
-function add_inspection_details()
+function viewInspectionDetails(inspection_reference_no)
     {
-        let inspection_type = $('#inspection_type').val();
-        let inspection_date = $('#inspection_date').val();
-        let inspection_reason = $('#inspection_reason').val();
-        let ec_clearance_no = $('#ec_clearance_no').val();
-        let proponent_name = $('#proponent_name').val();
-        let project_name = $('#project_name').val();
-        let address = $('#address').val();
-        let observation = $('#observation').val();
-        let team_leader = $('#team_leader').val();
-        let team_members = $('#team_members').val();
-        let remarks = $('#remarks').val();
-        let fines_penalties = $('#fines_penalties').val();
-        let inspection_status = $('#inspection_status').val();
-        let record_status = 'Active';
-
-        if(inspection_type == "")
-        {
-            $('#inspection_typeErrorMsg').html("Enter Inspection Type");
-            $('#inspection_typeErrorMsg').show();
-            $('#inspection_typeErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(inspection_date == "")
-        {
-            $('#inspection_dateErrorMsg').html("Choose Inspection Date");
-            $('#inspection_dateErrorMsg').show();
-            $('#inspection_dateErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(inspection_reason == "")
-        {
-            $('#inspection_reasonErrorMsg').html("Enter Inspection Reason");
-            $('#inspection_reasonErrorMsg').show();
-            $('#inspection_reasonErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(ec_clearance_no == "")
-        {
-            $('#ec_clearance_noErrorMsg').html("Enter Environment Clearance Number");
-            $('#ec_clearance_noErrorMsg').show();
-            $('#ec_clearance_noErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(proponent_name == "")
-        {
-            $('#proponent_nameErrorMsg').html("Proponent Name Cannot Be Empty");
-            $('#proponent_nameErrorMsg').show();
-            $('#proponent_nameErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(project_name == "")
-        {
-            $('#project_nameErrorMsg').html("Enter Project Name");
-            $('#project_nameErrorMsg').show();
-            $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(address == "")
-        {
-            $('#addressErrorMsg').html("Enter Address");
-            $('#addressErrorMsg').show();
-            $('#addressErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(observation == "")
-        {
-            $('#observationErrorMsg').html("Enter Observation");
-            $('#observationErrorMsg').show();
-            $('#observationErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(team_leader == "")
-        {
-            $('#team_leaderErrorMsg').html("Enter Team Leader");
-            $('#team_leaderErrorMsg').show();
-            $('#team_leaderErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(team_members == "")
-        {
-            $('#team_membersErrorMsg').html("Enter Team Members");
-            $('#team_membersErrorMsg').show();
-            $('#team_membersErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(inspection_status == "")
-        {
-            $('#inspection_statusErrorMsg').html("Select Status");
-            $('#inspection_statusErrorMsg').show();
-            $('#inspection_statusErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(fines_penalties == "")
-        {
-            $('#fines_penaltiesErrorMsg').html("Select Fines & Penalties (Yes/No)");
-            $('#fines_penaltiesErrorMsg').show();
-            $('#fines_penaltiesErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else
-        {
-            $.ajax({
-                type : "GET",
-                url : "{% url 'add_inspection' %}",
-                data : $('#inspection_form').serialize(),
-                success : function()
-                {
-                    $('#inspection_SuccessMsg').html("Add Successful");
-                    $('#inspection_SuccessMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#inspection_SuccessMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#add_inspection_modal').modal('hide');
-                    }, 2000);
-                    setTimeout(function() {
-                        location.reload();
-                    }, 3000);
-                    $('#inspection_form')[0].reset();
-                }
-            });
-       }
+        $.ajax({
+            type : "GET",
+            url : "{% url 'view_inspection_details' %}",
+            data :{'inspection_reference_no':inspection_reference_no},
+            success : function(data)
+            {
+                $('#AppDetails').html(data);
+            }
+        });
     }
-
-function get_ec_details(ec_clearance_no)
-        {
-            $.ajax({
-                type : "GET",
-                url : "{% url 'load_ec_details' %}",
-                data :{'ec_reference_no':ec_clearance_no},
-                success : function(data)
-                {
-                    $('#proponent_name').val(data.applicant_name);
-                    $('#project_name').val(data.project_name);
-                    $('#address').val(data.address);
-                }
-            });
-        }
 
 function populateDeleteForm(record_id, ec_clearance_no, project_name)
 {

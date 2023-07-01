@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>NEC | ECS </title>
+        <title>DECC | Environmental Clearances Services System </title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="ECSS System" name="description" />
         <meta content="Deepak" name="author" />
@@ -235,11 +235,18 @@
                                 </div>
                             </li>
                             <li class="side-nav-item">
+                                <a href="{% url 'inspection_list' %}" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Manage Inspection/Monitoring </span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
                                 <a href="{% url 'application_status_list' %}" class="side-nav-link">
                                     <i class="uil-folder-plus"></i>
                                     <span> View Application Status </span>
                                 </a>
                             </li>
+
                         </ul>
                     {% elif request.session.role == 'Verifier' %}
                         <ul class="side-nav">
@@ -255,16 +262,6 @@
                                 <a href="{% url 'verify_application_list' %}" class="side-nav-link">
                                     <i class="uil-home-alt"></i>
                                     <span> Application List 
-                                        <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                            99+
-                                        </span> -->
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="side-nav-item">
-                                <a href="{% url 'payment_list' %}" class="side-nav-link">
-                                    <i class="uil-home-alt"></i>
-                                    <span> Payment List 
                                         <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                             99+
                                         </span> -->
@@ -351,14 +348,20 @@
                                     </span>
                                 </a>
                             </li>
-                            <li class="side-nav-item">
+                            <!--<li class="side-nav-item">
                                 <a href="{% url 'payment_list' %}" class="side-nav-link">
                                     <i class="uil-home-alt"></i>
                                     <span> Payment List 
-                                        <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        &lt;!&ndash; <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                             99+
-                                        </span> -->
+                                        </span> &ndash;&gt;
                                     </span>
+                                </a>
+                            </li>-->
+                            <li class="side-nav-item">
+                                <a href="{% url 'inspection_list' %}" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Manage Inspection/Monitoring </span>
                                 </a>
                             </li>
                             <li class="side-nav-item">
@@ -434,6 +437,16 @@
                                 <a href="{% url 'client_application_list' %}" class="side-nav-link">
                                     <i class="uil-folder-plus"></i>
                                     <span> Resubmit Application </span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'payment_list' %}" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Payment Update
+                                        <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            99+
+                                        </span> -->
+                                    </span>
                                 </a>
                             </li>
                             <li class="side-nav-item">

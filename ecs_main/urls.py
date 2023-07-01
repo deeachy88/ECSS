@@ -29,12 +29,16 @@ urlpatterns = [
 
 
 #InspectionMonitoring
+    path('inspection_submission_form', views.inspection_submission_form, name='inspection_submission_form'),
+    path('view_inspection_details', views.view_inspection_details, name='view_inspection_details'),
     path('inspection_list', views.inspection_list, name='inspection_list'),
     path('add_inspection', views.add_inspection, name='add_inspection'),
-    path('get_inspection_details/<int:record_id>', views.get_inspection_details, name='get_inspection_details'),
+    path('get_inspection_details/<str:record_id>', views.get_inspection_details, name='get_inspection_details'),
+    path('load_inspection_attachment_details', views.load_inspection_attachment_details, name='load_inspection_attachment_details'),
     path('load_ec_details', views.load_ec_details, name='load_ec_details'),
     path('edit_inspection', views.edit_inspection, name='edit_inspection'),
     path('delete_inspection', views.delete_inspection, name='delete_inspection'),
+    path('submit_inspection_form', views.submit_inspection_form, name='submit_inspection_form'),
 
 
 #fines and penalties
