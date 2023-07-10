@@ -230,3 +230,4 @@ class t_notification_details(models.Model):
     document_id = models.BigIntegerField(blank=True, null=True)
     is_active = models.CharField(max_length=3, default=None, blank=True, null=True)
     is_deleted = models.CharField(max_length=3, default=None, blank=True, null=True)
+    notification_date = models.CharField(max_length=10, default=None, blank=True, null=True)

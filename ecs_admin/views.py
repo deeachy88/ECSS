@@ -15,6 +15,8 @@ import random
 from django.http import JsonResponse
 from datetime import date
 
+from proponent.models import t_workflow_dtls
+
 
 # Create your views here.
 def home(request):
@@ -78,6 +80,8 @@ def login(request):
                         security = t_security_question_master.objects.all()
                         return render(request, 'update_password.html', {'security': security})
                     else:
+                        v_application_count = 0;
+                        r_application_count = 0
                         if check_user.login_type == 'I':
                             role_details = t_role_master.objects.filter(role_id=check_user.role_id_id)
                             for roles in role_details:
@@ -88,7 +92,11 @@ def login(request):
                                 request.session['login_id'] = check_user.login_id
                                 request.session['ca_authority'] = check_user.agency_code
                                 request.session['dzongkhag_code'] = check_user.dzongkhag_code
-                                return render(request, 'common_dashboard.html')
+                                if roles.role_name == 'Verifier':
+                                    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=check_user.agency_code).count()
+                                elif roles.role_name == 'Reviewer':
+                                    r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=check_user.agency_code).count()
+                                return render(request, 'common_dashboard.html',{'v_application_count':v_application_count, 'r_application_count':r_application_count})
                         else:
                             request.session['name'] = check_user.proponent_name
                             request.session['email'] = check_user.email_id

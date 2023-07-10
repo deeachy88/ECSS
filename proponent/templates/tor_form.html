@@ -7,6 +7,7 @@
                 <h4 class="header-title mb-3"> TOR Form</h4>
                 <form method="post" id="tor_form">
                     {% csrf_token %}
+                    <input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
@@ -147,7 +148,7 @@
                     <div class="row mt-4">
                         <div class="text-sm-end">
                             <button type="button" class="btn btn-success" onclick="save_tor_form()">
-                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </button>
+                                <i class="mdi mdi-arrow-right me-1"></i> Submit </button>
                         </div>
                     </div>
                 </form>
@@ -218,34 +219,6 @@
             $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
             $('#project_name').focus();
         }
-        if(project_name == "")
-        {
-            $('#project_nameErrorMsg').html("Enter Name of Project");
-            $('#project_nameErrorMsg').show();
-            $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#project_name').focus();
-        }
-        else if(project_category == "")
-        {
-            $('#project_categoryErrorMsg').html("Enter Business Type");
-            $('#project_categoryErrorMsg').show();
-            $('#project_categoryErrorMsg').delay(2000).fadeOut('slow');
-            $('#project_category').focus();
-        }
-        else if(cid == "")
-        {
-            $('#cidErrorMsg').html("Enter CID");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
-        }
-        else if(cid_length < 11)
-        {
-            $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
-        }
         else if(applicant_name == "")
         {
             $('#applicant_nameErrorMsg').html("Enter Name of The Applicant");
@@ -290,7 +263,7 @@
         }
         else if(site_value == 'T' && thromde == "")
         {
-            $('#thromdeErrorMsg').html("Select Dzongkhag");
+            $('#thromdeErrorMsg').html("Select Thromde");
             $('#dzongkhagErrorMsg').show();
             $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
             $('#dzongkhag').focus();

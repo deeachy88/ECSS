@@ -120,43 +120,93 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Dzongkhag/Thromde</label>
-                                                <select class="form-select" name="dzo_throm"  id="dzo_throm">
-                                                    {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
-                                                            {{ dzongkhag.dzongkhag_name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
+                                                <label class="form-label fw-bold">Site</label>
+                                                {% if application_details.project_location_site == 'D' %}
+                                                    <div class="mt-2">
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" id="customRadio3" name="site" class="form-check-input" checked>
+                                                            <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" id="customRadio4" name="site" class="form-check-input">
+                                                            <label class="form-check-label" for="customRadio4">Thromde</label>
+                                                        </div>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="mt-2">
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" id="customRadio3" name="site" class="form-check-input">
+                                                            <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" id="customRadio4" name="site" class="form-check-input"  checked>
+                                                            <label class="form-check-label" for="customRadio4">Thromde</label>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
                                             </div>
+                                            <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Gewog</label>
-                                                <select class="form-select" name="gewog" id="gewog" >
-                                                    {% for gewog in gewog %}
-                                                        <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
-                                                            {{ gewog.gewog_name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
+                                        {% if application_details.project_location_site == 'T' %}
+                                            <div class="col-lg-6 thromde_div">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select">
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                                                {{ thromde.thromde_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                        </div>
+                                        {% endif %}
                                     </div>
                                     <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog" >
-                                                    {% for village in village %}
-                                                    <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
-                                                        {{ village.village_name }}
-                                                    </option>
-                                                    {% endfor %}
-                                                </select>
+                                        {% if application_details.project_location_site == 'D' %}
+                                            <div class="col-lg-6 dzongkhag_div">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select">
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                                {{ dzongkhag.dzongkhag_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select">
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                                {{ gewog.gewog_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                         </div>
-                                    </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select">
+                                                        {% for village in village %}
+                                                            <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                                {{ village.village_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                     <div class="row">
                                         <table class="table table-hover table-bordered table-centered mb-0">
                                             <thead>

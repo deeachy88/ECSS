@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'ECS.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ecss_db',
+        'NAME': 'ecs_db',
         'USER': 'postgres',
         'PASSWORD': 'root',
         'HOST': 'localhost'

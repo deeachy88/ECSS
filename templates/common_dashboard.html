@@ -28,6 +28,26 @@
         <link href="{% static 'assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
         <link href="{% static 'assets/vendor/quill/quill.core.css' %}" rel="stylesheet" type="text/css" />
         <link href="{% static 'assets/vendor/quill/quill.snow.css' %}" rel="stylesheet" type="text/css" />
+
+        <style>
+                                    
+                .badge {
+                    display: block;
+                    position: absolute;
+                    top: 2px;
+                    right: 65px;
+                    line-height: 16px;
+                    height: 16px;
+                    padding: 0 5px;
+                    color: #ff0303;
+                    text-shadow: 0 1px rgb(0 0 0 / 0%);
+                    border-width: 1px;
+                    border-style: solid;
+                    border-radius: 10px;
+                    border-color: #f84343;
+                }
+        </style>
+
     </head>
 
     <body>
@@ -262,10 +282,7 @@
                                 <a href="{% url 'verify_application_list' %}" class="side-nav-link">
                                     <i class="uil-home-alt"></i>
                                     <span> Application List 
-                                        <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                            99+
-                                        </span> -->
-                                    </span>
+                                    <span class="badge badge-danger">{{ v_application_count }}</span>
                                 </a>
                             </li>
                             <li class="side-nav-item">
@@ -341,11 +358,8 @@
                             <li class="side-nav-item">
                                 <a href="{% url 'reviewer_application_list' %}" class="side-nav-link">
                                     <i class="uil-home-alt"></i>
-                                    <span> Application List
-                                        <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                            99+
-                                        </span> -->
-                                    </span>
+                                    <span> Application List</span>
+                                    <span class="badge badge-danger">{{ r_application_count }}</span>
                                 </a>
                             </li>
                             <!--<li class="side-nav-item">

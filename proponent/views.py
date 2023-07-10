@@ -1,5 +1,6 @@
 from datetime import date
 from django.shortcuts import render, redirect
+from ecs_main.models import t_application_history
 from ecs_main.views import client_application_list, payment_list
 from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t12_drainage_details, t_ec_industries_t13_dumpyard, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals, t_report_submission_t1, t_report_submission_t2
 from ecs_admin.models import t_user_master, t_bsic_code, t_competant_authority_master, t_fees_schedule, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_service_master, t_thromde_master, t_village_master
@@ -746,7 +747,20 @@ def save_iee_application(request):
                     service_id=request.session['service_id'],
                     application_source='ECSS'
                     )
-            
+        t_application_history.objects.create(
+                                                application_no=application_no,
+                                                application_date=date.today(),
+                                                applicant_id=request.session['login_id'],
+                                                ca_authority=ca_auth,
+                                                service_id=request.session['service_id'], 
+                                                application_status='P', 
+                                                action_date=None, 
+                                                actor_id=request.session['login_id'],
+                                                actor_name=request.session['name'], 
+                                                remarks=None, 
+                                                status='Pending' 
+                                            )
+    
         t_workflow_dtls.objects.create(application_no=application_no, 
                                         service_id=request.session['service_id'],
                                         application_status='P',
@@ -1528,6 +1542,9 @@ def submit_iee_application(request):
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
         anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        app_hist_details = t_application_history.objects.create(application_no=application_no)
+        app_hist_details.update(action_date=date.today())
+        
         for application_details in application_details:
             service_id = application_details.service_id
             application_type = application_details.application_type
@@ -2627,6 +2644,9 @@ def submit_transmission_application(request):
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
         anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        app_hist_details = t_application_history.objects.create(application_no=application_no)
+        app_hist_details.update(action_date=date.today())
+        
         for application_details in application_details:
             service_id = application_details.service_id
             application_type = application_details.application_type
@@ -2705,6 +2725,9 @@ def submit_general_application(request):
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
         anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        app_hist_details = t_application_history.objects.create(application_no=application_no)
+        app_hist_details.update(action_date=date.today())
+        
         for application_details in application_details:
             service_id = application_details.service_id
             application_type = application_details.application_type
@@ -2783,7 +2806,7 @@ def tor_form(request):
 def save_tor_form(request):
     data = dict()
     try:
-        application_no = request.POST.get('ea_disclaimer_application_no')
+        application_no = request.POST.get('application_no')
         project_name = request.POST.get('project_name')
         applicant_name = request.POST.get('applicant_name')
         address = request.POST.get('address')
@@ -2812,35 +2835,39 @@ def save_tor_form(request):
                                                   location_name=location_name
                                                   )
         if site == 'T':
-            t_workflow_dtls.objects.create(application_no=application_no, 
-                                            service_id=request.session['service_id'],
-                                            application_status='P',
-                                            action_date=date.today(),
-                                            actor_id=request.session['login_id'],
-                                            actor_name=request.session['name'],
-                                            assigned_user_id=None,
-                                            assigned_role_id='2',
-                                            assigned_role_name='Verifier',
-                                            result=None,
-                                            ca_authority=request.session['ca_authority'],
-                                            dzongkhag_thromde_id=thromde,
-                                            application_source='ECSS'
-                                        )
+            ca_auth = t_competant_authority_master.objects.filter(dzongkhag_code=thromde)
+            for ca in ca_auth:
+                ca_authority = ca.competent_authority_id
+                t_workflow_dtls.objects.create(application_no=application_no, 
+                                                service_id=request.session['service_id'],
+                                                application_status='P',
+                                                action_date=date.today(),
+                                                actor_id=request.session['login_id'],
+                                                actor_name=request.session['name'],
+                                                assigned_user_id=None,
+                                                assigned_role_id='2',
+                                                assigned_role_name='Verifier',
+                                                result=None,
+                                                ca_authority=ca_authority,
+                                                application_source='ECSS'
+                                            )
         else:
-            t_workflow_dtls.objects.create(application_no=application_no, 
-                                            service_id=request.session['service_id'],
-                                            application_status='P',
-                                            action_date=date.today(),
-                                            actor_id=request.session['login_id'],
-                                            actor_name=request.session['name'],
-                                            assigned_user_id=None,
-                                            assigned_role_id='2',
-                                            assigned_role_name='Verifier',
-                                            result=None,
-                                            ca_authority=request.session['ca_authority'],
-                                            dzongkhag_thromde_id=dzongkhag,
-                                            application_source='ECSS'
-                                        )
+            ca_auth = t_competant_authority_master.objects.filter(dzongkhag_code=dzongkhag)
+            for ca in ca_auth:
+                ca_authority = ca.competent_authority_id
+                t_workflow_dtls.objects.create(application_no=application_no, 
+                                                service_id=request.session['service_id'],
+                                                application_status='P',
+                                                action_date=date.today(),
+                                                actor_id=request.session['login_id'],
+                                                actor_name=request.session['name'],
+                                                assigned_user_id=None,
+                                                assigned_role_id='2',
+                                                assigned_role_name='Verifier',
+                                                result=None,
+                                                ca_authority=ca_authority,
+                                                application_source='ECSS'
+                                            )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -3303,6 +3330,21 @@ def save_road_application(request):
                 application_status='P',
                 service_id=request.session['service_id']
                 )
+        
+        t_application_history.objects.create(
+                                                application_no=application_no,
+                                                application_date=date.today(),
+                                                applicant_id=request.session['login_id'],
+                                                ca_authority=ca_auth,
+                                                service_id=request.session['service_id'], 
+                                                application_status='P', 
+                                                action_date=None, 
+                                                actor_id=request.session['login_id'],
+                                                actor_name=request.session['name'], 
+                                                remarks=None, 
+                                                status='Pending' 
+                                            )
+        
         t_workflow_dtls.objects.create(application_no=application_no, 
                                     service_id=request.session['service_id'],
                                     application_status='P',
@@ -3473,7 +3515,21 @@ def save_general_application(request):
                 application_status='P',
                 service_id=request.session['service_id']
                 )
-            
+        
+        t_application_history.objects.create(
+                                                application_no=application_no,
+                                                application_date=date.today(),
+                                                applicant_id=request.session['login_id'],
+                                                ca_authority=ca_auth,
+                                                service_id=request.session['service_id'], 
+                                                application_status='P', 
+                                                action_date=None, 
+                                                actor_id=request.session['login_id'],
+                                                actor_name=request.session['name'], 
+                                                remarks=None, 
+                                                status='Pending' 
+                                            )
+        
         t_workflow_dtls.objects.create(application_no=application_no, 
                                         service_id=request.session['service_id'],
                                         application_status='P',
@@ -3664,6 +3720,21 @@ def save_forest_application(request):
                 application_status='P',
                 service_id=request.session['service_id']
                 )
+            
+        t_application_history.objects.create(
+                                                application_no=application_no,
+                                                application_date=date.today(),
+                                                applicant_id=request.session['login_id'],
+                                                ca_authority=ca_auth,
+                                                service_id=request.session['service_id'], 
+                                                application_status='P', 
+                                                action_date=None, 
+                                                actor_id=request.session['login_id'],
+                                                actor_name=request.session['name'], 
+                                                remarks=None, 
+                                                status='Pending' 
+                                            )
+        
         t_workflow_dtls.objects.create(application_no=application_no, 
                                         service_id=request.session['service_id'],
                                         application_status='P',
@@ -3696,7 +3767,9 @@ def submit_forest_application(request):
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
         anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
-
+        app_hist_details = t_application_history.objects.create(application_no=application_no)
+        app_hist_details.update(action_date=date.today())
+        
         for application_details in application_details:
             service_id = application_details.service_id
             application_type = application_details.application_type
@@ -3928,6 +4001,21 @@ def save_ground_water_application(request):
                 application_status='P',
                 service_id=request.session['service_id']
                 )
+            
+        t_application_history.objects.create(
+                                                application_no=application_no,
+                                                application_date=date.today(),
+                                                applicant_id=request.session['login_id'],
+                                                ca_authority=ca_auth,
+                                                service_id=request.session['service_id'], 
+                                                application_status='P', 
+                                                action_date=None, 
+                                                actor_id=request.session['login_id'],
+                                                actor_name=request.session['name'], 
+                                                remarks=None, 
+                                                status='Pending' 
+                                            )
+        
         t_workflow_dtls.objects.create(application_no=application_no, 
                                         service_id=request.session['service_id'],
                                         application_status='P',
@@ -3990,6 +4078,9 @@ def submit_ground_water_application(request):
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
         anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        app_hist_details = t_application_history.objects.create(application_no=application_no)
+        app_hist_details.update(action_date=date.today())
+        
         for application_details in application_details:
             service_id = application_details.service_id
             application_type = application_details.application_type
@@ -4222,6 +4313,21 @@ def save_quarry_application(request):
                 application_status='P',
                 service_id=request.session['service_id']
                 )
+            
+        t_application_history.objects.create(
+                                                application_no=application_no,
+                                                application_date=date.today(),
+                                                applicant_id=request.session['login_id'],
+                                                ca_authority=ca_auth,
+                                                service_id=request.session['service_id'], 
+                                                application_status='P', 
+                                                action_date=None, 
+                                                actor_id=request.session['login_id'],
+                                                actor_name=request.session['name'], 
+                                                remarks=None, 
+                                                status='Pending' 
+                                            )
+        
         t_workflow_dtls.objects.create(application_no=application_no, 
                                     service_id=request.session['service_id'],
                                     application_status='P',
@@ -4260,6 +4366,9 @@ def submit_quarry_application(request):
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
         anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        app_hist_details = t_application_history.objects.create(application_no=application_no)
+        app_hist_details.update(action_date=date.today())
+        
         for application_details in application_details:
             service_id = application_details.service_id
             application_type = application_details.application_type
@@ -4462,6 +4571,8 @@ def submit_road_application(request):
     try:
         application_no = request.POST.get('road_disclaimer_application_no')
         identifier = request.POST.get('disc_identifier')
+        app_hist_details = t_application_history.objects.create(application_no=application_no)
+        app_hist_details.update(action_date=date.today())
         if identifier == 'OC' or identifier == 'NC':
             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
             workflow_dtls.update(action_date=date.today())
@@ -4637,6 +4748,21 @@ def save_energy_application(request):
                 application_status='P',
                 service_id=request.session['service_id']
                 )
+            
+        t_application_history.objects.create(
+                                                application_no=application_no,
+                                                application_date=date.today(),
+                                                applicant_id=request.session['login_id'],
+                                                ca_authority=ca_auth,
+                                                service_id=request.session['service_id'], 
+                                                application_status='P', 
+                                                action_date=None, 
+                                                actor_id=request.session['login_id'],
+                                                actor_name=request.session['name'], 
+                                                remarks=None, 
+                                                status='Pending' 
+                                            )
+        
         t_workflow_dtls.objects.create(application_no=application_no, 
                                     service_id=request.session['service_id'],
                                     application_status='P',
@@ -4675,6 +4801,9 @@ def submit_energy_application(request):
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
         anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        app_hist_details = t_application_history.objects.create(application_no=application_no)
+        app_hist_details.update(action_date=date.today())
+        
         for application_details in application_details:
             service_id = application_details.service_id
             application_type = application_details.application_type
@@ -4887,6 +5016,21 @@ def save_tourism_application(request):
                 application_status='P',
                 service_id=request.session['service_id']
                 )
+        
+        t_application_history.objects.create(
+                                                application_no=application_no,
+                                                application_date=date.today(),
+                                                applicant_id=request.session['login_id'],
+                                                ca_authority=ca_auth,
+                                                service_id=request.session['service_id'], 
+                                                application_status='P', 
+                                                action_date=None, 
+                                                actor_id=request.session['login_id'],
+                                                actor_name=request.session['name'], 
+                                                remarks=None, 
+                                                status='Pending' 
+                                            )
+        
         t_workflow_dtls.objects.create(application_no=application_no, 
                                     service_id=request.session['service_id'],
                                     application_status='P',
@@ -4979,6 +5123,9 @@ def submit_tourism_application(request):
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
         anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        app_hist_details = t_application_history.objects.create(application_no=application_no)
+        app_hist_details.update(action_date=date.today())
+
         for application_details in application_details:
             service_id = application_details.service_id
             application_type = application_details.application_type

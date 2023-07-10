@@ -475,6 +475,10 @@ class t_ec_industries_t1_general(models.Model):
     service_type = models.CharField(max_length=100,default=None, blank=True, null=True)
     additional_info = models.TextField(max_length=250, default=None, blank=True, null=True)
     additional_info_letter = models.TextField(max_length=250, default=None, blank=True, null=True)
+    tor_approve_date =  models.CharField(max_length=100,default=None, blank=True, null=True)
+    tor_remarks =  models.CharField(max_length=250,default=None, blank=True, null=True)
+    ai_date = models.DateField(default=None, blank=True, null=True)
+    tat = models.CharField(max_length=100,default=None, blank=True, null=True)
     
 class t_ec_industries_t2_partner_details(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -645,7 +649,6 @@ class t_workflow_dtls(models.Model):
     assigned_role_id = models.CharField(max_length=10, default=None, blank=True, null=True)
     assigned_role_name = models.CharField(max_length=250, default=None, blank=True, null=True)
     ca_authority = models.CharField(max_length=100, default=None, blank=True, null=True)
-    dzongkhag_thromde_id = models.CharField(max_length=100, default=None, blank=True, null=True)
     result = models.CharField(max_length=250, default=None, blank=True, null=True)
     application_source = models.CharField(max_length=20,default=None, blank=True, null=True)
 
