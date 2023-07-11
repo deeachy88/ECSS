@@ -22,4 +22,9 @@ urlpatterns = [
     path('application_status_list', views.application_status_list, name='application_status_list'),
     path('application_status', views.application_status, name='application_status'),
 
+
+#EC Renewal Notifications
+    path('ec_renewal_list', views.ec_renewal_list, name='ec_renewal_list'),
+    path('send_notification', views.send_notification, name='send_notification'),
+
 ]
