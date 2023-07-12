@@ -29,7 +29,6 @@
                                 <option value="Regular">Regular</option>
                             </select>
                         </div>
-                        <div class="alert alert-danger" id="inspection_typeErrorMsg" style="display:none"></div>
                     </div>
                     <div class="row">
                         <div class="col-3">
@@ -38,7 +37,6 @@
                         <div class="col-sm-9">
                             <input type="date" name="inspection_date" class="form-control" id="inspection_date" value="{{inspection_details.inspection_date}}|date:'d/m/Y'">
                         </div>
-                        <div class="alert alert-danger" id="inspection_dateErrorMsg" style="display:none"></div>
                     </div>
                     <div class="row">
                         <div class="col-3">
@@ -48,11 +46,10 @@
                             <select id="ec_clearance_no" name="ec_clearance_no" class="form-select" onchange="get_ec_details(this.value)">
                                 <option value="">--EC Number--</option>
                                 {% for ec_details in ec_details %}
-                                    <option value="{{ ec_details.ec_reference_no }}" {% if inspection_details.ec_clearance_no == inspection_details.ec_clearance_no %}selected{% endif %} >{{ ec_details.ec_reference_no }}</option>
+                                    <option value="{{ ec_details.ec_reference_no }}" {% if ec_details.ec_reference_no == inspection_details.ec_clearance_no %}selected{% endif %} >{{ ec_details.ec_reference_no }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="alert alert-danger" id="ec_clearance_noErrorMsg" style="display:none"></div>
                     </div>
                     <div class="row">
                         <div class="col-3">
@@ -85,7 +82,6 @@
                         <div class="col-sm-9">
                             <input type="text" name="inspection_reason" class="form-control" id="inspection_reason" value="{{inspection_details.inspection_reason}}">
                         </div>
-                        <div class="alert alert-danger" id="inspection_reasonErrorMsg" style="display:none"></div>
                     </div>
                     <div class="row">
                         <div class="col-3">
@@ -94,7 +90,6 @@
                         <div class="col-sm-9">
                             <input type="text" name="observation" class="form-control" id="observation" value="{{inspection_details.observation}}">
                         </div>
-                        <div class="alert alert-danger" id="observationErrorMsg" style="display:none"></div>
                     </div>
                     <div class="row">
                         <div class="col-3">
@@ -115,7 +110,6 @@
                         <div class="col-sm-9">
                             <input type="text" name="team_leader" class="form-control" id="team_leader" value="{{inspection_details.team_leader}}">
                         </div>
-                        <div class="alert alert-danger" id="team_leaderErrorMsg" style="display:none"></div>
                     </div>
                     <div class="row">
                         <div class="col-3">
@@ -124,7 +118,6 @@
                         <div class="col-sm-9">
                             <input type="text" name="team_members" class="form-control" id="team_members" value="{{inspection_details.team_members}}">
                         </div>
-                        <div class="alert alert-danger" id="team_membersErrorMsg" style="display:none"></div>
                     </div>
                     <div class="row">
                         <div class="col-3">
@@ -137,7 +130,6 @@
                                 <option value="No">No</option>
                             </select>
                         </div>
-                        <div class="alert alert-danger" id="fines_penaltiesErrorMsg" style="display:none"></div>
                     </div>
                     <div class="row">
                         <div class="col-3">
@@ -155,6 +147,7 @@
                             {% include 'inspection/edit_inspection_file_attachment.html' %}
                         </div>
                     </div>
+                    <div class="alert alert-danger" id="ErrorMsg" style="display:none"></div>
                     <div class="alert alert-success" id="edit_successMsg" style="display:none"></div>
                     <div class="float-end">
                         <button type="button" class="btn btn-md btn-primary" onclick="update_inspection_details()">Update Inspection Report</button>
@@ -220,75 +213,75 @@
         var record_status = 'Active';
         if(inspection_type == "")
         {
-            $('#inspection_typeErrorMsg').html("Enter Inspection Type");
-            $('#inspection_typeErrorMsg').show();
-            $('#inspection_typeErrorMsg').delay(2000).fadeOut('slow');
+            $('#ErrorMsg').html("Enter Inspection Type");
+            $('#ErrorMsg').show();
+            $('#ErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(inspection_date == "")
         {
-            $('#inspection_dateErrorMsg').html("Choose Inspection Date");
-            $('#inspection_dateErrorMsg').show();
-            $('#inspection_dateErrorMsg').delay(2000).fadeOut('slow');
+            $('#ErrorMsg').html("Choose Inspection Date");
+            $('#ErrorMsg').show();
+            $('#ErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(inspection_reason == "")
         {
-            $('#inspection_reasonErrorMsg').html("Enter Inspection Reason");
-            $('#inspection_reasonErrorMsg').show();
-            $('#inspection_reasonErrorMsg').delay(2000).fadeOut('slow');
+            $('#ErrorMsg').html("Enter Inspection Reason");
+            $('#ErrorMsg').show();
+            $('#ErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(ec_clearance_no == "")
         {
-            $('#ec_clearance_noErrorMsg').html("Enter Environment Clearance Number");
-            $('#ec_clearance_noErrorMsg').show();
-            $('#ec_clearance_noErrorMsg').delay(2000).fadeOut('slow');
+            $('#ErrorMsg').html("Select Environment Clearance Number");
+            $('#ErrorMsg').show();
+            $('#ErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(proponent_name == "")
         {
-            $('#proponent_nameErrorMsg').html("Proponent Name Cannot Be Empty");
-            $('#proponent_nameErrorMsg').show();
-            $('#proponent_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#ErrorMsg').html("Proponent Name Cannot Be Empty");
+            $('#ErrorMsg').show();
+            $('#ErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(project_name == "")
         {
-            $('#project_nameErrorMsg').html("Enter Project Name");
-            $('#project_nameErrorMsg').show();
-            $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#ErrorMsg').html("Enter Project Name");
+            $('#ErrorMsg').show();
+            $('#ErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(address == "")
         {
-            $('#addressErrorMsg').html("Enter Address");
-            $('#addressErrorMsg').show();
-            $('#addressErrorMsg').delay(2000).fadeOut('slow');
+            $('#ErrorMsg').html("Enter Address");
+            $('#ErrorMsg').show();
+            $('#ErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(observation == "")
         {
-            $('#observationErrorMsg').html("Enter Observation");
-            $('#observationErrorMsg').show();
-            $('#observationErrorMsg').delay(2000).fadeOut('slow');
+            $('#ErrorMsg').html("Enter Observation");
+            $('#ErrorMsg').show();
+            $('#ErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(team_leader == "")
         {
-            $('#team_leaderErrorMsg').html("Enter Team Leader");
-            $('#team_leaderErrorMsg').show();
-            $('#team_leaderErrorMsg').delay(2000).fadeOut('slow');
+            $('#ErrorMsg').html("Enter Team Leader");
+            $('#ErrorMsg').show();
+            $('#ErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(team_members == "")
         {
-            $('#team_membersErrorMsg').html("Enter Team Members");
-            $('#team_membersErrorMsg').show();
-            $('#team_membersErrorMsg').delay(2000).fadeOut('slow');
+            $('#ErrorMsg').html("Enter Team Members");
+            $('#ErrorMsg').show();
+            $('#ErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(inspection_status == "")
         {
-            $('#inspection_statusErrorMsg').html("Select Status");
-            $('#inspection_statusErrorMsg').show();
-            $('#inspection_statusErrorMsg').delay(2000).fadeOut('slow');
+            $('#ErrorMsg').html("Select Status");
+            $('#ErrorMsg').show();
+            $('#ErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(fines_penalties == "")
         {
-            $('#fines_penaltiesErrorMsg').html("Select Fines & Penalties (Yes/No)");
-            $('#fines_penaltiesErrorMsg').show();
-            $('#fines_penaltiesErrorMsg').delay(2000).fadeOut('slow');
+            $('#ErrorMsg').html("Select Fines & Penalties (Yes/No)");
+            $('#ErrorMsg').show();
+            $('#ErrorMsg').delay(2000).fadeOut('slow');
         }
         else
         {

@@ -992,7 +992,7 @@ def load_inspection_attachment_details(request):
 def get_inspection_details(request, record_id):
     file_attach = t_file_attachment.objects.filter(application_no=record_id)
     inspection_details = t_inspection_monitoring_t1.objects.filter(inspection_reference_no=record_id)
-    ec_details = t_ec_industries_t1_general.objects.all()
+    ec_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False)
     return render(request, 'inspection/edit_inspection.html', {'inspection_details': inspection_details,
                                                                'file_attach': file_attach, 'ec_details': ec_details})
 
@@ -1018,7 +1018,6 @@ def edit_inspection(request):
     edit_remarks = request.POST.get('remarks')
     edit_fines_penalties = request.POST.get('fines_penalties')
     edit_inspection_status = request.POST.get('inspection_status')
-    print(edit_record_id)
     inspection_details = t_inspection_monitoring_t1.objects.filter(inspection_reference_no=edit_record_id)
     inspection_details.update(inspection_type=edit_inspection_type, inspection_date=edit_inspection_date,
                               inspection_reason=edit_inspection_reason, ec_clearance_no=edit_ec_clearance_no,
