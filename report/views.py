@@ -272,16 +272,6 @@ def application_status(request):
 
 
 #EC Renewal Notifications
-def ec_renewal_list(request):
-    ca_authority = request.GET.get('ca_authority')
-    dzongkhag_list = t_dzongkhag_master.objects.all()
-    ca_list = t_competant_authority_master.objects.all()
-
-    ec_list = t_ec_industries_t1_general.objects.filter(application_status='A').values()
-
-    return render(request, 'ec_renewal_list.html',
-                  {'dzongkhag_list': dzongkhag_list, 'ec_list': ec_list, 'ca_list': ca_list})
-
 
 def ec_renewal_list(request):
     ca_authority = request.session['ca_authority']
