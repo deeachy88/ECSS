@@ -475,7 +475,7 @@ class t_ec_industries_t1_general(models.Model):
     service_type = models.CharField(max_length=100,default=None, blank=True, null=True)
     additional_info = models.TextField(max_length=250, default=None, blank=True, null=True)
     additional_info_letter = models.TextField(max_length=250, default=None, blank=True, null=True)
-    tor_approve_date =  models.CharField(max_length=100,default=None, blank=True, null=True)
+    tor_approve_date =  models.DateField(default=None, blank=True, null=True)
     tor_remarks =  models.CharField(max_length=250,default=None, blank=True, null=True)
     ai_date = models.DateField(default=None, blank=True, null=True)
     tat = models.CharField(max_length=100,default=None, blank=True, null=True)

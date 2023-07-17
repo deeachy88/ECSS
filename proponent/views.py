@@ -568,7 +568,7 @@ def delete_partner_details(request):
 
 
 def save_iee_application(request):
-    data = dict()
+    data = {}
     try:
         application_no = request.POST.get('application_no')
         project_name = request.POST.get('project_name')
@@ -601,108 +601,101 @@ def save_iee_application(request):
         identifier = request.POST.get('identifier')
         ec_reference_no = request.POST.get('ec_reference_no')
         form_type = request.POST.get('form_type')
+        
         ca_auth = None
+        if identifier != 'DR':
+            auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session['ca_auth'],
+                dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+            )
+            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
 
-        if identifier !='DR':
-            if request.session['ca_auth'] == 'DEC':
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
-            elif request.session['ca_auth'] == 'THROMDE':
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
-            else:
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
-        if(identifier == 'NC'):
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(project_name=project_name)
-        elif(identifier == 'OC'):
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(applicant_name=applicant_name)
-        elif(identifier == 'DR'): # This is For Draft Applications
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            if application_details.exists():
-                application_details.update(
-                application_type='New',
-                project_name=project_name,
-                project_category=project_category,
-                applicant_name=applicant_name,
-                address=address,
-                cid=cid,
-                contact_no=contact_no,
-                email=email,
-                focal_person=focal_person,
-                industry_type=industry_type,
-                establishment_type=establishment_type,
-                industry_classification=industry_classification,
-                dzongkhag_code=dzongkhag_code,
-                gewog_code=gewog_code,
-                village_code=village_code,
-                location_name=location_name,
-                industrial_area_acre=industrial_area_acre,
-                state_reserve_forest_acre=state_reserve_forest_acre,
-                private_area_acre=private_area_acre,
-                others_area_acre=others_area_acre,
-                total_area_acre=total_area_acre,
-                green_area_acre=green_area_acre,
-                production_process_flow=production_process_flow,
-                project_objective=project_objective,
-                project_no_of_workers=project_no_of_workers,
-                project_cost=project_cost,
-                project_duration=project_duration,
-                )
-            else:
-                t_ec_industries_t1_general.objects.create(
-                    application_no=application_no,
-                    application_date=date.today(),
-                    application_type='New',
-                    form_type=form_type,
-                    ca_authority=ca_auth,
-                    applicant_id=request.session['email'],
-                    colour_code=request.session['colour_code'],
-                    project_name=project_name,
-                    project_category=project_category,
-                    applicant_name=applicant_name,
-                    address=address,
-                    cid=cid,
-                    contact_no=contact_no,
-                    email=email,
-                    focal_person=focal_person,
-                    industry_type=industry_type,
-                    establishment_type=establishment_type,
-                    industry_classification=industry_classification,
-                    dzongkhag_code=dzongkhag_code,
-                    gewog_code=gewog_code,
-                    village_code=village_code,
-                    location_name=location_name,
-                    industrial_area_acre=industrial_area_acre,
-                    state_reserve_forest_acre=state_reserve_forest_acre,
-                    private_area_acre=private_area_acre,
-                    others_area_acre=others_area_acre,
-                    total_area_acre=total_area_acre,
-                    green_area_acre=green_area_acre,
-                    production_process_flow=production_process_flow,
-                    project_objective=project_objective,
-                    project_no_of_workers=project_no_of_workers,
-                    project_cost=project_cost,
-                    project_duration=project_duration,
-                    application_status='P',
-                    service_id=request.session['service_id'],
-                    application_source='ECSS',
-                    broad_activity_code=request.session['broad_activity_code'] ,
-                    specific_activity_code=request.session['specific_activity_code'],
-                    category=request.session['category']
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+
+        with transaction.atomic():
+            if identifier == 'NC':
+                application_details.update(project_name=project_name)
+            elif identifier == 'OC':
+                application_details.update(applicant_name=applicant_name)
+            elif identifier == 'DR':
+                if application_details.exists():
+                    application_details.update(
+                        application_type='New',
+                        project_name=project_name,
+                        project_category=project_category,
+                        applicant_name=applicant_name,
+                        address=address,
+                        cid=cid,
+                        contact_no=contact_no,
+                        email=email,
+                        focal_person=focal_person,
+                        industry_type=industry_type,
+                        establishment_type=establishment_type,
+                        industry_classification=industry_classification,
+                        dzongkhag_code=dzongkhag_code,
+                        gewog_code=gewog_code,
+                        village_code=village_code,
+                        location_name=location_name,
+                        industrial_area_acre=industrial_area_acre,
+                        state_reserve_forest_acre=state_reserve_forest_acre,
+                        private_area_acre=private_area_acre,
+                        others_area_acre=others_area_acre,
+                        total_area_acre=total_area_acre,
+                        green_area_acre=green_area_acre,
+                        production_process_flow=production_process_flow,
+                        project_objective=project_objective,
+                        project_no_of_workers=project_no_of_workers,
+                        project_cost=project_cost,
+                        project_duration=project_duration,
                     )
-        elif identifier== 'TC' or identifier== 'PC' or identifier == 'LC' or identifier == 'CC':
-            application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
-            for app_det in application_details:
-                t_ec_industries_t1_general.objects.create(
+                else:
+                    t_ec_industries_t1_general.objects.create(
+                        application_no=application_no,
+                        application_date=timezone.now().date(),
+                        application_type='New',
+                        form_type=form_type,
+                        ca_authority=ca_auth,
+                        applicant_id=request.session['email'],
+                        colour_code=request.session['colour_code'],
+                        project_name=project_name,
+                        project_category=project_category,
+                        applicant_name=applicant_name,
+                        address=address,
+                        cid=cid,
+                        contact_no=contact_no,
+                        email=email,
+                        focal_person=focal_person,
+                        industry_type=industry_type,
+                        establishment_type=establishment_type,
+                        industry_classification=industry_classification,
+                        dzongkhag_code=dzongkhag_code,
+                        gewog_code=gewog_code,
+                        village_code=village_code,
+                        location_name=location_name,
+                        industrial_area_acre=industrial_area_acre,
+                        state_reserve_forest_acre=state_reserve_forest_acre,
+                        private_area_acre=private_area_acre,
+                        others_area_acre=others_area_acre,
+                        total_area_acre=total_area_acre,
+                        green_area_acre=green_area_acre,
+                        production_process_flow=production_process_flow,
+                        project_objective=project_objective,
+                        project_no_of_workers=project_no_of_workers,
+                        project_cost=project_cost,
+                        project_duration=project_duration,
+                        application_status='P',
+                        service_id=request.session['service_id'],
+                        application_source='ECSS',
+                        broad_activity_code=request.session['broad_activity_code'],
+                        specific_activity_code=request.session['specific_activity_code'],
+                        category=request.session['category']
+                    )
+            elif identifier in ['TC', 'PC', 'LC', 'CC']:
+                for app_det in application_details:
+                    t_ec_industries_t1_general.objects.create(
                         application_no=application_no,
                         application_type='New',
-                        application_date=date.today(),
+                        application_date=timezone.now().date(),
                         form_type=form_type,
                         ca_authority=app_det.ca_authority,
                         applicant_id=request.session['email'],
@@ -736,11 +729,11 @@ def save_iee_application(request):
                         application_status='P',
                         service_id=app_det.service_id,
                         application_source='ECSS'
-                        )
-        else:
-            t_ec_industries_t1_general.objects.create(
+                    )
+            else:
+                t_ec_industries_t1_general.objects.create(
                     application_no=application_no,
-                    application_date=date.today(),
+                    application_date=timezone.now().date(),
                     application_type='New',
                     form_type=form_type,
                     ca_authority=ca_auth,
@@ -775,42 +768,46 @@ def save_iee_application(request):
                     application_status='P',
                     service_id=request.session['service_id'],
                     application_source='ECSS',
-                    broad_activity_code=request.session['broad_activity_code'] ,
+                    broad_activity_code=request.session['broad_activity_code'],
                     specific_activity_code=request.session['specific_activity_code'],
                     category=request.session['category']
-                    )
-        t_application_history.objects.create(
-                                                application_no=application_no,
-                                                application_date=date.today(),
-                                                applicant_id=request.session['login_id'],
-                                                ca_authority=ca_auth,
-                                                service_id=request.session['service_id'], 
-                                                application_status='P', 
-                                                action_date=None, 
-                                                actor_id=request.session['login_id'],
-                                                actor_name=request.session['name'], 
-                                                remarks=None, 
-                                                status=None 
-                                            )
-    
-        t_workflow_dtls.objects.create(application_no=application_no, 
-                                        service_id=request.session['service_id'],
-                                        application_status='P',
-                                        action_date=None,
-                                        actor_id=request.session['login_id'],
-                                        actor_name=request.session['name'],
-                                        assigned_user_id=None,
-                                        assigned_role_id='2',
-                                        assigned_role_name='Verifier',
-                                        result=None,
-                                        ca_authority=ca_auth,
-                                        application_source='ECSS'
-                                    )
-        data['message'] = "success"
+                )
+
+            t_application_history.objects.create(
+                application_no=application_no,
+                application_date=timezone.now().date(),
+                applicant_id=request.session['login_id'],
+                ca_authority=ca_auth,
+                service_id=request.session['service_id'],
+                application_status='P',
+                action_date=None,
+                actor_id=request.session['login_id'],
+                actor_name=request.session['name'],
+                remarks=None,
+                status=None
+            )
+
+            t_workflow_dtls.objects.create(
+                application_no=application_no,
+                service_id=request.session['service_id'],
+                application_status='P',
+                action_date=None,
+                actor_id=request.session['login_id'],
+                actor_name=request.session['name'],
+                assigned_user_id=None,
+                assigned_role_id='2',
+                assigned_role_name='Verifier',
+                result=None,
+                ca_authority=ca_auth,
+                application_source='ECSS'
+            )
+
+        data['message'] = 'success'
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        data['message'] = 'failure'
     return JsonResponse(data)
+
 
 def save_terrain_baseline_details(request):
     data = dict()
@@ -3438,7 +3435,7 @@ def save_road_application(request):
 
 # General Application Details
 def save_general_application(request):
-    data = dict()
+    data = {}
     try:
         application_no = request.POST.get('application_no')
         project_name = request.POST.get('project_name')
@@ -3460,54 +3457,104 @@ def save_general_application(request):
         identifier = request.POST.get('identifier')
         ec_reference_no = request.POST.get('ec_reference_no')
         form_type = request.POST.get('form_type')
-        ca_auth = None
 
-        if identifier !='DR':
-            if request.session['ca_auth'] == 'DEC':
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
-            elif request.session['ca_auth'] == 'THROMDE':
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
-            else:
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
-        if(identifier == 'NC'):
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(project_name=project_name)
-            application_details.update(form_type=identifier)
-        elif(identifier == 'OC'):
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(applicant_name=applicant_name)
-            application_details.update(form_type=identifier)
-        elif(identifier == 'DR'): # This is For Draft Applications
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            if application_details.exists():
-                application_details.update(
-                application_type='New',
-                project_name=project_name,
-                project_category=project_category,
-                applicant_name=applicant_name,
-                address=address,
-                contact_no=contact_no,
-                email=email,
-                focal_person=focal_person,
-                dzongkhag_code=dzongkhag_code,
-                gewog_code=gewog_code,
-                village_code=village_code,
-                industrial_area_acre=industrial_area_acre,
-                state_reserve_forest_acre=state_reserve_forest_acre,
-                private_area_acre=private_area_acre,
-                others_area_acre=others_area_acre,
-                total_area_acre=total_area_acre,
-                )
+        ca_auth = None
+        if identifier != 'DR':
+            auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session['ca_auth'],
+                dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+            )
+            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+
+        with transaction.atomic():
+            if identifier == 'NC':
+                application_details.update(project_name=project_name, form_type=identifier)
+            elif identifier == 'OC':
+                application_details.update(applicant_name=applicant_name, form_type=identifier)
+            elif identifier == 'DR':
+                if application_details.exists():
+                    application_details.update(
+                        application_type='New',
+                        project_name=project_name,
+                        project_category=project_category,
+                        applicant_name=applicant_name,
+                        address=address,
+                        contact_no=contact_no,
+                        email=email,
+                        focal_person=focal_person,
+                        dzongkhag_code=dzongkhag_code,
+                        gewog_code=gewog_code,
+                        village_code=village_code,
+                        industrial_area_acre=industrial_area_acre,
+                        state_reserve_forest_acre=state_reserve_forest_acre,
+                        private_area_acre=private_area_acre,
+                        others_area_acre=others_area_acre,
+                        total_area_acre=total_area_acre,
+                    )
+                else:
+                    t_ec_industries_t1_general.objects.create(
+                        application_no=application_no,
+                        application_date=timezone.now().date(),
+                        application_type='New',
+                        form_type=form_type,
+                        ca_authority=ca_auth,
+                        applicant_id=request.session['email'],
+                        colour_code=request.session['colour_code'],
+                        project_name=project_name,
+                        project_category=project_category,
+                        applicant_name=applicant_name,
+                        address=address,
+                        contact_no=contact_no,
+                        email=email,
+                        focal_person=focal_person,
+                        dzongkhag_code=dzongkhag_code,
+                        gewog_code=gewog_code,
+                        village_code=village_code,
+                        industrial_area_acre=industrial_area_acre,
+                        state_reserve_forest_acre=state_reserve_forest_acre,
+                        private_area_acre=private_area_acre,
+                        others_area_acre=others_area_acre,
+                        total_area_acre=total_area_acre,
+                        application_status='P',
+                        service_id=request.session['service_id'],
+                        broad_activity_code=request.session['broad_activity_code'],
+                        specific_activity_code=request.session['specific_activity_code'],
+                        category=request.session['category']
+                    )
+            elif identifier in ['TC', 'PC', 'LC', 'CC']:
+                for app_det in application_details:
+                    t_ec_industries_t1_general.objects.create(
+                        application_no=application_no,
+                        application_date=timezone.now().date(),
+                        application_type='New',
+                        form_type=identifier,
+                        ca_authority=app_det.ca_authority,
+                        applicant_id=request.session['email'],
+                        colour_code=app_det.colour_code,
+                        project_name=project_name,
+                        project_category=project_category,
+                        applicant_name=applicant_name,
+                        address=address,
+                        contact_no=contact_no,
+                        email=email,
+                        focal_person=focal_person,
+                        dzongkhag_code=dzongkhag_code,
+                        gewog_code=gewog_code,
+                        village_code=village_code,
+                        industrial_area_acre=industrial_area_acre,
+                        state_reserve_forest_acre=state_reserve_forest_acre,
+                        private_area_acre=private_area_acre,
+                        others_area_acre=others_area_acre,
+                        total_area_acre=total_area_acre,
+                        application_status='P',
+                        service_id=app_det.service_id
+                    )
             else:
                 t_ec_industries_t1_general.objects.create(
                     application_no=application_no,
-                    application_date=date.today(),
+                    application_date=timezone.now().date(),
                     application_type='New',
                     form_type=form_type,
                     ca_authority=ca_auth,
@@ -3530,101 +3577,38 @@ def save_general_application(request):
                     total_area_acre=total_area_acre,
                     application_status='P',
                     service_id=request.session['service_id'],
-                    broad_activity_code=request.session['broad_activity_code'] ,
+                    broad_activity_code=request.session['broad_activity_code'],
                     specific_activity_code=request.session['specific_activity_code'],
                     category=request.session['category']
-                    )
-        elif identifier== 'TC' or identifier== 'PC' or identifier == 'LC' or identifier == 'CC':
-            application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
-            for app_det in application_details:
-                t_ec_industries_t1_general.objects.create(
-                    application_no=application_no,
-                    application_date=date.today(),
-                    application_type='New',
-                    form_type=identifier,
-                    ca_authority=app_det.ca_authority,
-                    applicant_id=request.session['email'],
-                    colour_code=app_det.colour_code,
-                    project_name=project_name,
-                    project_category=project_category,
-                    applicant_name=applicant_name,
-                    address=address,
-                    contact_no=contact_no,
-                    email=email,
-                    focal_person=focal_person,
-                    dzongkhag_code=dzongkhag_code,
-                    gewog_code=gewog_code,
-                    village_code=village_code,
-                    industrial_area_acre=industrial_area_acre,
-                    state_reserve_forest_acre=state_reserve_forest_acre,
-                    private_area_acre=private_area_acre,
-                    others_area_acre=others_area_acre,
-                    total_area_acre=total_area_acre,
-                    application_status='P',
-                    service_id=app_det.service_id
-                    )
-        else:
-            t_ec_industries_t1_general.objects.create(
-                application_no=application_no,
-                application_date=date.today(),
-                application_type='New',
-                form_type=form_type,
-                ca_authority=ca_auth,
-                applicant_id=request.session['email'],
-                colour_code=request.session['colour_code'],
-                project_name=project_name,
-                project_category=project_category,
-                applicant_name=applicant_name,
-                address=address,
-                contact_no=contact_no,
-                email=email,
-                focal_person=focal_person,
-                dzongkhag_code=dzongkhag_code,
-                gewog_code=gewog_code,
-                village_code=village_code,
-                industrial_area_acre=industrial_area_acre,
-                state_reserve_forest_acre=state_reserve_forest_acre,
-                private_area_acre=private_area_acre,
-                others_area_acre=others_area_acre,
-                total_area_acre=total_area_acre,
-                application_status='P',
-                service_id=request.session['service_id'],
-                broad_activity_code=request.session['broad_activity_code'] ,
-                specific_activity_code=request.session['specific_activity_code'],
-                category=request.session['category']
                 )
-        
-        t_application_history.objects.create(
-                                                application_no=application_no,
-                                                application_date=date.today(),
-                                                applicant_id=request.session['login_id'],
-                                                ca_authority=ca_auth,
-                                                service_id=request.session['service_id'], 
-                                                application_status='P', 
-                                                action_date=None, 
-                                                actor_id=request.session['login_id'],
-                                                actor_name=request.session['name'], 
-                                                remarks=None, 
-                                                status=None 
-                                            )
-        
-        t_workflow_dtls.objects.create(application_no=application_no, 
-                                        service_id=request.session['service_id'],
-                                        application_status='P',
-                                        action_date=None,
-                                        actor_id=request.session['login_id'],
-                                        actor_name=request.session['name'],
-                                        assigned_user_id=None,
-                                        assigned_role_id='2',
-                                        assigned_role_name='Verifier',
-                                        result=None,
-                                        ca_authority=ca_auth,
-                                        application_source='ECSS'
-                                    )
-        data['message'] = "success"
+
+            t_application_history.objects.create(
+                application_no=application_no,
+                application_date=timezone.now().date(),
+                applicant_id=request.session['login_id'],
+                ca_authority=ca_auth,
+                service_id=request.session['service_id'],
+                application_status='P',
+                actor_id=request.session['login_id'],
+                actor_name=request.session['name']
+            )
+
+            t_workflow_dtls.objects.create(
+                application_no=application_no,
+                service_id=request.session['service_id'],
+                application_status='P',
+                actor_id=request.session['login_id'],
+                actor_name=request.session['name'],
+                assigned_role_id='2',
+                assigned_role_name='Verifier',
+                ca_authority=ca_auth,
+                application_source='ECSS'
+            )
+
+        data['message'] = 'success'
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        data['message'] = 'failure'
     return JsonResponse(data)
 
 
