@@ -1,5 +1,4 @@
 from datetime import date, datetime, timedelta
-
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
 from django.db.models import Max
@@ -8,6 +7,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils import formats
+from django.core.mail import send_mail
+from django.contrib.auth.hashers import make_password, check_password
 
 from proponent.models import t_ec_industries_t1_general, t_ec_industries_t2_partner_details, \
     t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, \
@@ -311,3 +312,48 @@ def application_status(request):
 
     return render(request, 'application_status.html',
                   {'dzongkhag_list': dzongkhag_list, 'ec_list': ec_list, 'ca_list': ca_list})
+
+
+
+#EC Renewal Notifications
+
+def ec_renewal_list(request):
+    ca_authority = request.session['ca_authority']
+    dzongkhag_list = t_dzongkhag_master.objects.all()
+    ca_list = t_competant_authority_master.objects.all()
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    ec_list = t_ec_industries_t1_general.objects.filter(
+        ca_authority=ca_authority,
+        application_status='A',
+        ec_expiry_date__lt=expiry_date_threshold
+    ).values()
+
+    return render(request, 'ec_renewal_list.html',
+                  {'dzongkhag_list': dzongkhag_list, 'ec_list': ec_list, 'ca_list': ca_list})
+
+
+def send_notification(request):
+    notice = request.POST.get('notice')
+    ca_authority = request.session['ca_authority']
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    ec_list = t_ec_industries_t1_general.objects.filter(
+        ca_authority=ca_authority,
+        application_status='A',
+        ec_expiry_date__lt=expiry_date_threshold
+    ).values('ec_reference_no', 'applicant_id')
+
+    for ec in ec_list:
+        ec_reference_no = ec['ec_reference_no']
+        email = [ec['applicant_id']]  # Convert the email string to a list or tuple
+
+        subject = 'Environment Clearance Renewal Notification'
+        message = "Dear Sir/Madam, \n\nYour Environmental Clearance No. " + ec_reference_no + " is due for renewal in less than 30 Days. DECC would like to request you to renew the Environmental Clearance before the expiry. \n\nThanking You"
+        send_mail(subject, message, 'systems@moenr.gov.bt', email, fail_silently=False,
+                  auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
+                  connection=None, html_message=None)
+
+        return redirect(ec_renewal_list)
+

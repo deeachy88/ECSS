@@ -8,7 +8,7 @@
         <div class="col-md-12">
             <div class="card mt-1">
                 <div class="card-body">
-                    <div class="card-widgets">
+                    <div class="modal-footer flex-right justify-content-right">
                         {% if request.session.role != 'Admin' %}
                             <a type="button" class="btn btn-primary btn-sm" href="{% url 'inspection_submission_form' %}"><i class="mdi mdi-plus me-2"></i>Add</a>
                         {% endif %}

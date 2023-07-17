@@ -305,7 +305,7 @@
                                 <a href="{% url 'verify_application_list' %}" class="side-nav-link">
                                     <i class="uil-home-alt"></i>
                                     <span> Application List</span>
-                                    {% if v_application_count > 0 %}
+                                    {% if v_application_count > 0 %}</span>
                                         <span class="badge badge-danger">{{ v_application_count }}</span>
                                     {% endif %}
                                 </a>
@@ -360,6 +360,13 @@
                                 <a href="{% url 'application_status_list' %}" class="side-nav-link">
                                     <i class="uil-folder-plus"></i>
                                     <span> View Application Status </span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'ec_renewal_list' %}" class="side-nav-link">
+                                    <i class="uil-folder-plus"></i>
+                                    <span> EC Renewal Notification </span>
+                                    <span class="badge badge-danger">{{ ec_renewal_count }}</span>
                                 </a>
                             </li>
                             <li class="side-nav-item">

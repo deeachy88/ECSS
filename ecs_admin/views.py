@@ -8,13 +8,18 @@ from ecs_admin.models import t_competant_authority_master, t_user_master, t_secu
     t_file_attachment, t_menu_master, t_agency_master, t_proponent_type_master, t_dzongkhag_master, t_village_master,\
     t_gewog_master,t_submenu_master, t_other_details, t_about_us, t_notification_details, t_homepage_master
 from ecs_admin.forms import UserForm, RoleForm
+from proponent.models import t_ec_industries_t1_general
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password, check_password
 import string
 import random
 from django.http import JsonResponse
+<<<<<<< HEAD
 from datetime import date
 from ecs_main.models import t_application_history
+=======
+from datetime import date, datetime, timedelta
+>>>>>>> efdba8a216e138d5d96642d6edfdde427b5b73c5
 
 from proponent.models import t_workflow_dtls
 
@@ -81,9 +86,11 @@ def login(request):
                         security = t_security_question_master.objects.all()
                         return render(request, 'update_password.html', {'security': security})
                     else:
-                        v_application_count = 0;
+                        v_application_count = 0
                         r_application_count = 0
+                        ec_renewal_count = 0
                         if check_user.login_type == 'I':
+
                             role_details = t_role_master.objects.filter(role_id=check_user.role_id_id)
                             for roles in role_details:
                                 request.session['name'] = check_user.name
@@ -93,11 +100,22 @@ def login(request):
                                 request.session['login_id'] = check_user.login_id
                                 request.session['ca_authority'] = check_user.agency_code
                                 request.session['dzongkhag_code'] = check_user.dzongkhag_code
+                                # START: count no of EC due for renewal within 30 days
+                                ca_authority = request.session['ca_authority']
+                                expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+                                ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority,
+                                                                                  application_status='A',
+                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
+                                print(expiry_date_threshold)
+                                print(ec_renewal_count)
+                                # END: count no of EC due for renewal within 30 days
                                 if roles.role_name == 'Verifier':
                                     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=check_user.agency_code).count()
                                 elif roles.role_name == 'Reviewer':
                                     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=check_user.agency_code).count()
-                                return render(request, 'common_dashboard.html',{'v_application_count':v_application_count, 'r_application_count':r_application_count})
+                                return render(request, 'common_dashboard.html',{'v_application_count':v_application_count, 'r_application_count':r_application_count, 'ec_renewal_count':ec_renewal_count})
+
+
                         else:
                             request.session['name'] = check_user.proponent_name
                             request.session['email'] = check_user.email_id
@@ -105,9 +123,14 @@ def login(request):
                             request.session['login_id'] = check_user.login_id
                             request.session['address'] = check_user.address
                             request.session['contact_number'] = check_user.contact_number
+<<<<<<< HEAD
                             app_hist_count = t_application_history.objects.filter(applicant_id=check_user.login_id).count()
                             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=check_user.login_id).count()
                             return render(request, 'common_dashboard.html',{'app_hist_count':app_hist_count,'cl_application_count':cl_application_count})
+=======
+
+                            return render(request, 'common_dashboard.html')
+>>>>>>> efdba8a216e138d5d96642d6edfdde427b5b73c5
                 else:
                     _message = 'User ID or Password Not Matching.'
         else:
