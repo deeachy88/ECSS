@@ -14,12 +14,8 @@ from django.contrib.auth.hashers import make_password, check_password
 import string
 import random
 from django.http import JsonResponse
-<<<<<<< HEAD
 from datetime import date
 from ecs_main.models import t_application_history
-=======
-from datetime import date, datetime, timedelta
->>>>>>> efdba8a216e138d5d96642d6edfdde427b5b73c5
 
 from proponent.models import t_workflow_dtls
 
@@ -123,14 +119,9 @@ def login(request):
                             request.session['login_id'] = check_user.login_id
                             request.session['address'] = check_user.address
                             request.session['contact_number'] = check_user.contact_number
-<<<<<<< HEAD
                             app_hist_count = t_application_history.objects.filter(applicant_id=check_user.login_id).count()
                             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=check_user.login_id).count()
                             return render(request, 'common_dashboard.html',{'app_hist_count':app_hist_count,'cl_application_count':cl_application_count})
-=======
-
-                            return render(request, 'common_dashboard.html')
->>>>>>> efdba8a216e138d5d96642d6edfdde427b5b73c5
                 else:
                     _message = 'User ID or Password Not Matching.'
         else:
