@@ -60,6 +60,21 @@
                 border-radius: 10px;
                 border-color: #f84343;
             }
+            .re-badge {
+                display: block;
+                position: absolute;
+                top: 2px;
+                right: 18px;
+                line-height: 16px;
+                height: 16px;
+                padding: 0 5px;
+                color: #ff0303;
+                text-shadow: 0 1px rgb(0 0 0 / 0%);
+                border-width: 1px;
+                border-style: solid;
+                border-radius: 10px;
+                border-color: #f84343;
+            }
         </style>
 
     </head>
@@ -366,7 +381,7 @@
                                 <a href="{% url 'ec_renewal_list' %}" class="side-nav-link">
                                     <i class="uil-folder-plus"></i>
                                     <span> EC Renewal Notification </span>
-                                    <span class="badge badge-danger">{{ ec_renewal_count }}</span>
+                                    <span class="badge badge-danger re-badge">{{ ec_renewal_count }}</span>
                                 </a>
                             </li>
                             <li class="side-nav-item">

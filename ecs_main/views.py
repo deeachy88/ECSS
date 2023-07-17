@@ -9,7 +9,7 @@ from datetime import date
 from django.core.mail import send_mail
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Max
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Create your views here.
 def verify_application_list(request):
@@ -18,7 +18,11 @@ def verify_application_list(request):
     service_details = t_service_master.objects.all()
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
-    return render(request, 'application_list.html',{'application_details':application_list,'v_application_count':v_application_count, 'service_details':service_details, 'payment_details':payment_details})
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority,
+                                                                                  application_status='A',
+                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
+    return render(request, 'application_list.html',{'application_details':application_list,'v_application_count':v_application_count, 'service_details':service_details, 'payment_details':payment_details,'ec_renewal_count':ec_renewal_count})
 
 def client_application_list(request):
     login_id = request.session['login_id']
@@ -959,7 +963,11 @@ def inspection_list(request):
     ec_details = t_ec_industries_t1_general.objects.all()
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    return render(request, 'inspection/inspection.html', {'inspection_list':inspection_list,'v_application_count':v_application_count,'r_application_count':r_application_count, 'user_list':user_list, 'ec_details':ec_details})
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                                  application_status='A',
+                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
+    return render(request, 'inspection/inspection.html', {'inspection_list':inspection_list,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'user_list':user_list, 'ec_details':ec_details})
 
 def view_inspection_details(request):
     inspection_reference_no = request.GET.get('inspection_reference_no')

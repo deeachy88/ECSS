@@ -16,6 +16,7 @@ import random
 from django.http import JsonResponse
 from datetime import date
 from ecs_main.models import t_application_history
+from datetime import datetime, timedelta
 
 from proponent.models import t_workflow_dtls
 

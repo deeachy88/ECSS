@@ -24,17 +24,25 @@
                                 {% for application_details in application_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        {% for payment_details in payment_details %}
-                                            {% if application_details.application_no == payment_details.application_no %}
-                                                {% if payment_details.transaction_date %}
-                                                    <td>
-                                                        <a href="javascript: void(0);" class="btn btn-outline-primary" onclick="viewApplicationDetails('{{application_details.application_no}}','{{application_details.service_id}}','{{application_details.application_source}}')">{{application_details.application_no}}
-                                                        </a>
-                                                {% else %}
-                                                    <td>{{application_details.application_no}}</td>
+                                        {% if application_details.service_id == 0 %}
+                                        <td>
+                                            <a href="javascript: void(0);" class="btn btn-outline-primary" onclick="viewApplicationDetails('{{application_details.application_no}}','{{application_details.service_id}}','{{application_details.application_source}}')">{{application_details.application_no}}
+                                            </a>
+                                        </td>
+                                        {% else %}
+                                            {% for payment_details in payment_details %}
+                                                {% if application_details.application_no == payment_details.application_no %}
+                                                    {% if payment_details.transaction_date %}
+                                                        <td>
+                                                            <a href="javascript: void(0);" class="btn btn-outline-primary" onclick="viewApplicationDetails('{{application_details.application_no}}','{{application_details.service_id}}','{{application_details.application_source}}')">{{application_details.application_no}}
+                                                            </a>
+                                                        </td>
+                                                    {% else %}
+                                                        <td>{{application_details.application_no}}</td>
+                                                    {% endif %}
                                                 {% endif %}
-                                            {% endif %}
-                                        {% endfor %}
+                                            {% endfor %}
+                                        {% endif %}
                                         {% for service_details in service_details %}
                                             {% if application_details.service_id == service_details.service_id %}
                                                 <td>{{service_details.service_name}}</td>

@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 from django.shortcuts import render, redirect
 from ecs_main.models import t_application_history
 from ecs_main.views import client_application_list, payment_list
@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
+from django.db import transaction
 
 def new_application(request):
     bsic_details = t_bsic_code.objects.all()
@@ -2841,7 +2842,7 @@ def tor_form(request):
 
 
 def save_tor_form(request):
-    data = dict()
+    data = {}
     try:
         application_no = request.POST.get('application_no')
         project_name = request.POST.get('project_name')
@@ -2857,89 +2858,87 @@ def save_tor_form(request):
         vil_chiwog = request.POST.get('vil_chiwog')
         location_name = request.POST.get('location_name')
 
-        t_ec_industries_t1_general.objects.create(application_no=application_no,
-                                                  project_name=project_name,
-                                                  applicant_name=applicant_name,
-                                                  application_date=date.today(),
-                                                  address=address,
-                                                  contact_no=contact_no,
-                                                  email=email,
-                                                  focal_person=focal_person,
-                                                  project_location_site=site,
-                                                  thromde_id=thromde,
-                                                  dzongkhag_code=dzongkhag,
-                                                  gewog_code=gewog,
-                                                  village_code=vil_chiwog,
-                                                  location_name=location_name,
-                                                  broad_activity_code=request.session['broad_activity_code'] ,
-                                                  specific_activity_code=request.session['specific_activity_code'],
-                                                  category=request.session['category']
-                                                  )
-        if site == 'T':
-            ca_auth = t_competant_authority_master.objects.filter(dzongkhag_code=thromde)
-            for ca in ca_auth:
-                ca_authority = ca.competent_authority_id
-                t_workflow_dtls.objects.create(application_no=application_no, 
-                                                service_id=request.session['service_id'],
-                                                application_status='P',
-                                                action_date=date.today(),
-                                                actor_id=request.session['login_id'],
-                                                actor_name=request.session['name'],
-                                                assigned_user_id=None,
-                                                assigned_role_id='2',
-                                                assigned_role_name='Verifier',
-                                                result=None,
-                                                ca_authority=ca_authority,
-                                                application_source='ECSS'
-                                            )
-                t_application_history.objects.create(
-                                                application_no=application_no,
-                                                application_date=date.today(),
-                                                applicant_id=request.session['login_id'],
-                                                ca_authority=ca_authority,
-                                                service_id=request.session['service_id'], 
-                                                application_status='P', 
-                                                action_date=date.today(), 
-                                                actor_id=request.session['login_id'],
-                                                actor_name=request.session['name'], 
-                                                remarks=None, 
-                                                status=None 
-                                            )
-        else:
-            ca_auth = t_competant_authority_master.objects.filter(dzongkhag_code=dzongkhag)
-            for ca in ca_auth:
-                ca_authority = ca.competent_authority_id
-                t_workflow_dtls.objects.create(application_no=application_no, 
-                                                service_id=request.session['service_id'],
-                                                application_status='P',
-                                                action_date=date.today(),
-                                                actor_id=request.session['login_id'],
-                                                actor_name=request.session['name'],
-                                                assigned_user_id=None,
-                                                assigned_role_id='2',
-                                                assigned_role_name='Verifier',
-                                                result=None,
-                                                ca_authority=ca_authority,
-                                                application_source='ECSS'
-                                            )
-                t_application_history.objects.create(
-                                                application_no=application_no,
-                                                application_date=date.today(),
-                                                applicant_id=request.session['login_id'],
-                                                ca_authority=ca_auth,
-                                                service_id=request.session['service_id'], 
-                                                application_status='P', 
-                                                action_date=date.today(), 
-                                                actor_id=request.session['login_id'],
-                                                actor_name=request.session['name'], 
-                                                remarks=None, 
-                                                status=None 
-                                            )
-        data['message'] = "success"
+        broad_activity_code = request.session['broad_activity_code']
+        specific_activity_code = request.session['specific_activity_code']
+        category = request.session['category']
+        service_id = request.session['service_id']
+        login_id = request.session['login_id']
+        name = request.session['name']
+
+        application_date = timezone.now().date()
+        action_date = application_date
+
+        with transaction.atomic():
+            t_ec_industries_t1_general.objects.create(
+                application_no=application_no,
+                project_name=project_name,
+                applicant_name=applicant_name,
+                application_date=application_date,
+                address=address,
+                contact_no=contact_no,
+                email=email,
+                focal_person=focal_person,
+                project_location_site=site,
+                thromde_id=thromde,
+                dzongkhag_code=dzongkhag,
+                gewog_code=gewog,
+                village_code=vil_chiwog,
+                location_name=location_name,
+                broad_activity_code=broad_activity_code,
+                specific_activity_code=specific_activity_code,
+                category=category
+            )
+
+            ca_auth_filter = (
+                t_competant_authority_master.objects.filter(
+                    dzongkhag_code=thromde if site == 'T' else dzongkhag
+                )
+            )
+            ca_authorities = [ca.competent_authority_id for ca in ca_auth_filter]
+
+            workflow_dtls = [
+                t_workflow_dtls(
+                    application_no=application_no,
+                    service_id=service_id,
+                    application_status='P',
+                    action_date=action_date,
+                    actor_id=login_id,
+                    actor_name=name,
+                    assigned_user_id=None,
+                    assigned_role_id='2',
+                    assigned_role_name='Verifier',
+                    result=None,
+                    ca_authority=ca_authority,
+                    application_source='ECSS'
+                )
+                for ca_authority in ca_authorities
+            ]
+            t_workflow_dtls.objects.bulk_create(workflow_dtls)
+
+            application_history = [
+                t_application_history(
+                    application_no=application_no,
+                    application_date=application_date,
+                    applicant_id=login_id,
+                    ca_authority=ca_authority,
+                    service_id=service_id,
+                    application_status='P',
+                    action_date=action_date,
+                    actor_id=login_id,
+                    actor_name=name,
+                    remarks=None,
+                    status=None
+                )
+                for ca_authority in ca_authorities
+            ]
+            t_application_history.objects.bulk_create(application_history)
+
+        data['message'] = 'success'
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        data['message'] = 'failure'
     return JsonResponse(data)
+
 
 def insert_app_payment_details(request,application_no,account_head, identifier,total_amount,application_type):
     t_payment_details.objects.create(application_no=application_no,
@@ -5928,7 +5927,11 @@ def report_list(request):
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
-    return render(request, 'report_submission/report_list.html', {'report_list':report_list,'v_application_count':v_application_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'user_list':user_list, 'ec_details':ec_details})
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                                  application_status='A',
+                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
+    return render(request, 'report_submission/report_list.html', {'report_list':report_list,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'user_list':user_list, 'ec_details':ec_details})
 
 def view_report_details(request):
     report_reference_no = request.GET.get('report_reference_no')
@@ -5938,8 +5941,12 @@ def view_report_details(request):
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                                  application_status='A',
+                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'report_submission/report_details.html',
-                  {'report_details':report_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'v_application_count':v_application_count, 'details':details, 'file_attach':file_attach})
+                  {'report_details':report_details,'app_hist_count':app_hist_count,'ec_renewal_count':ec_renewal_count,'cl_application_count':cl_application_count,'v_application_count':v_application_count, 'details':details, 'file_attach':file_attach})
 
 def viewDraftReport(request, report_reference_no):
     applicant = request.session['email']
@@ -6163,7 +6170,11 @@ def ec_print_list(request):
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    return render(request, 'EC/ec_print_list.html', {'application_details': application_details,'app_hist_count':app_hist_count, 'cl_application_count':cl_application_count,'v_application_count':v_application_count,'r_application_count':r_application_count})
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                                  application_status='A',
+                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
+    return render(request, 'EC/ec_print_list.html', {'application_details': application_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count, 'cl_application_count':cl_application_count,'v_application_count':v_application_count,'r_application_count':r_application_count})
 
 def view_print_details(request):
     ec_reference_no = request.GET.get('ec_reference_no')
