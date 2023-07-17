@@ -17,14 +17,17 @@ def verify_application_list(request):
     application_list = t_workflow_dtls.objects.filter(application_status='P', assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='DEC',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='AL',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='FT',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)
     service_details = t_service_master.objects.all()
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
-    return render(request, 'application_list.html',{'application_details':application_list, 'service_details':service_details, 'payment_details':payment_details})
+    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
+    return render(request, 'application_list.html',{'application_details':application_list,'v_application_count':v_application_count, 'service_details':service_details, 'payment_details':payment_details})
 
 def client_application_list(request):
     login_id = request.session['login_id']
-    application_list = t_workflow_dtls.objects.filter(application_status='ALR', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='ALA', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='EATC', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='RS', action_date__isnull=False) | t_workflow_dtls.objects.filter(application_status='LU', action_date__isnull=False)
+    application_list = t_workflow_dtls.objects.filter(application_status='ALR', action_date__isnull=False,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='ALA', action_date__isnull=False,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='EATC', action_date__isnull=False,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='RS', action_date__isnull=False,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='LU', action_date__isnull=False,assigned_user_id=login_id)
     service_details = t_service_master.objects.all()
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
-    return render(request, 'application_list.html',{'application_details':application_list, 'service_details':service_details, 'payment_details':payment_details})
+    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=login_id).count()
+    return render(request, 'application_list.html',{'application_details':application_list,'cl_application_count':cl_application_count,'app_hist_count':app_hist_count, 'service_details':service_details, 'payment_details':payment_details})
 
 def reviewer_application_list(request):
     ca_authority = request.session['ca_authority']
@@ -32,7 +35,8 @@ def reviewer_application_list(request):
     application_list = t_workflow_dtls.objects.filter(application_status='R',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='ALS',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='FEATC',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='RSS',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='LUS',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='APP',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority)
     service_details = t_service_master.objects.all()
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
-    return render(request, 'application_list.html', {'application_details':application_list, 'service_details':service_details, 'payment_details':payment_details})
+    r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
+    return render(request, 'application_list.html', {'application_details':application_list,'r_application_count':r_application_count, 'service_details':service_details, 'payment_details':payment_details})
 
 # def payment_list(request):
 #     login_id = request.session['login_id']
@@ -48,8 +52,10 @@ def payment_list(request):
         application_no__in=t_ec_industries_t1_general.objects.filter(applicant_id=login_id).values('application_no')
     )
     service_details = t_service_master.objects.all()
+    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
     return render(request, 'payment_list.html',
-                  {'payment_details': payment_details, 'service_details': service_details})
+                  {'payment_details': payment_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'service_details': service_details})
 
 def view_application_details(request):
     application_no = request.GET.get('application_no')
@@ -85,9 +91,11 @@ def view_application_details(request):
                 eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
                 lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
                 rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
+                app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+                cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
                 return render(request, 'ea_application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials, 'status':status,'anc_road_details':anc_road_details,'anc_power_line_details':anc_power_line_details,
                                                             'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                            'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details,'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach, 'rev_lu_attach':rev_lu_attach})
+                                                            'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details,'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach, 'rev_lu_attach':rev_lu_attach})
             else:
                 application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
                 ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -108,9 +116,11 @@ def view_application_details(request):
                 eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
                 lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
                 rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
+                app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+                cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
                 return render(request, 'iee_application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,'anc_road_details':anc_road_details,'anc_power_line_details':anc_power_line_details,
                                                             'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                            'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
+                                                            'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '2':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
             ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -131,9 +141,11 @@ def view_application_details(request):
             eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
             rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
+            app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+            cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             return render(request, 'energy_application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog,'status':status,'anc_road_details':anc_road_details,'anc_power_line_details':anc_power_line_details,
-                                                        'village':village,'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
+                                                        'village':village,'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '3':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
             ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -154,9 +166,11 @@ def view_application_details(request):
             eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
             rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
+            app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+            cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             return render(request, 'road_application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,'anc_road_details':anc_road_details,'anc_power_line_details':anc_power_line_details,
                                                         'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
+                                                        'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '4':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
             ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -177,9 +191,11 @@ def view_application_details(request):
             eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
             rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
+            app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+            cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             return render(request, 'transmission_application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,'anc_road_details':anc_road_details,'anc_power_line_details':anc_power_line_details,
                                                         'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
+                                                        'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '5':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
             ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -200,9 +216,11 @@ def view_application_details(request):
             eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
             rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
+            app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+            cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             return render(request, 'tourism_application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,'anc_road_details':anc_road_details,'anc_power_line_details':anc_power_line_details,
                                                         'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
+                                                        'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '6':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
             ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -223,9 +241,11 @@ def view_application_details(request):
             eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
             rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
+            app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+            cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             return render(request, 'ground_water_application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,'anc_road_details':anc_road_details,'anc_power_line_details':anc_power_line_details,
                                                         'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
+                                                        'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '7':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
             ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -245,10 +265,12 @@ def view_application_details(request):
             reviewer_list = t_user_master.objects.filter(role_id='3', agency_code=ca_auth)
             eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
-            rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')  
+            rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
+            app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count() 
+            cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count() 
             return render(request, 'forest_application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,'anc_road_details':anc_road_details,'anc_power_line_details':anc_power_line_details,
                                                         'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
+                                                        'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '8':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
             ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -269,9 +291,11 @@ def view_application_details(request):
             eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
             rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
+            app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+            cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             return render(request, 'quarry_application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,'anc_road_details':anc_road_details,'anc_power_line_details':anc_power_line_details,
                                                         'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
+                                                        'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '9':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
             ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
@@ -295,9 +319,11 @@ def view_application_details(request):
             eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
             rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
+            app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+            cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             return render(request, 'general_application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,'anc_road_details':anc_road_details,'anc_power_line_details':anc_power_line_details,
                                                         'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'dumpyard_details':dumpyard_details,
-                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
+                                                        'forest_produce':forest_produce, 'products_by_products': products_by_products,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '10':
             renewal_details_one = t_ec_renewal_t1.objects.filter(application_no=application_no)
             for renewal_details_one in renewal_details_one:
@@ -310,8 +336,10 @@ def view_application_details(request):
             village = t_village_master.objects.all()
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
             rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
+            app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+            cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             return render(request, 'renewal_application_details.html',{'application_details':application_details,'renewal_details_one':renewal_details_one,'status':status,
-                                                                       'dzongkhag':dzongkhag,'gewog':gewog,'village':village,'renewal_details_two':renewal_details_two,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
+                                                                       'dzongkhag':dzongkhag,'gewog':gewog,'village':village,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details_two':renewal_details_two,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '0':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             dzongkhag = t_dzongkhag_master.objects.all()
@@ -488,19 +516,18 @@ def forward_application(request):
         forward_to = request.POST.get('forward_to')
         
         workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
-        app_hist_details = t_application_history.objects.filter(application_no=application_no)
         if identifier == 'R':
             workflow_details.update(application_status='R', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=forward_to, assigned_role_id='3',assigned_role_name='Reviewer')
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='R')
-            app_hist_details.update(application_status='R',
+            t_application_history.objects.create(application_status='R',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
         elif identifier == 'AL':
-            app_hist_details.update(application_status='AL',
+            t_application_history.objects.create(application_status='AL',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -511,7 +538,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'ALA':
-            app_hist_details.update(application_status='ALA',
+            t_application_history.objects.create(application_status='ALA',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -526,7 +553,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
         elif identifier == 'ALR':
-            app_hist_details.update(application_status='ALR',
+            t_application_history.objects.create(application_status='ALR',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -541,7 +568,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
         elif identifier == 'ALS':
-            app_hist_details.update(application_status='ALS',
+            t_application_history.objects.create(application_status='ALS',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -553,7 +580,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
         elif identifier == 'EATC':
-            app_hist_details.update(application_status='EATC',
+            t_application_history.objects.create(application_status='EATC',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -574,7 +601,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
         elif identifier == 'RS':
-            app_hist_details.update(application_status='RS',
+            t_application_history.objects.create(application_status='RS',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -591,7 +618,7 @@ def forward_application(request):
         elif identifier == 'RSS':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='RSS')
-            app_hist_details.update(application_status='RSS',
+            t_application_history.objects.create(application_status='RSS',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -603,7 +630,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
         elif identifier == 'AP':
-            app_hist_details.update(application_status='AP',
+            t_application_history.objects.create(application_status='AP',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -637,7 +664,7 @@ def forward_application(request):
                         data['message'] = "success"
                         data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'LU':
-            app_hist_details.update(application_status='LU',
+            t_application_history.objects.create(application_status='LU',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -654,7 +681,7 @@ def forward_application(request):
         elif identifier == 'LUS':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='LUS')
-            app_hist_details.update(application_status='LUS',
+            t_application_history.objects.create(application_status='LUS',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -664,7 +691,7 @@ def forward_application(request):
         elif identifier == 'DEC':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='DEC')
-            app_hist_details.update(application_status='DEC',
+            t_application_history.objects.create(application_status='DEC',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -684,7 +711,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'A':
-            app_hist_details.update(application_status='DEC',
+            t_application_history.objects.create(application_status='DEC',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -720,7 +747,7 @@ def forward_application(request):
                         data['message'] = "success"
                         data['redirect_to'] = "verify_application_list"
         elif identifier == 'FT': # forward TOR form
-            app_hist_details.update(application_status='FT',
+            t_application_history.objects.create(application_status='FT',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -732,7 +759,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'AT': # Approve TOR form
-            app_hist_details.update(application_status='AT',
+            t_application_history.objects.create(application_status='AT',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -930,7 +957,9 @@ def inspection_list(request):
     inspection_list = t_inspection_monitoring_t1.objects.filter(record_status='Active').order_by('inspection_date')
     user_list = t_user_master.objects.all()
     ec_details = t_ec_industries_t1_general.objects.all()
-    return render(request, 'inspection/inspection.html', {'inspection_list':inspection_list, 'user_list':user_list, 'ec_details':ec_details})
+    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
+    r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
+    return render(request, 'inspection/inspection.html', {'inspection_list':inspection_list,'v_application_count':v_application_count,'r_application_count':r_application_count, 'user_list':user_list, 'ec_details':ec_details})
 
 def view_inspection_details(request):
     inspection_reference_no = request.GET.get('inspection_reference_no')
@@ -942,7 +971,8 @@ def view_inspection_details(request):
 def inspection_submission_form(request):
     applicant = request.session['email']
     ec_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False)
-    return render(request, 'inspection/inspection_submission.html', {'ec_details': ec_details})
+    r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
+    return render(request, 'inspection/inspection_submission.html', {'ec_details': ec_details,'r_application_count':r_application_count})
 
 def load_ec_details(request):
     data = dict()
@@ -970,7 +1000,7 @@ def add_inspection(request):
     fines_penalties = request.POST.get('fines_penalties')
     inspection_status = request.POST.get('inspection_status')
     applicant_id = request.POST.get('applicant_id')
-    print(reference_no)
+    
     t_inspection_monitoring_t1.objects.create(inspection_type=inspection_type, inspection_date=inspection_date,
                                               inspection_reference_no=reference_no, inspection_reason=inspection_reason,
                                               ec_clearance_no=ec_clearance_no, project_name=project_name,

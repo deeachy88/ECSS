@@ -479,6 +479,9 @@ class t_ec_industries_t1_general(models.Model):
     tor_remarks =  models.CharField(max_length=250,default=None, blank=True, null=True)
     ai_date = models.DateField(default=None, blank=True, null=True)
     tat = models.CharField(max_length=100,default=None, blank=True, null=True)
+    broad_activity_code = models.CharField(max_length=10,default=None, blank=True, null=True)
+    specific_activity_code = models.CharField(max_length=10,default=None, blank=True, null=True)
+    category = models.TextField(default=None, blank=True, null=True)
     
 class t_ec_industries_t2_partner_details(models.Model):
     record_id = models.AutoField(primary_key=True)

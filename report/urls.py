@@ -22,4 +22,7 @@ urlpatterns = [
     path('application_status_list', views.application_status_list, name='application_status_list'),
     path('application_status', views.application_status, name='application_status'),
 
+#Application Status
+    path('application_history', views.application_history, name='application_history'),
+
 ]
