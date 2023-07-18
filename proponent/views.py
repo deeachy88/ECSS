@@ -12,6 +12,8 @@ from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
 from django.db import transaction
+from django.db.models import Count
+from django.utils.timezone import now
 
 def new_application(request):
     bsic_details = t_bsic_code.objects.all()
@@ -2758,63 +2760,64 @@ def submit_general_application(request):
         anc_other_general = None
         anc_other_transmission = None
 
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
-        app_hist_details = t_application_history.objects.filter(application_no=application_no)
-        app_hist_details.update(action_date=date.today())
-        
-        for application_details in application_details:
-            service_id = application_details.service_id
-            application_type = application_details.application_type
-            anc_other_crushing_unit = application_details.anc_other_crushing_unit
-            anc_other_surface_collection = application_details.anc_other_surface_collection
-            anc_other_ground_water = application_details.anc_other_ground_water
-            anc_other_mineral = application_details.anc_other_mineral
-            anc_other_general = application_details.anc_other_general
-            anc_other_transmission = application_details.anc_other_transmission
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        application_details_main = application_details.filter(form_type='Main Activity').first()
+        application_details_ancillary = application_details.filter(form_type='Ancillary').first()
+        anc_details = application_details.filter(form_type='Ancillary').count()
 
-        if anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or anc_other_general == 'Yes' or anc_other_transmission == 'Yes':
-            if anc_details == 0:
-                data['message'] = "not submitted"
+        if application_details_main:
+            service_id = application_details_main.service_id
+            application_type = application_details_main.application_type
+            anc_other_crushing_unit = application_details_main.anc_other_crushing_unit
+            anc_other_surface_collection = application_details_main.anc_other_surface_collection
+            anc_other_ground_water = application_details_main.anc_other_ground_water
+            anc_other_mineral = application_details_main.anc_other_mineral
+            anc_other_general = application_details_main.anc_other_general
+            anc_other_transmission = application_details_main.anc_other_transmission
+
+        if (anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or
+            anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or
+            anc_other_general == 'Yes' or anc_other_transmission == 'Yes') and anc_details == 0:
+            data['message'] = "not submitted"
         else:
             if identifier == 'Ancillary':
-                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
-                application_details.update(action_date=date.today())
+                application_details_ancillary.action_date = now()
+                application_details_ancillary.save()
                 workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                workflow_dtls.update(action_date=date.today())
+                workflow_dtls.update(action_date=now())
+                data['message'] = "success"
+            elif identifier == 'OC' or identifier == 'NC':
+                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                workflow_dtls.update(action_date=now())
                 data['message'] = "success"
             else:
-                if identifier == 'OC' or identifier == 'NC':
-                    workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                    workflow_dtls.update(action_date=date.today())
-                    data['message'] = "success"
+                ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+                if ancillary_count > 0:
+                    data['message'] = "not submitted"
                 else:
-                    ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
-                    if(ancillary_count > 0):
-                        data['message'] = "not submitted"
+                    application_details_main.action_date = now()
+                    application_details_main.save()
+                    workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
+                    workflow_dtls.update(action_date=now())
+
+                    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
+                    main_amount = fees_details.first().rate + fees_details.first().application_fee
+
+                    ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                    if ancillary_application_details_count > 0:
+                        ancillary_amount = fees_details.first().rate
+                        total_amount = main_amount + ancillary_amount
                     else:
-                        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
-                        application_details.update(action_date=date.today())
-                        workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                        workflow_dtls.update(action_date=date.today())
-                        fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                        for fees_details in fees_details:
-                            main_amount = int(fees_details.rate)
-                            main_amount += int(fees_details.application_fee)
-                            ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
-                            if ancillary_application_details_count > 0:
-                                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                                for fees_details in fees_details:
-                                    ancillary_amount = fees_details.rate
-                                    total_amount = main_amount + ancillary_amount
-                            else:
-                                total_amount=main_amount
-                            insert_app_payment_details(request, application_no,'131370003', 'new_general_application',total_amount,application_type)
-                            send_payment_mail(request.session['name'],request.session['email'], total_amount)
-                        data['message'] = "success"
+                        total_amount = main_amount
+
+                    insert_app_payment_details(request, application_no, '131370003', 'new_general_application', total_amount, application_type)
+                    send_payment_mail(request.session['name'], request.session['email'], total_amount)
+                    data['message'] = "success"
+
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
+
     return JsonResponse(data)
 
 def send_payment_mail(name, email_id, amount):
@@ -3445,7 +3448,8 @@ def save_general_application(request):
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
         focal_person = request.POST.get('focal_person')
-        dzongkhag_code = request.POST.get('dzo_throm')
+        thromde_id = request.POST.get('thromde_id')
+        dzongkhag_code = request.POST.get('dzongkhag')
         gewog_code = request.POST.get('gewog')
         village_code = request.POST.get('vil_chiwog')
         industrial_area_acre = request.POST.get('industrial_area_acre')
@@ -3453,7 +3457,7 @@ def save_general_application(request):
         private_area_acre = request.POST.get('private_area_acre')
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
-
+        dzongkhag_throm = request.POST.get('dzongkhag_throm')
         identifier = request.POST.get('identifier')
         ec_reference_no = request.POST.get('ec_reference_no')
         form_type = request.POST.get('form_type')
@@ -3483,6 +3487,8 @@ def save_general_application(request):
                         address=address,
                         contact_no=contact_no,
                         email=email,
+                        dzongkhag_throm=dzongkhag_throm,
+                        thromde_id=thromde_id,
                         focal_person=focal_person,
                         dzongkhag_code=dzongkhag_code,
                         gewog_code=gewog_code,
@@ -3508,6 +3514,8 @@ def save_general_application(request):
                         address=address,
                         contact_no=contact_no,
                         email=email,
+                        dzongkhag_throm=dzongkhag_throm,
+                        thromde_id=thromde_id,
                         focal_person=focal_person,
                         dzongkhag_code=dzongkhag_code,
                         gewog_code=gewog_code,
@@ -3540,6 +3548,8 @@ def save_general_application(request):
                         contact_no=contact_no,
                         email=email,
                         focal_person=focal_person,
+                        dzongkhag_throm=dzongkhag_throm,
+                        thromde_id=thromde_id,
                         dzongkhag_code=dzongkhag_code,
                         gewog_code=gewog_code,
                         village_code=village_code,
@@ -3565,6 +3575,8 @@ def save_general_application(request):
                     applicant_name=applicant_name,
                     address=address,
                     contact_no=contact_no,
+                    dzongkhag_throm=dzongkhag_throm,
+                    thromde_id=thromde_id,
                     email=email,
                     focal_person=focal_person,
                     dzongkhag_code=dzongkhag_code,
@@ -3604,7 +3616,6 @@ def save_general_application(request):
                 ca_authority=ca_auth,
                 application_source='ECSS'
             )
-
         data['message'] = 'success'
     except Exception as e:
         print('An error occurred:', e)
@@ -5898,24 +5909,60 @@ def submit_renew_application(request):
 def report_list(request):
     login_type = request.session['login_type']
     login_id = request.session['email']
+    
+    # Set ec_renewal_count and v_application_count to default values
+    ec_renewal_count = 0
+    v_application_count = 0
 
     if login_type == 'C':
+        # Fetch t_report_submission_t1 objects where created_by is equal to the logged-in user's login_id
         report_list = t_report_submission_t1.objects.filter(created_by=login_id).values().order_by('submission_date')
+        
+        # Count the number of t_workflow_dtls objects with assigned_user_id equal to the logged-in user
+        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+        
+        # Count the number of t_application_history objects related to the logged-in user
+        app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+    
     elif login_type == 'I':
+        # Retrieve the 'ca_authority' from the session
         ca_authority = request.session['ca_authority']
+        
+        # Fetch t_report_submission_t1 objects where ca_authority is equal to the logged-in user's ca_authority,
+        # and report_status is not equal to 'P' (pending)
         report_list = t_report_submission_t1.objects.filter(ca_authority=ca_authority).exclude(report_status='P').values().order_by('submission_date')
+        
+        # Count the number of t_workflow_dtls objects with assigned_role_id='2',
+        # assigned_role_name='Verifier', and ca_authority matching the logged-in user's 'ca_authority'
+        v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier',
+                                                              ca_authority=request.session['ca_authority']).count()
+    
+        # Calculate the expiry date threshold as today's date plus 30 days
+        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+        
+        # Count the number of t_ec_industries_t1_general objects with ca_authority matching the logged-in user's 'ca_authority',
+        # application_status='A', and ec_expiry_date less than the expiry date threshold
+        ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                    application_status='A',
+                                                                    ec_expiry_date__lt=expiry_date_threshold).count()
 
-
+    # Fetch all t_user_master objects
     user_list = t_user_master.objects.all()
+    
+    # Fetch all t_ec_industries_t1_general objects
     ec_details = t_ec_industries_t1_general.objects.all()
-    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
-    ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                  application_status='A',
-                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
-    return render(request, 'report_submission/report_list.html', {'report_list':report_list,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'user_list':user_list, 'ec_details':ec_details})
+    
+    # Pass the retrieved data to the 'report_list.html' template for rendering
+    return render(request, 'report_submission/report_list.html', {'report_list': report_list,
+                                                                  'ec_renewal_count': ec_renewal_count,
+                                                                  'v_application_count': v_application_count,
+                                                                  'app_hist_count': app_hist_count,
+                                                                  'cl_application_count': cl_application_count,
+                                                                  'user_list': user_list,
+                                                                  'ec_details': ec_details})
+
+
+
 
 def view_report_details(request):
     report_reference_no = request.GET.get('report_reference_no')
@@ -5924,11 +5971,12 @@ def view_report_details(request):
     file_attach = t_file_attachment.objects.filter(application_no=report_reference_no)
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
-    ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                  application_status='A',
-                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
+    if request.session['ca_authority'] != None:
+        v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
+        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+        ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                                    application_status='A',
+                                                                                    ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'report_submission/report_details.html',
                   {'report_details':report_details,'app_hist_count':app_hist_count,'ec_renewal_count':ec_renewal_count,'cl_application_count':cl_application_count,'v_application_count':v_application_count, 'details':details, 'file_attach':file_attach})
 
@@ -5944,7 +5992,8 @@ def viewDraftReport(request, report_reference_no):
 def report_submission_form(request):
     applicant = request.session['email']
     ec_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False,applicant_id=applicant)
-    return render(request, 'report_submission/report_submission.html', {'ec_details': ec_details})
+    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+    return render(request, 'report_submission/report_submission.html', {'ec_details': ec_details, 'app_hist_count':app_hist_count})
 
 def save_report_submission(request):
     data = dict()
@@ -6149,26 +6198,91 @@ def save_compliance_details(request):
     return render(request, 'ec_details.html', {'ec_details': ec_details})
 
 def ec_print_list(request):
-    application_details = t_ec_industries_t1_general.objects.filter(application_status='A',form_type="Main Activity")
+    # Retrieve t_ec_industries_t1_general objects with application_status='A' and form_type="Main Activity"
+    application_details = t_ec_industries_t1_general.objects.filter(application_status='A', form_type="Main Activity")
+    
+    # Count the number of t_application_history objects related to the logged-in user
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+    
+    # Count the number of t_workflow_dtls objects with assigned_user_id equal to the logged-in user
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
-    r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
-    ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                  application_status='A',
-                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
-    return render(request, 'EC/ec_print_list.html', {'application_details': application_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count, 'cl_application_count':cl_application_count,'v_application_count':v_application_count,'r_application_count':r_application_count})
+    
+    # Check if the 'ca_authority' exists in the session and has a non-empty value
+    if 'ca_authority' in request.session and request.session['ca_authority']:
+        # Count the number of t_workflow_dtls objects with assigned_role_id='2',
+        # assigned_role_name='Verifier', and ca_authority matching the logged-in user's 'ca_authority'
+        v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier',
+                                                              ca_authority=request.session['ca_authority']).count()
+        
+        # Count the number of t_workflow_dtls objects with assigned_role_id='3',
+        # assigned_role_name='Reviewer', and ca_authority matching the logged-in user's 'ca_authority'
+        r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer',
+                                                              ca_authority=request.session['ca_authority']).count()
+        
+        # Calculate the expiry date threshold as today's date plus 30 days
+        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+        
+        # Count the number of t_ec_industries_t1_general objects with ca_authority matching the logged-in user's 'ca_authority',
+        # application_status='A', and ec_expiry_date less than the expiry date threshold
+        ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                     application_status='A',
+                                                                     ec_expiry_date__lt=expiry_date_threshold).count()
+    else:
+        # If 'ca_authority' is not found or empty, set the variables to appropriate default values
+        v_application_count = 0
+        r_application_count = 0
+        ec_renewal_count = 0
+    
+    # Pass the retrieved data to the 'ec_print_list.html' template for rendering
+    return render(request, 'EC/ec_print_list.html', {'application_details': application_details,
+                                                     'ec_renewal_count': ec_renewal_count,
+                                                     'app_hist_count': app_hist_count,
+                                                     'cl_application_count': cl_application_count,
+                                                     'v_application_count': v_application_count,
+                                                     'r_application_count': r_application_count})
+
+
 
 def view_print_details(request):
+    # Retrieve the 'ec_reference_no' parameter from the GET request
     ec_reference_no = request.GET.get('ec_reference_no')
-    application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no,form_type="Main Activity")
+    
+    # Retrieve t_ec_industries_t1_general objects with ec_reference_no=ec_reference_no and form_type="Main Activity"
+    application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no, form_type="Main Activity")
+    
+    # Retrieve t_ec_industries_t11_ec_details objects with ec_reference_no=ec_reference_no
     ec_details = t_ec_industries_t11_ec_details.objects.filter(ec_reference_no=ec_reference_no)
+    
+    # Count the number of t_application_history objects related to the logged-in user
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+    
+    # Count the number of t_workflow_dtls objects with assigned_user_id equal to the logged-in user
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
-    r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    return render(request, 'EC/print_ec.html', {'application_details': application_details, 'ec_details':ec_details,'app_hist_count':app_hist_count, 'cl_application_count':cl_application_count,'v_application_count':v_application_count,'r_application_count':r_application_count})
+    
+    # Check if the 'ca_authority' exists in the session and has a non-empty value
+    if 'ca_authority' in request.session and request.session['ca_authority']:
+        # Count the number of t_workflow_dtls objects with assigned_role_id='2',
+        # assigned_role_name='Verifier', and ca_authority matching the logged-in user's 'ca_authority'
+        v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier',
+                                                              ca_authority=request.session['ca_authority']).count()
+        
+        # Count the number of t_workflow_dtls objects with assigned_role_id='3',
+        # assigned_role_name='Reviewer', and ca_authority matching the logged-in user's 'ca_authority'
+        r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer',
+                                                              ca_authority=request.session['ca_authority']).count()
+    else:
+        # If 'ca_authority' is not found or empty, set the variables to appropriate default values
+        v_application_count = 0
+        r_application_count = 0
+    
+    # Pass the retrieved data to the 'print_ec.html' template for rendering
+    return render(request, 'EC/print_ec.html', {'application_details': application_details,
+                                                 'ec_details': ec_details,
+                                                 'app_hist_count': app_hist_count,
+                                                 'cl_application_count': cl_application_count,
+                                                 'v_application_count': v_application_count,
+                                                 'r_application_count': r_application_count})
+
 
 # dumpyard Details
 def add_dumpyard_details(request):

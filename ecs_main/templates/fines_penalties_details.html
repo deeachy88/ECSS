@@ -12,6 +12,7 @@
                     <div class="mb-3">
                         <form id="fines_penalties_form" method="post">
                             {% csrf_token %}
+                            {% for application_details in application_details %}
                             <input type="text" class="form-control" value="{{application_no}}" name="application_no" style="display:none;">
                             <div class="row">
                                 <div class="col-lg-6">
@@ -142,6 +143,7 @@
                                     </div>
                                 </div>
                             </div>
+                            {% endfor %}
                             <div class="alert alert-warning border-0 rounded-0" role="alert">
                                 <i class="uil-folder-heart me-1 h4 align-middle"></i> Fines And Penalties Details
                             </div>

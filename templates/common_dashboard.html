@@ -390,6 +390,12 @@
                                     <span> EC Print List </span>
                                 </a>
                             </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'fines_penalties' %}" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Fines And Penalties </span>
+                                </a>
+                            </li>
                         </ul>
                     {% elif request.session.role == 'Reviewer' %}
                         <ul class="side-nav">
@@ -463,6 +469,12 @@
                                 <a href="{% url 'ec_print_list' %}" class="side-nav-link">
                                     <i class="uil-folder-plus"></i>
                                     <span> EC Print List </span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'fines_penalties' %}" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Fines And Penalties </span>
                                 </a>
                             </li>
                         </ul>

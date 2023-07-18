@@ -42,6 +42,7 @@ urlpatterns = [
 
 
 #fines and penalties
+    path('fines_penalties', views.fines_penalties, name='fines_penalties'),
     path('get_fines_penalties_details', views.get_fines_penalties_details, name='get_fines_penalties_details'),
     path('save_fines_penalties', views.save_fines_penalties, name='save_fines_penalties'),
     
@@ -50,6 +51,7 @@ urlpatterns = [
     path('approve_tor_application', views.approve_tor_application, name='approve_tor_application'),
 
 # Payment Details
-    path('payment_list', views.payment_list, name='payment_list')
+    path('payment_list', views.payment_list, name='payment_list'),
+
 
 ]

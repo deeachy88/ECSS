@@ -1124,12 +1124,26 @@ def save_fines_penalties(request):
                                         amount=amount,
                                         fines_status='P'
                                         )
+        insert_payment_details(request, application_no,'131379010',proponent_name,amount,fines_penalties_type)
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        for application_details in application_details:
+            fines_penalties_email(application_details.email, application_no, amount)
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
     return JsonResponse(data)
 
-
+def fines_penalties_email(email_id, application_no, amount):
+    subject = 'APPLICATION APPROVED'
+    message = "Dear Sir," \
+              "" \
+              "Your Application No" + application_no + "Has Has Fines and Penalty " \
+              " of Nu. " + amount + " . Please Pay To Further Proceess Your Application." 
+    recipient_list = [email_id]
+    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
+              connection=None, html_message=None)
+    
 #TOR Details
 def tor_to_verifier(request):
     application_no = request.POST.get('application_no')
@@ -1180,4 +1194,16 @@ def tor_submit_email(email_id, application_no, service_name):
     send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
               auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
               connection=None, html_message=None)
+    
+def fines_penalties(request):
+    application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False)
+    return render(request, 'fines_penalties.html',{'application_details':application_details})
 
+def insert_payment_details(request,application_no,account_head, proponent_name,total_amount,application_type):
+    t_payment_details.objects.create(application_no=application_no,
+            application_type=application_type,
+            application_date=date.today(), 
+            proponent_name=proponent_name,
+            amount=total_amount,
+            account_head_code=account_head)
+    return redirect(fines_penalties)
