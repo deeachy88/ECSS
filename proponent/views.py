@@ -5962,8 +5962,6 @@ def report_list(request):
                                                                   'ec_details': ec_details})
 
 
-
-
 def view_report_details(request):
     report_reference_no = request.GET.get('report_reference_no')
     report_details = t_report_submission_t1.objects.filter(report_reference_no=report_reference_no)
@@ -5971,14 +5969,19 @@ def view_report_details(request):
     file_attach = t_file_attachment.objects.filter(application_no=report_reference_no)
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    if request.session['ca_authority'] != None:
+    
+    v_application_count = 0  # Provide default value for v_application_count
+    ec_renewal_count = 0  # Provide default value for ec_renewal_count
+
+    if request.session.get('ca_authority') is not None:
         v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
         expiry_date_threshold = datetime.now().date() + timedelta(days=30)
         ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                     application_status='A',
                                                                                     ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'report_submission/report_details.html',
-                  {'report_details':report_details,'app_hist_count':app_hist_count,'ec_renewal_count':ec_renewal_count,'cl_application_count':cl_application_count,'v_application_count':v_application_count, 'details':details, 'file_attach':file_attach})
+                  {'report_details': report_details, 'app_hist_count': app_hist_count, 'ec_renewal_count': ec_renewal_count, 'cl_application_count': cl_application_count, 'v_application_count': v_application_count, 'details': details, 'file_attach': file_attach})
+
 
 def viewDraftReport(request, report_reference_no):
     applicant = request.session['email']

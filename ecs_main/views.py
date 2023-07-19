@@ -524,14 +524,15 @@ def forward_application(request):
             workflow_details.update(application_status='R', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=forward_to, assigned_role_id='3',assigned_role_name='Reviewer')
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='R')
-            t_application_history.objects.create(application_status='R',
+            t_application_history.objects.create(application_no=application_no,
+                        application_status='R',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
         elif identifier == 'AL':
-            t_application_history.objects.create(application_status='AL',
+            t_application_history.objects.create(application_status='AL',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -542,7 +543,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'ALA':
-            t_application_history.objects.create(application_status='ALA',
+            t_application_history.objects.create(application_status='ALA',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -557,7 +558,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
         elif identifier == 'ALR':
-            t_application_history.objects.create(application_status='ALR',
+            t_application_history.objects.create(application_status='ALR',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -572,7 +573,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
         elif identifier == 'ALS':
-            t_application_history.objects.create(application_status='ALS',
+            t_application_history.objects.create(application_status='ALS',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -584,7 +585,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
         elif identifier == 'EATC':
-            t_application_history.objects.create(application_status='EATC',
+            t_application_history.objects.create(application_status='EATC',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -605,7 +606,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
         elif identifier == 'RS':
-            t_application_history.objects.create(application_status='RS',
+            t_application_history.objects.create(application_status='RS',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -622,7 +623,7 @@ def forward_application(request):
         elif identifier == 'RSS':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='RSS')
-            t_application_history.objects.create(application_status='RSS',
+            t_application_history.objects.create(application_status='RSS',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -634,7 +635,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
         elif identifier == 'AP':
-            t_application_history.objects.create(application_status='AP',
+            t_application_history.objects.create(application_status='AP',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -668,7 +669,7 @@ def forward_application(request):
                         data['message'] = "success"
                         data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'LU':
-            t_application_history.objects.create(application_status='LU',
+            t_application_history.objects.create(application_status='LU',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -685,7 +686,7 @@ def forward_application(request):
         elif identifier == 'LUS':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='LUS')
-            t_application_history.objects.create(application_status='LUS',
+            t_application_history.objects.create(application_status='LUS',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -695,7 +696,7 @@ def forward_application(request):
         elif identifier == 'DEC':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='DEC')
-            t_application_history.objects.create(application_status='DEC',
+            t_application_history.objects.create(application_status='DEC',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -715,7 +716,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'A':
-            t_application_history.objects.create(application_status='DEC',
+            t_application_history.objects.create(application_status='DEC',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -751,7 +752,7 @@ def forward_application(request):
                         data['message'] = "success"
                         data['redirect_to'] = "verify_application_list"
         elif identifier == 'FT': # forward TOR form
-            t_application_history.objects.create(application_status='FT',
+            t_application_history.objects.create(application_status='FT',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
@@ -763,7 +764,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'AT': # Approve TOR form
-            t_application_history.objects.create(application_status='AT',
+            t_application_history.objects.create(application_status='AT',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
