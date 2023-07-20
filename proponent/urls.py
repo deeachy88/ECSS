@@ -88,6 +88,7 @@ urlpatterns = [
     path('save_industry_ancillary_application', views.save_industry_ancillary_application, name='save_industry_ancillary_application'),
 
     #General Application Details
+    path('save_general_info', views.save_general_application, name='save_general_info'),
     path('save_general_water_requirement', views.save_general_water_requirement, name='save_general_water_requirement'),
     path('submit_general_application', views.submit_general_application, name='submit_general_application'),
 
@@ -97,9 +98,6 @@ urlpatterns = [
     #TOR
     path('tor_form', views.tor_form, name='tor_form'),
     path('save_tor_form', views.save_tor_form, name='save_tor_form'),
-
-    # General Application Details
-    path('save_general_info', views.save_general_application, name='save_general_info'),
 
     #Forest Application Details
     path('save_forest_application', views.save_forest_application, name='save_forest_application'),

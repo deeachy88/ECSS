@@ -78,25 +78,25 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Site</label>
-                                                {% if application_details.project_location_site == 'D' %}
+                                                {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
                                                     <div class="mt-2">
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" id="customRadio3" name="site" class="form-check-input" checked>
+                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" checked>
                                                             <label class="form-check-label" for="customRadio3">Dzongkhag</label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" id="customRadio4" name="site" class="form-check-input">
+                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)">
                                                             <label class="form-check-label" for="customRadio4">Thromde</label>
                                                         </div>
                                                     </div>
                                                 {% else %}
                                                     <div class="mt-2">
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" id="customRadio3" name="site" class="form-check-input">
+                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)">
                                                             <label class="form-check-label" for="customRadio3">Dzongkhag</label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" id="customRadio4" name="site" class="form-check-input"  checked>
+                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" checked>
                                                             <label class="form-check-label" for="customRadio4">Thromde</label>
                                                         </div>
                                                     </div>
@@ -104,7 +104,7 @@
                                             </div>
                                             <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        {% if application_details.project_location_site == 'T' %}
+                                        {% if application_details.dzongkhag_throm == 'Thromde' %} 
                                             <div class="col-lg-6 thromde_div">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Thromde</label>
@@ -121,7 +121,7 @@
                                         {% endif %}
                                     </div>
                                     <div class="row">
-                                        {% if application_details.project_location_site == 'D' %}
+                                        {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
                                             <div class="col-lg-6 dzongkhag_div">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Dzongkhag</label>
@@ -168,7 +168,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of Particular Project Site</label>
-                                                <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.project_site}}">
+                                                <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}">
                                             </div>
                                             <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div> 
@@ -6481,6 +6481,20 @@
         else
         {
             $('#gen_submit_btn').hide();
+        }
+    }
+
+    function check_dzong_throm(value)
+    {
+        if(value == "Dzongkhag")
+        {
+            $('.dzongkhag').show();
+            $('.thromde').hide();
+        }
+        else
+        {
+            $('.thromde').show();
+            $('.dzongkhag').hide();
         }
     }
 </script>

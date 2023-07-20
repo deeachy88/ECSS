@@ -3414,8 +3414,9 @@ def save_general_application(request):
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
+        project_site = request.POST.get('project_site')
         identifier = request.POST.get('identifier')
-        ec_reference_no = request.POST.get('ec_reference_no')
+        #ec_reference_no = request.POST.get('ec_reference_no')
         form_type = request.POST.get('form_type')
 
         ca_auth = None
@@ -3443,6 +3444,7 @@ def save_general_application(request):
                         address=address,
                         contact_no=contact_no,
                         email=email,
+                        location_name=project_site,
                         dzongkhag_throm=dzongkhag_throm,
                         thromde_id=thromde_id,
                         focal_person=focal_person,
@@ -3470,6 +3472,7 @@ def save_general_application(request):
                         address=address,
                         contact_no=contact_no,
                         email=email,
+                        location_name=project_site,
                         dzongkhag_throm=dzongkhag_throm,
                         thromde_id=thromde_id,
                         focal_person=focal_person,
@@ -3500,6 +3503,7 @@ def save_general_application(request):
                         project_name=project_name,
                         project_category=project_category,
                         applicant_name=applicant_name,
+                        location_name=project_site,
                         address=address,
                         contact_no=contact_no,
                         email=email,
@@ -3533,6 +3537,7 @@ def save_general_application(request):
                     contact_no=contact_no,
                     dzongkhag_throm=dzongkhag_throm,
                     thromde_id=thromde_id,
+                    location_name=project_site,
                     email=email,
                     focal_person=focal_person,
                     dzongkhag_code=dzongkhag_code,

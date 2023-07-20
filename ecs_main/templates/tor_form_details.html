@@ -63,7 +63,7 @@
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Site</label>
-                                    {% if application_details.project_location_site == 'D' %}
+                                    {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
                                         <div class="mt-2">
                                             <div class="form-check form-check-inline">
                                                 <input type="radio" id="customRadio3" name="site" class="form-check-input" checked>
@@ -89,7 +89,7 @@
                                 </div>
                                 <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                             </div>
-                            {% if application_details.project_location_site == 'T' %}
+                            {% if application_details.dzongkhag_throm == 'Thromde' %}
                                 <div class="col-lg-6 thromde_div">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Thromde</label>
@@ -106,7 +106,7 @@
                             {% endif %}
                         </div>
                         <div class="row">
-                            {% if application_details.project_location_site == 'D' %}
+                            {% if application_details.dzongkhag_throm == 'Dzongkhag %}
                                 <div class="col-lg-6 dzongkhag_div">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Dzongkhag</label>
@@ -149,12 +149,14 @@
                                 </div>
                             </div>
                         {% endif %}
-                        <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Name of Particular Project Site</label>
-                                <input type="text" name="location_name" class="form-control" id="location_name" value="{{application_details.location_name}}" disabled>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                    <<input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
+                                </div>
+                                <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                             </div>
-                            <div id="location_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
                         <div class="alert alert-success border-0 rounded-0" role="alert" id="tor_form_successMsg" style="display:none">
                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
