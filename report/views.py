@@ -282,8 +282,9 @@ def application_status_list(request):
     application_list = []
     ec_renewal_count = 0
     v_application_count = 0
-    r_application_count = 0  # Provide a default value for r_application_count
-    # Initialize other variables if needed with default values here
+    r_application_count = 0
+    app_hist_count = 0  # Provide a default value
+    cl_application_count = 0  # Provide a default value
 
     if login_type == 'C':
         applicant_id = request.session['email']
@@ -295,9 +296,7 @@ def application_status_list(request):
         v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
         r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
         expiry_date_threshold = datetime.now().date() + timedelta(days=30)
-        ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                    application_status='A',
-                                                                                    ec_expiry_date__lt=expiry_date_threshold).count()
+        ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'], application_status='A', ec_expiry_date__lt=expiry_date_threshold).count()
 
     if login_type == 'C':
         application_list = t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id).values()
@@ -308,6 +307,7 @@ def application_status_list(request):
     
     # Return the render statement with the variables as before
     return render(request, 'application_status_list.html', {'ca_list': ca_list, 'ec_renewal_count': ec_renewal_count, 'dzongkhag_list': dzongkhag_list, 'v_application_count': v_application_count, 'r_application_count': r_application_count, 'application_list': application_list, 'app_hist_count': app_hist_count, 'cl_application_count': cl_application_count})
+
 
 
 
