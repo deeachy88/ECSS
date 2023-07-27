@@ -5630,6 +5630,8 @@ def report_list(request):
     # Set ec_renewal_count and v_application_count to default values
     ec_renewal_count = 0
     v_application_count = 0
+    app_hist_count = 0
+    cl_application_count = 0
 
     if login_type == 'C':
         # Fetch t_report_submission_t1 objects where created_by is equal to the logged-in user's login_id
