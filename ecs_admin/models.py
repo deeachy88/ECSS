@@ -103,6 +103,7 @@ class t_bsic_code(models.Model):
     competent_authority = models.CharField(max_length=250)
     entry_point = models.CharField(max_length=10)
     service_id = models.IntegerField()
+    has_tor = models.CharField(max_length=3,default=None, blank=True, null=True)
 
 
 class t_competant_authority_master(models.Model):

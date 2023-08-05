@@ -70,11 +70,11 @@
                                 <label class="form-label fw-bold">Site</label>
                                 <div class="mt-2">
                                     <div class="form-check form-check-inline">
-                                        <input type="radio" id="customRadio3" name="site" class="form-check-input"  value="D" onclick="check_site_radio(this.value)">
+                                        <input type="radio" id="customRadio3" name="dzongkhag_throm" class="form-check-input"  value="Dzongkhag" onclick="check_site_radio(this.value)">
                                         <label class="form-check-label" for="customRadio3">Dzongkhag</label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input type="radio" id="customRadio4" name="site" class="form-check-input"  value="T" onclick="check_site_radio(this.value)">
+                                        <input type="radio" id="customRadio4" name="dzongkhag_throm" class="form-check-input"  value="Thromde" onclick="check_site_radio(this.value)">
                                         <label class="form-check-label" for="customRadio4">Thromde</label>
                                     </div>
                                 </div>
@@ -84,7 +84,7 @@
                         <div class="col-lg-6 thromde_div" style="display:none;">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Thromde</label>
-                                <select class="form-select" name="thromde"  id="thromde">
+                                <select class="form-select" name="thromde_id"  id="thromde_id">
                                     <option value="">--SELECT THROMDE--</option>
                                     {% for thromde in thromde %}
                                         <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
@@ -159,7 +159,7 @@
 <script>
     function check_site_radio(value)
     {
-        if(value == 'T')
+        if(value == 'Thromde')
         {
             $('.thromde_div').show();
             $('.dzongkhag_div').hide();

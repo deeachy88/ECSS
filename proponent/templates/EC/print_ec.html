@@ -34,14 +34,17 @@
             <table class="table table-centered table-borderless mb-0">
                 <thead>
                     {% for ec_details in ec_details %}
+                        {% if ec_details.type == 'Terms' %}
                         <tr>
                             <th colspan="2">{{ec_details.ec_heading}}</th>
                         </tr>
+                        
                 </thead>
                 <tbody>
                         <tr>
                             <td>{{ec_details.ec_terms}}</td>
                         </tr>
+                        {% endif %}
                     {% endfor %}    
                 </tbody>
             </table>

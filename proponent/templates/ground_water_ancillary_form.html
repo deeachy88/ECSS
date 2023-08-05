@@ -2442,7 +2442,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_ground_water_attachment' %}",
+                url : "{% url 'save_anc_ground_water_attachment' %}",
                 data : fd,
                 dataType: 'json',
                 contentType: false,
@@ -2456,7 +2456,7 @@
                         $.ajax
                         ({
                             type : "POST",
-                            url : "{% url 'save_ground_water_attachment_details' %}",
+                            url : "{% url 'save_anc_ground_water_attachment_details' %}",
                             data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
                             success : function(responseText)
                             {
