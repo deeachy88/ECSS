@@ -25,7 +25,7 @@
         </div>
         <p>
             {% for ec_details in ec_details %}
-                {% if ec_details.type == 'Header' %}
+                {% if ec_details.ec_type == 'Header' %}
                     {{ec_details.ec_terms}}
                 {% endif %}
             {% endfor %}
@@ -34,7 +34,7 @@
             <table class="table table-centered table-borderless mb-0">
                 <thead>
                     {% for ec_details in ec_details %}
-                        {% if ec_details.type == 'Terms' %}
+                        {% if ec_details.ec_type == 'Terms' %}
                         <tr>
                             <th colspan="2">{{ec_details.ec_heading}}</th>
                         </tr>
@@ -50,7 +50,7 @@
             </table>
         </p>
         {% for ec_details in ec_details %}
-                {% if ec_details.type == 'Footer' %}
+                {% if ec_details.ec_type == 'Footer' %}
                     <p>{{ec_details.ec_terms}}</p>
                 {% endif %}
             {% endfor %}   

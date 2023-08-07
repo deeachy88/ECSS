@@ -7480,7 +7480,7 @@
                         <div class="card-body">
                             <div class="col-lg-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Addional Payable Amount</label>
+                                    <label class="form-label fw-bold">Additional Payable Amount</label>
                                     <input type="text" name="addtional_payment_amount" class="form-control" id="addtional_payment_amount"> 
                                 </div>
                             </div>
@@ -7565,6 +7565,17 @@
                     </div>
                 </div>
                 <div class="col-md-12 draft_ec_div" style="display: none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-0">LU Details</h5>
+                            {% for rev_lu_attach in rev_lu_attach %}
+                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                            {% endfor %}
+                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                {% include 'rev_lu_attachment_page.html' %}
+                            </div>
+                        </div>
+                    </div>
                     <div class="card">
                         <div class="card-body">
                             <div class="card-widgets">

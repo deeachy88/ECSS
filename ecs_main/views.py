@@ -751,18 +751,44 @@ def forward_application(request):
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'])
             workflow_details.update(application_status='DEC', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='2',assigned_role_name='Verifier')
-            for app_details in application_details:
-                application_approval_date = app_details.ec_approve_date
-                application_submission_date = app_details.application_date
-                application_ai_date = app_details.ai_date
-                application_resubmit_date = app_details.resubmit_date
 
-                day_one = days_between(application_approval_date,application_submission_date)
-                day_two = days_between_one(application_ai_date,application_resubmit_date)
+            app_history = t_application_history.objects.filter(application_no=application_no)
 
+            application_approval_date = None
+            application_submission_date = None
+            application_ai_date = None
+            application_resubmit_date = None
+
+            for app_details in app_history:
+                if app_details.application_status == 'LUS':
+                    application_approval_date = app_details.action_date
+                    print("Application App Date ")
+                    print(application_approval_date)
+                elif app_details.application_status == 'P':
+                    application_submission_date = app_details.application_date
+                    print("Application P Date ")
+                    print(application_submission_date)
+                elif app_details.application_status == 'ALR':
+                    application_ai_date = app_details.action_date
+                    print("Application ALR Date ")
+                    print(application_ai_date)
+                elif app_details.application_status == 'RSS':
+                    application_resubmit_date = app_details.action_date
+                    print("Application RSS Date ")
+                    print(application_resubmit_date)
+
+            # Calculate TAT (Turnaround Time) based on the conditions
+            if application_approval_date and application_submission_date and application_ai_date is None and application_resubmit_date is None:
+                tat = days_between(application_submission_date,application_approval_date)
+            else:
+                day_one = days_between(application_submission_date,application_approval_date)
+                day_two = days_between( application_resubmit_date, application_ai_date)
                 tat = day_one - day_two
-                application_details.update(tat=tat)
 
+            # Update the application details with TAT
+            print("TAT ")
+            print(tat)
+            application_details.update(tat=tat)
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'A':
@@ -843,15 +869,8 @@ def forward_application(request):
         data['message'] = "failure"
     return JsonResponse(data)
 
-def days_between(d1, d2):
-    d1 = datetime.strptime(d1, "%Y-%m-%d")
-    d2 = datetime.strptime(d2, "%Y-%m-%d")
-    return abs((d2 - d1).days)
-
-def days_between_one(d1, d2):
-    d1 = datetime.strptime(d1, "%Y-%m-%d")
-    d2 = datetime.strptime(d2, "%Y-%m-%d")
-    return abs((d2 - d1).days)
+def days_between(date1, date2):
+    return (date2 - date1).days
 
 def save_lu_attachment(request):
     data = dict()

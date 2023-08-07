@@ -1750,12 +1750,12 @@ def get_application_service_id(request):
         request.session['service_id'] = cat_details.service_id
         request.session['broad_activity_code'] = cat_details.broad_activity_code
         request.session['specific_activity_code'] = cat_details.specific_activity_code
-
+        request.session['has_tor'] = cat_details.has_tor
         request.session['category'] = cat_details.category
         data['service_id'] = cat_details.service_id
         data['colour_code'] = cat_details.colour_code
         data['ca_auth'] = cat_details.competent_authority
-        data['has_tor'] = request.session['has_tor']
+        data['has_tor'] = cat_details.has_tor
     return JsonResponse(data)
 
 # IEE DETAILS
