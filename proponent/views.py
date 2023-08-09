@@ -3009,11 +3009,15 @@ def view_tor_application_details(request):
     status = None
     ca_auth = None
 
-    workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
+    workflow_details = t_bsic_code.objects.filter(service_id=service_id)
     for work_details in workflow_details:
-        status = work_details.application_status
-        ca_auth = work_details.ca_authority
-        assigned_role_id = work_details.assigned_role_id
+        comp_auth = work_details.ca_authority
+
+        auth_details = t_competant_authority_master.objects.filter(competant_authority=comp_auth)
+        for auth_details in auth_details:
+            ca_auth = auth_details.competent_authority_id
+            request.session['ca_auth'] = ca_auth
+            request.session['service_id'] = service_id
 
         if service_id == '1':
             if application_source == 'IBLS':
