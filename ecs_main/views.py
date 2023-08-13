@@ -401,8 +401,9 @@ def view_application_details(request):
             village = t_village_master.objects.all()
             thromde = t_thromde_master.objects.all()
             reviewer_list = t_user_master.objects.filter(role_id='3', agency_code=ca_auth)
+            file_attach = t_file_attachment.objects.filter(attachment_type='TOR')
 
-            return render(request, 'tor_form_details.html', {'application_details':application_details,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde, 'reviewer_list':reviewer_list,'assigned_role_id':assigned_role_id, 'status':status})
+            return render(request, 'tor_form_details.html', {'application_details':application_details,'file_attach':file_attach,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde, 'reviewer_list':reviewer_list,'assigned_role_id':assigned_role_id, 'status':status})
 
 
 def resubmit_application(request):
@@ -568,115 +569,143 @@ def forward_application(request):
         application_no = request.POST.get('application_no')
         identifier = request.POST.get('identifier')
         forward_to = request.POST.get('forward_to')
+        applicant = None
         
         workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
         if identifier == 'R':
             workflow_details.update(application_status='R', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=forward_to, assigned_role_id='3',assigned_role_name='Reviewer')
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='R')
+            for app_det in application_details:
+                applicant = app_det.applicant_id
             t_application_history.objects.create(application_no=application_no,
                         application_status='R',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
         elif identifier == 'AL':
-            t_application_history.objects.create(application_status='AL',application_no=application_no,
-                        action_date=date.today(),
-                        actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
             additional_info_letter = request.POST.get('additional_info_letter')
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(additional_info_letter=additional_info_letter,application_status='AL')
+            for app_det in application_details:
+                applicant = app_det.applicant_id
+            t_application_history.objects.create(application_status='AL',application_no=application_no,
+                        action_date=date.today(),
+                        actor_id=request.session['login_id'], 
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             workflow_details.update(application_status='AL', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='2',assigned_role_name='Verifier')
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'ALA':
-            t_application_history.objects.create(application_status='ALA',application_no=application_no,
-                        action_date=date.today(),
-                        actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(ai_date=date.today(),application_status='ALA')
             for app_details in application_details:
                 app_id = app_details.applicant_id
+                applicant = app_det.applicant_id
                 user_details = t_user_master.objects.filter(email_id=app_id)
                 for user_details in user_details:
                     login_id = user_details.login_id
                     workflow_details.update(application_status='ALA', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=login_id, assigned_role_id=None,assigned_role_name=None)
+            t_application_history.objects.create(application_status='ALA',application_no=application_no,
+                        action_date=date.today(),
+                        actor_id=request.session['login_id'], 
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
         elif identifier == 'ALR':
-            t_application_history.objects.create(application_status='ALR',application_no=application_no,
-                        action_date=date.today(),
-                        actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(ai_date=date.today(),application_status='ALR')
             for app_details in application_details:
                 app_id = app_details.applicant_id
+                applicant = app_det.applicant_id
                 user_details = t_user_master.objects.filter(email_id=app_id)
                 for user_details in user_details:
                     login_id = user_details.login_id
                     workflow_details.update(application_status='ALR', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=login_id, assigned_role_id=None,assigned_role_name=None)
+            t_application_history.objects.create(application_status='ALR',application_no=application_no,
+                        action_date=date.today(),
+                        actor_id=request.session['login_id'], 
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
         elif identifier == 'ALS':
-            t_application_history.objects.create(application_status='ALS',application_no=application_no,
-                        action_date=date.today(),
-                        actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
             additional_info = request.POST.get('additional_info')
             application_details.update(resubmit_date=date.today())
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(additional_info=additional_info,application_status='ALS')
+            for app_det in application_details:
+                applicant = app_det.applicant_id
+            t_application_history.objects.create(application_status='ALS',application_no=application_no,
+                        action_date=date.today(),
+                        actor_id=request.session['login_id'], 
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             workflow_details.update(application_status='ALS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
         elif identifier == 'EATC':
-            t_application_history.objects.create(application_status='EATC',application_no=application_no,
-                        action_date=date.today(),
-                        actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='EATC')
             for app_details in application_details:
                 app_id = app_details.applicant_id
+                applicant = app_details.applicant_id
                 user_details = t_user_master.objects.filter(email_id=app_id)
                 for user_details in user_details:
                     login_id = user_details.login_id
                     workflow_details.update(application_status='EATC', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=login_id, assigned_role_id=None,assigned_role_name=None)
+            t_application_history.objects.create(application_status='EATC',application_no=application_no,
+                        action_date=date.today(),
+                        actor_id=request.session['login_id'], 
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'FEATC':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='FEATC')
+            for app_det in application_details:
+                applicant = app_det.applicant_id
+            t_application_history.objects.create(application_status='FEATC',application_no=application_no,
+                        action_date=date.today(),
+                        actor_id=request.session['login_id'], 
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             workflow_details.update(application_status='FEATC', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
         elif identifier == 'RS':
-            t_application_history.objects.create(application_status='RS',application_no=application_no,
-                        action_date=date.today(),
-                        actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='RS')
             for app_details in application_details:
                 app_id = app_details.applicant_id
                 user_details = t_user_master.objects.filter(email_id=app_id)
+                applicant = app_details.applicant_id
                 for user_details in user_details:
                     login_id = user_details.login_id
                     workflow_details.update(application_status='RS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=login_id, assigned_role_id=None,assigned_role_name=None)
+            t_application_history.objects.create(application_status='RS',application_no=application_no,
+                        action_date=date.today(),
+                        actor_id=request.session['login_id'], 
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'RSS':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='RSS')
+            for app_det in application_details:
+                applicant = app_det.applicant_id
             t_application_history.objects.create(application_status='RSS',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             resubmit_remarks = request.POST.get('resubmit_remarks')
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(resubmit_remarks=resubmit_remarks)
@@ -685,14 +714,16 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
         elif identifier == 'AP':
-            t_application_history.objects.create(application_status='AP',application_no=application_no,
-                        action_date=date.today(),
-                        actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
             addtional_payment_amount = request.POST.get('addtional_payment_amount')
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='AP')
-
+            for app_det in application_details:
+                applicant = app_det.applicant_id
+            t_application_history.objects.create(application_status='AP',application_no=application_no,
+                        action_date=date.today(),
+                        actor_id=request.session['login_id'], 
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             workflow_details.update(assigned_user_id=None)
             workflow_details.update(assigned_role_id=None)
             workflow_details.update(assigned_role_name=None)
@@ -719,37 +750,45 @@ def forward_application(request):
                         data['message'] = "success"
                         data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'LU':
-            t_application_history.objects.create(application_status='LU',application_no=application_no,
-                        action_date=date.today(),
-                        actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='LU')
             for app_details in application_details:
                 app_id = app_details.applicant_id
+                applicant = app_details.applicant_id
                 user_details = t_user_master.objects.filter(email_id=app_id)
                 for user_details in user_details:
                     login_id = user_details.login_id
                     workflow_details.update(application_status='LU', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=login_id, assigned_role_id=None,assigned_role_name=None)
+            t_application_history.objects.create(application_status='LU',application_no=application_no,
+                        action_date=date.today(),
+                        actor_id=request.session['login_id'], 
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'LUS':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='LUS')
+            for app_det in application_details:
+                applicant = app_det.applicant_id
             t_application_history.objects.create(application_status='LUS',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             workflow_details.update(application_status='LUS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
         elif identifier == 'DEC':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='DEC')
+            for app_det in application_details:
+                applicant = app_det.applicant_id
             t_application_history.objects.create(application_status='DEC',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             workflow_details.update(application_status='DEC', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='2',assigned_role_name='Verifier')
 
             app_history = t_application_history.objects.filter(application_no=application_no)
@@ -762,20 +801,12 @@ def forward_application(request):
             for app_details in app_history:
                 if app_details.application_status == 'LUS':
                     application_approval_date = app_details.action_date
-                    print("Application App Date ")
-                    print(application_approval_date)
                 elif app_details.application_status == 'P':
                     application_submission_date = app_details.application_date
-                    print("Application P Date ")
-                    print(application_submission_date)
                 elif app_details.application_status == 'ALR':
                     application_ai_date = app_details.action_date
-                    print("Application ALR Date ")
-                    print(application_ai_date)
                 elif app_details.application_status == 'RSS':
                     application_resubmit_date = app_details.action_date
-                    print("Application RSS Date ")
-                    print(application_resubmit_date)
 
             # Calculate TAT (Turnaround Time) based on the conditions
             if application_approval_date and application_submission_date and application_ai_date is None and application_resubmit_date is None:
@@ -792,18 +823,19 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'A':
-            t_application_history.objects.create(application_status='DEC',application_no=application_no,
-                        action_date=date.today(),
-                        actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
-            
             ec_expiry_date = request.POST.get('ec_expiry_date')
             tat = request.POST.get('tat')
             ec_no = get_ec_no(request)
 
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(ec_reference_no=ec_no, ec_approve_date=date.today(),application_status='A',tat=tat,ec_expiry_date=ec_expiry_date)
-
+            for app_det in application_details:
+                applicant = app_det.applicant_id
+            t_application_history.objects.create(application_status='DEC',application_no=application_no,
+                        action_date=date.today(),
+                        actor_id=request.session['login_id'], 
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
             ec_details.update(ec_reference_no=ec_no)
             
@@ -828,25 +860,29 @@ def forward_application(request):
                         data['message'] = "success"
                         data['redirect_to'] = "verify_application_list"
         elif identifier == 'FT': # forward TOR form
-            t_application_history.objects.create(application_status='FT',application_no=application_no,
-                        action_date=date.today(),
-                        actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
             tor_remarks = request.POST.get('tor_remarks')
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(tor_remarks=tor_remarks,application_status='FT')
-
+            for app_det in application_details:
+                applicant = app_det.applicant_id
+            t_application_history.objects.create(application_status='FT',application_no=application_no,
+                        action_date=date.today(),
+                        actor_id=request.session['login_id'], 
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             workflow_details.update(application_status='FT', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='2',assigned_role_name='Verifier')
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'AT': # Approve TOR form
-            t_application_history.objects.create(application_status='AT',application_no=application_no,
-                        action_date=date.today(),
-                        actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'])
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(tor_approve_date=date.today(),application_status='A')
-
+            for app_det in application_details:
+                applicant = app_det.applicant_id
+            t_application_history.objects.create(application_status='FT',application_no=application_no,
+                        action_date=date.today(),
+                        actor_id=request.session['login_id'], 
+                        actor_name=request.session['name'],
+                        application_id=applicant)
             workflow_details.update(assigned_user_id=None)
             workflow_details.update(assigned_role_id=None)
             workflow_details.update(assigned_role_name=None)

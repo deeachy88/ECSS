@@ -119,6 +119,8 @@
                     service_id = data.service_id;
                     colour_code = data.colour_code;
                     has_tor = data.has_tor;
+                    alert(service_id);
+                    alert(has_tor);
                     if(colour_code == 'Green')
                     {
                         $('#successMsg').html("No need For Environment Clearance.");
@@ -144,7 +146,7 @@
                             
                             window.location.href = '/new_forestry_application';
                         }
-                        else if(service_id == '1' || service_id =='3' || service_id =='4' || service_id =='7' && has_tor == 'Y')
+                        else if(service_id == '1' || service_id =='2' || service_id =='3' || service_id =='4' || service_id =='5' || service_id =='6' || service_id =='7' || service_id =='8' || service_id =='9' && has_tor == 'Y')
                         {
                             window.location.href = '/tor_form';
                         }

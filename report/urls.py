@@ -21,6 +21,7 @@ urlpatterns = [
 #Application Status
     path('application_status_list', views.application_status_list, name='application_status_list'),
     path('application_status', views.application_status, name='application_status'),
+    path('client_application_details', views.client_application_details, name='client_application_details'),
 
 #Application Status
     path('application_history', views.application_history, name='application_history'),

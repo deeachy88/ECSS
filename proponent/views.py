@@ -780,7 +780,7 @@ def save_iee_application(request):
             t_application_history.objects.create(
                 application_no=application_no,
                 application_date=timezone.now().date(),
-                applicant_id=request.session['login_id'],
+                applicant_id=request.session['email'],
                 ca_authority=ca_auth,
                 service_id=request.session['service_id'],
                 application_status='P',
@@ -1562,7 +1562,7 @@ def submit_iee_application(request):
         application_no = request.POST.get('iee_disclaimer_application_no')
         identifier = request.POST.get('disc_identifier')
         
-        app_hist_details = t_application_history.objects.create(application_no=application_no)
+        app_hist_details = t_application_history.objects.filter(application_no=application_no)
         app_hist_details.update(action_date=date.today())
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -2175,6 +2175,31 @@ def save_general_attachment_details(request):
 
     return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
 
+def save_tor_attachment(request):
+    data = dict()
+    tor_attach = request.FILES['tor_attach']
+    file_name = tor_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/TOR/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, tor_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/TOR" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_tor_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('application_no')
+
+    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='TOR')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='TOR')
+
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
+
 def save_anc_general_attachment(request):
     data = dict()
     general_attach = request.FILES['general_attach']
@@ -2510,7 +2535,7 @@ def submit_ea_application(request):
         application_no = request.POST.get('ea_disclaimer_application_no')
         identifier = request.POST.get('disc_identifier')
         
-        app_hist_details = t_application_history.objects.create(application_no=application_no)
+        app_hist_details = t_application_history.objects.filter(application_no=application_no)
         app_hist_details.update(action_date=date.today())
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -2819,7 +2844,7 @@ def submit_general_application(request):
     try:
         application_no = request.POST.get('general_disclaimer_application_no')
         identifier = request.POST.get('anc_identifier')
-
+        
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         application_details_main = application_details.filter(form_type='Main Activity').first()
         application_details_ancillary = application_details.filter(form_type='Ancillary').first()
@@ -3790,7 +3815,7 @@ def save_road_application(request):
         t_application_history.objects.create(
                                                 application_no=application_no,
                                                 application_date=date.today(),
-                                                applicant_id=request.session['login_id'],
+                                                applicant_id=request.session['email'],
                                                 ca_authority=ca_auth,
                                                 service_id=request.session['service_id'], 
                                                 application_status='P', 
@@ -3916,7 +3941,8 @@ def save_general_application(request):
                         service_id=request.session['service_id'],
                         broad_activity_code=request.session['broad_activity_code'],
                         specific_activity_code=request.session['specific_activity_code'],
-                        category=request.session['category']
+                        category=request.session['category'],
+                        application_source='ECSS'
                     )
             elif identifier in ['TC', 'PC', 'LC', 'CC']:
                 for app_det in application_details:
@@ -3947,7 +3973,8 @@ def save_general_application(request):
                         others_area_acre=others_area_acre,
                         total_area_acre=total_area_acre,
                         application_status='P',
-                        service_id=app_det.service_id
+                        service_id=app_det.service_id,
+                        application_source='ECSS'
                     )
             else:
                 t_ec_industries_t1_general.objects.create(
@@ -3980,13 +4007,14 @@ def save_general_application(request):
                     service_id=request.session['service_id'],
                     broad_activity_code=request.session['broad_activity_code'],
                     specific_activity_code=request.session['specific_activity_code'],
-                    category=request.session['category']
+                    category=request.session['category'],
+                    application_source='ECSS'
                 )
 
             t_application_history.objects.create(
                 application_no=application_no,
                 application_date=timezone.now().date(),
-                applicant_id=request.session['login_id'],
+                applicant_id=request.session['email'],
                 ca_authority=ca_auth,
                 service_id=request.session['service_id'],
                 application_status='P',
@@ -4096,7 +4124,7 @@ def save_forest_application(request):
         t_application_history.objects.create(
             application_no=request.POST.get('application_no'),
             application_date=timezone.now().date(),
-            applicant_id=request.session['login_id'],
+            applicant_id=request.session['email'],
             ca_authority=ca_auth,
             service_id=request.session['service_id'],
             application_status='P',
@@ -4292,7 +4320,7 @@ def save_ground_water_application(request):
         t_application_history.objects.create(
             application_no=application_no,
             application_date=timezone.now().date(),
-            applicant_id=request.session['login_id'],
+            applicant_id=request.session['email'],
             ca_authority=ca_auth,
             service_id=request.session['service_id'],
             application_status='P',
@@ -4562,7 +4590,7 @@ def save_quarry_application(request):
         t_application_history.objects.create(
             application_no=application_no,
             application_date=timezone.now().date(),
-            applicant_id=request.session['login_id'],
+            applicant_id=request.session['email'],
             ca_authority=ca_auth,
             service_id=request.session['service_id'],
             application_status='P',
@@ -4994,7 +5022,7 @@ def save_energy_application(request):
         t_application_history.objects.create(
                                                 application_no=application_no,
                                                 application_date=date.today(),
-                                                applicant_id=request.session['login_id'],
+                                                applicant_id=request.session['email'],
                                                 ca_authority=ca_auth,
                                                 service_id=request.session['service_id'], 
                                                 application_status='P', 
@@ -5268,7 +5296,7 @@ def save_tourism_application(request):
         t_application_history.objects.create(
                                                 application_no=application_no,
                                                 application_date=date.today(),
-                                                applicant_id=request.session['login_id'],
+                                                applicant_id=request.session['email'],
                                                 ca_authority=ca_auth,
                                                 service_id=request.session['service_id'], 
                                                 application_status='P', 

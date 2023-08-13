@@ -108,6 +108,8 @@ urlpatterns = [
     path('save_tor_form', views.save_tor_form, name='save_tor_form'),
     path('tor_list', views.tor_list, name='tor_list'),
     path('view_tor_application_details',views.view_tor_application_details, name='view_tor_application_details'),
+    path('save_tor_attachment', views.save_tor_attachment, name='save_tor_attachment'),
+    path('save_tor_attachment_details', views.save_tor_attachment_details, name='save_tor_attachment_details'),
 
     #Forest Application Details
     path('save_forest_application', views.save_forest_application, name='save_forest_application'),

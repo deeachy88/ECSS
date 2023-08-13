@@ -1,7 +1,5 @@
 {% extends 'common_dashboard.html' %}
-{% load crispy_forms_tags %}
 {% block content %}
-{% load static %}
 <style>
     .bold-green {
         font-weight: bold;
@@ -14,10 +12,9 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Application Status</h4>
+                        <h4 class="card-title">Application Status List</h4>
                     </div>
                     <div class="card-body">
-                        <h4 class="card-title">Application List.</h4>
                         <div class="table-responsive">
                         <table id="ec_table" class="table table-striped table-bordered">
                             <thead>
@@ -31,6 +28,7 @@
                                     <th scope="col">EC Number</th>
                                     <th scope="col">Approve Date</th>
                                     <th scope="col">Application Status</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,6 +49,7 @@
                                         {% else %}
                                             <td>None</td>
                                         {% endif %}
+                                        <td><button type="button" class="btn btn-sm btn-outline-primary px-1 py-0" onclick="viewApplicationDetails('{{application_list.application_no}}','{{application_list.service_id}}','{{application_list.application_source}}')"> <i class="uil uil-file-copy-alt font-16"></i> </button></td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -66,34 +65,27 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function()
-        {
-            $("#ec_table").DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        title: 'List of Application',
-                        text:'<i class="fas fa-file-excel"></i>',
-                        titleAttr: 'Excel'
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'List of Application',
-                        text:'<i class="fas fa-file-pdf"></i>',
-                        titleAttr: 'PDF'
-                    },
-                     {
-                        extend: 'print',
-                        title: 'List of Application',
-                        text: '<i class="fas fa-print"></i>',
-                        titleAttr: 'Print'
-                    },
-                ]
-            });
-        }
-    );
 
+<script>
+    function viewApplicationDetails(application_no,service_id, application_source)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'client_application_details' %}",
+            data :{'application_no':application_no, 'service_id':service_id,'application_source':application_source},
+            success : function(data)
+            {
+                $('#Application_Details').html(data);
+                $('#Application_Details').show();
+            }
+        });
+    }
+
+    function printDiv()
+    {
+        $("#print").show();
+        jQuery('#print').print();
+        $("#print").hide();
+    }
 </script>
 {% endblock %}

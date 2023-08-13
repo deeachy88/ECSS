@@ -118,7 +118,7 @@ def login(request):
                             request.session['login_id'] = check_user.login_id
                             request.session['address'] = check_user.address
                             request.session['contact_number'] = check_user.contact_number
-                            app_hist_count = t_application_history.objects.filter(applicant_id=check_user.login_id).count()
+                            app_hist_count = t_application_history.objects.filter(applicant_id=check_user.email_id).count()
                             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=check_user.login_id).count()
                             return render(request, 'common_dashboard.html',{'app_hist_count':app_hist_count,'cl_application_count':cl_application_count})
                 else:

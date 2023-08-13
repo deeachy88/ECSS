@@ -139,12 +139,31 @@
                             <div id="location_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-widgets">
+                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#tor_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                </div>
+                                <h5 class="card-title mb-0">Attachments</h5>
+                                <div id="cardCollpase7" class="collapse pt-3 show">
+                                    <div id="tor_attachment">
+                                        {% include 'file_attachment_page.html' %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="alert alert-success border-0 rounded-0" role="alert" id="tor_form_successMsg" style="display:none">
                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                     </div>
                     <div class="alert alert-danger border-0 rounded-0" role="alert" id="tor_form_errorMsg" style="display:none">
                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                     </div>
+                    <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                        Loading...
+                    </button>
                     <div class="row mt-4">
                         <div class="text-sm-end">
                             <button type="button" class="btn btn-success" onclick="save_tor_form()">
@@ -156,6 +175,42 @@
         </div>
     </div>
 </div>
+
+<form method="post" id="tor_attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="tor_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Add Attachment</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Attachment</label>
+                        <input type="file" name="tor_attach" class="form-control" id="tor_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                    </div>
+                    <div class="alert alert-danger" id="tor_attachErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="save_tor_attachment()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+
 <script>
     function check_site_radio(value)
     {
@@ -291,6 +346,7 @@
         }
         else
         {
+            $("#pageloader").show();
             $.ajax
             ({
                 type : "POST",
@@ -300,6 +356,7 @@
                 {
                     if(data.message == 'success')
                     {
+                        $("#pageloader").hide();
                         $('#tor_form_successMsg').html("Saved Successfully");
                         $('#tor_form_successMsg').show();
                         setTimeout(function()
@@ -312,12 +369,75 @@
                     }
                     else
                     {
+                        $("#pageloader").hide();
                         $('#tor_form_errorMsg').html("Please Check And Submit Again");
                         $('#tor_form_errorMsg').show();
                         setTimeout(function()
                         {
                             $('#tor_form_errorMsg').delay(2000).fadeOut('slow');
                         }, 2000);
+                    }
+                }
+            });
+        }
+    }
+
+    function save_tor_attachment()
+    {
+        let file_length = document.getElementById("tor_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#tor_attachErrorMsg').html("Please Choose A Attachment");
+            $('#tor_attachErrorMsg').show();
+            $('#tor_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var fileName = document.getElementById('tor_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('tor_attach').files[0];
+            fd.append('tor_attach', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_tor_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_tor_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#tor_attachment_modal').modal('hide');
+                                $('#tor_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#tor_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#tor_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#tor_attachErrorMsg').show();
+                        $('#tor_attachErrorMsg').delay(2000).fadeOut('slow');
                     }
                 }
             });
