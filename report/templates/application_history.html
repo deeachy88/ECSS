@@ -9,33 +9,31 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">Application List.</h4>
+                        <h4 class="card-title">Application History List.</h4>
                         <div class="table-responsive">
                             <table id="basic-datatable" class="table dt-responsive nowrap w-100">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Proponent</th>
-                                    <th scope="col">Proponent Type</th>
-                                    <th scope="col">Project Name</th>
-                                    <th scope="col">Address</th>
-                                    <th scope="col">Application Date</th>
-                                    <th scope="col">EC Number</th>
-                                    <th scope="col">Approve Date</th>
-                                    <th scope="col">Application Status</th>
+                                    <th scope="col">Application No</th>
+                                    <th scope="col">Applicant</th>
+                                    <th scope="col">Service</th>
+                                    <th scope="col">Remarks</th>
+                                    <th scope="col">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for application_list in application_list %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{application_list.applicant_name}}</td>
-                                        <td>{{application_list.applicant_type}}</td>
-                                        <td>{{application_list.project_name}}</td>
-                                        <td>{{application_list.address}}</td>
-                                        <td>{{application_list.application_date}}</td>
-                                        <td>{{application_list.ec_reference_no}}</td>
-                                        <td>{{application_list.ec_approve_date}}</td>
+                                        <td>{{application_list.application_no}}</td>
+                                        <td>{{application_list.applicant_id}}</td>
+                                        {% for service_details in service_details %}
+                                            {% if application_list.service_id == service_details.service_id %}
+                                                <td>{{service_details.service_name}}</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <td>{{application_list.remarks}}</td>
                                         {% if application_list.application_status == 'P' %}
                                             <td>Pending</td>
                                         {% elif application_list.application_status == 'A' %}

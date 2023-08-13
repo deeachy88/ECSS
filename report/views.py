@@ -333,7 +333,8 @@ def application_history(request):
         application_list = t_application_history.objects.filter(ca_authority=ca_authority).values()
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'application_history.html', {'ca_list': ca_list, 'dzongkhag_list': dzongkhag_list,
+    service_details = t_service_master.objects.all()
+    return render(request, 'application_history.html', {'ca_list': ca_list,'service_details':service_details, 'dzongkhag_list': dzongkhag_list,
                                                            'application_list': application_list,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count})
 
 

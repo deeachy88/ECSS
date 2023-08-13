@@ -2891,7 +2891,8 @@ def submit_general_application(request):
                             total_amount = main_amount + ancillary_amount
                         else:
                             total_amount = main_amount
-
+                        app_hist_details = t_application_history.objects.filter(application_no=application_no)
+                        app_hist_details.update(remarks='Your Application Submitted')
                         insert_app_payment_details(request, application_no, '131370003', 'new_general_application', total_amount, application_type)
                         send_payment_mail(request.session['name'], request.session['email'], total_amount)
                         data['message'] = "success"
