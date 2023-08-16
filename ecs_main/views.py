@@ -455,6 +455,7 @@ def update_payment_details(request):
     amount = request.POST.get('amount')
     instrument_no = request.POST.get('instrument_no')
     transaction_date = request.POST.get('transaction_date')
+    applicant = None
     payment_details = t_payment_details.objects.filter(application_no=application_no, application_type='AP')
     if payment_details.exists():
         payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
