@@ -2912,6 +2912,15 @@ def send_payment_mail(name, email_id, amount):
               auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
               connection=None, html_message=None)
     
+def send_tor_payment_mail(name, email_id, amount):
+    subject = 'Application Submitted'
+    message = "Dear " + name + " Your TOR Application for ECS System Is Submitted. Please Make A Payment of " \
+              + str(amount) + ""
+    recipient_list = [email_id]
+    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
+              connection=None, html_message=None)
+    
 #TOR
 def tor_form(request):
     service_code = 'TOR'
@@ -2936,9 +2945,14 @@ def save_tor_form(request):
         focal_person = request.POST.get('focal_person')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         thromde = request.POST.get('thromde_id')
-        dzongkhag = request.POST.get('dzongkhag')
-        gewog = request.POST.get('gewog')
-        vil_chiwog = request.POST.get('vil_chiwog')
+        if dzongkhag_throm == 'Thromde':
+            dzongkhag = None
+            gewog = None
+            vil_chiwog = None
+        else:
+            dzongkhag = request.POST.get('dzongkhag')
+            gewog = request.POST.get('gewog')
+            vil_chiwog = request.POST.get('vil_chiwog')
         location_name = request.POST.get('location_name')
 
         broad_activity_code = request.session['broad_activity_code']
@@ -2950,7 +2964,7 @@ def save_tor_form(request):
 
         application_date = timezone.now().date()
         action_date = application_date
-
+        
         with transaction.atomic():
             t_ec_industries_t1_general.objects.create(
                 application_no=application_no,
@@ -2974,11 +2988,10 @@ def save_tor_form(request):
 
             ca_auth_filter = (
                 t_competant_authority_master.objects.filter(
-                    dzongkhag_code=thromde if dzongkhag_throm == 'T' else dzongkhag
+                    dzongkhag_code=thromde if dzongkhag_throm == 'Thromde' else dzongkhag
                 )
             )
             ca_authorities = [ca.competent_authority_id for ca in ca_auth_filter]
-
             workflow_dtls = [
                 t_workflow_dtls(
                     application_no=application_no,
@@ -3002,7 +3015,7 @@ def save_tor_form(request):
                 t_application_history(
                     application_no=application_no,
                     application_date=application_date,
-                    applicant_id=login_id,
+                    applicant_id=request.session['email'],
                     ca_authority=ca_authority,
                     service_id=service_id,
                     application_status='P',
@@ -3015,7 +3028,9 @@ def save_tor_form(request):
                 for ca_authority in ca_authorities
             ]
             t_application_history.objects.bulk_create(application_history)
-
+            
+            insert_app_payment_details(request, application_no, None, 'tor_form', 500, None)
+            send_tor_payment_mail(request.session['name'], request.session['email'], 500)
         data['message'] = 'success'
     except Exception as e:
         print('An error occurred:', e)
