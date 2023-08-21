@@ -471,13 +471,17 @@ def update_payment_details(request):
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         for app_det in application_details:
             applicant = app_det.applicant_id
+            service_id = app_det.service_id
+            ca_auth = app_det.ca_authorty
         t_application_history.objects.create(application_no=application_no,
-                    application_status='APP',
-                    action_date=date.today(),
-                    actor_id=request.session['login_id'], 
-                    actor_name=request.session['name'],
-                    application_id=applicant,
-                    remarks='Additional Payment Made')
+                application_status='APP',
+                action_date=date.today(),
+                actor_id=request.session['login_id'], 
+                actor_name=request.session['name'],
+                applicant_id=applicant,
+                remarks='Additional Payment Made',
+                service_id=service_id,
+                ca_authorty=ca_auth)
     else:
         payment_details = t_payment_details.objects.filter(application_no=application_no)
         payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
@@ -485,13 +489,17 @@ def update_payment_details(request):
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         for app_det in application_details:
             applicant = app_det.applicant_id
+            service_id = app_det.service_id
+            ca_auth = app_det.ca_authorty
         t_application_history.objects.create(application_no=application_no,
-                    application_status='PAY',
-                    action_date=date.today(),
-                    actor_id=request.session['login_id'], 
-                    actor_name=request.session['name'],
-                    application_id=applicant,
-                    remarks='Payment Made')
+                application_status='PAY',
+                action_date=date.today(),
+                actor_id=request.session['login_id'], 
+                actor_name=request.session['name'],
+                applicant_id=applicant,
+                remarks='Payment Made',
+                service_id=service_id,
+                ca_authorty=ca_auth)
     return redirect(payment_list)
 
 def get_ec_no(request):
@@ -599,13 +607,15 @@ def forward_application(request):
             application_details.update(application_status='R')
             for app_det in application_details:
                 applicant = app_det.applicant_id
+                service_id = app_det.service_id
             t_application_history.objects.create(application_no=application_no,
                         application_status='R',
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='To Reviewer')
+                        remarks='To Reviewer',
+                        service_id=service_id)
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
         elif identifier == 'AL':
@@ -614,12 +624,14 @@ def forward_application(request):
             application_details.update(additional_info_letter=additional_info_letter,application_status='AL')
             for app_det in application_details:
                 applicant = app_det.applicant_id
+                service_id = app_det.service_id
             t_application_history.objects.create(application_status='AL',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='Addtional Info Required')
+                        remarks='Addtional Info Required',
+                        service_id=service_id)
             workflow_details.update(application_status='AL', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='2',assigned_role_name='Verifier')
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
@@ -628,7 +640,8 @@ def forward_application(request):
             application_details.update(ai_date=date.today(),application_status='ALA')
             for app_details in application_details:
                 app_id = app_details.applicant_id
-                applicant = app_det.applicant_id
+                applicant = app_details.applicant_id
+                service_id = app_details.service_id
                 user_details = t_user_master.objects.filter(email_id=app_id)
                 for user_details in user_details:
                     login_id = user_details.login_id
@@ -638,7 +651,8 @@ def forward_application(request):
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='Addtional Info Approved')
+                        remarks='Addtional Info Approved',
+                        service_id=service_id)
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
         elif identifier == 'ALR':
@@ -646,7 +660,8 @@ def forward_application(request):
             application_details.update(ai_date=date.today(),application_status='ALR')
             for app_details in application_details:
                 app_id = app_details.applicant_id
-                applicant = app_det.applicant_id
+                applicant = app_details.applicant_id
+                service_id = app_details.service_id
                 user_details = t_user_master.objects.filter(email_id=app_id)
                 for user_details in user_details:
                     login_id = user_details.login_id
@@ -656,7 +671,8 @@ def forward_application(request):
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='Addtional Info Rejected')
+                        remarks='Addtional Info Rejected',
+                        service_id=service_id)
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
         elif identifier == 'ALS':
@@ -666,12 +682,14 @@ def forward_application(request):
             application_details.update(additional_info=additional_info,application_status='ALS')
             for app_det in application_details:
                 applicant = app_det.applicant_id
+                service_id = app_det.service_id
             t_application_history.objects.create(application_status='ALS',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='Addtional Info Submitted')
+                        remarks='Addtional Info Submitted',
+                        service_id=service_id)
             workflow_details.update(application_status='ALS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
@@ -681,6 +699,7 @@ def forward_application(request):
             for app_details in application_details:
                 app_id = app_details.applicant_id
                 applicant = app_details.applicant_id
+                service_id = app_details.service_id
                 user_details = t_user_master.objects.filter(email_id=app_id)
                 for user_details in user_details:
                     login_id = user_details.login_id
@@ -690,7 +709,8 @@ def forward_application(request):
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='EATC Attach Requested')
+                        remarks='EATC Attach Requested',
+                        service_id=service_id)
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'FEATC':
@@ -698,12 +718,14 @@ def forward_application(request):
             application_details.update(application_status='FEATC')
             for app_det in application_details:
                 applicant = app_det.applicant_id
+                service_id = app_det.service_id
             t_application_history.objects.create(application_status='FEATC',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='EATC Attachment Made')
+                        remarks='EATC Attachment Made',
+                        service_id=service_id)
             workflow_details.update(application_status='FEATC', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
@@ -712,8 +734,9 @@ def forward_application(request):
             application_details.update(application_status='RS')
             for app_details in application_details:
                 app_id = app_details.applicant_id
-                user_details = t_user_master.objects.filter(email_id=app_id)
                 applicant = app_details.applicant_id
+                service_id = app_details.service_id
+                user_details = t_user_master.objects.filter(email_id=app_id)
                 for user_details in user_details:
                     login_id = user_details.login_id
                     workflow_details.update(application_status='RS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=login_id, assigned_role_id=None,assigned_role_name=None)
@@ -722,7 +745,8 @@ def forward_application(request):
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='Resumit Application For Clearification')
+                        remarks='Resumit Application For Clearification',
+                        service_id=service_id)
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'RSS':
@@ -730,12 +754,14 @@ def forward_application(request):
             application_details.update(application_status='RSS')
             for app_det in application_details:
                 applicant = app_det.applicant_id
+                service_id = app_det.service_id
             t_application_history.objects.create(application_status='RSS',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='Application Resubmitted')
+                        remarks='Application Resubmitted',
+                        service_id=service_id)
             resubmit_remarks = request.POST.get('resubmit_remarks')
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(resubmit_remarks=resubmit_remarks)
@@ -749,12 +775,14 @@ def forward_application(request):
             application_details.update(application_status='AP')
             for app_det in application_details:
                 applicant = app_det.applicant_id
+                service_id = app_det.service_id
             t_application_history.objects.create(application_status='AP',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='Additional Payment Required')
+                        remarks='Additional Payment Required',
+                        service_id=service_id)
             workflow_details.update(assigned_user_id=None)
             workflow_details.update(assigned_role_id=None)
             workflow_details.update(assigned_role_name=None)
@@ -786,6 +814,7 @@ def forward_application(request):
             for app_details in application_details:
                 app_id = app_details.applicant_id
                 applicant = app_details.applicant_id
+                service_id = app_details.service_id
                 user_details = t_user_master.objects.filter(email_id=app_id)
                 for user_details in user_details:
                     login_id = user_details.login_id
@@ -795,7 +824,8 @@ def forward_application(request):
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='Legal Undertaking Request')
+                        remarks='Legal Undertaking Request',
+                        service_id=service_id)
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'LUS':
@@ -803,12 +833,14 @@ def forward_application(request):
             application_details.update(application_status='LUS')
             for app_det in application_details:
                 applicant = app_det.applicant_id
+                service_id = app_det.service_id
             t_application_history.objects.create(application_status='LUS',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='Legal Undertaking attached')
+                        remarks='Legal Undertaking attached',
+                        service_id=service_id)
             workflow_details.update(application_status='LUS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
@@ -817,12 +849,14 @@ def forward_application(request):
             application_details.update(application_status='DEC')
             for app_det in application_details:
                 applicant = app_det.applicant_id
+                service_id = app_det.service_id
             t_application_history.objects.create(application_status='DEC',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='Drafted EC')
+                        remarks='Drafted EC',
+                        service_id=service_id)
             workflow_details.update(application_status='DEC', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='2',assigned_role_name='Verifier')
 
             app_history = t_application_history.objects.filter(application_no=application_no)
@@ -864,12 +898,14 @@ def forward_application(request):
             application_details.update(ec_reference_no=ec_no, ec_approve_date=date.today(),application_status='A',tat=tat,ec_expiry_date=ec_expiry_date)
             for app_det in application_details:
                 applicant = app_det.applicant_id
+                service_id = app_det.service_id
             t_application_history.objects.create(application_status='DEC',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='Approved')
+                        remarks='Approved',
+                        service_id=service_id)
             ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
             ec_details.update(ec_reference_no=ec_no)
             
@@ -899,12 +935,14 @@ def forward_application(request):
             application_details.update(tor_remarks=tor_remarks,application_status='FT')
             for app_det in application_details:
                 applicant = app_det.applicant_id
+                service_id=app_det.service_id
             t_application_history.objects.create(application_status='FT',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='TOR Forwared')
+                        remarks='TOR Forwared',
+                        service_id=service_id)
             workflow_details.update(application_status='FT', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='2',assigned_role_name='Verifier')
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
@@ -913,12 +951,14 @@ def forward_application(request):
             application_details.update(tor_approve_date=date.today(),application_status='A')
             for app_det in application_details:
                 applicant = app_det.applicant_id
+                service_id=app_det.service_id
             t_application_history.objects.create(application_status='FT',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         application_id=applicant,
-                        remarks='TOR Approved')
+                        remarks='TOR Approved',
+                        service_id=service_id)
             workflow_details.update(assigned_user_id=None)
             workflow_details.update(assigned_role_id=None)
             workflow_details.update(assigned_role_name=None)
