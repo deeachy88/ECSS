@@ -436,7 +436,11 @@ def transmission_ancillary_form(request):
 
 
 def get_application_no(request, service_code, service_id):
-    application_no= t_ec_industries_t1_general.objects.filter(service_id=service_id).aggregate(Max('application_no'))
+    result = t_ec_industries_t1_general.objects.filter(application_no__contains='TOR')
+    if result.exists():
+        application_no= t_ec_industries_t1_general.objects.filter(application_no__contains='TOR').aggregate(Max('application_no'))
+    else:
+        application_no= t_ec_industries_t1_general.objects.filter(service_id=service_id).aggregate(Max('application_no'))
     last_application_no= application_no['application_no__max']
     if not last_application_no:
         year=timezone.now().year
@@ -2924,7 +2928,7 @@ def send_tor_payment_mail(name, email_id, amount):
 #TOR
 def tor_form(request):
     service_code = 'TOR'
-    application_no = get_application_no(request, service_code, request.session['service_id'])
+    application_no = get_application_no(request, service_code, None)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -6533,6 +6537,13 @@ def delete_application_attachment(request):
         for file in file:
             file_name = file.attachment
             fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ECR/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'TOR':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/TOR/")
             fs.delete(str(file_name))
         file.delete()
     file_attach = t_file_attachment.objects.filter(application_no=application_no)
