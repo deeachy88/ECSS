@@ -83,9 +83,14 @@
 
     function printDiv()
     {
-        $("#print").show();
-        jQuery('#print').print();
-        $("#print").hide();
+        var contentToPrintClone = $("#print").clone();
+
+        // Show the cloned content and print it
+        contentToPrintClone.show();
+        contentToPrintClone.print();
+
+        // Remove the cloned content after printing
+        contentToPrintClone.remove();
     }
 </script>
 {% endblock %}
