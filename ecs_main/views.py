@@ -456,6 +456,7 @@ def update_payment_details(request):
     instrument_no = request.POST.get('instrument_no')
     transaction_date = request.POST.get('transaction_date')
     applicant = None
+    service_id = None
     payment_details = t_payment_details.objects.filter(application_no=application_no, application_type='AP')
     if payment_details.exists():
         payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
@@ -481,7 +482,8 @@ def update_payment_details(request):
                 applicant_id=applicant,
                 remarks='Additional Payment Made',
                 service_id=service_id,
-                ca_authorty=ca_auth)
+                ca_authority=ca_auth,
+                application_status='P')
     else:
         payment_details = t_payment_details.objects.filter(application_no=application_no)
         payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
@@ -499,7 +501,8 @@ def update_payment_details(request):
                 applicant_id=applicant,
                 remarks='Payment Made',
                 service_id=service_id,
-                ca_authorty=ca_auth)
+                ca_authority=ca_auth,
+                application_status='P')
     return redirect(payment_list)
 
 def get_ec_no(request):
