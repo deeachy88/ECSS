@@ -475,15 +475,14 @@ def update_payment_details(request):
             service_id = app_det.service_id
             ca_auth = app_det.ca_authority
         t_application_history.objects.create(application_no=application_no,
-                application_status='APP',
+                application_status='P',
                 action_date=date.today(),
                 actor_id=request.session['login_id'], 
                 actor_name=request.session['name'],
                 applicant_id=applicant,
                 remarks='Additional Payment Made',
                 service_id=service_id,
-                ca_authority=ca_auth,
-                application_status='P')
+                ca_authority=ca_auth)
     else:
         payment_details = t_payment_details.objects.filter(application_no=application_no)
         payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
@@ -494,15 +493,14 @@ def update_payment_details(request):
             service_id = app_det.service_id
             ca_auth = app_det.ca_authority
         t_application_history.objects.create(application_no=application_no,
-                application_status='PAY',
+                application_status='P',
                 action_date=date.today(),
                 actor_id=request.session['login_id'], 
                 actor_name=request.session['name'],
                 applicant_id=applicant,
                 remarks='Payment Made',
                 service_id=service_id,
-                ca_authority=ca_auth,
-                application_status='P')
+                ca_authority=ca_auth)
     return redirect(payment_list)
 
 def get_ec_no(request):
