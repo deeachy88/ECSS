@@ -472,7 +472,7 @@ def update_payment_details(request):
         for app_det in application_details:
             applicant = app_det.applicant_id
             service_id = app_det.service_id
-            ca_auth = app_det.ca_authorty
+            ca_auth = app_det.ca_authority
         t_application_history.objects.create(application_no=application_no,
                 application_status='APP',
                 action_date=date.today(),
@@ -490,7 +490,7 @@ def update_payment_details(request):
         for app_det in application_details:
             applicant = app_det.applicant_id
             service_id = app_det.service_id
-            ca_auth = app_det.ca_authorty
+            ca_auth = app_det.ca_authority
         t_application_history.objects.create(application_no=application_no,
                 application_status='PAY',
                 action_date=date.today(),

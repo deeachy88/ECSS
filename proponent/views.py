@@ -2975,7 +2975,7 @@ def save_tor_form(request):
         if dzongkhag_throm == 'Thromde':
             ca_auth_filter = t_competant_authority_master.objects.filter(dzongkhag_code=thromde)
         else:
-            ca_auth_filter = t_competant_authority_master.objects.filter(dzongkhag_code=thromde)
+            ca_auth_filter = t_competant_authority_master.objects.filter(dzongkhag_code=dzongkhag)
 
         for ca_auth_filter in ca_auth_filter:
             ca_auth = ca_auth_filter.competent_authority_id
