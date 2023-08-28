@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 # Create your views here.
 def verify_application_list(request):
     ca_authority = request.session['ca_authority']
-    application_list = t_workflow_dtls.objects.filter(application_status='P', assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='DEC',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='AL',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='FT',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)
+    application_list = t_workflow_dtls.objects.filter(application_status='P', assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='DEC',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='AL',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)  | t_workflow_dtls.objects.filter(application_status='FT',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)
     service_details = t_service_master.objects.all()
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
@@ -67,13 +67,24 @@ def view_application_details(request):
     application_source = request.GET.get('application_source')
     status = None
     ca_auth = None
-
+    assigned_role_id = None
+    result = t_ec_industries_t1_general.objects.filter(application_no__contains='TOR')
     workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
     for work_details in workflow_details:
         status = work_details.application_status
         ca_auth = work_details.ca_authority
         assigned_role_id = work_details.assigned_role_id
+    if result.exists():
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
+        reviewer_list = t_user_master.objects.filter(role_id='3', agency_code=ca_auth)
+        file_attach = t_file_attachment.objects.filter(attachment_type='TOR')
 
+        return render(request, 'tor_form_details.html', {'application_details':application_details,'file_attach':file_attach,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde, 'reviewer_list':reviewer_list,'assigned_role_id':assigned_role_id, 'status':status})
+    else:
         if service_id == '1':
             if application_source == 'IBLS':
                 application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
@@ -393,17 +404,7 @@ def view_application_details(request):
             app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             return render(request, 'renewal_application_details.html',{'application_details':application_details,'renewal_details_one':renewal_details_one,'status':status,
-                                                                       'dzongkhag':dzongkhag,'gewog':gewog,'village':village,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details_two':renewal_details_two,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
-        elif service_id == '0':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            dzongkhag = t_dzongkhag_master.objects.all()
-            gewog = t_gewog_master.objects.all()
-            village = t_village_master.objects.all()
-            thromde = t_thromde_master.objects.all()
-            reviewer_list = t_user_master.objects.filter(role_id='3', agency_code=ca_auth)
-            file_attach = t_file_attachment.objects.filter(attachment_type='TOR')
-
-            return render(request, 'tor_form_details.html', {'application_details':application_details,'file_attach':file_attach,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde, 'reviewer_list':reviewer_list,'assigned_role_id':assigned_role_id, 'status':status})
+                                                                    'dzongkhag':dzongkhag,'gewog':gewog,'village':village,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details_two':renewal_details_two,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
 
 
 def resubmit_application(request):
@@ -614,7 +615,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='To Reviewer',
                         service_id=service_id)
             data['message'] = "success"
@@ -630,7 +631,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='Addtional Info Required',
                         service_id=service_id)
             workflow_details.update(application_status='AL', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='2',assigned_role_name='Verifier')
@@ -651,7 +652,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='Addtional Info Approved',
                         service_id=service_id)
             data['message'] = "success"
@@ -671,7 +672,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='Addtional Info Rejected',
                         service_id=service_id)
             data['message'] = "success"
@@ -688,7 +689,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='Addtional Info Submitted',
                         service_id=service_id)
             workflow_details.update(application_status='ALS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
@@ -709,7 +710,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='EATC Attach Requested',
                         service_id=service_id)
             data['message'] = "success"
@@ -724,7 +725,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='EATC Attachment Made',
                         service_id=service_id)
             workflow_details.update(application_status='FEATC', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
@@ -745,7 +746,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='Resumit Application For Clearification',
                         service_id=service_id)
             data['message'] = "success"
@@ -760,7 +761,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='Application Resubmitted',
                         service_id=service_id)
             resubmit_remarks = request.POST.get('resubmit_remarks')
@@ -781,7 +782,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='Additional Payment Required',
                         service_id=service_id)
             workflow_details.update(assigned_user_id=None)
@@ -824,7 +825,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='Legal Undertaking Request',
                         service_id=service_id)
             data['message'] = "success"
@@ -839,7 +840,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='Legal Undertaking attached',
                         service_id=service_id)
             workflow_details.update(application_status='LUS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
@@ -855,7 +856,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='Drafted EC',
                         service_id=service_id)
             workflow_details.update(application_status='DEC', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='2',assigned_role_name='Verifier')
@@ -904,7 +905,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='Approved',
                         service_id=service_id)
             ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
@@ -941,7 +942,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='TOR Forwared',
                         service_id=service_id)
             workflow_details.update(application_status='FT', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='2',assigned_role_name='Verifier')
@@ -957,7 +958,7 @@ def forward_application(request):
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
-                        application_id=applicant,
+                        applicant_id=applicant,
                         remarks='TOR Approved',
                         service_id=service_id)
             workflow_details.update(assigned_user_id=None)

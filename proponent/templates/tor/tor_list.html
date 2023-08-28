@@ -3,7 +3,7 @@
 <div id="application_details">
     <div class="card mt-1">
         <div class="card-body">
-            <h5 class="card-title mb-0 text-right">Draft Application List</h5>
+            <h5 class="card-title mb-0 text-right">TOR Application List</h5>
             <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
                 <i class="ri-check-line me-2"></i>
             </div>
@@ -18,7 +18,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for application_details in application_details %}
+                        {% for application_details in tor_details %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td><button type="button" class="btn btn-link text-info mb-0" onclick="viewApplicationDetails('{{application_details.application_no}}','{{application_details.service_id}}','{{application_details.application_source}}')">{{application_details.application_no}}</button></td>
@@ -41,12 +41,12 @@
     </div>
 </div>
 <script>
-    function viewApplicationDetails(application_no,service_id)
+    function viewApplicationDetails(application_no,service_id,application_source)
     {
         $.ajax({
             type : "GET",
             url : "{% url 'view_tor_application_details' %}",
-            data :{'application_no':application_no, 'service_id':service_id},
+            data :{'application_no':application_no, 'service_id':service_id,'application_source':application_source},
             success : function(data)
             {
                 $('#application_details').html(data);

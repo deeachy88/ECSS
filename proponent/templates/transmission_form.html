@@ -1350,9 +1350,26 @@
                                     <div class="alert alert-danger border-0 rounded-0" role="alert" id="transmission_submit_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
+                                    <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
+                                    <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
+                                    <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
+                                    <p class="text-wrap">3.	Application Outcome: Submission of this application does not guarantee acceptance or approval. The final decision rests with the appropriate authorities, and we reserve the right to reject any application without providing any reason.</p>
+                                    <p class="text-wrap">4.	Disclaimer of Liability: To the extent permitted by law, we disclaim all liability for any loss, damage, or injury arising out of or related to your use of this online application form or reliance on any information provided herein. We shall not be responsible for any technical errors, interruptions, or inaccuracies that may occur during the application process.</p>
+                                    <p class="text-wrap">5.	Modification or Termination: We reserve the right to modify, suspend, or terminate this online application form at any time without prior notice. We may also update or change the terms and conditions of this disclaimer without notice.</p>
+                                    <p class="text-wrap">Please review this disclaimer carefully before submitting your application. If you do not agree with any part of this disclaimer, please refrain from using this online application form.</p>
+                                    <div class="mt-3">
+                                        <div class="form-check">
+                                            <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
+                                            <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
+                                        </div>
+                                    </div>
+                                    <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                        Loading...
+                                    </button>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
-                                            <a href="#" class="btn btn-success" onclick="submit_transmission_application()">
+                                            <a href="#" class="btn btn-success" id="tra_submit_btn" onclick="submit_transmission_application()">
                                                 <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
                                         </div>
                                     </div>
@@ -3994,6 +4011,7 @@
 
     function submit_transmission_application()
     {
+        $("#pageloader").show();
         $.ajax
         ({
             type : "POST",
@@ -4001,6 +4019,7 @@
             data : $('#transmission_submit_form').serialize(),
             success : function(data)
             {
+                $("#pageloader").hide();
                 if(data.message == 'success')
                 {
                     $('#transmission_submit_successMsg').html("Application Submitted Successfully");
@@ -5448,6 +5467,18 @@
         {
             $('.thromde').show();
             $('.dzongkhag').hide();
+        }
+    }
+
+    function check_terms()
+    {
+        if($("#ec_terms").prop('checked') == true)
+        {
+            $('#tra_submit_btn').show();
+        }
+        else
+        {
+            $('#tra_submit_btn').hide();
         }
     }
 </script>

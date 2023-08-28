@@ -10,6 +10,9 @@ urlpatterns = [
     path('new_forestry_application', views.new_forestry_application, name='new_forestry_application'),
     path('new_general_application', views.new_general_application, name='new_general_application'),
     path('new_ground_water_application', views.new_ground_water_application, name='new_ground_water_application'),
+    path('new_energy_application', views.new_energy_application, name='new_energy_application'),
+    path('new_tourism_form', views.new_tourism_form, name='new_tourism_form'),
+     path('new_quarry_form', views.new_quarry_form, name='new_quarry_form'),
     path('new_application_form', views.new_application_form, name='new_application_form'),
 
 

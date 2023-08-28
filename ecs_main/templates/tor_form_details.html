@@ -105,8 +105,8 @@
                                 </div>
                             {% endif %}
                         </div>
-                        <div class="row">
-                            {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                        {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                            <div class="row">
                                 <div class="col-lg-6 dzongkhag_div">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Dzongkhag</label>
@@ -161,9 +161,6 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="card-widgets">
-                                        <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#tor_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                    </div>
                                     <h5 class="card-title mb-0">Attachments</h5>
                                     <div id="cardCollpase7" class="collapse pt-3 show">
                                         <table id="basic-datatable" class="table dt-responsive nowrap w-100">
@@ -238,6 +235,10 @@
                                     <i class="mdi mdi-arrow-right me-1"></i> Approve </button>
                             </div>
                         </div>
+                        <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </button>
                     </form>
                 </div>
             </div>
@@ -304,7 +305,7 @@
         }
         else
         {
-            
+            $("#pageloader").show();
             $.ajax
             ({
                 type : "POST",
@@ -312,8 +313,22 @@
                 data : {'application_no':application_no,'tor_remarks':tor_remarks, 'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data)
                 {
-                    if(data.message == 'success')
+                    if(data.message == 'success' && identifier == 'A')
                     {
+                        $("#pageloader").hide();
+                        $('#tor_form_successMsg').html("TOR Application Approved");
+                        $('#tor_form_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#tor_form_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            location.reload()
+                        }, 2000);
+                    }
+                    else if(data.message == 'success' && identifier == 'FT')
+                    {
+                        $("#pageloader").hide();
                         $('#tor_form_successMsg').html("Forwarded Successfully");
                         $('#tor_form_successMsg').show();
                         setTimeout(function()
@@ -326,6 +341,7 @@
                     }
                     else
                     {
+                        $("#pageloader").hide();
                         $('#tor_form_errorMsg').html("Please Check And Submit Again");
                         $('#tor_form_errorMsg').show();
                         setTimeout(function()

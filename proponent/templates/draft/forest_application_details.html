@@ -1707,9 +1707,13 @@
                                             <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
                                         </div>
                                     </div>
+                                    <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                        Loading...
+                                    </button>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
-                                            <a href="#" class="btn btn-success" onclick="submit_forest_application()">
+                                            <a href="#" class="btn btn-success" id="for_submit_btn()" onclick="submit_forest_application()" style="display: none;">
                                                 <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
                                         </div>
                                     </div>
@@ -3308,6 +3312,7 @@
         
         function submit_forest_application()
         {
+            $("#pageloader").show();
             $.ajax
             ({
                 type : "POST",
@@ -3315,6 +3320,7 @@
                 data : $('#forest_submit_form').serialize(),
                 success : function(data)
                 {
+                    $("#pageloader").hide();
                     if(data.message == 'success')
                     {
                         $('#forest_submit_successMsg').html("Application Submitted Successfully");
@@ -5615,11 +5621,11 @@
         {
             if($("#ec_terms").prop('checked') == true)
             {
-                $('#gen_submit_btn').show();
+                $('#for_submit_btn').show();
             }
             else
             {
-                $('#gen_submit_btn').hide();
+                $('#for_submit_btn').hide();
             }
         }
     

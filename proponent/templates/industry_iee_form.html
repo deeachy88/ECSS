@@ -30,11 +30,6 @@
                                             </div>
                                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                    </div>
-                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
-                                    </div>
-                                    <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Business Type</label>
@@ -42,26 +37,22 @@
                                             </div>
                                             <div id="project_categoryErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">CID</label>
-                                                <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" onchange="getCitizenDetails(this.value)">
-                                            </div>
-                                            <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
+                                    </div>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Applicant Name</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly>
+                                                <label class="form-label fw-bold">Name of Applicant</label>
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Address</label>
-                                                <input type="text" name="address" class="form-control" id="address">
+                                                <input type="text" name="address" class="form-control" id="address" value="{{request.session.address}}" readonly>
                                             </div>
                                             <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -70,14 +61,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Contact No</label>
-                                                <input type="number" min="1"  name="contact_no" class="form-control" id="contact_no" maxlength="8">
+                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{request.session.contact_number}}" readonly>
                                             </div>
                                             <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Email</label>
-                                                <input type="email" name="email" class="form-control" id="email">
+                                                <input type="email" name="email" class="form-control" id="email" value="{{request.session.email}}" readonly>
                                             </div>
                                             <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -442,95 +433,86 @@
                                             <tr>
                                                 <td>a)</td>
                                                 <td>Protected Areas and zonation (multiple use/buffer/core)</td>
-                                                <td>
-                                                    <div class="mb-1">
-                                                        <input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" >
-                                                    </div>
-                                                    <div id="bl_protected_area_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                                </td>
-                                                <td>
-                                                    <div class="mb-1">
-                                                        <input type="text" name="bl_protected_area_distance" class="form-control col-lg-6" id="bl_protected_area_distance"></td>
-                                                    </div>
-                                                    <div id="bl_protected_area_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                <td><input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_protected_area_distance" class="form-control col-lg-6" id="bl_protected_area_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>b)</td>
                                                 <td>Migratory route/habitat/key biodiversity areas</td>
-                                                <td><input type="text" name="bl_migratory_route_name" class="form-control col-lg-6" id="bl_migratory_route_name"></td>
-                                                <td><input type="text" name="bl_migratory_route_distance" class="form-control col-lg-6" id="bl_migratory_route_distance"></td>
+                                                <td><input type="text" name="bl_migratory_route_name" class="form-control col-lg-6" id="bl_migratory_route_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_migratory_route_distance" class="form-control col-lg-6" id="bl_migratory_route_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>c)</td>
                                                 <td>Wetland/catchment area</td>
-                                                <td><input type="text" name="bl_wetland_name" class="form-control col-lg-6" id="bl_wetland_name"></td>
-                                                <td><input type="text" name="bl_wetland_distance" class="form-control col-lg-6" id="bl_wetland_distance"></td>
+                                                <td><input type="text" name="bl_wetland_name" class="form-control col-lg-6" id="bl_wetland_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_wetland_distance" class="form-control col-lg-6" id="bl_wetland_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>d)</td>
                                                 <td>Water bodies/resources/source (rivers, streams, springs, lakes, etc.)</td>
-                                                <td><input type="text" name="bl_water_bodies_name" class="form-control col-lg-6" id="bl_water_bodies_name"></td>
-                                                <td><input type="text" name="bl_water_bodies_distance" class="form-control col-lg-6" id="bl_water_bodies_distance"></td>
+                                                <td><input type="text" name="bl_water_bodies_name" class="form-control col-lg-6" id="bl_water_bodies_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_water_bodies_distance" class="form-control col-lg-6" id="bl_water_bodies_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>e)</td>
                                                 <td>FMUs/Community forests/private forests</td>
-                                                <td><input type="text" name="bl_fmu_name" class="form-control col-lg-6" id="bl_fmu_name"></td>
-                                                <td><input type="text" name="bl_fmu_distance" class="form-control col-lg-6" id="bl_fmu_distance"></td>
+                                                <td><input type="text" name="bl_fmu_name" class="form-control col-lg-6" id="bl_fmu_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_fmu_distance" class="form-control col-lg-6" id="bl_fmu_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>f)</td>
                                                 <td>Agricultural lands/private lands</td>
-                                                <td><input type="text" name="bl_agricultural_name" class="form-control col-lg-6" id="bl_agricultural_name"></td>
-                                                <td><input type="text" name="bl_agricultural_distance" class="form-control col-lg-6" id="bl_agricultural_distance"></td>
+                                                <td><input type="text" name="bl_agricultural_name" class="form-control col-lg-6" id="bl_agricultural_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_agricultural_distance" class="form-control col-lg-6" id="bl_agricultural_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>g)</td>
                                                 <td>Settlements</td>
-                                                <td><input type="text" name="bl_settlement_name" class="form-control col-lg-6" id="bl_settlement_name"></td>
-                                                <td><input type="text" name="bl_settlement_distance" class="form-control col-lg-6" id="bl_settlement_distance"></td>
+                                                <td><input type="text" name="bl_settlement_name" class="form-control col-lg-6" id="bl_settlement_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_settlement_distance" class="form-control col-lg-6" id="bl_settlement_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>h)</td>
                                                 <td>Roads</td>
-                                                <td><input type="text" name="bl_road_name" class="form-control col-lg-6" id="bl_road_name"></td>
-                                                <td><input type="text" name="bl_road_distance" class="form-control col-lg-6" id="bl_road_distance"></td>
+                                                <td><input type="text" name="bl_road_name" class="form-control col-lg-6" id="bl_road_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_road_distance" class="form-control col-lg-6" id="bl_road_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>i)</td>
                                                 <td>Public infrastructures (irrigation canals/drinking water supply/Powerlines/Telecommunication towers, etc)</td>
-                                                <td><input type="text" name="bl_public_infra_name" class="form-control col-lg-6" id="bl_public_infra_name"></td>
-                                                <td><input type="text" name="bl_public_infra_distance" class="form-control col-lg-6" id="bl_public_infra_distance"></td>
+                                                <td><input type="text" name="bl_public_infra_name" class="form-control col-lg-6" id="bl_public_infra_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_public_infra_distance" class="form-control col-lg-6" id="bl_public_infra_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>j)</td>
                                                 <td>Schools/Institutions/Hospitals/BHUs</td>
-                                                <td><input type="text" name="bl_school_name" class="form-control col-lg-6" id="bl_school_name"></td>
-                                                <td><input type="text" name="bl_school_distance" class="form-control col-lg-6" id="bl_school_distance"></td>
+                                                <td><input type="text" name="bl_school_name" class="form-control col-lg-6" id="bl_school_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_school_distance" class="form-control col-lg-6" id="bl_school_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>k)</td>
                                                 <td>Heritage/religious/archaeological /cultural sites</td>
-                                                <td><input type="text" name="bl_heritage_name" class="form-control col-lg-6" id="bl_heritage_name"></td>
-                                                <td><input type="text" name="bl_heritage_distance" class="form-control col-lg-6" id="bl_heritage_distance"></td>
+                                                <td><input type="text" name="bl_heritage_name" class="form-control col-lg-6" id="bl_heritage_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_heritage_distance" class="form-control col-lg-6" id="bl_heritage_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>l)</td>
                                                 <td>Tourist facilities/tourism sites/ Nature recreation sites</td>
-                                                <td><input type="text" name="bl_tourist_facility_name" class="form-control col-lg-6" id="bl_tourist_facility_name"></td>
-                                                <td><input type="text" name="bl_tourist_facility_distance" class="form-control col-lg-6" id="bl_tourist_facility_distance"></td>
+                                                <td><input type="text" name="bl_tourist_facility_name" class="form-control col-lg-6" id="bl_tourist_facility_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_tourist_facility_distance" class="form-control col-lg-6" id="bl_tourist_facility_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>l)</td>
                                                 <td>Important installations (early warning systems, weather stations, flood mitigation activities, etc.)</td>
-                                                <td><input type="text" name="bl_impt_installation_name" class="form-control col-lg-6" id="bl_impt_installation_name"></td>
-                                                <td><input type="text" name="bl_impt_installation_distance" class="form-control col-lg-6" id="bl_impt_installation_distance"></td>
+                                                <td><input type="text" name="bl_impt_installation_name" class="form-control col-lg-6" id="bl_impt_installation_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_impt_installation_distance" class="form-control col-lg-6" id="bl_impt_installation_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>l)</td>
                                                 <td>Industries</td>
-                                                <td><input type="text" name="bl_industries_name" class="form-control col-lg-6" id="bl_industries_name"></td>
-                                                <td><input type="text" name="bl_industries_distance" class="form-control col-lg-6" id="bl_industries_distance"></td>
+                                                <td><input type="text" name="bl_industries_name" class="form-control col-lg-6" id="bl_industries_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_industries_distance" class="form-control col-lg-6" id="bl_industries_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>o)</td>
@@ -538,12 +520,12 @@
                                                     <div class="row">
                                                         <label for="bl_others" class="col-sm-4 col-form-label">Others Specify</label>
                                                         <div class="col-sm-8">
-                                                            <input type="text" class="form-control" id="bl_others" name="bl_others">
+                                                            <input type="text" class="form-control" id="bl_others" name="bl_others" value="N/A">
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td><input type="text" name="bl_others_name" class="form-control col-lg-6" id="bl_others_name"></td>
-                                                <td><input type="text" name="bl_others_distance" class="form-control col-lg-6" id="bl_others_distance"></td>
+                                                <td><input type="text" name="bl_others_name" class="form-control col-lg-6" id="bl_others_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_others_distance" class="form-control col-lg-6" id="bl_others_distance" value="0"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -673,49 +655,49 @@
                                                     <tr>
                                                         <td>1</td>
                                                         <td>Water as raw material</td>
-                                                        <td><input type="text" name="water_raw_material_source" class="form-control col-lg-6" id="water_raw_material_source"></td>
-                                                        <td><input type="text" name="water_raw_material_qty_day" class="form-control col-lg-6" id="water_raw_material_qty_day"></td>
-                                                        <td><input type="text" name="water_raw_material_recycle_day" class="form-control col-lg-6" id="water_raw_material_recycle_day"></td>
+                                                        <td><input type="text" name="water_raw_material_source" class="form-control col-lg-6" id="water_raw_material_source" value="N/A"></td>
+                                                        <td><input type="text" name="water_raw_material_qty_day" class="form-control col-lg-6" id="water_raw_material_qty_day" value="0"></td>
+                                                        <td><input type="text" name="water_raw_material_recycle_day" class="form-control col-lg-6" id="water_raw_material_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>2</td>
                                                         <td>Raw material and finished product cleaning/washing</td>
-                                                        <td><input type="text" name="water_cleaning_source" class="form-control col-lg-6" id="water_cleaning_source"></td>
-                                                        <td><input type="text" name="water_cleaning_qty_day" class="form-control col-lg-6" id="water_cleaning_qty_day"></td>
-                                                        <td><input type="text" name="water_cleaning_recycle_day" class="form-control col-lg-6" id="water_cleaning_recycle_day"></td>
+                                                        <td><input type="text" name="water_cleaning_source" class="form-control col-lg-6" id="water_cleaning_source"  value="N/A"></td>
+                                                        <td><input type="text" name="water_cleaning_qty_day" class="form-control col-lg-6" id="water_cleaning_qty_day"  value="0"></td>
+                                                        <td><input type="text" name="water_cleaning_recycle_day" class="form-control col-lg-6" id="water_cleaning_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>3</td>
                                                         <td>Process (cooling/boiler use)</td>
-                                                        <td><input type="text" name="water_process_source" class="form-control col-lg-6" id="water_process_source"></td>
-                                                        <td><input type="text" name="water_process_qty_day" class="form-control col-lg-6" id="water_process_qty_day"></td>
-                                                        <td><input type="text" name="water_process_recycle_day" class="form-control col-lg-6" id="water_process_recycle_day"></td>
+                                                        <td><input type="text" name="water_process_source" class="form-control col-lg-6" id="water_process_source" value="N/A"></td>
+                                                        <td><input type="text" name="water_process_qty_day" class="form-control col-lg-6" id="water_process_qty_day" value="0"></td>
+                                                        <td><input type="text" name="water_process_recycle_day" class="form-control col-lg-6" id="water_process_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>4</td>
                                                         <td>Domestic (Drinking and sanitation)</td>
-                                                        <td><input type="text" name="water_domestic_source" class="form-control col-lg-6" id="water_domestic_source"></td>
-                                                        <td><input type="text" name="water_domestic_qty_day" class="form-control col-lg-6" id="water_domestic_qty_day"></td>
-                                                        <td><input type="text" name="water_domestic_recycle_day" class="form-control col-lg-6" id="water_domestic_recycle_day"></td>
+                                                        <td><input type="text" name="water_domestic_source" class="form-control col-lg-6" id="water_domestic_source"  value="N/A"></td>
+                                                        <td><input type="text" name="water_domestic_qty_day" class="form-control col-lg-6" id="water_domestic_qty_day"  value="0"></td>
+                                                        <td><input type="text" name="water_domestic_recycle_day" class="form-control col-lg-6" id="water_domestic_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>5</td>
                                                         <td>Dust suppression</td>
-                                                        <td><input type="text" name="water_dust_compression_source" class="form-control col-lg-6" id="water_dust_compression_source"></td>
-                                                        <td><input type="text" name="water_dust_compression_qty_day" class="form-control col-lg-6" id="water_dust_compression_qty_day"></td>
-                                                        <td><input type="text" name="water_dust_compression_recycle_day" class="form-control col-lg-6" id="water_dust_compression_recycle_day"></td>
+                                                        <td><input type="text" name="water_dust_compression_source" class="form-control col-lg-6" id="water_dust_compression_source"  value="N/A"></td>
+                                                        <td><input type="text" name="water_dust_compression_qty_day" class="form-control col-lg-6" id="water_dust_compression_qty_day" value="0"></td>
+                                                        <td><input type="text" name="water_dust_compression_recycle_day" class="form-control col-lg-6" id="water_dust_compression_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>6</td>
                                                         <td>Others, specify </td>
-                                                        <td><input type="text" name="water_others_name" class="form-control col-lg-6" id="water_others_name"></td>
-                                                        <td><input type="text" name="water_others_source" class="form-control col-lg-6" id="water_others_source"></td>
-                                                        <td><input type="text" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day"></td>
+                                                        <td><input type="text" name="water_others_name" class="form-control col-lg-6" id="water_others_name"  value="N/A"></td>
+                                                        <td><input type="text" name="water_others_source" class="form-control col-lg-6" id="water_others_source" value="0"></td>
+                                                        <td><input type="text" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3" align="center">Total quantity of water to be consumed</td>
-                                                        <td><input type="text" name="total_water_consumption" id="total_water_consumption" class="form-control col-lg-6"></td>
-                                                        <td><input type="text" name="total_water_recycled" id="total_water_recycled" class="form-control col-lg-6"></td>
+                                                        <td><input type="text" name="total_water_consumption" id="total_water_consumption" class="form-control col-lg-6" value="0"></td>
+                                                        <td><input type="text" name="total_water_recycled" id="total_water_recycled" class="form-control col-lg-6" value="0"></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -1098,38 +1080,38 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Hazardous Waste</td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_list" id="en_impact_hazardous_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_source" id="en_impact_hazardous_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_qty_annum" id="en_impact_hazardous_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_mgt_plan" id="en_impact_hazardous_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_list" id="en_impact_hazardous_waste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_source" id="en_impact_hazardous_waste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_qty_annum" id="en_impact_hazardous_waste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_mgt_plan" id="en_impact_hazardous_waste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Non-Hazardous Waste</td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_list" id="en_impact_non_hazardous_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_source" id="en_impact_non_hazardous_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_qty_annum" id="en_impact_non_hazardous_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_mgt_plan" id="en_impact_non_hazardous_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_list" id="en_impact_non_hazardous_waste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_source" id="en_impact_non_hazardous_waste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_qty_annum" id="en_impact_non_hazardous_waste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_mgt_plan" id="en_impact_non_hazardous_waste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Medical</td>
-                                                    <td><input type="text" name="en_impact_medical_waste_list" id="en_impact_medical_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_source" id="en_impact_medical_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_qty_annum" id="en_impact_medical_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_mgt_plan" id="en_impact_medical_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_list" id="en_impact_medical_waste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_source" id="en_impact_medical_waste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_qty_annum" id="en_impact_medical_waste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_mgt_plan" id="en_impact_medical_waste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>E-waste</td>
-                                                    <td><input type="text" name="en_impact_ewaste_list" id="en_impact_ewaste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_ewaste_source" id="en_impact_ewaste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_ewaste_qty_annum" id="en_impact_ewaste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_ewaste_mgt_plan" id="en_impact_ewaste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_ewaste_list" id="en_impact_ewaste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_ewaste_source" id="en_impact_ewaste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_ewaste_qty_annum" id="en_impact_ewaste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_ewaste_mgt_plan" id="en_impact_ewaste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Others</td>
-                                                    <td><input type="text" name="en_impact_others_waste_list" id="en_impact_others_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_others_waste_source" id="en_impact_others_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_others_waste_qty_annum" id="en_impact_others_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_others_waste_mgt_plan" id="en_impact_others_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_others_waste_list" id="en_impact_others_waste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_others_waste_source" id="en_impact_others_waste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_others_waste_qty_annum" id="en_impact_others_waste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_others_waste_mgt_plan" id="en_impact_others_waste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1196,234 +1178,234 @@
                                             <tbody>
                                                 <tr>
                                                     <td>1.Ammoniacal Nitrogen (NH3-N)</td>
-                                                    <td><input type="text" name="waste_water_nh3n_source" id="waste_water_nh3n_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_nh3n_discharge" id="waste_water_nh3n_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_nh3n_treatment" id="waste_water_nh3n_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_nh3n_name_location" id="waste_water_nh3n_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_nh3n_source" id="waste_water_nh3n_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_nh3n_discharge" id="waste_water_nh3n_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_nh3n_treatment" id="waste_water_nh3n_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_nh3n_name_location" id="waste_water_nh3n_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>2.Arsenic</td>
-                                                    <td><input type="text" name="waste_water_arsenic_source" id="waste_water_arsenic_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_arsenic_discharge" id="waste_water_arsenic_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_arsenic_treatment" id="waste_water_arsenic_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_arsenic_name_location" id="waste_water_arsenic_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_arsenic_source" id="waste_water_arsenic_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_arsenic_discharge" id="waste_water_arsenic_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_arsenic_treatment" id="waste_water_arsenic_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_arsenic_name_location" id="waste_water_arsenic_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>3.BOD</td>
-                                                    <td><input type="text" name="waste_water_bod_source" id="waste_water_bod_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_bod_discharge" id="waste_water_bod_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_bod_treatment" id="waste_water_bod_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_bod_name_location" id="waste_water_bod_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_bod_source" id="waste_water_bod_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_bod_discharge" id="waste_water_bod_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_bod_treatment" id="waste_water_bod_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_bod_name_location" id="waste_water_bod_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>4.Boron</td>
-                                                    <td><input type="text" name="waste_water_boron_source" id="waste_water_boron_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_boron_discharge" id="waste_water_boron_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_boron_treatment" id="waste_water_boron_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_boron_name_location" id="waste_water_boron_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_boron_source" id="waste_water_boron_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_boron_discharge" id="waste_water_boron_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_boron_treatment" id="waste_water_boron_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_boron_name_location" id="waste_water_boron_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>5.Cadmium total</td>
-                                                    <td><input type="text" name="waste_water_cadmium_source" id="waste_water_cadmium_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_cadmium_discharge" id="waste_water_cadmium_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_cadmium_treatment" id="waste_water_cadmium_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_cadmium_name_location" id="waste_water_cadmium_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_cadmium_source" id="waste_water_cadmium_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_cadmium_discharge" id="waste_water_cadmium_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_cadmium_treatment" id="waste_water_cadmium_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_cadmium_name_location" id="waste_water_cadmium_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>6.COD</td>
-                                                    <td><input type="text" name="waste_water_cod_source" id="waste_water_cod_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_cod_discharge" id="waste_water_cod_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_cod_treatment" id="waste_water_cod_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_cod_name_location" id="waste_water_cod_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_cod_source" id="waste_water_cod_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_cod_discharge" id="waste_water_cod_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_cod_treatment" id="waste_water_cod_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_cod_name_location" id="waste_water_cod_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>7.Chloride</td>
-                                                    <td><input type="text" name="waste_water_cloride_source" id="waste_water_cloride_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_cloride_discharge" id="waste_water_cloride_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_cloride_treatment" id="waste_water_cloride_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_cloride_name_location" id="waste_water_cloride_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_cloride_source" id="waste_water_cloride_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_cloride_discharge" id="waste_water_cloride_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_cloride_treatment" id="waste_water_cloride_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_cloride_name_location" id="waste_water_cloride_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>8.Chromium total</td>
-                                                    <td><input type="text" name="waste_water_chromium_source" id="waste_water_chromium_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_chromium_discharge" id="waste_water_chromium_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_chromium_treatment" id="waste_water_chromium_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_chromium_name_location" id="waste_water_chromium_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_chromium_source" id="waste_water_chromium_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_chromium_discharge" id="waste_water_chromium_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_chromium_treatment" id="waste_water_chromium_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_chromium_name_location" id="waste_water_chromium_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>9.Chromium Hexavalent</td>
-                                                    <td><input type="text" name="waste_water_chromium_hex_source" id="waste_water_chromium_hex_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_chromium_hex_discharge" id="waste_water_chromium_hex_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_chromium_hex_treatment" id="waste_water_chromium_hex_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_chromium_hex_name_location" id="waste_water_chromium_hex_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_chromium_hex_source" id="waste_water_chromium_hex_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_chromium_hex_discharge" id="waste_water_chromium_hex_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_chromium_hex_treatment" id="waste_water_chromium_hex_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_chromium_hex_name_location" id="waste_water_chromium_hex_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>10.Copper total</td>
-                                                    <td><input type="text" name="waste_water_copper_source" id="waste_water_copper_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_copper_discharge" id="waste_water_copper_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_copper_treatment" id="waste_water_copper_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_copper_name_location" id="waste_water_copper_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_copper_source" id="waste_water_copper_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_copper_discharge" id="waste_water_copper_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_copper_treatment" id="waste_water_copper_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_copper_name_location" id="waste_water_copper_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>11.Cyanide</td>
-                                                    <td><input type="text" name="waste_water_cyanide_source" id="waste_water_cyanide_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_cyanide_discharge" id="waste_water_cyanide_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_cyanide_treatment" id="waste_water_cyanide_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_cyanide_name_location" id="waste_water_cyanide_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_cyanide_source" id="waste_water_cyanide_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_cyanide_discharge" id="waste_water_cyanide_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_cyanide_treatment" id="waste_water_cyanide_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_cyanide_name_location" id="waste_water_cyanide_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>12.Fluoride</td>
-                                                    <td><input type="text" name="waste_water_floride_source" id="waste_water_floride_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_floride_discharge" id="waste_water_floride_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_floride_treatment" id="waste_water_floride_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_floride_name_location" id="waste_water_floride_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_floride_source" id="waste_water_floride_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_floride_discharge" id="waste_water_floride_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_floride_treatment" id="waste_water_floride_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_floride_name_location" id="waste_water_floride_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>13.Phosphate</td>
-                                                    <td><input type="text" name="waste_water_phosphate_source" id="waste_water_phosphate_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_phosphate_discharge" id="waste_water_phosphate_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_phosphate_treatment" id="waste_water_phosphate_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_phosphate_name_location" id="waste_water_phosphate_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_phosphate_source" id="waste_water_phosphate_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_phosphate_discharge" id="waste_water_phosphate_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_phosphate_treatment" id="waste_water_phosphate_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_phosphate_name_location" id="waste_water_phosphate_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>14.Nitrate</td>
-                                                    <td><input type="text" name="waste_water_nitrate_source" id="waste_water_nitrate_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_nitrate_discharge" id="waste_water_nitrate_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_nitrate_treatment" id="waste_water_nitrate_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_nitrate_name_location" id="waste_water_nitrate_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_nitrate_source" id="waste_water_nitrate_source" class="form-control col-lg-6" value="N/A"></td> 
+                                                    <td><input type="text" name="waste_water_nitrate_discharge" id="waste_water_nitrate_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_nitrate_treatment" id="waste_water_nitrate_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_nitrate_name_location" id="waste_water_nitrate_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>15.Iron total</td>
-                                                    <td><input type="text" name="waste_water_iron_source" id="waste_water_iron_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_iron_discharge" id="waste_water_iron_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_iron_treatment" id="waste_water_iron_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_iron_name_location" id="waste_water_iron_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_iron_source" id="waste_water_iron_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_iron_discharge" id="waste_water_iron_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_iron_treatment" id="waste_water_iron_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_iron_name_location" id="waste_water_iron_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>16.Lead total</td>
-                                                    <td><input type="text" name="waste_water_lead_source" id="waste_water_lead_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_lead_discharge" id="waste_water_lead_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_lead_treatment" id="waste_water_lead_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_lead_name_location" id="waste_water_lead_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_lead_source" id="waste_water_lead_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_lead_discharge" id="waste_water_lead_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_lead_treatment" id="waste_water_lead_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_lead_name_location" id="waste_water_lead_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>17.Manganese</td>
-                                                    <td><input type="text" name="waste_water_manganese_source" id="waste_water_manganese_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_manganese_discharge" id="waste_water_manganese_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_manganese_treatment" id="waste_water_manganese_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_manganese_name_location" id="waste_water_manganese_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_manganese_source" id="waste_water_manganese_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_manganese_discharge" id="waste_water_manganese_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_manganese_treatment" id="waste_water_manganese_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_manganese_name_location" id="waste_water_manganese_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>18.Mercury</td>
-                                                    <td><input type="text" name="waste_water_mercury_source" id="waste_water_mercury_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_mercury_discharge" id="waste_water_mercury_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_mercury_treatment" id="waste_water_mercury_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_mercury_name_location" id="waste_water_mercury_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_mercury_source" id="waste_water_mercury_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_mercury_discharge" id="waste_water_mercury_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_mercury_treatment" id="waste_water_mercury_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_mercury_name_location" id="waste_water_mercury_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>19.Nickel</td>
-                                                    <td><input type="text" name="waste_water_nickel_source" id="waste_water_nickel_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_nickel_discharge" id="waste_water_nickel_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_nickel_treatment" id="waste_water_nickel_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_nickel_name_location" id="waste_water_nickel_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_nickel_source" id="waste_water_nickel_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_nickel_discharge" id="waste_water_nickel_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_nickel_treatment" id="waste_water_nickel_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_nickel_name_location" id="waste_water_nickel_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>20.Oil and grease</td>
-                                                    <td><input type="text" name="waste_water_oil_source" id="waste_water_oil_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_oil_discharge" id="waste_water_oil_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_oil_treatment" id="waste_water_oil_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_oil_name_location" id="waste_water_oil_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_oil_source" id="waste_water_oil_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_oil_discharge" id="waste_water_oil_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_oil_treatment" id="waste_water_oil_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_oil_name_location" id="waste_water_oil_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>21.pH</td>
-                                                    <td><input type="text" name="waste_water_ph_source" id="waste_water_ph_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_ph_discharge" id="waste_water_ph_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_ph_treatment" id="waste_water_ph_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_ph_name_location" id="waste_water_ph_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_ph_source" id="waste_water_ph_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_ph_discharge" id="waste_water_ph_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_ph_treatment" id="waste_water_ph_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_ph_name_location" id="waste_water_ph_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>22.Phenolic compounds</td>
-                                                    <td><input type="text" name="waste_water_phenolic_source" id="waste_water_phenolic_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_phenolic_discharge" id="waste_water_phenolic_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_phenolic_treatment" id="waste_water_phenolic_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_phenolic_name_location" id="waste_water_phenolic_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_phenolic_source" id="waste_water_phenolic_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_phenolic_discharge" id="waste_water_phenolic_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_phenolic_treatment" id="waste_water_phenolic_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_phenolic_name_location" id="waste_water_phenolic_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>23.Selenium</td>
-                                                    <td><input type="text" name="waste_water_selenium_source" id="waste_water_selenium_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_selenium_discharge" id="waste_water_selenium_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_selenium_treatment" id="waste_water_selenium_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_selenium_name_location" id="waste_water_selenium_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_selenium_source" id="waste_water_selenium_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_selenium_discharge" id="waste_water_selenium_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_selenium_treatment" id="waste_water_selenium_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_selenium_name_location" id="waste_water_selenium_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>24.Sulphate (SO4)</td>
-                                                    <td><input type="text" name="waste_water_so4_source" id="waste_water_so4_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_so4_discharge" id="waste_water_so4_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_so4_treatment" id="waste_water_so4_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_so4_name_location" id="waste_water_so4_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_so4_source" id="waste_water_so4_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_so4_discharge" id="waste_water_so4_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_so4_treatment" id="waste_water_so4_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_so4_name_location" id="waste_water_so4_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>25.Sulphide (S)</td>
-                                                    <td><input type="text" name="waste_water_s_source" id="waste_water_s_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_s_discharge" id="waste_water_s_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_s_treatment" id="waste_water_s_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_s_name_location" id="waste_water_s_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_s_source" id="waste_water_s_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_s_discharge" id="waste_water_s_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_s_treatment" id="waste_water_s_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_s_name_location" id="waste_water_s_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>26.TDS</td>
-                                                    <td><input type="text" name="waste_water_tds_source" id="waste_water_tds_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_tds_discharge" id="waste_water_tds_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_tds_treatment" id="waste_water_tds_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_tds_name_location" id="waste_water_tds_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_tds_source" id="waste_water_tds_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_tds_discharge" id="waste_water_tds_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_tds_treatment" id="waste_water_tds_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_tds_name_location" id="waste_water_tds_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>27.TSS</td>
-                                                    <td><input type="text" name="waste_water_tss_source" id="waste_water_tss_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_tss_discharge" id="waste_water_tss_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_tss_treatment" id="waste_water_tss_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_tss_name_location" id="waste_water_tss_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_tss_source" id="waste_water_tss_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_tss_discharge" id="waste_water_tss_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_tss_treatment" id="waste_water_tss_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_tss_name_location" id="waste_water_tss_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>28.Temperature</td>
-                                                    <td><input type="text" name="waste_water_temp_source" id="waste_water_temp_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_temp_discharge" id="waste_water_temp_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_temp_treatment" id="waste_water_temp_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_temp_name_location" id="waste_water_temp_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_temp_source" id="waste_water_temp_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_temp_discharge" id="waste_water_temp_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_temp_treatment" id="waste_water_temp_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_temp_name_location" id="waste_water_temp_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>29.TKN</td>
-                                                    <td><input type="text" name="waste_water_tkn_source" id="waste_water_tkn_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_tkn_discharge" id="waste_water_tkn_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_tkn_treatment" id="waste_water_tkn_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_tkn_name_location" id="waste_water_tkn_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_tkn_source" id="waste_water_tkn_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_tkn_discharge" id="waste_water_tkn_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_tkn_treatment" id="waste_water_tkn_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_tkn_name_location" id="waste_water_tkn_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>30.Total residual chloride</td>
-                                                    <td><input type="text" name="waste_water_residual_cloride_source" id="waste_water_residual_cloride_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_residual_cloride_discharge" id="waste_water_residual_cloride_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_residual_cloride_treatment" id="waste_water_residual_cloride_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_residual_cloride_name_location" id="waste_water_residual_cloride_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_residual_cloride_source" id="waste_water_residual_cloride_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_residual_cloride_discharge" id="waste_water_residual_cloride_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_residual_cloride_treatment" id="waste_water_residual_cloride_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_residual_cloride_name_location" id="waste_water_residual_cloride_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>31.Zinc total</td>
-                                                    <td><input type="text" name="waste_water_zinc_source" id="waste_water_zinc_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_zinc_discharge" id="waste_water_zinc_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_zinc_treatment" id="waste_water_zinc_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_zinc_name_location" id="waste_water_zinc_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_zinc_source" id="waste_water_zinc_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_zinc_discharge" id="waste_water_zinc_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_zinc_treatment" id="waste_water_zinc_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_zinc_name_location" id="waste_water_zinc_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>32.Free Ammonia</td>
-                                                    <td><input type="text" name="waste_water_ammonia_source" id="waste_water_ammonia_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_ammonia_discharge" id="waste_water_ammonia_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_ammonia_treatment" id="waste_water_ammonia_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_ammonia_name_location" id="waste_water_ammonia_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_ammonia_source" id="waste_water_ammonia_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_ammonia_discharge" id="waste_water_ammonia_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_ammonia_treatment" id="waste_water_ammonia_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_ammonia_name_location" id="waste_water_ammonia_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>33.Color and odor</td>
-                                                    <td><input type="text" name="waste_water_colour_source" id="waste_water_colour_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_colour_discharge" id="waste_water_colour_discharge" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_colour_treatment" id="waste_water_colour_treatment" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="waste_water_colour_name_location" id="waste_water_colour_name_location" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="waste_water_colour_source" id="waste_water_colour_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="waste_water_colour_discharge" id="waste_water_colour_discharge" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_colour_treatment" id="waste_water_colour_treatment" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="waste_water_colour_name_location" id="waste_water_colour_name_location" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1532,11 +1514,11 @@
                                             <tbody>
                                                 <tr>
                                                     <td>SPM</td>
-                                                    <td><input type="text" name="en_spm_emission_expected" id="en_spm_emission_expected" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_spm_emission_expected" id="en_spm_emission_expected" class="form-control col-lg-6" value="0"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>SO2</td>
-                                                    <td><input type="text" name="en_so2_emission_expected" id="en_so2_emission_expected" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_so2_emission_expected" id="en_so2_emission_expected" class="form-control col-lg-6" value="0"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>NOx</td>
@@ -1544,11 +1526,11 @@
                                                 </tr>
                                                 <tr>
                                                     <td>CO</td>
-                                                    <td><input type="text" name="en_co_emission_expected" id="en_co_emission_expected" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_co_emission_expected" id="en_co_emission_expected" class="form-control col-lg-6" value="0"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Total Fluoride</td>
-                                                    <td><input type="text" name="en_fluoride_emission_expected" id="en_fluoride_emission_expected" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_fluoride_emission_expected" id="en_fluoride_emission_expected" class="form-control col-lg-6" value="0"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1563,23 +1545,23 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Stack Height</td>
-                                                    <td><input type="text" name="en_pol_control_device_stack_height" id="en_pol_control_device_stack_height" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_pol_control_device_stack_height" id="en_pol_control_device_stack_height" class="form-control col-lg-6" value="0"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Stack Diameter</td>
-                                                    <td><input type="text" name="en_pol_control_device_stack_diameter" id="en_pol_control_device_stack_diameter" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_pol_control_device_stack_diameter" id="en_pol_control_device_stack_diameter" class="form-control col-lg-6" value="0"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Dimension of measurement platform and port (m x m)</td>
-                                                    <td><input type="text" name="en_pol_control_device_dimension" id="en_pol_control_device_dimension" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_pol_control_device_dimension" id="en_pol_control_device_dimension" class="form-control col-lg-6" value="0"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Volumetric flow rate of flue gas (Nm 3 /hr)</td>
-                                                    <td><input type="text" name="en_pol_control_device_volume" id="en_pol_control_device_volume" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_pol_control_device_volume" id="en_pol_control_device_volume" class="form-control col-lg-6" value="0"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Temperature (degree celsius) of flue</td>
-                                                    <td><input type="text" name="en_pol_control_device_temp" id="en_pol_control_device_temp" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_pol_control_device_temp" id="en_pol_control_device_temp" class="form-control col-lg-6" value="0"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1653,23 +1635,23 @@
                                                 <tr>
                                                     <td>Industrial Area</td>
                                                     <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_ind_area_day" id="en_noise_ind_area_day" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_ind_area_night" id="en_noise_ind_area_night" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_ind_area_mgt_plan" id="en_noise_ind_area_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_noise_ind_area_day" id="en_noise_ind_area_day" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_ind_area_night" id="en_noise_ind_area_night" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_ind_area_mgt_plan" id="en_noise_ind_area_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Mixed Area</td>
                                                     <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_mixed_area_day" id="en_noise_mixed_area_day" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_mixed_area_night" id="en_noise_mixed_area_night" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_mixed_area_mgt_plan" id="en_noise_mixed_area_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_noise_mixed_area_day" id="en_noise_mixed_area_day" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_mixed_area_night" id="en_noise_mixed_area_night" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_mixed_area_mgt_plan" id="en_noise_mixed_area_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Sensitive Area</td>
                                                     <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_sen_area_day" id="en_noise_sen_area_day" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_sen_area_night" id="en_noise_sen_area_night" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_sen_area_mgt_plan" id="en_noise_sen_area_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_noise_sen_area_day" id="en_noise_sen_area_day" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_sen_area_night" id="en_noise_sen_area_night" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_sen_area_mgt_plan" id="en_noise_sen_area_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1720,75 +1702,75 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Odour</td>
-                                                    <td><input type="text" name="en_other_impact_odour_source" id="en_other_impact_odour_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_odour_qty" id="en_other_impact_odour_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_odour_mgt_plan" id="en_other_impact_odour_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_odour_source" id="en_other_impact_odour_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_odour_qty" id="en_other_impact_odour_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_odour_mgt_plan" id="en_other_impact_odour_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Fugitive emission</td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_source" id="en_other_impact_fugutive_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_qty" id="en_other_impact_fugutive_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_mgt_plan" id="en_other_impact_fugutive_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_fugutive_source" id="en_other_impact_fugutive_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_fugutive_qty" id="en_other_impact_fugutive_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_fugutive_mgt_plan" id="en_other_impact_fugutive_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Slope instability</td>
-                                                    <td><input type="text" name="en_other_impact_slope_source" id="en_other_impact_slope_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_slope_qty" id="en_other_impact_slope_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_slope_mgt_plan" id="en_other_impact_slope_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_slope_source" id="en_other_impact_slope_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_slope_qty" id="en_other_impact_slope_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_slope_mgt_plan" id="en_other_impact_slope_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Aesthetic</td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_source" id="en_other_impact_aesthetic_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_qty" id="en_other_impact_aesthetic_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_mgt_plan" id="en_other_impact_aesthetic_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_aesthetic_source" id="en_other_impact_aesthetic_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_aesthetic_qty" id="en_other_impact_aesthetic_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_aesthetic_mgt_plan" id="en_other_impact_aesthetic_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Excavated mucks</td>
-                                                    <td><input type="text" name="en_other_impact_mucks_source" id="en_other_impact_mucks_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_mucks_qty" id="en_other_impact_mucks_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_mucks_mgt_plan" id="en_other_impact_mucks_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_mucks_source" id="en_other_impact_mucks_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_mucks_qty" id="en_other_impact_mucks_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_mucks_mgt_plan" id="en_other_impact_mucks_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Sewerage generation</td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_source" id="en_other_impact_sewerage_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_qty" id="en_other_impact_sewerage_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_mgt_plan" id="en_other_impact_sewerage_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_sewerage_source" id="en_other_impact_sewerage_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_sewerage_qty" id="en_other_impact_sewerage_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_sewerage_mgt_plan" id="en_other_impact_sewerage_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Surface Run-off/Erosion</td>
-                                                    <td><input type="text" name="en_other_impact_erosion_source" id="en_other_impact_erosion_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_erosion_qty" id="en_other_impact_erosion_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_erosion_mgt_plan" id="en_other_impact_erosion_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_erosion_source" id="en_other_impact_erosion_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_erosion_qty" id="en_other_impact_erosion_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_erosion_mgt_plan" id="en_other_impact_erosion_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Storm water</td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_source" id="en_other_impact_storm_water_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_qty" id="en_other_impact_storm_water_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_mgt_plan" id="en_other_impact_storm_water_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_storm_water_source" id="en_other_impact_storm_water_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_storm_water_qty" id="en_other_impact_storm_water_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_storm_water_mgt_plan" id="en_other_impact_storm_water_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Loss of habitat</td>
-                                                    <td><input type="text" name="en_other_impact_habitat_source" id="en_other_impact_habitat_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_habitat_qty" id="en_other_impact_habitat_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_habitat_mgt_plan" id="en_other_impact_habitat_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_habitat_source" id="en_other_impact_habitat_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_habitat_qty" id="en_other_impact_habitat_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_habitat_mgt_plan" id="en_other_impact_habitat_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Socio-economic issues</td>
-                                                    <td><input type="text" name="en_other_impact_socio_source" id="en_other_impact_socio_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_socio_qty" id="en_other_impact_socio_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_socio_mgt_plan" id="en_other_impact_socio_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_socio_source" id="en_other_impact_socio_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_socio_qty" id="en_other_impact_socio_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_socio_mgt_plan" id="en_other_impact_socio_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Impact on water resources</td>
-                                                    <td><input type="text" name="en_other_impact_water_source_source" id="en_other_impact_water_source_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_water_source_qty" id="en_other_impact_water_source_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_water_source_mgt_plan" id="en_other_impact_water_source_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_water_source_source" id="en_other_impact_water_source_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_water_source_qty" id="en_other_impact_water_source_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_water_source_mgt_plan" id="en_other_impact_water_source_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Other environmental impacts</td>
-                                                    <td><input type="text" name="en_other_impact_other_source" id="en_other_impact_other_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_other_qty" id="en_other_impact_other_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_other_mgt_plan" id="en_other_impact_other_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_other_source" id="en_other_impact_other_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_other_qty" id="en_other_impact_other_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_other_mgt_plan" id="en_other_impact_other_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1911,15 +1893,33 @@
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
 
+                                    
+                                    <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
+                                    <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
+                                    <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
+                                    <p class="text-wrap">3.	Application Outcome: Submission of this application does not guarantee acceptance or approval. The final decision rests with the appropriate authorities, and we reserve the right to reject any application without providing any reason.</p>
+                                    <p class="text-wrap">4.	Disclaimer of Liability: To the extent permitted by law, we disclaim all liability for any loss, damage, or injury arising out of or related to your use of this online application form or reliance on any information provided herein. We shall not be responsible for any technical errors, interruptions, or inaccuracies that may occur during the application process.</p>
+                                    <p class="text-wrap">5.	Modification or Termination: We reserve the right to modify, suspend, or terminate this online application form at any time without prior notice. We may also update or change the terms and conditions of this disclaimer without notice.</p>
+                                    <p class="text-wrap">Please review this disclaimer carefully before submitting your application. If you do not agree with any part of this disclaimer, please refrain from using this online application form.</p>
+                                    <div class="mt-3">
+                                        <div class="form-check">
+                                            <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
+                                            <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
+                                        </div>
+                                    </div>
+                                    <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                        Loading...
+                                    </button>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="iee_submit_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="alert alert-danger border-0 rounded-0" role="alert" id="iee_submit_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
-                                            <a href="#" class="btn btn-success" onclick="submit_iee_application()">
+                                            <a href="#" class="btn btn-success" id="iee_submit_btn" onclick="submit_iee_application()" style="display:none;">
                                                 <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
                                         </div>
                                     </div>
@@ -6676,6 +6676,7 @@
 
     function submit_iee_application()
     {
+        $("#pageloader").show();
         $.ajax
         ({
             type : "POST",
@@ -6683,6 +6684,7 @@
             data : $('#iee_submit_form').serialize(),
             success : function(data)
             {
+                $("#pageloader").hide();
                 if(data.message == 'success')
                 {
                     $('#iee_submit_successMsg').html("Application Submitted Successfully");
@@ -7399,6 +7401,18 @@
         {
             $('.thromde').show();
             $('.dzongkhag').hide();
+        }
+    }
+
+    function check_terms()
+    {
+        if($("#ec_terms").prop('checked') == true)
+        {
+            $('#iee_submit_btn').show();
+        }
+        else
+        {
+            $('#iee_submit_btn').hide();
         }
     }
 </script>

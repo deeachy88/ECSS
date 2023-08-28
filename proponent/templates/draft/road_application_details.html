@@ -1657,9 +1657,13 @@
                                     <div class="alert alert-danger border-0 rounded-0" role="alert" id="road_submit_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
+                                    <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                        Loading...
+                                    </button>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
-                                            <a href="#" class="btn btn-success" onclick="submit_road_application()">
+                                            <a href="#" class="btn btn-success" id="road_submit_btn" onclick="submit_road_application()" style="display: none;">
                                                 <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
                                         </div>
                                     </div>
@@ -5057,6 +5061,7 @@
 
     function submit_road_application()
     {
+        $("#pageloader").show();
         $.ajax
         ({
             type : "POST",
@@ -5064,6 +5069,7 @@
             data : $('#road_submit_form').serialize(),
             success : function(data)
             {
+                $("#pageloader").hide();
                 if(data.message == 'success')
                 {
                     $('#road_submit_successMsg').html("Application Submitted Successfully");
@@ -5595,6 +5601,18 @@
         {
             $('.thromde').show();
             $('.dzongkhag').hide();
+        }
+    }
+
+    function check_terms()
+    {
+        if($("#ec_terms").prop('checked') == true)
+        {
+            $('#road_submit_btn').show();
+        }
+        else
+        {
+            $('#road_submit_btn').hide();
         }
     }
 </script>
