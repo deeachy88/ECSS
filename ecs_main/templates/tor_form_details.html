@@ -187,12 +187,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="alert alert-success border-0 rounded-0" role="alert" id="tor_form_successMsg" style="display:none">
-                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                        </div>
-                        <div class="alert alert-danger border-0 rounded-0" role="alert" id="tor_form_errorMsg" style="display:none">
-                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                        </div>
+                        
                         <div class="col-lg-6 show_verifier_details" style="display: none;">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Forward To</label>
@@ -205,10 +200,54 @@
                             </div>
                             <div id="forward_toErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
+                        <div class="col-md-12 verifier_attach_details" style="display: none;">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-0">DRAFT TOR</h5>
+                                    <div id="cardCollpase7" class="collapse pt-3 show">
+                                        <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">File</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                               {% for tor_attach in tor_attach %}
+                                                        <tr>
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td><a href='{{tor_attach.file_path}}' target="_blank">{{tor_attach.attachment}}</a></td>
+                                                        </tr>
+                                                        {% empty %}
+                                                        <tr>
+                                                          <td colspan="3" class="text-center">No Data</td>
+                                                        </tr>
+                                               {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-lg-6 tor_remarks_div"  style="display: none;">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Remarks</label>
                                 <textarea class="form-control" rows="2" readonly>{{application_details.tor_remarks}}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-12 reviewer_attach_details" style="display: none;">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-widgets">
+                                        <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#rev_tor_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                    </div>
+                                    <h5 class="card-title mb-0">DRAFT TOR</h5>
+                                    <div id="cardCollpase7" class="collapse pt-3 show">
+                                        <div id="tor_rev_attachment">
+                                            {% include 'tor_attachment_page.html' %}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-lg-6 show_reviewer_details"  style="display: none;">
@@ -217,6 +256,16 @@
                                 <textarea class="form-control" rows="2" id="tor_remarks" name="tor_remarks"></textarea>
                             </div>
                         </div>
+                        <div class="alert alert-success border-0 rounded-0" role="alert" id="tor_form_successMsg" style="display:none">
+                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                        </div>
+                        <div class="alert alert-danger border-0 rounded-0" role="alert" id="tor_form_errorMsg" style="display:none">
+                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                        </div>
+                        <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </button>
                         <div class="row mt-4 show_verifier_details" style="display: none;">
                             <div class="text-sm-end">
                                 <button type="button" class="btn btn-success" onclick="forward_tor_form('R')">
@@ -229,22 +278,55 @@
                                     <i class="mdi mdi-arrow-right me-1"></i> Forward </button>
                             </div>
                         </div>
-                        <div class="row mt-4 show_AT_reviewer_details" style="display: none;">
+                        <div class="row mt-4 show_AT_reviewer_details" style="display: none;"> 
                             <div class="text-sm-end">
-                                <button type="button" class="btn btn-success" onclick="forward_tor_form('A')">
+                                <button type="button" class="btn btn-success" onclick="forward_tor_form('AT')">
                                     <i class="mdi mdi-arrow-right me-1"></i> Approve </button>
                             </div>
                         </div>
-                        <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
-                            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                            Loading...
-                        </button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 {% endfor %}
+
+<form method="post" id="rev_tor_attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="rev_tor_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+    <!--Header-->
+    <div class="modal-header text-center">
+    <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                            &nbsp;Attach</strong></h3>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+    </div>
+    <!--Body-->
+    <div class="modal-body mx-4">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Attachment</label>
+                <input type="file" name="rev_tor_attach" class="form-control" id="rev_tor_attach" accept=".pdf, .doc, .docx">
+            </div>
+            <div class="alert alert-danger" id="rev_tor_attachErrorMsg" style="display:none"></div>
+        </div>
+    </div>
+    </div>
+    <div class="modal-footer flex-center justify-content-center">
+    <button type="button" class="btn btn-sm btn-primary" onclick="save_rev_tor_attachment()">Add</button>
+    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+    </div>
+    </div>
+    <!--/.Content-->
+    </div>
+    </div>
+</form>
+
+
 <script>
     $(function() {
         let status = $('#status').val();
@@ -258,10 +340,12 @@
         {
             $('.tor_remarks_div').show();
             $('.show_AT_reviewer_details').show();
+            $('.verifier_attach_details').show();
         }
         else 
         {
             $('.show_reviewer_details').show();
+            $('.reviewer_attach_details').show();
         }
     });
 
@@ -313,7 +397,7 @@
                 data : {'application_no':application_no,'tor_remarks':tor_remarks, 'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data)
                 {
-                    if(data.message == 'success' && identifier == 'A')
+                    if(data.message == 'success' && identifier == 'AT')
                     {
                         $("#pageloader").hide();
                         $('#tor_form_successMsg').html("TOR Application Approved");
@@ -353,5 +437,69 @@
             });
         }
         
+    }
+
+    function save_rev_tor_attachment()
+    {
+        let file_length = document.getElementById("rev_tor_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#rev_tor_attachErrorMsg').html("Please Choose A Attachment");
+            $('#rev_tor_attachErrorMsg').show();
+            $('#rev_tor_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            let application_no = $('#application_no').val();
+            var fileName = document.getElementById('rev_tor_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('rev_tor_attach').files[0];
+            fd.append('rev_tor_attach', file);
+            fd.append('application_no', application_no);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_rev_tor_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_rev_tor_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#rev_tor_attachment_modal').modal('hide');
+                                $('#tor_rev_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#rev_tor_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#rev_tor_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#rev_tor_attachErrorMsg').show();
+                        $('#rev_tor_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+        }
     }
 </script>

@@ -568,6 +568,9 @@
                                 <a href="{% url 'tor_list' %}" class="side-nav-link">
                                     <i class="uil-document-layout-center"></i>
                                     <span> TOR Details </span>
+                                    {% if tor_application_count > 0 %}
+                                        <span class="badge badge-danger cl-badge">{{ tor_application_count }}</span>
+                                    {% endif %}
                                 </a>
                             </li>
                             <li class="side-nav-item">

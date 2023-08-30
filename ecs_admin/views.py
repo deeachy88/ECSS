@@ -2,6 +2,7 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 from django.utils import timezone
 import requests,json
+from django.db.models import Count, Subquery, OuterRef
 
 from ecs_admin.models import t_competant_authority_master, t_user_master, t_security_question_master, t_role_master, t_service_master, \
     t_fees_schedule, t_bsic_code, t_forgot_password, \
@@ -120,7 +121,18 @@ def login(request):
                             request.session['contact_number'] = check_user.contact_number
                             app_hist_count = t_application_history.objects.filter(applicant_id=check_user.email_id).count()
                             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=check_user.login_id).count()
-                            return render(request, 'common_dashboard.html',{'app_hist_count':app_hist_count,'cl_application_count':cl_application_count})
+                            t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+                                tor_application_no=OuterRef('application_no')
+                            ).values('tor_application_no')
+
+                            # Query to count approved applications that are not in t1_general
+                            tor_application_count = t_workflow_dtls.objects.filter(
+                                application_status='A'
+                            ).exclude(
+                                application_no__in=Subquery(t1_general_subquery)
+                            ).count()
+                           
+                            return render(request, 'common_dashboard.html',{'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'tor_application_count':tor_application_count})
                 else:
                     _message = 'User ID or Password Not Matching.'
         else:
@@ -413,8 +425,8 @@ def user_password_reset_mail(Name, Email_Id, password):
     message = "Dear " + Name + " Your Password Has Been Reset for Bhutan Bio-Food Security System. Your Login Id is " \
               + Email_Id + " And Password is " + password + ""
     recipient_list = [Email_Id]
-    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
-              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
               connection=None, html_message=None)
 
 

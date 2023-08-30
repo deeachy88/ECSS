@@ -5,6 +5,7 @@ from ecs_main.views import client_application_list, payment_list
 from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t12_drainage_details, t_ec_industries_t13_dumpyard, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals, t_report_submission_t1, t_report_submission_t2
 from ecs_admin.models import t_user_master, t_bsic_code, t_competant_authority_master, t_fees_schedule, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_service_master, t_thromde_master, t_village_master
 # Create your views here.
+from django.db.models import Count, Subquery, OuterRef
 from datetime import datetime
 from django.db.models import Max
 from django.utils import timezone
@@ -21,7 +22,17 @@ def new_application(request):
     bsic_details = t_bsic_code.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'new_application.html',{'bsic_details':bsic_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count})
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+    return render(request, 'new_application.html',{'bsic_details':bsic_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'tor_application_count':tor_application_count})
 
 def new_ea_application(request):
     service_code = 'IEA'
@@ -2629,7 +2640,17 @@ def ec_renewal(request):
     service_details = t_service_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'renewal.html',{'application_details':application_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details':renewal_details,'service_details':service_details})
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+    return render(request, 'renewal.html',{'application_details':application_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details':renewal_details,'service_details':service_details,'tor_application_count':tor_application_count})
 
 def ec_renewal_details(request):
     ec_reference_no = request.GET.get('ec_reference_no')
@@ -2989,7 +3010,16 @@ def save_tor_form(request):
 
 
 def tor_list(request):
-    tor_details = t_workflow_dtls.objects.filter(application_no__contains='TOR', application_status='A')
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_details = t_workflow_dtls.objects.filter(
+        application_status='A'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    )
     service_details = t_service_master.objects.all()
     return render(request, 'tor/tor_list.html', {'tor_details':tor_details,'service_details':service_details})
 
@@ -5282,7 +5312,17 @@ def name_change(request):
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=applicant)
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'NC'})
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'NC','tor_application_count':tor_application_count})
 
 def ownership_change(request):
     applicant = request.session['email']
@@ -5290,7 +5330,17 @@ def ownership_change(request):
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=applicant)
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'OC'})
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'OC','tor_application_count':tor_application_count})
 
 def technology_change(request):
     applicant = request.session['email']
@@ -5298,7 +5348,17 @@ def technology_change(request):
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=applicant)
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'TC'})
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'TC','tor_application_count':tor_application_count})
 
 def product_change(request):
     applicant = request.session['email']
@@ -5306,7 +5366,17 @@ def product_change(request):
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=applicant)
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'OC'})
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'OC','tor_application_count':tor_application_count})
 
 def capacity_change(request):
     applicant = request.session['email']
@@ -5314,7 +5384,17 @@ def capacity_change(request):
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=applicant)
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'CC'})
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'CC','tor_application_count':tor_application_count})
 
 def area_change(request):
     applicant = request.session['email']
@@ -5322,7 +5402,17 @@ def area_change(request):
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=applicant)
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'AC'})
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'AC','tor_application_count':tor_application_count})
 
 def location_change(request):
     applicant = request.session['email']
@@ -5330,7 +5420,17 @@ def location_change(request):
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=applicant)
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'LC'})
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+    return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'LC','tor_application_count':tor_application_count})
 
 def get_other_modification_details(request):
     ec_reference_no = request.GET.get('ec_reference_no')
@@ -5552,7 +5652,17 @@ def draft_application_list(request):
     service_details = t_service_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'draft/application_list.html',{'application_details':application_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'service_details':service_details})
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+    return render(request, 'draft/application_list.html',{'application_details':application_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'service_details':service_details, 'tor_application_count':tor_application_count})
 
 def view_draft_application_details(request):
     application_no = request.GET.get('application_no')
@@ -5903,6 +6013,7 @@ def report_list(request):
     v_application_count = 0
     app_hist_count = 0
     cl_application_count = 0
+    tor_application_count = 0
 
     if login_type == 'C':
         # Fetch t_report_submission_t1 objects where created_by is equal to the logged-in user's login_id
@@ -5913,7 +6024,16 @@ def report_list(request):
         
         # Count the number of t_application_history objects related to the logged-in user
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
-    
+        t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+        ).values('tor_application_no')
+
+        # Query to count approved applications that are not in t1_general
+        tor_application_count = t_workflow_dtls.objects.filter(
+            application_status='A'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     elif login_type == 'I':
         # Retrieve the 'ca_authority' from the session
         ca_authority = request.session['ca_authority']
@@ -5949,7 +6069,7 @@ def report_list(request):
                                                                   'app_hist_count': app_hist_count,
                                                                   'cl_application_count': cl_application_count,
                                                                   'user_list': user_list,
-                                                                  'ec_details': ec_details})
+                                                                  'ec_details': ec_details,'tor_application_count':tor_application_count})
 
 
 def view_report_details(request):
@@ -6199,7 +6319,16 @@ def ec_print_list(request):
     
     # Count the number of t_workflow_dtls objects with assigned_user_id equal to the logged-in user
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+    tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
     # Check if the 'ca_authority' exists in the session and has a non-empty value
     if 'ca_authority' in request.session and request.session['ca_authority']:
         # Count the number of t_workflow_dtls objects with assigned_role_id='2',
@@ -6220,6 +6349,8 @@ def ec_print_list(request):
         ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                      application_status='A',
                                                                      ec_expiry_date__lt=expiry_date_threshold).count()
+
+        
     else:
         # If 'ca_authority' is not found or empty, set the variables to appropriate default values
         v_application_count = 0
@@ -6232,7 +6363,8 @@ def ec_print_list(request):
                                                      'app_hist_count': app_hist_count,
                                                      'cl_application_count': cl_application_count,
                                                      'v_application_count': v_application_count,
-                                                     'r_application_count': r_application_count})
+                                                     'r_application_count': r_application_count,
+                                                     'tor_application_count':tor_application_count})
 
 
 

@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils import formats
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password, check_password
+from django.db.models import Count, Subquery, OuterRef
 
 from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t13_dumpyard, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, \
     t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, \
@@ -289,6 +290,16 @@ def application_status_list(request):
     if login_type == 'C':
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+        t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+        ).values('tor_application_no')
+
+        # Query to count approved applications that are not in t1_general
+        tor_application_count = t_workflow_dtls.objects.filter(
+            application_status='A'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     elif login_type == 'I':
         role = request.session['role']
         ca_authority = request.session['ca_authority']
@@ -305,7 +316,7 @@ def application_status_list(request):
         application_list = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority).values()
     
     # Return the render statement with the variables as before
-    return render(request, 'application_status_list.html', {'ca_list': ca_list, 'ec_renewal_count': ec_renewal_count, 'dzongkhag_list': dzongkhag_list, 'v_application_count': v_application_count, 'r_application_count': r_application_count, 'application_list': application_list, 'app_hist_count': app_hist_count, 'cl_application_count': cl_application_count})
+    return render(request, 'application_status_list.html', {'ca_list': ca_list, 'ec_renewal_count': ec_renewal_count, 'dzongkhag_list': dzongkhag_list, 'v_application_count': v_application_count, 'r_application_count': r_application_count, 'application_list': application_list, 'app_hist_count': app_hist_count, 'cl_application_count': cl_application_count, 'tor_application_count':tor_application_count})
 
 
 

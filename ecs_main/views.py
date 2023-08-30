@@ -10,6 +10,7 @@ from django.core.mail import send_mail
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Max
 from datetime import datetime, timedelta
+from django.db.models import Count, Subquery, OuterRef
 
 # Create your views here.
 def verify_application_list(request):
@@ -31,7 +32,17 @@ def client_application_list(request):
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=login_id).count()
-    return render(request, 'application_list.html',{'application_details':application_list,'cl_application_count':cl_application_count,'app_hist_count':app_hist_count, 'service_details':service_details, 'payment_details':payment_details})
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+    return render(request, 'application_list.html',{'application_details':application_list,'cl_application_count':cl_application_count,'app_hist_count':app_hist_count, 'service_details':service_details, 'payment_details':payment_details,'tor_application_count':tor_application_count})
 
 def reviewer_application_list(request):
     ca_authority = request.session['ca_authority']
@@ -58,8 +69,18 @@ def payment_list(request):
     service_details = t_service_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
     return render(request, 'payment_list.html',
-                  {'payment_details': payment_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'service_details': service_details})
+                  {'payment_details': payment_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'service_details': service_details,'tor_application_count':tor_application_count})
 
 def view_application_details(request):
     application_no = request.GET.get('application_no')
@@ -81,9 +102,9 @@ def view_application_details(request):
         village = t_village_master.objects.all()
         thromde = t_thromde_master.objects.all()
         reviewer_list = t_user_master.objects.filter(role_id='3', agency_code=ca_auth)
-        file_attach = t_file_attachment.objects.filter(attachment_type='TOR')
-
-        return render(request, 'tor_form_details.html', {'application_details':application_details,'file_attach':file_attach,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde, 'reviewer_list':reviewer_list,'assigned_role_id':assigned_role_id, 'status':status})
+        file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='TOR')
+        tor_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RTOR')
+        return render(request, 'tor_form_details.html', {'application_details':application_details,'file_attach':file_attach,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde, 'reviewer_list':reviewer_list,'assigned_role_id':assigned_role_id, 'status':status,'tor_attach':tor_attach})
     else:
         if service_id == '1':
             if application_source == 'IBLS':
@@ -518,11 +539,46 @@ def get_ec_no(request):
         newECNo ="EC" + "-" + str(year) + "-" + ecNo
     return newECNo
 
+def get_tor_clearance_no(request,service_id):
+    service_name = None
+    last_cl_no = t_ec_industries_t1_general.objects.aggregate(Max('tor_clearance_no'))
+    lastClearnaceNo = last_cl_no['tor_clearance_no__max']
+
+    if service_id == '1':
+        service_name='IEE'
+    elif service_id == '2':
+        service_name='ENE'
+    elif service_id == '3':
+        service_name='ROA'
+    elif service_id == '4':
+        service_name='TRA'
+    elif service_id == '5':
+        service_name='TOU'
+    elif service_id == '6':
+        service_name='GWA'
+    elif service_id == '7':
+        service_name='FOR'
+    elif service_id == '8':
+        service_name='QUA'
+    else:
+        service_name='GEN'    
+
+    if not lastClearnaceNo:
+        year = timezone.now().year
+        newClearanceNo = "TOR" + "-" + str(service_name) + "-" + str(year) + "-" + "0001"
+    else:
+        substring = str(lastClearnaceNo)[13:17]
+        substring = int(substring) + 1
+        ecNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newClearanceNo ="TOR" + "-" + str(service_name) + "-" + str(year) + "-" + ecNo
+    return newClearanceNo
+
 def send_ec_ap_email(ec_no, email, application_no, service_name, addtional_payment_amount):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir," \
               "" \
-              "Your EC Application For" + service_name + "Has Additional Payment. Your " \
+              "Your EC Application For " + service_name + " Has Additional Payment. Your " \
               " Amount is " + str(addtional_payment_amount) + " Please Make Payment To Proceed Further"\
               " . " 
     recipient_list = [email]
@@ -543,12 +599,13 @@ def send_ec_approve_email(ec_no, email, application_no, service_name):
               auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
               connection=None, html_message=None)
     
-def send_tor_approve_email(ec_no, email, application_no, service_name):
+def send_tor_approve_email(email, application_no, service_name,tor_clearance_no):
+    print("send_tor_approve_email")
     subject = 'APPLICATION APPROVED'
-    message = "Dear Sir," \
+    message = "Dear Sir/Madam," \
               "" \
-              "Your TOR Application For" + service_name + "Has Been Approved. Your " \
-              " Application No is " + application_no + \
+              "Your TOR Application For" + service_name + " Has Been Approved. Draft TOR Has been attached for your reference. " \
+              " Your Application No is " + application_no + " And Tor Clearance No is" + tor_clearance_no + " Thank You"\
               " . " 
     recipient_list = [email]
     send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
@@ -975,7 +1032,9 @@ def forward_application(request):
                     service_name = service.service_name
                     for email_id in application_details:
                         emailId = email_id.email
-                        send_tor_approve_email(ec_no, emailId, application_no, service_name)
+                        tor_clearance_no = get_tor_clearance_no(request,service_id)
+                        send_tor_approve_email(emailId, application_no, service_name,tor_clearance_no)
+                        application_details.update(tor_clearance_no=tor_clearance_no)
                         data['message'] = "success"
                         data['redirect_to'] = "verify_application_list"
     except Exception as e:
@@ -1051,6 +1110,47 @@ def delete_rev_lu_attachment(request):
 
     rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='RLU')
     return render(request, 'rev_lu_attachment_page.html', {'rev_lu_attach':rev_lu_attach})
+
+# TOR ATTACHMENTS
+def save_rev_tor_attachment(request):
+    data = dict()
+    lu_attach = request.FILES['rev_tor_attach']
+    app_no = request.POST.get('application_no')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + lu_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/RTOR/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, lu_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/RTOR" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_rev_tor_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('application_no')
+
+    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='RTOR')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RTOR')
+
+    return render(request, 'tor_attachment_page.html', {'tor_attach': file_attach})
+
+def delete_rev_tor_attachment(request):
+    file_id = request.POST.get('file_id')
+    application_no = request.POST.get('application_no')
+    
+    file = t_file_attachment.objects.filter(file_id=file_id)
+    for file in file:
+        file_name = str(application_no)[0:3] + "_" + str(application_no)[4:8] + "_" + str(application_no)[9:13] + "_" + str(file.attachment)
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/RTOR")
+        fs.delete(str(file_name))
+    file.delete()
+
+    tor_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='RTOR')
+    return render(request, 'tor_attachment_page.html', {'tor_attach':tor_attach})
 
 def save_ai_attachment(request):
     data = dict()
@@ -1365,7 +1465,9 @@ def approve_tor_application(request):
             service_name = service.service_name
             for email_id in application_details:
                 emailId = email_id.email
-                tor_submit_email(emailId, application_no, service_name)
+                tor_clearance_no = get_tor_clearance_no(request,service_id)
+                send_tor_approve_email(emailId, application_no, service_name, tor_clearance_no)
+                application_details.update(tor_clearance_no=tor_clearance_no)
     return redirect(verify_application_list)
 
 def tor_submit_email(email_id, application_no, service_name):
