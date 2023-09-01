@@ -396,9 +396,11 @@ def client_application_details(request):
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
         thromde = t_thromde_master.objects.all()
-        file_attach = t_file_attachment.objects.filter(attachment_type='TOR')
-
-        return render(request, 'application_details/tor_form_details.html', {'application_details':application_details,'file_attach':file_attach,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde})
+        file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='TOR')
+        tor_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RTOR')
+        tor_attach_count = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RTOR').count()
+        print(tor_attach_count)
+        return render(request, 'application_details/tor_form_details.html', {'application_details':application_details,'file_attach':file_attach,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde, 'tor_attach':tor_attach, 'tor_attach_count':tor_attach_count})
     else:
         if service_id == '1':
             if application_source == 'IBLS':

@@ -2936,13 +2936,11 @@ def save_tor_form(request):
         action_date = application_date
         ca_auth = None
         
-        if dzongkhag_throm == 'Thromde':
-            ca_auth_filter = t_competant_authority_master.objects.filter(dzongkhag_code=thromde)
-        else:
-            ca_auth_filter = t_competant_authority_master.objects.filter(dzongkhag_code=dzongkhag)
-
-        for ca_auth_filter in ca_auth_filter:
-            ca_auth = ca_auth_filter.competent_authority_id
+        auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session['ca_auth'],
+                dzongkhag_code_id=dzongkhag if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+            )
+        ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
         # Insert record in t_ec_industries_t1_general table
         t_ec_industries_t1_general.objects.create(
             application_no=application_no,

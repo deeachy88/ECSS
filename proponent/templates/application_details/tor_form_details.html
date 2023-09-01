@@ -156,7 +156,7 @@
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Name of Particular Project Site</label>
-                                    <<input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
+                                    <input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
                                 </div>
                                 <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                             </div>
@@ -190,6 +190,37 @@
                                 </div>
                             </div>
                         </div>
+                        {% if tor_attach_count > 0 %}
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-0">DRAFT TOR</h5>
+                                        <div id="cardCollpase7" class="collapse pt-3 show">
+                                            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">File</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for file_attach in tor_attach %}
+                                                            <tr>
+                                                                <td>{{ forloop.counter }}</td>
+                                                                <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                                                            </tr>
+                                                            {% empty %}
+                                                            <tr>
+                                                            <td colspan="3" class="text-center">No Data</td>
+                                                            </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     </form>
                 </div>
 
@@ -343,7 +374,7 @@
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Name of Particular Project Site</label>
-                                    <<input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
+                                    <input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
                                 </div>
                                 <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                             </div>
@@ -377,6 +408,37 @@
                                 </div>
                             </div>
                         </div>
+                        {% if tor_attach_count > 0 %}
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-0">DRAFT TOR</h5>
+                                        <div id="cardCollpase7" class="collapse pt-3 show">
+                                            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">File</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for file_attach in tor_attach %}
+                                                            <tr>
+                                                                <td>{{ forloop.counter }}</td>
+                                                                <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                                                            </tr>
+                                                            {% empty %}
+                                                            <tr>
+                                                            <td colspan="3" class="text-center">No Data</td>
+                                                            </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     </form>
                 </div>
 
