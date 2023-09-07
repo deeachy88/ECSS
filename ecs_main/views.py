@@ -84,12 +84,13 @@ def payment_list(request):
 
 def view_application_details(request):
     application_no = request.GET.get('application_no')
+    print(application_no)
     service_id = request.GET.get('service_id')
     application_source = request.GET.get('application_source')
     status = None
     ca_auth = None
     assigned_role_id = None
-    result = t_ec_industries_t1_general.objects.filter(application_no__contains='TOR')
+    result = t_ec_industries_t1_general.objects.filter(application_no=application_no,application_no__contains='TOR')
     workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
     for work_details in workflow_details:
         status = work_details.application_status
