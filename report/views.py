@@ -384,7 +384,7 @@ def client_application_details(request):
     status = None
     ca_auth = None
     assigned_role_id = None
-    result = t_ec_industries_t1_general.objects.filter(application_no__contains='TOR')
+    result = t_ec_industries_t1_general.objects.filter(application_no=application_no,application_no__contains='TOR')
     workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
     for work_details in workflow_details:
         status = work_details.application_status
