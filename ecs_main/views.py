@@ -188,7 +188,7 @@ def view_application_details(request):
             for_anc_file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='FORANC')
             gw_anc_file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='GWANC')
             ind_anc_file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='IEEANC')
-            ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no,application_no=application_no)
+            ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
             reviewer_list = t_user_master.objects.filter(role_id='3', agency_code=ca_auth)
             eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
