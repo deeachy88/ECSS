@@ -7567,13 +7567,34 @@
                 <div class="col-md-12 draft_ec_div" style="display: none;">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title mb-0">LU Details</h5>
-                            {% for rev_lu_attach in rev_lu_attach %}
-                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
-                            {% endfor %}
-                            <div id="cardCollpase7" class="collapse pt-3 show">
-                                {% include 'rev_lu_attachment_page.html' %}
-                            </div>
+                            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Commitee & Field Verification Paper</th>
+                                        <th scope="col">Draft Legal Undertaking</th>
+                                        <th scope="col">Legal Undertaking Attached</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            {% for rev_lu_attach in eatc_attach %}
+                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            {% for rev_lu_attach in rev_lu_attach %}
+                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                            {% endfor %}    
+                                        </td>
+                                        <td>
+                                            {% for rev_lu_attach in lu_attach %}
+                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div class="card">
@@ -7774,6 +7795,35 @@
                     </div>
                 </div>
                 <div class="col-md-12 verifier_ec_draft_div" style="display: none;">
+                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                        <thead>
+                            <tr>
+                                <th scope="col">Commitee & Field Verification Paper</th>
+                                <th scope="col">Draft Legal Undertaking</th>
+                                <th scope="col">Legal Undertaking Attached</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    {% for rev_lu_attach in eatc_attach %}
+                                        <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for rev_lu_attach in rev_lu_attach %}
+                                        <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                    {% endfor %}    
+                                </td>
+                                <td>
+                                    {% for rev_lu_attach in lu_attach %}
+                                        <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
