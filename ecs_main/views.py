@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from ecs_admin.views import bsic_master
 from proponent.models import t_ec_industries_t10_hazardous_chemicals, t_ec_industries_t11_ec_details, t_ec_industries_t13_dumpyard, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_industries_t9_products_by_products, t_ec_renewal_t1, t_ec_renewal_t2, t_fines_penalties, t_payment_details, t_workflow_dtls, t_workflow_dtls_audit
-from ecs_admin.models import t_bsic_code, t_dzongkhag_master, t_file_attachment, t_gewog_master, t_role_master, t_service_master, t_thromde_master, t_user_master, t_village_master
+from ecs_admin.models import payment_details_master, t_bsic_code, t_dzongkhag_master, t_file_attachment, t_gewog_master, t_role_master, t_service_master, t_thromde_master, t_user_master, t_village_master
 from ecs_main.models import t_application_history, t_inspection_monitoring_t1
 from django.utils import timezone
 from datetime import date
@@ -20,7 +20,8 @@ def verify_application_list(request):
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=30)
-    ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority,
+    payment_details = payment_details_master.objects.all()
+    ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority,payment_details=payment_details,
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'application_list.html',{'application_details':application_list,'v_application_count':v_application_count, 'service_details':service_details, 'payment_details':payment_details,'ec_renewal_count':ec_renewal_count})
@@ -831,6 +832,7 @@ def forward_application(request):
             data['redirect_to'] = "client_application_list"
         elif identifier == 'AP':
             addtional_payment_amount = request.POST.get('addtional_payment_amount')
+            account_head_code = request.POST.get('account_head')
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(application_status='AP')
             for app_det in application_details:
@@ -856,7 +858,7 @@ def forward_application(request):
                             application_date=date.today(), 
                             proponent_name=request.session['name'],
                             amount=addtional_payment_amount,
-                            account_head_code='131370080')
+                            account_head_code=account_head_code)
 
             for work_details in workflow_details:
                 service_id = work_details.service_id

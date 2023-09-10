@@ -7480,6 +7480,17 @@
                         <div class="card-body">
                             <div class="col-lg-6">
                                 <div class="mb-3">
+                                    <label class="form-label fw-bold">Account Head</label>
+                                    <select class="form-select" name="account_head"  id="account_head">
+                                        <option value="">--SELECT--</option>
+                                        {% for payment_details in payment_details %}
+                                            <option value="{{ payment_details.account_head_code }}">{{ thromde.account_head_name }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
                                     <label class="form-label fw-bold">Additional Payable Amount</label>
                                     <input type="text" name="addtional_payment_amount" class="form-control" id="addtional_payment_amount"> 
                                 </div>

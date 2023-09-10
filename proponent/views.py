@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from ecs_main.models import t_application_history
 from ecs_main.views import client_application_list, payment_list
 from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t12_drainage_details, t_ec_industries_t13_dumpyard, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals, t_report_submission_t1, t_report_submission_t2
-from ecs_admin.models import t_user_master, t_bsic_code, t_competant_authority_master, t_fees_schedule, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_service_master, t_thromde_master, t_village_master
+from ecs_admin.models import payment_details_master, t_user_master, t_bsic_code, t_competant_authority_master, t_fees_schedule, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_service_master, t_thromde_master, t_village_master
 # Create your views here.
 from django.db.models import Count, Subquery, OuterRef
 from datetime import datetime
@@ -1572,7 +1572,7 @@ def submit_iee_application(request):
                             ancillary_amount += int(anc_fees_detail.rate)
 
                     total_amount = main_amount + ancillary_amount
-                    insert_app_payment_details(request, application_no, '131370003', 'new_iee_application', total_amount, application_type)
+                    insert_app_payment_details(request, application_no, 'new_iee_application', total_amount, application_type)
                     send_payment_mail(request.session['name'], request.session['email'], total_amount)
                     data['message'] = "success"
 
@@ -2053,7 +2053,7 @@ def save_anc_forest_attachment_details(request):
     file_name = request.POST.get('filename')
     file_url = request.POST.get('file_url')
     application_no = request.POST.get('application_no')
-    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='FO')
+    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='FOANC')
     file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='FOANC')
 
     return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
@@ -2241,7 +2241,7 @@ def update_forest_produce_details(request):
     final_product_details.update(produce_name=produce_name, qty=quantity_annum, storage_method=storage_method)
     final_product = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no).order_by(
         'record_id')
-    return render(request, 'forestry_produce.html', {'forestry_produce': forestry_produce})
+    return render(request, 'forestry_produce.html', {'forestry_produce': final_product})
 
 def delete_forest_produce_details(request):
     record_id = request.POST.get('record_id')
@@ -2330,7 +2330,7 @@ def update_products_by_products_details(request):
     products_by_products_details.update(type=type,product_name=product_name, qty=qty, storage_method=storage_method)
     products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no).order_by(
         'record_id')
-    return render(request, 'final_products.html', {'final_product': final_product})
+    return render(request, 'final_products.html', {'final_product': products_by_products})
 
 def delete_products_by_products_details(request):
     record_id = request.POST.get('record_id')
@@ -2547,7 +2547,7 @@ def submit_ea_application(request):
                                     ancillary_amount += int(anc_fees_detail.rate)
 
                             total_amount = main_amount + ancillary_amount
-                            insert_app_payment_details(request, application_no, '131370003', 'new_ea_application', total_amount, application_type)
+                            insert_app_payment_details(request, application_no, 'new_ea_application', total_amount, application_type)
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
 
@@ -2795,7 +2795,7 @@ def submit_transmission_application(request):
                         else:
                             total_amount = main_amount
 
-                        insert_app_payment_details(request, application_no, '131370003', 'new_transmission_application', total_amount, application_type)
+                        insert_app_payment_details(request, application_no, 'new_transmission_application', total_amount, application_type)
                         send_payment_mail(request.session['name'], request.session['email'], total_amount)
                         data['message'] = "success"
 
@@ -2862,7 +2862,7 @@ def submit_general_application(request):
                         app_hist_details = t_application_history.objects.filter(application_no=application_no)
                         app_hist_details.update(remarks='Your Application Submitted')
                         app_hist_details.update(action_date=timezone.now())
-                        insert_app_payment_details(request, application_no, '131370003', 'new_general_application', total_amount, application_type)
+                        insert_app_payment_details(request, application_no, 'new_general_application', total_amount, application_type)
                         send_payment_mail(request.session['name'], request.session['email'], total_amount)
                         data['message'] = "success"
 
@@ -3193,13 +3193,16 @@ def view_tor_application_details(request):
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
 
-def insert_app_payment_details(request,application_no,account_head, identifier,total_amount,application_type):
-    t_payment_details.objects.create(application_no=application_no,
-            application_type=application_type,
-            application_date=date.today(), 
-            proponent_name=request.session['name'],
-            amount=total_amount,
-            account_head_code=account_head)
+def insert_app_payment_details(request,application_no, identifier,total_amount,application_type):
+    if 'new' in identifier:
+        payment_details = payment_details_master.objects.filter(payment_type='New')
+        for pay_details in payment_details:      
+            t_payment_details.objects.create(application_no=application_no,
+                    application_type=application_type,
+                    application_date=date.today(), 
+                    proponent_name=request.session['name'],
+                    amount=total_amount,
+                    account_head_code=pay_details.account_head_code)
     return redirect(identifier)
 
 def insert_payment_details(request,application_no,account_head, identifier):
@@ -3900,6 +3903,9 @@ def save_forest_application(request):
 
         # Application details
         application_details = {
+            'application_no':request.POST.get('application_no'),
+            'application_date':timezone.now().date(),
+            'application_type':'New',
             'project_name': request.POST.get('project_name'),
             'project_category': request.POST.get('project_category'),
             'applicant_name': request.POST.get('applicant_name'),
@@ -3919,74 +3925,58 @@ def save_forest_application(request):
             'max_evacuation_depth': request.POST.get('max_evacuation_depth'),
             'terrain_elevation': request.POST.get('terrain_elevation'),
             'terrain_slope': request.POST.get('terrain_slope'),
-        }
-
-        # Common fields for all application types
-        common_fields = {
-            'application_no': request.POST.get('application_no'),
-            'application_date': timezone.now().date(),
-            'application_type': 'New',
             'form_type': request.POST.get('form_type'),
-            'ca_authority': ca_auth,
-            'applicant_id': request.session['email'],
-            'colour_code': request.session['colour_code'],
-            'application_status': 'P',
-            'service_id': request.session['service_id'],
-            'broad_activity_code': request.session['broad_activity_code'],
-            'specific_activity_code': request.session['specific_activity_code'],
-            'category': request.session['category'],
+            'ca_authority':ca_auth,
+            'applicant_id':request.session['email'],
+            'colour_code':request.session['colour_code'],
         }
 
-        if identifier == 'NC' or identifier == 'OC':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=request.POST.get('application_no')).first()
-            if application_details:
-                application_details.project_name = request.POST.get('project_name') if identifier == 'NC' else application_details.project_name
-                application_details.applicant_name = request.POST.get('applicant_name') if identifier == 'OC' else application_details.applicant_name
-                application_details.save()
-        elif identifier == 'DR':
-            application_details, created = t_ec_industries_t1_general.objects.get_or_create(
+        with transaction.atomic():
+            if identifier == 'NC' or identifier == 'OC':
+                application_instance = t_ec_industries_t1_general.objects.filter(application_no=request.POST.get('application_no')).first()
+                if application_instance:
+                    application_instance.project_name = request.POST.get('project_name') if identifier == 'NC' else application_instance.project_name
+                    application_instance.applicant_name = request.POST.get('applicant_name') if identifier == 'OC' else application_instance.applicant_name
+                    application_instance.save()
+                else:
+                    raise ValueError("Application does not exist.")
+            elif identifier == 'DR':
+                application_instance, created = t_ec_industries_t1_general.objects.get_or_create(application_no=request.POST.get('application_no'))
+                if not created:
+                    for field, value in application_details.items():
+                        setattr(application_instance, field, value)
+                    application_instance.save()
+                else:
+                    raise ValueError("Application does not exist.")
+            elif identifier in ['TC', 'PC', 'LC', 'CC']:
+                ec_reference_no = request.POST.get('ec_reference_no')
+                for app_det in t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no):
+                    t_ec_industries_t1_general.objects.create(application_no=request.POST.get('application_no'), ec_reference_no=ec_reference_no, **application_details)
+            else:
+                t_ec_industries_t1_general.objects.create(**application_details)
+
+            t_application_history.objects.create(
                 application_no=request.POST.get('application_no'),
-                defaults=dict(common_fields, **application_details)
-            )
-            if not created:
-                for field, value in application_details.items():
-                    setattr(application_details, field, value)
-                application_details.save()
-        elif identifier in ['TC', 'PC', 'LC', 'CC']:
-            ec_reference_no = request.POST.get('ec_reference_no')
-            for app_det in t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no):
-                t_ec_industries_t1_general.objects.create(
-                    application_no=request.POST.get('application_no'),
-                    ec_reference_no=ec_reference_no,
-                    defaults=dict(common_fields, **application_details)
-                )
-        else:
-            t_ec_industries_t1_general.objects.create(
-                defaults=dict(common_fields, **application_details)
+                application_date=timezone.now().date(),
+                applicant_id=request.session['email'],
+                ca_authority=ca_auth,
+                service_id=request.session['service_id'],
+                application_status='P',
+                actor_id=request.session['login_id'],
+                actor_name=request.session['name']
             )
 
-        t_application_history.objects.create(
-            application_no=request.POST.get('application_no'),
-            application_date=timezone.now().date(),
-            applicant_id=request.session['email'],
-            ca_authority=ca_auth,
-            service_id=request.session['service_id'],
-            application_status='P',
-            actor_id=request.session['login_id'],
-            actor_name=request.session['name']
-        )
-
-        t_workflow_dtls.objects.create(
-            application_no=request.POST.get('application_no'),
-            service_id=request.session['service_id'],
-            application_status='P',
-            actor_id=request.session['login_id'],
-            actor_name=request.session['name'],
-            assigned_role_id='2',
-            assigned_role_name='Verifier',
-            ca_authority=ca_auth,
-            application_source='ECSS'
-        )
+            t_workflow_dtls.objects.create(
+                application_no=request.POST.get('application_no'),
+                service_id=request.session['service_id'],
+                application_status='P',
+                actor_id=request.session['login_id'],
+                actor_name=request.session['name'],
+                assigned_role_id='2',
+                assigned_role_name='Verifier',
+                ca_authority=ca_auth,
+                application_source='ECSS'
+            )
 
         data['message'] = "success"
     except Exception as e:
@@ -4000,75 +3990,85 @@ def submit_forest_application(request):
     try:
         application_no = request.POST.get('forest_disclaimer_application_no')
         identifier = request.POST.get('anc_identifier')
-        main_amount = 0
-        ancillary_amount = 0
-        total_amount = 0
-        application_type = None
 
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
-        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').count()
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        application_details_main = application_details.filter(form_type='Main Activity').first()
+        application_details_ancillary = application_details.filter(form_type='Ancillary').first()
+        anc_details = application_details.filter(form_type='Ancillary').count()
 
-        # Update application history action_date
-        app_hist_details = t_application_history.objects.filter(application_no=application_no)
-        app_hist_details.update(action_date=timezone.now().date())
+        if application_details_main:
+            service_id = application_details_main.service_id
+            application_type = application_details_main.application_type
+            anc_other_crushing_unit = application_details_main.anc_other_crushing_unit
+            anc_other_surface_collection = application_details_main.anc_other_surface_collection
+            anc_other_ground_water = application_details_main.anc_other_ground_water
+            anc_other_mineral = application_details_main.anc_other_mineral
+            anc_other_general = application_details_main.anc_other_general
+            anc_other_transmission = application_details_main.anc_other_transmission
 
-        for application_detail in application_details:
-            service_id = application_detail.service_id
-            application_type = application_detail.application_type
-            anc_other_crushing_unit = application_detail.anc_other_crushing_unit
-            anc_other_surface_collection = application_detail.anc_other_surface_collection
-            anc_other_ground_water = application_detail.anc_other_ground_water
-            anc_other_mineral = application_detail.anc_other_mineral
-            anc_other_general = application_detail.anc_other_general
-            anc_other_transmission = application_detail.anc_other_transmission
+            ancillary_conditions = (
+                anc_other_crushing_unit == 'Yes' or
+                anc_other_surface_collection == 'Yes' or
+                anc_other_ground_water == 'Yes' or
+                anc_other_mineral == 'Yes' or
+                anc_other_general == 'Yes' or
+                anc_other_transmission == 'Yes'
+            )
 
-        if any([anc_other_crushing_unit == 'Yes', anc_other_surface_collection == 'Yes', anc_other_ground_water == 'Yes', anc_other_mineral == 'Yes', anc_other_general == 'Yes', anc_other_transmission == 'Yes']):
-            if anc_details == 0:
+            if ancillary_conditions and anc_details == 0:
                 data['message'] = "not submitted"
             else:
                 if identifier == 'Ancillary':
-                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
+                    application_details_ancillary.action_date = timezone.now()
+                    application_details_ancillary.save()
+                elif identifier in ('OC', 'NC'):
+                    pass  # Nothing to do for 'OC' and 'NC'
                 else:
-                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
-                
-                application_details.update(action_date=timezone.now().date())
-                
-                if identifier in ['OC', 'NC']:
-                    workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                    workflow_dtls.update(action_date=timezone.now().date())
-                elif identifier not in ['TC', 'PC', 'LC', 'CC'] and t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary', application_status='P').exists():
-                    data['message'] = "not submitted"
-                else:
-                    workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                    workflow_dtls.update(action_date=timezone.now().date())
-
-                    if identifier in ['OC', 'NC']:
-                        fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                        for fees_detail in fees_details:
-                            main_amount = int(fees_detail.rate) + int(fees_detail.application_fee)
-
-                        insert_app_payment_details(request, application_no, '131370003', 'new_general_application', main_amount, application_type)
-                        send_payment_mail(request.session['name'], request.session['email'], main_amount)
+                    ancillary_count = t_ec_industries_t1_general.objects.filter(
+                        application_no=application_no,
+                        form_type='Ancillary',
+                        application_status='P'
+                    ).count()
+                    if ancillary_count > 0:
+                        data['message'] = "not submitted"
                     else:
-                        ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').count()
+                        application_details_main.action_date = timezone.now()
+                        application_details_main.save()
+
+                        fees_details = t_fees_schedule.objects.filter(service_id=service_id).first()
+                        main_amount = fees_details.rate + fees_details.application_fee
+
+                        ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(
+                            application_no=application_no,
+                            form_type='Ancillary'
+                        ).count()
+
                         if ancillary_application_details_count > 0:
-                            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                            for fees_detail in fees_details:
-                                ancillary_amount = fees_detail.rate
+                            ancillary_amount = fees_details.rate
                             total_amount = main_amount + ancillary_amount
                         else:
                             total_amount = main_amount
+                        
+                        app_hist_details = t_application_history.objects.filter(application_no=application_no)
+                        app_hist_details.update(remarks='Your Application Submitted')
+                        app_hist_details.update(action_date=timezone.now())
 
-                        insert_app_payment_details(request, application_no, '131370003', 'new_general_application', total_amount, application_type)
+                        insert_app_payment_details(
+                            request,
+                            application_no,
+                            'new_forest_application',
+                            total_amount,
+                            application_type
+                        )
                         send_payment_mail(request.session['name'], request.session['email'], total_amount)
 
-                    data['message'] = "success"
+                data['message'] = "success"
+
     except Exception as e:
-        print('An error occurred:', e)
+        print(e)
         data['message'] = "failure"
 
     return JsonResponse(data)
-
 
 # ground water
 def save_ground_water_application(request):
@@ -4274,7 +4274,7 @@ def submit_ground_water_application(request):
                                     total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount = main_amount
-                                insert_app_payment_details(request, application_no, '131370003', 'new_ground_water_application', total_amount, application_type)
+                                insert_app_payment_details(request, application_no, 'new_ground_water_application', total_amount, application_type)
                                 send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -4524,7 +4524,7 @@ def submit_quarry_application(request):
                             else:
                                 total_amount = main_amount
 
-                            insert_app_payment_details(request, application_no, '131370003', 'new_quarry_application', total_amount, application_type)
+                            insert_app_payment_details(request, application_no, 'new_quarry_application', total_amount, application_type)
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
 
                             data['message'] = "success"
@@ -4967,7 +4967,7 @@ def submit_energy_application(request):
                                         total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount=main_amount
-                                insert_app_payment_details(request, application_no,'131370003', 'submit_energy_application ',total_amount,application_type)
+                                insert_app_payment_details(request, application_no, 'submit_energy_application ',total_amount,application_type)
                                 send_payment_mail(request.session['name'],request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -5295,7 +5295,7 @@ def submit_tourism_application(request):
                                         total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount=main_amount
-                                insert_app_payment_details(request, application_no,'131370003', 'submit_tourism_application ',total_amount,application_type)
+                                insert_app_payment_details(request, application_no, 'submit_tourism_application ',total_amount,application_type)
                                 send_payment_mail(request.session['name'],request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -6470,6 +6470,13 @@ def delete_application_attachment(request):
         for file in file:
             file_name = file.attachment
             fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/TOR/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'FO':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/FO/")
             fs.delete(str(file_name))
         file.delete()
     file_attach = t_file_attachment.objects.filter(application_no=application_no)

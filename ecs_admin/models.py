@@ -232,3 +232,9 @@ class t_notification_details(models.Model):
     is_active = models.CharField(max_length=3, default=None, blank=True, null=True)
     is_deleted = models.CharField(max_length=3, default=None, blank=True, null=True)
     notification_date = models.CharField(max_length=10, default=None, blank=True, null=True)
+
+class payment_details_master(models.Model):
+    record_id = models.AutoField(primary_key=True)
+    account_head_name = models.CharField(max_length=250, default=None, blank=True, null=True)
+    account_head_code = models.BigIntegerField(default=None, blank=True, null=True)
+    payment_type = models.CharField(max_length=250, default=None, blank=True, null=True)

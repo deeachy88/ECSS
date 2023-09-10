@@ -1408,7 +1408,7 @@
                                     
                                     <div class="row general_application mt-1" style="display:none;">
                                         <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
+                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a> 
                                     </div>
 
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="forest_submit_successMsg" style="display:none">
@@ -2980,7 +2980,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_anc_forest_attachment' %}",
+                url : "{% url 'save_forest_attachment' %}",
                 data : fd,
                 dataType: 'json',
                 contentType: false,
@@ -2994,7 +2994,7 @@
                         $.ajax
                         ({
                             type : "POST",
-                            url : "{% url 'save_anc_forest_attachment_details' %}",
+                            url : "{% url 'save_forest_attachment_details' %}",
                             data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
                             success : function(responseText)
                             {
@@ -3041,38 +3041,12 @@
             data : $('#forest_submit_form').serialize(),
             success : function(data)
             {
-                $("#pageloader").hide();
-                if(data.message == 'success')
-                {
-                    $('#forest_submit_successMsg').html("Application Submitted Successfully");
-                    $('#forest_submit_successMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#forest_submit_successMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        location.reload()
-                    }, 2000);
-                }
-                else if(data.message == 'not submitted')
-                {
-                    $('#iee_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
-                    $('#iee_submit_errorMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                }
-                else
-                {
-                    $('#forest_submit_errorMsg').html("Please Check And Submit Again");
-                    $('#forest_submit_errorMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#forest_submit_errorMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                }
-            }
+                alert(data.message);
+            },
+    error: function(jqXHR, textStatus, errorThrown) {
+        console.log('An error occurred:', errorThrown);
+        alert('An error occurred: ' + errorThrown);
+    }
         });
     }
 
