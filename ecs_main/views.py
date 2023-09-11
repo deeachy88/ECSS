@@ -18,13 +18,13 @@ def verify_application_list(request):
     application_list = t_workflow_dtls.objects.filter(application_status='P', assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='DEC',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='AL',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)  | t_workflow_dtls.objects.filter(application_status='FT',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)
     service_details = t_service_master.objects.all()
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
-    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
+    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority'],action_date__isnull=False).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=30)
-    payment_details = payment_details_master.objects.all()
-    ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority,payment_details=payment_details,
+    pay_details = payment_details_master.objects.all()
+    ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority,
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
-    return render(request, 'application_list.html',{'application_details':application_list,'v_application_count':v_application_count, 'service_details':service_details, 'payment_details':payment_details,'ec_renewal_count':ec_renewal_count})
+    return render(request, 'application_list.html',{'application_details':application_list,'v_application_count':v_application_count, 'service_details':service_details, 'payment_details':payment_details,'ec_renewal_count':ec_renewal_count,'pay_details':pay_details})
 
 def client_application_list(request):
     login_id = request.session['login_id']

@@ -74,11 +74,11 @@
                                                                 <option value="Sand_dredging" selected>Sand-dredging</option>
                                                                 <option value="Surface_Collection">Surface Collection</option>
                                                                 <option value="RBM_dredging_collection">RBM dredging/collection</option>
-                                                            {% if application_details.project_name == 'Surface_Collection' %}
+                                                            {% elif application_details.project_name == 'Surface_Collection' %}
                                                                 <option value="Sand_dredging">Sand-dredging</option>
                                                                 <option value="Surface_Collection" selected>Surface Collection</option>
                                                                 <option value="RBM_dredging_collection">RBM dredging/collection</option>
-                                                            {% if application_details.project_name == 'RBM_dredging_collection' %}
+                                                            {% elif application_details.project_name == 'RBM_dredging_collection' %}
                                                                 <option value="Sand_dredging">Sand-dredging</option>
                                                                 <option value="Surface_Collection">Surface Collection</option>
                                                                 <option value="RBM_dredging_collection" selected>RBM dredging/collection</option>

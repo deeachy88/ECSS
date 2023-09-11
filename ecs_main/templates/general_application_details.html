@@ -7483,7 +7483,7 @@
                                     <label class="form-label fw-bold">Account Head</label>
                                     <select class="form-select" name="account_head"  id="account_head">
                                         <option value="">--SELECT--</option>
-                                        {% for payment_details in payment_details %}
+                                        {% for payment_details in pay_details %}
                                             <option value="{{ payment_details.account_head_code }}">{{ thromde.account_head_name }}</option>
                                         {% endfor %} 
                                     </select>

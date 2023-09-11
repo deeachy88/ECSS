@@ -2133,6 +2133,31 @@ def save_general_attachment_details(request):
 
     return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
 
+def save_road_attachment(request):
+    data = dict()
+    road_attach = request.FILES['road_attach']
+    file_name = road_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ROA/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, road_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/ROA" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_road_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('application_no')
+
+    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='ROA')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='ROA')
+
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
+
 def save_tor_attachment(request):
     data = dict()
     tor_attach = request.FILES['tor_attach']
@@ -2810,7 +2835,7 @@ def submit_transmission_application(request):
 def submit_general_application(request):
     data = dict()
     try:
-        application_no = request.POST.get('general_disclaimer_application_no')
+        application_no = request.POST.get('road_disclaimer_application_no')
         identifier = request.POST.get('anc_identifier')
         
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)

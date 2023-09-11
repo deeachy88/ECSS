@@ -1291,7 +1291,7 @@
                                             </div>
                                             <h5 class="card-title mb-0">Attachments</h5>
                                             <div id="cardCollpase7" class="collapse pt-3 show">
-                                                <div id="iee_file_attachment">
+                                                <div id="road_file_attachment">
                                                     {% include 'file_attachment_page.html' %}
                                                 </div>
                                             </div>
@@ -1400,7 +1400,7 @@
           <!--Body-->
           <div class="modal-body mx-4">
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-6"> 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Attachment</label>
                         <input type="file" name="road_attach" class="form-control" id="road_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
@@ -5294,6 +5294,68 @@
         else
         {
             $('#road_submit_btn').hide();
+        }
+    }
+
+    function save_road_attachment()
+    {
+        let file_length = document.getElementById("road_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#road_attachErrorMsg').html("Please Choose A Attachment");
+            $('#road_attachErrorMsg').show();
+            $('#road_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var fileName = document.getElementById('road_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('road_attach').files[0];
+            fd.append('road_attach', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_road_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_road_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#road_attachment_modal').modal('hide');
+                                $('#road_file_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#road_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#road_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#road_attachErrorMsg').show();
+                        $('#road_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
         }
     }
 </script>
