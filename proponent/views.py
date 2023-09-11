@@ -2835,7 +2835,7 @@ def submit_transmission_application(request):
 def submit_general_application(request):
     data = dict()
     try:
-        application_no = request.POST.get('road_disclaimer_application_no')
+        application_no = request.POST.get('general_disclaimer_application_no')
         identifier = request.POST.get('anc_identifier')
         
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
