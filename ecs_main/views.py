@@ -20,7 +20,7 @@ def verify_application_list(request):
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority'],action_date__isnull=False).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=30)
-    pay_details = payment_details_master.objects.all()
+    payment_details_master.objects.exclude(payment_type="TOR")
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority,
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
