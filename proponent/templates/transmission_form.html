@@ -1316,7 +1316,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="transmission_submit_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="transmission_disclaimer_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no">
                                     
                                     <div class="row industry_application" style="display:none;">
                                         <a href="{% url 'industry_ancillary_form' %}" class="btn btn-danger">
@@ -4015,7 +4015,7 @@
         $.ajax
         ({
             type : "POST",
-            url : "{% url 'submit_transmission_application' %}",
+            url : "{% url 'submit_general_application' %}",
             data : $('#transmission_submit_form').serialize(),
             success : function(data)
             {

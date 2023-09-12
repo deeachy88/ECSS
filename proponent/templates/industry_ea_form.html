@@ -1884,7 +1884,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="ea_submit_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" id="ea_disclaimer_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" id="general_disclaimer_application_no">
                                     <div class="row industry_application" style="display:none;">
                                         <a href="{% url 'new_industry_application' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for Industrial projects </a>
@@ -5703,7 +5703,7 @@
         $.ajax
         ({
             type : "POST",
-            url : "{% url 'submit_ea_application' %}",
+            url : "{% url 'submit_general_application' %}",
             data : $('#ea_submit_form').serialize(),
             success : function(data)
             {

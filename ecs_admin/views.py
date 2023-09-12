@@ -106,7 +106,7 @@ def login(request):
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
                                 # END: count no of EC due for renewal within 30 days
                                 if roles.role_name == 'Verifier':
-                                    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=check_user.agency_code).count()
+                                    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=check_user.agency_code, action_date__isnull=False).count()
                                 elif roles.role_name == 'Reviewer':
                                     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=check_user.agency_code).count()
                                 return render(request, 'common_dashboard.html',{'v_application_count':v_application_count, 'r_application_count':r_application_count, 'ec_renewal_count':ec_renewal_count})

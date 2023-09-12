@@ -6900,7 +6900,10 @@
                     </div>
                 </div>
             </div>
-            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
+                        
 <div class="card-body" id="reviewer_details_accordian" style="display:none;">
     <div class="alert alert-primary">Reviewer Details</div>
         <form method="post" id="reviewer_form">
@@ -7000,7 +7003,18 @@
                         <div class="card-body">
                             <div class="col-lg-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Addional Payable Amount</label>
+                                    <label class="form-label fw-bold">Account Head</label>
+                                    <select class="form-select" name="account_head"  id="account_head">
+                                        <option value="">--SELECT--</option>
+                                        {% for payment_details in pay_details %}
+                                            <option value="{{ payment_details.account_head_code }}">{{ thromde.account_head_name }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Additional Payable Amount</label>
                                     <input type="text" name="addtional_payment_amount" class="form-control" id="addtional_payment_amount"> 
                                 </div>
                             </div>
@@ -7085,6 +7099,38 @@
                     </div>
                 </div>
                 <div class="col-md-12 draft_ec_div" style="display: none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Commitee & Field Verification Paper</th>
+                                        <th scope="col">Draft Legal Undertaking</th>
+                                        <th scope="col">Legal Undertaking Attached</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            {% for rev_lu_attach in eatc_attach %}
+                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            {% for rev_lu_attach in rev_lu_attach %}
+                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                            {% endfor %}    
+                                        </td>
+                                        <td>
+                                            {% for rev_lu_attach in lu_attach %}
+                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                     <div class="card">
                         <div class="card-body">
                             <div class="card-widgets">
@@ -7283,6 +7329,35 @@
                     </div>
                 </div>
                 <div class="col-md-12 verifier_ec_draft_div" style="display: none;">
+                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                        <thead>
+                            <tr>
+                                <th scope="col">Commitee & Field Verification Paper</th>
+                                <th scope="col">Draft Legal Undertaking</th>
+                                <th scope="col">Legal Undertaking Attached</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    {% for rev_lu_attach in eatc_attach %}
+                                        <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for rev_lu_attach in rev_lu_attach %}
+                                        <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                    {% endfor %}    
+                                </td>
+                                <td>
+                                    {% for rev_lu_attach in lu_attach %}
+                                        <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
@@ -7303,7 +7378,7 @@
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Turn Around Time</label>
                                 {% for application_details in application_details %}
-                                    <input type="date" name="tat" class="form-control" id="tat" value="{{application_details.tat}}">
+                                    <input type="text" name="tat" class="form-control" id="tat" value="{{application_details.tat}}">
                                 {% endfor %}
                             </div>
                         </div>

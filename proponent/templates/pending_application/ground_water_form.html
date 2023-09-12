@@ -1381,7 +1381,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="ground_water_submit_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_details.application_no}}" name="ground_water_disclaimer_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_details.application_no}}" name="general_disclaimer_application_no">
                                     
                                     <div class="row industry_application" style="display:none;">
                                         <a href="{% url 'industry_ancillary_form' %}" class="btn btn-danger">
@@ -4671,7 +4671,7 @@
         $.ajax
         ({
             type : "POST",
-            url : "{% url 'submit_ground_water_application' %}",
+            url : "{% url 'general_disclaimer_application_no' %}",
             data : $('#ground_water_submit_form').serialize(),
             success : function(data)
             {

@@ -5861,15 +5861,47 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="mb-3">
+                                    <label class="form-label fw-bold">Additional Information Letter</label>
+                                    {% for application_details in application_details %}
+                                        <textarea class="form-control" rows="2" readonly>{{application_details.additional_info_letter}}</textarea>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
                                     <label class="form-label fw-bold">Additional Information</label>
                                     {% for application_details in application_details %}
                                         <textarea class="form-control" rows="2" readonly>{{application_details.additional_info}}</textarea>
                                     {% endfor %}
                                 </div>
                             </div>
+                            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">File</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   {% for file_attach in ai_attach %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                                                <td>
+                                                    <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_ai_attachment('{{ file_attach.file_id }}','{{ file_attach.application_no }}')"><i class="uil-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="3" class="text-center">No Data</td>
+                                            </tr>
+                                   {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                         <div class="row">
-                            <div class="col-lg-6 information_complete_div">
+                            <div class="col-lg-6 information_complete_div"  style="display: none;">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Is The Information Complete?</label>
                                     <div class="mt-2">
@@ -5913,13 +5945,36 @@
                                 </div>
                                 <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
                             </div>
+                            <div class="col-md-12 addtional_payment_div" style="display: none;">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Account Head</label>
+                                                <select class="form-select" name="account_head"  id="account_head">
+                                                    <option value="">--SELECT--</option>
+                                                    {% for payment_details in pay_details %}
+                                                        <option value="{{ payment_details.account_head_code }}">{{ thromde.account_head_name }}</option>
+                                                    {% endfor %} 
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Additional Payable Amount</label>
+                                                <input type="text" name="addtional_payment_amount" class="form-control" id="addtional_payment_amount"> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-12 eatc_attachment_div" style="display: none;">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="card-widgets">
                                             <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#eatc_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                         </div>
-                                        <h5 class="card-title mb-0">Attachments</h5>
+                                        <h5 class="card-title mb-0">Attach Committee And Field Verification Paper</h5>
                                         <div id="cardCollpase7" class="collapse pt-3 show">
                                             <div id="eatc_file_attachment">
                                                 {% include 'eatc_attachment_page.html' %}
@@ -5928,6 +5983,7 @@
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="row fines_penalty_div" style="display: none;">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
@@ -5977,14 +6033,51 @@
                             <div class="col-md-12 rev_lu_attachment_div" style="display: none;">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title mb-0">LU Details</h5>
+                                        <div class="card-widgets">
+                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#rev_lu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                        </div>
+                                        <h5 class="card-title mb-0">Legal Undertaking Attach</h5>
                                         <div id="cardCollpase7" class="collapse pt-3 show">
-                                                {% include 'lu_attachment_page.html' %}
+                                            <div id="rev_lu_file_attachment">
+                                                {% include 'rev_lu_attachment_page.html' %}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 draft_ec_div" style="display: none;">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Commitee & Field Verification Paper</th>
+                                                    <th scope="col">Draft Legal Undertaking</th>
+                                                    <th scope="col">Legal Undertaking Attached</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        {% for rev_lu_attach in eatc_attach %}
+                                                            <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                                        {% endfor %}
+                                                    </td>
+                                                    <td>
+                                                        {% for rev_lu_attach in rev_lu_attach %}
+                                                            <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                                        {% endfor %}    
+                                                    </td>
+                                                    <td>
+                                                        {% for rev_lu_attach in lu_attach %}
+                                                            <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                                        {% endfor %}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="card-widgets">
@@ -6015,12 +6108,12 @@
                         <div class="row  mt-3 AL_button" style="display: none;">
                             <div class="mb-3">
                                 <a href="#" class="btn btn-success" onclick="forwardApplication('AL')">
-                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
+                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
                             </div>
                         </div>
-                        <div class="row  mt-3">
-                            <div class="mb-3 EATC_button" style="display: none;">
-                                <a href="#" class="btn btn-success" onclick="forwardApplication('EATC')">
+                        <div class="row mt-3 additonal_payment_button" style="display: none;">
+                            <div class="mb-3">
+                                <a href="#" class="btn btn-success" onclick="forwardApplication('AP')">
                                     <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
                             </div>
                         </div>
@@ -6057,12 +6150,27 @@
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Additional Information</label>
-                                            <textarea class="form-control" id="additional_info" name="additional_info" rows="2"></textarea>
+                                        <textarea class="form-control" id="additional_info" name="additional_info" rows="2"></textarea>
                                     </div>
                                     <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-widgets">
+                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#ai_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            </div>
+                                            <h5 class="card-title mb-0">Additional Info Attachment</h5>
+                                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                                <div id="ai_file_attachment">
+                                                    {% include 'ai_attachment_page.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
+            
                             <div class="row resubmit_remarks_div" style="display: none;">
                                 <div class="col-lg-12">
                                     <div class="mb-3">
@@ -6082,10 +6190,16 @@
                                     </div>
                                 </div>
                             </div>
-
+            
                             <div class="col-md-12 client_lu_attachment_div" style="display: none;">
                                 <div class="card">
                                     <div class="card-body">
+                                        <h5 class="card-title mb-0">Legal Undertaking</h5>
+                                        <br>
+                                        {% for rev_lu_attach in rev_lu_attach %}
+                                            <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                        {% endfor %}
+                                        <hr><br><br>
                                         <div class="card-widgets">
                                             <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#lu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                         </div>
@@ -6098,7 +6212,7 @@
                                     </div>
                                 </div>
                             </div>
-
+            
                             <div class="alert alert-success border-0 rounded-0" role="alert" id="client_application_successMsg" style="display:none">
                                 <i class="uil-folder-heart me-1 h4 align-middle"></i>
                             </div>
@@ -6156,12 +6270,41 @@
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Additional Information Letter</label>
                                         {% for application_details in application_details %}
-                                            <textarea class="form-control" rows="2" readonly>{{application_details.additional_info_letter}}</textarea>
+                                            <textarea class="form-control" rows="2">{{application_details.additional_info_letter}}</textarea>
                                         {% endfor %}
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 verifier_ec_draft_div" style="display: none;">
+                                <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Commitee & Field Verification Paper</th>
+                                            <th scope="col">Draft Legal Undertaking</th>
+                                            <th scope="col">Legal Undertaking Attached</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                {% for rev_lu_attach in eatc_attach %}
+                                                    <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                                {% endfor %}
+                                            </td>
+                                            <td>
+                                                {% for rev_lu_attach in rev_lu_attach %}
+                                                    <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                                {% endfor %}    
+                                            </td>
+                                            <td>
+                                                {% for rev_lu_attach in lu_attach %}
+                                                    <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <br>
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-body">
@@ -6182,7 +6325,7 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Turn Around Time</label>
                                             {% for application_details in application_details %}
-                                                <input type="date" name="tat" class="form-control" id="tat" value="{{application_details.tat}}">
+                                                <input type="text" name="tat" class="form-control" id="tat" value="{{application_details.tat}}">
                                             {% endfor %}
                                         </div>
                                     </div>
@@ -6201,9 +6344,9 @@
                                 </div>
                                 <div class="mb-3 ALA_button" style="display:none;">
                                         <a href="#" class="btn btn-success" onclick="forwardApplication('ALA')">
-                                            <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Approve </a>
+                                            <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Additional Information Required </a>
                                         <a href="#" class="btn btn-danger" onclick="forwardApplication('ALR')">
-                                            <i class="uil uil-multiply me-1"></i> Reject </a>
+                                            <i class="uil uil-multiply me-1"></i> Additional Information Not Required </a>
                                 </div>
                                 <div class="mb-3 approveButton" style="display:none;">
                                         <a href="#" class="btn btn-success" onclick="forwardApplication('A')">
@@ -6214,96 +6357,178 @@
                     </form>
                 </div>
             </div>
-        </div>
-    </div>
-
-<form method="post" id="eatc_attachment_form" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="modal fade" id="eatc_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <!--Content-->
-        <div class="modal-content form-elegant">
-          <!--Header-->
-          <div class="modal-header text-center">
+            </div>
+            </div>
+            
+            <form method="post" id="eatc_attachment_form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal fade" id="eatc_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+            <!--Header-->
+            <div class="modal-header text-center">
             <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
                                                     &nbsp;Attach</strong></h3>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-          <!--Body-->
-          <div class="modal-body mx-4">
+            </div>
+            <!--Body-->
+            <div class="modal-body mx-4">
             <div class="row">
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Attachment</label>
-                        <input type="file" name="eatc_attach" class="form-control" id="eatc_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                        <input type="file" name="eatc_attach" class="form-control" id="eatc_attach" accept=".pdf, .doc, .docx">
                     </div>
                     <div class="alert alert-danger" id="eatc_attachErrorMsg" style="display:none"></div>
                 </div>
             </div>
-          </div>
-          <div class="modal-footer flex-center justify-content-center">
+            </div>
+            <div class="modal-footer flex-center justify-content-center">
             <button type="button" class="btn btn-sm btn-primary" onclick="save_eatc_attachment()">Add</button>
             <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-        <!--/.Content-->
-      </div>
-    </div>
-</form>
-
-<form method="post" id="lu_attachment_form" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="modal fade" id="lu_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <!--Content-->
-        <div class="modal-content form-elegant">
-          <!--Header-->
-          <div class="modal-header text-center">
+            </div>
+            </div>
+            <!--/.Content-->
+            </div>
+            </div>
+            </form>
+            
+            <form method="post" id="ai_attachment_form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal fade" id="ai_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                <!--Content-->
+                <div class="modal-content form-elegant">
+                <!--Header-->
+                <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Attach</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <!--Body-->
+                <div class="modal-body mx-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Attachment</label>
+                            <input type="file" name="ai_attach" class="form-control" id="ai_attach" accept=".pdf, .doc, .docx">
+                        </div>
+                        <div class="alert alert-danger" id="ai_attachErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                </div>
+                <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="save_ai_attachment()">Add</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+                </div>
+                <!--/.Content-->
+                </div>
+                </div>
+            </form>
+            
+            <form method="post" id="lu_attachment_form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal fade" id="lu_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+            <!--Header-->
+            <div class="modal-header text-center">
             <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
                                                     &nbsp;Attach</strong></h3>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-          <!--Body-->
-          <div class="modal-body mx-4">
+            </div>
+            <!--Body-->
+            <div class="modal-body mx-4">
             <div class="row">
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Attachment</label>
-                        <input type="file" name="lu_attach" class="form-control" id="lu_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                        <input type="file" name="lu_attach" class="form-control" id="lu_attach" accept=".pdf, .doc, .docx">
                     </div>
                     <div class="alert alert-danger" id="lu_attachErrorMsg" style="display:none"></div>
                 </div>
             </div>
-          </div>
-          <div class="modal-footer flex-center justify-content-center">
+            </div>
+            <div class="modal-footer flex-center justify-content-center">
             <button type="button" class="btn btn-sm btn-primary" onclick="save_lu_attachment()">Add</button>
             <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-        <!--/.Content-->
-      </div>
-    </div>
-</form>
-
-<form method="post" id="draft_ec_form" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="modal fade" id="draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <!--Content-->
-        <div class="modal-content form-elegant">
-          <!--Header-->
-          <div class="modal-header text-center">
+            </div>
+            </div>
+            <!--/.Content-->
+            </div>
+            </div>
+            </form>
+            
+            <form method="post" id="rev_lu_attachment_form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal fade" id="rev_lu_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                <!--Content-->
+                <div class="modal-content form-elegant">
+                <!--Header-->
+                <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Attach</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <!--Body-->
+                <div class="modal-body mx-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Attachment</label>
+                            <input type="file" name="rev_lu_attach" class="form-control" id="rev_lu_attach" accept=".pdf, .doc, .docx">
+                        </div>
+                        <div class="alert alert-danger" id="rev_lu_attachErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                </div>
+                <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="save_rev_lu_attachment()">Add</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+                </div>
+                <!--/.Content-->
+                </div>
+                </div>
+                </form>
+            
+            <form method="post" id="draft_ec_form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal fade" id="draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+            <!--Header-->
+            <div class="modal-header text-center">
             <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
                                                     &nbsp;EC Draft</strong></h3>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-          <!--Body-->
-          <div class="modal-body mx-4">
+            </div>
+            <!--Body-->
+            <div class="modal-body mx-4">
             <div class="row">
                 <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Type</label>
+                        <select class="form-control" id="ec_type" name="ec_type" onchange="check_ec_draft_type(this.value)">
+                            <option>-SELECT-</option>
+                            <option value="Header">Header</option>
+                            <option value="Footer">Footer</option>
+                            <option value="Terms">Terms</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="ec_headingErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6 heading_div" style="display:none">
                     <div class="mb-3">
                         <label class="form-label fw-bold">EC Heading</label>
                         <input type="text" name="ec_heading" class="form-control" id="ec_heading">
@@ -6315,47 +6540,59 @@
                 <div class="col-lg-12">
                     <div class="mb-3">
                         <label class="form-label fw-bold">EC Terms</label>
-                        <textarea rows="2" name="ec_terms" class="form-control" id="ec_terms"></textarea>
+                        <textarea rows="3" name="ec_terms" class="form-control" id="ec_terms"></textarea>
                     </div>
                     <div class="alert alert-danger" id="ec_termsErrorMsg" style="display:none"></div>
                 </div>
             </div>
-          </div>
+            </div>
             <div class="alert alert-success border-0 rounded-0" role="alert" id="ec_draft_successMsg" style="display:none">
                 <i class="uil-folder-heart me-1 h4 align-middle"></i>
             </div>
             <div class="alert alert-danger border-0 rounded-0" role="alert" id="ec_draft_errorMsg" style="display:none">
                     <i class="uil-folder-heart me-1 h4 align-middle"></i>
             </div>
-          <div class="modal-footer flex-center justify-content-center">
+            <div class="modal-footer flex-center justify-content-center">
             <button type="button" class="btn btn-sm btn-primary" onclick="save_ec_draft()">Add</button>
             <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-        <!--/.Content-->
-      </div>
-    </div>
-</form>
-
-<form method="post" id="edit_draft_ec_form" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="modal fade" id="edit_draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <!--Content-->
-        <div class="modal-content form-elegant">
-          <!--Header-->
-          <div class="modal-header text-center">
+            </div>
+            </div>
+            <!--/.Content-->
+            </div>
+            </div>
+            </form>
+            
+            <form method="post" id="edit_draft_ec_form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal fade" id="edit_draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+            <!--Header-->
+            <div class="modal-header text-center">
             <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
                                                     &nbsp;Edit EC Draft</strong></h3>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-          <!--Body-->
-          <div class="modal-body mx-4">
+            </div>
+            <!--Body-->
+            <div class="modal-body mx-4">
             <input type="hidden" class="form-control" name="ec_draft_application_no" id="ec_draft_application_no">
             <input type="hidden" class="form-control" name="ec_draft_record_id" id="ec_draft_record_id">
             <div class="row">
                 <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Type</label>
+                        <select class="form-control" id="edit_ec_type" name="edit_ec_type" onchange="check_edit_ec_draft_type(this.value)">
+                            <option>-SELECT-</option>
+                            <option value="Header">Header</option>
+                            <option value="Footer">Footer</option>
+                            <option value="Terms">Terms</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="ec_headingErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6 edit_heading_div" style="display:none">
                     <div class="mb-3">
                         <label class="form-label fw-bold">EC Heading</label>
                         <input type="text" name="edit_ec_heading" class="form-control" id="edit_ec_heading">
@@ -6367,69 +6604,69 @@
                 <div class="col-lg-12">
                     <div class="mb-3">
                         <label class="form-label fw-bold">EC Terms</label>
-                        <textarea rows="2" name="edit_ec_terms" class="form-control" id="edit_ec_terms"></textarea>
+                        <textarea rows="3" name="edit_ec_terms" class="form-control" id="edit_ec_terms"></textarea>
                     </div>
                     <div class="alert alert-danger" id="edit_ec_termsErrorMsg" style="display:none"></div>
                 </div>
             </div>
-          </div>
+            </div>
             <div class="alert alert-success border-0 rounded-0" role="alert" id="edit_ec_draft_successMsg" style="display:none">
                 <i class="uil-folder-heart me-1 h4 align-middle"></i>
             </div>
             <div class="alert alert-danger border-0 rounded-0" role="alert" id="edit_ec_draft_errorMsg" style="display:none">
                     <i class="uil-folder-heart me-1 h4 align-middle"></i>
             </div>
-          <div class="modal-footer flex-center justify-content-center">
+            <div class="modal-footer flex-center justify-content-center">
             <button type="button" class="btn btn-sm btn-primary" onclick="update_ec_draft()">Update</button>
             <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-        <!--/.Content-->
-      </div>
-    </div>
-</form>
-
-<form method="post" id="delete_draft_ec_form" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="modal fade" id="delete_draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-sm" role="document">
-        <!--Content-->
-        <div class="modal-content form-elegant">
-          <!--Header-->
-          <div class="modal-header text-center">
+            </div>
+            </div>
+            <!--/.Content-->
+            </div>
+            </div>
+            </form>
+            
+            <form method="post" id="delete_draft_ec_form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal fade" id="delete_draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+            <!--Header-->
+            <div class="modal-header text-center">
             <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;Edit EC Draft</strong></h3>
+                                                    &nbsp;Delete EC Draft</strong></h3>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-          <!--Body-->
-          <div class="modal-body mx-4">
+            </div>
+            <!--Body-->
+            <div class="modal-body mx-4">
             <input type="hidden" class="form-control" name="delete_ec_draft_application_no" id="delete_ec_draft_application_no">
             <input type="hidden" class="form-control" name="delete_ec_draft_record_id" id="delete_ec_draft_record_id">
             <p>Are You SUre You Want TO Delete?</p>
-          </div>
+            </div>
             <div class="alert alert-success border-0 rounded-0" role="alert" id="delete_ec_draft_successMsg" style="display:none">
                 <i class="uil-folder-heart me-1 h4 align-middle"></i>
             </div>
             <div class="alert alert-danger border-0 rounded-0" role="alert" id="delete_ec_draft_errorMsg" style="display:none">
                     <i class="uil-folder-heart me-1 h4 align-middle"></i>
             </div>
-          <div class="modal-footer flex-center justify-content-center">
+            <div class="modal-footer flex-center justify-content-center">
             <button type="button" class="btn btn-sm btn-primary" onclick="delete_ec_draft()">Yes</button>
             <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">No</button>
-          </div>
-        </div>
-        <!--/.Content-->
-      </div>
-    </div>
-</form>
-
-<script>
-    $(function() {
-        let status = $('#status').val();
-
-        if(status == 'P' || status == 'DEC' || status == 'AL')
-        {
+            </div>
+            </div>
+            <!--/.Content-->
+            </div>
+            </div>
+            </form>
+            
+            <script>
+            $(function() {
+            let status = $('#status').val();
+            
+            if(status == 'P' || status == 'DEC' || status == 'AL')
+            {
             if(status == 'P')
             {
                 $('.forwardTo').show();
@@ -6449,11 +6686,12 @@
             }
             $('#verifier_details_accordian').show();
             
-        }
-        else if(status == 'R' || status == 'ALS' || status == 'FEATC' || status == 'RSS' || status == 'LUS')
-        {
+            }
+            else if(status == 'R' || status == 'ALS' || status == 'FEATC' || status == 'RSS' || status == 'LUS' || status == 'APP')
+            {
             if(status == 'R')
             {
+                $('.information_complete_div').show();
                 $('input[name="information"]').focus();
                 $('.AL_button').show();
                 
@@ -6472,22 +6710,27 @@
             else if(status == 'LUS')
             {
                 $('.information_complete_div').hide();
-                $('.rev_lu_attachment_div').show();
                 $('.draft_ec_div').show();
                 $('.ec_draft_button').show();
             }
             else if(status == 'RSS')
             {
-                $('.LU_button').show();
+                
                 $('.information_complete_div').hide();
                 $('.rev_resubmit_remarks_div').show();
+            }
+            else if(status == 'APP')
+            {
+                $('.eatc_attachment_div').show();
+                $('.rev_lu_attachment_div').show();
+                $('.LU_button').show();
             }
             
             $('#reviewer_details_accordian').show();
             
-        }
-        else if(status == 'ALR' || status == 'ALA' || status == 'EATC' || status == 'RS' || status == 'LU')
-        {
+            }
+            else if(status == 'ALR' || status == 'ALA' || status == 'EATC' || status == 'RS' || status == 'LU')
+            {
             if(status == 'ALR' || status == 'ALA')
             {
                 $('.ALS_button').show();
@@ -6512,19 +6755,21 @@
             }
             $('#client_details_accordian').show();
             $('#client_details_accordian').focus();
-        }
-    });
-
-    function forwardApplication(identifier)
-    {
-        let application_no = $('#application_no').val();
-        let additional_info_letter = $('#additional_info_letter').val();
-        let additional_info = $('#additional_info').val();
-        let resubmit_remarks = $('#resubmit_remarks').val();
-        let ec_expiry_date = $('#ec_expiry_date').val();
-
-        if(identifier == 'R' || identifier == 'ALS')
-        {
+            }
+            });
+            
+            function forwardApplication(identifier)
+            {
+            let application_no = $('#application_no').val();
+            let additional_info_letter = $('#additional_info_letter').val();
+            let additional_info = $('#additional_info').val();
+            let resubmit_remarks = $('#resubmit_remarks').val();
+            let ec_expiry_date = $('#ec_expiry_date').val();
+            let addtional_payment_amount = $('#addtional_payment_amount').val();
+            let tat = $('#tat').val();
+            
+            if(identifier == 'R' || identifier == 'ALS')
+            {
             let forward_to = $('#forward_to').val();
             $.ajax
             ({
@@ -6541,9 +6786,27 @@
                         {
                             $('#verifier_application_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
-                        setTimeout(function() {
-                            location.reload();
-                        }, 2000);
+                        if(data.redirect_to == 'verify_application_list')
+                        {
+                            setTimeout(function()
+                            {
+                                window.location.href = '/verify_application_list';
+                            }, 2000);
+                        }
+                        else if(data.redirect_to == 'reviewer_application_list')
+                        {
+                            setTimeout(function()
+                            {
+                                window.location.href = '/reviewer_application_list';
+                            }, 2000);
+                        }
+                        else if(data.redirect_to == 'client_application_list')
+                        {
+                            setTimeout(function()
+                            {
+                                window.location.href = '/client_application_list';
+                            }, 2000);
+                        }
                     }
                     else
                     {
@@ -6559,27 +6822,53 @@
                     }
                 }
             });
-        }
-        else
-        {
+            }
+            else
+            {
             $.ajax
             ({
                 type : "POST",
                 url : "{% url 'forward_application' %}",
-                data : {'application_no':application_no, 'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}','additional_info_letter':additional_info_letter ,'resubmit_remarks':resubmit_remarks,'ec_expiry_date':ec_expiry_date},
+                data : {'application_no':application_no, 'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}','additional_info_letter':additional_info_letter ,'resubmit_remarks':resubmit_remarks,'ec_expiry_date':ec_expiry_date,'tat':tat,'addtional_payment_amount':addtional_payment_amount},
                 success : function(data)
                 {
                     if(data.message == 'success')
                     {
-                        $('#verifier_application_successMsg').html("Application Forwarded Successfully");
+                        if(identifier == 'A')
+                        {
+                            $('#verifier_application_successMsg').html("Application Approved");
+                        }
+                        else
+                        {
+                            $('#verifier_application_successMsg').html("Application Forwarded Successfully");
+                        }
+                        
                         $('#verifier_application_successMsg').show();
                         setTimeout(function()
                         {
                             $('#verifier_application_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
-                        setTimeout(function() {
-                            location.reload();
-                        }, 2000);
+                        if(data.redirect_to == 'verify_application_list')
+                        {
+                            setTimeout(function()
+                            {
+                                window.location.href = '/verify_application_list';
+                            }, 2000);
+                        }
+                        else if(data.redirect_to == 'reviewer_application_list')
+                        {
+                            setTimeout(function()
+                            {
+                                window.location.href = '/reviewer_application_list';
+                            }, 2000);
+                        }
+                        else if(data.redirect_to == 'client_application_list')
+                        {
+                            setTimeout(function()
+                            {
+                                window.location.href = '/client_application_list';
+                            }, 2000);
+                        }
                     }
                     else
                     {
@@ -6595,76 +6884,96 @@
                     }
                 }
             });
-        }
-    }
-
-    function check_information_radio(value)
-    {
-        if(value == 'Yes')
-        {
+            }
+            }
+            
+            function check_information_radio(value)
+            {
+            if(value == 'Yes')
+            {
             $('.additional_payment_info').show();
             $('.additional_info_letter').hide();
-        }
-        else
-        {
+            $('.LU_button').show();
+            $('.AL_button').hide();
+            }
+            else
+            {
             
             $('.additional_info_letter').show();
             $('.additional_payment_info').hide();
-        }
-    }
-
-    function check_eatc_addtional_payment(value)
-    {
-        if(value == 'Yes')
-        {
-            $('.eatc_attachment_div').hide();
-        }
-        else
-        {
-            $('.eatc_attachment_div').show();
-        }
-    }
-
-    function check_fines_and_penalty(value)
-    {
-        if(value == 'No')
-        {
+            $('.LU_button').hide();
+            $('.AL_button').show();
+            }
+            }
+            
+            function check_eatc_addtional_payment(value)
+            {
+            if(value == 'Yes')
+            {
+                $('.eatc_attachment_div').hide();
+                $('.rev_lu_attachment_div').hide();
+                $('.addtional_payment_div').show();
+                $('.additonal_payment_button').show();
+                $('.LU_button').hide();
+            }
+            else
+            {
+                $('.eatc_attachment_div').show();
+                $('.rev_lu_attachment_div').show();
+                $('.addtional_payment_div').hide();
+                $('.additonal_payment_button').hide();
+                $('.LU_button').show();
+            }
+            }
+            
+            function check_fines_and_penalty(value)
+            {
+            if(value == 'No')
+            {
             $('.lu_attachment_div').show();
-        }
-        else
-        { 
+            }
+            else
+            { 
             $('.lu_attachment_div').hide();
-        }
-        
-    }
-    function save_ec_draft()
-    {
-        let application_no = $('#application_no').val();
-        let ec_heading = $('#ec_heading').val();
-        let ec_terms = $('#ec_terms').val();
-
-        if(ec_heading == "")
-        {
+            }
+            
+            }
+            function save_ec_draft()
+            {
+            let application_no = $('#application_no').val();
+            let ec_type = $('#ec_type').val();
+            let ec_heading = $('#ec_heading').val();
+            let ec_terms = $('#ec_terms').val();
+            
+            if(ec_type == "")
+            {
+            $('#ec_typeErrorMsg').html("Select One");
+            $('#ec_typeErrorMsg').show();
+            $('#ec_typeErrorMsg').delay(2000).fadeOut('slow');
+            $('#ec_type').focus();
+            }
+            else if(ec_type == 'Terms' && ec_heading == "")
+            {
             $('#ec_headingErrorMsg').html("Enter EC Heading");
             $('#ec_headingErrorMsg').show();
             $('#ec_headingErrorMsg').delay(2000).fadeOut('slow');
             $('#ec_heading').focus();
-        }
-        else if(ec_terms == "")
-        {
+            }
+            else if(ec_terms == "")
+            {
             $('#ec_termsErrorMsg').html("Enter EC Terms");
             $('#ec_termsErrorMsg').show();
             $('#ec_termsErrorMsg').delay(2000).fadeOut('slow');
             $('#ec_terms').focus();
-        }
-        else
-        {
+            }
+            else
+            {
             $.ajax
             ({
                 type : "POST",
                 url : "{% url 'save_draft_ec_details' %}",
-                data : {'application_no':application_no, 'ec_heading':ec_heading,'ec_terms':ec_terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(data)
+                data : {'application_no':application_no, 'ec_type':ec_type,  'ec_heading':ec_heading,'ec_terms':ec_terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
                 {
                     $('#ec_draft_successMsg').html("Saved Successfully");
                     $('#ec_draft_successMsg').show();
@@ -6673,90 +6982,158 @@
                         $('#ec_draft_successMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                     setTimeout(function() {
-                        $('.draft_ec_div').html(responseText);
-                        $('.draft_ec_div').focus();
+                        $('#draft_ec_form')[0].reset();
+                        $('#draft_ec_modal').modal('hide');
+                        $('#draft_ec_details').html(responseText);
+                        $('#draft_ec_div').focus();
                     }, 2000);
                 }
             });
-        }
-        
-    }
-    function save_eatc_attachment()
-    {
-        let file_length = document.getElementById("eatc_attach");
-        if(file_length.value.length < 1)
-        {
-            $('#eatc_attachErrorMsg').html("Please Choose A Attachment");
-            $('#eatc_attachErrorMsg').show();
-            $('#eatc_attachErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else
-        {
-            let application_no = $('#application_no').val();
-            var fileName = document.getElementById('eatc_attach').files[0].name;
-            var fd = new FormData();
-            var file = document.getElementById('eatc_attach').files[0];
-            fd.append('eatc_attach', file);
-            fd.append('application_no', application_no);
-            token_value=$("input[name=csrfmiddlewaretoken]").val();
-            $.ajaxSetup
-            ({
-                beforeSend: function(xhr, settings)
+            }
+            
+            }
+            
+            function save_ai_attachment()
+            {
+                let file_length = document.getElementById("ai_attach");
+                if(file_length.value.length < 1)
                 {
-                xhr.setRequestHeader("X-CSRFToken", token_value);
+                $('#ai_attachErrorMsg').html("Please Choose A Attachment");
+                $('#ai_attachErrorMsg').show();
+                $('#ai_attachErrorMsg').delay(2000).fadeOut('slow');
                 }
-            });
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'save_eatc_attachment' %}",
-                data : fd,
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                success : function(data)
+                else
                 {
-                    if (data.form_is_valid)
+                let application_no = $('#application_no').val();
+                var fileName = document.getElementById('ai_attach').files[0].name;
+                var fd = new FormData();
+                var file = document.getElementById('ai_attach').files[0];
+                fd.append('ai_attach', file);
+                fd.append('application_no', application_no);
+                token_value=$("input[name=csrfmiddlewaretoken]").val();
+                $.ajaxSetup
+                ({
+                    beforeSend: function(xhr, settings)
                     {
-                        let file_url = data.file_url;
-                        let application_no = $('#application_no').val();
-                        $.ajax
-                        ({
-                            type : "POST",
-                            url : "{% url 'save_eatc_attachment_details' %}",
-                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
-                            success : function(responseText)
-                            {
-                                $('#eatc_attachment_modal').modal('hide');
-                                $('#eatc_file_attachment').html(responseText);
-                                $('.modal-backdrop').remove();
-                                $('#eatc_attachment_form')[0].reset();
-                            }
-                        });
+                    xhr.setRequestHeader("X-CSRFToken", token_value);
                     }
-                    else
+                });
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'save_ai_attachment' %}",
+                    data : fd,
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    success : function(data)
                     {
-                        $('#eatc_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                        $('#eatc_attachErrorMsg').show();
-                        $('#eatc_attachErrorMsg').delay(2000).fadeOut('slow');
+                        if (data.form_is_valid)
+                        {
+                            let file_url = data.file_url;
+                            let application_no = $('#application_no').val();
+                            $.ajax
+                            ({
+                                type : "POST",
+                                url : "{% url 'save_ai_attachment_details' %}",
+                                data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                                success : function(responseText)
+                                {
+                                    $('#ai_attachment_modal').modal('hide');
+                                    $('#ai_file_attachment').html(responseText);
+                                    $('.modal-backdrop').remove();
+                                    $('#ai_attachment_form')[0].reset();
+                                }
+                            });
+                        }
+                        else
+                        {
+                            $('#ai_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                            $('#ai_attachErrorMsg').show();
+                            $('#ai_attachErrorMsg').delay(2000).fadeOut('slow');
+                        }
                     }
+                });
                 }
-            });
-        }
-    }
-
-
-    function save_lu_attachment()
-    {
-        let file_length = document.getElementById("lu_attach");
-        if(file_length.value.length < 1)
-        {
+            }
+            
+            
+            function save_eatc_attachment()
+            {
+                let file_length = document.getElementById("eatc_attach");
+                if(file_length.value.length < 1)
+                {
+                $('#eatc_attachErrorMsg').html("Please Choose A Attachment");
+                $('#eatc_attachErrorMsg').show();
+                $('#eatc_attachErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                let application_no = $('#application_no').val();
+                var fileName = document.getElementById('eatc_attach').files[0].name;
+                var fd = new FormData();
+                var file = document.getElementById('eatc_attach').files[0];
+                fd.append('eatc_attach', file);
+                fd.append('application_no', application_no);
+                token_value=$("input[name=csrfmiddlewaretoken]").val();
+                $.ajaxSetup
+                ({
+                    beforeSend: function(xhr, settings)
+                    {
+                    xhr.setRequestHeader("X-CSRFToken", token_value);
+                    }
+                });
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'save_eatc_attachment' %}",
+                    data : fd,
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    success : function(data)
+                    {
+                        if (data.form_is_valid)
+                        {
+                            let file_url = data.file_url;
+                            let application_no = $('#application_no').val();
+                            $.ajax
+                            ({
+                                type : "POST",
+                                url : "{% url 'save_eatc_attachment_details' %}",
+                                data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                                success : function(responseText)
+                                {
+                                    $('#eatc_attachment_modal').modal('hide');
+                                    $('#eatc_file_attachment').html(responseText);
+                                    $('.modal-backdrop').remove();
+                                    $('#eatc_attachment_form')[0].reset();
+                                }
+                            });
+                        }
+                        else
+                        {
+                            $('#eatc_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                            $('#eatc_attachErrorMsg').show();
+                            $('#eatc_attachErrorMsg').delay(2000).fadeOut('slow');
+                        }
+                    }
+                });
+                }
+            }
+            
+            
+            function save_lu_attachment()
+            {
+            let file_length = document.getElementById("lu_attach");
+            if(file_length.value.length < 1)
+            {
             $('#lu_attachErrorMsg').html("Please Choose A Attachment");
             $('#lu_attachErrorMsg').show();
             $('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else
-        {
+            }
+            else
+            {
             let application_no = $('#application_no').val();
             var fileName = document.getElementById('lu_attach').files[0].name;
             var fd = new FormData();
@@ -6807,69 +7184,142 @@
                     }
                 }
             });
-        }
-    }
-
-    function check_rectification(value)
-    {
-        if(value=="Yes")
-        {
+            }
+            }
+            
+            function save_rev_lu_attachment()
+            {
+            let file_length = document.getElementById("rev_lu_attach");
+            if(file_length.value.length < 1)
+            {
+            $('#rev_lu_attachErrorMsg').html("Please Choose A Attachment");
+            $('#rev_lu_attachErrorMsg').show();
+            $('#rev_lu_attachErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+            let application_no = $('#application_no').val();
+            var fileName = document.getElementById('rev_lu_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('rev_lu_attach').files[0];
+            fd.append('rev_lu_attach', file);
+            fd.append('application_no', application_no);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_rev_lu_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_rev_lu_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#rev_lu_attachment_modal').modal('hide');
+                                $('#rev_lu_file_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#rev_lu_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#rev_lu_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#rev_lu_attachErrorMsg').show();
+                        $('#rev_lu_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+            }
+            }
+            
+            function check_rectification(value)
+            {
+            if(value=="Yes")
+            {
             $('.rectification_button').show();
             $('.LU_button').hide();
-        }
-        else
-        {
+            }
+            else
+            {
             $('.LU_button').show();
             $('.rectification_button').hide();
-        }
-    }
-
-    function populate_ec_details(record_id, application_no, ec_heading, ec_terms)
-    {
-        $('#ec_draft_record_id').val(record_id);
-        $('#ec_draft_application_no').val(application_no);
-        $('#edit_ec_heading').val(ec_heading);
-        $('#edit_ec_terms').val(ec_terms);
-        
-        $('#edit_draft_ec_modal').modal('show');
-    }
-
-    function populate_delete_ec_details(record_id, application_no)
-    {
-        $('#delete_ec_draft_record_id').val(record_id);
-        $('#delete_ec_draft_application_no').val(application_no);
-        
-        $('#delete_draft_ec_modal').modal('show');
-    }
-
-    function update_ec_draft()
-    {
-        let record_id = $('#ec_draft_record_id').val();
-        let application_no = $('#ec_draft_application_no').val();
-        let ec_heading = $('#edit_ec_heading').val();
-        let ec_terms = $('#edit_ec_terms').val();
-
-        if(ec_heading == "")
-        {
+            }
+            }
+            
+            function populate_ec_details(record_id, application_no,ec_type, ec_heading, ec_terms)
+            {
+            $('#ec_draft_record_id').val(record_id);
+            $('#ec_draft_application_no').val(application_no);
+            $('#edit_ec_type').val(ec_type);
+            $('#edit_ec_heading').val(ec_heading);
+            $('#edit_ec_terms').val(ec_terms);
+            
+            $('#edit_draft_ec_modal').modal('show');
+            }
+            
+            function populate_delete_ec_details(record_id, application_no)
+            {
+            $('#delete_ec_draft_record_id').val(record_id);
+            $('#delete_ec_draft_application_no').val(application_no);
+            
+            $('#delete_draft_ec_modal').modal('show');
+            }
+            
+            function update_ec_draft()
+            {
+            let record_id = $('#ec_draft_record_id').val();
+            let application_no = $('#ec_draft_application_no').val();
+            let ec_type = $('#edit_ec_type').val();
+            let ec_heading = $('#edit_ec_heading').val();
+            let ec_terms = $('#edit_ec_terms').val();
+            
+            if(ec_type == "")
+            {
+            $('#edit_ec_typeErrorMsg').html("Choose One");
+            $('#edit_ec_typeErrorMsg').show();
+            $('#edit_ec_typeErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_ec_type').focus();
+            }
+            else if(ec_heading == "")
+            {
             $('#edit_ec_headingErrorMsg').html("Enter EC Heading");
             $('#edit_ec_headingErrorMsg').show();
             $('#edit_ec_headingErrorMsg').delay(2000).fadeOut('slow');
             $('#edit_ec_heading').focus();
-        }
-        else if(ec_terms == "")
-        {
+            }
+            else if(ec_terms == "")
+            {
             $('#edit_ec_termsErrorMsg').html("Enter EC Terms");
             $('#edit_ec_termsErrorMsg').show();
             $('#edit_ec_termsErrorMsg').delay(2000).fadeOut('slow');
             $('#edit_ec_terms').focus();
-        }
-        else
-        {
+            }
+            else
+            {
             $.ajax
             ({
                 type : "POST",
                 url : "{% url 'update_draft_ec_details' %}",
-                data : {'record_id':record_id, 'application_no':application_no, 'ec_heading':ec_heading,'ec_terms':ec_terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'record_id':record_id, 'application_no':application_no, 'ec_type':ec_type, 'ec_heading':ec_heading,'ec_terms':ec_terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_ec_draft_successMsg').html("Updated Successfully");
@@ -6880,21 +7330,21 @@
                     }, 2000);
                     setTimeout(function() {
                         $('#edit_draft_ec_modal').modal('hide');
-                        $('.draft_ec_div').html(responseText);
-                        $('.draft_ec_div').focus();
+                        $('#draft_ec_details').html(responseText);
+                        $('#draft_ec_div').focus();
                     }, 2000);
                 }
             });
-        }
-    }
-
-    function delete_ec_draft()
-    {
-        let record_id = $('#delete_ec_draft_record_id').val();
-        let application_no = $('#delete_ec_draft_application_no').val();
-        
-        $.ajax
-        ({
+            }
+            }
+            
+            function delete_ec_draft()
+            {
+            let record_id = $('#delete_ec_draft_record_id').val();
+            let application_no = $('#delete_ec_draft_application_no').val();
+            
+            $.ajax
+            ({
             type : "POST",
             url : "{% url 'delete_draft_ec_details' %}",
             data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
@@ -6908,10 +7358,34 @@
                 }, 2000);
                 setTimeout(function() {
                     $('#delete_draft_ec_modal').modal('hide');
-                    $('.draft_ec_div').html(responseText);
-                    $('.draft_ec_div').focus();
+                    $('#draft_ec_details').html(responseText);
+                    $('#draft_ec_div').focus();
                 }, 2000);
             }
-        });
-    }
+            });
+            }
+            
+            function check_ec_draft_type(value)
+            {
+                if(value=="Terms")
+                {
+                    $('.heading_div').show();
+                }
+                else
+                {
+                    $('.heading_div').hide();
+                }
+            }
+            
+            function check_edit_ec_draft_type(value)
+            {
+                if(value=="Terms")
+                {
+                    $('.edit_heading_div').show();
+                }
+                else
+                {
+                    $('.edit_heading_div').hide();
+                }
+            }
 </script>

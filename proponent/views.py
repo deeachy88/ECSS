@@ -3024,7 +3024,7 @@ def save_tor_form(request):
             ca_authority=ca_auth,
             application_source='ECSS'
         )
-        insert_app_payment_details(request, application_no, None, 'tor_form', 500, None)
+        insert_app_payment_details(request, application_no, 'tor_form', 500, None)
         send_tor_payment_mail(request.session['name'], request.session['email'], 500)
         data['message'] = 'success'
     except Exception as e:
@@ -3220,7 +3220,16 @@ def view_tor_application_details(request):
 
 def insert_app_payment_details(request,application_no, identifier,total_amount,application_type):
     if 'new' in identifier:
-        payment_details = payment_details_master.objects.filter(payment_type='New')
+        payment_details = payment_details_master.objects.filter(payment_type='NEW')
+        for pay_details in payment_details:      
+            t_payment_details.objects.create(application_no=application_no,
+                    application_type=application_type,
+                    application_date=date.today(), 
+                    proponent_name=request.session['name'],
+                    amount=total_amount,
+                    account_head_code=pay_details.account_head_code)
+    elif 'tor' in identifier:
+        payment_details = payment_details_master.objects.filter(payment_type='TOR')
         for pay_details in payment_details:      
             t_payment_details.objects.create(application_no=application_no,
                     application_type=application_type,

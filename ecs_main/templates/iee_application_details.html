@@ -7454,172 +7454,9 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body" id="reviewer_details_accordian" style="display:none;">
-                <div class="alert alert-primary">Reviewer Details</div>
-                    <form method="post" id="reviewer_form">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Is The Information Complete?</label>
-                                    <div class="mt-2">
-                                        <div class="form-check form-check-inline">
-                                            <input type="radio" id="customRadio3" name="information" class="form-check-input"  value="Yes" onclick="check_information_radio(this.value)">
-                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="radio" id="customRadio4" name="information" class="form-check-input"  value="No" onclick="check_information_radio(this.value)">
-                                            <label class="form-check-label" for="customRadio4">No</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="informationErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                            </div>
-                            <div class="row additional_info_letter" style="display: none;">
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Additional Information Letter</label>
-                                        <textarea class="form-control" id="additional_info" name="additional_info" rows="2"></textarea>
-                                    </div>
-                                </div>
-                                <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                            </div>
-                            <div class="row additional_payment_info" style="display: none;">
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Is There Additional Payment?</label>
-                                        <div class="mt-2">
-                                            <div class="form-check form-check-inline">
-                                                <input type="radio" id="customRadio3" name="addtional_payment" class="form-check-input"  value="Yes" onclick="check_eatc_addtional_payment(this.value)">
-                                                <label class="form-check-label" for="customRadio3">Yes</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input type="radio" id="customRadio4" name="addtional_payment" class="form-check-input"  value="No" onclick="check_eatc_addtional_payment(this.value)">
-                                                <label class="form-check-label" for="customRadio4">No</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                            </div>
-                            <div class="col-md-12 eatc_attachment_div" style="display: none;">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="card-widgets">
-                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#eatc_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                        </div>
-                                        <h5 class="card-title mb-0">Attachments</h5>
-                                        <div id="cardCollpase7" class="collapse pt-3 show">
-                                            <div id="eatc_file_attachment">
-                                                {% include 'file_attachment_page.html' %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row fines_penalty_div" style="display: none;">
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Is There Fines And Penalties?</label>
-                                        <div class="mt-2">
-                                            <div class="form-check form-check-inline">
-                                                <input type="radio" id="customRadio3" name="fines_penalty" class="form-check-input"  value="Yes" onclick="check_fines_and_penalty(this.value)">
-                                                <label class="form-check-label" for="customRadio3">Yes</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input type="radio" id="customRadio4" name="fines_penalty" class="form-check-input"  value="No" onclick="check_fines_and_penalty(this.value)">
-                                                <label class="form-check-label" for="customRadio4">No</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                            </div>
-                            
-                            <div class="row rectification_div" style="display: none;">
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Is There Rectification/on hold/further studies/clarification?</label>
-                                        <div class="mt-2">
-                                            <div class="form-check form-check-inline">
-                                                <input type="radio" id="customRadio3" name="rectification" class="form-check-input"  value="Yes" onclick="check_rectification(this.value)">
-                                                <label class="form-check-label" for="customRadio3">Yes</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input type="radio" id="customRadio4" name="rectification" class="form-check-input"  value="No" onclick="check_rectification(this.value)">
-                                                <label class="form-check-label" for="customRadio4">No</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="rectificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                            </div>
-                            <div class="col-md-12 lu_attachment_div" style="display: none;">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title mb-0">Attachments</h5>
-                                        <div id="cardCollpase7" class="collapse pt-3 show">
-                                                {% include 'file_attachment_page.html' %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 draft_ec_div" style="display: none;">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="card-widgets">
-                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#draft_ec_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                        </div>
-                                        <h5 class="card-title mb-0">EC Draft</h5>
-                                        <div id="cardCollpase7" class="collapse pt-3 show">
-                                            <div id="draft_ec_details">
-                                                {% include 'ec_details.html' %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="alert alert-success border-0 rounded-0" role="alert" id="reviewer_application_successMsg" style="display:none">
-                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                        </div>
-                        <div class="alert alert-danger border-0 rounded-0" role="alert" id="reviewer_application_errorMsg" style="display:none">
-                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                        </div>
-                        <div class="row  mt-3 AL_button">
-                            <div class="mb-3">
-                                <a href="#" class="btn btn-success" onclick="forwardApplication('AL')">
-                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
-                            </div>
-                        </div>
-                        <div class="row  mt-3">
-                            <div class="mb-3 EATC_button" style="display: none;">
-                                <a href="#" class="btn btn-success" onclick="forwardApplication('EATC')">
-                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="mb-3"></div>
-                                <div class="LU_button" style="display:none;">
-                                    <a href="#" class="btn btn-success" onclick="forwardApplication('LU')">
-                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-3 rectification_button" style="display:none;">
-                            <div class="mb-3">
-                                <a href="#" class="btn btn-success" onclick="forwardApplication('OH')">
-                                    <i class="mdi mdi-alert-octagon me-1"></i> On Hold </a>
-                                <a href="#" class="btn btn-success" onclick="forwardApplication('RS')">
-                                    <i class="uil uil-history-alt me-1"></i> Resubmit </a>
-                                <a href="#" class="btn btn-success" onclick="forwardApplication('V')">
-                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
 <div class="card-body" id="reviewer_details_accordian" style="display:none;">
     <div class="alert alert-primary">Reviewer Details</div>
         <form method="post" id="reviewer_form">
@@ -7719,7 +7556,18 @@
                         <div class="card-body">
                             <div class="col-lg-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Addional Payable Amount</label>
+                                    <label class="form-label fw-bold">Account Head</label>
+                                    <select class="form-select" name="account_head"  id="account_head">
+                                        <option value="">--SELECT--</option>
+                                        {% for payment_details in pay_details %}
+                                            <option value="{{ payment_details.account_head_code }}">{{ thromde.account_head_name }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Additional Payable Amount</label>
                                     <input type="text" name="addtional_payment_amount" class="form-control" id="addtional_payment_amount"> 
                                 </div>
                             </div>
@@ -7804,6 +7652,38 @@
                     </div>
                 </div>
                 <div class="col-md-12 draft_ec_div" style="display: none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Commitee & Field Verification Paper</th>
+                                        <th scope="col">Draft Legal Undertaking</th>
+                                        <th scope="col">Legal Undertaking Attached</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            {% for rev_lu_attach in eatc_attach %}
+                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            {% for rev_lu_attach in rev_lu_attach %}
+                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                            {% endfor %}    
+                                        </td>
+                                        <td>
+                                            {% for rev_lu_attach in lu_attach %}
+                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                     <div class="card">
                         <div class="card-body">
                             <div class="card-widgets">
@@ -8002,6 +7882,35 @@
                     </div>
                 </div>
                 <div class="col-md-12 verifier_ec_draft_div" style="display: none;">
+                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                        <thead>
+                            <tr>
+                                <th scope="col">Commitee & Field Verification Paper</th>
+                                <th scope="col">Draft Legal Undertaking</th>
+                                <th scope="col">Legal Undertaking Attached</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    {% for rev_lu_attach in eatc_attach %}
+                                        <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for rev_lu_attach in rev_lu_attach %}
+                                        <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                    {% endfor %}    
+                                </td>
+                                <td>
+                                    {% for rev_lu_attach in lu_attach %}
+                                        <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
@@ -8022,7 +7931,7 @@
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Turn Around Time</label>
                                 {% for application_details in application_details %}
-                                    <input type="date" name="tat" class="form-control" id="tat" value="{{application_details.tat}}">
+                                    <input type="text" name="tat" class="form-control" id="tat" value="{{application_details.tat}}">
                                 {% endfor %}
                             </div>
                         </div>

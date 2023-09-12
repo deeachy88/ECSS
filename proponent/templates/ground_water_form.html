@@ -4490,7 +4490,7 @@
         $.ajax
         ({
             type : "POST",
-            url : "{% url 'submit_ground_water_application' %}",
+            url : "{% url 'submit_general_application' %}",
             data : $('#ground_water_submit_form').serialize(),
             success : function(data)
             {
