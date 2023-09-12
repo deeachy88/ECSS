@@ -6020,13 +6020,15 @@ def submit_renew_application(request):
             amount = main_application_details.amount
         for fees_details in fees_details:
             total_amount = (fees_details.rate * amount)/100 + fees_details.application_fee
-            
-        t_payment_details.objects.create(application_no=application_no,
-            application_type= 'Renewal',
-            application_date=date.today(), 
-            proponent_name=request.session['name'],
-            amount=total_amount,
-            account_head_code='131370002')
+
+        payment_details = payment_details_master.objects.filter(payment_type='TOR')
+        for pay_details in payment_details:      
+            t_payment_details.objects.create(application_no=application_no,
+                application_type= 'Renewal',
+                application_date=date.today(), 
+                proponent_name=request.session['name'],
+                amount=total_amount,
+                account_head_code=pay_details.account_head_code)
         send_payment_mail(request.session['name'],request.session['email'], total_amount)
         data['message'] = "success"
     except Exception as e:
