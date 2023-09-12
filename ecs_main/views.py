@@ -1415,7 +1415,9 @@ def save_fines_penalties(request):
                                         amount=amount,
                                         fines_status='P'
                                         )
-        insert_payment_details(request, application_no,'131379010',proponent_name,amount,fines_penalties_type)
+        payment_details = payment_details_master.objects.filter(payment_type='FINE')
+        for pay_details in payment_details:
+            insert_payment_details(request, application_no,pay_details.account_head_code,proponent_name,amount,fines_penalties_type)
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         for application_details in application_details:
             fines_penalties_email(application_details.email, application_no, amount)
