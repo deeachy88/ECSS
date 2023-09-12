@@ -6021,7 +6021,7 @@ def submit_renew_application(request):
         for fees_details in fees_details:
             total_amount = (fees_details.rate * amount)/100 + fees_details.application_fee
 
-        payment_details = payment_details_master.objects.filter(payment_type='TOR')
+        payment_details = payment_details_master.objects.filter(payment_type='RENEW')
         for pay_details in payment_details:      
             t_payment_details.objects.create(application_no=application_no,
                 application_type= 'Renewal',
