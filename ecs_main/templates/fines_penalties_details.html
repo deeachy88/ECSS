@@ -1,215 +1,217 @@
-{% extends 'common_dashboard.html' %}
-{% block content %}
-<div class="card mt-1">
-    <div class="card-body">
-        <h5 class="card-title mb-0 text-right">Fines And Penalties Details</h5>
-        <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
-            <i class="ri-check-line me-2"></i>
-        </div>
-        <div id="cardCollpase1" class="collapse pt-3 show">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <form id="fines_penalties_form" method="post">
-                            {% csrf_token %}
-                            {% for application_details in application_details %}
-                            <input type="text" class="form-control" value="{{application_no}}" name="application_no" style="display:none;">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Name of Project</label>
-                                        <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Fines and Penalties Type</label>
-                                        <input type="text" name="fines_penalty_type" class="form-control" id="fines_penalty_type" value="{{ application_details.project_name }}" disabled>
-                                    </div>
+<div class="row" xmlns="http://www.w3.org/1999/html">
+    <div class="col-xl-12">
+        <div class="card mt-1">
+            <div class="card-body">
+                <h5 class="card-title mb-0 text-right">Fines And Penalties Details</h5>
+                <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
+                    <i class="ri-check-line me-2"></i>
+                </div>
+                <div id="cardCollpase1" class="collapse pt-3 show">
+                    <form id="fines_penalties_form" method="post">
+                        {% csrf_token %}
+                        {% for application_details in application_details %}
+                        <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Name of Project</label>
+                                    <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" readonly>
                                 </div>
                             </div>
-                            <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Applicant Name</label>
-                                        <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
-                                    </div>
-                                    <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Address</label>
-                                        <input type="text" name="address" class="form-control" id="address" value="{{ application_details.address }}" disabled>
-                                    </div>
-                                    <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Fines and Penalties Type</label>
+                                    <input type="text" name="fines_penalty_type" class="form-control" id="fines_penalty_type" value="{{ application_details.project_name }}" readonly>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Contact No</label>
-                                        <input type="number" min="1"  name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{ application_details.contact_no }}" disabled>
-                                    </div>
+                        </div>
+                        <div class="alert alert-warning border-0 rounded-0" role="alert">
+                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Applicant Name</label>
+                                    <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" readonly>
                                 </div>
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Email</label>
-                                        <input type="email" name="email" class="form-control" id="email" value="{{ application_details.email }}" disabled>
-                                    </div>
+                                <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Address</label>
+                                    <input type="text" name="address" class="form-control" id="address" value="{{ application_details.address }}" readonly>
+                                </div>
+                                <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Contact No</label>
+                                    <input type="number" min="1"  name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{ application_details.contact_no }}" readonly>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
-                                        <textarea class="form-control" id="focal_person" name="focal_person" rows="3" disabled>{{ application_details.focal_person }}</textarea>
-                                    </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Email</label>
+                                    <input type="email" name="email" class="form-control" id="email" value="{{ application_details.email }}" readonly>
                                 </div>
                             </div>
-                            <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Dzongkhag/Thromde</label>
-                                        <select class="form-select" name="dzo_throm"  id="dzo_throm" disabled>
-                                            {% for dzongkhag in dzongkhag %}
-                                                <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
-                                                    {{ dzongkhag.dzongkhag_name }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Gewog</label>
-                                        <select class="form-select" name="gewog" id="gewog" disabled>
-                                            {% for gewog in gewog %}
-                                                <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
-                                                    {{ gewog.gewog_name }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
+                                    <textarea class="form-control" id="focal_person" name="focal_person" rows="3" readonly>{{ application_details.focal_person }}</textarea>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Village/Chiwog</label>
-                                        <select class="form-select" name="vil_chiwog" id="vil_chiwog" disabled>
-                                            {% for village in village %}
-                                            <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
-                                                {{ village.village_name }}
+                        </div>
+                        <div class="alert alert-warning border-0 rounded-0" role="alert">
+                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Dzongkhag/Thromde</label>
+                                    <select class="form-select" name="dzo_throm"  id="dzo_throm" readonly>
+                                        {% for dzongkhag in dzongkhag %}
+                                            <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                {{ dzongkhag.dzongkhag_name }}
                                             </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
+                                        {% endfor %}
+                                    </select>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Name of Particular Project Site</label>
-                                        <input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
-                                    </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Gewog</label>
+                                    <select class="form-select" name="gewog" id="gewog" readonly>
+                                        {% for gewog in gewog %}
+                                            <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                {{ gewog.gewog_name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
                             </div>
-                            <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                <i class="uil-folder-heart me-1 h4 align-middle"></i> EC Details
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">EC Reference No</label>
-                                        <input type="text" class="form-control" name="ec_ref_no"  value="{{ application_details.ec_ref_no }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">EC Issue Date</label>
-                                        <input type="text" class="form-control"  value="{{ application_details.ec_approve_date }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">EC Expiry Date</label>
-                                        <input type="text" class="form-control" name="ec_expiry_date"  value="{{ application_details.ec_expiry_date }}" disabled>
-                                    </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog" readonly>
+                                        {% for village in village %}
+                                        <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                            {{ village.village_name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
                             </div>
-                            {% endfor %}
-                            <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                <i class="uil-folder-heart me-1 h4 align-middle"></i> Fines And Penalties Details
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Fines And Penalties(Nu)</label>
-                                        <input type="number" class="form-control"  name="fines_and_penalties" id="fines_and_penalties">
-                                    </div>
-                                    <div id="fines_and_penaltiesErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Remarks</label>
-                                        <input type="text" class="form-control" name="fines_penalties_remarks" id="fines_penalties_remarks">
-                                    </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                    <input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" readonly>
                                 </div>
                             </div>
-                            <div class="alert alert-success border-0 rounded-0" role="alert" id="fines_penalties_successMsg" style="display:none">
-                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                            </div>
-                            <div class="alert alert-danger border-0 rounded-0" role="alert" id="fines_penalties_errorMsg" style="display:none">
-                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                            </div>
-                            <div class="row mt-4">
-                                <div class="text-sm-end">
-                                    <button type="button" class="btn btn-success" onclick="save_fines_penalties()">
-                                        <i class="mdi mdi-arrow-right me-1"></i> Submit 
-                                    </button>
+                        </div>
+                        <div class="alert alert-warning border-0 rounded-0" role="alert">
+                            <i class="uil-folder-heart me-1 h4 align-middle"></i> EC Details
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">EC Reference No</label>
+                                    <input type="text" class="form-control" name="ec_ref_no"  value="{{ application_details.ec_reference_no }}" readonly>
                                 </div>
                             </div>
-                        </form>
-                    </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">EC Issue Date</label>
+                                    <input type="text" class="form-control"  value="{{ application_details.ec_approve_date|date:"d-m-Y" }}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">EC Expiry Date</label>
+                                    <input type="text" class="form-control" name="ec_expiry_date"  value="{{ application_details.ec_expiry_date|date:"d-m-Y" }}" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="alert alert-warning border-0 rounded-0" role="alert">
+                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Fines And Penalties Details
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Fines And Penalties(Nu)</label>
+                                    <input type="number" class="form-control"  name="fines_and_penalties" id="fines_and_penalties">
+                                </div>
+                                <div id="fines_and_penaltiesErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Remarks</label>
+                                    <input type="text" class="form-control" name="fines_penalties_remarks" id="fines_penalties_remarks">
+                                </div>
+                            </div>
+                        </div>
+                        <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </button>
+                        <div class="alert alert-success border-0 rounded-0" role="alert" id="fines_penalties_successMsg" style="display:none">
+                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                        </div>
+                        <div class="alert alert-danger border-0 rounded-0" role="alert" id="fines_penalties_errorMsg" style="display:none">
+                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="text-sm-end">
+                                <button type="button" class="btn btn-success" onclick="save_fines_penalties()">
+                                    <i class="mdi mdi-arrow-right me-1"></i> Submit 
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 <script>
     function save_fines_penalties()
     {
+        $("#pageloader").show();
         let fines_and_penalties = $('#fines_and_penalties').val();
         
         if(fines_and_penalties == "")
         {
-            $('#fines_and_penaltiesErrorMsg').html("Enter CID");
+            $('#fines_and_penaltiesErrorMsg').html("Enter Fine");
             $('#fines_and_penaltiesErrorMsg').show();
             $('#fines_and_penaltiesErrorMsg').delay(2000).fadeOut('slow');
             $('#fines_and_penalties').focus();
         }
         else
         {
+            
             $.ajax({
                 type : "POST",
                 url : "{% url 'save_fines_penalties' %}",
                 data :$('#fines_penalties_form').serialize(),
                 success : function(data)
                 {
+                    $("#pageloader").hide();
                     if(data.message == 'success')
                     {
                         $('#fines_penalties_successMsg').html("Submitted Successfully");
-                        $('#other_impact_successMsg').show();
+                        $('#fines_penalties_successMsg').show();
                         setTimeout(function()
                         {
-                            $('#other_impact_successMsg').delay(2000).fadeOut('slow');
+                            $('#fines_penalties_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                         setTimeout(function() {
                             location.reload();
@@ -218,10 +220,10 @@
                     else
                     {
                         $('#fines_penalties_errorMsg').html("Please Check And Submit Again");
-                        $('#other_impact_errorMsg').show();
+                        $('#fines_penalties_errorMsg').show();
                         setTimeout(function()
                         {
-                            $('#other_impact_errorMsg').delay(2000).fadeOut('slow');
+                            $('#fines_penalties_errorMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                     }
                 }
@@ -229,6 +231,5 @@
         }
     }
 </script>
-{% endblock %}       
 
                     

@@ -5,11 +5,11 @@ from proponent.models import t_ec_industries_t10_hazardous_chemicals, t_ec_indus
 from ecs_admin.models import payment_details_master, t_bsic_code, t_dzongkhag_master, t_file_attachment, t_gewog_master, t_role_master, t_service_master, t_thromde_master, t_user_master, t_village_master
 from ecs_main.models import t_application_history, t_inspection_monitoring_t1
 from django.utils import timezone
-from datetime import date
 from django.core.mail import send_mail
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Max
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
+from datetime import date
 from django.db.models import Count, Subquery, OuterRef
 
 # Create your views here.
@@ -1386,8 +1386,10 @@ def get_fines_penalties_details(request):
     ec_ref_no = request.GET.get('ec_ref_no')
 
     application_details = t_ec_industries_t1_general.objects.filter(application_no=ec_ref_no) | t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_ref_no)
-    
-    return render(request, 'fines_penalties_details.html', {'application_details':application_details})
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'fines_penalties_details.html', {'application_details':application_details, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 
 def save_fines_penalties(request):
     data = dict()
@@ -1400,14 +1402,16 @@ def save_fines_penalties(request):
         validity = request.POST.get('ec_expiry_date')
         amount = request.POST.get('fines_and_penalties')
         
+        parsed_date = datetime.strptime(validity, "%d-%m-%Y")
+        formatted_date = parsed_date.strftime("%Y-%m-%d")
 
         t_fines_penalties.objects.create(application_no=application_no,
                                         fines_penalties_type=fines_penalties_type,
-                                        fines_date=date.now(),
+                                        fines_date=date.today(),
                                         ec_no=ec_no,
                                         proponent_name=proponent_name,
                                         address=address,
-                                        validity=validity,
+                                        validity=formatted_date,
                                         amount=amount,
                                         fines_status='P'
                                         )
@@ -1415,6 +1419,7 @@ def save_fines_penalties(request):
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         for application_details in application_details:
             fines_penalties_email(application_details.email, application_no, amount)
+        data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
