@@ -6393,13 +6393,17 @@ def ec_print_list(request):
         ec_renewal_count = 0
     
     # Pass the retrieved data to the 'ec_print_list.html' template for rendering
+    payment_details = t_payment_details.objects.all()
+    service_details = t_service_master.objects.all()
     return render(request, 'EC/ec_print_list.html', {'application_details': application_details,
                                                      'ec_renewal_count': ec_renewal_count,
                                                      'app_hist_count': app_hist_count,
                                                      'cl_application_count': cl_application_count,
                                                      'v_application_count': v_application_count,
                                                      'r_application_count': r_application_count,
-                                                     'tor_application_count':tor_application_count})
+                                                     'tor_application_count':tor_application_count,
+                                                     'service_details':service_details,
+                                                     'payment_details':payment_details})
 
 
 

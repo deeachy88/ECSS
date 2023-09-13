@@ -21,7 +21,7 @@
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td><button type="button" class="btn btn-primary btn-link"  onclick="populate_payment_modal('{{payment_details.application_no}}','{{payment_details.amount}}')">{{payment_details.application_no}}</button></td>
-                            <td>{{payment_details.ec_no}}</td>
+                            <td>{{payment_details.ec_reference_no}}</td>
                         </tr>
                         {% empty %}
                         <tr>

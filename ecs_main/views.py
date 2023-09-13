@@ -481,50 +481,71 @@ def update_payment_details(request):
     transaction_date = request.POST.get('transaction_date')
     applicant = None
     service_id = None
-    payment_details = t_payment_details.objects.filter(application_no=application_no, application_type='AP')
-    if payment_details.exists():
-        payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
+    fine_details = t_payment_details.objects.filter(application_no=application_no, application_type='Fines And Penalties')
+    if fine_details.exists():
+        fine_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
                                instrument_no=instrument_no, transaction_date=transaction_date)
-        work_details = t_workflow_dtls.objects.filter(application_no=application_no)
-        work_details.update(application_status='APP')
-        work_details.update(assigned_role_id='3')
-        work_details.update(assigned_role_name='Reviewer')
-        work_details.update(action_date=date.today())
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
-        application_details.update(application_status='APP')
-        application_details.update(action_date=date.today())
+        work_details = t_fines_penalties.objects.filter(application_no=application_no)
+        work_details.update(fines_status='FPP') # Fines Paid
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         for app_det in application_details:
             applicant = app_det.applicant_id
             service_id = app_det.service_id
             ca_auth = app_det.ca_authority
-        t_application_history.objects.create(application_no=application_no,
-                application_status='P',
-                action_date=date.today(),
-                actor_id=request.session['login_id'], 
-                actor_name=request.session['name'],
-                applicant_id=applicant,
-                remarks='Additional Payment Made',
-                service_id=service_id,
-                ca_authority=ca_auth)
+            t_application_history.objects.create(application_no=application_no,
+                    application_status='FPP',
+                    action_date=date.today(),
+                    actor_id=request.session['login_id'], 
+                    actor_name=request.session['name'],
+                    applicant_id=applicant,
+                    remarks='Fines Payment Made',
+                    service_id=service_id,
+                    ca_authority=ca_auth)
     else:
-        payment_details = t_payment_details.objects.filter(application_no=application_no)
-        payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
+        payment_details = t_payment_details.objects.filter(application_no=application_no, application_type='AP')
+        if payment_details.exists():
+            payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
                                 instrument_no=instrument_no, transaction_date=transaction_date)
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        for app_det in application_details:
-            applicant = app_det.applicant_id
-            service_id = app_det.service_id
-            ca_auth = app_det.ca_authority
-        t_application_history.objects.create(application_no=application_no,
-                application_status='P',
-                action_date=date.today(),
-                actor_id=request.session['login_id'], 
-                actor_name=request.session['name'],
-                applicant_id=applicant,
-                remarks='Payment Made',
-                service_id=service_id,
-                ca_authority=ca_auth)
+            work_details = t_workflow_dtls.objects.filter(application_no=application_no)
+            work_details.update(application_status='APP')
+            work_details.update(assigned_role_id='3')
+            work_details.update(assigned_role_name='Reviewer')
+            work_details.update(action_date=date.today())
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+            application_details.update(application_status='APP')
+            application_details.update(action_date=date.today())
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            for app_det in application_details:
+                applicant = app_det.applicant_id
+                service_id = app_det.service_id
+                ca_auth = app_det.ca_authority
+            t_application_history.objects.create(application_no=application_no,
+                    application_status='P',
+                    action_date=date.today(),
+                    actor_id=request.session['login_id'], 
+                    actor_name=request.session['name'],
+                    applicant_id=applicant,
+                    remarks='Additional Payment Made',
+                    service_id=service_id,
+                    ca_authority=ca_auth)
+        else:
+            payment_details = t_payment_details.objects.filter(application_no=application_no)
+            payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
+                                    instrument_no=instrument_no, transaction_date=transaction_date)
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            for app_det in application_details:
+                applicant = app_det.applicant_id
+                service_id = app_det.service_id
+                ca_auth = app_det.ca_authority
+            t_application_history.objects.create(application_no=application_no,
+                    application_status='P',
+                    action_date=date.today(),
+                    actor_id=request.session['login_id'], 
+                    actor_name=request.session['name'],
+                    applicant_id=applicant,
+                    remarks='Payment Made',
+                    service_id=service_id,
+                    ca_authority=ca_auth)
     return redirect(payment_list)
 
 def get_ec_no(request):
@@ -1397,7 +1418,7 @@ def save_fines_penalties(request):
         application_no = request.POST.get('application_no')
         fines_penalties_type = request.POST.get('fines_penalty_type')
         ec_no = request.POST.get('ec_ref_no')
-        proponent_name = request.POST.get('ec_ref_no')
+        proponent_name = request.POST.get('proponent_name')
         address = request.POST.get('address')
         validity = request.POST.get('ec_expiry_date')
         amount = request.POST.get('fines_and_penalties')
@@ -1415,9 +1436,24 @@ def save_fines_penalties(request):
                                         amount=amount,
                                         fines_status='P'
                                         )
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        for app_det in application_details:
+            applicant = app_det.applicant_id
+            service_id = app_det.service_id
+            ca_auth = app_det.ca_authority
+        t_application_history.objects.create(application_no=application_no,
+                application_status='FP',
+                application_date=date.today(),
+                action_date=date.today(),
+                actor_id=request.session['login_id'], 
+                actor_name=request.session['name'],
+                applicant_id=applicant,
+                remarks='Fines Payment Pending',
+                service_id=service_id,
+                ca_authority=ca_auth)
         payment_details = payment_details_master.objects.filter(payment_type='FINE')
         for pay_details in payment_details:
-            insert_payment_details(request, application_no,pay_details.account_head_code,proponent_name,amount,fines_penalties_type)
+            insert_payment_details(request, application_no,pay_details.account_head_code,proponent_name,amount,ec_no)
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         for application_details in application_details:
             fines_penalties_email(application_details.email, application_no, amount)
@@ -1495,11 +1531,12 @@ def fines_penalties(request):
     application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False)
     return render(request, 'fines_penalties.html',{'application_details':application_details})
 
-def insert_payment_details(request,application_no,account_head, proponent_name,total_amount,application_type):
+def insert_payment_details(request,application_no,account_head, proponent_name,total_amount,ec_no):
     t_payment_details.objects.create(application_no=application_no,
-            application_type=application_type,
+            application_type='Fines And Penalties',
             application_date=date.today(), 
             proponent_name=proponent_name,
             amount=total_amount,
-            account_head_code=account_head)
+            account_head_code=account_head,
+            ec_no=ec_no)
     return redirect(fines_penalties)
