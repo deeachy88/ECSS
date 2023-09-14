@@ -505,11 +505,10 @@ def transmission_ancillary_form(request):
 
 
 def get_application_no(request, service_code, service_id):
-    result = t_ec_industries_t1_general.objects.filter(application_no__contains='TOR')
-    if result.exists():
+    if service_code == "TOR":
         application_no= t_ec_industries_t1_general.objects.filter(application_no__contains='TOR').aggregate(Max('application_no'))
     else:
-        application_no= t_ec_industries_t1_general.objects.filter(service_id=service_id).aggregate(Max('application_no'))
+        application_no= t_ec_industries_t1_general.objects.exclude(service_id=service_id,application_no__contains=service_code).aggregate(Max('application_no'))
     last_application_no= application_no['application_no__max']
     if not last_application_no:
         year=timezone.now().year
@@ -518,6 +517,7 @@ def get_application_no(request, service_code, service_id):
         substring = str(last_application_no)[9:13]
         substring = int(substring) + 1
         app_num = str(substring).zfill(4)
+        print(app_num)
         year =  timezone.now().year
         new_application_no =  service_code + "-" + str(year) + "-" + app_num
     return new_application_no
@@ -2210,12 +2210,12 @@ def save_anc_general_attachment_details(request):
 
 def add_final_product_details(request):
     application_no = request.POST.get('application_no')
-    product_name = request.POST.get('produce_name')
-    quantity_annum = request.POST.get('quantity_annum')
+    product_name = request.POST.get('product_name')
+    name_location = request.POST.get('name_location')
     storage_method = request.POST.get('storage_method')
 
     t_ec_industries_t4_project_product.objects.create(application_no=application_no, product_name=product_name,
-                                                    quantity_annum=quantity_annum, storage_method=storage_method)
+                                                    name_location_type=name_location, storage_method=storage_method)
     final_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'final_products.html', {'final_product': final_product})
@@ -3035,12 +3035,12 @@ def save_tor_form(request):
 
 def tor_list(request):
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
-        tor_application_no=OuterRef('application_no')
+        tor_application_no=OuterRef('application_no') 
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
     tor_details = t_workflow_dtls.objects.filter(
-        application_status='A'
+        application_status='A',application_no__contains='TOR'
     ).exclude(
         application_no__in=Subquery(t1_general_subquery)
     )
@@ -6517,6 +6517,13 @@ def delete_application_attachment(request):
         for file in file:
             file_name = file.attachment
             fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/FO/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'IEE':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/IEE/")
             fs.delete(str(file_name))
         file.delete()
     file_attach = t_file_attachment.objects.filter(application_no=application_no)

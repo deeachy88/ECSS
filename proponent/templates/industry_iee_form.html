@@ -20,7 +20,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="iee_application_form">
                                     {% csrf_token %}
-                                    <input type="text" class="form-control" value="{{application_no}}" name="application_no" style="display:none;">
+                                    <input type="text" class="form-control" value="{{application_no}}" name="application_no" id="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="Main Activity" name="form_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -104,6 +104,7 @@
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Classification of Industry</label>
                                                 <select class="form-control" name="industry_classification" id="industry_classification">
+                                                    <option value="">-SELECT-</option>
                                                     <option value="Small">Small</option>
                                                     <option value="Cottage">Cottage</option>
                                                     <option value="Large">Large</option>
@@ -1522,7 +1523,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td>NOx</td>
-                                                    <td><input type="text" name="en_nox_emission_expected" id="en_nox_emission_expected" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_nox_emission_expected" id="en_nox_emission_expected" class="form-control col-lg-6" value="0"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>CO</td>
@@ -2273,7 +2274,7 @@
                 </div>
             </div>
       </div>
-        <div class="alert alert-success" id="delete_final_products_successMsg" style="display:none"></div>
+      <div class="alert alert-success" id="delete_final_products_successMsg" style="display:none"></div>
       <div class="modal-footer flex-center justify-content-center">
         <button type="button" class="btn btn-sm btn-primary" onclick="delete_final_product_details()">Yes</button>
         <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">No</button>
@@ -3366,7 +3367,7 @@
     function populate_delete_produce(record_id, application_no)
     {
         $('#delete_final_products_record_id').val(record_id);
-        $('#delete_final_products_app_no').val(application_no);
+        $('#delete_final_products_application_no').val(application_no);
         $('#delete_final_products_modal').modal('show');
     }
 
@@ -3382,11 +3383,11 @@
             data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
-                $('#delete_final_products_SuccessMsg').html("Delete Successful");
-                $('#delete_final_products_SuccessMsg').show();
+                $('#delete_final_products_successMsg').html("Delete Successful");
+                $('#delete_final_products_successMsg').show();
                 setTimeout(function()
                 {
-                    $('#delete_final_products_SuccessMsg').delay(2000).fadeOut('slow');
+                    $('#delete_final_products_successMsg').delay(2000).fadeOut('slow');
                 }, 2000);
                 setTimeout(function() {
                     $('#delete_final_products_modal').modal('hide');
@@ -3749,13 +3750,6 @@
     {
         let project_name = $('#project_name').val();
         let project_category = $('#project_category').val();
-        let applicant_name = $('#applicant_name').val();
-        let address = $('#address').val();
-        let cid = $('#cid').val();
-        let cid_length = $('#cid').val().length;
-        let contact_no = $('#contact_no').val();
-        let contact_no_length = $('#contact_no').val().length;
-        let email = $('#email').val();
         let focal_person = $('#focal_person').val();
         let industry_type = $('#industry_type').val();
         let establishment_type = $('#establishment_type').val();
@@ -3789,55 +3783,6 @@
             $('#project_categoryErrorMsg').show();
             $('#project_categoryErrorMsg').delay(2000).fadeOut('slow');
             $('#project_category').focus();
-        }
-        else if(cid == "")
-        {
-            $('#cidErrorMsg').html("Enter CID");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
-        }
-        else if(cid_length < 11)
-        {
-            $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
-        }
-        else if(applicant_name == "")
-        {
-            $('#applicant_nameErrorMsg').html("Enter Name of The Applicant");
-            $('#applicant_nameErrorMsg').show();
-            $('#applicant_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#applicant_name').focus();
-        }
-        else if(address == "")
-        {
-            $('#addressErrorMsg').html("Enter Address");
-            $('#addressErrorMsg').show();
-            $('#addressErrorMsg').delay(2000).fadeOut('slow');
-            $('#address').focus();
-        }
-        else if(contact_no == "")
-        {
-            $('#contact_noErrorMsg').html("Enter Contact No");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
-        }
-        else if(contact_no_length < 8)
-        {
-            $('#contact_noErrorMsg').html("Cannot Be Less Than Eight Digits");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
-        }
-        else if(email == "")
-        {
-            $('#emailErrorMsg').html("Enter Email");
-            $('#emailErrorMsg').show();
-            $('#emailErrorMsg').delay(2000).fadeOut('slow');
-            $('#email').focus();
         }
         else if(industry_type == "")
         {

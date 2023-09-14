@@ -3,7 +3,7 @@
         <tr>
             <th>Sl.no.</th>
             <th>Product (Name)</th>
-            <th>Installed capacity/quantity per annum</th>
+            <th>Name/Location Type</th>
             <th>Method of storage</th>
         </tr>
     </thead>
@@ -12,7 +12,7 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{final_product.product_name}}</td>
-                <td>{{final_product.quantity_annum}}</td>
+                <td>{{final_product.name_location_type}}</td>
                 {% if final_product.storage_method == 'fully_enclosed' %}
                     <td>Fully Enclosed</td>
                 {% elif final_product.storage_method == 'partially_enclosed' %}
@@ -22,7 +22,7 @@
                 {% endif %}
                 <td>
                     <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="edit_produce_populate('{{final_product.record_id}}','{{final_product.application_no}}','{{final_product.product_name}}','{{final_product.quantity_annum}}','{{final_product.storage_method}}')"><i class="mdi mdi-square-edit-outline"></i></button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="edit_produce_populate('{{final_product.record_id}}','{{final_product.application_no}}','{{final_product.product_name}}','{{final_product.name_location_type}}','{{final_product.storage_method}}')"><i class="mdi mdi-square-edit-outline"></i></button>
                         <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_produce('{{final_product.record_id}}','{{final_product.application_no}}')"><i class="uil-trash"></i></button>
                     </div>
                 </td>
