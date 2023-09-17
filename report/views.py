@@ -296,7 +296,7 @@ def application_status_list(request):
 
         # Query to count approved applications that are not in t1_general
         tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A'
+            application_status='A',application_no__contains='TOR'
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()

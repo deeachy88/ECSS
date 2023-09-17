@@ -17,7 +17,6 @@
                                 <form method="post" id="iee_application_form">
                                     {% csrf_token %}
                                     <input type="text" class="form-control" value="{{application_no}}" name="application_no" id="application_no" style="display:none;">
-                                    <input type="text" class="form-control" value="{{tor_application_no}}" id="tor_application_no" name="tor_application_no" style="display:none;">
                                     <input type="text" class="form-control" value="Main Activity" name="form_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -235,7 +234,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Total Green Space (acre)</label>
-                                                <input type="text" name="green_area_acre" class="form-control" id="green_area_acre">
+                                                <input type="number" name="green_area_acre" class="form-control" id="green_area_acre">
                                             </div>
                                             <div id="green_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1449,7 +1448,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name, location and distance of the receiving water body/surrounding environment of the treated effluent</label>
-                                                <input type="number" name="waste_water_treatment_plant_name_location" class="form-control" id="waste_water_treatment_plant_name_location" maxlength="8">
+                                                <input type="text" name="waste_water_treatment_plant_name_location" class="form-control" id="waste_water_treatment_plant_name_location" maxlength="8">
                                             </div>
                                             <div id="waste_water_treatment_plant_name_locationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1520,7 +1519,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td>NOx</td>
-                                                    <td><input type="text" name="en_nox_emission_expected" id="en_nox_emission_expected" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_nox_emission_expected" id="en_nox_emission_expected" class="form-control col-lg-6" value="0"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>CO</td>
@@ -1865,7 +1864,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="iee_submit_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="iee_disclaimer_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no">
                                     
                                     <div class="row industry_application" style="display:none;">
                                         <a href="{% url 'industry_ancillary_form' %}" class="btn btn-danger">
@@ -1891,12 +1890,7 @@
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
 
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="iee_submit_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="iee_submit_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
+                                    
                                     <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
                                     <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
                                     <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
@@ -1914,6 +1908,12 @@
                                         <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                                         Loading...
                                     </button>
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="iee_submit_successMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="iee_submit_errorMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
                                             <a href="#" class="btn btn-success" id="iee_submit_btn" onclick="submit_iee_application()" style="display:none;">
@@ -1956,7 +1956,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Qty</label>
-                    <input type="text" name="machine_tool_qty" class="form-control" id="machine_tool_qty">
+                    <input type="number" name="machine_tool_qty" class="form-control" id="machine_tool_qty">
                 </div>
                 <div class="alert alert-danger" id="machine_tool_qtyErrorMsg" style="display:none"></div>
             </div>
@@ -1965,7 +1965,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Installed Capacity</label>
-                    <input type="text" name="machine_tool_installed_capacity" class="form-control" id="machine_tool_installed_capacity">
+                    <input type="number" name="machine_tool_installed_capacity" class="form-control" id="machine_tool_installed_capacity">
                 </div>
                 <div class="alert alert-danger" id="machine_tool_installed_capacityErrorMsg" style="display:none"></div>
             </div>
@@ -2009,7 +2009,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Qty</label>
-                    <input type="text" name="edit_machine_tool_qty" class="form-control" id="edit_machine_tool_qty">
+                    <input type="number" name="edit_machine_tool_qty" class="form-control" id="edit_machine_tool_qty">
                 </div>
                 <div class="alert alert-danger" id="edit_machine_tool_qtyErrorMsg" style="display:none"></div>
             </div>
@@ -2018,7 +2018,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Installed Capacity</label>
-                    <input type="text" name="edit_machine_tool_installed_capacity" class="form-control" id="edit_machine_tool_installed_capacity">
+                    <input type="number" name="edit_machine_tool_installed_capacity" class="form-control" id="edit_machine_tool_installed_capacity">
                 </div>
                 <div class="alert alert-danger" id="edit_machine_tool_installed_capacityErrorMsg" style="display:none"></div>
             </div>
@@ -2270,7 +2270,7 @@
                 </div>
             </div>
       </div>
-        <div class="alert alert-success" id="delete_final_products_successMsg" style="display:none"></div>
+      <div class="alert alert-success" id="delete_final_products_successMsg" style="display:none"></div>
       <div class="modal-footer flex-center justify-content-center">
         <button type="button" class="btn btn-sm btn-primary" onclick="delete_final_product_details()">Yes</button>
         <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">No</button>
@@ -2307,7 +2307,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Quantity (MT/annum)</label>
-                    <input type="text" name="raw_material_qty" class="form-control" id="raw_material_qty">
+                    <input type="number" name="raw_material_qty" class="form-control" id="raw_material_qty">
                 </div>
                 <div class="alert alert-danger" id="raw_material_qtyErrorMsg" style="display:none"></div>
             </div>
@@ -2373,7 +2373,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Quantity (MT/annum)</label>
-                    <input type="text" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
+                    <input type="number" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
                 </div>
                 <div class="alert alert-danger" id="edit_raw_material_qtyErrorMsg" style="display:none"></div>
             </div>
@@ -2437,7 +2437,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">CID</label>
-                    <input type="number" min="0" name="partner_cid" class="form-control" id="partner_cid">
+                    <input type="number" min="0" name="partner_cid" class="form-control" id="partner_cid" oninput="checkMaxLength(this, 11)">
                 </div>
                 <div class="alert alert-danger" id="partner_cidErrorMsg" style="display:none"></div>
             </div>
@@ -2498,7 +2498,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">CID</label>
-                    <input type="text" name="edit_partner_cid" class="form-control" id="edit_partner_cid">
+                    <input type="text" name="edit_partner_cid" class="form-control" id="edit_partner_cid" oninput="checkMaxLength(this, 11)">
                 </div>
                 <div class="alert alert-danger" id="edit_partner_cidErrorMsg" style="display:none"></div>
             </div>
@@ -3363,7 +3363,7 @@
     function populate_delete_produce(record_id, application_no)
     {
         $('#delete_final_products_record_id').val(record_id);
-        $('#delete_final_products_app_no').val(application_no);
+        $('#delete_final_products_application_no').val(application_no);
         $('#delete_final_products_modal').modal('show');
     }
 
@@ -3379,11 +3379,11 @@
             data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
-                $('#delete_final_products_SuccessMsg').html("Delete Successful");
-                $('#delete_final_products_SuccessMsg').show();
+                $('#delete_final_products_successMsg').html("Delete Successful");
+                $('#delete_final_products_successMsg').show();
                 setTimeout(function()
                 {
-                    $('#delete_final_products_SuccessMsg').delay(2000).fadeOut('slow');
+                    $('#delete_final_products_successMsg').delay(2000).fadeOut('slow');
                 }, 2000);
                 setTimeout(function() {
                     $('#delete_final_products_modal').modal('hide');
@@ -3746,11 +3746,6 @@
     {
         let project_name = $('#project_name').val();
         let project_category = $('#project_category').val();
-        let applicant_name = $('#applicant_name').val();
-        let address = $('#address').val();
-        let contact_no = $('#contact_no').val();
-        let contact_no_length = $('#contact_no').val().length;
-        let email = $('#email').val();
         let focal_person = $('#focal_person').val();
         let industry_type = $('#industry_type').val();
         let establishment_type = $('#establishment_type').val();
@@ -3784,41 +3779,6 @@
             $('#project_categoryErrorMsg').show();
             $('#project_categoryErrorMsg').delay(2000).fadeOut('slow');
             $('#project_category').focus();
-        }
-        else if(applicant_name == "")
-        {
-            $('#applicant_nameErrorMsg').html("Enter Name of The Applicant");
-            $('#applicant_nameErrorMsg').show();
-            $('#applicant_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#applicant_name').focus();
-        }
-        else if(address == "")
-        {
-            $('#addressErrorMsg').html("Enter Address");
-            $('#addressErrorMsg').show();
-            $('#addressErrorMsg').delay(2000).fadeOut('slow');
-            $('#address').focus();
-        }
-        else if(contact_no == "")
-        {
-            $('#contact_noErrorMsg').html("Enter Contact No");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
-        }
-        else if(contact_no_length < 8)
-        {
-            $('#contact_noErrorMsg').html("Cannot Be Less Than Eight Digits");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
-        }
-        else if(email == "")
-        {
-            $('#emailErrorMsg').html("Enter Email");
-            $('#emailErrorMsg').show();
-            $('#emailErrorMsg').delay(2000).fadeOut('slow');
-            $('#email').focus();
         }
         else if(industry_type == "")
         {
@@ -6657,13 +6617,15 @@
 
     function submit_iee_application()
     {
+        $("#pageloader").show();
         $.ajax
         ({
             type : "POST",
-            url : "{% url 'submit_iee_application' %}",
+            url : "{% url 'submit_general_application' %}",
             data : $('#iee_submit_form').serialize(),
             success : function(data)
             {
+                $("#pageloader").hide();
                 if(data.message == 'success')
                 {
                     $('#iee_submit_successMsg').html("Application Submitted Successfully");
@@ -7392,6 +7354,12 @@
         else
         {
             $('#iee_submit_btn').hide();
+        }
+    }
+
+    function checkMaxLength(input, maxLength) {
+        if (input.value.length > maxLength) {
+            input.value = input.value.slice(0, maxLength);
         }
     }
 </script>

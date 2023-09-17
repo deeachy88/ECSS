@@ -20,7 +20,7 @@ def verify_application_list(request):
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority'],action_date__isnull=False).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=30)
-    payment_details_master.objects.exclude(payment_type="TOR")
+    pay_details = payment_details_master.objects.exclude(payment_type="TOR")
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority,
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
@@ -39,10 +39,10 @@ def client_application_list(request):
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     return render(request, 'application_list.html',{'application_details':application_list,'cl_application_count':cl_application_count,'app_hist_count':app_hist_count, 'service_details':service_details, 'payment_details':payment_details,'tor_application_count':tor_application_count})
 
 def reviewer_application_list(request):
@@ -76,10 +76,10 @@ def payment_list(request):
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     return render(request, 'payment_list.html',
                   {'payment_details': payment_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'service_details': service_details,'tor_application_count':tor_application_count})
 

@@ -28,10 +28,10 @@ def new_application(request):
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     return render(request, 'new_application.html',{'bsic_details':bsic_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'tor_application_count':tor_application_count})
 
 def new_ea_application(request):
@@ -47,10 +47,11 @@ def new_ea_application(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
     return render(request, 'industry_ea_form.html',
-                {'partner_details': partner_details, 'machine_equipment': machine_equipment,
+                {'thromde':thromde,'partner_details': partner_details, 'machine_equipment': machine_equipment,
                 'raw_materials': raw_materials,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,
                 'project_product': project_product, 'ancillary_road': ancillary_road, 'power_line': power_line,
                 'application_no': application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
@@ -69,9 +70,10 @@ def new_road_application(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'road_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+    return render(request, 'road_form.html',{'thromde':thromde,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                     'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'drainage_type':drainage_type})
 
@@ -88,9 +90,10 @@ def new_transmission_application(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'transmission_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+    return render(request, 'transmission_form.html',{'thromde':thromde,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                     'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
 
@@ -104,9 +107,10 @@ def new_forestry_application(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'forest_form.html',{'forest_produce':forest_produce,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
+    return render(request, 'forest_form.html',{'thromde':thromde,'forest_produce':forest_produce,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                 'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
 
 def new_general_application(request):
@@ -142,9 +146,10 @@ def new_ground_water_application(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'ground_water_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+    return render(request, 'ground_water_form.html',{'thromde':thromde,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                     'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
 
@@ -161,9 +166,10 @@ def new_energy_application(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'energy_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+    return render(request, 'energy_form.html',{'thromde':thromde,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                     'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
 
@@ -180,9 +186,10 @@ def new_tourism_form(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'tourism_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+    return render(request, 'tourism_form.html',{'thromde':thromde,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                     'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
 
@@ -199,9 +206,10 @@ def new_quarry_form(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'quarry_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+    return render(request, 'quarry_form.html',{'thromde':thromde,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                     'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
 
@@ -1740,7 +1748,8 @@ def new_iee_application(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
-    return render(request, 'industry_iee_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+    thromde = t_thromde_master.objects.all()
+    return render(request, 'industry_iee_form.html',{'thromde':thromde,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                     'final_product':final_product,'ancillary_road':ancillary_road, 'power_line':power_line,
                                                     'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 def save_iee_attachment(request):
@@ -2223,12 +2232,12 @@ def add_final_product_details(request):
 def update_final_product_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
-    product_name = request.POST.get('produce_name')
-    quantity_annum = request.POST.get('quantity_annum')
+    product_name = request.POST.get('product_name')
+    name_location_type = request.POST.get('name_location')
     storage_method = request.POST.get('storage_method')
 
     final_product_details = t_ec_industries_t4_project_product.objects.filter(record_id=record_id)
-    final_product_details.update(product_name=product_name, quantity_annum=quantity_annum, storage_method=storage_method)
+    final_product_details.update(product_name=product_name, name_location_type=name_location_type, storage_method=storage_method)
     final_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'final_products.html', {'final_product': final_product})
@@ -2671,10 +2680,10 @@ def ec_renewal(request):
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     return render(request, 'renewal.html',{'application_details':application_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details':renewal_details,'service_details':service_details,'tor_application_count':tor_application_count})
 
 def ec_renewal_details(request):
@@ -3044,13 +3053,28 @@ def tor_list(request):
     ).exclude(
         application_no__in=Subquery(t1_general_subquery)
     )
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A',application_no__contains='TOR'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
     service_details = t_service_master.objects.all()
-    return render(request, 'tor/tor_list.html', {'tor_details':tor_details,'service_details':service_details})
+    return render(request, 'tor/tor_list.html', {'tor_application_count':tor_application_count,'tor_details':tor_details,'service_details':service_details})
 
 def view_tor_application_details(request):
     tor_application_no = request.GET.get('application_no')
     service_id = request.GET.get('service_id')
     app_det = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+    tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_workflow_dtls.objects.filter(
+        application_status='A',application_no__contains='TOR'
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
     for app_det in app_det:
         request.session['ca_auth'] = app_det.ca_authority
         request.session['colour_code'] = app_det.colour_code
@@ -3063,16 +3087,16 @@ def view_tor_application_details(request):
         service_code = 'IEE'
         application_no = get_application_no(request, service_code, '1')
         request.session['application_no'] = application_no
-        partner_details = t_ec_industries_t2_partner_details.objects.all()
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-        final_product = t_ec_industries_t4_project_product.objects.all()
-        raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
+        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
+        final_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
+        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
+        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
+        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        return render(request, 'tor/industry_iee_form.html',{'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'tor/industry_iee_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'final_product':final_product,'ancillary_road':ancillary_road, 'power_line':power_line,
                                                         'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
     elif service_id == '2':
@@ -3090,7 +3114,7 @@ def view_tor_application_details(request):
         village = t_village_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'energy_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'energy_form.html',{'tor_application_count':tor_application_count,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
     elif service_id == '3':
@@ -3109,7 +3133,7 @@ def view_tor_application_details(request):
         village = t_village_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'road_form.html',{'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'road_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'drainage_type':drainage_type})
     elif service_id == '4':
@@ -3127,7 +3151,7 @@ def view_tor_application_details(request):
         village = t_village_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'transmission_form.html',{'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'transmission_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
     elif service_id == '5':
@@ -3145,7 +3169,7 @@ def view_tor_application_details(request):
         village = t_village_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'tourism_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'tourism_form.html',{'tor_application_count':tor_application_count,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
     elif service_id == '6':
@@ -3163,7 +3187,7 @@ def view_tor_application_details(request):
         village = t_village_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'ground_water_form.html',{'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'ground_water_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
     elif service_id == '7':
@@ -3178,7 +3202,7 @@ def view_tor_application_details(request):
         village = t_village_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'forest_form.html',{'tor_application_no':tor_application_no,'forest_produce':forest_produce,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
+        return render(request, 'forest_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'forest_produce':forest_produce,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                     'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
     elif service_id == '8':
         service_code = 'QUA' 
@@ -3195,7 +3219,7 @@ def view_tor_application_details(request):
         village = t_village_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'quarry_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'quarry_form.html',{'tor_application_count':tor_application_count,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
     elif service_id == '9':
@@ -3214,7 +3238,7 @@ def view_tor_application_details(request):
         thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'general_form.html',{'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'general_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
 
@@ -5351,10 +5375,10 @@ def name_change(request):
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'NC','tor_application_count':tor_application_count})
 
 def ownership_change(request):
@@ -5369,10 +5393,10 @@ def ownership_change(request):
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'OC','tor_application_count':tor_application_count})
 
 def technology_change(request):
@@ -5387,10 +5411,10 @@ def technology_change(request):
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'TC','tor_application_count':tor_application_count})
 
 def product_change(request):
@@ -5405,10 +5429,10 @@ def product_change(request):
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'OC','tor_application_count':tor_application_count})
 
 def capacity_change(request):
@@ -5423,10 +5447,10 @@ def capacity_change(request):
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'CC','tor_application_count':tor_application_count})
 
 def area_change(request):
@@ -5441,10 +5465,10 @@ def area_change(request):
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'AC','tor_application_count':tor_application_count})
 
 def location_change(request):
@@ -5459,10 +5483,10 @@ def location_change(request):
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     return render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'LC','tor_application_count':tor_application_count})
 
 def get_other_modification_details(request):
@@ -5691,10 +5715,10 @@ def draft_application_list(request):
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     return render(request, 'draft/application_list.html',{'application_details':application_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'service_details':service_details, 'tor_application_count':tor_application_count})
 
 def view_draft_application_details(request):
@@ -5719,10 +5743,11 @@ def view_draft_application_details(request):
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
+            thromde = t_thromde_master.objects.all()
             ec_details = t_ec_industries_t11_ec_details.objects.all()
             app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-            return render(request, 'draft/ea_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials, 'status':status,
+            return render(request, 'draft/ea_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials, 'status':status,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                         'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details,'ancillary_details':ancillary_details,'service_id':service_id})
         else:
@@ -5741,9 +5766,10 @@ def view_draft_application_details(request):
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
             ec_details = t_ec_industries_t11_ec_details.objects.all()
+            thromde = t_thromde_master.objects.all()
             app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-            return render(request, 'draft/iee_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+            return render(request, 'draft/iee_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                         'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                         'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '2':
@@ -5761,10 +5787,11 @@ def view_draft_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/energy_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'draft/energy_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog,
                                                      'village':village,'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '3':
@@ -5782,10 +5809,11 @@ def view_draft_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/road_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+        return render(request, 'draft/road_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '4':
@@ -5803,10 +5831,11 @@ def view_draft_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/transmission_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+        return render(request, 'draft/transmission_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '5':
@@ -5824,10 +5853,11 @@ def view_draft_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/tourism_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+        return render(request, 'draft/tourism_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '6':
@@ -5845,10 +5875,11 @@ def view_draft_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/ground_water_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+        return render(request, 'draft/ground_water_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '7':
@@ -5866,10 +5897,11 @@ def view_draft_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/forest_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+        return render(request, 'draft/forest_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '8':
@@ -5887,10 +5919,11 @@ def view_draft_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/quarry_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+        return render(request, 'draft/quarry_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '9':
@@ -5908,10 +5941,11 @@ def view_draft_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         ec_details = t_ec_industries_t11_ec_details.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/general_application_details.html',{'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
+        return render(request, 'draft/general_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     
@@ -6065,7 +6099,7 @@ def report_list(request):
 
         # Query to count approved applications that are not in t1_general
         tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A'
+            application_status='A',application_no__contains='TOR'
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
@@ -6360,10 +6394,10 @@ def ec_print_list(request):
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     # Check if the 'ca_authority' exists in the session and has a non-empty value
     if 'ca_authority' in request.session and request.session['ca_authority']:
         # Count the number of t_workflow_dtls objects with assigned_role_id='2',

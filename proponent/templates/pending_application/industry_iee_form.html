@@ -3114,7 +3114,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">CID</label>
-                    <input type="number" min="0" name="partner_cid" class="form-control" id="partner_cid">
+                    <input type="number" min="0" name="partner_cid" class="form-control" id="partner_cid" oninput="checkMaxLength(this, 11)">
                 </div>
                 <div class="alert alert-danger" id="partner_cidErrorMsg" style="display:none"></div>
             </div>
@@ -3175,7 +3175,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">CID</label>
-                    <input type="text" name="edit_partner_cid" class="form-control" id="edit_partner_cid">
+                    <input type="text" name="edit_partner_cid" class="form-control" id="edit_partner_cid" oninput="checkMaxLength(this, 11)">
                 </div>
                 <div class="alert alert-danger" id="edit_partner_cidErrorMsg" style="display:none"></div>
             </div>
@@ -8069,6 +8069,12 @@
         {
             $('.thromde').show();
             $('.dzongkhag').hide();
+        }
+    }
+
+    function checkMaxLength(input, maxLength) {
+        if (input.value.length > maxLength) {
+            input.value = input.value.slice(0, maxLength);
         }
     }
 </script>

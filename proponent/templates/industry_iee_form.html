@@ -238,7 +238,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Total Green Space (acre)</label>
-                                                <input type="text" name="green_area_acre" class="form-control" id="green_area_acre">
+                                                <input type="number" name="green_area_acre" class="form-control" id="green_area_acre">
                                             </div>
                                             <div id="green_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1452,7 +1452,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name, location and distance of the receiving water body/surrounding environment of the treated effluent</label>
-                                                <input type="number" name="waste_water_treatment_plant_name_location" class="form-control" id="waste_water_treatment_plant_name_location" maxlength="8">
+                                                <input type="text" name="waste_water_treatment_plant_name_location" class="form-control" id="waste_water_treatment_plant_name_location" maxlength="8">
                                             </div>
                                             <div id="waste_water_treatment_plant_name_locationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1960,7 +1960,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Qty</label>
-                    <input type="text" name="machine_tool_qty" class="form-control" id="machine_tool_qty">
+                    <input type="number" name="machine_tool_qty" class="form-control" id="machine_tool_qty">
                 </div>
                 <div class="alert alert-danger" id="machine_tool_qtyErrorMsg" style="display:none"></div>
             </div>
@@ -1969,7 +1969,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Installed Capacity</label>
-                    <input type="text" name="machine_tool_installed_capacity" class="form-control" id="machine_tool_installed_capacity">
+                    <input type="number" name="machine_tool_installed_capacity" class="form-control" id="machine_tool_installed_capacity">
                 </div>
                 <div class="alert alert-danger" id="machine_tool_installed_capacityErrorMsg" style="display:none"></div>
             </div>
@@ -2013,7 +2013,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Qty</label>
-                    <input type="text" name="edit_machine_tool_qty" class="form-control" id="edit_machine_tool_qty">
+                    <input type="number" name="edit_machine_tool_qty" class="form-control" id="edit_machine_tool_qty">
                 </div>
                 <div class="alert alert-danger" id="edit_machine_tool_qtyErrorMsg" style="display:none"></div>
             </div>
@@ -2022,7 +2022,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Installed Capacity</label>
-                    <input type="text" name="edit_machine_tool_installed_capacity" class="form-control" id="edit_machine_tool_installed_capacity">
+                    <input type="number" name="edit_machine_tool_installed_capacity" class="form-control" id="edit_machine_tool_installed_capacity">
                 </div>
                 <div class="alert alert-danger" id="edit_machine_tool_installed_capacityErrorMsg" style="display:none"></div>
             </div>
@@ -2441,7 +2441,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">CID</label>
-                    <input type="number" min="0" name="partner_cid" class="form-control" id="partner_cid">
+                    <input type="number" min="0" name="partner_cid" class="form-control" id="partner_cid" oninput="checkMaxLength(this, 11)">
                 </div>
                 <div class="alert alert-danger" id="partner_cidErrorMsg" style="display:none"></div>
             </div>
@@ -2502,7 +2502,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">CID</label>
-                    <input type="text" name="edit_partner_cid" class="form-control" id="edit_partner_cid">
+                    <input type="text" name="edit_partner_cid" class="form-control" id="edit_partner_cid" oninput="checkMaxLength(this, 11)">
                 </div>
                 <div class="alert alert-danger" id="edit_partner_cidErrorMsg" style="display:none"></div>
             </div>
@@ -7358,6 +7358,12 @@
         else
         {
             $('#iee_submit_btn').hide();
+        }
+    }
+
+    function checkMaxLength(input, maxLength) {
+        if (input.value.length > maxLength) {
+            input.value = input.value.slice(0, maxLength);
         }
     }
 </script>

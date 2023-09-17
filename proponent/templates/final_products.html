@@ -13,9 +13,9 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{final_product.product_name}}</td>
                 <td>{{final_product.name_location_type}}</td>
-                {% if final_product.storage_method == 'fully_enclosed' %}
+                {% if final_product.storage_method == 'Fully_Enclosed' %}
                     <td>Fully Enclosed</td>
-                {% elif final_product.storage_method == 'partially_enclosed' %}
+                {% elif final_product.storage_method == 'Partially_Enclosed' %}
                     <td>Partially Enclosed</td>
                 {% else %}
                     <td>Open</td>
