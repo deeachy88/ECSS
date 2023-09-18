@@ -513,10 +513,11 @@ def transmission_ancillary_form(request):
 
 
 def get_application_no(request, service_code, service_id):
+    print(service_code)
     if service_code == "TOR":
         application_no= t_ec_industries_t1_general.objects.filter(application_no__contains='TOR').aggregate(Max('application_no'))
     else:
-        application_no= t_ec_industries_t1_general.objects.exclude(service_id=service_id,application_no__contains=service_code).aggregate(Max('application_no'))
+        application_no= t_ec_industries_t1_general.objects.exclude(service_id=service_id, application_no__contains='TOR').filter(application_no__contains=service_code).aggregate(Max('application_no'))
     last_application_no= application_no['application_no__max']
     if not last_application_no:
         year=timezone.now().year
@@ -658,7 +659,6 @@ def save_iee_application(request):
     try:
         application_no = request.POST.get('application_no')
         identifier = request.POST.get('identifier')
-        print(identifier)
         ca_auth = None
         dzongkhag_code = request.POST.get('dzo_throm'),
         common_data = {
@@ -693,7 +693,8 @@ def save_iee_application(request):
             'project_cost':request.POST.get('project_cost'),
             'project_duration':request.POST.get('project_duration'),
             'ec_reference_no':request.POST.get('ec_reference_no'),
-            'form_type':request.POST.get('form_type')
+            'form_type':request.POST.get('form_type'),
+            'tor_application_no':request.POST.get('tor_application_no')
         }
         
         with transaction.atomic():
@@ -3096,9 +3097,10 @@ def view_tor_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        return render(request, 'tor/industry_iee_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        thromde = t_thromde_master.objects.all()
+        return render(request, 'tor/industry_iee_form.html',{'thromde':thromde,'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'final_product':final_product,'ancillary_road':ancillary_road, 'power_line':power_line,
-                                                        'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+                                                        'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde})
     elif service_id == '2':
         service_code = 'ENE' 
         application_no = get_application_no(request, service_code, '2')
@@ -3112,11 +3114,12 @@ def view_tor_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
         return render(request, 'energy_form.html',{'tor_application_count':tor_application_count,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
-                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
+                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
     elif service_id == '3':
         service_code = 'ROA'
         application_no = get_application_no(request, service_code, '3')
@@ -3131,11 +3134,12 @@ def view_tor_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
         return render(request, 'road_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
-                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'drainage_type':drainage_type})
+                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'drainage_type':drainage_type, 'thromde':thromde})
     elif service_id == '4':
         service_code = 'TRA'
         application_no = get_application_no(request, service_code, '4')
@@ -3149,11 +3153,12 @@ def view_tor_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
         return render(request, 'transmission_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
-                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
+                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
     elif service_id == '5':
         service_code = 'TOU' 
         application_no = get_application_no(request, service_code, '5')
@@ -3167,11 +3172,12 @@ def view_tor_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
         return render(request, 'tourism_form.html',{'tor_application_count':tor_application_count,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
-                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
+                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
     elif service_id == '6':
         service_code = 'GWA' 
         application_no = get_application_no(request, service_code, '6')
@@ -3185,11 +3191,12 @@ def view_tor_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
         return render(request, 'ground_water_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
-                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
+                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
     elif service_id == '7':
         service_code = 'FOR'
         application_no = get_application_no(request, service_code, '7')
@@ -3200,10 +3207,11 @@ def view_tor_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
         return render(request, 'forest_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'forest_produce':forest_produce,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
-                                                    'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
+                                                    'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
     elif service_id == '8':
         service_code = 'QUA' 
         application_no = get_application_no(request, service_code, '8')
@@ -3217,11 +3225,12 @@ def view_tor_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
         return render(request, 'quarry_form.html',{'tor_application_count':tor_application_count,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
-                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
+                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
     elif service_id == '9':
         service_code = 'GEN'
         application_no = get_application_no(request, service_code, '9')
@@ -3774,17 +3783,21 @@ def save_general_application(request):
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         project_site = request.POST.get('project_site')
         identifier = request.POST.get('identifier')
-        #ec_reference_no = request.POST.get('ec_reference_no')
+        tor_application_no = request.POST.get('tor_application_no')
         form_type = request.POST.get('form_type')
 
         ca_auth = None
-        if identifier != 'DR':
+        if identifier != 'DR' and tor_application_no == None:
             auth_filter = t_competant_authority_master.objects.filter(
                 competent_authority=request.session['ca_auth'],
                 dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
             )
             ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-
+        else:
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=tor_application_no
+            )
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
 
         with transaction.atomic():
@@ -3847,7 +3860,8 @@ def save_general_application(request):
                         broad_activity_code=request.session['broad_activity_code'],
                         specific_activity_code=request.session['specific_activity_code'],
                         category=request.session['category'],
-                        application_source='ECSS'
+                        application_source='ECSS',
+                        tor_application_no=tor_application_no
                     )
             elif identifier in ['TC', 'PC', 'LC', 'CC']:
                 for app_det in application_details:
@@ -3913,7 +3927,8 @@ def save_general_application(request):
                     broad_activity_code=request.session['broad_activity_code'],
                     specific_activity_code=request.session['specific_activity_code'],
                     category=request.session['category'],
-                    application_source='ECSS'
+                    application_source='ECSS',
+                    tor_application_no=tor_application_no
                 )
 
             t_application_history.objects.create(
@@ -3950,15 +3965,17 @@ def save_forest_application(request):
     data = {}
     try:
         identifier = request.POST.get('identifier')
-
         # Fetch ca_auth for non-draft applications
+        
         ca_auth = None
         if identifier != 'DR':
-            auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-            if request.session['ca_auth'] in ['DEC', 'THROMDE']:
-                auth_details = auth_details.filter(dzongkhag_code_id=request.POST.get('dzo_throm'))
-            ca_auth = auth_details.first().competent_authority_id
-
+            auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session['ca_auth'],
+                dzongkhag_code_id= request.POST.get('dzo_throm') if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+            )
+            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+            print(request.session['ca_auth'])
+            print(ca_auth)
         # Application details
         application_details = {
             'application_no':request.POST.get('application_no'),

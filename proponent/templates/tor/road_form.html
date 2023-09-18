@@ -3257,7 +3257,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_road_application' %}",
+                url : "{% url 'save_general_info' %}",
                 data : $('#road_application_form').serialize(),
                 success : function(data)
                 {

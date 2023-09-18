@@ -246,7 +246,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Elevation(meters)</label>
-                                                <input type="text" name="terrain_elevation" class="form-control" id="terrain_elevation">
+                                                <input type="number" name="terrain_elevation" class="form-control" id="terrain_elevation">
                                             </div>
                                             <div id="terrain_elevationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -445,7 +445,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Output/Extraction volume (per annum)</label>
-                                                <input type="text" name="project_output" class="form-control" id="project_output">
+                                                <input type="number" name="project_output" class="form-control" id="project_output">
                                             </div>
                                             <div id="project_outputErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -454,7 +454,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Cost</label>
-                                                <input type="text" name="project_cost" class="form-control" id="project_cost">
+                                                <input type="number" name="project_cost" class="form-control" id="project_cost">
                                             </div>
                                             <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -470,14 +470,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name the month/season of the year when the activity will be undertaken</label>
-                                                <input type="text" name="month_season_name" class="form-control" id="month_season_name">
+                                                <input type="number" name="month_season_name" class="form-control" id="month_season_name">
                                             </div>
                                             <div id="month_season_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Number of workers to be employed</label>
-                                                <input type="text" name="no_of_workers" class="form-control" id="no_of_workers">
+                                                <input type="number" name="no_of_workers" class="form-control" id="no_of_workers">
                                             </div>
                                             <div id="no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1476,7 +1476,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Installed capacity/quantity per annum</label>
-                    <input type="text" name="quantity_annum" class="form-control" id="quantity_annum">
+                    <input type="number" name="quantity_annum" class="form-control" id="quantity_annum">
                 </div>
                 <div class="alert alert-danger" id="quantity_annumErrorMsg" style="display:none"></div>
             </div>
@@ -1535,7 +1535,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Installed capacity/quantity per annum</label>
-                    <input type="text" name="edit_forestry_produce_qty" class="form-control" id="edit_forestry_produce_qty">
+                    <input type="number" name="edit_forestry_produce_qty" class="form-control" id="edit_forestry_produce_qty">
                 </div>
                 <div class="alert alert-danger" id="edit_forestry_produce_qtyErrorMsg" style="display:none"></div>
             </div>
@@ -2138,7 +2138,7 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Quantity (MT/annum)</label>
-                        <input type="text" name="raw_material_qty" class="form-control" id="raw_material_qty">
+                        <input type="number" name="raw_material_qty" class="form-control" id="raw_material_qty">
                     </div>
                     <div class="alert alert-danger" id="raw_material_qtyErrorMsg" style="display:none"></div>
                 </div>
@@ -2204,7 +2204,7 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Quantity (MT/annum)</label>
-                        <input type="text" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
+                        <input type="number" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
                     </div>
                     <div class="alert alert-danger" id="edit_raw_material_qtyErrorMsg" style="display:none"></div>
                 </div>
@@ -2943,7 +2943,7 @@
         $('#edit_area_required').val(total);
     }
 
-    function check_anc_facility()
+    function check_anc_facility(value)
     {
         if(value == "Yes")
         {
@@ -3041,12 +3041,38 @@
             data : $('#forest_submit_form').serialize(),
             success : function(data)
             {
-                alert(data.message);
-            },
-    error: function(jqXHR, textStatus, errorThrown) {
-        console.log('An error occurred:', errorThrown);
-        alert('An error occurred: ' + errorThrown);
-    }
+                $("#pageloader").hide();
+                if(data.message == 'success')
+                {
+                    $('#forest_submit_successMsg').html("Application Submitted Successfully");
+                    $('#forest_submit_successMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#forest_submit_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        location.reload()
+                    }, 2000);
+                }
+                else if(data.message == 'not submitted')
+                {
+                    $('#forest_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
+                    $('#forest_submit_errorMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#forest_submit_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
+                else
+                {
+                    $('#forest_submit_errorMsg').html("Please Check And Submit Again");
+                    $('#forest_submit_errorMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#forest_submit_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
+            }
         });
     }
 

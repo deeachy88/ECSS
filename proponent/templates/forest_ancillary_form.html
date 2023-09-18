@@ -261,7 +261,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Elevation(meters)</label>
-                                                <input type="text" name="terrain_elevation" class="form-control" id="terrain_elevation">
+                                                <input type="number" name="terrain_elevation" class="form-control" id="terrain_elevation">
                                             </div>
                                             <div id="terrain_elevationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -460,7 +460,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Output/Extraction volume (per annum)</label>
-                                                <input type="text" name="project_output" class="form-control" id="project_output">
+                                                <input type="number" name="project_output" class="form-control" id="project_output">
                                             </div>
                                             <div id="project_outputErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -469,7 +469,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Cost</label>
-                                                <input type="text" name="project_cost" class="form-control" id="project_cost">
+                                                <input type="number" name="project_cost" class="form-control" id="project_cost">
                                             </div>
                                             <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -485,14 +485,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name the month/season of the year when the activity will be undertaken</label>
-                                                <input type="text" name="month_season_name" class="form-control" id="month_season_name">
+                                                <input type="number" name="month_season_name" class="form-control" id="month_season_name">
                                             </div>
                                             <div id="month_season_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Number of workers to be employed</label>
-                                                <input type="text" name="no_of_workers" class="form-control" id="no_of_workers">
+                                                <input type="number" name="no_of_workers" class="form-control" id="no_of_workers">
                                             </div>
                                             <div id="no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1554,7 +1554,7 @@
 
     function submit_forest_application()
     {
-        let service_id = $("#service_id").val();
+        $("#pageloader").show();
         $.ajax
         ({
             type : "POST",
@@ -1562,6 +1562,7 @@
             data : $('#forest_submit_form').serialize(),
             success : function(data)
             {
+                $("#pageloader").hide();
                 if(data.message == 'success')
                 {
                     $('#forest_submit_successMsg').html("Application Submitted Successfully");
@@ -1570,9 +1571,17 @@
                     {
                         $('#forest_submit_successMsg').delay(2000).fadeOut('slow');
                     }, 2000);
+                    setTimeout(function() {
+                        location.reload()
+                    }, 2000);
+                }
+                else if(data.message == 'not submitted')
+                {
+                    $('#forest_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
+                    $('#forest_submit_errorMsg').show();
                     setTimeout(function()
                     {
-                        window.location.href = '/new_application_form';
+                        $('#forest_submit_errorMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                 }
                 else

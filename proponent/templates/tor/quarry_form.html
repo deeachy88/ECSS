@@ -2578,7 +2578,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_quarry_application' %}",
+                url : "{% url 'save_general_info' %}",
                 data : $('#quarry_application_form').serialize(),
                 success : function(data)
                 {

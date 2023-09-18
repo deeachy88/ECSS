@@ -4632,7 +4632,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_iee_application' %}",
+                url : "{% url 'save_general_info' %}",
                 data : $('#transmission_application_form').serialize(),
                 success : function(data)
                 {

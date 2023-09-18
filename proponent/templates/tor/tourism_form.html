@@ -4259,7 +4259,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_tourism_application' %}",
+                url : "{% url 'save_general_info' %}",
                 data : $('#tourism_application_form').serialize(),
                 success : function(data)
                 {
