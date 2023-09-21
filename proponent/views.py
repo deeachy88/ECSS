@@ -659,8 +659,19 @@ def save_iee_application(request):
     try:
         application_no = request.POST.get('application_no')
         identifier = request.POST.get('identifier')
-        ca_auth = None
-        dzongkhag_code = request.POST.get('dzo_throm'),
+        dzongkhag_throm = request.POST.get('dzongkhag_throm')
+        tor_application_no = request.POST.get('tor_application_no')
+        if dzongkhag_throm == 'Dzongkhag':
+            dzongkhag_code = request.POST.get('dzongkhag')
+            gewog_code = request.POST.get('gewog')
+            village_code = request.POST.get('vil_chiwog')
+            thromde_id = None
+        else:
+            dzongkhag_code = None
+            gewog_code = None
+            village_code = None
+            thromde_id = request.POST.get('thromde_id')
+
         common_data = {
             'application_no': application_no,
             'application_date': timezone.now().date(),
@@ -677,9 +688,10 @@ def save_iee_application(request):
             'industry_type':request.POST.get('industry_type'),
             'establishment_type': request.POST.get('establishment_type'),
             'industry_classification':request.POST.get('industry_classification'),
-            'dzongkhag_code':request.POST.get('dzo_throm'),
-            'gewog_code':request.POST.get('gewog'),
-            'village_code':request.POST.get('vil_chiwog'),
+            'dzongkhag_code':dzongkhag_code,
+            'gewog_code':gewog_code,
+            'village_code':village_code,
+            'thromde_id':thromde_id,
             'location_name':request.POST.get('location_name'),
             'industrial_area_acre':request.POST.get('industrial_area_acre'),
             'state_reserve_forest_acre':request.POST.get('state_reserve_forest_acre'),
@@ -698,12 +710,18 @@ def save_iee_application(request):
         }
         
         with transaction.atomic():
-            if identifier != 'DR':
+            ca_auth = None
+            if identifier != 'DR' and tor_application_no == None:
                 auth_filter = t_competant_authority_master.objects.filter(
                     competent_authority=request.session['ca_auth'],
                     dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
                 )
                 ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+            else:
+                auth_filter = t_ec_industries_t1_general.objects.filter(
+                    application_no=tor_application_no
+                )
+                ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
             
             if identifier == 'NC':
                 t_ec_industries_t1_general.objects.filter(application_no=application_no).update(

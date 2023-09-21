@@ -114,7 +114,7 @@
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
                                     </div>
                                     <div class="row">
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-6"> 
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Select One</label>
                                                 <div class="mt-2">
@@ -725,7 +725,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Distance from source to the project site (meters)</label>
-                                                <input type="text" name="water_source_distance" class="form-control" id="water_source_distance">
+                                                <input type="number" name="water_source_distance" class="form-control" id="water_source_distance">
                                             </div>
                                             <div id="water_source_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1055,7 +1055,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Provide an allocated budget for the management plan proposed</label>
-                                                <input type="text" name="en_impact_allocated_budget" class="form-control" id="en_impact_allocated_budget">
+                                                <input type="number" name="en_impact_allocated_budget" class="form-control" id="en_impact_allocated_budget">
                                             </div>
                                             <div id="en_impact_allocated_budgetErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1162,7 +1162,7 @@
                                         </div>
                                     </div>
                                     <br>
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-12" id="effulent_details" style="display: none;">
                                         <table class="table table-hover table-bordered table-centered mb-0">
                                             <thead>
                                                 <tr>
@@ -1440,7 +1440,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Quantity of sludge to be generated along with the management plan</label>
-                                                <input type="email" name="waste_water_treatment_sludge_qty" class="form-control" id="waste_water_treatment_sludge_qty">
+                                                <input type="text" name="waste_water_treatment_sludge_qty" class="form-control" id="waste_water_treatment_sludge_qty">
                                             </div>
                                             <div id="waste_water_treatment_sludge_qtyErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1449,7 +1449,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name, location and distance of the receiving water body/surrounding environment of the treated effluent</label>
-                                                <input type="text" name="waste_water_treatment_plant_name_location" class="form-control" id="waste_water_treatment_plant_name_location" maxlength="8">
+                                                <input type="text" name="waste_water_treatment_plant_name_location" class="form-control" id="waste_water_treatment_plant_name_location">
                                             </div>
                                             <div id="waste_water_treatment_plant_name_locationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1501,7 +1501,7 @@
                                             <div id="industry_emissionErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-12" id="industry_emmission_table" style="display: none;">
                                         <table class="table table-hover table-bordered table-centered mb-0">
                                             <thead>
                                                 <tr>
@@ -3751,7 +3751,10 @@
         let industry_type = $('#industry_type').val();
         let establishment_type = $('#establishment_type').val();
         let industry_classification = $('#industry_classification').val();
-        let dzongkhag_code = $('#dzo_throm').val();
+        let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
+        let dzongkhag_throm_val = $("input[name=dzongkhag_throm]:checked").val();
+        let thromde_id = $('#thromde_id').val();
+        let dzongkhag_code = $('#dzongkhag').val();
         let gewog_code = $('#gewog').val();
         let village_code = $('#vil_chiwog').val();
         let location_name = $('#location_name').val();
@@ -3802,21 +3805,35 @@
             $('#industry_classificationErrorMsg').delay(2000).fadeOut('slow');
             $('#industry_classification').focus();
         }
-        else if(dzongkhag_code == "")
+        else if(dzongkhag_throm == "")
         {
-            $('#dzo_thromErrorMsg').html("Select Dzongkhag");
-            $('#dzo_thromErrorMsg').show();
-            $('#dzo_thromErrorMsg').delay(2000).fadeOut('slow');
-            $('#dzo_throm').focus();
+            $('#dzongkhag_thromErrorMsg').html("Choose One");
+            $('#dzongkhag_thromErrorMsg').show();
+            $('#dzongkhag_thromErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag_throm').focus();
         }
-        else if(gewog_code == "")
+        else if(dzongkhag_throm_val == "Thromde" && thromde_id == "")
+        {
+            $('#thromde_idErrorMsg').html("Select Dzongkhag");
+            $('#thromde_idErrorMsg').show();
+            $('#thromde_idErrorMsg').delay(2000).fadeOut('slow');
+            $('#thromde_id').focus();
+        }
+        else if(dzongkhag_throm_val == "Dzongkhag" && dzongkhag_code == "")
+        {
+            $('#dzongkhagErrorMsg').html("Select Dzongkhag");
+            $('#dzongkhagErrorMsg').show();
+            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag').focus();
+        }
+        else if(dzongkhag_throm_val == "Dzongkhag" && gewog_code == "")
         {
             $('#gewogErrorMsg').html("Select Gewog");
             $('#gewogErrorMsg').show();
             $('#gewogErrorMsg').delay(2000).fadeOut('slow');
             $('#gewog').focus();
         }
-        else if(village_code == "")
+        else if(dzongkhag_throm_val == "Dzongkhag" && village_code == "")
         {
             $('#vil_chiwogErrorMsg').html("Select Village");
             $('#vil_chiwogErrorMsg').show();
@@ -7125,11 +7142,11 @@
     {
         if(value == 'Yes')
         {
-            $('.power_line_details').show();
+            $('#effulent_details').show();
         }
         else
         {
-            $('.power_line_details').hide();
+            $('#effulent_details').hide();
         }
     }
 
@@ -7137,11 +7154,11 @@
     {
         if(value == 'Yes')
         {
-            $('.power_line_details').show();
+            $('#industry_emmission_table').show();
         }
         else
         {
-            $('.power_line_details').hide();
+            $('#industry_emmission_table').hide();
         }
     }
 
