@@ -24,7 +24,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of Project</label>
-                                                <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}">
+                                                <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}"> 
                                             </div>
                                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -144,10 +144,11 @@
                                             <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         {% if application_details.dzongkhag_throm == 'Thromde' %} 
-                                            <div class="col-lg-6 thromde_div">
+                                            <div class="col-lg-6 thromdes_div">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Thromde</label>
                                                     <select class="form-select">
+                                                        <option value="">-SELECT-</option>
                                                         {% for thromde in thromde %}
                                                             <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
                                                                 {{ thromde.thromde_name }}
@@ -159,9 +160,9 @@
                                             </div>
                                         {% endif %}
                                     </div>
-                                    <div class="row">
-                                        {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
-                                            <div class="col-lg-6 dzongkhag_div">
+                                    {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                        <div class="row dzongkhag_div">
+                                            <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Dzongkhag</label>
                                                     <select class="form-select">
@@ -187,7 +188,7 @@
                                                 <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="row  dzongkhag_div">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Village/Chiwog</label>
@@ -216,14 +217,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
-                                                <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" onchange="get_total_area_acre()">
+                                                <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{application_details.industrial_area_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="industrial_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">State Forest Reserve (acres)</label>
-                                                <input type="number" min="0" name="state_reserve_forest_acre" class="form-control" id="state_reserve_forest_acre" onchange="get_total_area_acre()">
+                                                <input type="number" min="0" name="state_reserve_forest_acre" class="form-control" id="state_reserve_forest_acre" value="{{application_details.state_reserve_forest_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="state_reserve_forest_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -232,14 +233,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Private Area (acres)</label>
-                                                <input type="number" min="0" name="private_area_acre" class="form-control" id="private_area_acre" onchange="get_total_area_acre()">
+                                                <input type="number" min="0" name="private_area_acre" class="form-control" id="private_area_acre" value="{{application_details.private_area_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="private_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Others Specify (acres)</label>
-                                                <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()">
+                                                <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" value="{{application_details.others_area_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -248,14 +249,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Total land area required (acre)</label>
-                                                <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" readonly>
+                                                <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" value="{{application_details.total_area_acre}}" readonly>
                                             </div>
                                             <div id="total_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Total Green Space (acre)</label>
-                                                <input type="number" name="green_area_acre" class="form-control" id="green_area_acre">
+                                                <input type="number" name="green_area_acre" class="form-control" id="green_area_acre" value="{{application_details.green_area_acre}}">
                                             </div>
                                             <div id="green_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -264,7 +265,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Brief Description of Production and Process Flow</label>
-                                                <textarea class="form-control" name="production_process_flow" id="production_process_flow" rows="3"></textarea>
+                                                <textarea class="form-control" name="production_process_flow" id="production_process_flow" rows="3">{{application_details.production_process_flow}}</textarea>
                                             </div>
                                             <div id="production_process_flowErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -293,14 +294,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Objective</label>
-                                                <input type="text" name="project_objective" class="form-control" id="project_objective">
+                                                <input type="text" name="project_objective" class="form-control" id="project_objective" value="{{application_details.project_objective}}">
                                             </div>
                                             <div id="project_objectiveErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Number of Workers To Be Employed</label>
-                                                <input type="number" min="1" name="project_no_of_workers" class="form-control" id="project_no_of_workers">
+                                                <input type="number" min="1" name="project_no_of_workers" class="form-control" id="project_no_of_workers" value="{{application_details.project_no_of_workers}}">
                                             </div>
                                             <div id="project_no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -309,14 +310,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Cost</label>
-                                                <input type="number" min="0" name="project_cost" class="form-control" id="project_cost">
+                                                <input type="number" min="0" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}">
                                             </div>
                                             <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Duration</label>
-                                                <input type="text" name="project_duration" class="form-control" id="project_duration">
+                                                <input type="text" name="project_duration" class="form-control" id="project_duration" value="{{application_details.project_duration}}">
                                             </div>
                                             <div id="project_durationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -3394,7 +3395,7 @@
     function populate_delete_produce(record_id, application_no)
     {
         $('#delete_final_products_record_id').val(record_id);
-        $('#delete_final_products_app_no').val(application_no);
+        $('#delete_final_products_application_no').val(application_no);
         $('#delete_final_products_modal').modal('show');
     }
 
@@ -3410,11 +3411,11 @@
             data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
-                $('#delete_final_products_SuccessMsg').html("Delete Successful");
-                $('#delete_final_products_SuccessMsg').show();
+                $('#delete_final_products_successMsg').html("Delete Successful");
+                $('#delete_final_products_successMsg').show();
                 setTimeout(function()
                 {
-                    $('#delete_final_products_SuccessMsg').delay(2000).fadeOut('slow');
+                    $('#delete_final_products_successMsg').delay(2000).fadeOut('slow');
                 }, 2000);
                 setTimeout(function() {
                     $('#delete_final_products_modal').modal('hide');
@@ -3777,18 +3778,14 @@
     {
         let project_name = $('#project_name').val();
         let project_category = $('#project_category').val();
-        let applicant_name = $('#applicant_name').val();
-        let address = $('#address').val();
-        let cid = $('#cid').val();
-        let cid_length = $('#cid').val().length;
-        let contact_no = $('#contact_no').val();
-        let contact_no_length = $('#contact_no').val().length;
-        let email = $('#email').val();
         let focal_person = $('#focal_person').val();
         let industry_type = $('#industry_type').val();
         let establishment_type = $('#establishment_type').val();
         let industry_classification = $('#industry_classification').val();
-        let dzongkhag_code = $('#dzo_throm').val();
+        let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
+        let dzongkhag_throm_val = $("input[name=dzongkhag_throm]:checked").val();
+        let thromde_id = $('#thromde_id').val();
+        let dzongkhag_code = $('#dzongkhag').val();
         let gewog_code = $('#gewog').val();
         let village_code = $('#vil_chiwog').val();
         let location_name = $('#location_name').val();
@@ -3818,55 +3815,6 @@
             $('#project_categoryErrorMsg').delay(2000).fadeOut('slow');
             $('#project_category').focus();
         }
-        else if(cid == "")
-        {
-            $('#cidErrorMsg').html("Enter CID");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
-        }
-        else if(cid_length < 11)
-        {
-            $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
-        }
-        else if(applicant_name == "")
-        {
-            $('#applicant_nameErrorMsg').html("Enter Name of The Applicant");
-            $('#applicant_nameErrorMsg').show();
-            $('#applicant_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#applicant_name').focus();
-        }
-        else if(address == "")
-        {
-            $('#addressErrorMsg').html("Enter Address");
-            $('#addressErrorMsg').show();
-            $('#addressErrorMsg').delay(2000).fadeOut('slow');
-            $('#address').focus();
-        }
-        else if(contact_no == "")
-        {
-            $('#contact_noErrorMsg').html("Enter Contact No");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
-        }
-        else if(contact_no_length < 8)
-        {
-            $('#contact_noErrorMsg').html("Cannot Be Less Than Eight Digits");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
-        }
-        else if(email == "")
-        {
-            $('#emailErrorMsg').html("Enter Email");
-            $('#emailErrorMsg').show();
-            $('#emailErrorMsg').delay(2000).fadeOut('slow');
-            $('#email').focus();
-        }
         else if(industry_type == "")
         {
             $('#industry_typeErrorMsg').html("Enter Industry Type");
@@ -3888,21 +3836,35 @@
             $('#industry_classificationErrorMsg').delay(2000).fadeOut('slow');
             $('#industry_classification').focus();
         }
-        else if(dzongkhag_code == "")
+        else if(dzongkhag_throm == "")
         {
-            $('#dzo_thromErrorMsg').html("Select Dzongkhag");
-            $('#dzo_thromErrorMsg').show();
-            $('#dzo_thromErrorMsg').delay(2000).fadeOut('slow');
-            $('#dzo_throm').focus();
+            $('#dzongkhag_thromErrorMsg').html("Choose One");
+            $('#dzongkhag_thromErrorMsg').show();
+            $('#dzongkhag_thromErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag_throm').focus();
         }
-        else if(gewog_code == "")
+        else if(dzongkhag_throm_val == "Thromde" && thromde_id == "")
+        {
+            $('#thromde_idErrorMsg').html("Select Dzongkhag");
+            $('#thromde_idErrorMsg').show();
+            $('#thromde_idErrorMsg').delay(2000).fadeOut('slow');
+            $('#thromde_id').focus();
+        }
+        else if(dzongkhag_throm_val == "Dzongkhag" && dzongkhag_code == "")
+        {
+            $('#dzongkhagErrorMsg').html("Select Dzongkhag");
+            $('#dzongkhagErrorMsg').show();
+            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag').focus();
+        }
+        else if(dzongkhag_throm_val == "Dzongkhag" && gewog_code == "")
         {
             $('#gewogErrorMsg').html("Select Gewog");
             $('#gewogErrorMsg').show();
             $('#gewogErrorMsg').delay(2000).fadeOut('slow');
             $('#gewog').focus();
         }
-        else if(village_code == "")
+        else if(dzongkhag_throm_val == "Dzongkhag" && village_code == "")
         {
             $('#vil_chiwogErrorMsg').html("Select Village");
             $('#vil_chiwogErrorMsg').show();
@@ -4596,8 +4558,8 @@
         anc_road_length = $('#anc_road_length').val();
         anc_road_start_point = $('#anc_road_start_point').val();
         anc_road_end_point  = $('#anc_road_end_point').val();
-        anc_road_blast_required= $("input[name=anc_road_required]:checked").length;
-        anc_road_blast_required_value = $("input[name=anc_road_required]:checked").val();
+        anc_road_blast_required= $("input[name=anc_road_blast_required]:checked").length;
+        anc_road_blast_required_value = $("input[name=anc_road_blast_required]:checked").val();
         anc_road_blast_type = $('#anc_road_blast_type').val();
         anc_road_blast_qty = $('#anc_road_blast_qty').val();
         anc_road_blast_location = $('#anc_road_blast_location').val();
@@ -4617,21 +4579,21 @@
             $('#anc_road_lengthErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_length').focus();
         }
-        else if(water_required_value == 'Yes' && anc_road_start_point == "")
+        else if(anc_road_required_value == 'Yes' && anc_road_start_point == "")
         {
             $('#anc_road_start_pointErrorMsg').html("Enter Starting Point.");
             $('#anc_road_start_pointErrorMsg').show();
             $('#anc_road_start_pointErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_start_point').focus();
         }
-        else if(water_required_value == 'Yes' && anc_road_end_point == "")
+        else if(anc_road_required_value == 'Yes' && anc_road_end_point == "")
         {
             $('#anc_road_end_pointErrorMsg').html("Enter Termination Point.");
             $('#anc_road_end_pointErrorMsg').show();
             $('#anc_road_end_pointErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_end_point').focus();
         }
-        else if( anc_road_blast_required < 1)
+        else if(anc_road_blast_required < 1)
         {
             $('#anc_road_blast_requiredErrorMsg').html("Enter Termination Point.");
             $('#anc_road_blast_requiredErrorMsg').show();
@@ -6704,6 +6666,7 @@
 
     function submit_iee_application()
     {
+        $("#pageloader").show();
         $.ajax
         ({
             type : "POST",
@@ -6711,6 +6674,7 @@
             data : $('#iee_submit_form').serialize(),
             success : function(data)
             {
+                $("#pageloader").hide();
                 if(data.message == 'success')
                 {
                     $('#iee_submit_successMsg').html("Application Submitted Successfully");
@@ -6804,14 +6768,17 @@
             ({
                 type : "POST",
                 url : "{% url 'save_anc_road_details' %}",
-                data : {'application_no':application_no,'road_line_chainage_from':road_line_chainage_from,'road_line_chainage_to':road_line_chainage_to,'road_land_type':road_land_type,'road_terrain':road_terrain,'road_width':road_width,'road_row':road_row,'road_area_required':road_area_required},
+                data : {'application_no':application_no,'road_line_chainage_from':road_line_chainage_from,'road_line_chainage_to':road_line_chainage_to,'road_land_type':road_land_type,'road_terrain':road_terrain,'road_width':road_width,'road_row':road_row,'road_area_required':road_area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
-                    $('#road_successMsg').html("Approach Road Details Added Successfully");
-                    $('#road_successMsg').show();
-                    $('#road_successMsg').delay(2000).fadeOut('slow');
+                    $('#anc_road_successMsg').html("Approach Road Details Added Successfully");
+                    $('#anc_road_successMsg').show();
+                    $('#anc_road_successMsg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#anc_approach_road_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_approach_road_details').html(responseText);
                     }, 2000);
                     setTimeout(function() {
                         $('#anc_approach_road_form')[0].reset();
@@ -6823,7 +6790,7 @@
 
     function populate_approach_road_details(record_id, application_no, line_chainage_from, line_chainage_to, land_type, terrain, road_width, row, area_required)
     {
-        $('#edit_anc_road_record_id').val(record_id);
+        $('#edit_anc_app_record_id').val(record_id);
         $('#edit_anc_road_application_no').val(application_no);
         $('#edit_road_line_chainage_from').val(line_chainage_from);
         $('#edit_road_line_chainage_to').val(line_chainage_to);
@@ -6851,7 +6818,7 @@
         ({
             type : "POST",
             url : "{% url 'delete_anc_road_details' %}",
-            data : {'record_id':record_id,'application_no':application_no},
+            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
@@ -6860,21 +6827,24 @@
                 setTimeout(function() {
                     $('#delete_anc_approach_road_modal').modal('hide');
                 }, 2000);
+                setTimeout(function() {
+                    $('#anc_approach_road_details').html(responseText);
+                }, 2000);
             }
         });
     }
 
     function update_anc_road_details()
     {
-        record_id = $('#edit_anc_road_record_id').val();
-        application_no = $('#edit_anc_road_application_no').val();
-        line_chainage_from = $('#edit_road_line_chainage_from').val();
-        line_chainage_to = $('#edit_road_line_chainage_to').val();
-        land_type = $('#edit_road_land_type').val();
-        terrain = $('#edit_road_terrain').val();
-        road_width = $('#edit_road_width').val();
-        row = $('#edit_road_row').val();
-        area_required = $('#edit_road_area_required').val();
+        let record_id = $('#edit_anc_app_record_id').val();
+        let application_no = $('#edit_anc_road_application_no').val();
+        let line_chainage_from = $('#edit_road_line_chainage_from').val();
+        let line_chainage_to = $('#edit_road_line_chainage_to').val();
+        let land_type = $('#edit_road_land_type').val();
+        let terrain = $('#edit_road_terrain').val();
+        let road_width = $('#edit_road_width').val();
+        let row = $('#edit_road_row').val();
+        let area_required = $('#edit_road_area_required').val();
 
         if(line_chainage_from == "")
         {
@@ -6924,7 +6894,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_anc_road_details' %}",
-                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'road_width':road_width,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_road_successMsg').html("Approach Road Details Updated Successfully");
@@ -6932,6 +6902,9 @@
                     $('#edit_road_successMsg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#edit_anc_approach_road_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_approach_road_details').html(responseText);
                     }, 2000);
                 }
             });
@@ -7004,7 +6977,7 @@
             ({
                 type : "POST",
                 url : "{% url 'save_anc_power_line_details' %}",
-                data : {'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                data : {'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#power_line_successMsg').html("Power Line Details Added Successfully");
@@ -7012,6 +6985,9 @@
                     $('#power_line_successMsg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#anc_power_line_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_power_line_details').html(responseText);
                     }, 2000);
                     setTimeout(function() {
                         $('#anc_power_line_form')[0].reset();
@@ -7039,20 +7015,20 @@
     function populate_delete_power_line(record_id, application_no)
     {
         $('#delete_anc_record_id').val(record_id);
-        $('#delete_anc_record_id').val(application_no);
+        $('#delete_anc_application_no').val(application_no);
         $('#delete_anc_power_line_modal').modal('show');
     }
 
     function delete_power_line_details()
     {
         record_id =$('#delete_anc_record_id').val();
-        application_no =$('#delete_anc_record_id').val();
+        application_no =$('#delete_anc_application_no').val();
 
         $.ajax
         ({
             type : "POST",
             url : "{% url 'delete_anc_power_line_details' %}",
-            data : {'record_id':record_id,'application_no':application_no},
+            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
@@ -7060,6 +7036,9 @@
                 $('#delete_power_line_successMsg').delay(2000).fadeOut('slow');
                 setTimeout(function() {
                     $('#delete_anc_power_line_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#anc_power_line_details').html(responseText);
                 }, 2000);
             }
         });
@@ -7132,7 +7111,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_anc_power_line_details' %}",
-                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_power_line_successMsg').html("Power Line Details Updated Successfully");
@@ -7140,6 +7119,9 @@
                     $('#edit_power_line_successMsg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#edit_anc_power_line_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_power_line_details').html(responseText);
                     }, 2000);
                 }
             });
@@ -7151,10 +7133,12 @@
         if(value == 'Yes')
         {
             $('#approach_road_details').show();
+            $('#approach_road_details_table').show(); 
         }
         else
         {
             $('#approach_road_details').hide();
+            $('#approach_road_details_table').hide();
         }
     }
 
@@ -7189,11 +7173,11 @@
     {
         if(value == 'Yes')
         {
-            $('.power_line_details').show();
+            $('.effulent_details').show();
         }
         else
         {
-            $('.power_line_details').hide();
+            $('.effulent_details').hide();
         }
     }
 
@@ -7201,11 +7185,11 @@
     {
         if(value == 'Yes')
         {
-            $('.power_line_details').show();
+            $('#industry_emmission_table').show();
         }
         else
         {
-            $('.power_line_details').hide();
+            $('#industry_emmission_table').hide();
         }
     }
 
@@ -7241,9 +7225,9 @@
 
     function calculate_edit_road_area_required()
     {
-        let road_line_chainage_from = $('#road_line_chainage_from').val();
-        let road_line_chainage_to = $('#road_line_chainage_to').val(); 
-        let road_row = $('#road_row').val();
+        let road_line_chainage_from = $('#edit_road_line_chainage_from').val();
+        let road_line_chainage_to = $('#edit_road_line_chainage_to').val(); 
+        let road_row = $('#edit_road_row').val();
         let sum = 0;
         let product = 0;
 
@@ -7251,7 +7235,7 @@
         sum += parseFloat(road_line_chainage_to) || 0;
         product = parseFloat(sum) * parseFloat(road_row) || 0;
          
-        $('#road_area_required').val(product);
+        $('#edit_road_area_required').val(product);
     }
 
     function check_anc_other_crushing_unit()
@@ -7377,17 +7361,56 @@
         }
     }
 
+    function getCitizenDetails(cid)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'check_cid_exists' %}",
+            data :{'cid':cid},
+            success : function(data)
+            {
+                if(data.count > 0)
+                {
+                    $('#cid').val("");
+                    $('#applicant_name').val("");
+                    $('#cidErrorMsg').html("CID Already Exists.Try With Another one");
+                    $('#cidErrorMsg').show();
+                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    const myObj =data.response;
+                    if(myObj.citizendatas.citizendata == undefined)
+                    {
+                        $('#cid').val("");
+                        $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                        $('#cidErrorMsg').show();
+                        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        var CitizenName = myObj.citizendatas.citizendata[0].Name
+                        var dzongkhagName = myObj.citizendatas.citizendata[0].Dzongkhag_Name
+                        var villageName = myObj.citizendatas.citizendata[0].Gewog_Name
+                        var gewogName = myObj.citizendatas.citizendata[0].Village_Name
+                        $('#applicant_name').val(CitizenName);
+                    }
+                }
+            }
+        });
+    }
+    
     function check_dzong_throm(value)
     {
         if(value == "Dzongkhag")
         {
-            $('.dzongkhag').show();
-            $('.thromde').hide();
+            $('.dzongkhag_div').show();
+            $('.thromdes_div').hide();
         }
         else
         {
-            $('.thromde').show();
-            $('.dzongkhag').hide();
+            $('.thromdes_div').show();
+            $('.dzongkhag_div').hide();
         }
     }
 
@@ -7401,5 +7424,53 @@
         {
             $('#iee_submit_btn').hide();
         }
+    }
+
+    function checkMaxLength(input, maxLength) {
+        if (input.value.length > maxLength) {
+            input.value = input.value.slice(0, maxLength);
+        }
+    }
+
+    function calculate_area_required()
+    {
+        let line_chainage_from_val = 0;
+        let line_chainage_to_val = 0;
+        let line_chainage_from = $('#line_chainage_from').val();
+        let line_chainage_to = $('#line_chainage_to').val();
+        let row = $('#row').val();
+
+        if(line_chainage_from == "")
+        {
+            line_chainage_from = line_chainage_from_val;
+        }
+        else
+        {
+            line_chainage_to = line_chainage_to_val;
+        }
+        let sum_line_chainage = line_chainage_from + line_chainage_to ;
+        let total = row * sum_line_chainage;
+        $('#area_required').val(total);
+    }
+
+    function calculate_edit_area_required()
+    {
+        let line_chainage_from_val = 0;
+        let line_chainage_to_val = 0;
+        let line_chainage_from = $('#edit_line_chainage_from').val();
+        let line_chainage_to = $('#edit_line_chainage_to').val();
+        let row = $('#edit_row').val();
+
+        if(line_chainage_from == "")
+        {
+            line_chainage_from = line_chainage_from_val;
+        }
+        else
+        {
+            line_chainage_to = line_chainage_to_val;
+        }
+        let sum_line_chainage = line_chainage_from + line_chainage_to ;
+        let total = row * sum_line_chainage;
+        $('#edit_area_required').val(total);
     }
 </script>

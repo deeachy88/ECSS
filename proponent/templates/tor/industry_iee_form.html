@@ -1162,7 +1162,7 @@
                                         </div>
                                     </div>
                                     <br>
-                                    <div class="col-lg-12" id="effulent_details" style="display: none;">
+                                    <div class="col-lg-12 effulent_details" style="display: none;">
                                         <table class="table table-hover table-bordered table-centered mb-0">
                                             <thead>
                                                 <tr>
@@ -1413,7 +1413,7 @@
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide following information on Effluent Treatment Plant (ETP), if required
                                     </div>
                                     <br>
-                                    <div class="row">
+                                    <div class="row effulent_details" style="display:none">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Capacity</label>
@@ -1429,7 +1429,7 @@
                                             <div id="waste_water_qty_per_annumErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row effulent_details" style="display:none">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Dimension of ETP</label>
@@ -1445,7 +1445,7 @@
                                             <div id="waste_water_treatment_sludge_qtyErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row effulent_details" style="display:none">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name, location and distance of the receiving water body/surrounding environment of the treated effluent</label>
@@ -4527,8 +4527,8 @@
         anc_road_length = $('#anc_road_length').val();
         anc_road_start_point = $('#anc_road_start_point').val();
         anc_road_end_point  = $('#anc_road_end_point').val();
-        anc_road_blast_required= $("input[name=anc_road_required]:checked").length;
-        anc_road_blast_required_value = $("input[name=anc_road_required]:checked").val();
+        anc_road_blast_required= $("input[name=anc_road_blast_required]:checked").length;
+        anc_road_blast_required_value = $("input[name=anc_road_blast_required]:checked").val();
         anc_road_blast_type = $('#anc_road_blast_type').val();
         anc_road_blast_qty = $('#anc_road_blast_qty').val();
         anc_road_blast_location = $('#anc_road_blast_location').val();
@@ -4548,21 +4548,21 @@
             $('#anc_road_lengthErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_length').focus();
         }
-        else if(water_required_value == 'Yes' && anc_road_start_point == "")
+        else if(anc_road_required_value == 'Yes' && anc_road_start_point == "")
         {
             $('#anc_road_start_pointErrorMsg').html("Enter Starting Point.");
             $('#anc_road_start_pointErrorMsg').show();
             $('#anc_road_start_pointErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_start_point').focus();
         }
-        else if(water_required_value == 'Yes' && anc_road_end_point == "")
+        else if(anc_road_required_value == 'Yes' && anc_road_end_point == "")
         {
             $('#anc_road_end_pointErrorMsg').html("Enter Termination Point.");
             $('#anc_road_end_pointErrorMsg').show();
             $('#anc_road_end_pointErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_end_point').focus();
         }
-        else if( anc_road_blast_required < 1)
+        else if(anc_road_blast_required < 1)
         {
             $('#anc_road_blast_requiredErrorMsg').html("Enter Termination Point.");
             $('#anc_road_blast_requiredErrorMsg').show();
@@ -7142,11 +7142,11 @@
     {
         if(value == 'Yes')
         {
-            $('#effulent_details').show();
+            $('.effulent_details').show();
         }
         else
         {
-            $('#effulent_details').hide();
+            $('.effulent_details').hide();
         }
     }
 

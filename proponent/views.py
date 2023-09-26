@@ -706,7 +706,12 @@ def save_iee_application(request):
             'project_duration':request.POST.get('project_duration'),
             'ec_reference_no':request.POST.get('ec_reference_no'),
             'form_type':request.POST.get('form_type'),
-            'tor_application_no':request.POST.get('tor_application_no')
+            'tor_application_no':request.POST.get('tor_application_no'),
+            'application_status':'P',
+            'project_name':request.POST.get('project_name'),
+            'project_category':request.POST.get('project_category'),
+            'dzongkhag_throm':dzongkhag_throm,
+            'location_name':request.POST.get('project_site')
         }
         
         with transaction.atomic():
@@ -2985,6 +2990,7 @@ def save_tor_form(request):
         service_id = request.session['service_id']
         login_id = request.session['login_id']
         name = request.session['name']
+        colour_code = request.session['colour_code']
 
         application_date = timezone.now().date()
         action_date = application_date
@@ -3019,7 +3025,8 @@ def save_tor_form(request):
             application_status='P',
             action_date=action_date,
             service_id=service_id,
-            application_source='ECSS'
+            application_source='ECSS',
+            colour_code=colour_code
         )
 
         # Insert record in t_application_history table
