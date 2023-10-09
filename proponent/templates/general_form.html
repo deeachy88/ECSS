@@ -233,7 +233,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Elevation(meters)</label>
-                                                <input type="text" name="terrain_elevation" class="form-control" id="terrain_elevation">
+                                                <input type="number" name="terrain_elevation" class="form-control" id="terrain_elevation">
                                             </div>
                                             <div id="terrain_elevationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -420,7 +420,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Cost(Nu)</label>
-                                                <input type="text" name="project_cost" class="form-control" id="project_cost">
+                                                <input type="number" name="project_cost" class="form-control" id="project_cost">
                                             </div>
                                             <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1627,7 +1627,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Installed capacity/quantity per annum</label>
-                    <input type="text" name="quantity_annum" class="form-control" id="quantity_annum">
+                    <input type="number" name="quantity_annum" class="form-control" id="quantity_annum">
                 </div>
                 <div class="alert alert-danger" id="quantity_annumErrorMsg" style="display:none"></div>
             </div>
@@ -1678,7 +1678,7 @@
             <input type="hidden" name="edit_final_products_app_no" class="form-control" id="edit_final_products_app_no">
             <div class="col-lg-6">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Name of produce</label>
+                    <label class="form-label fw-bold">Name of Products</label>
                     <input type="text" name="edit_produce_name" class="form-control" id="edit_produce_name">
                 </div>
                 <div class="alert alert-danger" id="edit_produce_nameErrorMsg" style="display:none"></div>
@@ -1686,7 +1686,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Installed capacity/quantity per annum</label>
-                    <input type="text" name="edit_quantity_annum" class="form-control" id="edit_quantity_annum">
+                    <input type="number" name="edit_quantity_annum" class="form-control" id="edit_quantity_annum">
                 </div>
                 <div class="alert alert-danger" id="edit_quantity_annumErrorMsg" style="display:none"></div>
             </div>
@@ -5324,8 +5324,8 @@
 
     function delete_final_product_details()
     {
-        $('#delete_final_product_record_id').val();
-        $('#delete_final_product_app_no').val();
+        var record_id = $('#delete_final_product_record_id').val();
+        var application_no = $('#delete_final_product_app_no').val();
 
         $.ajax
             ({
