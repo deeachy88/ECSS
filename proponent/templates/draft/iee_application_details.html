@@ -17,7 +17,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="iee_application_form">
                                     {% csrf_token %}
-                                    <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" style="display:none;">
+                                    <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="{{application_details.service_id}}" name="service_id" style="display:none;">
                                     <input type="text" class="form-control" value="Draft" name="identifier" style="display:none;">
                                     <div class="row">
@@ -623,7 +623,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFourBtn"
-                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" disabled>
+                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                                 Water Requirement
                             </button>
                         </h2>
@@ -779,7 +779,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFive">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFiveBtn"
-                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" disabled>
+                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                                 Ancillary:Approach Road
                             </button>
                         </h2>
@@ -915,7 +915,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSix">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSixBtn"
-                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" disabled>
+                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
                                 Ancillary:Power Lines
                             </button>
                         </h2>
@@ -1018,7 +1018,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSeven">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSevenBtn"
-                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" disabled>
+                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
                                 Ancillary:Others
                             </button>
                         </h2>
@@ -1071,7 +1071,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingEight">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
-                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
                                 Solid Waste
                             </button>
                         </h2>
@@ -1163,7 +1163,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingNine">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingNineBtn"
-                                data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine" disabled>
+                                data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
                                 Effluent
                             </button>
                         </h2>
@@ -1503,7 +1503,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingEleven">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingElevenBtn"
-                                data-bs-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven" disabled>
+                                data-bs-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">
                                 Industry Emission
                             </button>
                         </h2>
@@ -1634,7 +1634,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwelve">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTwelveBtn"
-                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" disabled>
+                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
                                 Noise Level
                             </button>
                         </h2>
@@ -1703,7 +1703,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOtherImpacts">
                             <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
                                 Other Impacts
                             </button>
                         </h2>
@@ -1822,7 +1822,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingAttachment">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
-                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
+                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
                                 File Attachment
                             </button>
                         </h2>
@@ -2164,284 +2164,282 @@
 </form>
 
 <form method="post" id="final_products_form">
-{% csrf_token %}
-<div class="modal fade" id="final_products_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Add</strong></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Product (Name)</label>
-                    <input type="text" name="product_name" class="form-control" id="product_name">
-                </div>
-                <div class="alert alert-danger" id="product_nameErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Name/Location Type</label>
-                    <input type="text" name="name_location" class="form-control" id="name_location">
-                </div>
-                <div class="alert alert-danger" id="name_locationErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Method of Storage</label>
-                    <select class="form-select" name="storage_method" id="storage_method">
-                        <option value="">Choose One</option>
-                        <option value="Fully_Enclosed">Fully Enclosed</option>
-                        <option value="Partially_Enclosed">Partially Enclosed</option>
-                        <option value="Open">Open</option>
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="storage_methodErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-      </div>
-          <div class="alert alert-success" id="final_products_SuccessMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="add_final_products_details()">Add</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-    <!--/.Content-->
-  </div>
-</div>
-</form>
-
-<form method="post" id="edit_final_products_form">
-{% csrf_token %}
-<div class="modal fade" id="edit_final_products_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Edit</strong></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-        <div class="row">
-            <input type="hidden" name="edit_final_products_record_id" class="form-control" id="edit_final_products_record_id">
-            <input type="hidden" name="edit_final_products_app_no" class="form-control" id="edit_final_products_app_no">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Product (Name)</label>
-                    <input type="text" name="edit_product_name" class="form-control" id="edit_product_name">
-                </div>
-                <div class="alert alert-danger" id="edit_product_nameErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Name/Location Type</label>
-                    <input type="text" name="edit_name_location" class="form-control" id="edit_name_location">
-                </div>
-                <div class="alert alert-danger" id="edit_name_locationErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Method of Storage</label>
-                    <select class="form-select" name="edit_storage_method" id="edit_storage_method">
-                        <option value="">Choose One</option>
-                        <option value="Fully_Enclosed">Fully Enclosed</option>
-                        <option value="Partially_Enclosed">Partially Enclosed</option>
-                        <option value="Open">Open</option>
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="edit_storage_methodErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-      </div>
-          <div class="alert alert-success" id="edit_final_products_SuccessMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="update_final_product_details()">Update</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-    <!--/.Content-->
-  </div>
-</div>
-</form>
-
-<form method="post" id="delete_final_products_form">
-{% csrf_token %}
-<div class="modal fade" id="delete_final_products_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Delete</strong></h3>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-          <input type="hidden" name="delete_final_products_record_id" class="form-control" id="delete_final_products_record_id">
-          <input type="hidden" name="delete_final_products_application_no" class="form-control" id="delete_final_products_application_no">
+    {% csrf_token %}
+    <div class="modal fade" id="final_products_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Add</strong></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
             <div class="row">
-                <div class="col-lg-12">
-                    <p>Are You Sure You Want To Delete ? </p>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Name of Products</label>
+                        <input type="text" name="product_name" class="form-control" id="product_name">
+                    </div>
+                    <div class="alert alert-danger" id="product_nameErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Installed capacity/quantity per annum</label>
+                        <input type="number" name="quantity_annum" class="form-control" id="quantity_annum">
+                    </div>
+                    <div class="alert alert-danger" id="quantity_annumErrorMsg" style="display:none"></div>
                 </div>
             </div>
-      </div>
-        <div class="alert alert-success" id="delete_final_products_successMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="delete_final_product_details()">Yes</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">No</button>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Method of Storage</label>
+                        <select class="form-select" name="storage_method" id="storage_method">
+                            <option selected>Choose One</option>
+                            <option value="fully_enclosed">Fully Enclosed</option>
+                            <option value="partially_enclosed">Partially Enclosed</option>
+                            <option value="open">Open</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="storage_methodErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+              <div class="alert alert-success" id="final_products_SuccessMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="add_final_products_details()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
       </div>
     </div>
-    <!--/.Content-->
-  </div>
-</div>
-</form>
+    </form>
 
-<form method="post" id="raw_materials_form">
-{% csrf_token %}
-<div class="modal fade" id="raw_materials_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Add</strong></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">List of raw materials </label>
-                    <input type="text" name="raw_material" class="form-control" id="raw_material">
+    <form method="post" id="edit_final_products_form">
+        {% csrf_token %}
+        <div class="modal fade" id="edit_final_products_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Edit</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <div class="row">
+                    <input type="hidden" name="edit_final_products_record_id" class="form-control" id="edit_final_products_record_id">
+                    <input type="hidden" name="edit_final_products_app_no" class="form-control" id="edit_final_products_app_no">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Name of Products</label>
+                            <input type="text" name="edit_produce_name" class="form-control" id="edit_produce_name">
+                        </div>
+                        <div class="alert alert-danger" id="edit_produce_nameErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Installed capacity/quantity per annum</label>
+                            <input type="number" name="edit_quantity_annum" class="form-control" id="edit_quantity_annum">
+                        </div>
+                        <div class="alert alert-danger" id="edit_quantity_annumErrorMsg" style="display:none"></div>
+                    </div>
                 </div>
-                <div class="alert alert-danger" id="raw_materialErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Quantity (MT/annum)</label>
-                    <input type="text" name="raw_material_qty" class="form-control" id="raw_material_qty">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Method of storage</label>
+                            <select class="form-select" name="edit_final_product_storage_method" id="edit_final_product_storage_method">
+                                <option selected>Choose One</option>
+                                <option value="fully_enclosed">Fully Enclosed</option>
+                                <option value="partially_enclosed">Partially Enclosed</option>
+                                <option value="open">Open</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="edit_final_product_storage_methodErrorMsg" style="display:none"></div>
+                    </div>
                 </div>
-                <div class="alert alert-danger" id="raw_material_qtyErrorMsg" style="display:none"></div>
+              </div>
+                  <div class="alert alert-success" id="edit_final_product_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="update_final_product_details()">Update</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
             </div>
+            <!--/.Content-->
+          </div>
         </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Source</label>
-                    <input type="text" name="raw_material_source" class="form-control" id="raw_material_source">
+        </form>
+        
+        <form method="post" id="delete_final_product_form">
+        {% csrf_token %}
+        <div class="modal fade" id="delete_final_product_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Delete</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <div class="modal-body mx-4">
+                <input type="hidden" name="delete_final_product_record_id" class="form-control" id="delete_final_product_record_id">
+                <input type="hidden" name="delete_final_product_app_no" class="form-control" id="delete_final_product_app_no">
+                  <div class="row">
+                    <div class="col-lg-12">
+                        <p>Are You Sure You Want To Delete ? </p>
+                    </div>
                 </div>
-                <div class="alert alert-danger" id="raw_material_sourceErrorMsg" style="display:none"></div>
+              </div>
+                  <div class="alert alert-success" id="delete_final_product_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="delete_final_product_details()">Delete</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
             </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Method of Storage</label>
-                    <select class="form-select" name="raw_material_storage_method" id="raw_material_storage_method">
-                        <option selected>Choose One</option>
-                        <option value="Fully_Enclosed">Fully Enclosed</option>
-                        <option value="Partially_Enclosed">Partially Enclosed</option>
-                        <option value="Open">Open</option>
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="raw_material_storage_methodErrorMsg" style="display:none"></div>
-            </div>
+          </div>
         </div>
-      </div>
-          <div class="alert alert-success" id="raw_material_SuccessMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="add_raw_material_details()">Add</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-    <!--/.Content-->
-  </div>
-</div>
-</form>
+        </form>
 
-<form method="post" id="edit_raw_materials_form">
-{% csrf_token %}
-<div class="modal fade" id="edit_raw_materials_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Update</strong></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-        <input type="hidden" name="edit_raw_material_record_id" class="form-control" id="edit_raw_material_record_id">
-        <input type="hidden" name="edit_raw_material_app_no" class="form-control" id="edit_raw_material_app_no">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">List of raw materials </label>
-                    <input type="text" name="edit_raw_material" class="form-control" id="edit_raw_material">
+        <form method="post" id="raw_materials_form">
+            {% csrf_token %}
+            <div class="modal fade" id="raw_materials_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-lg" role="document">
+                <!--Content-->
+                <div class="modal-content form-elegant">
+                  <!--Header-->
+                  <div class="modal-header text-center">
+                    <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                            &nbsp;Add</strong></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                  </div>
+                  <!--Body-->
+                  <div class="modal-body mx-4">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">List of raw materials </label>
+                                <input type="text" name="raw_material" class="form-control" id="raw_material">
+                            </div>
+                            <div class="alert alert-danger" id="raw_materialErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Quantity (MT/annum)</label>
+                                <input type="number" name="raw_material_qty" class="form-control" id="raw_material_qty">
+                            </div>
+                            <div class="alert alert-danger" id="raw_material_qtyErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Source</label>
+                                <input type="text" name="raw_material_source" class="form-control" id="raw_material_source">
+                            </div>
+                            <div class="alert alert-danger" id="raw_material_sourceErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Method of Storage</label>
+                                <select class="form-select" name="raw_material_storage_method" id="raw_material_storage_method">
+                                    <option selected>Choose One</option>
+                                    <option value="Fully_Enclosed">Fully Enclosed</option>
+                                    <option value="Partially_Enclosed">Partially Enclosed</option>
+                                    <option value="Open">Open</option>
+                                </select>
+                            </div>
+                            <div class="alert alert-danger" id="raw_material_storage_methodErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                  </div>
+                      <div class="alert alert-success" id="raw_material_SuccessMsg" style="display:none"></div>
+                  <div class="modal-footer flex-center justify-content-center">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="add_raw_material_details()">Add</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                  </div>
                 </div>
-                <div class="alert alert-danger" id="edit_raw_materialErrorMsg" style="display:none"></div>
+                <!--/.Content-->
+              </div>
             </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Quantity (MT/annum)</label>
-                    <input type="text" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
+            </form>
+            
+            <form method="post" id="edit_raw_materials_form">
+            {% csrf_token %}
+            <div class="modal fade" id="edit_raw_materials_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-lg" role="document">
+                <!--Content-->
+                <div class="modal-content form-elegant">
+                  <!--Header-->
+                  <div class="modal-header text-center">
+                    <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                            &nbsp;Update</strong></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                  </div>
+                  <!--Body-->
+                  <div class="modal-body mx-4">
+                    <input type="hidden" name="edit_raw_material_record_id" class="form-control" id="edit_raw_material_record_id">
+                    <input type="hidden" name="edit_raw_material_app_no" class="form-control" id="edit_raw_material_app_no">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">List of raw materials </label>
+                                <input type="text" name="edit_raw_material" class="form-control" id="edit_raw_material">
+                            </div>
+                            <div class="alert alert-danger" id="edit_raw_materialErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Quantity (MT/annum)</label>
+                                <input type="number" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
+                            </div>
+                            <div class="alert alert-danger" id="edit_raw_material_qtyErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Source</label>
+                                <input type="text" name="edit_raw_material_source" class="form-control" id="edit_raw_material_source">
+                            </div>
+                            <div class="alert alert-danger" id="edit_raw_material_sourceErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Method of Storage</label>
+                                <select class="form-select" name="edit_raw_material_storage_method" id="edit_raw_material_storage_method">
+                                    <option selected>Choose One</option>
+                                    <option value="Fully_Enclosed">Fully Enclosed</option>
+                                    <option value="Partially_Enclosed">Partially Enclosed</option>
+                                    <option value="Open">Open</option>
+                                </select>
+                            </div>
+                            <div class="alert alert-danger" id="edit_raw_material_storage_methodErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                  </div>
+                      <div class="alert alert-success" id="edit_raw_material_SuccessMsg" style="display:none"></div>
+                  <div class="modal-footer flex-center justify-content-center">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="update_raw_material_details()">Update</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                  </div>
                 </div>
-                <div class="alert alert-danger" id="edit_raw_material_qtyErrorMsg" style="display:none"></div>
+                <!--/.Content-->
+              </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Source</label>
-                    <input type="text" name="edit_raw_material_source" class="form-control" id="edit_raw_material_source">
-                </div>
-                <div class="alert alert-danger" id="edit_raw_material_sourceErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Method of Storage</label>
-                    <select class="form-select" name="edit_raw_material_storage_method" id="edit_raw_material_storage_method">
-                        <option selected>Choose One</option>
-                        <option value="Fully_Enclosed">Fully Enclosed</option>
-                        <option value="Partially_Enclosed">Partially Enclosed</option>
-                        <option value="Open">Open</option>
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="edit_raw_material_storage_methodErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-      </div>
-          <div class="alert alert-success" id="edit_raw_material_SuccessMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="update_raw_material_details()">Update</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-    <!--/.Content-->
-  </div>
-</div>
-</form>
+            </form>
 
 <form method="post" id="partner_details_form">
 {% csrf_token %}
@@ -3274,24 +3272,24 @@
 
     function add_final_products_details()
     {
-        let application_no = $('#application_no').val();
-        let product_name = $('#product_name').val();
-        let name_location = $('#name_location').val();
-        let storage_method = $('#storage_method').val();
+        application_no = $('#application_no').val();
+        produce_name = $('#product_name').val();
+        quantity_annum = $('#quantity_annum').val();
+        storage_method = $('#storage_method').val();
 
-        if(product_name == "")
+        if(produce_name == "")
         {
-            $('#product_nameErrorMsg').html("Enter Product Name");
-            $('#product_nameErrorMsg').show();
-            $('#product_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#product_name').focus();
+            $('#produce_nameErrorMsg').html("Enter Name of Produce");
+            $('#produce_nameErrorMsg').show();
+            $('#produce_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#produce_name').focus();
         }
-        else if(name_location == "")
+        else if(quantity_annum == "")
         {
-            $('#name_locationErrorMsg').html("Enter Name/Location Type");
-            $('#name_locationErrorMsg').show();
-            $('#name_locationErrorMsg').delay(2000).fadeOut('slow');
-            $('#name_location').focus();
+            $('#quantity_annumErrorMsg').html("Enter Installed capacity/quantity per annum");
+            $('#quantity_annumErrorMsg').show();
+            $('#quantity_annumErrorMsg').delay(2000).fadeOut('slow');
+            $('#quantity_annum').focus();
         }
         else if(storage_method == "")
         {
@@ -3306,7 +3304,7 @@
             ({
                 type : "POST",
                 url : "{% url 'add_final_product_details' %}",
-                data : {'application_no':application_no,'product_name':product_name,'name_location':name_location,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'application_no':application_no,'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#final_products_SuccessMsg').html("Add Successful");
@@ -3327,13 +3325,13 @@
         }
     }
 
-    function edit_produce_populate(record_id, application_no, product_name, name_location, storage_method)
+    function edit_produce_populate(record_id, application_no, produce_name, qty, storage_method)
     {
         $('#edit_final_products_record_id').val(record_id)
         $('#edit_final_products_app_no').val(application_no)
-        $('#edit_product_name').val(product_name);
-        $('#edit_name_location').val(name_location);
-        $('#edit_storage_method').val(storage_method);
+        $('#edit_produce_name').val(produce_name);
+        $('#edit_quantity_annum').val(qty);
+        $('#edit_final_product_storage_method').val(storage_method);
         $('#edit_final_products_modal').modal('show');
     }
 
@@ -3341,30 +3339,30 @@
     {
         record_id = $('#edit_final_products_record_id').val();
         application_no = $('#edit_final_products_app_no').val();
-        product_name = $('#edit_product_name').val();
-        name_location = $('#edit_name_location').val();
-        storage_method = $('#edit_storage_method').val();;
+        produce_name = $('#edit_produce_name').val();
+        quantity_annum = $('#edit_quantity_annum').val();
+        storage_method = $('#edit_final_product_storage_method').val();
 
-        if(product_name == "")
+        if(produce_name == "")
         {
-            $('#edit_product_nameErrorMsg').html("Enter Product Name");
-            $('#edit_product_nameErrorMsg').show();
-            $('#edit_product_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#edit_product_name').focus();
+            $('#edit_produce_nameErrorMsg').html("Enter Name of Produce");
+            $('#edit_produce_nameErrorMsg').show();
+            $('#edit_produce_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_produce_name').focus();
         }
-        else if(name_location == "")
+        else if(quantity_annum == "")
         {
-            $('#edit_name_locationErrorMsg').html("Enter Name/Location Type");
-            $('#edit_name_locationErrorMsg').show();
-            $('#edit_name_locationErrorMsg').delay(2000).fadeOut('slow');
-            $('#edit_name_location').focus();
+            $('#edit_final_product_qtyErrorMsg').html("Enter Installed capacity/quantity per annum");
+            $('#edit_final_product_qtyErrorMsg').show();
+            $('#edit_final_product_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_final_product_qty').focus();
         }
         else if(storage_method == "")
         {
-            $('#edit_storage_methodErrorMsg').html("Enter Method of Storage");
-            $('#edit_storage_methodErrorMsg').show();
-            $('#edit_storage_methodErrorMsg').delay(2000).fadeOut('slow');
-            $('#edit_storage_method').focus();
+            $('#edit_final_product_storage_methodErrorMsg').html("Enter Method of Storage");
+            $('#edit_final_product_storage_methodErrorMsg').show();
+            $('#edit_final_product_storage_methodErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_final_product_storage_method').focus();
         }
         else
         {
@@ -3372,14 +3370,14 @@
             ({
                 type : "POST",
                 url : "{% url 'update_final_product_details' %}",
-                data : {'application_no':application_no,'record_id':record_id, 'product_name':product_name,'name_location':name_location,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'application_no':application_no,'record_id':record_id, 'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
-                    $('#edit_final_products_SuccessMsg').html("Update Successful");
-                    $('#edit_final_products_SuccessMsg').show();
+                    $('#edit_final_product_SuccessMsg').html("Update Successful");
+                    $('#edit_final_product_SuccessMsg').show();
                     setTimeout(function()
                     {
-                        $('#edit_final_products_SuccessMsg').delay(2000).fadeOut('slow');
+                        $('#edit_final_product_SuccessMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                     setTimeout(function() {
                         $('#edit_final_products_modal').modal('hide');
@@ -3394,37 +3392,37 @@
 
     function populate_delete_produce(record_id, application_no)
     {
-        $('#delete_final_products_record_id').val(record_id);
-        $('#delete_final_products_application_no').val(application_no);
-        $('#delete_final_products_modal').modal('show');
+        $('#delete_final_product_record_id').val(record_id);
+        $('#delete_final_product_app_no').val(application_no);
+        $('#delete_final_product_modal').modal('show');
     }
 
     function delete_final_product_details()
     {
-        let record_id =  $('#delete_final_products_record_id').val();
-        let application_no = $('#delete_final_products_app_no').val();
+        var record_id = $('#delete_final_product_record_id').val();
+        var application_no = $('#delete_final_product_app_no').val();
 
         $.ajax
-        ({
-            type : "POST",
-            url : "{% url 'delete_final_product_details' %}",
-            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
-            success : function(responseText)
-            {
-                $('#delete_final_products_successMsg').html("Delete Successful");
-                $('#delete_final_products_successMsg').show();
-                setTimeout(function()
+            ({
+                type : "POST",
+                url : "{% url 'delete_final_product_details' %}",
+                data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
                 {
-                    $('#delete_final_products_successMsg').delay(2000).fadeOut('slow');
-                }, 2000);
-                setTimeout(function() {
-                    $('#delete_final_products_modal').modal('hide');
-                }, 2000);
-                setTimeout(function() {
-                    $('#final_products_div').html(responseText);
-                }, 2000);
-            }
-        });
+                    $('#delete_final_product_SuccessMsg').html("Deleted Successfully");
+                    $('#delete_final_product_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#delete_final_product_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#delete_final_product_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#final_products_div').html(responseText);
+                    }, 2000);
+                }
+            });
     }
 
     function add_raw_material_details()
