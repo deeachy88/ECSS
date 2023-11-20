@@ -930,8 +930,8 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSeven">
-                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSevenBtn"
-                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" id="headingSevenBtn">
                                 Ancillary:Others
                             </button>
                         </h2>
@@ -941,51 +941,188 @@
                                 <form method="post" id="anc_others_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="others_application_no">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_ancillary_others(this.value)">
-                                                        <label class="form-check-label" for="customRadio3">Yes</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_ancillary_others(this.value)">
-                                                        <label class="form-check-label" for="customRadio4">No</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div id="anc_other_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="alert alert-warning border-0 rounded-0 anc_others" role="alert">
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                     </div>
                                     <br>
-                                    <div class="form-check anc_others">
-                                        <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()">
-                                        <label class="form-check-label">Housing Colony</label>
-                                    </div>
-                                    <div class="form-check anc_others">
-                                        <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()">
-                                        <label class="form-check-label">Power Excavation Line</label>
-                                    </div>
-                                    <div class="form-check anc_others">
-                                        <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()">
-                                        <label class="form-check-label">Crushing Unit</label>
-                                    </div>
-                                    <div class="form-check anc_others">
-                                        <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()">
-                                        <label class="form-check-label">Others</label>
-                                    </div>
+                                    {% if application_details.anc_other_housing_colony == 'Yes' && application_details.anc_power_excavation == 'Yes' && application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_general == 'Yes' %}
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes" checked>
+                                            <label class="form-check-label">Housing Colony</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes" checked>
+                                            <label class="form-check-label">Power Excavation Line</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()"  value="Yes" checked>
+                                            <label class="form-check-label">Crushing Unit</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
+                                            <label class="form-check-label">Others</label>
+                                        </div>
+                                    {% elif application_details.anc_other_housing_colony == 'Yes' && application_details.anc_power_excavation == 'Yes' && application_details.anc_other_crushing_unit == 'No' && application_details.anc_other_general == 'No' %}
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes" checked>
+                                            <label class="form-check-label">Housing Colony</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes" checked>
+                                            <label class="form-check-label">Power Excavation Line</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()"  value="Yes">
+                                            <label class="form-check-label">Crushing Unit</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes">
+                                            <label class="form-check-label">Others</label>
+                                        </div>
+                                    {% elif application_details.anc_other_housing_colony == 'Yes' && application_details.anc_power_excavation == 'No' && application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_general == 'No' %}
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes" checked>
+                                            <label class="form-check-label">Housing Colony</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes">
+                                            <label class="form-check-label">Power Excavation Line</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()"  value="Yes" checked>
+                                            <label class="form-check-label">Crushing Unit</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes">
+                                            <label class="form-check-label">Others</label>
+                                        </div>
+                                    {% elif application_details.anc_other_housing_colony == 'Yes' && application_details.anc_power_excavation == 'No' && application_details.anc_other_crushing_unit == 'No' && application_details.anc_other_general == 'Yes' %}
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes" checked>
+                                            <label class="form-check-label">Housing Colony</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes">
+                                            <label class="form-check-label">Power Excavation Line</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()"  value="Yes">
+                                            <label class="form-check-label">Crushing Unit</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
+                                            <label class="form-check-label">Others</label>
+                                        </div>
+                                    {% elif application_details.anc_other_housing_colony == 'No' && application_details.anc_power_excavation == 'Yes' && application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_general == 'No' %}
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
+                                            <label class="form-check-label">Housing Colony</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes" checked>
+                                            <label class="form-check-label">Power Excavation Line</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()"  value="Yes" checked>
+                                            <label class="form-check-label">Crushing Unit</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes">
+                                            <label class="form-check-label">Others</label>
+                                        </div>
+                                    {% elif application_details.anc_other_housing_colony == 'No' && application_details.anc_power_excavation == 'Yes' && application_details.anc_other_crushing_unit == 'No' && application_details.anc_other_general == 'Yes' %}
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
+                                            <label class="form-check-label">Housing Colony</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes" checked>
+                                            <label class="form-check-label">Power Excavation Line</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()"  value="Yes">
+                                            <label class="form-check-label">Crushing Unit</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
+                                            <label class="form-check-label">Others</label>
+                                        </div>
+                                    {% elif application_details.anc_other_housing_colony == 'No' && application_details.anc_power_excavation == 'Yes' && application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_general == 'Yes' %}
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
+                                            <label class="form-check-label">Housing Colony</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes" checked>
+                                            <label class="form-check-label">Power Excavation Line</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()"  value="Yes" checked>
+                                            <label class="form-check-label">Crushing Unit</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
+                                            <label class="form-check-label">Others</label>
+                                        </div>
+                                    {% elif application_details.anc_other_housing_colony == 'No' && application_details.anc_power_excavation == 'No' && application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_general == 'Yes' %}
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
+                                            <label class="form-check-label">Housing Colony</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes">
+                                            <label class="form-check-label">Power Excavation Line</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()"  value="Yes" checked>
+                                            <label class="form-check-label">Crushing Unit</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
+                                            <label class="form-check-label">Others</label>
+                                        </div>
+                                    {% elif application_details.anc_other_housing_colony == 'No' && application_details.anc_power_excavation == 'No' && application_details.anc_other_crushing_unit == 'No' && application_details.anc_other_general == 'Yes' %}
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
+                                            <label class="form-check-label">Housing Colony</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes">
+                                            <label class="form-check-label">Power Excavation Line</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()"  value="Yes">
+                                            <label class="form-check-label">Crushing Unit</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
+                                            <label class="form-check-label">Others</label>
+                                        </div>
+                                    {% else %}
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
+                                            <label class="form-check-label">Housing Colony</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes">
+                                            <label class="form-check-label">Power Excavation Line</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()"  value="Yes">
+                                            <label class="form-check-label">Crushing Unit</label>
+                                        </div>
+                                        <div class="form-check anc_others">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes">
+                                            <label class="form-check-label">Others</label>
+                                        </div>
+                                    {% endif %}
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_others_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="alert alert-danger border-0 rounded-0" role="alert" id="anc_others_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="row mt-2">
+                                    <div class="row mt-4">
                                         <div class="text-sm-end">
                                             <a href="#" class="btn btn-success" onclick="save_anc_other_details()">
                                                 <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>

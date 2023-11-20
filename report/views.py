@@ -286,6 +286,7 @@ def application_status_list(request):
     r_application_count = 0
     app_hist_count = 0  # Provide a default value
     cl_application_count = 0  # Provide a default value
+    tor_application_count = 0
     applicant_id = request.session['email']
     if login_type == 'C':
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()

@@ -1208,26 +1208,6 @@
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="ground_water_disclaimer_application_no">
                                     
-                                    <div class="row industry_application" style="display:none;">
-                                        <a href="{% url 'industry_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Industrial projects </a>
-                                    </div>
-                                    
-                                    <div class="row forestry_application mt-1" style="display:none;">
-                                        <a href="{% url 'forest_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Forestry projects </a>
-                                    </div>
-                                    
-                                    <div class="row ground_water_application mt-1" style="display:none;">
-                                        <a href="{% url 'ground_water_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Ground Water projects </a>
-                                    </div>
-                                    
-                                    <div class="row general_application mt-1" style="display:none;">
-                                        <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
-                                    </div>
-
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="ground_water_submit_successMsg" style="display:none">
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>

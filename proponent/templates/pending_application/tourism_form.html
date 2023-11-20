@@ -666,135 +666,507 @@
                         </div>
                     </div>
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingFive">
-                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFiveBtn"
-                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" disabled>
-                                Ancillary:Approach Road
+                        <h2 class="accordion-header" id="headingSeven">
+                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSevenBtn"
+                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                                Ancillary:Others
                             </button>
                         </h2>
-                        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
+                        <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <form method="post" id="ancillary_approach_road_form">
+                                <form method="post" id="anc_others_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="approach_road_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="others_application_no">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity require construction of Approach road?</label>
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_road_required" class="form-check-input" value="Yes" onclick="check_approach_road(this.value)">
-                                                        <label class="form-check-label" for="customRadio3">Yes</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_road_required" class="form-check-input" value="No" onclick="check_approach_road(this.value)">
-                                                        <label class="form-check-label" for="customRadio4">No</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div id="approach_roadErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row" id="approach_road_details" style="display: none;">
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Length of road in km</label>
-                                                <input type="text" name="anc_road_length" class="form-control" id="anc_road_length">
-                                            </div>
-                                            <div id="anc_road_lengthErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Starting point</label>
-                                                <input type="text" name="anc_road_start_point" class="form-control" id="anc_road_start_point">
-                                            </div>
-                                            <div id="anc_road_start_pointErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Termination point</label>
-                                                <input type="text" name="anc_road_end_point" class="form-control" id="anc_road_end_point">
-                                            </div>
-                                            <div id="anc_road_end_pointErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="card mt-1">
-                                                <div class="card-body">
-                                                    <div class="card-widgets">
-                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#anc_approach_road_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                                    </div>
-                                                    <h5 class="card-title mb-2"></h5>
-                                                    <div id="cardCollpase1" class="collapse pt-3 show">
-                                                        <div id="anc_approach_road_details">
-                                                            {% include 'anc_approach_road_details.html' %}
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
+                                                    {% if application_details.anc_other_required == 'Yes' %}
+                                                        <div class="mt-2">
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)">
+                                                                <label class="form-check-label" for="customRadio3">Yes</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)">
+                                                                <label class="form-check-label" for="customRadio4">No</label>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    {% else %}
+                                                        <div class="mt-2">
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)">
+                                                                <label class="form-check-label" for="customRadio3">Yes</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)">
+                                                                <label class="form-check-label" for="customRadio4">No</label>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
                                                 </div>
-                                            </div>
+                                            
+                                            <div id="anc_other_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity require Blasting?</label>
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_road_blast_required" class="form-check-input" value="Yes" onclick="check_blasting_radio(this.value)">
-                                                        <label class="form-check-label" for="customRadio3">Yes</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_road_blast_required" class="form-check-input" value="No" onclick="check_blasting_radio(this.value)">
-                                                        <label class="form-check-label" for="customRadio4">No</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div id="blasting_radioErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
+                                    <div class="alert alert-warning border-0 rounded-0 anc_facility_details" role="alert" style="display: none;">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                     </div>
-                                    <div class="row blasting_details" style="display: none;">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Mention type of blasting</label>
-                                                <input type="text" name="anc_road_blast_type" class="form-control" id="anc_road_blast_type">
+                                    <br>
+                                    {% if application_details.anc_other_required == 'Yes' %}
+                                        {% if application_details.anc_other_crushing_unit == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()" checked>
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
                                             </div>
-                                            <div id="anc_road_blast_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Type and quantity of explosive to be used</label>
-                                                <input type="text" name="anc_road_blast_qty" class="form-control" id="anc_road_blast_qty">
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
                                             </div>
-                                            <div id="anc_road_blast_qtyErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row blasting_details" style="display: none;">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Mention location (s) where blasting is required</label>
-                                                <input type="text" name="anc_road_blast_location" class="form-control" id="anc_road_blast_location">
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()">
+                                                <label class="form-check-label">Ground water abstraction</label>
                                             </div>
-                                            <div id="anc_road_blast_locationErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Frequency and timing of blasting per day</label>
-                                                <input type="text" name="anc_road_blast_frequency_time" class="form-control" id="anc_road_blast_frequency_time">
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
                                             </div>
-                                            <div id="anc_road_blast_frequency_timeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_approach_road_successMsg" style="display:none">
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_surface_collection == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()">
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_ground_water == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()" checked>
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_mineral == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()">
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_surface_collection == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()" checked>
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()">
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_ground_water == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()" checked>
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()" checked>
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_mineral == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()" checked>
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()">
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>  
+                                        {% elif application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_general == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()" checked>
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()">
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div> 
+                                        {% elif application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_ground_water == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()" checked>
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_mineral == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()">
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div> 
+                                        {% elif application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_general == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()">
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div> 
+                                        {% elif application_details.anc_other_ground_water == 'Yes' && application_details.anc_other_mineral == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()" checked>
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_ground_water == 'Yes' && application_details.anc_other_general == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()" checked>
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_mineral == 'Yes' && application_details.anc_other_general == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()">
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_ground_water == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()" checked>
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()" checked>
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>  
+                                        {% elif application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_mineral == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()" checked>
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()">
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div> 
+                                        {% elif application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_general == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()" checked>
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()">
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_ground_water == 'Yes' && application_details.anc_other_mineral == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()" checked>
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_ground_water == 'Yes' && application_details.anc_other_general == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()" checked>
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_ground_water == 'Yes' && application_details.anc_other_mineral == 'Yes' && application_details.anc_other_general == 'Yes' %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()" checked>
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% else %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()">
+                                                <label class="form-check-label">Ground water abstraction</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_others_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="anc_approach_road_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="anc_others_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
-                                            <a href="#" class="btn btn-success" onclick="save_anc_approach_road_details()">
+                                            <a href="#" class="btn btn-success" onclick="save_anc_other_details()">
                                                 <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
                                         </div>
                                     </div>

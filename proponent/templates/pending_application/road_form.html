@@ -1159,7 +1159,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSeven">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" id="collapseSevenBtn" disabled>
+                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" id="collapseSevenBtn">
                                 Ancillary
                             </button>
                         </h2>
@@ -1205,35 +1205,731 @@
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                         </div>
                                         <br>
-                                        {% if application_details.anc_other_crushing_unit == "Yes" %}
-                                        <div class="form-check anc_facility_details" role="alert">
-                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_general()">
-                                            <label class="form-check-label">Bridge</label>
-                                        </div>
-                                        {% endif %}
-                                        {% if application_details.anc_other_surface_collection == "Yes" %}
-                                        <div class="form-check anc_facility_details" role="alert">
-                                            <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" onclick="check_anc_other_crushing_unit()">
-                                            <label class="form-check-label">Crushing Plant</label>
-                                        </div>
-                                        {% endif %}
-                                        {% if application_details.anc_other_ground_water == "Yes" %}
-                                        <div class="form-check anc_facility_details" role="alert">
-                                            <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" onclick="check_anc_other_ground_water()">
-                                            <label class="form-check-label">Concrete Batching Plant</label>
-                                        </div>
-                                        {% endif %}
-                                        {% if application_details.anc_other_surface_collection == "Yes" %}
-                                        <div class="form-check anc_facility_details" role="alert">
-                                            <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" onclick="check_anc_other_surface_collection()">
-                                            <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                        </div>
-                                        {% endif %}
-                                        {% if application_details.anc_other_general == "Yes" %}
-                                        <div class="form-check anc_facility_details" role="alert">
-                                            <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()">
-                                            <label class="form-check-label">Others</label>
-                                        </div>
+                                        {% if application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" checked onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "Yes" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "Yes" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" >
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" >
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "Yes" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" >
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "Yes" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "Yes" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "Yes" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "No" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "Yes" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()" checked>
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "Yes" %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% else %}
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Bridge</label> 
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Crushing Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_ground_water" id="anc_other_concrete_building" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Concrete Batching Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" class="form-check-input" value="Yes" onclick="check_anc_other_industry()">
+                                                <label class="form-check-label">Asphalt Plant</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check anc_facility_details" role="alert">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
                                         {% endif %}
                                     {% endif %}
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_others_successMsg" style="display:none">
