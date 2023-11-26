@@ -1205,7 +1205,7 @@
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                         </div>
                                         <br>
-                                        {% if application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                        {% if application_details.anc_other_bridge == "Yes"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "No" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Bridge</label> 
@@ -1230,7 +1230,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "Yes" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "No" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1255,7 +1255,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "Yes" and if application_details.anc_other_asphalt_plant == "No" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1280,7 +1280,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "Yes" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1305,7 +1305,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "No" and if application_details.anc_other_surface_collection == "Yes" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1330,7 +1330,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "Yes" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "No" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "Yes" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1355,7 +1355,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "Yes"  and if application_details.anc_other_crushing_unit == "Yes" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "No" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Bridge</label> 
@@ -1380,7 +1380,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "Yes"  and if application_details.anc_other_crushing_unit == "Yes" and if application_details.anc_other_concrete_building == "Yes" and if application_details.anc_other_asphalt_plant == "No" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Bridge</label> 
@@ -1405,7 +1405,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "Yes"  and if application_details.anc_other_crushing_unit == "Yes" and if application_details.anc_other_concrete_building == "Yes" and if application_details.anc_other_asphalt_plant == "Yes" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Bridge</label> 
@@ -1430,7 +1430,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "Yes"  and if application_details.anc_other_crushing_unit == "Yes" and if application_details.anc_other_concrete_building == "Yes" and if application_details.anc_other_asphalt_plant == "Yes" and if application_details.anc_other_surface_collection == "Yes" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Bridge</label> 
@@ -1455,7 +1455,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "Yes" %}
+                                        {% elif application_details.anc_other_bridge == "Yes"  and if application_details.anc_other_crushing_unit == "Yes" and if application_details.anc_other_concrete_building == "Yes" and if application_details.anc_other_asphalt_plant == "Yes" and if application_details.anc_other_surface_collection == "Yes" and if application_details.anc_other_general == "Yes" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Bridge</label> 
@@ -1480,7 +1480,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "Yes"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "Yes" and if application_details.anc_other_asphalt_plant == "No" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Bridge</label> 
@@ -1505,7 +1505,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "Yes"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "Yes" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Bridge</label> 
@@ -1530,7 +1530,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "Yes"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "No" and if application_details.anc_other_surface_collection == "Yes" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Bridge</label> 
@@ -1555,7 +1555,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "Yes"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "Yes" %}
+                                        {% elif application_details.anc_other_bridge == "Yes"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "No" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "Yes" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Bridge</label> 
@@ -1580,7 +1580,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "Yes" and if application_details.anc_other_concrete_building == "Yes" and if application_details.anc_other_asphalt_plant == "No" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1605,7 +1605,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "Yes" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "Yes" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1630,7 +1630,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "Yes" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "No" and if application_details.anc_other_surface_collection == "Yes" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1655,7 +1655,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "Yes" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "Yes" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "No" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "Yes" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1680,7 +1680,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "Yes" and if application_details.anc_other_concrete_building == "Yes" and if application_details.anc_other_asphalt_plant == "Yes" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1705,7 +1705,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "Yes" and if application_details.anc_other_concrete_building == "Yes" and if application_details.anc_other_asphalt_plant == "Yes" and if application_details.anc_other_surface_collection == "Yes" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1730,7 +1730,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "Yes" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "Yes" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "Yes" and if application_details.anc_other_concrete_building == "Yes" and if application_details.anc_other_asphalt_plant == "Yes" and if application_details.anc_other_surface_collection == "Yes" and if application_details.anc_other_general == "Yes" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1755,7 +1755,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "No" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "Yes" and if application_details.anc_other_asphalt_plant == "Yes" and if application_details.anc_other_surface_collection == "No" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1780,7 +1780,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "Yes" and if application_details.anc_other_asphalt_plant == "Yes" and if application_details.anc_other_surface_collection == "Yes" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1805,7 +1805,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "Yes" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "Yes" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "Yes" and if application_details.anc_other_asphalt_plant == "Yes" and if application_details.anc_other_surface_collection == "Yes" and if application_details.anc_other_general == "Yes" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1830,7 +1830,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "No" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "Yes" and if application_details.anc_other_surface_collection == "Yes" and if application_details.anc_other_general == "No" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1855,7 +1855,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "Yes" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "Yes" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "Yes" and if application_details.anc_other_surface_collection == "Yes" and if application_details.anc_other_general == "Yes" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 
@@ -1880,7 +1880,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_bridge == "No"  && if application_details.anc_other_crushing_unit == "No" && if application_details.anc_other_concrete_building == "No" && if application_details.anc_other_asphalt_plant == "No" && if application_details.anc_other_surface_collection == "Yes" && if application_details.anc_other_general == "Yes" %}
+                                        {% elif application_details.anc_other_bridge == "No"  and if application_details.anc_other_crushing_unit == "No" and if application_details.anc_other_concrete_building == "No" and if application_details.anc_other_asphalt_plant == "No" and if application_details.anc_other_surface_collection == "Yes" and if application_details.anc_other_general == "Yes" %}
                                             <div class="form-check anc_facility_details" role="alert">
                                                 <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Bridge</label> 

@@ -1002,7 +1002,7 @@
                                     </div>
                                     <br>
                                     {% if application_details.anc_other_required == 'Yes' %}
-                                        {% if application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_mineral == 'Yes' &&  application_details.anc_other_general =='Yes' %}
+                                        {% if application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_surface_collection == 'Yes' and application_details.anc_other_mineral == 'Yes' and  application_details.anc_other_general =='Yes' %}
                                             <div class="form-check">
                                                 <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()" checked>
                                                 <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
@@ -1019,7 +1019,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_surface_collection == 'Yes' %}
+                                        {% elif application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_surface_collection == 'Yes' %}
                                             <div class="form-check">
                                                 <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()" checked>
                                                 <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
@@ -1036,7 +1036,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_mineral == 'Yes'%}
+                                        {% elif application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_surface_collection == 'Yes' and application_details.anc_other_mineral == 'Yes'%}
                                             <div class="form-check">
                                                 <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()" checked>
                                                 <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
@@ -1053,7 +1053,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_mineral == 'Yes' &&  application_details.anc_other_general =='Yes' %}
+                                        {% elif application_details.anc_other_surface_collection == 'Yes' and application_details.anc_other_mineral == 'Yes' and  application_details.anc_other_general =='Yes' %}
                                             <div class="form-check">
                                                 <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()">
                                                 <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
@@ -1070,7 +1070,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()" checked>
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_mineral == 'Yes' %}
+                                        {% elif application_details.anc_other_surface_collection == 'Yes' and application_details.anc_other_mineral == 'Yes' %}
                                             <div class="form-check">
                                                 <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()" checked>
                                                 <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
@@ -1087,7 +1087,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_crushing_unit == 'Yes' &&  application_details.anc_other_general =='Yes' %}
+                                        {% elif application_details.anc_other_crushing_unit == 'Yes' and  application_details.anc_other_general =='Yes' %}
                                             <div class="form-check">
                                                 <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()">
                                                 <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
@@ -1104,7 +1104,7 @@
                                                 <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()">
                                                 <label class="form-check-label">Others</label>
                                             </div>
-                                        {% elif application_details.anc_other_mineral == 'Yes' &&  application_details.anc_other_general =='Yes' %}
+                                        {% elif application_details.anc_other_mineral == 'Yes' and  application_details.anc_other_general =='Yes' %}
                                             <div class="form-check">
                                                 <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()">
                                                 <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>

@@ -1223,11 +1223,12 @@
                                             <div id="anc_other_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
+                                    {% if application_details.anc_other_required == 'Yes' %}
                                     <div class="alert alert-warning border-0 rounded-0 anc_facility_details" role="alert" style="display: none;">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                     </div>
                                     <br>
-                                    {% if application_details.anc_other_ropeway == 'Yes' && application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_general == 'Yes'  %}
+                                    {% if application_details.anc_other_ropeway == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_surface_collection == 'Yes' and application_details.anc_other_general == 'Yes'  %}
                                         <div class="form-check other_ancillary_facilities">
                                             <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()" checked>
                                             <label class="form-check-label">Ropeway/Cable lines</label>
@@ -1244,7 +1245,7 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_ropeway == 'Yes' && application_details.anc_other_crushing_unit == 'Yes' %}
+                                    {% elif application_details.anc_other_ropeway == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' %}
                                         <div class="form-check other_ancillary_facilities">
                                             <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()" checked>
                                             <label class="form-check-label">Ropeway/Cable lines</label>
@@ -1261,7 +1262,7 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_ropeway == 'Yes' && application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_surface_collection == 'Yes'%}
+                                    {% elif application_details.anc_other_ropeway == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_surface_collection == 'Yes'%}
                                         <div class="form-check other_ancillary_facilities">
                                             <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()" checked>
                                             <label class="form-check-label">Ropeway/Cable lines</label>
@@ -1278,7 +1279,7 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_general == 'Yes'  %}
+                                    {% elif application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_surface_collection == 'Yes' and application_details.anc_other_general == 'Yes'  %}
                                         <div class="form-check other_ancillary_facilities">
                                             <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()">
                                             <label class="form-check-label">Ropeway/Cable lines</label>
@@ -1295,7 +1296,7 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_general == 'Yes'  %}
+                                    {% elif application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'Yes'  %}
                                         <div class="form-check other_ancillary_facilities">
                                             <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()">
                                             <label class="form-check-label">Ropeway/Cable lines</label>
@@ -1312,7 +1313,7 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_surface_collection == 'Yes' && application_details.anc_other_general == 'Yes'  %}
+                                    {% elif application_details.anc_other_surface_collection == 'Yes' and application_details.anc_other_general == 'Yes'  %}
                                         <div class="form-check other_ancillary_facilities">
                                             <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()">
                                             <label class="form-check-label">Ropeway/Cable lines</label>
@@ -1346,6 +1347,7 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                             <label class="form-check-label">Others</label>
                                         </div>
+                                    {% endif %}
                                     {% endif %}
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_others_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>

@@ -948,7 +948,7 @@
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                     </div>
                                     <br>
-                                    {% if application_details.anc_other_housing_colony == 'Yes' && application_details.anc_power_excavation == 'Yes' && application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_general == 'Yes' %}
+                                    {% if application_details.anc_other_housing_colony == 'Yes' and application_details.anc_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'Yes' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes" checked>
                                             <label class="form-check-label">Housing Colony</label>
@@ -965,7 +965,7 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'Yes' && application_details.anc_power_excavation == 'Yes' && application_details.anc_other_crushing_unit == 'No' && application_details.anc_other_general == 'No' %}
+                                    {% elif application_details.anc_other_housing_colony == 'Yes' and application_details.anc_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'No' and application_details.anc_other_general == 'No' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes" checked>
                                             <label class="form-check-label">Housing Colony</label>
@@ -982,7 +982,7 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes">
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'Yes' && application_details.anc_power_excavation == 'No' && application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_general == 'No' %}
+                                    {% elif application_details.anc_other_housing_colony == 'Yes' and application_details.anc_power_excavation == 'No' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'No' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes" checked>
                                             <label class="form-check-label">Housing Colony</label>
@@ -999,7 +999,7 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes">
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'Yes' && application_details.anc_power_excavation == 'No' && application_details.anc_other_crushing_unit == 'No' && application_details.anc_other_general == 'Yes' %}
+                                    {% elif application_details.anc_other_housing_colony == 'Yes' and application_details.anc_power_excavation == 'No' and application_details.anc_other_crushing_unit == 'No' and application_details.anc_other_general == 'Yes' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes" checked>
                                             <label class="form-check-label">Housing Colony</label>
@@ -1016,7 +1016,7 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'No' && application_details.anc_power_excavation == 'Yes' && application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_general == 'No' %}
+                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'No' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
                                             <label class="form-check-label">Housing Colony</label>
@@ -1033,7 +1033,7 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes">
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'No' && application_details.anc_power_excavation == 'Yes' && application_details.anc_other_crushing_unit == 'No' && application_details.anc_other_general == 'Yes' %}
+                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'No' and application_details.anc_other_general == 'Yes' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
                                             <label class="form-check-label">Housing Colony</label>
@@ -1050,7 +1050,7 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'No' && application_details.anc_power_excavation == 'Yes' && application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_general == 'Yes' %}
+                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'Yes' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
                                             <label class="form-check-label">Housing Colony</label>
@@ -1067,7 +1067,7 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'No' && application_details.anc_power_excavation == 'No' && application_details.anc_other_crushing_unit == 'Yes' && application_details.anc_other_general == 'Yes' %}
+                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_power_excavation == 'No' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'Yes' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
                                             <label class="form-check-label">Housing Colony</label>
@@ -1084,7 +1084,7 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'No' && application_details.anc_power_excavation == 'No' && application_details.anc_other_crushing_unit == 'No' && application_details.anc_other_general == 'Yes' %}
+                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_power_excavation == 'No' and application_details.anc_other_crushing_unit == 'No' and application_details.anc_other_general == 'Yes' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
                                             <label class="form-check-label">Housing Colony</label>
