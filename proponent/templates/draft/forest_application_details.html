@@ -2754,6 +2754,76 @@
         </form>
     
     <script>
+         $(function() {
+            if 
+            (
+                $('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_mineral').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            ) 
+            {
+                $('.industry_application').show();
+                $('.mineral_application').show();
+                $('.general_application').show();
+            } 
+            else if 
+            (
+                $('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_mineral').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.industry_application').show();
+            }
+            else if 
+            (
+                $('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_mineral').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.industry_application').show();
+                $('.mineral_application').show();
+            }
+            else if 
+            (
+                $('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_mineral').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.industry_application').show();
+                $('.general_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_mineral').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.mineral_application').show();
+                $('.general_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_mineral').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.mineral_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_mineral').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.general_application').show();
+            }
+         });
         function check_general_water(value)
         {
             if(value == 'Yes')

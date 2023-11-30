@@ -3238,6 +3238,196 @@
 </div>
 </form>
 <script>
+    $(function() {
+            if 
+            (
+                $('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_ground_water').prop('checked') &&
+                $('#anc_other_mineral').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            ) 
+            {
+                $('.industry_application').show();
+                $('.forestry_application').show();
+                $('.ground_water_application').show();
+                $('.general_application').show();
+                $('.mineral_application').show();
+            } 
+            else if 
+            (
+                $('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_surface_collection').prop('checked') &&
+                !$('#anc_other_ground_water').prop('checked') &&
+                !$('#anc_other_mineral').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.industry_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_surface_collection').prop('checked') &&
+                !$('#anc_other_ground_water').prop('checked') &&
+                !$('#anc_other_mineral').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.forestry_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_ground_water').prop('checked') &&
+                !$('#anc_other_mineral').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.ground_water_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_surface_collection').prop('checked') &&
+                !$('#anc_other_ground_water').prop('checked') &&
+                $('#anc_other_mineral').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.mineral_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_surface_collection').prop('checked') &&
+                !$('#anc_other_ground_water').prop('checked') &&
+                !$('#anc_other_mineral').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.general_application').show();    
+            }
+            else if 
+            (
+                $('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_surface_collection').prop('checked') &&
+                !$('#anc_other_ground_water').prop('checked') &&
+                !$('#anc_other_mineral').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.industry_application').show();
+                $('.forestry_application').show();
+            }
+            else if 
+            (
+                $('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_ground_water').prop('checked') &&
+                !$('#anc_other_mineral').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.industry_application').show();
+                $('.forestry_application').show();
+                $('.ground_water_application').show();
+            }
+            else if 
+            (
+                $('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_ground_water').prop('checked') &&
+                $('#anc_other_mineral').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.industry_application').show();
+                $('.forestry_application').show();
+                $('.ground_water_application').show();
+                $('.mineral_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_ground_water').prop('checked') &&
+                !$('#anc_other_mineral').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.forestry_application').show();
+                $('.ground_water_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_ground_water').prop('checked') &&
+                $('#anc_other_mineral').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            )  
+            {
+                
+                $('.forestry_application').show();
+                $('.ground_water_application').show();
+                $('.mineral_application').show();
+                
+            }
+            else if 
+            (
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_ground_water').prop('checked') &&
+                $('#anc_other_mineral').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.forestry_application').show();
+                $('.ground_water_application').show();
+                $('.general_application').show();
+                $('.mineral_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_ground_water').prop('checked') &&
+                $('#anc_other_mineral').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.ground_water_application').show();
+                $('.mineral_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_ground_water').prop('checked') &&
+                $('#anc_other_mineral').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.ground_water_application').show();
+                $('.general_application').show();
+                $('.mineral_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_surface_collection').prop('checked') &&
+                !$('#anc_other_ground_water').prop('checked') &&
+                $('#anc_other_mineral').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            )  
+            {
+                $('.general_application').show();
+                $('.mineral_application').show();
+            }
+    });
+    
     function check_industry_radio(value)
     {
         if(value == 'Yes')

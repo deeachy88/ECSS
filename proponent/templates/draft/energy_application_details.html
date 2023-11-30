@@ -945,13 +945,13 @@
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                     </div>
                                     <br>
-                                    {% if application_details.anc_other_housing_colony == 'Yes' and application_details.anc_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'Yes' %}
+                                    {% if application_details.anc_other_housing_colony == 'Yes' and application_details.anc_other_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'Yes' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes" checked>
                                             <label class="form-check-label">Housing Colony</label>
                                         </div>
                                         <div class="form-check anc_others">
-                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes" checked>
+                                            <input type="checkbox" name="anc_other_power_excavation" id="anc_other_power_excavation" class="form-check-input" onclick="check_anc_other_power_excavation()"  value="Yes" checked>
                                             <label class="form-check-label">Power Excavation Line</label>
                                         </div>
                                         <div class="form-check anc_others">
@@ -962,13 +962,13 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'Yes' and application_details.anc_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'No' and application_details.anc_other_general == 'No' %}
+                                    {% elif application_details.anc_other_housing_colony == 'Yes' and application_details.anc_other_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'No' and application_details.anc_other_general == 'No' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes" checked>
                                             <label class="form-check-label">Housing Colony</label>
                                         </div>
                                         <div class="form-check anc_others">
-                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes" checked>
+                                            <input type="checkbox" name="anc_other_power_excavation" id="anc_other_power_excavation" class="form-check-input" onclick="check_anc_other_power_excavation()"  value="Yes" checked>
                                             <label class="form-check-label">Power Excavation Line</label>
                                         </div>
                                         <div class="form-check anc_others">
@@ -979,13 +979,13 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes">
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'Yes' and application_details.anc_power_excavation == 'No' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'No' %}
+                                    {% elif application_details.anc_other_housing_colony == 'Yes' and application_details.anc_other_power_excavation == 'No' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'No' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes" checked>
                                             <label class="form-check-label">Housing Colony</label>
                                         </div>
                                         <div class="form-check anc_others">
-                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes">
+                                            <input type="checkbox" name="anc_other_power_excavation" id="anc_other_power_excavation" class="form-check-input" onclick="check_anc_other_power_excavation()"  value="Yes">
                                             <label class="form-check-label">Power Excavation Line</label>
                                         </div>
                                         <div class="form-check anc_others">
@@ -996,13 +996,13 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes">
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'Yes' and application_details.anc_power_excavation == 'No' and application_details.anc_other_crushing_unit == 'No' and application_details.anc_other_general == 'Yes' %}
+                                    {% elif application_details.anc_other_housing_colony == 'Yes' and application_details.anc_other_power_excavation == 'No' and application_details.anc_other_crushing_unit == 'No' and application_details.anc_other_general == 'Yes' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes" checked>
                                             <label class="form-check-label">Housing Colony</label>
                                         </div>
                                         <div class="form-check anc_others">
-                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes">
+                                            <input type="checkbox" name="anc_other_power_excavation" id="anc_other_power_excavation" class="form-check-input" onclick="check_anc_other_power_excavation()"  value="Yes">
                                             <label class="form-check-label">Power Excavation Line</label>
                                         </div>
                                         <div class="form-check anc_others">
@@ -1013,13 +1013,13 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'No' %}
+                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_other_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'No' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
                                             <label class="form-check-label">Housing Colony</label>
                                         </div>
                                         <div class="form-check anc_others">
-                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes" checked>
+                                            <input type="checkbox" name="anc_other_power_excavation" id="anc_other_power_excavation" class="form-check-input" onclick="check_anc_other_power_excavation()"  value="Yes" checked>
                                             <label class="form-check-label">Power Excavation Line</label>
                                         </div>
                                         <div class="form-check anc_others">
@@ -1030,13 +1030,13 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes">
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'No' and application_details.anc_other_general == 'Yes' %}
+                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_other_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'No' and application_details.anc_other_general == 'Yes' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
                                             <label class="form-check-label">Housing Colony</label>
                                         </div>
                                         <div class="form-check anc_others">
-                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes" checked>
+                                            <input type="checkbox" name="anc_other_power_excavation" id="anc_other_power_excavation" class="form-check-input" onclick="check_anc_other_power_excavation()"  value="Yes" checked>
                                             <label class="form-check-label">Power Excavation Line</label>
                                         </div>
                                         <div class="form-check anc_others">
@@ -1047,13 +1047,13 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'Yes' %}
+                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_other_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'Yes' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
                                             <label class="form-check-label">Housing Colony</label>
                                         </div>
                                         <div class="form-check anc_others">
-                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes" checked>
+                                            <input type="checkbox" name="anc_other_power_excavation" id="anc_other_power_excavation" class="form-check-input" onclick="check_anc_other_power_excavation()"  value="Yes" checked>
                                             <label class="form-check-label">Power Excavation Line</label>
                                         </div>
                                         <div class="form-check anc_others">
@@ -1064,13 +1064,13 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_power_excavation == 'No' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'Yes' %}
+                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_other_power_excavation == 'No' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'Yes' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
                                             <label class="form-check-label">Housing Colony</label>
                                         </div>
                                         <div class="form-check anc_others">
-                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes">
+                                            <input type="checkbox" name="anc_other_power_excavation" id="anc_other_power_excavation" class="form-check-input" onclick="check_anc_other_power_excavation()"  value="Yes">
                                             <label class="form-check-label">Power Excavation Line</label>
                                         </div>
                                         <div class="form-check anc_others">
@@ -1081,13 +1081,13 @@
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()"  value="Yes" checked>
                                             <label class="form-check-label">Others</label>
                                         </div>
-                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_power_excavation == 'No' and application_details.anc_other_crushing_unit == 'No' and application_details.anc_other_general == 'Yes' %}
+                                    {% elif application_details.anc_other_housing_colony == 'No' and application_details.anc_other_power_excavation == 'No' and application_details.anc_other_crushing_unit == 'No' and application_details.anc_other_general == 'Yes' %}
                                         <div class="form-check anc_others">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony" class="form-check-input" onclick="check_anc_other_general()" value="Yes">
                                             <label class="form-check-label">Housing Colony</label>
                                         </div>
                                         <div class="form-check anc_others">
-                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes">
+                                            <input type="checkbox" name="anc_other_power_excavation" id="anc_other_power_excavation" class="form-check-input" onclick="check_anc_other_power_excavation()"  value="Yes">
                                             <label class="form-check-label">Power Excavation Line</label>
                                         </div>
                                         <div class="form-check anc_others">
@@ -1104,7 +1104,7 @@
                                             <label class="form-check-label">Housing Colony</label>
                                         </div>
                                         <div class="form-check anc_others">
-                                            <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation" class="form-check-input" onclick="check_anc_power_excavation()"  value="Yes">
+                                            <input type="checkbox" name="anc_other_power_excavation" id="anc_other_power_excavation" class="form-check-input" onclick="check_anc_other_power_excavation()"  value="Yes">
                                             <label class="form-check-label">Power Excavation Line</label>
                                         </div>
                                         <div class="form-check anc_others">
@@ -1514,7 +1514,7 @@
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
 
-                                    <div class="row power_excavation_application mt-1" style="display:none;">
+                                    <div class="row housing_colony_application mt-1" style="display:none;">
                                         <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
@@ -2007,6 +2007,123 @@
 </form>
 
 <script>
+    $(function() {
+        if 
+        (   
+            $('#anc_other_housing_colony').prop('checked') &&
+            $('#anc_other_power_excavation').prop('checked') &&
+            $('#anc_other_crushing_unit').prop('checked') &&
+            $('#anc_other_general').prop('checked')
+        ) 
+        {
+            
+            $('.housing_colony_application').show();
+            $('.industry_application').show();
+            $('.transmission_application').show();
+            $('.general_application').show();
+
+        } 
+        else if 
+        (   
+            $('#anc_other_housing_colony').prop('checked') &&
+            !$('#anc_other_power_excavation').prop('checked') &&
+            !$('#anc_other_crushing_unit').prop('checked') &&
+            !$('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.housing_colony_application').show();
+        } 
+        else if 
+        (   
+            !$('#anc_other_housing_colony').prop('checked') &&
+            $('#anc_other_power_excavation').prop('checked') &&
+            !$('#anc_other_crushing_unit').prop('checked') &&
+            !$('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.transmission_application').show();
+        }
+        else if 
+        (   
+            !$('#anc_other_housing_colony').prop('checked') &&
+            !$('#anc_other_power_excavation').prop('checked') &&
+            $('#anc_other_crushing_unit').prop('checked') &&
+            !$('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.industry_application').show();
+        }
+        else if 
+        (   
+            !$('#anc_other_housing_colony').prop('checked') &&
+            !$('#anc_other_power_excavation').prop('checked') &&
+            !$('#anc_other_crushing_unit').prop('checked') &&
+            $('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.general_application').show();
+        }
+        else if 
+        (   
+            $('#anc_other_housing_colony').prop('checked') &&
+            $('#anc_other_power_excavation').prop('checked') &&
+            !$('#anc_other_crushing_unit').prop('checked') &&
+            !$('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.housing_colony_application').show();
+            $('.transmission_application').show();
+        }
+        else if 
+        (   
+            $('#anc_other_housing_colony').prop('checked') &&
+            $('#anc_other_power_excavation').prop('checked') &&
+            $('#anc_other_crushing_unit').prop('checked') &&
+            !$('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.housing_colony_application').show();
+            $('.transmission_application').show();
+            $('.industry_application').show();
+        }
+        else if 
+        (   
+            $('#anc_other_housing_colony').prop('checked') &&
+            $('#anc_other_power_excavation').prop('checked') &&
+            !$('#anc_other_crushing_unit').prop('checked') &&
+            $('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.housing_colony_application').show();
+            $('.transmission_application').show();
+            $('.general_application').show();
+        }
+        else if 
+        (   
+            !$('#anc_other_housing_colony').prop('checked') &&
+            $('#anc_other_power_excavation').prop('checked') &&
+            $('#anc_other_crushing_unit').prop('checked') &&
+            $('#anc_other_general').prop('checked')
+        ) 
+        {
+            
+            $('.transmission_application').show();
+            $('.industry_application').show();
+            $('.general_application').show();
+        }
+        else if 
+        (   
+            !$('#anc_other_housing_colony').prop('checked') &&
+            !$('#anc_other_power_excavation').prop('checked') &&
+            $('#anc_other_crushing_unit').prop('checked') &&
+            $('#anc_other_general').prop('checked')
+        ) 
+        {
+            
+            $('.industry_application').show();
+            $('.general_application').show();
+        }
+        });
     function check_industry_radio(value)
     {
         if(value == 'Yes')
@@ -4274,25 +4391,25 @@
 
     function check_anc_other_general()
     {
-        if($('#anc_other_general').is(":checked") || $('#anc_power_excavation').is(":checked"))
+        if($('#anc_other_general').is(":checked") || $('#anc_other_housing_colony').is(":checked"))
         {
             ('.general_application').show();
-            $('.power_excavation_application').show();
+            $('.housing_colony_application').show();
         }
-        else if($('#anc_other_general').is(":checked") && $('#anc_power_excavation').not(":checked"))
+        else if($('#anc_other_general').is(":checked") && $('#anc_other_housing_colony').not(":checked"))
         {
             $('.general_application').show();
-            $('.power_excavation_application').hide();
+            $('.housing_colony_application').hide();
         }
-        else if($('#anc_other_general').is(":checked") && $('#anc_other_crushing_unit').is(":checked"))
+        else if($('#anc_other_general').is(":checked") && $('#anc_other_housing_colony').is(":checked"))
         {
             $('.general_application').hide();
-            $('.power_excavation_application').show();
+            $('.housing_colony_application').show();
         }
-        else if($('#anc_other_general').not(":checked") && $('#anc_other_crushing_unit').is(":checked"))
+        else if($('#anc_other_general').not(":checked") && $('#anc_other_housing_colony').is(":checked"))
         {
             $('.general_application').hide();
-            $('.power_excavation_application').hide();
+            $('.housing_colony_application').hide();
         }
     }
 
@@ -4306,6 +4423,19 @@
         else
         {
             $('.industry_application').hide();
+        }
+    }
+
+    function check_anc_other_power_excavation()
+    {
+        
+        if($('#anc_other_power_excavation').is(":checked"))
+        {
+            $('.transmission_application').show();
+        }
+        else
+        {
+            $('.transmission_application').hide();
         }
     }
 

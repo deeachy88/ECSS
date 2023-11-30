@@ -5771,6 +5771,7 @@ def draft_application_list(request):
 
 def view_draft_application_details(request):
     application_no = request.GET.get('application_no')
+    request.session['application_no'] = application_no
     service_id = request.GET.get('service_id')
     application_source = request.GET.get('application_source')
     status = None

@@ -1463,17 +1463,12 @@
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for Forestry projects </a>
                                     </div>
                                     
-                                    <div class="row ground_water_application mt-1" style="display:none;">
-                                        <a href="{% url 'ground_water_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Ground Water projects </a>
+                                    <div class="row ropeway_application mt-1" style="display:none;">
+                                        <a href="{% url 'forest_ancillary_form' %}" class="btn btn-danger">
+                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Forestry projects </a>
                                     </div>
                                     
                                     <div class="row general_application mt-1" style="display:none;">
-                                        <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
-                                    </div>
-
-                                    <div class="row mineral_application mt-1" style="display:none;">
                                         <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
@@ -2569,6 +2564,131 @@
 </div>
 </form>
 <script>
+    $(function() {
+        if 
+        (
+            $('#anc_other_ropeway').prop('checked') &&
+            $('#anc_other_crushing_unit').prop('checked') &&
+            $('#anc_other_surface_collection').prop('checked') &&
+            $('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.ropeway_application').show();
+            $('.industry_application').show();
+            $('.forestry_application').show();
+            $('.general_application').show();
+        } 
+        else if 
+        (
+            $('#anc_other_ropeway').prop('checked') &&
+            !$('#anc_other_crushing_unit').prop('checked') &&
+            !$('#anc_other_surface_collection').prop('checked') &&
+            !$('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.ropeway_application').show();
+        }
+        else if 
+        (
+            $('#anc_other_ropeway').prop('checked') &&
+            $('#anc_other_crushing_unit').prop('checked') &&
+            !$('#anc_other_surface_collection').prop('checked') &&
+            !$('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.ropeway_application').show();
+            $('.industry_application').show();
+        }
+        else if 
+        (
+            $('#anc_other_ropeway').prop('checked') &&
+            $('#anc_other_crushing_unit').prop('checked') &&
+            $('#anc_other_surface_collection').prop('checked') &&
+            !$('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.ropeway_application').show();
+            $('.industry_application').show();
+            $('.forestry_application').show();
+        }
+        else if 
+        (
+            $('#anc_other_ropeway').prop('checked') &&
+            $('#anc_other_crushing_unit').prop('checked') &&
+            !$('#anc_other_surface_collection').prop('checked') &&
+            $('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.ropeway_application').show();
+            $('.industry_application').show();
+            $('.general_application').show();
+        }
+        else if 
+        (
+            !$('#anc_other_ropeway').prop('checked') &&
+            $('#anc_other_crushing_unit').prop('checked') &&
+            $('#anc_other_surface_collection').prop('checked') &&
+            $('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.industry_application').show();
+            $('.forestry_application').show();
+            $('.general_application').show();
+        }
+        else if 
+        (
+            !$('#anc_other_ropeway').prop('checked') &&
+            $('#anc_other_crushing_unit').prop('checked') &&
+            $('#anc_other_surface_collection').prop('checked') &&
+            !$('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.industry_application').show();
+            $('.forestry_application').show();
+        }
+        else if 
+        (
+            !$('#anc_other_ropeway').prop('checked') &&
+            $('#anc_other_crushing_unit').prop('checked') &&
+            !$('#anc_other_surface_collection').prop('checked') &&
+            $('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.industry_application').show();
+            $('.general_application').show();
+        }
+        else if 
+        (
+            !$('#anc_other_ropeway').prop('checked') &&
+            !$('#anc_other_crushing_unit').prop('checked') &&
+            $('#anc_other_surface_collection').prop('checked') &&
+            $('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.forestry_application').show();
+            $('.general_application').show();
+        }
+        else if 
+        (
+            !$('#anc_other_ropeway').prop('checked') &&
+            !$('#anc_other_crushing_unit').prop('checked') &&
+            $('#anc_other_surface_collection').prop('checked') &&
+            !$('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.forestry_application').show();
+        }
+        else if 
+        (
+            !$('#anc_other_ropeway').prop('checked') &&
+            !$('#anc_other_crushing_unit').prop('checked') &&
+            !$('#anc_other_surface_collection').prop('checked') &&
+            $('#anc_other_general').prop('checked')
+        ) 
+        {
+            $('.general_application').show();
+        }
+    });
     function getCitizenDetails(cid)
     {
         $.ajax({
