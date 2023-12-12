@@ -12,7 +12,15 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{final_product.product_name}}</td>
-                <td>{{final_product.quantity_annum}}</td>
+                {% if final_product.quantity_annum is none %}
+                    <td>
+                        {{final_product.name_location_type}}
+                    </td>
+                {% else %}
+                    <td>
+                        {{final_product.quantity_annum }}
+                    </td>
+                {% endif %}
                 {% if final_product.storage_method == 'fully_enclosed' %}
                     <td>Fully Enclosed</td>
                 {% elif final_product.storage_method == 'partially_enclosed' %}
@@ -22,7 +30,11 @@
                 {% endif %}
                 <td>
                     <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="edit_produce_populate('{{final_product.record_id}}','{{final_product.application_no}}','{{final_product.product_name}}','{{final_product.quantity_annum}}','{{final_product.storage_method}}')"><i class="mdi mdi-square-edit-outline"></i></button>
+                        {% if final_product.quantity_annum is none %}
+                            <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="edit_produce_populate('{{final_product.record_id}}','{{final_product.application_no}}','{{final_product.product_name}}','{{final_product.name_location_type}}','{{final_product.storage_method}}')"><i class="mdi mdi-square-edit-outline"></i></button>
+                        {% else %}
+                            <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="edit_produce_populate('{{final_product.record_id}}','{{final_product.application_no}}','{{final_product.product_name}}','{{final_product.quantity_annum}}','{{final_product.storage_method}}')"><i class="mdi mdi-square-edit-outline"></i></button>
+                        {% endif %}
                         <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_produce('{{final_product.record_id}}','{{final_product.application_no}}')"><i class="uil-trash"></i></button>
                     </div>
                 </td>

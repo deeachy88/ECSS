@@ -1775,7 +1775,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Quantity (MT/annum)</label>
-                    <input type="text" name="raw_material_qty" class="form-control" id="raw_material_qty">
+                    <input type="number" name="raw_material_qty" class="form-control" id="raw_material_qty">
                 </div>
                 <div class="alert alert-danger" id="raw_material_qtyErrorMsg" style="display:none"></div>
             </div>
@@ -1793,9 +1793,9 @@
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="raw_material_storage_method" id="raw_material_storage_method">
                         <option selected>Choose One</option>
-                        <option value="fully_enclosed">Fully Enclosed</option>
-                        <option value="partially_enclosed">Partially Enclosed</option>
-                        <option value="open">Open</option>
+                        <option value="Fully_Enclosed">Fully Enclosed</option>
+                        <option value="Partially_Enclosed">Partially Enclosed</option>
+                        <option value="Open">Open</option>
                     </select>
                 </div>
                 <div class="alert alert-danger" id="raw_material_storage_methodErrorMsg" style="display:none"></div>
@@ -1841,7 +1841,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Quantity (MT/annum)</label>
-                    <input type="text" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
+                    <input type="number" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
                 </div>
                 <div class="alert alert-danger" id="edit_raw_material_qtyErrorMsg" style="display:none"></div>
             </div>
@@ -1859,9 +1859,9 @@
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="edit_raw_material_storage_method" id="edit_raw_material_storage_method">
                         <option selected>Choose One</option>
-                        <option value="fully_enclosed">Fully Enclosed</option>
-                        <option value="partially_enclosed">Partially Enclosed</option>
-                        <option value="open">Open</option>
+                        <option value="Fully_Enclosed">Fully Enclosed</option>
+                        <option value="Partially_Enclosed">Partially Enclosed</option>
+                        <option value="Open">Open</option>
                     </select>
                 </div>
                 <div class="alert alert-danger" id="edit_raw_material_storage_methodErrorMsg" style="display:none"></div>
@@ -1985,14 +1985,14 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Transmission line Chainage From</label>
-                    <input type="text" name="line_chainage_from" class="form-control" id="line_chainage_from" onblur="calculate_area_required()">
+                    <input type="number" name="line_chainage_from" class="form-control" id="line_chainage_from" onblur="calculate_area_required()">
                 </div>
                 <div class="alert alert-danger" id="line_chainage_fromErrorMsg" style="display:none"></div>
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Transmission line Chainage To</label>
-                    <input type="text" name="line_chainage_to" class="form-control" id="line_chainage_to" onblur="calculate_area_required()">
+                    <input type="number" name="line_chainage_to" class="form-control" id="line_chainage_to" onblur="calculate_area_required()">
                 </div>
                 <div class="alert alert-danger" id="line_chainage_toErrorMsg" style="display:none"></div>
             </div>
@@ -2092,14 +2092,14 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Transmission line Chainage From</label>
-                    <input type="text" name="edit_line_chainage_from" class="form-control" id="edit_line_chainage_from" onblur="calculate_edit_area_required()">
+                    <input type="number" name="edit_line_chainage_from" class="form-control" id="edit_line_chainage_from" onblur="calculate_edit_area_required()">
                 </div>
                 <div class="alert alert-danger" id="edit_line_chainage_fromErrorMsg" style="display:none"></div>
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Transmission line Chainage To</label>
-                    <input type="text" name="edit_line_chainage_to" class="form-control" id="edit_line_chainage_to" onblur="calculate_edit_area_required()">
+                    <input type="number" name="edit_line_chainage_to" class="form-control" id="edit_line_chainage_to" onblur="calculate_edit_area_required()">
                 </div>
                 <div class="alert alert-danger" id="edit_line_chainage_toErrorMsg" style="display:none"></div>
             </div>
@@ -2231,14 +2231,14 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Chainage From (m)</label>
-                        <input type="text" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onchange="calculate_road_area_required()">
+                        <input type="number" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onchange="calculate_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="road_line_chainage_fromErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Chainage To (m)</label>
-                        <input type="text" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onchange="calculate_road_area_required()">
+                        <input type="number" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onchange="calculate_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="road_line_chainage_toErrorMsg" style="display:none"></div>
                 </div>
@@ -2331,14 +2331,14 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Chainage From (m)</label>
-                        <input type="text" name="edit_road_line_chainage_from" class="form-control" id="edit_road_line_chainage_from" onblur="calculate_edit_road_area_required()">
+                        <input type="number" name="edit_road_line_chainage_from" class="form-control" id="edit_road_line_chainage_from" onblur="calculate_edit_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="edit_road_line_chainage_fromErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Chainage To(m)</label>
-                        <input type="text" name="edit_road_line_chainage_to" class="form-control" id="edit_road_line_chainage_to" onblur="calculate_edit_road_area_required()">
+                        <input type="number" name="edit_road_line_chainage_to" class="form-control" id="edit_road_line_chainage_to" onblur="calculate_edit_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="edit_road_line_chainage_toErrorMsg" style="display:none"></div>
                 </div>
@@ -5079,9 +5079,9 @@
             data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
-                $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
-                $('#delete_power_line_successMsg').show();
-                $('#delete_power_line_successMsg').delay(2000).fadeOut('slow');
+                $('#delete_road_successMsg').html("Approach Road Details Deleted Successfully");
+                $('#delete_road_successMsg').show();
+                $('#delete_road_successMsg').delay(2000).fadeOut('slow');
                 setTimeout(function() {
                     $('#delete_anc_approach_road_modal').modal('hide');
                 }, 2000);
@@ -5368,7 +5368,6 @@
         let dzongkhag_code = $('#dzongkhag').val();
         let gewog_code = $('#gewog').val();
         let village_code = $('#vil_chiwog').val();
-        let location_name = $('#location_name').val();
         let industrial_area_acre = $('#industrial_area_acre').val();
         let state_reserve_forest_acre = $('#state_reserve_forest_acre').val();
         let private_area_acre = $('#private_area_acre').val();
@@ -5473,13 +5472,6 @@
             $('#vil_chiwogErrorMsg').show();
             $('#vil_chiwogErrorMsg').delay(2000).fadeOut('slow');
             $('#vil_chiwog').focus();
-        }
-        else if(location_name == "")
-        {
-            $('#location_nameErrorMsg').html("Enter Name of The Particular Project Site");
-            $('#location_nameErrorMsg').show();
-            $('#location_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#location_name').focus();
         }
         else if(industrial_area_acre == "")
         {

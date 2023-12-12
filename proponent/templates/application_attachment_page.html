@@ -68,6 +68,14 @@
                 {
                     $('#road_file_attachment').html(responseText);
                 }
+                else if(attachment_type == 'TOU')
+                {
+                    $('#tourism_attachment').html(responseText);
+                }
+                else if(attachment_type == 'QUA')
+                {
+                    $('#quarry_attachment').html(responseText);
+                }
             }
         });
     }

@@ -132,6 +132,10 @@
                         {
                             window.location.href = '/new_iee_application';
                         }
+                        else if(service_id == '2' && has_tor == 'No')
+                        {
+                            window.location.href = '/new_energy_application';
+                        }
                         else if(service_id == '3'  && has_tor == 'No')
                         {
                             window.location.href = '/new_road_application';
@@ -140,18 +144,29 @@
                         {
                             window.location.href = '/new_transmission_application';
                         }
+                        else if(service_id == '5'  && has_tor == 'No')
+                        {
+                            window.location.href = '/new_tourism_application';
+                        }
+                        else if(service_id == '6'  && has_tor == 'No')
+                        {
+                            window.location.href = '/new_ground_water_application';
+                        }
                         else if(service_id == '7' && has_tor == 'No')
                         {
-                            
                             window.location.href = '/new_forestry_application';
                         }
-                        else if(service_id == '1' || service_id =='2' || service_id =='3' || service_id =='4' || service_id =='5' || service_id =='6' || service_id =='7' || service_id =='8' || service_id =='9' && has_tor == 'Yes')
+                        else if(service_id == '8' && has_tor == 'No')
                         {
-                            window.location.href = '/tor_form';
+                            window.location.href = '/new_quarry_application';
+                        }
+                        else if(service_id == '9' && has_tor == 'No')
+                        {
+                            window.location.href = '/new_general_application';
                         }
                         else
                         {
-                            window.location.href = '/new_general_application';
+                            window.location.href = '/tor_form';
                         }
                     }
                 }

@@ -173,7 +173,7 @@ def new_energy_application(request):
                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                     'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
 
-def new_tourism_form(request):
+def new_tourism_application(request):
     service_code = 'TOU' 
     application_no = get_application_no(request, service_code, '5')
     request.session['application_no'] = application_no
@@ -193,7 +193,7 @@ def new_tourism_form(request):
                                                     'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                     'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
 
-def new_quarry_form(request):
+def new_quarry_application(request):
     service_code = 'QUA' 
     application_no = get_application_no(request, service_code, '8')
     request.session['application_no'] = application_no
@@ -1030,13 +1030,37 @@ def save_anc_other_details(request):
         anc_other_ground_water = request.POST.get('anc_other_ground_water')
         anc_other_mineral = request.POST.get('anc_other_mineral')
         anc_other_general = request.POST.get('anc_other_general')
+        anc_other_housing_colony = request.POST.get('anc_other_housing_colony')
+        anc_power_excavation = request.POST.get('anc_power_excavation')
+        anc_other_bridge = request.POST.get('anc_other_bridge')
+        anc_other_concrete_building = request.POST.get('anc_other_concrete_building')
+        anc_other_asphalt_plant = request.POST.get('anc_other_asphalt_plant')
+        anc_other_ropeway = request.POST.get('anc_other_ropeway')
+
+        anc_other_crushing_unit = anc_other_crushing_unit if anc_other_crushing_unit else None
+        anc_other_surface_collection = anc_other_surface_collection if anc_other_surface_collection else None
+        anc_other_ground_water = anc_other_ground_water if anc_other_ground_water else None
+        anc_other_mineral = anc_other_mineral if anc_other_mineral else None
+        anc_other_general = anc_other_general if anc_other_general else None
+        anc_other_housing_colony = anc_other_housing_colony if anc_other_housing_colony else None
+        anc_power_excavation = anc_power_excavation if anc_power_excavation else None
+        anc_other_bridge = anc_other_bridge if anc_other_bridge else None
+        anc_other_concrete_building = anc_other_concrete_building if anc_other_concrete_building else None
+        anc_other_asphalt_plant = anc_other_asphalt_plant if anc_other_asphalt_plant else None
+        anc_other_ropeway = anc_other_ropeway if anc_other_ropeway else None
 
         anc_other_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         anc_other_details.update(anc_other_crushing_unit=anc_other_crushing_unit,
-                                  anc_other_surface_collection=anc_other_surface_collection,
-                                  anc_other_ground_water=anc_other_ground_water,
-                                  anc_other_mineral=anc_other_mineral,
-                                  anc_other_general=anc_other_general
+                                    anc_other_surface_collection=anc_other_surface_collection,
+                                    anc_other_ground_water=anc_other_ground_water,
+                                    anc_other_mineral=anc_other_mineral,
+                                    anc_other_general=anc_other_general,
+                                    anc_other_housing_colony=anc_other_housing_colony,
+                                    anc_power_excavation=anc_power_excavation,
+                                    anc_other_bridge=anc_other_bridge,
+                                    anc_other_concrete_building=anc_other_concrete_building,
+                                    anc_other_asphalt_plant=anc_other_asphalt_plant,
+                                    anc_other_ropeway=anc_other_ropeway
                                   )
         data['message'] = "success"
     except Exception as e:
@@ -2244,11 +2268,17 @@ def save_anc_general_attachment_details(request):
 def add_final_product_details(request):
     application_no = request.POST.get('application_no')
     product_name = request.POST.get('produce_name')
-    quantity_annum = request.POST.get('quantity_annum')
+    name_location_type = request.POST.get('name_location')
+    if name_location_type:
+        quantity_annum = None
+        name_location_type = request.POST.get('name_location')
+    else:
+        quantity_annum = request.POST.get('quantity_annum')
+        name_location_type = None
     storage_method = request.POST.get('storage_method')
 
     t_ec_industries_t4_project_product.objects.create(application_no=application_no, product_name=product_name,
-                                                    quantity_annum=quantity_annum, storage_method=storage_method)
+                                                    quantity_annum=quantity_annum,name_location_type=name_location_type, storage_method=storage_method)
     final_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'final_products.html', {'final_product': final_product})
@@ -2257,11 +2287,17 @@ def update_final_product_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
     product_name = request.POST.get('produce_name')
-    quantity_annum = request.POST.get('quantity_annum')
+    name_location_type = request.POST.get('name_location')
+    if name_location_type:
+        quantity_annum = None
+        name_location_type = request.POST.get('name_location')
+    else:
+        quantity_annum = request.POST.get('quantity_annum')
+        name_location_type = None
     storage_method = request.POST.get('storage_method')
 
     final_product_details = t_ec_industries_t4_project_product.objects.filter(record_id=record_id)
-    final_product_details.update(product_name=product_name, quantity_annum=quantity_annum, storage_method=storage_method)
+    final_product_details.update(product_name=product_name, quantity_annum=quantity_annum,name_location_type=name_location_type, storage_method=storage_method)
     final_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no).order_by(
         'record_id')
     return render(request, 'final_products.html', {'final_product': final_product})
@@ -2313,7 +2349,7 @@ def delete_forest_produce_details(request):
 
 def save_transmission_attachment(request):
     data = dict()
-    general_attach = request.FILES['general_attach']
+    general_attach = request.FILES['transmission_attach']
     file_name = general_attach.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/TRA/")
     if fs.exists(file_name):
@@ -2333,6 +2369,56 @@ def save_transmission_attachment_details(request):
 
     t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='TRA')
     file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='TRA')
+
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
+
+def save_tourism_attachment(request):
+    data = dict()
+    general_attach = request.FILES['tourism_attach']
+    file_name = general_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/TOU/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, general_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/TOU" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_tourism_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('application_no')
+
+    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='TOU')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='TOU')
+
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
+
+def save_quarry_attachment(request):
+    data = dict()
+    general_attach = request.FILES['quarry_attach']
+    file_name = general_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/QUA/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, general_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/QUA" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_quarry_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('application_no')
+
+    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='QUA')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='QUA')
 
     return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
 
@@ -2626,6 +2712,10 @@ def save_project_details(request):
         proposed_route_reason = request.POST.get('proposed_route_reason')
         project_cost = request.POST.get('project_cost')
         project_duration = request.POST.get('project_duration')
+        production_capacity = request.POST.get('production_capacity')
+        stripping_ratio = request.POST.get('stripping_ratio')
+        bench_height = request.POST.get('bench_height')
+        bench_width = request.POST.get('bench_width')
         right_of_way = request.POST.get('right_of_way')
         length_of_transmission = request.POST.get('length_of_transmission')
         transmission_voltage_level = request.POST.get('transmission_voltage_level')
@@ -2659,6 +2749,10 @@ def save_project_details(request):
                                     proposed_route_reason=proposed_route_reason,
                                     project_cost=project_cost,
                                     project_duration=project_duration,
+                                    production_capacity=production_capacity,
+                                    stripping_ratio=stripping_ratio,
+                                    bench_height=bench_height,
+                                    bench_width=bench_width,
                                     right_of_way=right_of_way,
                                     length_of_transmission=length_of_transmission,
                                     transmission_voltage_level=transmission_voltage_level,
@@ -3467,15 +3561,23 @@ def save_road_application(request):
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
-        application_type = request.POST.get('application_type')
         address = request.POST.get('address')
         cid = request.POST.get('cid')
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
+        dzongkhag_throm = request.POST.get('dzongkhag_throm')
         focal_person = request.POST.get('focal_person')
-        dzongkhag_code = request.POST.get('dzo_throm')
-        gewog_code = request.POST.get('gewog')
-        village_code = request.POST.get('vil_chiwog')
+        if dzongkhag_throm == 'Thromde':
+            dzongkhag_code = None
+            gewog_code = None
+            village_code = None
+            thromde_id = request.POST.get('thromde_id')
+        else:
+            dzongkhag_code = request.POST.get('dzongkhag')
+            gewog_code = request.POST.get('gewog')
+            village_code = request.POST.get('vil_chiwog')
+            thromde_id = None
+        
         bl_protected_area_name = request.POST.get('bl_protected_area_name')
         bl_protected_area_distance = request.POST.get('bl_protected_area_distance')
         bl_migratory_route_name = request.POST.get('bl_migratory_route_name')
@@ -3510,21 +3612,20 @@ def save_road_application(request):
         identifier = request.POST.get('identifier')
         ec_reference_no = request.POST.get('ec_reference_no')
         form_type = request.POST.get('form_type')
-        ca_auth = None
+        tor_application_no = request.POST.get('tor_application_no')
 
-        if identifier !='DR':
-            if request.session['ca_auth'] == 'DEC':
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
-            elif request.session['ca_auth'] == 'THROMDE':
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
-            else:
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
+        ca_auth = None
+        if identifier != 'DR' and tor_application_no == None:
+            auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session['ca_auth'],
+                dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+            )
+            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+        else:
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=tor_application_no
+            )
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -3545,6 +3646,8 @@ def save_road_application(request):
                     contact_no=contact_no,
                     email=email,
                     focal_person=focal_person,
+                    dzongkhag_throm=dzongkhag_throm,
+                    thromde_id=thromde_id,
                     dzongkhag_code=dzongkhag_code,
                     gewog_code=gewog_code,
                     village_code=village_code,
@@ -3597,6 +3700,8 @@ def save_road_application(request):
                     contact_no=contact_no,
                     email=email,
                     focal_person=focal_person,
+                    dzongkhag_throm=dzongkhag_throm,
+                    thromde_id=thromde_id,
                     dzongkhag_code=dzongkhag_code,
                     gewog_code=gewog_code,
                     village_code=village_code,
@@ -3656,6 +3761,8 @@ def save_road_application(request):
                     contact_no=contact_no,
                     email=email,
                     focal_person=focal_person,
+                    dzongkhag_throm=dzongkhag_throm,
+                    thromde_id=thromde_id,
                     dzongkhag_code=dzongkhag_code,
                     gewog_code=gewog_code,
                     village_code=village_code,
@@ -3710,6 +3817,8 @@ def save_road_application(request):
                 contact_no=contact_no,
                 email=email,
                 focal_person=focal_person,
+                dzongkhag_throm=dzongkhag_throm,
+                thromde_id=thromde_id,
                 dzongkhag_code=dzongkhag_code,
                 gewog_code=gewog_code,
                 village_code=village_code,
@@ -4189,10 +4298,18 @@ def save_ground_water_application(request):
         cid = request.POST.get('cid')
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
+        dzongkhag_throm = request.POST.get('dzongkhag_throm')
         focal_person = request.POST.get('focal_person')
-        dzongkhag_code = request.POST.get('dzo_throm')
-        gewog_code = request.POST.get('gewog')
-        village_code = request.POST.get('vil_chiwog')
+        if dzongkhag_throm == 'Thromde':
+            dzongkhag_code = None
+            gewog_code = None
+            village_code = None
+            thromde_id = request.POST.get('thromde_id')
+        else:
+            dzongkhag_code = request.POST.get('dzongkhag')
+            gewog_code = request.POST.get('gewog')
+            village_code = request.POST.get('vil_chiwog')
+            thromde_id = None
         industrial_area_acre = request.POST.get('industrial_area_acre')
         state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
         private_area_acre = request.POST.get('private_area_acre')
@@ -4204,17 +4321,22 @@ def save_ground_water_application(request):
         terrain_slope = request.POST.get('terrain_slope')
         identifier = request.POST.get('identifier')
         ec_reference_no = request.POST.get('ec_reference_no')
+        tor_application_no = request.POST.get('tor_application_no')
         form_type = request.POST.get('form_type')
+
         ca_auth = None
 
-        if identifier != 'DR':
-            if request.session['ca_auth'] == 'DEC' or request.session['ca_auth'] == 'THROMDE':
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-            else:
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-            
-            for auth_detail in auth_details:
-                ca_auth = auth_detail.competent_authority_id
+        if identifier != 'DR' and tor_application_no == None:
+            auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session['ca_auth'],
+                dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+            )
+            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+        else:
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=tor_application_no
+            )
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
 
         application_data = {
             'project_name': project_name,
@@ -4238,6 +4360,8 @@ def save_ground_water_application(request):
             'land_form': land_form,
             'terrain_elevation': terrain_elevation,
             'terrain_slope': terrain_slope,
+            'dzongkhag_throm':dzongkhag_throm,
+            'thromde_id':thromde_id
         }
 
         if identifier == 'NC' or identifier == 'OC':
@@ -4389,7 +4513,24 @@ def submit_ground_water_application(request):
     return JsonResponse(data)
 
 
+def save_alternative_analysis(request):
+    data = dict()
+    try:
+        application_no = request.POST.get('alternative_analysis_application_no')
+        alternative_surface_water = request.POST.get('alternative_surface_water') 
+        alternative_capital_expenditure = request.POST.get('alternative_capital_expenditure')
+        alternative_adequate_justification = request.POST.get('alternative_adequate_justification')
 
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        application_details.update(alternative_surface_water=alternative_surface_water, 
+                                    alternative_capital_expenditure=alternative_capital_expenditure,
+                                    alternative_adequate_justification=alternative_adequate_justification,
+                                    )
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
 # Quarry Application Details
 def save_quarry_application(request):
     data = {}
@@ -4398,15 +4539,23 @@ def save_quarry_application(request):
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
-        application_type = request.POST.get('application_type')
         address = request.POST.get('address')
         cid = request.POST.get('cid')
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
         focal_person = request.POST.get('focal_person')
-        dzongkhag_code = request.POST.get('dzo_throm')
-        gewog_code = request.POST.get('gewog')
-        village_code = request.POST.get('vil_chiwog')
+        dzongkhag_throm = request.POST.get('dzongkhag_throm')
+        focal_person = request.POST.get('focal_person')
+        if dzongkhag_throm == 'Thromde':
+            dzongkhag_code = None
+            gewog_code = None
+            village_code = None
+            thromde_id = request.POST.get('thromde_id')
+        else:
+            dzongkhag_code = request.POST.get('dzongkhag')
+            gewog_code = request.POST.get('gewog')
+            village_code = request.POST.get('vil_chiwog')
+            thromde_id = None
         industrial_area_acre = request.POST.get('industrial_area_acre')
         state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
         private_area_acre = request.POST.get('private_area_acre')
@@ -4418,14 +4567,21 @@ def save_quarry_application(request):
         terrain_slope = request.POST.get('terrain_slope')
         identifier = request.POST.get('identifier')
         ec_reference_no = request.POST.get('ec_reference_no')
+        tor_application_no = request.POST.get('tor_application_no')
         form_type = request.POST.get('form_type')
-        ca_auth = None
 
-        if identifier != 'DR':
-            auth_query = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-            if request.session['ca_auth'] in ['DEC', 'THROMDE']:
-                auth_query = auth_query.filter(dzongkhag_code_id=dzongkhag_code)
-            ca_auth = auth_query.first().competent_authority_id
+        ca_auth = None
+        if identifier != 'DR' and tor_application_no == None:
+            auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session['ca_auth'],
+                dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+            )
+            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+        else:
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=tor_application_no
+            )
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         if identifier == 'NC':
@@ -4447,6 +4603,8 @@ def save_quarry_application(request):
                     applicant_name=applicant_name,
                     address=address,
                     cid=cid,
+                    dzongkhag_throm=dzongkhag_throm,
+                    thromde_id=thromde_id,
                     contact_no=contact_no,
                     email=email,
                     focal_person=focal_person,
@@ -4459,7 +4617,7 @@ def save_quarry_application(request):
                     others_area_acre=others_area_acre,
                     total_area_acre=total_area_acre,
                     actual_mineable_area=actual_mineable_area,
-                    green_belt_area=green_belt_area,
+                    green_area_acre=green_belt_area,
                     terrain_elevation=terrain_elevation,
                     terrain_slope=terrain_slope,
                     application_status='P',
@@ -4483,6 +4641,8 @@ def save_quarry_application(request):
                     applicant_name=applicant_name,
                     address=address,
                     cid=cid,
+                    dzongkhag_throm=dzongkhag_throm,
+                    thromde_id=thromde_id,
                     contact_no=contact_no,
                     email=email,
                     focal_person=focal_person,
@@ -4495,7 +4655,7 @@ def save_quarry_application(request):
                     others_area_acre=others_area_acre,
                     total_area_acre=total_area_acre,
                     actual_mineable_area=actual_mineable_area,
-                    green_belt_area=green_belt_area,
+                    green_area_acre=green_belt_area,
                     terrain_elevation=terrain_elevation,
                     terrain_slope=terrain_slope,
                     application_status='P',
@@ -4515,6 +4675,8 @@ def save_quarry_application(request):
                 applicant_name=applicant_name,
                 address=address,
                 cid=cid,
+                dzongkhag_throm=dzongkhag_throm,
+                thromde_id=thromde_id,
                 contact_no=contact_no,
                 email=email,
                 focal_person=focal_person,
@@ -4527,7 +4689,7 @@ def save_quarry_application(request):
                 others_area_acre=others_area_acre,
                 total_area_acre=total_area_acre,
                 actual_mineable_area=actual_mineable_area,
-                green_belt_area=green_belt_area,
+                green_area_acre=green_belt_area,
                 terrain_elevation=terrain_elevation,
                 terrain_slope=terrain_slope,
                 application_status='P',
@@ -4813,17 +4975,23 @@ def save_energy_application(request):
     try:
         application_no = request.POST.get('application_no')
         project_name = request.POST.get('project_name')
-        project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
-        application_type =request.POST.get('application_type')
         address = request.POST.get('address')
         cid = request.POST.get('cid')
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
+        dzongkhag_throm = request.POST.get('dzongkhag_throm')
         focal_person = request.POST.get('focal_person')
-        dzongkhag_code = request.POST.get('dzo_throm')
-        gewog_code = request.POST.get('gewog')
-        village_code = request.POST.get('vil_chiwog')
+        if dzongkhag_throm == 'Thromde':
+            dzongkhag_code = None
+            gewog_code = None
+            village_code = None
+            thromde_id = request.POST.get('thromde_id')
+        else:
+            dzongkhag_code = request.POST.get('dzongkhag')
+            gewog_code = request.POST.get('gewog')
+            village_code = request.POST.get('vil_chiwog')
+            thromde_id = None
         industrial_area_acre = request.POST.get('industrial_area_acre')
         state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
         private_area_acre = request.POST.get('private_area_acre')
@@ -4831,22 +4999,21 @@ def save_energy_application(request):
         total_area_acre = request.POST.get('total_area_acre')
         identifier = request.POST.get('identifier')
         ec_reference_no = request.POST.get('ec_reference_no')
-        form_type = request.POST.get('ec_reference_no')
+        tor_application_no = request.POST.get('tor_application_no')
+        form_type = request.POST.get('form_type')
+        
         ca_auth = None
-
-        if identifier !='DR':
-            if request.session['ca_auth'] == 'DEC':
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
-            elif request.session['ca_auth'] == 'THROMDE':
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
-            else:
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
+        if identifier != 'DR' and tor_application_no == None:
+            auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session['ca_auth'],
+                dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+            )
+            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+        else:
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=tor_application_no
+            )
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -4860,7 +5027,6 @@ def save_energy_application(request):
                 application_details.update(
                     application_type='New',
                     project_name=project_name,
-                    project_category=project_category,
                     applicant_name=applicant_name,
                     address=address,
                     cid=cid,
@@ -4886,7 +5052,6 @@ def save_energy_application(request):
                     applicant_id=request.session['email'],
                     colour_code=request.session['colour_code'],
                     project_name=project_name,
-                    project_category=project_category,
                     applicant_name=applicant_name,
                     address=address,
                     cid=cid,
@@ -4919,7 +5084,6 @@ def save_energy_application(request):
                     applicant_id=request.session['email'],
                     colour_code=app_det.colour_code,
                     project_name=project_name,
-                    project_category=project_category,
                     applicant_name=applicant_name,
                     address=address,
                     cid=cid,
@@ -4947,7 +5111,6 @@ def save_energy_application(request):
                 applicant_id=request.session['email'],
                 colour_code=request.session['colour_code'],
                 project_name=project_name,
-                project_category=project_category,
                 applicant_name=applicant_name,
                 address=address,
                 cid=cid,
@@ -5089,47 +5252,51 @@ def save_tourism_application(request):
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
-        application_type = request.POST.get('application_type')
         address = request.POST.get('address')
         cid = request.POST.get('cid')
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
+        dzongkhag_throm = request.POST.get('dzongkhag_throm')
         focal_person = request.POST.get('focal_person')
-        dzongkhag_code = request.POST.get('dzo_throm')
-        gewog_code = request.POST.get('gewog')
-        village_code = request.POST.get('vil_chiwog')
+        if dzongkhag_throm == 'Thromde':
+            dzongkhag_code = None
+            gewog_code = None
+            village_code = None
+            thromde_id = request.POST.get('thromde_id')
+        else:
+            dzongkhag_code = request.POST.get('dzongkhag')
+            gewog_code = request.POST.get('gewog')
+            village_code = request.POST.get('vil_chiwog')
+            thromde_id = None
         industrial_area_acre = request.POST.get('industrial_area_acre')
         state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
         private_area_acre = request.POST.get('private_area_acre')
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
         identifier = request.POST.get('identifier')
-        ec_reference_no = request.POST.get('ec_reference_no')
+        tor_application_no = request.POST.get('tor_application_no')
         form_type = request.POST.get('form_type')
-        ca_auth = None
+        
 
-        if identifier !='DR':
-            if request.session['ca_auth'] == 'DEC':
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
-            elif request.session['ca_auth'] == 'THROMDE':
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'], dzongkhag_code_id=dzongkhag_code)
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
-            else:
-                auth_details = t_competant_authority_master.objects.filter(competent_authority=request.session['ca_auth'])
-                for auth_details in auth_details:
-                    ca_auth = auth_details.competent_authority_id
+        ca_auth = None
+        if identifier != 'DR' and tor_application_no == None:
+            auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session['ca_auth'],
+                dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+            )
+            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+        else:
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=tor_application_no
+            )
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
 
         if(identifier == 'NC'):
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(project_name=project_name)
         elif(identifier == 'OC'):
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(applicant_name=applicant_name)
         elif(identifier == 'DR'): # This is For Draft Applications
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             if application_details.exists():
                 application_details.update(
                     application_type='New',
@@ -5141,6 +5308,8 @@ def save_tourism_application(request):
                         contact_no=contact_no,
                         email=email,
                         focal_person=focal_person,
+                        dzongkhag_throm=dzongkhag_throm,
+                        thromde_id=thromde_id,
                         dzongkhag_code=dzongkhag_code,
                         gewog_code=gewog_code,
                         village_code=village_code,
@@ -5167,6 +5336,8 @@ def save_tourism_application(request):
                     contact_no=contact_no,
                     email=email,
                     focal_person=focal_person,
+                    dzongkhag_throm=dzongkhag_throm,
+                    thromde_id=thromde_id,
                     dzongkhag_code=dzongkhag_code,
                     gewog_code=gewog_code,
                     village_code=village_code,
@@ -5182,7 +5353,6 @@ def save_tourism_application(request):
                     category=request.session['category']
                     )
         elif identifier== 'TC' or identifier== 'PC' or identifier == 'LC' or identifier == 'CC':
-            application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
             for app_det in application_details:
                 t_ec_industries_t1_general.objects.create(
                     application_no=application_no,
@@ -5200,6 +5370,8 @@ def save_tourism_application(request):
                     contact_no=contact_no,
                     email=email,
                     focal_person=focal_person,
+                    dzongkhag_throm=dzongkhag_throm,
+                    thromde_id=thromde_id,
                     dzongkhag_code=dzongkhag_code,
                     gewog_code=gewog_code,
                     village_code=village_code,
@@ -5228,6 +5400,8 @@ def save_tourism_application(request):
                 contact_no=contact_no,
                 email=email,
                 focal_person=focal_person,
+                dzongkhag_throm=dzongkhag_throm,
+                thromde_id=thromde_id,
                 dzongkhag_code=dzongkhag_code,
                 gewog_code=gewog_code,
                 village_code=village_code,
@@ -6607,6 +6781,55 @@ def delete_application_attachment(request):
         for file in file:
             file_name = file.attachment
             fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/IEE/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'TRA':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/TRA/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'ROA':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ROA/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'ENE':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ENE/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'EA':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/EA/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'TOU':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/TOU/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'QUA':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/QUA/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'GW':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/GW/")
             fs.delete(str(file_name))
         file.delete()
     file_attach = t_file_attachment.objects.filter(application_no=application_no)

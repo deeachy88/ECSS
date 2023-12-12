@@ -20,82 +20,59 @@
                             <div class="accordion-body">
                                 <form method="post" id="ground_water_application_form">
                                     {% csrf_token %}
-                                    <input type="text" class="form-control" value="{{application_no}}" name="application_no" style="display:none;">
+                                    <input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="Main Activity" name="form_type" style="display:none;">
-                                    <div class="row">
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Name of Project</label>
-                                                    <input type="text" name="project_name" class="form-control" id="project_name">
-                                                </div>
-                                                <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Application Type</label>
-                                                <select class="form-control" id="application_type" name="application_type">
-                                                    <option value="">--SELECT--</option>
-                                                    <option value="New">New</option>
-                                                    <option value="Expansion">Expansion</option>
-                                                    <option value="Relocation">Relocation</option>
-                                                    <option value="Other Modification">Other Modification</option>
-                                                </select>
-                                            </div>
-                                            <div id="application_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">CID</label>
-                                                <input type="text" name="cid" class="form-control" id="cid">
-                                            </div>
-                                            <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Applicant Name</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name">
+                                                <label class="form-label fw-bold">Name of Applicant</label>
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Address</label>
-                                                <input type="text" name="address" class="form-control" id="address">
+                                                <input type="text" name="address" class="form-control" id="address" value="{{request.session.address}}" readonly>
                                             </div>
                                             <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Contact No</label>
-                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8">
-                                            </div>
-                                            <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
+                                                <label class="form-label fw-bold">Contact No</label>
+                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{request.session.contact_number}}" readonly>
+                                            </div>
+                                            <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
                                                 <label class="form-label fw-bold">Email</label>
-                                                <input type="email" name="email" class="form-control" id="email">
+                                                <input type="email" name="email" class="form-control" id="email" value="{{request.session.email}}" readonly>
                                             </div>
                                             <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Name of Project</label>
+                                                <input type="text" name="project_name" class="form-control" id="project_name">
+                                            </div>
+                                            <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
-                                                <textarea class="form-control" id="example-textarea" rows="3"></textarea>
+                                                <textarea class="form-control" name="focal_person" id="focal_person" rows="3"></textarea>
                                             </div>
                                         </div>
                                     </div>
+                                    <br>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
                                     </div>
@@ -255,10 +232,10 @@
                                                 <label class="form-label fw-bold">Slope/Gradient</label>
                                                 <select class="form-select" name="terrain_slope" id="terrain_slope">
                                                     <option selected>Choose One</option>
-                                                    <option value="Flat land (below 20 degrees)">Flat land (below 20 degrees)</option>
-                                                    <option value="Gentle slope (21-45 degrees)">Gentle slope (21-45 degrees)</option>
-                                                    <option value="Steep slope (46 – 60 degrees)">Steep slope (46 – 60 degrees)</option>
-                                                    <option value="Very steep slope (above 60 degrees)">Very steep slope (above 60 degrees)</option>
+                                                    <option value="Flat_land">Flat land (below 20 degrees)</option>
+                                                    <option value="Gentle_slope">Gentle slope (21-45 degrees)</option>
+                                                    <option value="Steep_slope">Steep slope (46-60 degrees)</option>
+                                                    <option value="Very_steep_slope">Very steep slope (above 60 degrees)</option>
                                                 </select>
                                             </div>
                                             <div id="terrain_slopeErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -278,7 +255,7 @@
                                     </div>
                                 </form>
                             </div>
-                        </div>
+                        </div> 
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
@@ -309,86 +286,86 @@
                                             <tr>
                                                 <td>a)</td>
                                                 <td>Protected Areas and zonation (multiple use/buffer/core)</td>
-                                                <td><input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name"></td>
-                                                <td><input type="text" name="bl_protected_area_distance" class="form-control col-lg-6" id="bl_protected_area_distance"></td>
+                                                <td><input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_protected_area_distance" class="form-control col-lg-6" id="bl_protected_area_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>b)</td>
                                                 <td>Migratory route/habitat/key biodiversity areas</td>
-                                                <td><input type="text" name="bl_migratory_route_name" class="form-control col-lg-6" id="bl_migratory_route_name"></td>
-                                                <td><input type="text" name="bl_migratory_route_distance" class="form-control col-lg-6" id="bl_migratory_route_distance"></td>
+                                                <td><input type="text" name="bl_migratory_route_name" class="form-control col-lg-6" id="bl_migratory_route_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_migratory_route_distance" class="form-control col-lg-6" id="bl_migratory_route_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>c)</td>
                                                 <td>Wetland/catchment area</td>
-                                                <td><input type="text" name="bl_wetland_name" class="form-control col-lg-6" id="bl_wetland_name"></td>
-                                                <td><input type="text" name="bl_wetland_distance" class="form-control col-lg-6" id="bl_wetland_distance"></td>
+                                                <td><input type="text" name="bl_wetland_name" class="form-control col-lg-6" id="bl_wetland_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_wetland_distance" class="form-control col-lg-6" id="bl_wetland_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>d)</td>
                                                 <td>Water bodies/resources/source (rivers, streams, springs, lakes, etc.)</td>
-                                                <td><input type="text" name="bl_water_bodies_name" class="form-control col-lg-6" id="bl_water_bodies_name"></td>
-                                                <td><input type="text" name="bl_water_bodies_distance" class="form-control col-lg-6" id="bl_water_bodies_distance"></td>
+                                                <td><input type="text" name="bl_water_bodies_name" class="form-control col-lg-6" id="bl_water_bodies_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_water_bodies_distance" class="form-control col-lg-6" id="bl_water_bodies_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>e)</td>
                                                 <td>FMUs/Community forests/private forests</td>
-                                                <td><input type="text" name="bl_fmu_name" class="form-control col-lg-6" id="bl_fmu_name"></td>
-                                                <td><input type="text" name="bl_fmu_distance" class="form-control col-lg-6" id="bl_fmu_distance"></td>
+                                                <td><input type="text" name="bl_fmu_name" class="form-control col-lg-6" id="bl_fmu_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_fmu_distance" class="form-control col-lg-6" id="bl_fmu_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>f)</td>
                                                 <td>Agricultural lands/private lands</td>
-                                                <td><input type="text" name="bl_agricultural_name" class="form-control col-lg-6" id="bl_agricultural_name"></td>
-                                                <td><input type="text" name="bl_agricultural_distance" class="form-control col-lg-6" id="bl_agricultural_distance"></td>
+                                                <td><input type="text" name="bl_agricultural_name" class="form-control col-lg-6" id="bl_agricultural_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_agricultural_distance" class="form-control col-lg-6" id="bl_agricultural_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>g)</td>
                                                 <td>Settlements</td>
-                                                <td><input type="text" name="bl_settlement_name" class="form-control col-lg-6" id="bl_settlement_name"></td>
-                                                <td><input type="text" name="bl_settlement_distance" class="form-control col-lg-6" id="bl_settlement_distance"></td>
+                                                <td><input type="text" name="bl_settlement_name" class="form-control col-lg-6" id="bl_settlement_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_settlement_distance" class="form-control col-lg-6" id="bl_settlement_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>h)</td>
                                                 <td>Roads</td>
-                                                <td><input type="text" name="bl_road_name" class="form-control col-lg-6" id="bl_road_name"></td>
-                                                <td><input type="text" name="bl_road_distance" class="form-control col-lg-6" id="bl_road_distance"></td>
+                                                <td><input type="text" name="bl_road_name" class="form-control col-lg-6" id="bl_road_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_road_distance" class="form-control col-lg-6" id="bl_road_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>i)</td>
                                                 <td>Public infrastructures (irrigation canals/drinking water supply/Powerlines/Telecommunication towers, etc)</td>
-                                                <td><input type="text" name="bl_public_infra_name" class="form-control col-lg-6" id="bl_public_infra_name"></td>
-                                                <td><input type="text" name="bl_public_infra_distance" class="form-control col-lg-6" id="bl_public_infra_distance"></td>
+                                                <td><input type="text" name="bl_public_infra_name" class="form-control col-lg-6" id="bl_public_infra_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_public_infra_distance" class="form-control col-lg-6" id="bl_public_infra_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>j)</td>
                                                 <td>Schools/Institutions/Hospitals/BHUs</td>
-                                                <td><input type="text" name="bl_school_name" class="form-control col-lg-6" id="bl_school_name"></td>
-                                                <td><input type="text" name="bl_school_distance" class="form-control col-lg-6" id="bl_school_distance"></td>
+                                                <td><input type="text" name="bl_school_name" class="form-control col-lg-6" id="bl_school_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_school_distance" class="form-control col-lg-6" id="bl_school_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>k)</td>
                                                 <td>Heritage/religious/archaeological /cultural sites</td>
-                                                <td><input type="text" name="bl_heritage_name" class="form-control col-lg-6" id="bl_heritage_name"></td>
-                                                <td><input type="text" name="bl_heritage_distance" class="form-control col-lg-6" id="bl_heritage_distance"></td>
+                                                <td><input type="text" name="bl_heritage_name" class="form-control col-lg-6" id="bl_heritage_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_heritage_distance" class="form-control col-lg-6" id="bl_heritage_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>l)</td>
                                                 <td>Tourist facilities/tourism sites/ Nature recreation sites</td>
-                                                <td><input type="text" name="bl_tourist_facility_name" class="form-control col-lg-6" id="bl_tourist_facility_name"></td>
-                                                <td><input type="text" name="bl_tourist_facility_distance" class="form-control col-lg-6" id="bl_tourist_facility_distance"></td>
+                                                <td><input type="text" name="bl_tourist_facility_name" class="form-control col-lg-6" id="bl_tourist_facility_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_tourist_facility_distance" class="form-control col-lg-6" id="bl_tourist_facility_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>l)</td>
                                                 <td>Important installations (early warning systems, weather stations, flood mitigation activities, etc.)</td>
-                                                <td><input type="text" name="bl_impt_installation_name" class="form-control col-lg-6" id="bl_impt_installation_name"></td>
-                                                <td><input type="text" name="bl_impt_installation_distance" class="form-control col-lg-6" id="bl_impt_installation_distance"></td>
+                                                <td><input type="text" name="bl_impt_installation_name" class="form-control col-lg-6" id="bl_impt_installation_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_impt_installation_distance" class="form-control col-lg-6" id="bl_impt_installation_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>l)</td>
                                                 <td>Industries</td>
-                                                <td><input type="text" name="bl_industries_name" class="form-control col-lg-6" id="bl_industries_name"></td>
-                                                <td><input type="text" name="bl_industries_distance" class="form-control col-lg-6" id="bl_industries_distance"></td>
+                                                <td><input type="text" name="bl_industries_name" class="form-control col-lg-6" id="bl_industries_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_industries_distance" class="form-control col-lg-6" id="bl_industries_distance" value="0"></td>
                                             </tr>
                                             <tr>
                                                 <td>o)</td>
@@ -396,12 +373,12 @@
                                                     <div class="row">
                                                         <label for="bl_others" class="col-sm-4 col-form-label">Others Specify</label>
                                                         <div class="col-sm-8">
-                                                            <input type="text" class="form-control" id="bl_others" name="bl_others">
+                                                            <input type="text" class="form-control" id="bl_others" name="bl_others" value="N/A">
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td><input type="text" name="bl_others_name" class="form-control col-lg-6" id="bl_others_name"></td>
-                                                <td><input type="text" name="bl_others_distance" class="form-control col-lg-6" id="bl_others_distance"></td>
+                                                <td><input type="text" name="bl_others_name" class="form-control col-lg-6" id="bl_others_name" value="N/A"></td>
+                                                <td><input type="text" name="bl_others_distance" class="form-control col-lg-6" id="bl_others_distance" value="0"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -454,7 +431,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Cost(Nu)</label>
-                                                <input type="text" name="project_cost" class="form-control" id="project_cost">
+                                                <input type="number" name="project_cost" class="form-control" id="project_cost">
                                             </div>
                                             <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -495,19 +472,19 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>Total requirement –cubic meter/day</td>
-                                                        <td><input type="text" name="total_requirement" class="form-control col-lg-6" id="total_requirement"></td>
+                                                        <td><input type="text" name="total_requirement" class="form-control col-lg-6" id="total_requirement" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Installed capacity of the bore-well</td>
-                                                        <td><input type="text" name="borewell_installed_capacity" class="form-control col-lg-6" id="borewell_installed_capacity"></td>
+                                                        <td><input type="text" name="borewell_installed_capacity" class="form-control col-lg-6" id="borewell_installed_capacity" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Geo-coordinates of the proposed site</td>
-                                                        <td><input type="text" name="geo_coordinates" class="form-control col-lg-6" id="geo_coordinates"></td>
+                                                        <td><input type="text" name="geo_coordinates" class="form-control col-lg-6" id="geo_coordinates" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Width and depth of the bore-well –meters</td>
-                                                        <td><input type="text" name="borewell_width_depth" class="form-control col-lg-6" id="borewell_width_depth"></td>
+                                                        <td><input type="text" name="borewell_width_depth" class="form-control col-lg-6" id="borewell_width_depth" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td rowspan="3">Depth of the borewell</td>
@@ -515,7 +492,7 @@
                                                             <div class="row">
                                                                 <label for="bl_others" class="col-sm-4 col-form-label">December</label>
                                                                 <div class="col-sm-8">
-                                                                    <input type="text" class="form-control" id="borewell_depth_dec" name="borewell_depth_dec">
+                                                                    <input type="text" class="form-control" id="borewell_depth_dec" name="borewell_depth_dec" value="0">
                                                                 </div>
                                                                 <div id="borewell_depth_decErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                                             </div>
@@ -526,7 +503,7 @@
                                                             <div class="row">
                                                                 <label for="bl_others" class="col-sm-4 col-form-label">January</label>
                                                                 <div class="col-sm-8">
-                                                                    <input type="text" class="form-control" id="borewell_depth_jan" name="borewell_depth_jan">
+                                                                    <input type="text" class="form-control" id="borewell_depth_jan" name="borewell_depth_jan" value="0">
                                                                 </div>
                                                                 <div id="borewell_depth_janErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                                             </div>
@@ -537,7 +514,7 @@
                                                             <div class="row">
                                                                 <label for="bl_others" class="col-sm-4 col-form-label">February</label>
                                                                 <div class="col-sm-8">
-                                                                    <input type="text" class="form-control" id="borewell_depth_feb" name="borewell_depth_feb">
+                                                                    <input type="text" class="form-control" id="borewell_depth_feb" name="borewell_depth_feb" value="0">
                                                                 </div>
                                                                 <div id="borewell_depth_febErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                                             </div>
@@ -602,7 +579,7 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <div class="card-widgets mb-3">
-                                                    <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#raw_materials_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#raw_materials_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                                 </div>
                                                 <div class="collapse pt-3 show">
                                                     <div id="raw_materials_div">
@@ -629,25 +606,31 @@
                                             <tr>
                                                 <td>pH</td>
                                                 <td>pH Scale</td>
-                                                <td><input type="text" name="water_source_ph" class="form-control col-lg-6" id="water_source_ph"></td>
+                                                <td><input type="text" name="water_source_ph" class="form-control col-lg-6" id="water_source_ph" value="N/A"></td>
                                             </tr>
                                             <tr>
                                                 <td>Turbidity</td>
                                                 <td>NTU</td>
-                                                <td><input type="text" name="water_source_turbidity" class="form-control col-lg-6" id="water_source_turbidity"></td>
+                                                <td><input type="text" name="water_source_turbidity" class="form-control col-lg-6" id="water_source_turbidity" value="N/A"></td>
                                             </tr>
                                             <tr>
                                                 <td>Conductivity</td>
                                                 <td>µS/cm</td>
-                                                <td><input type="text" name="water_source_conductivity" class="form-control col-lg-6" id="water_source_conductivity"></td>
+                                                <td><input type="text" name="water_source_conductivity" class="form-control col-lg-6" id="water_source_conductivity" value="N/A"></td>
                                             </tr>
                                             <tr>
                                                 <td>E.Coli</td>
                                                 <td>CFU/100ml sample</td>
-                                                <td><input type="text" name="water_source_ecoli" class="form-control col-lg-6" id="water_source_ecoli"></td>
+                                                <td><input type="text" name="water_source_ecoli" class="form-control col-lg-6" id="water_source_ecoli" value="N/A"></td>
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="ground_water_successMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="ground_water_errorMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
                                     <div class="row mt-4">
                                         <div class="text-sm-end">
                                             <a href="#" class="btn btn-success" onclick="save_ground_water_requirement()">
@@ -661,7 +644,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSix">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSixBtn"
-                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" disabled>
+                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
                                 Ancillary:Power Lines
                             </button>
                         </h2>
@@ -690,22 +673,20 @@
                                         </div>
                                     </div>
                                     <div class="row power_line_details" style="display: none;">
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Voltage level in kV</label>
                                                 <input type="text" name="anc_power_line_voltage" class="form-control" id="anc_power_line_voltage">
                                             </div>
                                             <div id="anc_power_line_voltageErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Length of transmission /distribution line in km</label>
                                                 <input type="text" name="anc_power_line_length" class="form-control" id="anc_power_line_length">
                                             </div>
                                             <div id="anc_power_line_lengthErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                    </div>
-                                    <div class="row power_line_details" style="display: none;">
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Starting point</label>
@@ -713,6 +694,8 @@
                                             </div>
                                             <div id="anc_power_line_start_pointErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
+                                    </div>
+                                    <div class="row power_line_details" style="display: none;">
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Termination point</label>
@@ -728,11 +711,11 @@
                                             <div id="anc_power_line_storing_methodErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="row power_line_details_table" style="display: none;">
+                                    <div class="row power_line_details" style="display: none;">
                                         <div class="col-lg-12">
                                             <div class="card mt-1">
                                                 <div class="card-body">
-                                                    <div class="card-widgets">
+                                                    <div class="card-widgets mb-3">
                                                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#anc_power_line_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                                     </div>
                                                     <h5 class="card-title mb-2"></h5>
@@ -764,7 +747,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingAnalysis">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseAnalysis" aria-expanded="false" aria-controls="collapseAnalysis">
+                                data-bs-target="#collapseAnalysis" aria-expanded="false" aria-controls="collapseAnalysis" id="headingAnalysisBtn" disabled>
                                 Analysis of Alternatives
                             </button>
                         </h2>
@@ -836,7 +819,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Provide an allocated budget for the management plan proposed</label>
-                                                <input type="text" name="en_impact_allocated_budget" class="form-control" id="en_impact_allocated_budget">
+                                                <input type="number" name="en_impact_allocated_budget" class="form-control" id="en_impact_allocated_budget">
                                             </div>
                                             <div id="en_impact_allocated_budgetErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -859,38 +842,38 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Hazardous Waste</td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_list" id="en_impact_hazardous_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_source" id="en_impact_hazardous_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_qty_annum" id="en_impact_hazardous_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_hazardous_waste_mgt_plan" id="en_impact_hazardous_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_list" id="en_impact_hazardous_waste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_source" id="en_impact_hazardous_waste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_qty_annum" id="en_impact_hazardous_waste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_hazardous_waste_mgt_plan" id="en_impact_hazardous_waste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Non-Hazardous Waste</td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_list" id="en_impact_non_hazardous_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_source" id="en_impact_non_hazardous_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_qty_annum" id="en_impact_non_hazardous_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_non_hazardous_waste_mgt_plan" id="en_impact_non_hazardous_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_list" id="en_impact_non_hazardous_waste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_source" id="en_impact_non_hazardous_waste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_qty_annum" id="en_impact_non_hazardous_waste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_non_hazardous_waste_mgt_plan" id="en_impact_non_hazardous_waste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Medical</td>
-                                                    <td><input type="text" name="en_impact_medical_waste_list" id="en_impact_medical_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_source" id="en_impact_medical_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_qty_annum" id="en_impact_medical_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_medical_waste_mgt_plan" id="en_impact_medical_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_list" id="en_impact_medical_waste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_source" id="en_impact_medical_waste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_qty_annum" id="en_impact_medical_waste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_medical_waste_mgt_plan" id="en_impact_medical_waste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>E-waste</td>
-                                                    <td><input type="text" name="en_impact_ewaste_list" id="en_impact_ewaste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_ewaste_source" id="en_impact_ewaste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_ewaste_qty_annum" id="en_impact_ewaste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_ewaste_mgt_plan" id="en_impact_ewaste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_ewaste_list" id="en_impact_ewaste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_ewaste_source" id="en_impact_ewaste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_ewaste_qty_annum" id="en_impact_ewaste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_ewaste_mgt_plan" id="en_impact_ewaste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Others</td>
-                                                    <td><input type="text" name="en_impact_others_waste_list" id="en_impact_others_waste_list" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_others_waste_source" id="en_impact_others_waste_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_others_waste_qty_annum" id="en_impact_others_waste_qty_annum" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_impact_others_waste_mgt_plan" id="en_impact_others_waste_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_impact_others_waste_list" id="en_impact_others_waste_list" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_others_waste_source" id="en_impact_others_waste_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_impact_others_waste_qty_annum" id="en_impact_others_waste_qty_annum" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_impact_others_waste_mgt_plan" id="en_impact_others_waste_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -943,23 +926,23 @@
                                                 <tr>
                                                     <td>Industrial Area</td>
                                                     <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_ind_area_day" id="en_noise_ind_area_day" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_ind_area_night" id="en_noise_ind_area_night" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_ind_area_mgt_plan" id="en_noise_ind_area_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_noise_ind_area_day" id="en_noise_ind_area_day" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_ind_area_night" id="en_noise_ind_area_night" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_ind_area_mgt_plan" id="en_noise_ind_area_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Mixed Area</td>
                                                     <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_mixed_area_day" id="en_noise_mixed_area_day" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_mixed_area_night" id="en_noise_mixed_area_night" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_mixed_area_mgt_plan" id="en_noise_mixed_area_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_noise_mixed_area_day" id="en_noise_mixed_area_day" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_mixed_area_night" id="en_noise_mixed_area_night" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_mixed_area_mgt_plan" id="en_noise_mixed_area_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Sensitive Area</td>
                                                     <td>dB(A)</td>
-                                                    <td><input type="text" name="en_noise_sen_area_day" id="en_noise_sen_area_day" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_sen_area_night" id="en_noise_sen_area_night" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_noise_sen_area_mgt_plan" id="en_noise_sen_area_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_noise_sen_area_day" id="en_noise_sen_area_day" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_sen_area_night" id="en_noise_sen_area_night" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_noise_sen_area_mgt_plan" id="en_noise_sen_area_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1010,87 +993,78 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Odour</td>
-                                                    <td><input type="text" name="en_other_impact_odour_source" id="en_other_impact_odour_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_odour_qty" id="en_other_impact_odour_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_odour_mgt_plan" id="en_other_impact_odour_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_odour_source" id="en_other_impact_odour_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_odour_qty" id="en_other_impact_odour_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_odour_mgt_plan" id="en_other_impact_odour_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Fugitive emission</td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_source" id="en_other_impact_fugutive_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_qty" id="en_other_impact_fugutive_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_fugutive_mgt_plan" id="en_other_impact_fugutive_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_fugutive_source" id="en_other_impact_fugutive_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_fugutive_qty" id="en_other_impact_fugutive_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_fugutive_mgt_plan" id="en_other_impact_fugutive_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Slope instability</td>
-                                                    <td><input type="text" name="en_other_impact_slope_source" id="en_other_impact_slope_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_slope_qty" id="en_other_impact_slope_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_slope_mgt_plan" id="en_other_impact_slope_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_slope_source" id="en_other_impact_slope_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_slope_qty" id="en_other_impact_slope_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_slope_mgt_plan" id="en_other_impact_slope_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Aesthetic</td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_source" id="en_other_impact_aesthetic_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_qty" id="en_other_impact_aesthetic_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_aesthetic_mgt_plan" id="en_other_impact_aesthetic_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_aesthetic_source" id="en_other_impact_aesthetic_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_aesthetic_qty" id="en_other_impact_aesthetic_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_aesthetic_mgt_plan" id="en_other_impact_aesthetic_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Excavated mucks</td>
-                                                    <td><input type="text" name="en_other_impact_mucks_source" id="en_other_impact_mucks_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_mucks_qty" id="en_other_impact_mucks_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_mucks_mgt_plan" id="en_other_impact_mucks_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_mucks_source" id="en_other_impact_mucks_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_mucks_qty" id="en_other_impact_mucks_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_mucks_mgt_plan" id="en_other_impact_mucks_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Sewerage generation</td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_source" id="en_other_impact_sewerage_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_qty" id="en_other_impact_sewerage_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_sewerage_mgt_plan" id="en_other_impact_sewerage_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_sewerage_source" id="en_other_impact_sewerage_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_sewerage_qty" id="en_other_impact_sewerage_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_sewerage_mgt_plan" id="en_other_impact_sewerage_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Surface Run-off/Erosion</td>
-                                                    <td><input type="text" name="en_other_impact_erosion_source" id="en_other_impact_erosion_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_erosion_qty" id="en_other_impact_erosion_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_erosion_mgt_plan" id="en_other_impact_erosion_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_erosion_source" id="en_other_impact_erosion_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_erosion_qty" id="en_other_impact_erosion_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_erosion_mgt_plan" id="en_other_impact_erosion_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Storm water</td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_source" id="en_other_impact_storm_water_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_qty" id="en_other_impact_storm_water_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_storm_water_mgt_plan" id="en_other_impact_storm_water_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_storm_water_source" id="en_other_impact_storm_water_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_storm_water_qty" id="en_other_impact_storm_water_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_storm_water_mgt_plan" id="en_other_impact_storm_water_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Loss of habitat</td>
-                                                    <td><input type="text" name="en_other_impact_habitat_source" id="en_other_impact_habitat_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_habitat_qty" id="en_other_impact_habitat_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_habitat_mgt_plan" id="en_other_impact_habitat_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_habitat_source" id="en_other_impact_habitat_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_habitat_qty" id="en_other_impact_habitat_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_habitat_mgt_plan" id="en_other_impact_habitat_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Socio-economic issues</td>
-                                                    <td><input type="text" name="en_other_impact_socio_source" id="en_other_impact_socio_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_socio_qty" id="en_other_impact_socio_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_socio_mgt_plan" id="en_other_impact_socio_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_socio_source" id="en_other_impact_socio_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_socio_qty" id="en_other_impact_socio_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_socio_mgt_plan" id="en_other_impact_socio_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Impact on water resources</td>
-                                                    <td><input type="text" name="en_other_impact_water_source_source" id="en_other_impact_water_source_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_water_source_qty" id="en_other_impact_water_source_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_water_source_mgt_plan" id="en_other_impact_water_source_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_water_source_source" id="en_other_impact_water_source_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_water_source_qty" id="en_other_impact_water_source_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_water_source_mgt_plan" id="en_other_impact_water_source_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Other environmental impacts</td>
-                                                    <td><input type="text" name="en_other_impact_other_source" id="en_other_impact_other_source" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_other_qty" id="en_other_impact_other_qty" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="en_other_impact_other_mgt_plan" id="en_other_impact_other_mgt_plan" class="form-control col-lg-6"></td>
+                                                    <td><input type="text" name="en_other_impact_other_source" id="en_other_impact_other_source" class="form-control col-lg-6" value="N/A"></td>
+                                                    <td><input type="text" name="en_other_impact_other_qty" id="en_other_impact_other_qty" class="form-control col-lg-6" value="0"></td>
+                                                    <td><input type="text" name="en_other_impact_other_mgt_plan" id="en_other_impact_other_mgt_plan" class="form-control col-lg-6" value="N/A"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Describe measures to undertake progressive restoration and final restoration of the peooject disturbed area</label>
-                                                <textarea class="form-control" rows="3" name="restoration_plan" id="restoration_plan"></textarea>
-                                            </div>
-                                            <div class="alert alert-danger" id="partner_type_addressErrorMsg" style="display:none"></div>
-                                        </div>
                                     </div>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="other_impact_successMsg" style="display:none">
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
@@ -1397,249 +1371,249 @@
 </form>
 
 <form method="post" id="anc_power_line_form">
-{% csrf_token %}
-<div class="modal fade" id="anc_power_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Add Power Line Details</strong></h3>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Transmission line Chainage From</label>
-                    <input type="text" name="line_chainage_from" class="form-control" id="line_chainage_from" onblur="calculate_area_required()">
-                </div>
-                <div class="alert alert-danger" id="line_chainage_fromErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Transmission line Chainage To</label>
-                    <input type="text" name="line_chainage_to" class="form-control" id="line_chainage_to" onblur="calculate_area_required()">
-                </div>
-                <div class="alert alert-danger" id="line_chainage_toErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Land Type</label>
-                    <select name="land_type" class="form-control" id="land_type">
-                        <option value="">--SELECT--</option>
-                        <option value="State Reserve Forest">State Reserve Forest</option>
-                        <option value="Private ">Private </option>
-                        <option value="Protected Area">Protected Area</option>
-                        <option value="Biological Corridor">Biological Corridor</option>
-                        <option value="Institutional Area">Institutional Area</option>
-                        <option value="Others">Others</option>
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="land_typeErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
-                    <select name="terrain" class="form-control" id="terrain">
-                        <option value="">--SELECT--</option>
-                        <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
-                        <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
-                        <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
-                        <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="terrainErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Type of Tower</label>
-                    <input type="text" name="tower_type" class="form-control" id="tower_type">
-                </div>
-                <div class="alert alert-danger" id="tower_typeErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">No. of Towers</label>
-                    <input type="text" name="no_of_tower" class="form-control" id="no_of_tower">
-                </div>
-                <div class="alert alert-danger" id="no_of_towerErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Right of way (RoW)</label>
-                    <input type="text" name="row" class="form-control" id="row" onblur="calculate_area_required()">
-                </div>
-                <div class="alert alert-danger" id="rowErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Area Required (length x RoW)</label>
-                    <input type="text" name="area_required" class="form-control" id="area_required" readonly="readonly">
-                </div>
-                <div class="alert alert-danger" id="area_requiredErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-      </div>
-      <div class="alert alert-success" id="power_line_successMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="save_power_line_details()">Add</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-    <!--/.Content-->
-  </div>
-</div>
-</form>
-
-<form method="post" id="edit_anc_power_line_form">
-{% csrf_token %}
-<div class="modal fade" id="edit_anc_power_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Edit Power Line Details</strong></h3>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-          <input type="hidden" name="edit_anc_record_id" class="form-control" id="edit_anc_record_id">
-          <input type="hidden" name="edit_anc_application_no" class="form-control" id="edit_anc_application_no">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Transmission line Chainage From</label>
-                    <input type="text" name="edit_line_chainage_from" class="form-control" id="edit_line_chainage_from" onblur="calculate_edit_area_required()">
-                </div>
-                <div class="alert alert-danger" id="edit_line_chainage_fromErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Transmission line Chainage To</label>
-                    <input type="text" name="edit_line_chainage_to" class="form-control" id="edit_line_chainage_to" onblur="calculate_edit_area_required()">
-                </div>
-                <div class="alert alert-danger" id="edit_line_chainage_toErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Land Type</label>
-                    <select name="edit_land_type" class="form-control" id="edit_land_type">
-                        <option value="">--SELECT--</option>
-                        <option value="State Reserve Forest">State Reserve Forest</option>
-                        <option value="Private ">Private </option>
-                        <option value="Protected Area">Protected Area</option>
-                        <option value="Biological Corridor">Biological Corridor</option>
-                        <option value="Institutional Area">Institutional Area</option>
-                        <option value="Others">Others</option>
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="edit_land_typeErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
-                    <select name="edit_terrain" class="form-control" id="edit_terrain">
-                        <option value="">--SELECT--</option>
-                        <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
-                        <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
-                        <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
-                        <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="edit_terrainErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Type of Tower</label>
-                    <input type="text" name="edit_tower_type" class="form-control" id="edit_tower_type">
-                </div>
-                <div class="alert alert-danger" id="edit_tower_typeErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">No. of Towers</label>
-                    <input type="text" name="edit_no_of_tower" class="form-control" id="edit_no_of_tower">
-                </div>
-                <div class="alert alert-danger" id="edit_no_of_towerErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Right of way (RoW)</label>
-                    <input type="text" name="edit_row" class="form-control" id="edit_row" onblur="calculate_edit_area_required()">
-                </div>
-                <div class="alert alert-danger" id="edit_rowErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Area Required (length x RoW)</label>
-                    <input type="text" name="edit_area_required" class="form-control" id="edit_area_required" readonly="readonly">
-                </div>
-                <div class="alert alert-danger" id="edit_area_requiredErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-      </div>
-        <div class="alert alert-success" id="edit_power_line_successMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="update_power_line_details()">Update</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-    <!--/.Content-->
-  </div>
-</div>
-</form>
-
-<form method="post" id="delete_anc_power_line_form">
-{% csrf_token %}
-<div class="modal fade" id="delete_anc_power_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Edit Power Line Details</strong></h3>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-          <input type="hidden" name="delete_anc_record_id" class="form-control" id="delete_anc_record_id">
-          <input type="hidden" name="delete_anc_application_no" class="form-control" id="delete_anc_application_no">
+    {% csrf_token %}
+    <div class="modal fade" id="anc_power_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Add Power Line Details</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
             <div class="row">
-                <div class="col-lg-12">
-                    <p>Are You Sure You Want To Delete ? </p>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Transmission line Chainage From</label>
+                        <input type="number" name="line_chainage_from" class="form-control" id="line_chainage_from" onblur="calculate_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="line_chainage_fromErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Transmission line Chainage To</label>
+                        <input type="number" name="line_chainage_to" class="form-control" id="line_chainage_to" onblur="calculate_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="line_chainage_toErrorMsg" style="display:none"></div>
                 </div>
             </div>
-      </div>
-        <div class="alert alert-success" id="delete_power_line_successMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="delete_power_line_details()">Delete</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Land Type</label>
+                        <select name="land_type" class="form-control" id="land_type">
+                            <option value="">--SELECT--</option>
+                            <option value="State Reserve Forest">State Reserve Forest</option>
+                            <option value="Private ">Private </option>
+                            <option value="Protected Area">Protected Area</option>
+                            <option value="Biological Corridor">Biological Corridor</option>
+                            <option value="Institutional Area">Institutional Area</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="land_typeErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
+                        <select name="terrain" class="form-control" id="terrain">
+                            <option value="">--SELECT--</option>
+                            <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
+                            <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
+                            <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
+                            <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="terrainErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Type of Tower</label>
+                        <input type="text" name="tower_type" class="form-control" id="tower_type">
+                    </div>
+                    <div class="alert alert-danger" id="tower_typeErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">No. of Towers</label>
+                        <input type="text" name="no_of_tower" class="form-control" id="no_of_tower">
+                    </div>
+                    <div class="alert alert-danger" id="no_of_towerErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Right of way (RoW)</label>
+                        <input type="text" name="row" class="form-control" id="row" onblur="calculate_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="rowErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Area Required (length x RoW)</label>
+                        <input type="text" name="area_required" class="form-control" id="area_required" readonly="readonly">
+                    </div>
+                    <div class="alert alert-danger" id="area_requiredErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+          <div class="alert alert-success" id="power_line_successMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="save_power_line_details()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
       </div>
     </div>
-    <!--/.Content-->
-  </div>
-</div>
+    </form>
+    
+    <form method="post" id="edit_anc_power_line_form">
+    {% csrf_token %}
+    <div class="modal fade" id="edit_anc_power_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Edit Power Line Details</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+              <input type="hidden" name="edit_anc_record_id" class="form-control" id="edit_anc_record_id">
+              <input type="hidden" name="edit_anc_application_no" class="form-control" id="edit_anc_application_no">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Transmission line Chainage From</label>
+                        <input type="number" name="edit_line_chainage_from" class="form-control" id="edit_line_chainage_from" onblur="calculate_edit_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="edit_line_chainage_fromErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Transmission line Chainage To</label>
+                        <input type="number" name="edit_line_chainage_to" class="form-control" id="edit_line_chainage_to" onblur="calculate_edit_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="edit_line_chainage_toErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Land Type</label>
+                        <select name="edit_land_type" class="form-control" id="edit_land_type">
+                            <option value="">--SELECT--</option>
+                            <option value="State Reserve Forest">State Reserve Forest</option>
+                            <option value="Private ">Private </option>
+                            <option value="Protected Area">Protected Area</option>
+                            <option value="Biological Corridor">Biological Corridor</option>
+                            <option value="Institutional Area">Institutional Area</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="edit_land_typeErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
+                        <select name="edit_terrain" class="form-control" id="edit_terrain">
+                            <option value="">--SELECT--</option>
+                            <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
+                            <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
+                            <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
+                            <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="edit_terrainErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Type of Tower</label>
+                        <input type="text" name="edit_tower_type" class="form-control" id="edit_tower_type">
+                    </div>
+                    <div class="alert alert-danger" id="edit_tower_typeErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">No. of Towers</label>
+                        <input type="text" name="edit_no_of_tower" class="form-control" id="edit_no_of_tower">
+                    </div>
+                    <div class="alert alert-danger" id="edit_no_of_towerErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Right of way (RoW)</label>
+                        <input type="text" name="edit_row" class="form-control" id="edit_row" onblur="calculate_edit_area_required()">
+                    </div>
+                    <div class="alert alert-danger" id="edit_rowErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Area Required (length x RoW)</label>
+                        <input type="text" name="edit_area_required" class="form-control" id="edit_area_required" readonly="readonly">
+                    </div>
+                    <div class="alert alert-danger" id="edit_area_requiredErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+            <div class="alert alert-success" id="edit_power_line_successMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="update_power_line_details()">Update</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+    </form>
+    
+    <form method="post" id="delete_anc_power_line_form">
+    {% csrf_token %}
+    <div class="modal fade" id="delete_anc_power_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-sm" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Delete Power Line Details</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+              <input type="hidden" name="delete_anc_record_id" class="form-control" id="delete_anc_record_id">
+              <input type="hidden" name="delete_anc_application_no" class="form-control" id="delete_anc_application_no">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>Are You Sure You Want To Delete ? </p>
+                    </div>
+                </div>
+          </div>
+            <div class="alert alert-success" id="delete_power_line_successMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="delete_power_line_details()">Delete</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
 </form>
 
 <form method="post" id="ground_water_attachment_form" enctype="multipart/form-data">
@@ -1936,7 +1910,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Quantity (MT/annum)</label>
-                    <input type="text" name="raw_material_qty" class="form-control" id="raw_material_qty">
+                    <input type="number" name="raw_material_qty" class="form-control" id="raw_material_qty">
                 </div>
                 <div class="alert alert-danger" id="raw_material_qtyErrorMsg" style="display:none"></div>
             </div>
@@ -1954,9 +1928,9 @@
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="raw_material_storage_method" id="raw_material_storage_method">
                         <option selected>Choose One</option>
-                        <option value="fully_enclosed">Fully Enclosed</option>
-                        <option value="partially_enclosed">Partially Enclosed</option>
-                        <option value="open">Open</option>
+                        <option value="Fully_Enclosed">Fully Enclosed</option>
+                        <option value="Partially_Enclosed">Partially Enclosed</option>
+                        <option value="Open">Open</option>
                     </select>
                 </div>
                 <div class="alert alert-danger" id="raw_material_storage_methodErrorMsg" style="display:none"></div>
@@ -2002,7 +1976,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Quantity (MT/annum)</label>
-                    <input type="text" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
+                    <input type="number" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
                 </div>
                 <div class="alert alert-danger" id="edit_raw_material_qtyErrorMsg" style="display:none"></div>
             </div>
@@ -2020,9 +1994,9 @@
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="edit_raw_material_storage_method" id="edit_raw_material_storage_method">
                         <option selected>Choose One</option>
-                        <option value="fully_enclosed">Fully Enclosed</option>
-                        <option value="partially_enclosed">Partially Enclosed</option>
-                        <option value="open">Open</option>
+                        <option value="Fully_Enclosed">Fully Enclosed</option>
+                        <option value="Partially_Enclosed">Partially Enclosed</option>
+                        <option value="Open">Open</option>
                     </select>
                 </div>
                 <div class="alert alert-danger" id="edit_raw_material_storage_methodErrorMsg" style="display:none"></div>
@@ -2054,8 +2028,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
       <div class="modal-body mx-4">
-        <input type="text" name="delete_raw_material_record_id" class="form-control" id="delete_raw_material_record_id">
-        <input type="text" name="delete_raw_material_app_no" class="form-control" id="delete_raw_material_app_no">
+        <input type="hidden" name="delete_raw_material_record_id" class="form-control" id="delete_raw_material_record_id">
+        <input type="hidden" name="delete_raw_material_app_no" class="form-control" id="delete_raw_material_app_no">
           <div class="row">
             <div class="col-lg-12">
                 <p>Are You Sure You Want To Delete ? </p>
@@ -2278,13 +2252,16 @@
 
     function check_power_line(value)
     {
-        if(value == "Yes")
+        if(value == 'Yes')
         {
             $('.power_line_details').show();
+            $('.power_line_details_table').hide();
         }
         else
         {
             $('.power_line_details').hide();
+            $('.power_line_details_table').show();
+
         }
     }
 
@@ -2354,7 +2331,7 @@
             ({
                 type : "POST",
                 url : "{% url 'save_anc_power_line_details' %}",
-                data : {'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                data : {'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#power_line_successMsg').html("Power Line Details Added Successfully");
@@ -2362,6 +2339,9 @@
                     $('#power_line_successMsg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#anc_power_line_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_power_line_details').html(responseText);
                     }, 2000);
                     setTimeout(function() {
                         $('#anc_power_line_form')[0].reset();
@@ -2389,20 +2369,20 @@
     function populate_delete_power_line(record_id, application_no)
     {
         $('#delete_anc_record_id').val(record_id);
-        $('#delete_anc_record_id').val(application_no);
+        $('#delete_anc_application_no').val(application_no);
         $('#delete_anc_power_line_modal').modal('show');
     }
 
     function delete_power_line_details()
     {
         record_id =$('#delete_anc_record_id').val();
-        application_no =$('#delete_anc_record_id').val();
+        application_no =$('#delete_anc_application_no').val();
 
         $.ajax
         ({
             type : "POST",
             url : "{% url 'delete_anc_power_line_details' %}",
-            data : {'record_id':record_id,'application_no':application_no},
+            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
@@ -2410,6 +2390,9 @@
                 $('#delete_power_line_successMsg').delay(2000).fadeOut('slow');
                 setTimeout(function() {
                     $('#delete_anc_power_line_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#anc_power_line_details').html(responseText);
                 }, 2000);
             }
         });
@@ -2482,7 +2465,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_anc_power_line_details' %}",
-                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_power_line_successMsg').html("Power Line Details Updated Successfully");
@@ -2490,6 +2473,9 @@
                     $('#edit_power_line_successMsg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#edit_anc_power_line_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_power_line_details').html(responseText);
                     }, 2000);
                 }
             });
@@ -2847,7 +2833,7 @@
             ({
                 type : "POST",
                 url : "{% url 'add_raw_materials' %}",
-                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method},
+                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#raw_material_SuccessMsg').html("Add Successful");
@@ -2922,10 +2908,10 @@
             ({
                 type : "POST",
                 url : "{% url 'update_raw_materials' %}",
-                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method},
+                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
-                    $('#edit_raw_material_SuccessMsg').html("Add Successful");
+                    $('#edit_raw_material_SuccessMsg').html("Update Successful");
                     $('#edit_raw_material_SuccessMsg').show();
                     setTimeout(function()
                     {
@@ -2958,10 +2944,10 @@
         ({
             type : "POST",
             url : "{% url 'delete_raw_materials' %}",
-            data : {'record_id':record_id, 'application_no':application_no},
+            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
-                $('#delete_raw_material_SuccessMsg').html("Add Successful");
+                $('#delete_raw_material_SuccessMsg').html("Delete Successful");
                 $('#delete_raw_material_SuccessMsg').show();
                 setTimeout(function()
                 {
@@ -2980,16 +2966,11 @@
     function save_ground_water_application()
     {
         let project_name = $('#project_name').val();
-        let application_type = $('#application_type').val();
-        let cid = $('#cid').val();
-        let cid_length = $('#cid').val().length;
-        let applicant_name = $('#applicant_name').val();
-        let address = $('#address').val();
         let contact_no = $('#contact_no').val();
-        let contact_no_length = $('#contact_no').val().length;
-        let email = $('#email').val();
-        let focal_person = $('#focal_person').val();
-        let dzongkhag_code = $('#dzo_throm').val();
+        let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
+        let dzongkhag_throm_val = $("input[name=dzongkhag_throm]:checked").val();
+        let thromde_id = $('#thromde_id').val();
+        let dzongkhag_code = $('#dzongkhag').val();
         let gewog_code = $('#gewog').val();
         let village_code = $('#vil_chiwog').val();
         let location_name = $('#location_name').val();
@@ -3009,77 +2990,35 @@
             $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
             $('#project_name').focus();
         }
-        else if(application_type == "")
+        else if(dzongkhag_throm == "")
         {
-            $('#application_typeErrorMsg').html("Enter Application Type");
-            $('#application_typeErrorMsg').show();
-            $('#application_typeErrorMsg').delay(2000).fadeOut('slow');
-            $('#application_type').focus();
+            $('#dzongkhag_thromErrorMsg').html("Choose One");
+            $('#dzongkhag_thromErrorMsg').show();
+            $('#dzongkhag_thromErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag_throm').focus();
         }
-        else if(cid == "")
+        else if(dzongkhag_throm_val == "Thromde" && thromde_id == "")
         {
-            $('#cidErrorMsg').html("Enter CID");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
+            $('#thromde_idErrorMsg').html("Select Dzongkhag");
+            $('#thromde_idErrorMsg').show();
+            $('#thromde_idErrorMsg').delay(2000).fadeOut('slow');
+            $('#thromde_id').focus();
         }
-        else if(cid_length < 11)
+        else if(dzongkhag_throm_val == "Dzongkhag" && dzongkhag_code == "")
         {
-            $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
+            $('#dzongkhagErrorMsg').html("Select Dzongkhag");
+            $('#dzongkhagErrorMsg').show();
+            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag').focus();
         }
-        else if(applicant_name == "")
-        {
-            $('#applicant_nameErrorMsg').html("Enter Name of The Applicant");
-            $('#applicant_nameErrorMsg').show();
-            $('#applicant_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#applicant_name').focus();
-        }
-        else if(address == "")
-        {
-            $('#addressErrorMsg').html("Enter Address");
-            $('#addressErrorMsg').show();
-            $('#addressErrorMsg').delay(2000).fadeOut('slow');
-            $('#address').focus();
-        }
-        else if(contact_no == "")
-        {
-            $('#contact_noErrorMsg').html("Enter Contact No");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
-        }
-        else if(contact_no_length < 8)
-        {
-            $('#contact_noErrorMsg').html("Cannot Be Less Than Eight Digits");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
-        }
-        else if(email == "")
-        {
-            $('#emailErrorMsg').html("Enter Email");
-            $('#emailErrorMsg').show();
-            $('#emailErrorMsg').delay(2000).fadeOut('slow');
-            $('#email').focus();
-        }
-        else if(dzongkhag_code == "")
-        {
-            $('#dzo_thromErrorMsg').html("Select Dzongkhag");
-            $('#dzo_thromErrorMsg').show();
-            $('#dzo_thromErrorMsg').delay(2000).fadeOut('slow');
-            $('#dzo_throm').focus();
-        }
-        else if(gewog_code == "")
+        else if(dzongkhag_throm_val == "Dzongkhag" && gewog_code == "")
         {
             $('#gewogErrorMsg').html("Select Gewog");
             $('#gewogErrorMsg').show();
             $('#gewogErrorMsg').delay(2000).fadeOut('slow');
             $('#gewog').focus();
         }
-        else if(village_code == "")
+        else if(dzongkhag_throm_val == "Dzongkhag" && village_code == "")
         {
             $('#vil_chiwogErrorMsg').html("Select Village");
             $('#vil_chiwogErrorMsg').show();
@@ -3682,7 +3621,7 @@
                         setTimeout(function() {
                             $("#headingSixBtn").removeAttr("disabled");
                             $("#collapseSix").addClass("show");
-                            $("#collapseForest").removeClass("show");
+                            $("#collapseFour").removeClass("show");
                         }, 2000);
                     }
                     else
@@ -3770,8 +3709,8 @@
                             $('#anc_power_line_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                         setTimeout(function() {
-                            $("#headingSevenBtn").removeAttr("disabled");
-                            $("#collapseSeven").addClass("show");
+                            $("#headingAnalysisBtn").removeAttr("disabled");
+                            $("#collapseAnalysis").addClass("show");
                             $("#collapseSix").removeClass("show");
                         }, 2000);
                     }
@@ -3795,7 +3734,8 @@
         let alternative_capital_expenditure = $('#alternative_capital_expenditure').val();
         let alternative_adequate_justification = $('#alternative_adequate_justification').val();
 
-        if(anc_power_line_required == "")
+        
+        if(alternative_surface_water == "")
         {
             $('#alternative_surface_waterErrorMsg').html("Cannot Be Empty");
             $('#alternative_surface_waterErrorMsg').show();
@@ -3818,7 +3758,38 @@
         }
         else
         {
-
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_alternative_analysis' %}",
+                data : $('#alternative_analysis_form').serialize(),
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $('#alternative_analysis_successMsg').html("Saved Successfully");
+                        $('#alternative_analysis_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#alternative_analysis_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            $("#headingEightBtn").removeAttr("disabled");
+                            $("#collapseEight").addClass("show");
+                            $("#collapseAnalysis").removeClass("show");
+                        }, 2000);
+                    }
+                    else
+                    {
+                        $('#alternative_analysis_errorMsg').html("Please Check And Submit Again");
+                        $('#alternative_analysis_errorMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#alternative_analysis_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
+                }
+            });
         }
     }
 

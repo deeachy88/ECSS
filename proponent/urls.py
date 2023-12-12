@@ -11,8 +11,8 @@ urlpatterns = [
     path('new_general_application', views.new_general_application, name='new_general_application'),
     path('new_ground_water_application', views.new_ground_water_application, name='new_ground_water_application'),
     path('new_energy_application', views.new_energy_application, name='new_energy_application'),
-    path('new_tourism_form', views.new_tourism_form, name='new_tourism_form'),
-     path('new_quarry_form', views.new_quarry_form, name='new_quarry_form'),
+    path('new_tourism_application', views.new_tourism_application, name='new_tourism_application'),
+     path('new_quarry_application', views.new_quarry_application, name='new_quarry_application'),
     path('new_application_form', views.new_application_form, name='new_application_form'),
 
 
@@ -122,10 +122,13 @@ urlpatterns = [
     path('save_ground_water_application', views.save_ground_water_application, name='save_ground_water_application'),
     path('save_ground_water_requirement', views.save_ground_water_requirement, name='save_ground_water_requirement'),
     path('submit_ground_water_application', views.submit_ground_water_application, name='submit_ground_water_application'),
+    path('save_alternative_analysis', views.save_alternative_analysis, name='save_alternative_analysis'),
 
     # Quarry Application Details
     path('save_quarry_application', views.save_quarry_application, name='save_quarry_application'),
     path('submit_quarry_application', views.submit_quarry_application, name='submit_quarry_application'),
+    path('save_quarry_attachment', views.save_quarry_attachment, name='save_quarry_attachment'),
+    path('save_quarry_attachment_details', views.save_quarry_attachment_details, name='save_quarry_attachment_details'),
 
     #Road Application Details
     path('save_road_application', views.save_road_application, name='save_road_application'),
@@ -151,6 +154,8 @@ urlpatterns = [
     path('save_tourism_application', views.save_tourism_application, name='save_tourism_application'),
     path('save_tourism_sewerage_details', views.save_tourism_sewerage_details, name='save_tourism_sewerage_details'),
     path('submit_tourism_application', views.submit_tourism_application, name='submit_tourism_application'),
+    path('save_tourism_attachment', views.save_tourism_attachment, name='save_tourism_attachment'),
+    path('save_tourism_attachment_details', views.save_tourism_attachment_details, name='save_tourism_attachment_details'),
 
     # Common 
     path('save_project_details', views.save_project_details, name='save_project_details'),
