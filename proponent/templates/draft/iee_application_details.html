@@ -92,9 +92,9 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Establishment Type</label>
-                                                <input type="text" name="establishment_type" class="form-control" id="establishment_type"  value="{{application_details.establishment_type}}">
+                                                <input type="text" name="establishment_name" class="form-control" id="establishment_name"  value="{{application_details.establishment_name}}">
                                             </div>
-                                            <div id="establishment_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="establishment_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -102,9 +102,19 @@
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Classification of Industry</label>
                                                 <select class="form-control" name="industry_classification" id="industry_classification">
-                                                    <option value="Small">Small</option>
-                                                    <option value="Cottage">Cottage</option>
-                                                    <option value="Large">Large</option>
+                                                    {% if application_details.industry_classification == "Small" %}
+                                                        <option value="Small" selected>Small</option>
+                                                        <option value="Cottage">Cottage</option>
+                                                        <option value="Large">Large</option>
+                                                    {% elif application_details.industry_classification == "Cottage" %}
+                                                        <option value="Small" selected>Small</option>
+                                                        <option value="Cottage">Cottage</option>
+                                                        <option value="Large">Large</option>
+                                                    {% else %}
+                                                        <option value="Small">Small</option>
+                                                        <option value="Cottage">Cottage</option>
+                                                        <option value="Large" selected>Large</option>
+                                                    {% endif %}
                                                 </select> 
                                             </div>
                                             <div id="industry_classificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -4891,7 +4901,7 @@
         let project_category = $('#project_category').val();
         let focal_person = $('#focal_person').val();
         let industry_type = $('#industry_type').val();
-        let establishment_type = $('#establishment_type').val();
+        let establishment_name = $('#establishment_name').val();
         let industry_classification = $('#industry_classification').val();
         let dzongkhag_code = $('#dzo_throm').val();
         let gewog_code = $('#gewog').val();
@@ -4930,12 +4940,12 @@
             $('#industry_typeErrorMsg').delay(2000).fadeOut('slow');
             $('#industry_type').focus();
         }
-        else if(establishment_type == "")
+        else if(establishment_name == "")
         {
-            $('#establishment_typeErrorMsg').html("Enter Establishment Type");
-            $('#establishment_typeErrorMsg').show();
-            $('#establishment_typeErrorMsg').delay(2000).fadeOut('slow');
-            $('#establishment_type').focus();
+            $('#establishment_nameErrorMsg').html("Enter Establishment Name");
+            $('#establishment_nameErrorMsg').show();
+            $('#establishment_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#establishment_name').focus();
         }
         else if(industry_classification == "")
         {

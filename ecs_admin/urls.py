@@ -2,6 +2,7 @@ from django.conf.urls.static import static
 from django.urls import path
 from . import views
 from ECS import settings
+from .views import logout_view
 
 
 urlpatterns = [
@@ -18,7 +19,7 @@ urlpatterns = [
     path('client_registration', views.client_registration, name='client_registration'),
     path('manage_user', views.manage_user, name='manage_user'),
     path('check_email_id', views.check_email_id, name='check_email_id'),
-    path('logout', views.logout, name='logout'),
+    path('logout/', logout_view, name='logout'),
     path('account_setting', views.account_setting, name='account_setting'),
 
     path('change_password', views.change_password, name='change_password'),

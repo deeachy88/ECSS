@@ -1,6 +1,11 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% if not request.session.name %}
+    <script>
+        window.location.replace("{% url 'index' %}");
+    </script>
+{% endif %}
 <div class="row">
     <div class="col-md-12">
         <div class="card mt-1">

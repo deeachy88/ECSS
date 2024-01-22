@@ -1,6 +1,11 @@
 {% extends 'common_dashboard.html' %}
 {% block content %}
 {% load static %}
+{% if not request.session.name %}
+    <script>
+        window.location.replace("{% url 'index' %}");
+    </script>
+{% endif %}
     <style>
         .ql-link{
             display: none !important;

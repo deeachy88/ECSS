@@ -22,7 +22,7 @@ class t_ec_industries_t1_general(models.Model):
     email = models.CharField(max_length=250,default=None, blank=True, null=True)
     focal_person = models.CharField(max_length=250,default=None, blank=True, null=True)
     industry_type = models.CharField(max_length=250,default=None, blank=True, null=True)
-    establishment_type = models.CharField(max_length=250,default=None, blank=True, null=True)
+    establishment_name = models.CharField(max_length=250,default=None, blank=True, null=True)
     industry_classification = models.CharField(max_length=250,default=None, blank=True, null=True)
     thromde_id = models.CharField(max_length=10,default=None, blank=True, null=True)
     dzongkhag_code  = models.IntegerField(default=None, blank=True, null=True)

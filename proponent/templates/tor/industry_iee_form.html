@@ -91,9 +91,9 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Establishment Type</label>
-                                                <input type="text" name="establishment_type" class="form-control" id="establishment_type">
+                                                <input type="text" name="establishment_name" class="form-control" id="establishment_name">
                                             </div>
-                                            <div id="establishment_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="establishment_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -3749,7 +3749,7 @@
         let project_category = $('#project_category').val();
         let focal_person = $('#focal_person').val();
         let industry_type = $('#industry_type').val();
-        let establishment_type = $('#establishment_type').val();
+        let establishment_name = $('#establishment_name').val();
         let industry_classification = $('#industry_classification').val();
         let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
         let dzongkhag_throm_val = $("input[name=dzongkhag_throm]:checked").val();
@@ -3791,12 +3791,12 @@
             $('#industry_typeErrorMsg').delay(2000).fadeOut('slow');
             $('#industry_type').focus();
         }
-        else if(establishment_type == "")
+        else if(establishment_name == "")
         {
-            $('#establishment_typeErrorMsg').html("Enter Establishment Type");
-            $('#establishment_typeErrorMsg').show();
-            $('#establishment_typeErrorMsg').delay(2000).fadeOut('slow');
-            $('#establishment_type').focus();
+            $('#establishment_nameErrorMsg').html("Enter Establishment Name");
+            $('#establishment_nameErrorMsg').show();
+            $('#establishment_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#establishment_name').focus();
         }
         else if(industry_classification == "")
         {

@@ -1,5 +1,7 @@
+import json
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
+import requests
 from ecs_admin.views import bsic_master
 from proponent.models import t_ec_industries_t10_hazardous_chemicals, t_ec_industries_t11_ec_details, t_ec_industries_t13_dumpyard, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_industries_t9_products_by_products, t_ec_renewal_t1, t_ec_renewal_t2, t_fines_penalties, t_payment_details, t_workflow_dtls, t_workflow_dtls_audit
 from ecs_admin.models import payment_details_master, t_bsic_code, t_dzongkhag_master, t_file_attachment, t_gewog_master, t_role_master, t_service_master, t_thromde_master, t_user_master, t_village_master
@@ -14,24 +16,35 @@ from django.db.models import Count, Subquery, OuterRef
 
 # Create your views here.
 def verify_application_list(request):
-    ca_authority = request.session['ca_authority']
+    v_application_count = 0
+    ec_renewal_count = 0
+    ca_authority = request.session.get('ca_authority', None)
     application_list = t_workflow_dtls.objects.filter(application_status='P', assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='DEC',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='AL',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)  | t_workflow_dtls.objects.filter(application_status='FT',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)
     service_details = t_service_master.objects.all()
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
-    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority'],action_date__isnull=False).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
     pay_details = payment_details_master.objects.exclude(payment_type="TOR")
-    ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority,
+    if ca_authority is not None:
+        v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority'],action_date__isnull=False).count()
+        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+        ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority,
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
-    return render(request, 'application_list.html',{'application_details':application_list,'v_application_count':v_application_count, 'service_details':service_details, 'payment_details':payment_details,'ec_renewal_count':ec_renewal_count,'pay_details':pay_details})
+    response = render(request, 'application_list.html',{'application_details':application_list,'v_application_count':v_application_count, 'service_details':service_details, 'payment_details':payment_details,'ec_renewal_count':ec_renewal_count,'pay_details':pay_details})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
+    
 
 def client_application_list(request):
-    login_id = request.session['login_id']
+    login_id = request.session.get('login_id', None)
+    applicant_id = request.session.get('email', None)
     application_list = t_workflow_dtls.objects.filter(application_status='ALR', action_date__isnull=False,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='ALA', action_date__isnull=False,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='EATC', action_date__isnull=False,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='RS', action_date__isnull=False,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='LU', action_date__isnull=False,assigned_user_id=login_id)
     service_details = t_service_master.objects.all()
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
-    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+    app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=login_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
@@ -43,16 +56,35 @@ def client_application_list(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-    return render(request, 'application_list.html',{'application_details':application_list,'cl_application_count':cl_application_count,'app_hist_count':app_hist_count, 'service_details':service_details, 'payment_details':payment_details,'tor_application_count':tor_application_count})
+    response = render(request, 'application_list.html',{'application_details':application_list,'cl_application_count':cl_application_count,'app_hist_count':app_hist_count, 'service_details':service_details, 'payment_details':payment_details,'tor_application_count':tor_application_count})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def reviewer_application_list(request):
-    ca_authority = request.session['ca_authority']
-    login_id = request.session['login_id']
-    application_list = t_workflow_dtls.objects.filter(application_status='R',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='ALS',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='FEATC',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='RSS',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='LUS',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='APP',assigned_role_id='3', action_date__isnull=False,ca_authority=ca_authority)
+    r_application_count = 0
+    ca_authority = request.session.get('ca_authority', None)
+    login_id = request.session.get('login_id', None)
     service_details = t_service_master.objects.all()
     payment_details = t_payment_details.objects.all().exclude(application_type='AP')
-    r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    return render(request, 'application_list.html', {'application_details':application_list,'r_application_count':r_application_count, 'service_details':service_details, 'payment_details':payment_details})
+    
+    application_list = []  # Initialize application_list outside the if block
+    
+    if ca_authority is not None:
+        application_list = t_workflow_dtls.objects.filter(application_status='R', assigned_role_id='3', action_date__isnull=False, ca_authority=ca_authority, assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='ALS', assigned_role_id='3', action_date__isnull=False, ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='FEATC', assigned_role_id='3', action_date__isnull=False, ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='RSS', assigned_role_id='3', action_date__isnull=False, ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='LUS', assigned_role_id='3', action_date__isnull=False, ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='APP', assigned_role_id='3', action_date__isnull=False, ca_authority=ca_authority)
+        r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
+    
+    response = render(request, 'application_list.html', {'application_details': application_list, 'r_application_count': r_application_count, 'service_details': service_details, 'payment_details': payment_details})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
+
 
 # def payment_list(request):
 #     login_id = request.session['login_id']
@@ -61,15 +93,15 @@ def reviewer_application_list(request):
 #     return render(request, 'payment_list.html', {'payment_details': payment_details,'service_details':service_details})
 
 def payment_list(request):
-    login_id = request.session['email']
-    print(login_id)
+    applicant_id = request.session.get('email', None)
+    assigned_user_id = request.session.get('login_id', None)
     payment_details = t_payment_details.objects.filter(
         transaction_no__isnull=True,
-        application_no__in=t_ec_industries_t1_general.objects.filter(applicant_id=login_id).values('application_no')
+        application_no__in=t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id).values('application_no')
     )
     service_details = t_service_master.objects.all()
-    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+    app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
@@ -80,8 +112,15 @@ def payment_list(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-    return render(request, 'payment_list.html',
+    
+    response = render(request, 'payment_list.html',
                   {'payment_details': payment_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'service_details': service_details,'tor_application_count':tor_application_count})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def view_application_details(request):
     application_no = request.GET.get('application_no')
@@ -598,7 +637,7 @@ def get_tor_clearance_no(request,service_id):
     return newClearanceNo
 
 def send_ec_ap_email(ec_no, email, application_no, service_name, addtional_payment_amount):
-    subject = 'APPLICATION APPROVED'
+    subject = 'ADDITIONAL PAYMENT'
     message = "Dear Sir," \
               "" \
               "Your EC Application For " + service_name + " Has Additional Payment. Your " \
@@ -1012,6 +1051,18 @@ def forward_application(request):
                         send_ec_approve_email(ec_no, emailId, application_no, service_name)
                         data['message'] = "success"
                         data['redirect_to'] = "verify_application_list"
+                        x = {
+                            "applicationNo":"e65ed5dc-2541-11ed-8d50-0242ac120010",
+                            "cleareanceNo":"1224343",
+                            "status":True,
+                            "message": "ok",
+                            "rejectionMessage": "notok"
+                        }
+                        post_data = json.dumps(x)
+                        headers = {'Accept': 'application/json'}
+
+                        res = requests.post('https://bpa.stagingibls.moea.gov.bt/mule/api/action/ecss_update',
+                                            params=post_data, headers=headers, verify=False)
         elif identifier == 'FT': # forward TOR form
             tor_remarks = request.POST.get('tor_remarks')
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -1268,14 +1319,27 @@ def delete_draft_ec_details(request):
 def inspection_list(request):
     inspection_list = t_inspection_monitoring_t1.objects.filter(record_status='Active').order_by('inspection_date')
     user_list = t_user_master.objects.all()
+    v_application_count = 0
+    r_application_count = 0
+    ec_renewal_count = 0
+    ca_authority = request.session.get('ca_authority', None)
+
     ec_details = t_ec_industries_t1_general.objects.all()
-    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
-    r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
-    ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
+    if ca_authority is not None: 
+        v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
+        r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
+        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+        ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
-    return render(request, 'inspection/inspection.html', {'inspection_list':inspection_list,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'user_list':user_list, 'ec_details':ec_details})
+    response = render(request, 'inspection/inspection.html', {'inspection_list':inspection_list,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'user_list':user_list, 'ec_details':ec_details})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
+    
 
 def view_inspection_details(request):
     inspection_reference_no = request.GET.get('inspection_reference_no')
@@ -1464,7 +1528,7 @@ def save_fines_penalties(request):
     return JsonResponse(data)
 
 def fines_penalties_email(email_id, application_no, amount):
-    subject = 'APPLICATION APPROVED'
+    subject = 'FINES AND PENALTY'
     message = "Dear Sir," \
               "" \
               "Your Application No" + application_no + "Has Has Fines and Penalty " \
@@ -1529,7 +1593,13 @@ def tor_submit_email(email_id, application_no, service_name):
     
 def fines_penalties(request):
     application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False)
-    return render(request, 'fines_penalties.html',{'application_details':application_details})
+    response = render(request, 'fines_penalties.html',{'application_details':application_details})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def insert_payment_details(request,application_no,account_head, proponent_name,total_amount,ec_no):
     t_payment_details.objects.create(application_no=application_no,

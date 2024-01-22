@@ -118,7 +118,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-
+LOGIN_URL = 'index'
 
 
 # Static files (CSS, JavaScript, Images)

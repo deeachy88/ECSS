@@ -18,7 +18,7 @@ from django.http import JsonResponse
 from datetime import date
 from ecs_main.models import t_application_history
 from datetime import datetime, timedelta
-
+from django.views.decorators.cache import cache_control
 from proponent.models import t_workflow_dtls
 
 
@@ -82,7 +82,13 @@ def login(request):
                         request.session['login_id'] = check_user.login_id
                         request.session['email'] = check_user.email_id
                         security = t_security_question_master.objects.all()
-                        return render(request, 'update_password.html', {'security': security})
+                        response = render(request, 'update_password.html', {'security': security})
+    
+                        # Set cache-control headers to prevent caching
+                        response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+                        response['Pragma'] = 'no-cache'
+                        response['Expires'] = '0'
+                        return response
                     else:
                         v_application_count = 0
                         r_application_count = 0
@@ -109,9 +115,13 @@ def login(request):
                                     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=check_user.agency_code, action_date__isnull=False).count()
                                 elif roles.role_name == 'Reviewer':
                                     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=check_user.agency_code).count()
-                                return render(request, 'common_dashboard.html',{'v_application_count':v_application_count, 'r_application_count':r_application_count, 'ec_renewal_count':ec_renewal_count})
-
-
+                                response = render(request, 'common_dashboard.html',{'v_application_count':v_application_count, 'r_application_count':r_application_count, 'ec_renewal_count':ec_renewal_count})
+            
+                                # Set cache-control headers to prevent caching
+                                response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+                                response['Pragma'] = 'no-cache'
+                                response['Expires'] = '0'
+                                return response
                         else:
                             request.session['name'] = check_user.proponent_name
                             request.session['email'] = check_user.email_id
@@ -131,14 +141,25 @@ def login(request):
                             ).exclude(
                                 application_no__in=Subquery(t1_general_subquery)
                             ).count()
-                           
-                            return render(request, 'common_dashboard.html',{'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'tor_application_count':tor_application_count})
+                            response = render(request, 'common_dashboard.html',{'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'tor_application_count':tor_application_count})
+            
+                            # Set cache-control headers to prevent caching
+                            response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+                            response['Pragma'] = 'no-cache'
+                            response['Expires'] = '0'
+                            return response
                 else:
                     _message = 'User ID or Password Not Matching.'
         else:
             _message = 'Invalid Credentials, Please Try Again.'
     context = {'message': _message}
-    return render(request, 'index.html', context)
+    response = render(request, 'index.html', context)
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 
 def add_user(request):
@@ -232,16 +253,28 @@ def manage_menu(request):
     menu_details = t_menu_master.objects.all().order_by('order')
     document_id = get_random_document_id_string(5)
     file_attachment = t_file_attachment.objects.all()
-    return render(request, 'manage_menu.html',{'menu_details':menu_details,'document_id':document_id,
+    response = render(request, 'manage_menu.html',{'menu_details':menu_details,'document_id':document_id,
                                                'file_attachment':file_attachment})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def manage_submenu(request):
     menu_details = t_menu_master.objects.filter(has_sub_menu="Yes",is_active="Y").order_by('order')
     sub_menu_details = t_submenu_master.objects.all()
     document_id = get_random_document_id_string(5)
     file_attachment = t_file_attachment.objects.all()
-    return render(request, 'manage_sub_menu.html',{'menu_details':menu_details,'sub_menu_details':sub_menu_details,
+    response = render(request, 'manage_sub_menu.html',{'menu_details':menu_details,'sub_menu_details':sub_menu_details,
                                                    'document_id':document_id, 'file_attachment':file_attachment})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def add_menu_master(request):
     menu_name = request.POST.get('menu_name')
@@ -275,28 +308,64 @@ def user_master(request):
     users = t_user_master.objects.filter(login_type='I')
     roles = t_role_master.objects.all().order_by('role_name')
     agency = t_competant_authority_master.objects.all().order_by('remarks')
-    return render(request, 'user_master.html', {'users': users, 'role': roles, 'agency':agency})
+    response = render(request, 'user_master.html', {'users': users, 'role': roles, 'agency':agency})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def agency_master(request):
     agency_list = t_competant_authority_master.objects.all().order_by('competent_authority_id')
     dzongkhag_list = t_dzongkhag_master.objects.all()
-    return render(request, 'agency_master.html', {'agency_list': agency_list, 'dzongkhag_list': dzongkhag_list})
+    response = render(request, 'agency_master.html', {'agency_list': agency_list, 'dzongkhag_list': dzongkhag_list})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def proponent_master(request):
     proponent_list = t_proponent_type_master.objects.all()
-    return render(request, 'proponent_master.html', {'proponent_list':proponent_list})
+    response = rrender(request, 'proponent_master.html', {'proponent_list':proponent_list})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def role_master(request):
     role_list = t_role_master.objects.all()
-    return render(request, 'role_master.html', {'role':role_list})
+    response = render(request, 'role_master.html', {'role':role_list})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def service_master(request):
     service_list = t_service_master.objects.all().order_by('service_name')
-    return render(request, 'service_master.html', {'service':service_list})
+    response = render(request, 'service_master.html', {'service':service_list})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def fee_schedule_master(request):
     fees_schedule_list = t_fees_schedule.objects.all().order_by('service_name')
-    return render(request, 'fees_schedule.html', {'fees_schedule':fees_schedule_list})
+    response = render(request, 'fees_schedule.html', {'fees_schedule':fees_schedule_list})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def edit_fee_schedule_master(request):
     edit_service_name = request.POST.get('service_name')
@@ -315,7 +384,13 @@ def delete_fee_schedule_master(request):
 def bsic_master(request):
     bsic_code_list = t_bsic_code.objects.all().order_by('activity_description')
     service_list = t_service_master.objects.all()
-    return render(request, 'bsic_code_master.html', {'bsic_code_list':bsic_code_list, 'service_list':service_list})
+    response = render(request, 'bsic_code_master.html', {'bsic_code_list':bsic_code_list, 'service_list':service_list})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def add_bsic_code_master(request):
     broad_activity_code = request.GET.get('broad_activity_code')
@@ -429,10 +504,18 @@ def user_password_reset_mail(Name, Email_Id, password):
               auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
               connection=None, html_message=None)
 
+def logout_view(request):
+     # Clear all sessions
+    request.session.clear()
 
-def logout(request):
-    request.session.flush()
-    return redirect('/')
+    response = redirect('/')
+    
+    # Add headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    
+    return response
 
 
 def account_setting(request):
@@ -777,8 +860,15 @@ def manage_live_statistics(request):
 def manage_home_page(request):
     home_page_details = t_homepage_master.objects.filter(homepage_id='1')
     file_attachment = t_file_attachment.objects.filter(attachment_type='H')
-    return render(request, 'manage_home_page.html', {'home_page_details': home_page_details,
+    response = render(request, 'manage_home_page.html', {'home_page_details': home_page_details,
                                                 'file_attach': file_attachment})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
+    
 
 def update_homepage_details(request):
     homepage_title = request.POST.get('homepage_title')
@@ -887,9 +977,15 @@ def new_client_registration(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     proponent_type = t_proponent_type_master.objects.all()
-    return render(request, 'new_client_registration.html', {'new_clients': clients,'dzongkhag':dzongkhag,
+    response = render(request, 'new_client_registration.html', {'new_clients': clients,'dzongkhag':dzongkhag,
                                                             'gewog':gewog, 'village':village,
                                                             'proponent_type':proponent_type})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def registered_client(request):
     reg_clients = t_user_master.objects.filter(login_type='C')
@@ -898,9 +994,15 @@ def registered_client(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     proponent_type = t_proponent_type_master.objects.all()
-    return render(request, 'registered_clients.html', {'new_clients': clients,'dzongkhag':dzongkhag,
+    response = render(request, 'registered_clients.html', {'new_clients': clients,'dzongkhag':dzongkhag,
                                                             'gewog':gewog, 'village':village,
                                                             'proponent_type':proponent_type})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 
 def manage_client(request):
@@ -1016,8 +1118,14 @@ def manage_others(request):
     other_details = t_other_details.objects.filter(is_deleted='N')
     document_id = get_random_document_id_string(5)
     file_attachment = t_file_attachment.objects.all()
-    return render(request,'others_master.html', {'other_details': other_details,
+    response = render(request,'others_master.html', {'other_details': other_details,
                                                       'file_attachment':file_attachment,'document_id':document_id})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def add_publication_file(request):
     data = dict()

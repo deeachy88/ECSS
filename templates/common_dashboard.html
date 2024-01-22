@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 {% load static %}
+{% if not request.session.name %}
+    <script>
+        window.location.replace("{% url 'index' %}");
+    </script>
+{% endif %}
 <html lang="en">
 <head>
         <meta charset="utf-8" />
@@ -7,6 +12,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="ECSS System" name="description" />
         <meta content="Deepak" name="author" />
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
 
         <!-- App favicon -->
         <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}">
@@ -74,6 +82,9 @@
                 border-radius: 10px;
                 border-color: #f84343;
             }
+            #idletimeout { background:#0088AA; border:3px solid #969696; color:#fff; font-family:arial, sans-serif; text-align:center; font-size:12px; padding:10px; position:relative; top:0px; left:0; right:0; z-index:100000; display:none; }
+            #idletimeout a { color:#fff; font-weight:bold }
+            #idletimeout span { font-weight:bold }
         </style>
 
     </head>
@@ -99,8 +110,12 @@
                             <span></span>
                         </div>
                     </button>
-
+                    <div id="idletimeout">
+                        <strong>You will be logged off in <span><!-- countdown place holder --></span>&nbsp;seconds due to inactivity. 
+                        <a id="idletimeout-resume" href="#">Click here to continue using this system</a>.</strong>
+                    </div>
                     <ul class="list-unstyled topbar-menu float-end mb-0">
+                        
                         {% if request.session.login_type == 'C' %}
                             {% if app_hist_count > 0 %}
                             <li class="d-none d-md-inline-block mt-2 dropdown notification-list">
@@ -1144,7 +1159,11 @@
                 </div>
             </div>
         </div>
-
+        <script>
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.href);
+            }
+        </script>
         <!-- Vendor js -->
         <script src="{% static 'assets/js/vendor.min.js' %}"></script>
 
@@ -1168,6 +1187,35 @@
         <script src="{% static 'assets/js/pages/demo.quilljs.js' %}"></script>
         <script src="{% static 'assets/js/jQuery.print.js' %}"></script>
         <script type="text/javascript" src="{% static 'assets/js/printThis.js' %}"></script>
-        
+        <script src="{% static 'assets/js/jquery.idletimer.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.idletimeout.js' %}"></script> 
+
+
+        <script>
+            $.idleTimeout('#idletimeout', '#idletimeout a', 
+            {
+                idleAfter: 300,
+                pollingInterval: 2,
+                serverResponseEquals: 'OK',
+                onTimeout: function()
+                {
+                    $(this).slideUp(); 
+                    window.location = "{% url 'logout' %}";
+                },
+                onIdle: function()
+                {
+                    $(this).slideDown();  //show the warning bar
+                    $(this).get(0).scrollIntoView();
+                },
+                onCountdown: function( counter )
+                {
+                    $(this).find("span").html( counter );  //update the counter
+                },
+                onResume: function()
+                {
+                    $(this).slideUp(); // hide the warning bar
+                }
+            });
+        </script>
     </body>
 </html>

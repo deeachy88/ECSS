@@ -1,5 +1,10 @@
 {% extends 'common_dashboard.html' %}
 {% block content %}
+{% if not request.session.name %}
+    <script>
+        window.location.replace("{% url 'index' %}");
+    </script>
+{% endif %}
 <div class="card mt-1">
     <div class="card-body">
         <h5 class="card-title mb-0">Manage Home Page Details</h5>
