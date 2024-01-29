@@ -725,7 +725,7 @@ def save_iee_application(request):
         
         with transaction.atomic():
             ca_auth = None
-            if identifier != 'DR' and identifier != 'NC' and identifier != 'OC' and tor_application_no == None:
+            if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
                 auth_filter = t_competant_authority_master.objects.filter(
                     competent_authority=request.session['ca_auth'],
                     dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
@@ -3641,7 +3641,7 @@ def save_road_application(request):
         tor_application_no = request.POST.get('tor_application_no')
 
         ca_auth = None
-        if identifier != 'DR' and tor_application_no == None:
+        if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
             auth_filter = t_competant_authority_master.objects.filter(
                 competent_authority=request.session['ca_auth'],
                 dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
@@ -3951,9 +3951,8 @@ def save_general_application(request):
         identifier = request.POST.get('identifier')
         tor_application_no = request.POST.get('tor_application_no')
         form_type = request.POST.get('form_type')
-
         ca_auth = None
-        if identifier != 'DR' and tor_application_no == None:
+        if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
             auth_filter = t_competant_authority_master.objects.filter(
                 competent_authority=request.session['ca_auth'],
                 dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
@@ -4132,16 +4131,14 @@ def save_forest_application(request):
     try:
         identifier = request.POST.get('identifier')
         # Fetch ca_auth for non-draft applications
-        
+        tor_application_no = request.POST.get('tor_application_no')
         ca_auth = None
-        if identifier != 'DR':
+        if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
             auth_filter = t_competant_authority_master.objects.filter(
                 competent_authority=request.session['ca_auth'],
                 dzongkhag_code_id= request.POST.get('dzo_throm') if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
             )
             ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-            print(request.session['ca_auth'])
-            print(ca_auth)
         # Application details
         application_details = {
             'application_no':request.POST.get('application_no'),
@@ -4352,7 +4349,7 @@ def save_ground_water_application(request):
 
         ca_auth = None
 
-        if identifier != 'DR' and tor_application_no == None:
+        if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
             auth_filter = t_competant_authority_master.objects.filter(
                 competent_authority=request.session['ca_auth'],
                 dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
@@ -4597,7 +4594,7 @@ def save_quarry_application(request):
         form_type = request.POST.get('form_type')
 
         ca_auth = None
-        if identifier != 'DR' and tor_application_no == None:
+        if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
             auth_filter = t_competant_authority_master.objects.filter(
                 competent_authority=request.session['ca_auth'],
                 dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
@@ -5029,7 +5026,7 @@ def save_energy_application(request):
         form_type = request.POST.get('form_type')
         
         ca_auth = None
-        if identifier != 'DR' and tor_application_no == None:
+        if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
             auth_filter = t_competant_authority_master.objects.filter(
                 competent_authority=request.session['ca_auth'],
                 dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
@@ -5305,7 +5302,7 @@ def save_tourism_application(request):
         
 
         ca_auth = None
-        if identifier != 'DR' and tor_application_no == None:
+        if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
             auth_filter = t_competant_authority_master.objects.filter(
                 competent_authority=request.session['ca_auth'],
                 dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None

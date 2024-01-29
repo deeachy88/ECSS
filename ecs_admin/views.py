@@ -9,7 +9,7 @@ from ecs_admin.models import t_competant_authority_master, t_user_master, t_secu
     t_file_attachment, t_menu_master, t_agency_master, t_proponent_type_master, t_dzongkhag_master, t_village_master,\
     t_gewog_master,t_submenu_master, t_other_details, t_about_us, t_notification_details, t_homepage_master
 from ecs_admin.forms import UserForm, RoleForm
-from proponent.models import t_ec_industries_t1_general
+from proponent.models import t_ec_industries_t1_general, t_payment_details
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password, check_password
 import string
@@ -93,6 +93,7 @@ def login(request):
                         v_application_count = 0
                         r_application_count = 0
                         ec_renewal_count = 0
+                        payment_count = 0
                         if check_user.login_type == 'I':
 
                             role_details = t_role_master.objects.filter(role_id=check_user.role_id_id)
@@ -131,6 +132,8 @@ def login(request):
                             request.session['contact_number'] = check_user.contact_number
                             app_hist_count = t_application_history.objects.filter(applicant_id=check_user.email_id).count()
                             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=check_user.login_id).count()
+                            payment_count = t_payment_details.objects.filter(transaction_no__isnull=True).count()
+                            print(payment_count);
                             t1_general_subquery = t_ec_industries_t1_general.objects.filter(
                                 tor_application_no=OuterRef('application_no')
                             ).values('tor_application_no')
@@ -141,7 +144,7 @@ def login(request):
                             ).exclude(
                                 application_no__in=Subquery(t1_general_subquery)
                             ).count()
-                            response = render(request, 'common_dashboard.html',{'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'tor_application_count':tor_application_count})
+                            response = render(request, 'common_dashboard.html',{'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'payment_count':payment_count, 'tor_application_count':tor_application_count})
             
                             # Set cache-control headers to prevent caching
                             response['Cache-Control'] = 'no-cache, no-store, must-revalidate'

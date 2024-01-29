@@ -7,48 +7,48 @@
     <div class="animated fadeIn">
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
+                <div class="card mt-1">
                     <div class="card-body">
                         <h4 class="card-title">Application History List.</h4>
                         <div class="table-responsive">
-                            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Application No</th>
-                                    <th scope="col">Applicant</th>
-                                    <th scope="col">Service</th>
-                                    <th scope="col">Remarks</th>
-                                    <th scope="col">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for application_list in application_list %}
+                            <table id="scroll-horizontal-datatable" class="table w-100 nowrap">
+                                <thead>
                                     <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{application_list.application_no}}</td>
-                                        <td>{{application_list.applicant_id}}</td>
-                                        {% for service_details in service_details %}
-                                            {% if application_list.service_id == service_details.service_id %}
-                                                <td>{{service_details.service_name}}</td>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Application No</th>
+                                        <th scope="col">Applicant</th>
+                                        <th scope="col">Service</th>
+                                        <th scope="col">Remarks</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for application_list in application_list %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{application_list.application_no}}</td>
+                                            <td>{{application_list.applicant_id}}</td>
+                                            {% for service_details in service_details %}
+                                                {% if application_list.service_id == service_details.service_id %}
+                                                    <td>{{service_details.service_name}}</td>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <td>{{application_list.remarks}}</td>
+                                            {% if application_list.application_status == 'P' %}
+                                                <td class="text-warning">Pending</td>
+                                            {% elif application_list.application_status == 'A' %}
+                                                <td class="text-success">Approved</td>
+                                            {% else %}
+                                                <td class="text-warning">Pending</td>
                                             {% endif %}
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                        <td colspan="9" class="text-center">No Data</td>
+                                        </tr>
                                         {% endfor %}
-                                        <td>{{application_list.remarks}}</td>
-                                        {% if application_list.application_status == 'P' %}
-                                            <td>Pending</td>
-                                        {% elif application_list.application_status == 'A' %}
-                                            <td>Approved</td>
-                                        {% else %}
-                                            <td>None</td>
-                                        {% endif %}
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="9" class="text-center">No Data</td>
-                                    </tr>
-                                    {% endfor %}
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -59,29 +59,7 @@
 <script>
     $(document).ready(function()
         {
-            $("#ec_table").DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        title: 'List of Application',
-                        text:'<i class="fas fa-file-excel"></i>',
-                        titleAttr: 'Excel'
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'List of Application',
-                        text:'<i class="fas fa-file-pdf"></i>',
-                        titleAttr: 'PDF'
-                    },
-                     {
-                        extend: 'print',
-                        title: 'List of Application',
-                        text: '<i class="fas fa-print"></i>',
-                        titleAttr: 'Print'
-                    },
-                ]
-            });
+            
         }
     );
 </script>

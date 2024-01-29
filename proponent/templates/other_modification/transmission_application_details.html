@@ -1,8 +1,9 @@
+{% for application_details in application_details %}
 <div class="row">
     <div class="col-xl-12">
         <div class="card mt-1">
             <div class="card-body">
-                <h4 class="header-title mb-3"> New Application</h4>
+                <h4 class="header-title mb-3"> Draft Transmission Application</h4>
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
@@ -17,8 +18,8 @@
                                 <form method="post" id="transmission_application_form">
                                     {% csrf_token %}
                                     <input type="text" class="form-control" value="{{identifier}}" id="identifier" name="identifier" style="display:none;">
-                            <input type="text" class="form-control" value="{{application_no}}" name="application_no" id="application_no" style="display:none;">
-                            <input type="text" class="form-control" value="{{application_details.ec_reference_no}}" name="ec_reference_no" id="ec_reference_no" style="display:none;">
+                                    <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+                                    <input type="text" class="form-control" value="{{application_details.ec_reference_no}}" name="ec_reference_no" id="ec_reference_no" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -53,14 +54,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">CID</label>
-                                                <input type="text" name="cid" class="form-control" id="cid">
+                                                <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" onchange="getCitizenDetails(this.value)">
                                             </div>
                                             <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of Applicant</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name">
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly>
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -106,36 +107,101 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Dzongkhag/Thromde</label>
-                                                <input type="text" name="dzo_throm" class="form-control" id="dzo_throm">
+                                                <label class="form-label fw-bold">Site</label>
+                                                {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                                    <div class="mt-2">
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" checked>
+                                                            <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)">
+                                                            <label class="form-check-label" for="customRadio4">Thromde</label>
+                                                        </div>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="mt-2">
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)">
+                                                            <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" checked>
+                                                            <label class="form-check-label" for="customRadio4">Thromde</label>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
                                             </div>
-                                            <div id="dzo_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Gewog</label>
-                                                <input type="text" name="gewog" class="form-control" id="gewog">
+                                        {% if application_details.dzongkhag_throm == 'Thromde' %} 
+                                            <div class="col-lg-6 thromde_div">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select">
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                                                {{ thromde.thromde_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
+                                        {% endif %}
                                     </div>
                                     <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <input type="text" name="vil_chiwog" class="form-control" id="vil_chiwog">
+                                        {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                            <div class="col-lg-6 dzongkhag_div">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select">
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                                {{ dzongkhag.dzongkhag_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select">
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                                {{ gewog.gewog_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
                                         </div>
-                                    </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select">
+                                                        {% for village in village %}
+                                                            <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                                {{ village.village_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of Particular Project Site</label>
-                                                <input type="text" name="project_site" class="form-control" id="project_site">
+                                                <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}">
                                             </div>
                                             <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
+                                        </div> 
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -204,7 +270,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" id="collapseTwoBtn" disabled>
+                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" id="collapseTwoBtn">
                                 Baseline/Existing information
                             </button>
                         </h2>
@@ -342,7 +408,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingProjectDetails">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn" disabled>
+                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn">
                                 Project Details
                             </button>
                         </h2>
@@ -513,7 +579,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSix">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" id="collapseSixBtn" disabled>
+                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" id="collapseSixBtn">
                                 Transmission Lines
                             </button>
                         </h2>
@@ -524,7 +590,7 @@
                                     <div class="col-lg-12">
                                         <div class="card mt-1">
                                             <div class="card-body">
-                                                <div class="card-widgets">
+                                                <div class="card-widgets mb-3">
                                                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#anc_power_line_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                                 </div>
                                                 <h5 class="card-title mb-2"></h5>
@@ -555,155 +621,159 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn" disabled>
+                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn">
                                 Energy & Water Requirement
                             </button>
                         </h2>
                         <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Excavated muck disposal area/Dumpyard</label>
-                                            <div class="mt-2">
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" name="water_excavated_muck" class="form-check-input" value="Yes" onclick="check_excavated_muck(this.value)">
-                                                    <label class="form-check-label" for="customRadio3">Yes</label>
+                                <form method="post" id="water_requirement_form">
+                                    {% csrf_token %}
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_water_application_no">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Excavated muck disposal area/Dumpyard</label>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="water_excavated_muck" class="form-check-input" value="Yes" onclick="check_excavated_muck(this.value)">
+                                                        <label class="form-check-label" for="customRadio3">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)">
+                                                        <label class="form-check-label" for="customRadio4">No</label>
+                                                    </div>
                                                 </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)">
-                                                    <label class="form-check-label" for="customRadio4">No</label>
+                                            </div>
+                                            <div id="water_excavated_muckErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 dump_yard_details" style="display:none;">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="card-widgets mb-3">
+                                                    <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#dump_yard_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                </div>
+                                                <div class="collapse pt-3 show">
+                                                    <div id="dump_yard_details_div">
+                                                        {% include 'dump_yard_details.html' %}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="water_excavated_muckErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
-                                </div>
-                                <div class="col-md-12 dump_yard_details" style="display:none;">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="card-widgets mb-3">
-                                                <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#dump_yard_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Provide information on water resources along the project alignment including name, location and distance from the proposed project</label>
+                                                <textarea class="form-control" rows="3" name="water_resources_info" id="water_resources_info"></textarea>
                                             </div>
-                                            <div class="collapse pt-3 show">
-                                                <div id="dump_yard_details_div">
-                                                    {% include 'dump_yard_details.html' %}
-                                                </div>
-                                            </div>
+                                            <div class="alert alert-danger" id="water_resources_infoErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Provide information on water resources along the project alignment including name, location and distance from the proposed project</label>
-                                            <textarea class="form-control" rows="3" name="water_resources_info" id="water_resources_info"></textarea>
-                                        </div>
-                                        <div class="alert alert-danger" id="water_resources_infoErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Will the activity require water consumption?</label>
-                                            <div class="mt-2">
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" id="customRadio3" name="water_required" class="form-check-input" value="Yes" onclick="check_industry_radio(this.value)">
-                                                    <label class="form-check-label" for="customRadio3">Yes</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_industry_radio(this.value)">
-                                                    <label class="form-check-label" for="customRadio4">No</label>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Will the activity require water consumption?</label>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="customRadio3" name="water_required" class="form-check-input" value="Yes" onclick="check_tansmission_water_radio(this.value)">
+                                                        <label class="form-check-label" for="customRadio3">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_tansmission_water_radio(this.value)">
+                                                        <label class="form-check-label" for="customRadio4">No</label>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <div id="water_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div id="water_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
-                                </div>
-                                <div class="row general_water_details" style="display: none;">
-                                    <div class="col-lg-12">
-                                        <table class="table table-hover table-bordered table-centered mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Sl.no.</th>
-                                                    <th>Purpose</th>
-                                                    <th>Source</th>
-                                                    <th>Quantity of water consumption in KL per day</th>
-                                                    <th>Quantity of water recycled/reused in KL per day (if applicable)</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>Water as raw material</td>
-                                                    <td><input type="text" name="water_raw_material_source" class="form-control col-lg-6" id="water_raw_material_source"></td>
-                                                    <td><input type="text" name="water_raw_material_qty_day" class="form-control col-lg-6" id="water_raw_material_qty_day"></td>
-                                                    <td><input type="text" name="water_raw_material_recycle_day" class="form-control col-lg-6" id="water_raw_material_recycle_day"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2</td>
-                                                    <td>Raw material and finished product cleaning/washing</td>
-                                                    <td><input type="text" name="water_cleaning_source" class="form-control col-lg-6" id="water_cleaning_source"></td>
-                                                    <td><input type="text" name="water_cleaning_qty_day" class="form-control col-lg-6" id="water_cleaning_qty_day"></td>
-                                                    <td><input type="text" name="water_cleaning_recycle_day" class="form-control col-lg-6" id="water_cleaning_recycle_day"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3</td>
-                                                    <td>Process (cooling/boiler use)</td>
-                                                    <td><input type="text" name="water_process_source" class="form-control col-lg-6" id="water_process_source"></td>
-                                                    <td><input type="text" name="water_process_qty_day" class="form-control col-lg-6" id="water_process_qty_day"></td>
-                                                    <td><input type="text" name="water_process_recycle_day" class="form-control col-lg-6" id="water_process_recycle_day"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>4</td>
-                                                    <td>Domestic (Drinking and sanitation)</td>
-                                                    <td><input type="text" name="water_domestic_source" class="form-control col-lg-6" id="water_domestic_source"></td>
-                                                    <td><input type="text" name="water_domestic_qty_day" class="form-control col-lg-6" id="water_domestic_qty_day"></td>
-                                                    <td><input type="text" name="water_domestic_recycle_day" class="form-control col-lg-6" id="water_domestic_recycle_day"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>5</td>
-                                                    <td>Dust suppression</td>
-                                                    <td><input type="text" name="water_dust_compression_source" class="form-control col-lg-6" id="water_dust_compression_source"></td>
-                                                    <td><input type="text" name="water_dust_compression_qty_day" class="form-control col-lg-6" id="water_dust_compression_qty_day"></td>
-                                                    <td><input type="text" name="water_dust_compression_recycle_day" class="form-control col-lg-6" id="water_dust_compression_recycle_day"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>6</td>
-                                                    <td>Others, specify </td>
-                                                    <td><input type="text" name="water_others_name" class="form-control col-lg-6" id="water_others_name"></td>
-                                                    <td><input type="text" name="water_others_source" class="form-control col-lg-6" id="water_others_source"></td>
-                                                    <td><input type="text" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="3" align="center">Total quantity of water to be consumed</td>
-                                                    <td><input type="text" name="total_water_consumption" id="total_water_consumption" class="form-control col-lg-6"></td>
-                                                    <td><input type="text" name="total_water_recycled" id="total_water_recycled" class="form-control col-lg-6"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <div class="row general_water_details" style="display: none;">
+                                        <div class="col-lg-12">
+                                            <table class="table table-hover table-bordered table-centered mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Sl.no.</th>
+                                                        <th>Purpose</th>
+                                                        <th>Source</th>
+                                                        <th>Quantity of water consumption in KL per day</th>
+                                                        <th>Quantity of water recycled/reused in KL per day (if applicable)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Water as raw material</td>
+                                                        <td><input type="text" name="water_raw_material_source" class="form-control col-lg-6" id="water_raw_material_source"></td>
+                                                        <td><input type="text" name="water_raw_material_qty_day" class="form-control col-lg-6" id="water_raw_material_qty_day"></td>
+                                                        <td><input type="text" name="water_raw_material_recycle_day" class="form-control col-lg-6" id="water_raw_material_recycle_day"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2</td>
+                                                        <td>Raw material and finished product cleaning/washing</td>
+                                                        <td><input type="text" name="water_cleaning_source" class="form-control col-lg-6" id="water_cleaning_source"></td>
+                                                        <td><input type="text" name="water_cleaning_qty_day" class="form-control col-lg-6" id="water_cleaning_qty_day"></td>
+                                                        <td><input type="text" name="water_cleaning_recycle_day" class="form-control col-lg-6" id="water_cleaning_recycle_day"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3</td>
+                                                        <td>Process (cooling/boiler use)</td>
+                                                        <td><input type="text" name="water_process_source" class="form-control col-lg-6" id="water_process_source"></td>
+                                                        <td><input type="text" name="water_process_qty_day" class="form-control col-lg-6" id="water_process_qty_day"></td>
+                                                        <td><input type="text" name="water_process_recycle_day" class="form-control col-lg-6" id="water_process_recycle_day"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>4</td>
+                                                        <td>Domestic (Drinking and sanitation)</td>
+                                                        <td><input type="text" name="water_domestic_source" class="form-control col-lg-6" id="water_domestic_source"></td>
+                                                        <td><input type="text" name="water_domestic_qty_day" class="form-control col-lg-6" id="water_domestic_qty_day"></td>
+                                                        <td><input type="text" name="water_domestic_recycle_day" class="form-control col-lg-6" id="water_domestic_recycle_day"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>5</td>
+                                                        <td>Dust suppression</td>
+                                                        <td><input type="text" name="water_dust_compression_source" class="form-control col-lg-6" id="water_dust_compression_source"></td>
+                                                        <td><input type="text" name="water_dust_compression_qty_day" class="form-control col-lg-6" id="water_dust_compression_qty_day"></td>
+                                                        <td><input type="text" name="water_dust_compression_recycle_day" class="form-control col-lg-6" id="water_dust_compression_recycle_day"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>6</td>
+                                                        <td>Others, specify </td>
+                                                        <td><input type="text" name="water_others_name" class="form-control col-lg-6" id="water_others_name"></td>
+                                                        <td><input type="text" name="water_others_source" class="form-control col-lg-6" id="water_others_source"></td>
+                                                        <td><input type="text" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3" align="center">Total quantity of water to be consumed</td>
+                                                        <td><input type="text" name="total_water_consumption" id="total_water_consumption" class="form-control col-lg-6"></td>
+                                                        <td><input type="text" name="total_water_recycled" id="total_water_recycled" class="form-control col-lg-6"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="alert alert-success border-0 rounded-0" role="alert" id="water_requirement_application_successMsg" style="display:none">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                </div>
-                                <div class="alert alert-danger border-0 rounded-0" role="alert" id="water_requirement_application_errorMsg" style="display:none">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                </div>
-                                <div class="row mt-4">
-                                    <div class="text-sm-end">
-                                        <a href="#" class="btn btn-success" onclick="save_general_water_requirement()">
-                                            <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="water_requirement_application_successMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                </div>
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="water_requirement_application_errorMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
+                                    <div class="row mt-4">
+                                        <div class="text-sm-end">
+                                            <a href="#" class="btn btn-success" onclick="save_general_water_requirement()">
+                                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFive">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFiveBtn"
-                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" disabled>
+                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                                 Ancillary:Approach Road
                             </button>
                         </h2>
@@ -839,7 +909,7 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSeven">
-                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSevenBtn"
                                 data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
                                 Ancillary:Others
                             </button>
@@ -852,42 +922,162 @@
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="others_application_no">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="other_ancillary_facilities" class="form-check-input" value="Yes" onclick="check_other_ancillary_facilities(this.value)">
-                                                        <label class="form-check-label">Yes</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="other_ancillary_facilities" class="form-check-input" value="No" onclick="check_other_ancillary_facilities(this.value)">
-                                                        <label class="form-check-label">No</label>
-                                                    </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
+                                                    {% if application_details.anc_other_required == 'Yes' %}
+                                                        <div class="mt-2">
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)">
+                                                                <label class="form-check-label" for="customRadio3">Yes</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)">
+                                                                <label class="form-check-label" for="customRadio4">No</label>
+                                                            </div>
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="mt-2">
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)">
+                                                                <label class="form-check-label" for="customRadio3">Yes</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)">
+                                                                <label class="form-check-label" for="customRadio4">No</label>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
                                                 </div>
-                                            </div>
-                                            <div id="other_ancillary_facilitiesErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            
+                                            <div id="anc_other_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-warning border-0 rounded-0 other_ancillary_facilities" role="alert">
+                                    <div class="alert alert-warning border-0 rounded-0 anc_facility_details" role="alert" style="display: none;">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                     </div>
                                     <br>
-                                    <div class="form-check other_ancillary_facilities">
-                                        <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" class="form-check-input" onclick="check_anc_other_ropeway()">
-                                        <label class="form-check-label">Ropeway/Cable lines</label>
-                                    </div>
-                                    <div class="form-check other_ancillary_facilities">
-                                        <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" onclick="check_anc_other_crushing_unit()">
-                                        <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                    </div>
-                                    <div class="form-check other_ancillary_facilities">
-                                        <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" onclick="check_anc_other_surface_collection()">
-                                        <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                    </div>
-                                    <div class="form-check other_ancillary_facilities">
-                                        <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" onclick="check_anc_other_general()">
-                                        <label class="form-check-label">Others</label>
-                                    </div>
+                                    {% if application_details.anc_other_required == 'Yes' %}
+                                        {% if application_details.anc_other_ropeway == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_surface_collection == 'Yes' and application_details.anc_other_general == 'Yes'  %}
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()" checked>
+                                                <label class="form-check-label">Ropeway/Cable lines</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()" checked>
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_ropeway == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' %}
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()" checked>
+                                                <label class="form-check-label">Ropeway/Cable lines</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()" checked>
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_ropeway == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_surface_collection == 'Yes'%}
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()" checked>
+                                                <label class="form-check-label">Ropeway/Cable lines</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()" checked>
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_surface_collection == 'Yes' and application_details.anc_other_general == 'Yes'  %}
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()">
+                                                <label class="form-check-label">Ropeway/Cable lines</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()" checked>
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'Yes'  %}
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()">
+                                                <label class="form-check-label">Ropeway/Cable lines</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()" checked>
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% elif application_details.anc_other_surface_collection == 'Yes' and application_details.anc_other_general == 'Yes'  %}
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()">
+                                                <label class="form-check-label">Ropeway/Cable lines</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" checked>
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" checked>
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% else  %}
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()">
+                                                <label class="form-check-label">Ropeway/Cable lines</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()">
+                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()">
+                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                            </div>
+                                            <div class="form-check other_ancillary_facilities">
+                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
+                                                <label class="form-check-label">Others</label>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_others_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
@@ -907,7 +1097,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingEight">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
-                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
                                 Solid Waste
                             </button>
                         </h2>
@@ -921,7 +1111,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Provide an allocated budget for the management plan proposed</label>
-                                                <input type="text" name="en_impact_allocated_budget" class="form-control" id="en_impact_allocated_budget">
+                                                <input type="number" name="en_impact_allocated_budget" class="form-control" id="en_impact_allocated_budget">
                                             </div>
                                             <div id="en_impact_allocated_budgetErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -999,7 +1189,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwelve">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTwelveBtn"
-                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" disabled>
+                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
                                 Noise Level
                             </button>
                         </h2>
@@ -1068,7 +1258,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOtherImpacts">
                             <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
                                 Other Impacts
                             </button>
                         </h2>
@@ -1187,7 +1377,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingAttachment">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
-                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
+                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
                                 File Attachment
                             </button>
                         </h2>
@@ -1264,7 +1454,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="transmission_submit_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="transmission_disclaimer_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no">
                                     
                                     <div class="row industry_application" style="display:none;">
                                         <a href="{% url 'industry_ancillary_form' %}" class="btn btn-danger">
@@ -1276,9 +1466,9 @@
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for Forestry projects </a>
                                     </div>
                                     
-                                    <div class="row ground_water_application mt-1" style="display:none;">
-                                        <a href="{% url 'ground_water_ancillary_form' %}" class="btn btn-danger">
-                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Ground Water projects </a>
+                                    <div class="row ropeway_application mt-1" style="display:none;">
+                                        <a href="{% url 'forest_ancillary_form' %}" class="btn btn-danger">
+                                            <i class="mdi mdi-truck-fast me-1"></i> IEE form for Forestry projects </a>
                                     </div>
                                     
                                     <div class="row general_application mt-1" style="display:none;">
@@ -1298,10 +1488,27 @@
                                     <div class="alert alert-danger border-0 rounded-0" role="alert" id="transmission_submit_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
+                                    <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
+                                    <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
+                                    <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
+                                    <p class="text-wrap">3.	Application Outcome: Submission of this application does not guarantee acceptance or approval. The final decision rests with the appropriate authorities, and we reserve the right to reject any application without providing any reason.</p>
+                                    <p class="text-wrap">4.	Disclaimer of Liability: To the extent permitted by law, we disclaim all liability for any loss, damage, or injury arising out of or related to your use of this online application form or reliance on any information provided herein. We shall not be responsible for any technical errors, interruptions, or inaccuracies that may occur during the application process.</p>
+                                    <p class="text-wrap">5.	Modification or Termination: We reserve the right to modify, suspend, or terminate this online application form at any time without prior notice. We may also update or change the terms and conditions of this disclaimer without notice.</p>
+                                    <p class="text-wrap">Please review this disclaimer carefully before submitting your application. If you do not agree with any part of this disclaimer, please refrain from using this online application form.</p>
+                                    <div class="mt-3">
+                                        <div class="form-check">
+                                            <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
+                                            <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
+                                        </div>
+                                    </div>
+                                    <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                        Loading...
+                                    </button>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
-                                            <a href="#" class="btn btn-success" onclick="submit_transmission_application()">
-                                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                            <a href="#" class="btn btn-success" id="tra_submit_btn" onclick="submit_transmission_application()" style="display:none;">
+                                                <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
                                         </div>
                                     </div>
                                 </form>
@@ -1313,6 +1520,7 @@
         </div> <!-- end card-->
     </div>
 </div>
+{% endfor %}
 
 <form method="post" id="machine_equipment_tool_form">
 {% csrf_token %}
@@ -2359,15 +2567,205 @@
 </div>
 </form>
 <script>
-    function check_industry_radio(value)
-    {
-        if(value == 'Yes')
+    $(function() {
+        let identifier = $('#identifier').val();
+        if(identifier == 'NC')
         {
-            $('#general_water_details').show();
+            $("input").prop('disabled', true);
+            $("select").prop('disabled', true);
+            $("textarea").prop('disabled', true);
+            $("#project_name").prop('disabled', false);
+            $(".disclaimer-check").prop('disabled', false);
+            $(".name_own_button").show();
+            $(".other_mod_button").hide();
+            $("button").hide();
+        }
+        else if(identifier == 'OC')
+        {
+            $("input").prop('disabled', true);
+            $("select").prop('disabled', true);
+            $("textarea").prop('disabled', true);
+            $("#applicant_name").prop('disabled', false);
+            $(".disclaimer-check").prop('disabled', false);
+            $(".name_own_button").show();
+            $(".other_mod_button").hide();
+            $("button").hide();
         }
         else
         {
-            $('#general_water_details').hide();
+            if 
+            (
+                $('#anc_other_ropeway').prop('checked') &&
+                $('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            ) 
+            {
+                $('.ropeway_application').show();
+                $('.industry_application').show();
+                $('.forestry_application').show();
+                $('.general_application').show();
+            } 
+            else if 
+            (
+                $('#anc_other_ropeway').prop('checked') &&
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_surface_collection').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            ) 
+            {
+                $('.ropeway_application').show();
+            }
+            else if 
+            (
+                $('#anc_other_ropeway').prop('checked') &&
+                $('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_surface_collection').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            ) 
+            {
+                $('.ropeway_application').show();
+                $('.industry_application').show();
+            }
+            else if 
+            (
+                $('#anc_other_ropeway').prop('checked') &&
+                $('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_surface_collection').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            ) 
+            {
+                $('.ropeway_application').show();
+                $('.industry_application').show();
+                $('.forestry_application').show();
+            }
+            else if 
+            (
+                $('#anc_other_ropeway').prop('checked') &&
+                $('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            ) 
+            {
+                $('.ropeway_application').show();
+                $('.industry_application').show();
+                $('.general_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_ropeway').prop('checked') &&
+                $('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            ) 
+            {
+                $('.industry_application').show();
+                $('.forestry_application').show();
+                $('.general_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_ropeway').prop('checked') &&
+                $('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_surface_collection').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            ) 
+            {
+                $('.industry_application').show();
+                $('.forestry_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_ropeway').prop('checked') &&
+                $('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            ) 
+            {
+                $('.industry_application').show();
+                $('.general_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_ropeway').prop('checked') &&
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            ) 
+            {
+                $('.forestry_application').show();
+                $('.general_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_ropeway').prop('checked') &&
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                $('#anc_other_surface_collection').prop('checked') &&
+                !$('#anc_other_general').prop('checked')
+            ) 
+            {
+                $('.forestry_application').show();
+            }
+            else if 
+            (
+                !$('#anc_other_ropeway').prop('checked') &&
+                !$('#anc_other_crushing_unit').prop('checked') &&
+                !$('#anc_other_surface_collection').prop('checked') &&
+                $('#anc_other_general').prop('checked')
+            ) 
+            {
+                $('.general_application').show();
+            }
+        }
+    });
+    function getCitizenDetails(cid)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'check_cid_exists' %}",
+            data :{'cid':cid},
+            success : function(data)
+            {
+                if(data.count > 0)
+                {
+                    $('#cid').val("");
+                    $('#applicant_name').val("");
+                    $('#cidErrorMsg').html("CID Already Exists.Try With Another one");
+                    $('#cidErrorMsg').show();
+                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    const myObj =data.response;
+                    if(myObj.citizendatas.citizendata == undefined)
+                    {
+                        $('#cid').val("");
+                        $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                        $('#cidErrorMsg').show();
+                        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        var CitizenName = myObj.citizendatas.citizendata[0].Name
+                        var dzongkhagName = myObj.citizendatas.citizendata[0].Dzongkhag_Name
+                        var villageName = myObj.citizendatas.citizendata[0].Gewog_Name
+                        var gewogName = myObj.citizendatas.citizendata[0].Village_Name
+                        $('#applicant_name').val(CitizenName);
+                    }
+                }
+            }
+        });
+    }
+
+    function check_tansmission_water_radio(value)
+    {
+        if(value == 'Yes')
+        {
+            $('.general_water_details').show();
+        }
+        else
+        {
+            $('.general_water_details').hide();
         }
     }
 
@@ -3115,14 +3513,14 @@
             $('#anc_road_lengthErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_length').focus();
         }
-        else if(water_required_value == 'Yes' && anc_road_start_point == "")
+        else if(anc_road_required_value == 'Yes' && anc_road_start_point == "")
         {
             $('#anc_road_start_pointErrorMsg').html("Enter Starting Point.");
             $('#anc_road_start_pointErrorMsg').show();
             $('#anc_road_start_pointErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_start_point').focus();
         }
-        else if(water_required_value == 'Yes' && anc_road_end_point == "")
+        else if(anc_road_required_value == 'Yes' && anc_road_end_point == "")
         {
             $('#anc_road_end_pointErrorMsg').html("Enter Termination Point.");
             $('#anc_road_end_pointErrorMsg').show();
@@ -3427,7 +3825,7 @@
                         }, 2000);
                         setTimeout(function() {
                             $("#headingNineBtn").removeAttr("disabled");
-                            $("#collapseNine").addClass("show");
+                            $("#headingTwelveBtn").addClass("show");
                             $("#collapseEight").removeClass("show");
                         }, 2000);
                     }
@@ -3903,13 +4301,15 @@
 
     function submit_transmission_application()
     {
+        $("#pageloader").show();
         $.ajax
         ({
             type : "POST",
-            url : "{% url 'submit_transmission_application' %}",
+            url : "{% url 'submit_general_application' %}",
             data : $('#transmission_submit_form').serialize(),
             success : function(data)
             {
+                $("#pageloader").hide();
                 if(data.message == 'success')
                 {
                     $('#transmission_submit_successMsg').html("Application Submitted Successfully");
@@ -4009,7 +4409,7 @@
         $('#edit_machine_equipment_tool_modal').modal('show');
     }
 
-    function update_machine_equipment_populate(record_id, application_no, machine_name, qty, installed_capacity)
+    function update_machine_tool_details()
     {
         let record_id = $('#edit_machine_tool_record_id').val();
         let application_no = $('#edit_machine_tool_app_no').val();
@@ -5309,18 +5709,22 @@
         if($('#anc_other_general').is(":checked") || $('#anc_other_mineral').is(":checked"))
         {
             $('.general_application').show();
+            $('.mineral_application').show();
         }
         else if($('#anc_other_general').is(":checked") && $('#anc_other_mineral').not(":checked"))
         {
             $('.general_application').show();
+            $('.mineral_application').hide();
         }
         else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').is(":checked"))
         {
-            $('.general_application').show();
+            $('.general_application').hide();
+            $('.mineral_application').show();
         }
         else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').not(":checked"))
         {
             $('.general_application').hide();
+            $('.mineral_application').hide();
         }
     }
 
@@ -5337,5 +5741,31 @@
         sum += parseFloat(others_area_acre) || 0;
 
         $('#total_area_acre').val(sum);
+    }
+
+    function check_dzong_throm(value)
+    {
+        if(value == "Dzongkhag")
+        {
+            $('.dzongkhag').show();
+            $('.thromde').hide();
+        }
+        else
+        {
+            $('.thromde').show();
+            $('.dzongkhag').hide();
+        }
+    }
+
+    function check_terms()
+    {
+        if($("#ec_terms").prop('checked') == true)
+        {
+            $('#tra_submit_btn').show();
+        }
+        else
+        {
+            $('#tra_submit_btn').hide();
+        }
     }
 </script>

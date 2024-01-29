@@ -535,9 +535,9 @@
                                 <a href="{% url 'payment_list' %}" class="side-nav-link">
                                     <i class="uil-home-alt"></i>
                                     <span> Payment Update
-                                        <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                            99+
-                                        </span> -->
+                                        {% if payment_count > 0 %}
+                                            <span class="badge badge-danger cl-badge">{{ payment_count }}</span>
+                                        {% endif %}
                                     </span>
                                 </a>
                             </li>
@@ -1215,6 +1215,29 @@
                 {
                     $(this).slideUp(); // hide the warning bar
                 }
+            });
+            $("#scroll-horizontal-datatable").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'List of Application',
+                        text:'<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Excel'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'List of Application',
+                        text:'<i class="fas fa-file-pdf"></i>',
+                        titleAttr: 'PDF'
+                    },
+                     {
+                        extend: 'print',
+                        title: 'List of Application',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Print'
+                    },
+                ]
             });
         </script>
     </body>

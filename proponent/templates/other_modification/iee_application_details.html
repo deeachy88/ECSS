@@ -18,7 +18,7 @@
                                 <form method="post" id="iee_application_form">
                                     {% csrf_token %}
                                     <input type="text" class="form-control" value="{{identifier}}" id="identifier" name="identifier" style="display:none;">
-                                    <input type="text" class="form-control" value="{{application_no}}" name="application_no" id="application_no" style="display:none;">
+                                    <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="{{application_details.ec_reference_no}}" name="ec_reference_no" id="ec_reference_no" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -31,7 +31,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Business Type</label>
-                                                <input type="text" name="project_category" class="form-control" id="project_category" value="{{application_details.project_category}}" disabled>
+                                                <input type="text" name="project_category" class="form-control" id="project_category" value="{{application_details.project_category}}">
                                             </div>
                                             <div id="project_categoryErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -43,14 +43,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of Applicant</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" disabled> 
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Address</label>
-                                                <input type="text" name="address" class="form-control" id="address" value="{{request.session.address}}" disabled>
+                                                <input type="text" name="address" class="form-control" id="address" value="{{request.session.address}}" readonly>
                                             </div>
                                             <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -59,14 +59,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Contact No</label>
-                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{request.session.contact_number}}" disabled>
+                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{request.session.contact_number}}" readonly>
                                             </div>
                                             <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Email</label>
-                                                <input type="email" name="email" class="form-control" id="email" value="{{request.session.email}}" disabled>
+                                                <input type="email" name="email" class="form-control" id="email" value="{{request.session.email}}" readonly>
                                             </div>
                                             <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -75,7 +75,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
-                                                <textarea class="form-control" id="focal_person" name="focal_person" rows="3" disabled>{{application_details.focal_person}}</textarea>
+                                                <textarea class="form-control" id="focal_person" name="focal_person" rows="3">{{application_details.focal_person}}</textarea>
                                             </div>
                                         </div>
                                         <div id="focal_personErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -85,28 +85,34 @@
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Industry Type</label>
                                                 
-                                                <input type="text" name="industry_type" class="form-control" id="industry_type" value="{{application_details.industry_type}}" disabled>
+                                                <input type="text" name="industry_type" class="form-control" id="industry_type" value="{{application_details.industry_type}}">
                                             </div>
                                             <div id="industry_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Establishment Type</label>
-                                                <input type="text" name="establishment_type" class="form-control" id="establishment_type"  value="{{application_details.establishment_type}}" disabled>
+                                                <input type="text" name="establishment_name" class="form-control" id="establishment_name"  value="{{application_details.establishment_name}}">
                                             </div>
-                                            <div id="establishment_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="establishment_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Classification of Industry</label>
-                                                <select class="form-control" name="industry_classification" id="industry_classification" disabled>
+                                                <select class="form-control" name="industry_classification" id="industry_classification">
                                                     {% if application_details.industry_classification == "Small" %}
                                                         <option value="Small" selected>Small</option>
+                                                        <option value="Cottage">Cottage</option>
+                                                        <option value="Large">Large</option>
                                                     {% elif application_details.industry_classification == "Cottage" %}
-                                                        <option value="Cottage" selected>Cottage</option>
+                                                        <option value="Small" selected>Small</option>
+                                                        <option value="Cottage">Cottage</option>
+                                                        <option value="Large">Large</option>
                                                     {% else %}
+                                                        <option value="Small">Small</option>
+                                                        <option value="Cottage">Cottage</option>
                                                         <option value="Large" selected>Large</option>
                                                     {% endif %}
                                                 </select> 
@@ -128,14 +134,14 @@
                                                             <label class="form-check-label" for="customRadio3">Dzongkhag</label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" disabled>
+                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)">
                                                             <label class="form-check-label" for="customRadio4">Thromde</label>
                                                         </div>
                                                     </div>
                                                 {% else %}
                                                     <div class="mt-2">
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" disabled>
+                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)">
                                                             <label class="form-check-label" for="customRadio3">Dzongkhag</label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
@@ -151,7 +157,7 @@
                                             <div class="col-lg-6 thromdes_div">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Thromde</label>
-                                                    <select class="form-select" disabled>
+                                                    <select class="form-select">
                                                         <option value="">-SELECT-</option>
                                                         {% for thromde in thromde %}
                                                             <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
@@ -169,7 +175,7 @@
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Dzongkhag</label>
-                                                    <select class="form-select" disabled>
+                                                    <select class="form-select">
                                                         {% for dzongkhag in dzongkhag %}
                                                             <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
                                                                 {{ dzongkhag.dzongkhag_name }}
@@ -181,7 +187,7 @@
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Gewog</label>
-                                                    <select class="form-select" disabled>
+                                                    <select class="form-select">
                                                         {% for gewog in gewog %}
                                                             <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
                                                                 {{ gewog.gewog_name }}
@@ -196,7 +202,7 @@
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Village/Chiwog</label>
-                                                    <select class="form-select" disabled>
+                                                    <select class="form-select">
                                                         {% for village in village %}
                                                             <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
                                                                 {{ village.village_name }}
@@ -212,7 +218,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of Particular Project Site</label>
-                                                <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}" disabled>
+                                                <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}">
                                             </div>
                                             <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div> 
@@ -221,14 +227,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
-                                                <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{application_details.industrial_area_acre}}" onchange="get_total_area_acre()" disabled>
+                                                <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{application_details.industrial_area_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="industrial_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">State Forest Reserve (acres)</label>
-                                                <input type="number" min="0" name="state_reserve_forest_acre" class="form-control" id="state_reserve_forest_acre" value="{{application_details.state_reserve_forest_acre}}" onchange="get_total_area_acre()" disabled>
+                                                <input type="number" min="0" name="state_reserve_forest_acre" class="form-control" id="state_reserve_forest_acre" value="{{application_details.state_reserve_forest_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="state_reserve_forest_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -237,14 +243,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Private Area (acres)</label>
-                                                <input type="number" min="0" name="private_area_acre" class="form-control" id="private_area_acre" value="{{application_details.private_area_acre}}" onchange="get_total_area_acre()" disabled>
+                                                <input type="number" min="0" name="private_area_acre" class="form-control" id="private_area_acre" value="{{application_details.private_area_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="private_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Others Specify (acres)</label>
-                                                <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" value="{{application_details.others_area_acre}}" onchange="get_total_area_acre()" disabled>
+                                                <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" value="{{application_details.others_area_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -253,14 +259,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Total land area required (acre)</label>
-                                                <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" value="{{application_details.total_area_acre}}" disabled>
+                                                <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" value="{{application_details.total_area_acre}}" readonly>
                                             </div>
                                             <div id="total_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Total Green Space (acre)</label>
-                                                <input type="number" name="green_area_acre" class="form-control" id="green_area_acre" value="{{application_details.green_area_acre}}" disabled>
+                                                <input type="number" name="green_area_acre" class="form-control" id="green_area_acre" value="{{application_details.green_area_acre}}">
                                             </div>
                                             <div id="green_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -269,7 +275,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Brief Description of Production and Process Flow</label>
-                                                <textarea class="form-control" name="production_process_flow" id="production_process_flow" rows="3" disabled>{{application_details.production_process_flow}}</textarea>
+                                                <textarea class="form-control" name="production_process_flow" id="production_process_flow" rows="3">{{application_details.production_process_flow}}</textarea>
                                             </div>
                                             <div id="production_process_flowErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -280,30 +286,14 @@
                                     <div class="col-md-12">
                                         <div class="card">
                                             <div class="card-body">
-                                                <table class="table table-hover table-bordered table-centered mb-0">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Sl.no.</th>
-                                                            <th>Machine/Tool/Equipment</th>
-                                                            <th>Qty</th>
-                                                            <th>Installed Capacity</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {% for machine_equipment in machine_equipment %}
-                                                            <tr>
-                                                                <td>{{ forloop.counter }}</td>
-                                                                <td>{{machine_equipment.machine_name}}</td>
-                                                                <td>{{machine_equipment.qty}}</td>
-                                                                <td>{{machine_equipment.installed_capacity}}</td>
-                                                            </tr>
-                                                        {% empty %}
-                                                            <tr>
-                                                              <td colspan="4" class="text-center">No Data Available</td>
-                                                            </tr>
-                                                        {% endfor %}
-                                                    </tbody>
-                                                </table>
+                                                <div class="card-widgets mb-3">
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#machine_equipment_tool_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                </div>
+                                                <div class="collapse pt-3 show">
+                                                    <div id="machine_details_div">
+                                                        {% include 'details_machine_equipment_tool.html' %}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -314,14 +304,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Objective</label>
-                                                <input type="text" name="project_objective" class="form-control" id="project_objective" value="{{application_details.project_objective}}" disabled>
+                                                <input type="text" name="project_objective" class="form-control" id="project_objective" value="{{application_details.project_objective}}">
                                             </div>
                                             <div id="project_objectiveErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Number of Workers To Be Employed</label>
-                                                <input type="number" min="1" name="project_no_of_workers" class="form-control" id="project_no_of_workers" value="{{application_details.project_no_of_workers}}" disabled>
+                                                <input type="number" min="1" name="project_no_of_workers" class="form-control" id="project_no_of_workers" value="{{application_details.project_no_of_workers}}">
                                             </div>
                                             <div id="project_no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -330,14 +320,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Cost</label>
-                                                <input type="number" min="0" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
+                                                <input type="number" min="0" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}">
                                             </div>
                                             <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Duration</label>
-                                                <input type="text" name="project_duration" class="form-control" id="project_duration" value="{{application_details.project_duration}}" disabled>
+                                                <input type="text" name="project_duration" class="form-control" id="project_duration" value="{{application_details.project_duration}}">
                                             </div>
                                             <div id="project_durationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -348,44 +338,14 @@
                                     <div class="col-md-12">
                                         <div class="card">
                                             <div class="card-body">
-                                                <table class="table table-hover table-bordered table-centered mb-0">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Sl.no.</th>
-                                                            <th>Product (Name)</th>
-                                                            <th>Installed capacity/quantity per annum</th>
-                                                            <th>Method of storage</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {% for final_product in final_product %}
-                                                            <tr>
-                                                                <td>{{ forloop.counter }}</td>
-                                                                <td>{{final_product.product_name}}</td>
-                                                                {% if final_product.quantity_annum is none %}
-                                                                    <td>
-                                                                        {{final_product.name_location_type}}
-                                                                    </td>
-                                                                {% else %}
-                                                                    <td>
-                                                                        {{final_product.quantity_annum }}
-                                                                    </td>
-                                                                {% endif %}
-                                                                {% if final_product.storage_method == 'fully_enclosed' %}
-                                                                    <td>Fully Enclosed</td>
-                                                                {% elif final_product.storage_method == 'partially_enclosed' %}
-                                                                    <td>Partially Enclosed</td>
-                                                                {% else %}
-                                                                    <td>Open</td>
-                                                                {% endif %}
-                                                            </tr>
-                                                        {% empty %}
-                                                            <tr>
-                                                              <td colspan="4" class="text-center">No Data Available</td>
-                                                            </tr>
-                                                        {% endfor %}
-                                                    </tbody>
-                                                </table>
+                                                <div class="card-widgets mb-3">
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#final_products_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                </div>
+                                                <div class="collapse pt-3 show">
+                                                    <div id="final_products_div">
+                                                        {% include 'final_products.html' %}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -395,38 +355,14 @@
                                     <div class="col-md-12">
                                         <div class="card">
                                             <div class="card-body">
-                                                <table class="table table-hover table-bordered table-centered mb-0">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Sl.no.</th>
-                                                            <th>List of raw materials</th>
-                                                            <th>Quantity (MT/annum)</th>
-                                                            <th>Source</th>
-                                                            <th>Method of storage</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {% for raw_materials in raw_materials %}
-                                                            <tr>
-                                                                <td>{{ forloop.counter }}</td>
-                                                                <td>{{raw_materials.raw_material}}</td>
-                                                                <td>{{raw_materials.qty}}</td>
-                                                                <td>{{raw_materials.source}}</td>
-                                                                {% if raw_materials.storage_method == 'Fully_Enclosed' %}
-                                                                    <td>Fully Enclosed</td>
-                                                                {% elif raw_materials.storage_method == 'Partially_Enclosed' %}
-                                                                    <td>Partially Enclosed</td>
-                                                                {% else %}
-                                                                    <td>Open</td>
-                                                                {% endif %}
-                                                            </tr>
-                                                        {% empty %}
-                                                            <tr>
-                                                              <td colspan="5" class="text-center">No Data Available</td>
-                                                            </tr>
-                                                        {% endfor %}
-                                                    </tbody>
-                                                </table>
+                                                <div class="card-widgets mb-3">
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#raw_materials_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                </div>
+                                                <div class="collapse pt-3 show">
+                                                    <div id="raw_materials_div">
+                                                        {% include 'raw_materials.html' %}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -436,32 +372,14 @@
                                     <div class="col-md-12">
                                         <div class="card">
                                             <div class="card-body">
-                                                <table class="table table-hover table-bordered table-centered mb-0">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Sl.no.</th>
-                                                            <th>Partner Type</th>
-                                                            <th>CID</th>
-                                                            <th>Name</th>
-                                                            <th>Address</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {% for partner_details in partner_details %}
-                                                            <tr>
-                                                                <td>{{ forloop.counter }}</td>
-                                                                <td>{{partner_details.partner_type}}</td>
-                                                                <td>{{partner_details.partner_cid}}</td>
-                                                                <td>{{partner_details.partner_name}}</td>
-                                                                <td>{{partner_details.partner_address}}</td>
-                                                            </tr>
-                                                        {% empty %}
-                                                            <tr>
-                                                              <td colspan="5" class="text-center">No Data Available</td>
-                                                            </tr>
-                                                        {% endfor %}
-                                                    </tbody>
-                                                </table>
+                                                <div class="card-widgets mb-3">
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#partner_details_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                </div>
+                                                <div class="collapse pt-3 show">
+                                                    <div id="partner_details_div">
+                                                        {% include 'partner_details.html' %}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -3632,7 +3550,7 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Area Required (length x RoW)</label>
-                        <input type="text" name="area_required" class="form-control" id="area_required" disabled="disabled">
+                        <input type="text" name="area_required" class="form-control" id="area_required" readonly="readonly">
                     </div>
                     <div class="alert alert-danger" id="area_requiredErrorMsg" style="display:none"></div>
                 </div>
@@ -3739,7 +3657,7 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Area Required (length x RoW)</label>
-                        <input type="text" name="edit_area_required" class="form-control" id="edit_area_required" disabled="disabled">
+                        <input type="text" name="edit_area_required" class="form-control" id="edit_area_required" readonly="readonly">
                     </div>
                     <div class="alert alert-danger" id="edit_area_requiredErrorMsg" style="display:none"></div>
                 </div>
@@ -3871,7 +3789,7 @@
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Area Required (length x RoW)</label>
-                            <input type="text" name="road_area_required" class="form-control" id="road_area_required" disabled="disabled">
+                            <input type="text" name="road_area_required" class="form-control" id="road_area_required" readonly="readonly">
                         </div>
                         <div class="alert alert-danger" id="road_area_requiredErrorMsg" style="display:none"></div>
                     </div>
@@ -3971,7 +3889,7 @@
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Area Required (length x RoW)</label>
-                            <input type="text" name="edit_road_area_required" class="form-control" id="edit_road_area_required" disabled="disabled">
+                            <input type="text" name="edit_road_area_required" class="form-control" id="edit_road_area_required" readonly="readonly">
                         </div>
                         <div class="alert alert-danger" id="edit_road_area_requiredErrorMsg" style="display:none"></div>
                     </div>
@@ -4025,7 +3943,31 @@
 
 <script>
     $(function() {
-        document.getElementById('industry_classification').disabled = true;
+        let identifier = $('#identifier').val();
+        if(identifier == 'NC')
+        {
+            $("input").prop('disabled', true);
+            $("select").prop('disabled', true);
+            $("textarea").prop('disabled', true);
+            $("#project_name").prop('disabled', false);
+            $(".disclaimer-check").prop('disabled', false);
+            $(".name_own_button").show();
+            $(".other_mod_button").hide();
+            $("button").hide();
+        }
+        else if(identifier == 'OC')
+        {
+            $("input").prop('disabled', true);
+            $("select").prop('disabled', true);
+            $("textarea").prop('disabled', true);
+            $("#applicant_name").prop('disabled', false);
+            $(".disclaimer-check").prop('disabled', false);
+            $(".name_own_button").show();
+            $(".other_mod_button").hide();
+            $("button").hide();
+        }
+        else
+        {
             if 
             (
                 $('#anc_other_crushing_unit').prop('checked') &&
@@ -4281,7 +4223,8 @@
                 $('.mineral_application').show();
                 $('.general_application').show();
             }
-        });
+        }
+    });
 
     function check_industry_radio(value)
     {
@@ -4984,7 +4927,7 @@
         let project_category = $('#project_category').val();
         let focal_person = $('#focal_person').val();
         let industry_type = $('#industry_type').val();
-        let establishment_type = $('#establishment_type').val();
+        let establishment_name = $('#establishment_name').val();
         let industry_classification = $('#industry_classification').val();
         let dzongkhag_code = $('#dzo_throm').val();
         let gewog_code = $('#gewog').val();
@@ -5023,12 +4966,12 @@
             $('#industry_typeErrorMsg').delay(2000).fadeOut('slow');
             $('#industry_type').focus();
         }
-        else if(establishment_type == "")
+        else if(establishment_name == "")
         {
-            $('#establishment_typeErrorMsg').html("Enter Establishment Name");
-            $('#establishment_typeErrorMsg').show();
-            $('#establishment_typeErrorMsg').delay(2000).fadeOut('slow');
-            $('#establishment_type').focus();
+            $('#establishment_nameErrorMsg').html("Enter Establishment Name");
+            $('#establishment_nameErrorMsg').show();
+            $('#establishment_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#establishment_name').focus();
         }
         else if(industry_classification == "")
         {

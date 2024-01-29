@@ -1001,11 +1001,14 @@ def forward_application(request):
             # Calculate TAT (Turnaround Time) based on the conditions
             if application_approval_date and application_submission_date and application_ai_date is None and application_resubmit_date is None:
                 tat = days_between(application_submission_date,application_approval_date)
+                print("iftat")
+                print(tat)
             else:
+                print("elsetat")
+                print(tat)
                 day_one = days_between(application_submission_date,application_approval_date)
-                day_two = days_between( application_resubmit_date, application_ai_date)
+                day_two = days_between(application_resubmit_date, application_ai_date)
                 tat = day_one - day_two
-
             # Update the application details with TAT
           
             application_details.update(tat=tat)
@@ -1021,7 +1024,7 @@ def forward_application(request):
             for app_det in application_details:
                 applicant = app_det.applicant_id
                 service_id = app_det.service_id
-            t_application_history.objects.create(application_status='DEC',application_no=application_no,
+            t_application_history.objects.create(application_status='A',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
