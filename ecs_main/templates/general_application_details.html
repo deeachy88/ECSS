@@ -8193,98 +8193,96 @@ aria-hidden="true">
 
 <script>
 $(function() {
-let status = $('#status').val();
+    let status = $('#status').val();
 
-if(status == 'P' || status == 'DEC' || status == 'AL')
-{
-if(status == 'P')
-{
-    $('.forwardTo').show();
-    $('.R_button').show();
-}
-else if(status == 'AL')
-{
-    $('.verifier_additional_info_letter').show();
-    $('.ALR_button').show();
-    $('.ALA_button').show();
-}
-else if(status == 'DEC')
-{
-    $('.forwardTo').hide();
-    $('.approveButton').show();
-    $('.verifier_ec_draft_div').show();
-}
-$('#verifier_details_accordian').show();
-
+    if(status == 'P' || status == 'DEC' || status == 'AL')
+    {
+    if(status == 'P')
+    {
+        $('.forwardTo').show();
+        $('.R_button').show();
+    }
+    else if(status == 'AL')
+    {
+        $('.verifier_additional_info_letter').show();
+        $('.ALR_button').show();
+        $('.ALA_button').show();
+    }
+    else if(status == 'DEC')
+    {
+        $('.forwardTo').hide();
+        $('.approveButton').show();
+        $('.verifier_ec_draft_div').show();
+    }
+    $('#verifier_details_accordian').show();
 }
 else if(status == 'R' || status == 'ALS' || status == 'FEATC' || status == 'RSS' || status == 'LUS' || status == 'APP')
 {
-if(status == 'R')
-{
-    $('.information_complete_div').show();
-    $('input[name="information"]').focus();
-    $('.AL_button').show();
-    
-}
-else if(status == 'ALS')
-{
-    $('.EATC_button').show();
-    $('.additional_info').show();
-}
-else if(status == 'FEATC')
-{
-    $('.information_complete_div').hide();
-    $('.rectification_div').show();
-    $('.rectification_button').show();
-}
-else if(status == 'LUS')
-{
-    $('.information_complete_div').hide();
-    $('.draft_ec_div').show();
-    $('.ec_draft_button').show();
-}
-else if(status == 'RSS')
-{
-    
-    $('.information_complete_div').hide();
-    $('.rev_resubmit_remarks_div').show();
-}
-else if(status == 'APP')
-{
-    $('.eatc_attachment_div').show();
-    $('.rev_lu_attachment_div').show();
-    $('.LU_button').show();
-}
+    if(status == 'R')
+    {
+        $('.information_complete_div').show();
+        $('input[name="information"]').focus();
+        $('.AL_button').show();
+        
+    }
+    else if(status == 'ALS')
+    {
+        $('.EATC_button').show();
+        $('.additional_info').show();
+    }
+    else if(status == 'FEATC')
+    {
+        $('.information_complete_div').hide();
+        $('.rectification_div').show();
+        $('.rectification_button').show();
+    }
+    else if(status == 'LUS')
+    {
+        $('.information_complete_div').hide();
+        $('.draft_ec_div').show();
+        $('.ec_draft_button').show();
+    }
+    else if(status == 'RSS')
+    {
+        
+        $('.information_complete_div').hide();
+        $('.rev_resubmit_remarks_div').show();
+    }
+    else if(status == 'APP')
+    {
+        $('.eatc_attachment_div').show();
+        $('.rev_lu_attachment_div').show();
+        $('.LU_button').show();
+    }
 
-$('#reviewer_details_accordian').show();
-
+    $('#reviewer_details_accordian').show();
 }
 else if(status == 'ALR' || status == 'ALA' || status == 'EATC' || status == 'RS' || status == 'LU')
 {
-if(status == 'ALR' || status == 'ALA')
-{
-    $('.ALS_button').show();
-}
-else if(status == 'EATC')
-{
-    $('.eatc_attachment_details').show();
-    $('.additional_info_div').hide();
-    $('.FEATC_button').show();
-}
-else if(status == 'RS')
-{
-    $('.additional_info_div').hide();
-    $('.resubmit_remarks_div').show();
-    $('.RSS_button').show();
-}
-else if(status == 'LU')
-{
-    $('.additional_info_div').hide();
-    $('.client_lu_attachment_div').show();
-    $('.LUS_button').show();
-}
-$('#client_details_accordian').show();
-$('#client_details_accordian').focus();
+    if(status == 'ALR' || status == 'ALA')
+    {
+        $('.ALS_button').show();
+    }
+    else if(status == 'EATC')
+    {
+        $('.eatc_attachment_details').show();
+        $('.additional_info_div').hide();
+        $('.FEATC_button').show();
+    }
+    else if(status == 'RS')
+    {
+        $('.additional_info_div').hide();
+        $('.resubmit_remarks_div').show();
+        $('.RSS_button').show();
+    }
+    else if(status == 'LU')
+    {
+        $('.additional_info_div').hide();
+        $('.client_lu_attachment_div').show();
+        $('.LUS_button').show();
+    }
+    $('#client_details_accordian').show();
+    $('#client_details_accordian').focus();
 }
 });
 

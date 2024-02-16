@@ -16,7 +16,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="general_om_application_form">
                                     {% csrf_token %}
-                                    <input type="text" class="form-control" value="{{ identifier }}" id="identifier" name="identifier">
+                                    <input type="text" class="form-control" value="{{ identifier }}" id="identifier" name="identifier" style="display:none;">
                                     <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="{{application_details.ec_reference_no}}" name="ec_reference_no" id="ec_reference_no" style="display:none;">
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
@@ -2144,7 +2144,7 @@
                                 <form method="post" id="general_submit_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no">
-                                    
+                                    <input type="text" class="form-control" value="{{ identifier }}" id="disclaimer_identifier" name="disclaimer_identifier" style="display:none;">
                                     <div class="row industry_application" style="display:none;">
                                         <a href="{% url 'industry_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for Industrial projects </a>
@@ -3423,6 +3423,8 @@
                 $("#project_name").prop('disabled', false);
                 $(".disclaimer-check").prop('disabled', false);
                 $("#identifier").prop('disabled', false);
+                $("#ec_reference_no").prop('disabled', false);
+                $("#application_no").prop('disabled', false);
                 $(".name_own_button").show();
                 $(".other_mod_button").hide();
                 $("button").hide();
@@ -3435,6 +3437,8 @@
                 $("#applicant_name").prop('disabled', false);
                 $(".disclaimer-check").prop('disabled', false);
                 $("#identifier").prop('disabled', false);
+                $("#ec_reference_no").prop('disabled', false);
+                $("#application_no").prop('disabled', false);
                 $(".name_own_button").show();
                 $(".other_mod_button").hide();
                 $("button").hide();

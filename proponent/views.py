@@ -731,6 +731,11 @@ def save_iee_application(request):
                     dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
                 )
                 ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+            elif identifier == 'NC' or identifier == 'OC':
+                auth_filter = t_ec_industries_t1_general.objects.filter(
+                    application_no=application_no
+                )
+                ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
             else:
                 auth_filter = t_ec_industries_t1_general.objects.filter(
                     application_no=tor_application_no
@@ -739,11 +744,11 @@ def save_iee_application(request):
             
             if identifier == 'NC':
                 t_ec_industries_t1_general.objects.filter(application_no=application_no).update(
-                    project_name=request.POST.get('project_name')
+                    project_name=request.POST.get('project_name'),form_type=identifier
                 )
             elif identifier == 'OC':
                 t_ec_industries_t1_general.objects.filter(application_no=application_no).update(
-                    applicant_name=request.POST.get('applicant_name')
+                    applicant_name=request.POST.get('applicant_name'),form_type=identifier
                 )
             elif identifier == 'DR':
                 application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -2984,60 +2989,61 @@ def submit_general_application(request):
     try:
         application_no = request.POST.get('general_disclaimer_application_no')
         identifier = request.POST.get('anc_identifier')
+        disclaimer_identifier = request.POST.get('disclaimer_identifier')
         
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        application_details_main = application_details.filter(form_type='Main Activity').first()
-        application_details_ancillary = application_details.filter(form_type='Ancillary').first()
-        anc_details = application_details.filter(form_type='Ancillary').count()
+        if disclaimer_identifier in ('OC', 'NC'):
+            t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
+            data['message'] = "success"
+        else:
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details_main = application_details.filter(form_type='Main Activity').first()
+            application_details_ancillary = application_details.filter(form_type='Ancillary').first()
+            anc_details = application_details.filter(form_type='Ancillary').count()
 
-        if application_details_main:
-            service_id = application_details_main.service_id
-            application_type = application_details_main.application_type
-            anc_other_crushing_unit = application_details_main.anc_other_crushing_unit
-            anc_other_surface_collection = application_details_main.anc_other_surface_collection
-            anc_other_ground_water = application_details_main.anc_other_ground_water
-            anc_other_mineral = application_details_main.anc_other_mineral
-            anc_other_general = application_details_main.anc_other_general
-            anc_other_transmission = application_details_main.anc_other_transmission
+            if application_details_main:
+                service_id = application_details_main.service_id
+                application_type = application_details_main.application_type
+                anc_other_crushing_unit = application_details_main.anc_other_crushing_unit
+                anc_other_surface_collection = application_details_main.anc_other_surface_collection
+                anc_other_ground_water = application_details_main.anc_other_ground_water
+                anc_other_mineral = application_details_main.anc_other_mineral
+                anc_other_general = application_details_main.anc_other_general
+                anc_other_transmission = application_details_main.anc_other_transmission
 
-            if (anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or
-                anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or
-                anc_other_general == 'Yes' or anc_other_transmission == 'Yes') and anc_details == 0:
-                data['message'] = "not submitted"
-            else:
-                if identifier == 'Ancillary':
-                    application_details_ancillary.action_date = timezone.now()
-                    application_details_ancillary.save()
-                    t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
-                    data['message'] = "success"
-                elif identifier in ('OC', 'NC'):
-                    t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
-                    data['message'] = "success"
+                if (anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or
+                    anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or
+                    anc_other_general == 'Yes' or anc_other_transmission == 'Yes') and anc_details == 0:
+                    data['message'] = "not submitted"
                 else:
-                    ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary', application_status='P').count()
-                    if ancillary_count > 0:
-                        data['message'] = "not submitted"
-                    else:
-                        application_details_main.action_date = timezone.now()
-                        application_details_main.save()
+                    if identifier == 'Ancillary':
+                        application_details_ancillary.action_date = timezone.now()
+                        application_details_ancillary.save()
                         t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
-
-                        fees_details = t_fees_schedule.objects.filter(service_id=service_id).first()
-                        main_amount = fees_details.rate + fees_details.application_fee
-
-                        ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').count()
-                        if ancillary_application_details_count > 0:
-                            ancillary_amount = fees_details.rate
-                            total_amount = main_amount + ancillary_amount
-                        else:
-                            total_amount = main_amount
-                        app_hist_details = t_application_history.objects.filter(application_no=application_no)
-                        app_hist_details.update(remarks='Your Application Submitted')
-                        app_hist_details.update(action_date=timezone.now())
-                        insert_app_payment_details(request, application_no, 'new_general_application', total_amount, application_type)
-                        send_payment_mail(request.session['name'], request.session['email'], total_amount)
                         data['message'] = "success"
+                    else:
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary', application_status='P').count()
+                        if ancillary_count > 0:
+                            data['message'] = "not submitted"
+                        else:
+                            application_details_main.action_date = timezone.now()
+                            application_details_main.save()
+                            t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
 
+                            fees_details = t_fees_schedule.objects.filter(service_id=service_id).first()
+                            main_amount = fees_details.rate + fees_details.application_fee
+
+                            ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').count()
+                            if ancillary_application_details_count > 0:
+                                ancillary_amount = fees_details.rate
+                                total_amount = main_amount + ancillary_amount
+                            else:
+                                total_amount = main_amount
+                            app_hist_details = t_application_history.objects.filter(application_no=application_no)
+                            app_hist_details.update(remarks='Your Application Submitted')
+                            app_hist_details.update(action_date=timezone.now())
+                            insert_app_payment_details(request, application_no, 'new_general_application', total_amount, application_type)
+                            send_payment_mail(request.session['name'], request.session['email'], total_amount)
+                            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
@@ -3647,6 +3653,11 @@ def save_road_application(request):
                 dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
             )
             ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+        elif identifier == 'NC' or identifier == 'OC':
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=application_no
+            )
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
         else:
             auth_filter = t_ec_industries_t1_general.objects.filter(
                 application_no=tor_application_no
@@ -3655,10 +3666,10 @@ def save_road_application(request):
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(project_name=project_name)
+            application_details.update(project_name=project_name, form_type=identifier)
         elif(identifier == 'OC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(applicant_name=applicant_name)
+            application_details.update(applicant_name=applicant_name, form_type=identifier)
         elif(identifier == 'DR'): # This is For Draft Applications
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             if application_details.exists():
@@ -3949,27 +3960,37 @@ def save_general_application(request):
         total_area_acre = request.POST.get('total_area_acre')
         project_site = request.POST.get('project_site')
         identifier = request.POST.get('identifier')
+        print(identifier)
         tor_application_no = request.POST.get('tor_application_no')
         form_type = request.POST.get('form_type')
         ca_auth = None
-        if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
-            auth_filter = t_competant_authority_master.objects.filter(
-                competent_authority=request.session['ca_auth'],
-                dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
-            )
-            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+        if tor_application_no is None:
+            if identifier in ['DR', 'NC', 'OC']:
+                if identifier == 'NC' or identifier == 'OC':
+                    auth_filter = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                    ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+                else:
+                    auth_filter = t_competant_authority_master.objects.filter(
+                        competent_authority=request.session['ca_auth'],
+                        dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+                    )
+                    ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+            else:
+                auth_filter = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
+                ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
         else:
-            auth_filter = t_ec_industries_t1_general.objects.filter(
-                application_no=tor_application_no
-            )
+            auth_filter = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
             ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+
+        print(ca_auth)
+
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
 
         with transaction.atomic():
             if identifier == 'NC':
                 application_details.update(project_name=project_name, form_type=identifier)
             elif identifier == 'OC':
-                application_details.update(applicant_name=applicant_name, form_type=identifier)
+                application_details.update(applicant_name=applicant_name, application_type=identifier)
             elif identifier == 'DR':
                 if application_details.exists():
                     application_details.update(
@@ -4132,14 +4153,29 @@ def save_forest_application(request):
         identifier = request.POST.get('identifier')
         # Fetch ca_auth for non-draft applications
         tor_application_no = request.POST.get('tor_application_no')
+        dzongkhag_throm = request.POST.get('dzongkhag_throm')
+        if dzongkhag_throm == 'Thromde':
+            dzongkhag_code, gewog_code, village_code, thromde_id = None, None, None, request.POST.get('thromde_id')
+        else:
+            dzongkhag_code, gewog_code, village_code, thromde_id = request.POST.get('dzongkhag'), request.POST.get('gewog'), request.POST.get('vil_chiwog'), None
+        # Application details
         ca_auth = None
         if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
             auth_filter = t_competant_authority_master.objects.filter(
                 competent_authority=request.session['ca_auth'],
-                dzongkhag_code_id= request.POST.get('dzo_throm') if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+                dzongkhag_code_id=request.POST.get('dzo_throm') if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
             )
             ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-        # Application details
+        elif identifier == 'NC' or identifier == 'OC':
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=request.POST.get('application_no')
+            )
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+        else:
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=tor_application_no
+            )
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
         application_details = {
             'application_no':request.POST.get('application_no'),
             'application_date':timezone.now().date(),
@@ -4152,9 +4188,11 @@ def save_forest_application(request):
             'contact_no': request.POST.get('contact_no'),
             'email': request.POST.get('email'),
             'focal_person': request.POST.get('focal_person'),
-            'dzongkhag_code': request.POST.get('dzo_throm'),
-            'gewog_code': request.POST.get('gewog'),
-            'village_code': request.POST.get('vil_chiwog'),
+            'dzongkhag_throm': request.POST.get('dzongkhag_throm'),
+            'dzongkhag_code': dzongkhag_code,
+            'gewog_code': gewog_code,
+            'village_code': village_code,
+            'thromde_id': thromde_id,        
             'industrial_area_acre': request.POST.get('industrial_area_acre'),
             'state_reserve_forest_acre': request.POST.get('state_reserve_forest_acre'),
             'private_area_acre': request.POST.get('private_area_acre'),
@@ -4175,6 +4213,7 @@ def save_forest_application(request):
                 if application_instance:
                     application_instance.project_name = request.POST.get('project_name') if identifier == 'NC' else application_instance.project_name
                     application_instance.applicant_name = request.POST.get('applicant_name') if identifier == 'OC' else application_instance.applicant_name
+                    application_instance.form_type=identifier
                     application_instance.save()
                 else:
                     raise ValueError("Application does not exist.")
@@ -4355,6 +4394,11 @@ def save_ground_water_application(request):
                 dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
             )
             ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+        elif identifier == 'NC' or identifier == 'OC':
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=application_no
+            )
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
         else:
             auth_filter = t_ec_industries_t1_general.objects.filter(
                 application_no=tor_application_no
@@ -4387,9 +4431,12 @@ def save_ground_water_application(request):
             'thromde_id':thromde_id
         }
 
-        if identifier == 'NC' or identifier == 'OC':
+        if identifier == 'NC':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(**application_data)
+            application_details.update(project_name=project_name, form_type=identifier)
+        elif identifier == 'OC':
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(applicant_name=applicant_name, form_type=identifier)
         else:
             application_data.update({
                 'application_no': application_no,
@@ -4600,6 +4647,11 @@ def save_quarry_application(request):
                 dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
             )
             ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+        elif identifier == 'NC' or identifier == 'OC':
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=application_no
+            )
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
         else:
             auth_filter = t_ec_industries_t1_general.objects.filter(
                 application_no=tor_application_no
@@ -4608,9 +4660,9 @@ def save_quarry_application(request):
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         if identifier == 'NC':
-            application_details.update(project_name=project_name)
+            application_details.update(project_name=project_name,form_type=identifier)
         elif identifier == 'OC':
-            application_details.update(applicant_name=applicant_name)
+            application_details.update(applicant_name=applicant_name, form_type=identifier)
         elif identifier == 'DR':
             if not application_details.exists():
                 t_ec_industries_t1_general.objects.create(
@@ -5032,6 +5084,11 @@ def save_energy_application(request):
                 dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
             )
             ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+        elif identifier == 'NC' or identifier == 'OC':
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=application_no
+            )
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
         else:
             auth_filter = t_ec_industries_t1_general.objects.filter(
                 application_no=tor_application_no
@@ -5040,10 +5097,10 @@ def save_energy_application(request):
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(project_name=project_name)
+            application_details.update(project_name=project_name, form_type=identifier)
         elif(identifier == 'OC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(applicant_name=applicant_name)
+            application_details.update(applicant_name=applicant_name, form_type=identifier)
         elif(identifier == 'DR'): # This is For Draft Applications
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             if application_details.exists():
@@ -5056,6 +5113,8 @@ def save_energy_application(request):
                     contact_no=contact_no,
                     email=email,
                     focal_person=focal_person,
+
+                    thromde_id=thromde_id,
                     dzongkhag_code=dzongkhag_code,
                     gewog_code=gewog_code,
                     village_code=village_code,
@@ -5081,6 +5140,7 @@ def save_energy_application(request):
                     contact_no=contact_no,
                     email=email,
                     focal_person=focal_person,
+                    thromde_id=thromde_id,
                     dzongkhag_code=dzongkhag_code,
                     gewog_code=gewog_code,
                     village_code=village_code,
@@ -5308,6 +5368,11 @@ def save_tourism_application(request):
                 dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
             )
             ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+        elif identifier == 'NC' or identifier == 'OC':
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=application_no
+            )
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
         else:
             auth_filter = t_ec_industries_t1_general.objects.filter(
                 application_no=tor_application_no

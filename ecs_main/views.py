@@ -1001,11 +1001,7 @@ def forward_application(request):
             # Calculate TAT (Turnaround Time) based on the conditions
             if application_approval_date and application_submission_date and application_ai_date is None and application_resubmit_date is None:
                 tat = days_between(application_submission_date,application_approval_date)
-                print("iftat")
-                print(tat)
             else:
-                print("elsetat")
-                print(tat)
                 day_one = days_between(application_submission_date,application_approval_date)
                 day_two = days_between(application_resubmit_date, application_ai_date)
                 tat = day_one - day_two
@@ -1056,7 +1052,7 @@ def forward_application(request):
                         data['redirect_to'] = "verify_application_list"
                         x = {
                             "applicationNo":"e65ed5dc-2541-11ed-8d50-0242ac120010",
-                            "cleareanceNo":"1224343",
+                            "cleareanceNo":ec_no,
                             "status":True,
                             "message": "ok",
                             "rejectionMessage": "notok"
@@ -1064,8 +1060,9 @@ def forward_application(request):
                         post_data = json.dumps(x)
                         headers = {'Accept': 'application/json'}
 
-                        res = requests.post('https://bpa.stagingibls.moea.gov.bt/mule/api/action/ecss_update',
+                        res = requests.post('https://staging-datahub-apim.dit.gov.bt/ibls_to_bafra_postapi/1.0.0/nectoibls',
                                             params=post_data, headers=headers, verify=False)
+                        print(res)
         elif identifier == 'FT': # forward TOR form
             tor_remarks = request.POST.get('tor_remarks')
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
