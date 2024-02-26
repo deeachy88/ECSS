@@ -90,12 +90,7 @@ def login(request):
                         response['Expires'] = '0'
                         return response
                     else:
-                        v_application_count = 0
-                        r_application_count = 0
-                        ec_renewal_count = 0
-                        payment_count = 0
                         if check_user.login_type == 'I':
-
                             role_details = t_role_master.objects.filter(role_id=check_user.role_id_id)
                             for roles in role_details:
                                 request.session['name'] = check_user.name
@@ -106,23 +101,7 @@ def login(request):
                                 request.session['ca_authority'] = check_user.agency_code
                                 request.session['dzongkhag_code'] = check_user.dzongkhag_code
                                 # START: count no of EC due for renewal within 30 days
-                                ca_authority = request.session['ca_authority']
-                                expiry_date_threshold = datetime.now().date() + timedelta(days=30)
-                                ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority,
-                                                                                  application_status='A',
-                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
-                                # END: count no of EC due for renewal within 30 days
-                                if roles.role_name == 'Verifier':
-                                    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=check_user.agency_code, action_date__isnull=False).count()
-                                elif roles.role_name == 'Reviewer':
-                                    r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=check_user.agency_code).count()
-                                response = render(request, 'common_dashboard.html',{'v_application_count':v_application_count, 'r_application_count':r_application_count, 'ec_renewal_count':ec_renewal_count})
-            
-                                # Set cache-control headers to prevent caching
-                                response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-                                response['Pragma'] = 'no-cache'
-                                response['Expires'] = '0'
-                                return response
+                                return redirect(dashboard)
                         else:
                             request.session['name'] = check_user.proponent_name
                             request.session['email'] = check_user.email_id
@@ -130,27 +109,7 @@ def login(request):
                             request.session['login_id'] = check_user.login_id
                             request.session['address'] = check_user.address
                             request.session['contact_number'] = check_user.contact_number
-                            app_hist_count = t_application_history.objects.filter(applicant_id=check_user.email_id).count()
-                            cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=check_user.login_id).count()
-                            payment_count = t_payment_details.objects.filter(transaction_no__isnull=True).count()
-                            print(payment_count);
-                            t1_general_subquery = t_ec_industries_t1_general.objects.filter(
-                                tor_application_no=OuterRef('application_no')
-                            ).values('tor_application_no')
-
-                            # Query to count approved applications that are not in t1_general
-                            tor_application_count = t_workflow_dtls.objects.filter(
-                                application_status='A',application_no__contains='TOR'
-                            ).exclude(
-                                application_no__in=Subquery(t1_general_subquery)
-                            ).count()
-                            response = render(request, 'common_dashboard.html',{'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'payment_count':payment_count, 'tor_application_count':tor_application_count})
-            
-                            # Set cache-control headers to prevent caching
-                            response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-                            response['Pragma'] = 'no-cache'
-                            response['Expires'] = '0'
-                            return response
+                            return redirect(dashboard)
                 else:
                     _message = 'User ID or Password Not Matching.'
         else:
@@ -164,6 +123,59 @@ def login(request):
     response['Expires'] = '0'
     return response
 
+def dashboard(request):
+    v_application_count = 0
+    r_application_count = 0
+    ec_renewal_count = 0
+    payment_count = 0
+    try:
+        login_type = request.session['login_type']
+        print(login_type)
+    except:
+        login_type = None
+    if login_type == 'I':
+        role = request.session['role']
+        ca_authority = request.session['ca_authority']
+        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+        ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority,
+                                                            application_status='A',
+                                                            ec_expiry_date__lt=expiry_date_threshold).count()
+        # END: count no of EC due for renewal within 30 days
+        if role == 'Verifier':
+            v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=ca_authority, action_date__isnull=False).count()
+        elif role == 'Reviewer':
+            r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=ca_authority).count()
+        response = render(request, 'common_dashboard.html',{'v_application_count':v_application_count, 'r_application_count':r_application_count, 'ec_renewal_count':ec_renewal_count})
+
+        # Set cache-control headers to prevent caching
+        response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response['Pragma'] = 'no-cache'
+        response['Expires'] = '0'
+        return response
+    else:
+        email_id = request.session['email']
+        login_id =  request.session['login_id']
+        app_hist_count = t_application_history.objects.filter(applicant_id=email_id).count()
+        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=login_id).count()
+        payment_count = t_payment_details.objects.filter(transaction_no__isnull=True).count()
+        print(payment_count);
+        t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+            tor_application_no=OuterRef('application_no')
+        ).values('tor_application_no')
+
+        # Query to count approved applications that are not in t1_general
+        tor_application_count = t_workflow_dtls.objects.filter(
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
+        response = render(request, 'common_dashboard.html',{'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'payment_count':payment_count, 'tor_application_count':tor_application_count})
+
+        # Set cache-control headers to prevent caching
+        response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response['Pragma'] = 'no-cache'
+        response['Expires'] = '0'
+        return response
 
 def add_user(request):
     name = request.POST.get('name')

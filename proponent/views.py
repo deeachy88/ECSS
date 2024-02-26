@@ -21,11 +21,12 @@ from django.shortcuts import render
 from datetime import timedelta
 
 def new_application(request):
-    applicant_id = request.session.get('login_id', None)
-    
+    assigned_user_id = request.session.get('login_id', None)
+    applicant_id = request.session.get('email', None)
     bsic_details = t_bsic_code.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=applicant_id).count()
+    print(app_hist_count)
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
@@ -2810,7 +2811,7 @@ def ec_renewal(request):
     renewal_details = t_ec_renewal_t2.objects.filter(application_status=None)
     service_details = t_service_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
+    #cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
@@ -2821,7 +2822,7 @@ def ec_renewal(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-    response = render(request, 'renewal.html',{'application_details':application_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details':renewal_details,'service_details':service_details,'tor_application_count':tor_application_count})
+    response = render(request, 'renewal.html',{'application_details':application_details,'app_hist_count':app_hist_count,'renewal_details':renewal_details,'service_details':service_details,'tor_application_count':tor_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
