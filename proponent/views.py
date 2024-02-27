@@ -2804,9 +2804,9 @@ def save_project_details(request):
     return JsonResponse(data)
 
 def ec_renewal(request):
-    applicant_id = request.session.get('email_id', None)
-    assigned_user_id = request.session.get('assigned_user_id', None)
-
+    assigned_user_id = request.session.get('login_id', None)
+    applicant_id = request.session.get('email', None)
+ 
     application_details = t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id,ec_expiry_date__lt=date.today(), form_type="Main Activity")
     renewal_details = t_ec_renewal_t2.objects.filter(application_status=None)
     service_details = t_service_master.objects.all()
@@ -3206,7 +3206,9 @@ def tor_list(request):
         application_no__in=Subquery(t1_general_subquery)
     ).count()
     service_details = t_service_master.objects.all()
-    response = render(request, 'tor/tor_list.html', {'tor_application_count':tor_application_count,'tor_details':tor_details,'service_details':service_details})
+    applicant_id = request.session.get('email', None)
+    app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
+    response = render(request, 'tor/tor_list.html', {'tor_application_count':tor_application_count,'tor_details':tor_details,'service_details':service_details, 'app_hist_count':app_hist_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'

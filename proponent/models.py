@@ -4,7 +4,7 @@ from django.db import models
 fs = FileSystemStorage()
 
 class t_ec_industries_t1_general(models.Model):
-    record_Id = models.AutoField(primary_key=True)
+    record_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100,default=None, blank=True, null=True)
     application_date = models.DateField(default=None, blank=True, null=True)
     application_type = models.CharField(max_length=100,default=None, blank=True, null=True)
