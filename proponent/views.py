@@ -25,7 +25,6 @@ def new_application(request):
     applicant_id = request.session.get('email', None)
     bsic_details = t_bsic_code.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
-    print(app_hist_count)
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
@@ -1776,6 +1775,7 @@ def get_application_service_id(request):
 
     category_details = t_bsic_code.objects.filter(broad_activity_code=broad_activity_code,specific_activity_code=specific_activity_code,category=category)
     for cat_details in category_details:
+        print(cat_details.competent_authority)
         request.session['ca_auth'] = cat_details.competent_authority
         request.session['colour_code'] = cat_details.colour_code
         request.session['service_id'] = cat_details.service_id
@@ -3963,7 +3963,6 @@ def save_general_application(request):
         total_area_acre = request.POST.get('total_area_acre')
         project_site = request.POST.get('project_site')
         identifier = request.POST.get('identifier')
-        print(identifier)
         tor_application_no = request.POST.get('tor_application_no')
         form_type = request.POST.get('form_type')
         ca_auth = None
@@ -3979,8 +3978,11 @@ def save_general_application(request):
                     )
                     ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
             else:
-                auth_filter = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
-                ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+                auth_filter = t_competant_authority_master.objects.filter(
+                    competent_authority=request.session['ca_auth'],
+                    dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+                )
+                ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
         else:
             auth_filter = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
             ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
