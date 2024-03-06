@@ -230,14 +230,14 @@ def new_application_form(request):
     application_source = None
     status = None
 
-    appl_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
+    appl_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
     for appl_details in appl_details:
         application_source = appl_details.application_source
 
     if service_id == 1:
         if application_source == 'IBLS':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
             partner_details = t_ec_industries_t2_partner_details.objects.all()
             machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
             project_product = t_ec_industries_t4_project_product.objects.all()
@@ -258,7 +258,7 @@ def new_application_form(request):
                                                         'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details,'ancillary_details':ancillary_details,'service_id':service_id})
         else:
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
             partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
             machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
             project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -279,7 +279,7 @@ def new_application_form(request):
                                                         'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == 2:
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
         project_product = t_ec_industries_t4_project_product.objects.all()
@@ -300,7 +300,7 @@ def new_application_form(request):
                                                      'village':village,'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == 3:
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
         project_product = t_ec_industries_t4_project_product.objects.all()
@@ -321,7 +321,7 @@ def new_application_form(request):
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == 4:
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
         project_product = t_ec_industries_t4_project_product.objects.all()
@@ -342,7 +342,7 @@ def new_application_form(request):
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == 5:
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
         project_product = t_ec_industries_t4_project_product.objects.all()
@@ -363,7 +363,7 @@ def new_application_form(request):
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == 6:
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
         project_product = t_ec_industries_t4_project_product.objects.all()
@@ -384,7 +384,7 @@ def new_application_form(request):
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == 7:
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
         project_product = t_ec_industries_t4_project_product.objects.all()
@@ -405,7 +405,7 @@ def new_application_form(request):
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == 8:
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
         project_product = t_ec_industries_t4_project_product.objects.all()
@@ -425,8 +425,8 @@ def new_application_form(request):
                                                      'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == 9:
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.all()
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
         project_product = t_ec_industries_t4_project_product.objects.all()
@@ -686,7 +686,7 @@ def save_iee_application(request):
             'application_no': application_no,
             'application_date': timezone.now().date(),
             'application_type': 'New',
-            'form_type': request.POST.get('form_type'),
+            'service_type': request.POST.get('service_type'),
             'applicant_id': request.session['email'],
             'applicant_name': request.POST.get('applicant_name'),
             'address': request.POST.get('address'),
@@ -714,7 +714,7 @@ def save_iee_application(request):
             'project_cost':request.POST.get('project_cost'),
             'project_duration':request.POST.get('project_duration'),
             'ec_reference_no':request.POST.get('ec_reference_no'),
-            'form_type':request.POST.get('form_type'),
+            'service_type':request.POST.get('service_type'),
             'tor_application_no':request.POST.get('tor_application_no'),
             'application_status':'P',
             'project_name':request.POST.get('project_name'),
@@ -744,11 +744,11 @@ def save_iee_application(request):
             
             if identifier == 'NC':
                 t_ec_industries_t1_general.objects.filter(application_no=application_no).update(
-                    project_name=request.POST.get('project_name'),form_type=identifier
+                    project_name=request.POST.get('project_name'),service_type=identifier
                 )
             elif identifier == 'OC':
                 t_ec_industries_t1_general.objects.filter(application_no=application_no).update(
-                    applicant_name=request.POST.get('applicant_name'),form_type=identifier
+                    applicant_name=request.POST.get('applicant_name'),service_type=identifier
                 )
             elif identifier == 'DR':
                 application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -1609,7 +1609,7 @@ def submit_iee_application(request):
             service_id = details.service_id
             application_type = details.application_type
 
-            if details.form_type in anc_forms:
+            if details.service_type in anc_forms:
                 anc_details += 1
 
         if anc_details > 0 and identifier != 'Ancillary':
@@ -1618,18 +1618,18 @@ def submit_iee_application(request):
             application_details.update(action_date=date.today())
 
             if identifier == 'Ancillary':
-                t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').update(action_date=date.today())
+                t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').update(action_date=date.today())
                 t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=date.today())
                 data['message'] = "success"
             elif identifier in ('OC', 'NC'):
                 t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=date.today())
                 data['message'] = "success"
             else:
-                ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary', application_status='P').count()
+                ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary', application_status='P').count()
                 if ancillary_count != 0:
                     data['message'] = "not submitted"
                 else:
-                    t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity').update(action_date=date.today())
+                    t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Main Activity').update(action_date=date.today())
                     t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=date.today())
 
                     fees_details = t_fees_schedule.objects.filter(Q(service_id=service_id) | Q(fee_type='application'))
@@ -1637,7 +1637,7 @@ def submit_iee_application(request):
                         main_amount = int(fees_detail.rate) + int(fees_detail.application_fee)
                         break
 
-                    ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').count()
+                    ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').count()
                     if ancillary_application_details_count > 0:
                         anc_fees_details = t_fees_schedule.objects.filter(Q(service_id=service_id) & ~Q(fee_type='application'))
                         for anc_fees_detail in anc_fees_details:
@@ -1690,7 +1690,7 @@ def save_industry_ancillary_application(request):
             application_no=application_no,
             application_date=date.today(),
             application_type='New',
-            form_type='Ancillary',
+            service_type='Ancillary',
             ca_authority=None,
             applicant_id=request.session['email'],
             colour_code=None,
@@ -2658,7 +2658,7 @@ def submit_ea_application(request):
         app_hist_details.update(action_date=date.today())
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').count()
+        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').count()
 
         ancillary_amount = 0
         main_amount = 0
@@ -2682,18 +2682,18 @@ def submit_ea_application(request):
                 else:
                     application_details.update(action_date=date.today())
                     if identifier == 'Ancillary':
-                        t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').update(action_date=date.today())
+                        t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').update(action_date=date.today())
                         t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=date.today())
                         data['message'] = "success"
                     elif identifier in ('OC', 'NC'):
                         t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=date.today())
                         data['message'] = "success"
                     else:
-                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary', application_status='P').count()
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary', application_status='P').count()
                         if ancillary_count:
                             data['message'] = "not submitted"
                         else:
-                            t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity').update(action_date=date.today())
+                            t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Main Activity').update(action_date=date.today())
                             t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=date.today())
 
                             fees_details = t_fees_schedule.objects.filter(Q(service_id=service_id) | Q(fee_type='application'))
@@ -2701,7 +2701,7 @@ def submit_ea_application(request):
                                 main_amount = int(fees_detail.rate) + int(fees_detail.application_fee)
                                 break
 
-                            ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').count()
+                            ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').count()
                             if ancillary_application_details_count:
                                 anc_fees_details = t_fees_schedule.objects.filter(Q(service_id=service_id) & ~Q(fee_type='application'))
                                 for anc_fees_detail in anc_fees_details:
@@ -2807,7 +2807,7 @@ def ec_renewal(request):
     assigned_user_id = request.session.get('login_id', None)
     applicant_id = request.session.get('email', None)
  
-    application_details = t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id,ec_expiry_date__lt=date.today(), form_type="Main Activity")
+    application_details = t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id,ec_expiry_date__lt=date.today(), service_type="Main Activity")
     renewal_details = t_ec_renewal_t2.objects.filter(application_status=None)
     service_details = t_service_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
@@ -2834,7 +2834,7 @@ def ec_renewal_details(request):
     ec_reference_no = request.GET.get('ec_reference_no')
     service_code = 'REN'
     application_no = get_application_no(request, service_code, '10')
-    application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no,form_type="Main Activity")
+    application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no,service_type="Main Activity")
     ec_data = t_ec_industries_t11_ec_details.objects.filter(ec_reference_no=ec_reference_no,ec_type='Terms')
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
@@ -2925,9 +2925,9 @@ def submit_transmission_application(request):
         application_no = request.POST.get('ea_disclaimer_application_no')
         identifier = request.POST.get('disc_identifier')
 
-        application_details_main = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity').first()
-        application_details_ancillary = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').first()
-        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').count()
+        application_details_main = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Main Activity').first()
+        application_details_ancillary = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').first()
+        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').count()
 
         if application_details_main:
             service_id = application_details_main.service_id
@@ -2955,7 +2955,7 @@ def submit_transmission_application(request):
                     t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
                     data['message'] = "success"
                 else:
-                    ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary', application_status='P').count()
+                    ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary', application_status='P').count()
                     if ancillary_count > 0:
                         data['message'] = "not submitted"
                     else:
@@ -2966,7 +2966,7 @@ def submit_transmission_application(request):
                         fees_details = t_fees_schedule.objects.filter(service_id=service_id).first()
                         main_amount = fees_details.rate + fees_details.application_fee
 
-                        ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').count()
+                        ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').count()
                         if ancillary_application_details_count > 0:
                             ancillary_amount = fees_details.rate
                             total_amount = main_amount + ancillary_amount
@@ -2997,9 +2997,9 @@ def submit_general_application(request):
             data['message'] = "success"
         else:
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details_main = application_details.filter(form_type='Main Activity').first()
-            application_details_ancillary = application_details.filter(form_type='Ancillary').first()
-            anc_details = application_details.filter(form_type='Ancillary').count()
+            application_details_main = application_details.filter(service_type='Main Activity').first()
+            application_details_ancillary = application_details.filter(service_type='Ancillary').first()
+            anc_details = application_details.filter(service_type='Ancillary').count()
 
             if application_details_main:
                 service_id = application_details_main.service_id
@@ -3022,7 +3022,7 @@ def submit_general_application(request):
                         t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
                         data['message'] = "success"
                     else:
-                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary', application_status='P').count()
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary', application_status='P').count()
                         if ancillary_count > 0:
                             data['message'] = "not submitted"
                         else:
@@ -3033,7 +3033,7 @@ def submit_general_application(request):
                             fees_details = t_fees_schedule.objects.filter(service_id=service_id).first()
                             main_amount = fees_details.rate + fees_details.application_fee
 
-                            ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').count()
+                            ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').count()
                             if ancillary_application_details_count > 0:
                                 ancillary_amount = fees_details.rate
                                 total_amount = main_amount + ancillary_amount
@@ -3427,8 +3427,8 @@ def insert_app_payment_details(request,application_no, identifier,total_amount,a
     return redirect(identifier)
 
 def insert_payment_details(request,application_no,account_head, identifier):
-    main_application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-    ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+    main_application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+    ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary').count()
 
     service_id = request.session['service_id']
     industry_classification = None
@@ -3499,7 +3499,7 @@ def insert_payment_details(request,application_no,account_head, identifier):
                 main_amount = fees_details.rate + fees_details.application_fee
 
     if ancillary_application_details_count > 0:
-        ancillary_application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         
         for ancillary_application in ancillary_application_details:
             industry_classification = ancillary_application.industry_classification
@@ -3646,7 +3646,7 @@ def save_road_application(request):
         bl_others_distance = request.POST.get('bl_others_distance')
         identifier = request.POST.get('identifier')
         ec_reference_no = request.POST.get('ec_reference_no')
-        form_type = request.POST.get('form_type')
+        service_type = request.POST.get('service_type')
         tor_application_no = request.POST.get('tor_application_no')
 
         ca_auth = None
@@ -3669,10 +3669,10 @@ def save_road_application(request):
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(project_name=project_name, form_type=identifier)
+            application_details.update(project_name=project_name, service_type=identifier)
         elif(identifier == 'OC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(applicant_name=applicant_name, form_type=identifier)
+            application_details.update(applicant_name=applicant_name, service_type=identifier)
         elif(identifier == 'DR'): # This is For Draft Applications
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             if application_details.exists():
@@ -3728,7 +3728,7 @@ def save_road_application(request):
                     application_no=application_no,
                     application_date=date.today(),
                     application_type='New',
-                    form_type=form_type,
+                    service_type=service_type,
                     ca_authority=ca_auth,
                     applicant_id=request.session['email'],
                     colour_code=request.session['colour_code'],
@@ -3789,7 +3789,7 @@ def save_road_application(request):
                     application_no=application_no,
                     application_date=date.today(),
                     application_type='New',
-                    form_type=form_type,
+                    service_type=service_type,
                     ca_authority=app_det.ca_authority,
                     applicant_id=request.session['email'],
                     colour_code=app_det.colour_code,
@@ -3845,7 +3845,7 @@ def save_road_application(request):
                 application_no=application_no,
                 application_date=date.today(),
                 application_type='New',
-                form_type=form_type,
+                service_type=service_type,
                 ca_authority=ca_auth,
                 applicant_id=request.session['email'],
                 colour_code=request.session['colour_code'],
@@ -3964,7 +3964,7 @@ def save_general_application(request):
         project_site = request.POST.get('project_site')
         identifier = request.POST.get('identifier')
         tor_application_no = request.POST.get('tor_application_no')
-        form_type = request.POST.get('form_type')
+        service_type = request.POST.get('service_type')
         ca_auth = None
         if tor_application_no is None:
             if identifier in ['DR', 'NC', 'OC']:
@@ -3993,7 +3993,7 @@ def save_general_application(request):
 
         with transaction.atomic():
             if identifier == 'NC':
-                application_details.update(project_name=project_name, form_type=identifier)
+                application_details.update(project_name=project_name, service_type=identifier)
             elif identifier == 'OC':
                 application_details.update(applicant_name=applicant_name, application_type=identifier)
             elif identifier == 'DR':
@@ -4024,7 +4024,7 @@ def save_general_application(request):
                         application_no=application_no,
                         application_date=timezone.now().date(),
                         application_type='New',
-                        form_type=form_type,
+                        service_type=service_type,
                         ca_authority=ca_auth,
                         applicant_id=request.session['email'],
                         colour_code=request.session['colour_code'],
@@ -4060,7 +4060,7 @@ def save_general_application(request):
                         application_no=application_no,
                         application_date=timezone.now().date(),
                         application_type='New',
-                        form_type=identifier,
+                        service_type=identifier,
                         ca_authority=app_det.ca_authority,
                         applicant_id=request.session['email'],
                         colour_code=app_det.colour_code,
@@ -4091,7 +4091,7 @@ def save_general_application(request):
                     application_no=application_no,
                     application_date=timezone.now().date(),
                     application_type='New',
-                    form_type=form_type,
+                    service_type=service_type,
                     ca_authority=ca_auth,
                     applicant_id=request.session['email'],
                     colour_code=request.session['colour_code'],
@@ -4206,7 +4206,7 @@ def save_forest_application(request):
             'max_evacuation_depth': request.POST.get('max_evacuation_depth'),
             'terrain_elevation': request.POST.get('terrain_elevation'),
             'terrain_slope': request.POST.get('terrain_slope'),
-            'form_type': request.POST.get('form_type'),
+            'service_type': request.POST.get('service_type'),
             'ca_authority':ca_auth,
             'applicant_id':request.session['email'],
             'colour_code':request.session['colour_code'],
@@ -4218,7 +4218,7 @@ def save_forest_application(request):
                 if application_instance:
                     application_instance.project_name = request.POST.get('project_name') if identifier == 'NC' else application_instance.project_name
                     application_instance.applicant_name = request.POST.get('applicant_name') if identifier == 'OC' else application_instance.applicant_name
-                    application_instance.form_type=identifier
+                    application_instance.service_type=identifier
                     application_instance.save()
                 else:
                     raise ValueError("Application does not exist.")
@@ -4274,9 +4274,9 @@ def submit_forest_application(request):
         identifier = request.POST.get('anc_identifier')
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        application_details_main = application_details.filter(form_type='Main Activity').first()
-        application_details_ancillary = application_details.filter(form_type='Ancillary').first()
-        anc_details = application_details.filter(form_type='Ancillary').count()
+        application_details_main = application_details.filter(service_type='Main Activity').first()
+        application_details_ancillary = application_details.filter(service_type='Ancillary').first()
+        anc_details = application_details.filter(service_type='Ancillary').count()
 
         if application_details_main:
             service_id = application_details_main.service_id
@@ -4308,7 +4308,7 @@ def submit_forest_application(request):
                 else:
                     ancillary_count = t_ec_industries_t1_general.objects.filter(
                         application_no=application_no,
-                        form_type='Ancillary',
+                        service_type='Ancillary',
                         application_status='P'
                     ).count()
                     if ancillary_count > 0:
@@ -4322,7 +4322,7 @@ def submit_forest_application(request):
 
                         ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(
                             application_no=application_no,
-                            form_type='Ancillary'
+                            service_type='Ancillary'
                         ).count()
 
                         if ancillary_application_details_count > 0:
@@ -4389,7 +4389,7 @@ def save_ground_water_application(request):
         identifier = request.POST.get('identifier')
         ec_reference_no = request.POST.get('ec_reference_no')
         tor_application_no = request.POST.get('tor_application_no')
-        form_type = request.POST.get('form_type')
+        service_type = request.POST.get('service_type')
 
         ca_auth = None
 
@@ -4438,15 +4438,15 @@ def save_ground_water_application(request):
 
         if identifier == 'NC':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(project_name=project_name, form_type=identifier)
+            application_details.update(project_name=project_name, service_type=identifier)
         elif identifier == 'OC':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(applicant_name=applicant_name, form_type=identifier)
+            application_details.update(applicant_name=applicant_name, service_type=identifier)
         else:
             application_data.update({
                 'application_no': application_no,
                 'application_date': timezone.now().date(),
-                'form_type': form_type,
+                'service_type': service_type,
                 'ca_authority': ca_auth,
                 'applicant_id': request.session['email'],
                 'colour_code': request.session['colour_code'],
@@ -4536,8 +4536,8 @@ def submit_ground_water_application(request):
         application_type = None
         anc_types = ['anc_other_crushing_unit', 'anc_other_surface_collection', 'anc_other_ground_water', 'anc_other_mineral', 'anc_other_general', 'anc_other_transmission']
 
-        main_activity_form = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity').first()
-        ancillary_form_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').count()
+        main_activity_form = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Main Activity').first()
+        ancillary_form_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').count()
         app_hist_details = t_application_history.objects.filter(application_no=application_no)
         app_hist_details.update(action_date=timezone.now().date())
 
@@ -4552,7 +4552,7 @@ def submit_ground_water_application(request):
             else:
                 main_activity_form.update(action_date=timezone.now().date())
                 if identifier == 'Ancillary':
-                    ancillary_form = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
+                    ancillary_form = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary')
                     ancillary_form.update(action_date=timezone.now().date())
                     workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
                     workflow_dtls.update(action_date=timezone.now().date())
@@ -4563,7 +4563,7 @@ def submit_ground_water_application(request):
                         workflow_dtls.update(action_date=timezone.now().date())
                         data['message'] = "success"
                     else:
-                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary', application_status='P').count()
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary', application_status='P').count()
                         if ancillary_count > 0 or ancillary_count < 0:
                             data['message'] = "not submitted"
                         else:
@@ -4573,7 +4573,7 @@ def submit_ground_water_application(request):
                             fees_details = t_fees_schedule.objects.filter(service_id=service_id)
                             for fee_detail in fees_details:
                                 main_amount = int(fee_detail.rate) + int(fee_detail.application_fee)
-                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').count()
+                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').count()
                                 if ancillary_application_details_count > 0:
                                     ancillary_amount = fee_detail.rate
                                     total_amount = main_amount + ancillary_amount
@@ -4643,7 +4643,7 @@ def save_quarry_application(request):
         identifier = request.POST.get('identifier')
         ec_reference_no = request.POST.get('ec_reference_no')
         tor_application_no = request.POST.get('tor_application_no')
-        form_type = request.POST.get('form_type')
+        service_type = request.POST.get('service_type')
 
         ca_auth = None
         if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
@@ -4665,16 +4665,16 @@ def save_quarry_application(request):
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         if identifier == 'NC':
-            application_details.update(project_name=project_name,form_type=identifier)
+            application_details.update(project_name=project_name,service_type=identifier)
         elif identifier == 'OC':
-            application_details.update(applicant_name=applicant_name, form_type=identifier)
+            application_details.update(applicant_name=applicant_name, service_type=identifier)
         elif identifier == 'DR':
             if not application_details.exists():
                 t_ec_industries_t1_general.objects.create(
                     application_no=application_no,
                     application_date=timezone.now().date(),
                     application_type='New',
-                    form_type=form_type,
+                    service_type=service_type,
                     ca_authority=ca_auth,
                     applicant_id=request.session['email'],
                     colour_code=request.session['colour_code'],
@@ -4712,7 +4712,7 @@ def save_quarry_application(request):
                     application_no=application_no,
                     application_date=timezone.now().date(),
                     application_type='New',
-                    form_type=form_type,
+                    service_type=service_type,
                     ca_authority=app_det.ca_authority,
                     applicant_id=request.session['email'],
                     colour_code=app_det.colour_code,
@@ -4746,7 +4746,7 @@ def save_quarry_application(request):
                 application_no=application_no,
                 application_date=timezone.now().date(),
                 application_type='New',
-                form_type=form_type,
+                service_type=service_type,
                 ca_authority=ca_auth,
                 applicant_id=request.session['email'],
                 colour_code=request.session['colour_code'],
@@ -4824,8 +4824,8 @@ def submit_quarry_application(request):
         # Update application history action_date
         t_application_history.objects.filter(application_no=application_no).update(action_date=timezone.now().date())
 
-        main_activity_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
-        ancillary_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').count()
+        main_activity_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Main Activity')
+        ancillary_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').count()
 
         anc_other_fields = ['anc_other_crushing_unit', 'anc_other_surface_collection', 'anc_other_ground_water', 'anc_other_mineral', 'anc_other_general', 'anc_other_transmission']
         application_type = None
@@ -4843,7 +4843,7 @@ def submit_quarry_application(request):
                 main_activity_details.update(action_date=timezone.now().date())
                 if identifier == 'Ancillary':
                     # Update action_date for the ancillary details
-                    t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').update(action_date=timezone.now().date())
+                    t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').update(action_date=timezone.now().date())
                     # Update action_date for the workflow details
                     t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now().date())
                     data['message'] = "success"
@@ -4853,7 +4853,7 @@ def submit_quarry_application(request):
                         t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now().date())
                         data['message'] = "success"
                     else:
-                        ancillary_pending_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary', application_status='P').count()
+                        ancillary_pending_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary', application_status='P').count()
                         if ancillary_pending_count > 0:
                             data['message'] = "not submitted"
                         else:
@@ -4864,7 +4864,7 @@ def submit_quarry_application(request):
 
                             fees_details = t_fees_schedule.objects.filter(service_id=service_id)
                             main_amount = sum(int(fees.rate) + int(fees.application_fee) for fees in fees_details)
-                            ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary').count()
+                            ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').count()
 
                             if ancillary_application_details_count > 0:
                                 ancillary_amount = sum(fees.rate for fees in fees_details)
@@ -5034,7 +5034,7 @@ def submit_road_application(request):
             workflow_dtls.update(action_date=date.today())
             data['message'] = "success"
         else:
-            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary', application_status='P').count()
             if(ancillary_count > 0):
                 data['message'] = "not submitted"
             else:
@@ -5080,7 +5080,7 @@ def save_energy_application(request):
         identifier = request.POST.get('identifier')
         ec_reference_no = request.POST.get('ec_reference_no')
         tor_application_no = request.POST.get('tor_application_no')
-        form_type = request.POST.get('form_type')
+        service_type = request.POST.get('service_type')
         
         ca_auth = None
         if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
@@ -5102,10 +5102,10 @@ def save_energy_application(request):
 
         if(identifier == 'NC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(project_name=project_name, form_type=identifier)
+            application_details.update(project_name=project_name, service_type=identifier)
         elif(identifier == 'OC'):
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(applicant_name=applicant_name, form_type=identifier)
+            application_details.update(applicant_name=applicant_name, service_type=identifier)
         elif(identifier == 'DR'): # This is For Draft Applications
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             if application_details.exists():
@@ -5134,7 +5134,7 @@ def save_energy_application(request):
                     application_no=application_no,
                     application_date=date.today(),
                     application_type='New',
-                    form_type=form_type,
+                    service_type=service_type,
                     ca_authority=ca_auth,
                     applicant_id=request.session['email'],
                     colour_code=request.session['colour_code'],
@@ -5167,7 +5167,7 @@ def save_energy_application(request):
                     application_no=application_no,
                     application_date=date.today(),
                     application_type='New',
-                    form_type=form_type,
+                    service_type=service_type,
                     ca_authority=app_det.ca_authority,
                     applicant_id=request.session['email'],
                     colour_code=app_det.colour_code,
@@ -5194,7 +5194,7 @@ def save_energy_application(request):
                 application_no=application_no,
                 application_date=date.today(),
                 application_type='New',
-                form_type=form_type,
+                service_type=service_type,
                 ca_authority=ca_auth,
                 applicant_id=request.session['email'],
                 colour_code=request.session['colour_code'],
@@ -5270,8 +5270,8 @@ def submit_energy_application(request):
         anc_other_general = None
         anc_other_transmission = None
 
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary').count()
         app_hist_details = t_application_history.objects.filter(application_no=application_no)
         app_hist_details.update(action_date=date.today())
         
@@ -5291,7 +5291,7 @@ def submit_energy_application(request):
             else:
                 application_details.update(action_date=date.today())
                 if identifier == 'Ancillary':
-                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
+                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary')
                     application_details.update(action_date=date.today())
                     workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
                     workflow_dtls.update(action_date=date.today())
@@ -5302,13 +5302,13 @@ def submit_energy_application(request):
                         workflow_dtls.update(action_date=date.today())
                         data['message'] = "success"
                     else:
-                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary', application_status='P').count()
                         if(ancillary_count > 0):
                             data['message'] = "not submitted"
                         elif(ancillary_count < 0):
                             data['message'] = "not submitted"
                         else:
-                            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Main Activity')
                             application_details.update(action_date=date.today())
                             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
                             workflow_dtls.update(action_date=date.today())
@@ -5316,7 +5316,7 @@ def submit_energy_application(request):
                             for fees_details in fees_details:
                                 main_amount = int(fees_details.rate)
                                 main_amount += int(fees_details.application_fee)
-                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary').count()
                                 if ancillary_application_details_count > 0:
                                     fees_details = t_fees_schedule.objects.filter(service_id=service_id)
                                     for fees_details in fees_details:
@@ -5363,7 +5363,7 @@ def save_tourism_application(request):
         total_area_acre = request.POST.get('total_area_acre')
         identifier = request.POST.get('identifier')
         tor_application_no = request.POST.get('tor_application_no')
-        form_type = request.POST.get('form_type')
+        service_type = request.POST.get('service_type')
         
 
         ca_auth = None
@@ -5417,7 +5417,7 @@ def save_tourism_application(request):
                     application_no=application_no,
                     application_date=date.today(),
                     application_type='New',
-                    form_type=form_type,
+                    service_type=service_type,
                     ca_authority=ca_auth,
                     applicant_id=request.session['email'],
                     colour_code=request.session['colour_code'],
@@ -5451,7 +5451,7 @@ def save_tourism_application(request):
                     application_no=application_no,
                     application_date=date.today(),
                     application_type='New',
-                    form_type=form_type,
+                    service_type=service_type,
                     ca_authority=app_det.ca_authority,
                     applicant_id=request.session['email'],
                     colour_code=app_det.colour_code,
@@ -5481,7 +5481,7 @@ def save_tourism_application(request):
                 application_no=application_no,
                 application_date=date.today(),
                 application_type='New',
-                form_type=form_type,
+                service_type=service_type,
                 ca_authority=ca_auth,
                 applicant_id=request.session['email'],
                 colour_code=request.session['colour_code'],
@@ -5614,8 +5614,8 @@ def submit_tourism_application(request):
         anc_other_general = None
         anc_other_transmission = None
 
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+        anc_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary').count()
         app_hist_details = t_application_history.objects.filter(application_no=application_no)
         app_hist_details.update(action_date=date.today())
 
@@ -5635,7 +5635,7 @@ def submit_tourism_application(request):
             else:
                 application_details.update(action_date=date.today())
                 if identifier == 'Ancillary':
-                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Ancillary')
+                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary')
                     application_details.update(action_date=date.today())
                     workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
                     workflow_dtls.update(action_date=date.today())
@@ -5646,13 +5646,13 @@ def submit_tourism_application(request):
                         workflow_dtls.update(action_date=date.today())
                         data['message'] = "success"
                     else:
-                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary', application_status='P').count()
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary', application_status='P').count()
                         if(ancillary_count > 0):
                             data['message'] = "not submitted"
                         elif(ancillary_count < 0):
                             data['message'] = "not submitted"
                         else:
-                            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+                            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Main Activity')
                             application_details.update(action_date=date.today())
                             workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
                             workflow_dtls.update(action_date=date.today())
@@ -5660,7 +5660,7 @@ def submit_tourism_application(request):
                             for fees_details in fees_details:
                                 main_amount = int(fees_details.rate)
                                 main_amount += int(fees_details.application_fee)
-                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary').count()
+                                ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary').count()
                                 if ancillary_application_details_count > 0:
                                     fees_details = t_fees_schedule.objects.filter(service_id=service_id)
                                     for fees_details in fees_details:
@@ -6069,7 +6069,7 @@ def get_other_modification_details(request):
 def draft_application_list(request):
     assigned_user_id = request.session.get('login_id', None)
     applicant_id = request.session.get('email', None)
-    application_details = t_ec_industries_t1_general.objects.filter(application_status='P',form_type='Main Activity',action_date__isnull=True)
+    application_details = t_ec_industries_t1_general.objects.filter(application_status='P',service_type='Main Activity',action_date__isnull=True)
     service_details = t_service_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
@@ -6101,8 +6101,8 @@ def view_draft_application_details(request):
 
     if service_id == '1':
         if application_source == 'IBLS':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
             partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
             machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
             project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -6124,7 +6124,7 @@ def view_draft_application_details(request):
                                                         'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details,'ancillary_details':ancillary_details,'service_id':service_id})
         else:
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
             partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
             machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
             project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -6146,7 +6146,7 @@ def view_draft_application_details(request):
                                                         'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '2':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
         project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -6168,7 +6168,7 @@ def view_draft_application_details(request):
                                                      'village':village,'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '3':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
         project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -6190,7 +6190,7 @@ def view_draft_application_details(request):
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '4':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
         project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -6212,7 +6212,7 @@ def view_draft_application_details(request):
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '5':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
         project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -6234,7 +6234,7 @@ def view_draft_application_details(request):
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '6':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
         project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -6256,7 +6256,7 @@ def view_draft_application_details(request):
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '7':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
         project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -6278,7 +6278,7 @@ def view_draft_application_details(request):
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '8':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
         project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -6300,7 +6300,7 @@ def view_draft_application_details(request):
                                                      'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
     elif service_id == '9':
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
         partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
         project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -6752,8 +6752,8 @@ def ec_print_list(request):
     applicant_id = request.session.get('email', None)
     assigned_user_id= request.session.get('login_id', None)
     
-    # Retrieve t_ec_industries_t1_general objects with application_status='A' and form_type="Main Activity"
-    application_details = t_ec_industries_t1_general.objects.filter(application_status='A', form_type="Main Activity")
+    # Retrieve t_ec_industries_t1_general objects with application_status='A' and service_type="Main Activity"
+    application_details = t_ec_industries_t1_general.objects.filter(application_status='A', service_type="Main Activity")
     
     # Count the number of t_application_history objects related to the logged-in user
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
@@ -6823,8 +6823,8 @@ def view_print_details(request):
     # Retrieve the 'ec_reference_no' parameter from the GET request
     ec_reference_no = request.GET.get('ec_reference_no')
     
-    # Retrieve t_ec_industries_t1_general objects with ec_reference_no=ec_reference_no and form_type="Main Activity"
-    application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no, form_type="Main Activity")
+    # Retrieve t_ec_industries_t1_general objects with ec_reference_no=ec_reference_no and service_type="Main Activity"
+    application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no, service_type="Main Activity")
     
     # Retrieve t_ec_industries_t11_ec_details objects with ec_reference_no=ec_reference_no
     ec_details = t_ec_industries_t11_ec_details.objects.filter(ec_reference_no=ec_reference_no)

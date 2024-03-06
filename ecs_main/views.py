@@ -149,8 +149,8 @@ def view_application_details(request):
     else:
         if service_id == '1':
             if application_source == 'IBLS':
-                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-                ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+                ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
                 partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
                 machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
                 project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -179,8 +179,8 @@ def view_application_details(request):
                                                             'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'file_attach':file_attach,'anc_file_attach':anc_file_attach,'file_attach':file_attach,'anc_file_attach':anc_file_attach,'anc_file_attach':anc_file_attach,'for_anc_file_attach':for_anc_file_attach,'gw_anc_file_attach':gw_anc_file_attach,'ind_anc_file_attach':ind_anc_file_attach,
                                                             'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details,'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach, 'rev_lu_attach':rev_lu_attach})
             else:
-                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-                ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+                ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
                 partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
                 machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
                 project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -209,8 +209,8 @@ def view_application_details(request):
                                                             'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'file_attach':file_attach,'anc_file_attach':anc_file_attach,'anc_file_attach':anc_file_attach,'for_anc_file_attach':for_anc_file_attach,'gw_anc_file_attach':gw_anc_file_attach,'ind_anc_file_attach':ind_anc_file_attach,
                                                             'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '2':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
             partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
             machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
             project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -239,8 +239,8 @@ def view_application_details(request):
                                                         'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog,'status':status,'anc_road_details':anc_road_details,'anc_power_line_details':anc_power_line_details,
                                                         'village':village,'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '3':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
             partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
             machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
             project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -269,8 +269,8 @@ def view_application_details(request):
                                                         'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'file_attach':file_attach,'anc_file_attach':anc_file_attach,'anc_file_attach':anc_file_attach,'for_anc_file_attach':for_anc_file_attach,'gw_anc_file_attach':gw_anc_file_attach,'ind_anc_file_attach':ind_anc_file_attach,
                                                         'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '4':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
             partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
             machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
             project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -299,8 +299,8 @@ def view_application_details(request):
                                                         'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'file_attach':file_attach,'anc_file_attach':anc_file_attach,'anc_file_attach':anc_file_attach,'for_anc_file_attach':for_anc_file_attach,'gw_anc_file_attach':gw_anc_file_attach,'ind_anc_file_attach':ind_anc_file_attach,
                                                         'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '5':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
             partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
             machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
             project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -329,8 +329,8 @@ def view_application_details(request):
                                                         'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'file_attach':file_attach,'anc_file_attach':anc_file_attach,'anc_file_attach':anc_file_attach,'for_anc_file_attach':for_anc_file_attach,'gw_anc_file_attach':gw_anc_file_attach,'ind_anc_file_attach':ind_anc_file_attach,
                                                         'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '6':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
             partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
             machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
             project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -359,8 +359,8 @@ def view_application_details(request):
                                                         'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'file_attach':file_attach,'anc_file_attach':anc_file_attach,'anc_file_attach':anc_file_attach,'for_anc_file_attach':for_anc_file_attach,'gw_anc_file_attach':gw_anc_file_attach,'ind_anc_file_attach':ind_anc_file_attach,
                                                         'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '7':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
             partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
             machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
             project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -389,8 +389,8 @@ def view_application_details(request):
                                                         'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'file_attach':file_attach,'anc_file_attach':anc_file_attach,'anc_file_attach':anc_file_attach,'for_anc_file_attach':for_anc_file_attach,'gw_anc_file_attach':gw_anc_file_attach,'ind_anc_file_attach':ind_anc_file_attach,
                                                         'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '8':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
             partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
             machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
             project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -408,7 +408,7 @@ def view_application_details(request):
             for_anc_file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='FORANC')
             gw_anc_file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='GWANC')
             ind_anc_file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='IEEANC')
-            ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no,form_type='Main Activity')
+            ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no,service_type='Main Activity')
             reviewer_list = t_user_master.objects.filter(role_id='3', agency_code=ca_auth)
             eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
@@ -419,8 +419,8 @@ def view_application_details(request):
                                                         'project_product':project_product,'anc_road_details':anc_road_details, 'anc_power_line_details':anc_power_line_details, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'file_attach':file_attach,'anc_file_attach':anc_file_attach,'anc_file_attach':anc_file_attach,'for_anc_file_attach':for_anc_file_attach,'gw_anc_file_attach':gw_anc_file_attach,'ind_anc_file_attach':ind_anc_file_attach,
                                                         'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
         elif service_id == '9':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Main Activity')
-            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,form_type='Ancillary')
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
+            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
             partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
             machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
             project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
@@ -454,7 +454,7 @@ def view_application_details(request):
         elif service_id == '10':
             renewal_details_one = t_ec_renewal_t1.objects.filter(application_no=application_no)
             for renewal_details_one in renewal_details_one:
-                application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=renewal_details_one.ec_reference_no,form_type='Main Activity')
+                application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=renewal_details_one.ec_reference_no,service_type='Main Activity')
             renewal_details_two = t_ec_renewal_t2.objects.filter(application_no=application_no)
             file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='ECR')
             reviewer_list = t_user_master.objects.filter(role_id='3')
@@ -550,7 +550,7 @@ def update_payment_details(request):
             work_details.update(assigned_role_id='3')
             work_details.update(assigned_role_name='Reviewer')
             work_details.update(action_date=date.today())
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, form_type='Main Activity')
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Main Activity')
             application_details.update(application_status='APP')
             application_details.update(action_date=date.today())
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
