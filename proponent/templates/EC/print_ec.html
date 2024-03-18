@@ -50,11 +50,13 @@
             </table>
         </p>
         {% for ec_details in ec_details %}
-                {% if ec_details.ec_type == 'Footer' %}
-                    <p>{{ec_details.ec_terms}}</p>
-                {% endif %}
-            {% endfor %}   
-             
+            {% if ec_details.ec_type == 'Footer' %}
+                <p>{{ec_details.ec_terms}}</p>
+            {% endif %}
+        {% endfor %}
+        {% for application_details in application_details %}   
+            <p>EC Expiry: {{application_details.ec_expiry_date|date:"d-m-Y"}} </p>
+        {% endfor %}
         <p><a href="#"><img class="img-responsive" src="{% static 'assets/images/decc_seal.png' %}" style="width:20%;"/></a></p>
     </div>
     </div>
