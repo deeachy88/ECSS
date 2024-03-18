@@ -10,55 +10,59 @@
     </div>
     <br>
     <div id="print">
-    <div class="card-title justify-content-between">
-        <a href="#"><img class="img-responsive" src="{% static 'assets/images/ec_header.png' %}" style="width:90%;"/></a>
-    </div>
-    <div class="card-body">
-        <div class="d-flex justify-content-between">
-            {% for application_details in application_details %}
-                <h5>{{application_details.ec_reference_no}}</h5>
-                <h5>{{application_details.ec_approve_date}}</h5>
-            {% endfor %}
+        <div class="card-title justify-content-between">
+            <a href="#"><img class="img-responsive" src="{% static 'assets/images/ec_header.png' %}" style="width:90%;"/></a>
         </div>
-        <div class="d-flex justify-content-center">
-            <h4>ENVIRONMENT CLEARNACE</h4>
-        </div>
-        <p>
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                {% for application_details in application_details %}
+                    <h5>{{application_details.ec_reference_no}}</h5>
+                    <h5>{{application_details.ec_approve_date}}</h5>
+                {% endfor %}
+            </div>
+            <div class="d-flex justify-content-center">
+                <h4>ENVIRONMENT CLEARNACE</h4>
+            </div>
+            <p>
+                {% for ec_details in ec_details %}
+                    {% if ec_details.ec_type == 'Header' %}
+                        {{ec_details.ec_terms}}
+                    {% endif %}
+                {% endfor %}
+            </p>
+            <p>
+                <table class="table table-centered table-borderless mb-0">
+                    <thead>
+                        {% for ec_details in ec_details %}
+                            {% if ec_details.ec_type == 'Terms' %}
+                            <tr>
+                                <th colspan="2">{{ec_details.ec_heading}}</th>
+                            </tr>
+                            
+                    </thead>
+                    <tbody>
+                            <tr>
+                                <td>{{ec_details.ec_terms}}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}    
+                    </tbody>
+                </table>
+            </p>
             {% for ec_details in ec_details %}
-                {% if ec_details.ec_type == 'Header' %}
-                    {{ec_details.ec_terms}}
+                {% if ec_details.ec_type == 'Footer' %}
+                    <p>{{ec_details.ec_terms}}</p>
                 {% endif %}
             {% endfor %}
-        </p>
-        <p>
-            <table class="table table-centered table-borderless mb-0">
-                <thead>
-                    {% for ec_details in ec_details %}
-                        {% if ec_details.ec_type == 'Terms' %}
-                        <tr>
-                            <th colspan="2">{{ec_details.ec_heading}}</th>
-                        </tr>
-                        
-                </thead>
-                <tbody>
-                        <tr>
-                            <td>{{ec_details.ec_terms}}</td>
-                        </tr>
-                        {% endif %}
-                    {% endfor %}    
-                </tbody>
-            </table>
-        </p>
-        {% for ec_details in ec_details %}
-            {% if ec_details.ec_type == 'Footer' %}
-                <p>{{ec_details.ec_terms}}</p>
-            {% endif %}
-        {% endfor %}
-        {% for application_details in application_details %}   
-            <p>EC Expiry: {{application_details.ec_expiry_date|date:"d-m-Y"}} </p>
-        {% endfor %}
-        <p><a href="#"><img class="img-responsive" src="{% static 'assets/images/decc_seal.png' %}" style="width:20%;"/></a></p>
-    </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <p><a href="#"><img class="img-responsive" src="{% static 'assets/images/decc_seal.png' %}" style="width:20%;"/></a></p>
+                <div>
+                    {% for application_details in application_details %}   
+                        <p>EC Expiry: {{application_details.ec_expiry_date|date:"d-m-Y"}} </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script>
