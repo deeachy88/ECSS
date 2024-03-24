@@ -1016,53 +1016,73 @@ def forward_application(request):
             ec_no = get_ec_no(request)
 
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(ec_reference_no=ec_no, ec_approve_date=date.today(),application_status='A',tat=tat,ec_expiry_date=ec_expiry_date)
+            application_details.update(ec_approve_date=date.today(),application_status='A',tat=tat,ec_expiry_date=ec_expiry_date)
             for app_det in application_details:
-                applicant = app_det.applicant_id
-                service_id = app_det.service_id
-            t_application_history.objects.create(application_status='A',application_no=application_no,
-                        action_date=date.today(),
-                        actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'],
-                        applicant_id=applicant,
-                        remarks='Approved',
-                        service_id=service_id)
-            ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
-            ec_details.update(ec_reference_no=ec_no)
-            
-            payment_details = t_payment_details.objects.filter(application_no=application_no)
-            payment_details.update(ec_no=ec_no)
+                service_type = app_det.service_type
+                if service_type == 'NC' or 'OC':
+                    workflow_details.update(assigned_user_id=None)
+                    workflow_details.update(assigned_role_id=None)
+                    workflow_details.update(assigned_role_name=None)
+                    workflow_details.update(action_date=date.today())
+                    workflow_details.update(actor_id=request.session['login_id'])
+                    workflow_details.update(actor_name=request.session['name'])
+                    workflow_details.update(application_status='A')
+                    for work_details in workflow_details:
+                        service_id = work_details.service_id
+                        service_details = t_service_master.objects.filter(service_id=service_id)
+                        for service in service_details:
+                            service_name = service.service_name
+                            for email_id in application_details:
+                                emailId = email_id.email
+                                send_ec_approve_email(ec_no, emailId, application_no, service_name)
+                else:
+                    application_details.update(ec_reference_no=ec_no, ec_approve_date=date.today(),application_status='A',tat=tat,ec_expiry_date=ec_expiry_date)
+                    for app_det in application_details:
+                        applicant = app_det.applicant_id
+                        service_id = app_det.service_id
+                    t_application_history.objects.create(application_status='A',application_no=application_no,
+                                action_date=date.today(),
+                                actor_id=request.session['login_id'], 
+                                actor_name=request.session['name'],
+                                applicant_id=applicant,
+                                remarks='Approved',
+                                service_id=service_id)
+                    ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
+                    ec_details.update(ec_reference_no=ec_no)
+                    
+                    payment_details = t_payment_details.objects.filter(application_no=application_no)
+                    payment_details.update(ec_no=ec_no)
 
-            workflow_details.update(assigned_user_id=None)
-            workflow_details.update(assigned_role_id=None)
-            workflow_details.update(assigned_role_name=None)
-            workflow_details.update(action_date=date.today())
-            workflow_details.update(actor_id=request.session['login_id'])
-            workflow_details.update(actor_name=request.session['name'])
-            workflow_details.update(application_status='A')
-            for work_details in workflow_details:
-                service_id = work_details.service_id
-                service_details = t_service_master.objects.filter(service_id=service_id)
-                for service in service_details:
-                    service_name = service.service_name
-                    for email_id in application_details:
-                        emailId = email_id.email
-                        send_ec_approve_email(ec_no, emailId, application_no, service_name)
-                        data['message'] = "success"
-                        data['redirect_to'] = "verify_application_list"
-                        x = {
-                            "applicationNo":"e65ed5dc-2541-11ed-8d50-0242ac120010",
-                            "cleareanceNo":ec_no,
-                            "status":True,
-                            "message": "ok",
-                            "rejectionMessage": "notok"
-                        }
-                        post_data = json.dumps(x)
-                        headers = {'Accept': 'application/json'}
+                    workflow_details.update(assigned_user_id=None)
+                    workflow_details.update(assigned_role_id=None)
+                    workflow_details.update(assigned_role_name=None)
+                    workflow_details.update(action_date=date.today())
+                    workflow_details.update(actor_id=request.session['login_id'])
+                    workflow_details.update(actor_name=request.session['name'])
+                    workflow_details.update(application_status='A')
+                    for work_details in workflow_details:
+                        service_id = work_details.service_id
+                        service_details = t_service_master.objects.filter(service_id=service_id)
+                        for service in service_details:
+                            service_name = service.service_name
+                            for email_id in application_details:
+                                emailId = email_id.email
+                                send_ec_approve_email(ec_no, emailId, application_no, service_name)
+                                data['message'] = "success"
+                                data['redirect_to'] = "verify_application_list"
+                                x = {
+                                    "applicationNo":"e65ed5dc-2541-11ed-8d50-0242ac120010",
+                                    "cleareanceNo":ec_no,
+                                    "status":True,
+                                    "message": "ok",
+                                    "rejectionMessage": "notok"
+                                }
+                                post_data = json.dumps(x)
+                                headers = {'Accept': 'application/json'}
 
-                        res = requests.post('https://staging-datahub-apim.dit.gov.bt/ibls_to_bafra_postapi/1.0.0/nectoibls',
-                                            params=post_data, headers=headers, verify=False)
-                        print(res)
+                                res = requests.post('https://staging-datahub-apim.dit.gov.bt/ibls_to_bafra_postapi/1.0.0/nectoibls',
+                                                    params=post_data, headers=headers, verify=False)
+                                print(res)
         elif identifier == 'FT': # forward TOR form
             tor_remarks = request.POST.get('tor_remarks')
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
