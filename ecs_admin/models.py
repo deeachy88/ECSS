@@ -50,7 +50,7 @@ class t_proponent_type_master(models.Model):
 
 class t_dzongkhag_master(models.Model):
     dzongkhag_code = models.AutoField(primary_key=True)
-    dzongkhag_name = models.CharField(max_length=100,default=None)
+    dzongkhag_name = models.CharField(max_length=100,default=None, null=True)
 
     def __str__(self):
         return self.Dzongkhag_Name
@@ -58,7 +58,7 @@ class t_dzongkhag_master(models.Model):
 
 class t_gewog_master(models.Model):
     gewog_code = models.AutoField(primary_key=True)
-    gewog_name = models.CharField(max_length=100,default=None)
+    gewog_name = models.CharField(max_length=100,default=None, null=True)
     dzongkhag_code = models.ForeignKey(t_dzongkhag_master, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
@@ -67,9 +67,9 @@ class t_gewog_master(models.Model):
 
 class t_village_master(models.Model):
     village_code = models.AutoField(primary_key=True)
-    village_name = models.CharField(max_length=100,default=None)
+    village_name = models.CharField(max_length=100,default=None, null=True)
     gewog_code = models.ForeignKey(t_gewog_master, on_delete=models.CASCADE, null=True, blank=True)
-    village_name_dzo = models.CharField(max_length=100, default=None,blank=True,null=True)
+    village_name_dzo = models.CharField(max_length=100, default=None, null=True)
 
     def __str__(self):
         return self.village_name

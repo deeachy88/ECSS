@@ -52,7 +52,7 @@ function save_report_form()
 			dataType : "html",
 			success : function(responseText)
 			{
-                location.reload()
+                window.location.href = "{% url 'report_list' %}";
 			}
 	});
 }

@@ -18,7 +18,8 @@
         <form method="post" id="report_submission_form">
             {% csrf_token %}
             {% for report_details in report_details %}
-            <input type="hidden" name="record_id" id="record_id">
+            <input type="hidden" name="record_id" id="record_id" value="{{report_details.record_id}}">
+            <input type="hidden" name="report_reference_no" id="report_reference_no" value="{{report_details.report_reference_no}}">
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
                     <li class="nav-item">
@@ -41,11 +42,37 @@
                                     <label class="form-label">Report Type <font color="red">*</font></label>
                                     <select class="form-control form-control" id="report_type" name="report_type">
                                         <option value="">-SELECT-</option>
-                                        <option value="1st Quarter">1st Quarter</option>
-                                        <option value="2nd Quarter">2nd Quarter</option>
-                                        <option value="3rd Quarter">3rd Quarter</option>
-                                        <option value="4th Quarter">4th Quarter</option>
-                                        <option value="Annual">Annual</option>
+                                        {% if report_details.report_type == '1st Quarter' %}
+                                            <option value="1st Quarter" selected>1st Quarter</option>
+                                            <option value="2nd Quarter">2nd Quarter</option>
+                                            <option value="3rd Quarter">3rd Quarter</option>
+                                            <option value="4th Quarter">4th Quarter</option>
+                                            <option value="Annual">Annual</option>
+                                        {% elif report_details.report_type == '2nd Quarter' %}
+                                            <option value="1st Quarter">1st Quarter</option>
+                                            <option value="2nd Quarter" selected>2nd Quarter</option>
+                                            <option value="3rd Quarter">3rd Quarter</option>
+                                            <option value="4th Quarter">4th Quarter</option>
+                                            <option value="Annual">Annual</option>
+                                        {% elif report_details.report_type == '3rd Quarter' %}
+                                            <option value="1st Quarter">1st Quarter</option>
+                                            <option value="2nd Quarter">2nd Quarter</option>
+                                            <option value="3rd Quarter" selected>3rd Quarter</option>
+                                            <option value="4th Quarter">4th Quarter</option>
+                                            <option value="Annual">Annual</option>
+                                        {% elif report_details.report_type == '4th Quarter' %}
+                                            <option value="1st Quarter">1st Quarter</option>
+                                            <option value="2nd Quarter">2nd Quarter</option>
+                                            <option value="3rd Quarter">3rd Quarter</option>
+                                            <option value="4th Quarter" selected>4th Quarter</option>
+                                            <option value="Annual">Annual</option>
+                                        {% else %}
+                                            <option value="1st Quarter">1st Quarter</option>
+                                            <option value="2nd Quarter">2nd Quarter</option>
+                                            <option value="3rd Quarter">3rd Quarter</option>
+                                            <option value="4th Quarter">4th Quarter</option>
+                                            <option value="Annual" selected>Annual</option>
+                                        {% endif %}
                                     </select>
                                 </div>
                                 <div class="alert alert-danger" id="report_typeErrorMsg" style="display:none"></div>
@@ -61,7 +88,9 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Submission Date <font color="red">*</font></label>
-                                    <input type="date" name="submission_date" id="submission_date" class="form-control date-picker flatpickr-input active" value="{{report_details.submission_date}}">
+                                    {% with submission_date_display=report_details.submission_date|date:"Y-m-d" %}
+                                        <input type="date" name="submission_date" id="submission_date" class="form-control date-picker flatpickr-input active" value="{{ submission_date_display }}">
+                                    {% endwith %}
                                 </div>
                                 <div class="alert alert-danger" id="submission_dateErrorMsg" style="display:none"></div>
                             </div>
@@ -74,7 +103,9 @@
                                     <select id="ec_clearance_no" name="ec_clearance_no" class="form-select" onchange="get_ec_details(this.value)">
                                         <option value="">--EC Number--</option>
                                         {% for ec_details in ec_details %}
-                                            <option value="{{ ec_details.ec_reference_no }}">{{ ec_details.ec_reference_no }}</option>
+                                            <option value="{{ec_details.ec_reference_no}}"{% if report_details.ec_clearance_no == ec_details.ec_reference_no %}selected{% endif %}>
+                                                {{ ec_details.ec_reference_no }}
+                                            </option>
                                         {% endfor %}
                                     </select>
                                 </div>

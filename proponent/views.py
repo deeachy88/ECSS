@@ -6527,7 +6527,7 @@ def report_list(request):
     context = {}
 
     if login_type == 'C':
-        report_list = t_report_submission_t1.objects.filter(created_by=login_id).values().order_by('submission_date')
+        report_list = t_report_submission_t1.objects.filter(created_by=login_id).order_by('submission_date')
 
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
 
@@ -6549,12 +6549,13 @@ def report_list(request):
 
     elif login_type == 'I':
         ca_authority = request.session['ca_authority']
-        expiry_date_threshold = Now() + timedelta(days=30)
+        expiry_date_threshold = timezone.now() + timedelta(days=30)
 
-        report_list = t_report_submission_t1.objects.filter(ca_authority=ca_authority).exclude(report_status='Pending').values().order_by('submission_date')
+        report_list = t_report_submission_t1.objects.filter(ca_authority=ca_authority).exclude(report_status='Pending').order_by('submission_date')
 
-        v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier',
-                                                            ca_authority=ca_authority).count()
+        v_application_count = t_workflow_dtls.objects.filter(
+            assigned_role_id='2', assigned_role_name='Verifier', ca_authority=ca_authority
+        ).count()
 
         ec_renewal_count = t_ec_industries_t1_general.objects.filter(
             ca_authority=ca_authority, application_status='A', ec_expiry_date__lt=expiry_date_threshold
@@ -6573,6 +6574,7 @@ def report_list(request):
     response['Pragma'] = 'no-cache'
     response['Expires'] = '0'
     return response
+
 
 
 
@@ -6684,7 +6686,6 @@ def update_report_submission(request):
 
 def load_report_submission_details(request):
     reference_no = request.GET.get('refNo')
-    print(reference_no)
     report_submission = t_report_submission_t2.objects.filter(report_reference_no=reference_no)
     return render(request, 'report_submission/report_submitted_details.html',
                   {'report_submission': report_submission})
