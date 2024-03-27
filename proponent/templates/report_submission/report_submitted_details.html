@@ -41,22 +41,22 @@
 </div>
 <script>
 function save_next() {
-    $('#pills-profile-file').tab('show'); // Corrected selector to show the 'pills-details' tab
-    $('#pills-details').removeClass('show active'); // Remove 'show' and 'active' classes from the current tab
-    $('#details').removeClass('active'); // Remove 'active' class from the current tab link
-    $('#file-attachment').addClass('active'); // Add 'active' class to the next tab link
+    $('.nav-tabs a[href="#settings-b1"]').tab('show');
+    $('#disco').removeClass('show');
+    $('#disco').removeClass('active');
+    $('#file_attachment_tab').removeClass('disabled');
 }
 
 function DeleteReportDetails(record_id)
 {
-    var refNo = $('#refNo').val();
+    var refNo = $('#report_reference_no').val();
     $.ajax({
         type : "GET",
         url : "{% url 'delete_report_details' %}",
         data :{'refNo':refNo , 'record_id': record_id},
         success : function(responseText)
         {
-            $('#report_details').html(responseText);
+            $('#report_submitted_details').html(responseText);
         }
     });
 }

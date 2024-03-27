@@ -6685,7 +6685,8 @@ def update_report_submission(request):
     return JsonResponse(data)
 
 def load_report_submission_details(request):
-    reference_no = request.GET.get('refNo')
+    reference_no = request.GET.get('report_reference_no')
+    print(reference_no)
     report_submission = t_report_submission_t2.objects.filter(report_reference_no=reference_no)
     return render(request, 'report_submission/report_submitted_details.html',
                   {'report_submission': report_submission})
