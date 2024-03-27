@@ -402,13 +402,11 @@ def client_application_details(request):
     application_source = request.GET.get('application_source')
     status = None
     ca_auth = None
-    assigned_role_id = None
     result = t_ec_industries_t1_general.objects.filter(application_no=application_no,application_no__contains='TOR')
     workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
     for work_details in workflow_details:
         status = work_details.application_status
         ca_auth = work_details.ca_authority
-        assigned_role_id = work_details.assigned_role_id
     if result.exists():
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         dzongkhag = t_dzongkhag_master.objects.all()
@@ -418,7 +416,6 @@ def client_application_details(request):
         file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='TOR')
         tor_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RTOR')
         tor_attach_count = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RTOR').count()
-        print(tor_attach_count)
         return render(request, 'application_details/tor_form_details.html', {'application_details':application_details,'file_attach':file_attach,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde, 'tor_attach':tor_attach, 'tor_attach_count':tor_attach_count})
     else:
         if service_id == '1':

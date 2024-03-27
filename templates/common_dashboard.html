@@ -1217,27 +1217,7 @@
                 }
             });
             $("#scroll-horizontal-datatable").DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        title: 'List of Application',
-                        text:'<i class="fas fa-file-excel"></i>',
-                        titleAttr: 'Excel'
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'List of Application',
-                        text:'<i class="fas fa-file-pdf"></i>',
-                        titleAttr: 'PDF'
-                    },
-                     {
-                        extend: 'print',
-                        title: 'List of Application',
-                        text: '<i class="fas fa-print"></i>',
-                        titleAttr: 'Print'
-                    },
-                ]
+                "scrollX": true
             });
         </script>
     </body>
