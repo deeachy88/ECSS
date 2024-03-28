@@ -6551,7 +6551,7 @@ def report_list(request):
         ca_authority = request.session['ca_authority']
         expiry_date_threshold = timezone.now() + timedelta(days=30)
 
-        report_list = t_report_submission_t1.objects.filter(ca_authority=ca_authority,report_status='Submitted').order_by('submission_date')
+        report_list = t_report_submission_t1.objects.filter(ca_authority=ca_authority).exclude(report_status='Pending').values().order_by('submission_date')
 
         v_application_count = t_workflow_dtls.objects.filter(
             assigned_role_id='2', assigned_role_name='Verifier', ca_authority=ca_authority
