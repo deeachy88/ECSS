@@ -6672,7 +6672,7 @@ def update_report_submission(request):
     address = request.POST.get('address')
     remarks = request.POST.get('remarks')
     report_type = request.POST.get('report_type')
-    login_id = request.session['login_id']
+    login_id = request.session['email']
 
     application_details = t_report_submission_t1.objects.filter(report_reference_no=reference_no)
 
