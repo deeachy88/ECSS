@@ -24,6 +24,8 @@
                                     <p class="mb-0">Note 3: The completed EA form shall be the basis to determine the requirement of detailed Environment Assessment (EA). If detailed EA is required, applicant will be notified to submit Terms of Reference for the project. </p>
                                     <p class="mb-0">Note 4: The application shall be subjected to Fee Schedules to cover the cost of administering the Environmental Assessment Act 2000.</p>
                                 </div>
+                                <input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">
+                                <input type="text" class="form-control" value="Main Activity" name="service_type" style="display:none;">
                                 {% for application_details in application_details %}
                                     <div class="row">
                                         <div class="col-lg-6">

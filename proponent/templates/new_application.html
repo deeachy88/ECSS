@@ -128,9 +128,13 @@
                     }
                     else
                     {
-                        if(service_id == '1' && has_tor == 'No')
+                        if(service_id == '1' && has_tor == 'No' && colour_code =='Blue')
                         {
                             window.location.href = '/new_iee_application';
+                        }
+                        else if(service_id == '1' && has_tor == 'No' && colour_code =='Red')
+                        {
+                            window.location.href = '/new_ea_application';
                         }
                         else if(service_id == '2' && has_tor == 'No')
                         {

@@ -4171,6 +4171,7 @@ def save_general_application(request):
 def save_forest_application(request):
     data = {}
     try:
+        print(request.session['ca_auth'])
         identifier = request.POST.get('identifier')
         # Fetch ca_auth for non-draft applications
         tor_application_no = request.POST.get('tor_application_no')
@@ -4226,6 +4227,8 @@ def save_forest_application(request):
             'ca_authority':ca_auth,
             'applicant_id':request.session['email'],
             'colour_code':request.session['colour_code'],
+            'service_id':request.session['service_id'],
+            'application_source':'ECSS'
         }
 
         with transaction.atomic():
