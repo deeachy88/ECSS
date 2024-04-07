@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 from django.shortcuts import render, redirect
+import requests
 from ecs_main.models import t_application_history
 from ecs_main.views import client_application_list, payment_list
 from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t12_drainage_details, t_ec_industries_t13_dumpyard, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals, t_report_submission_t1, t_report_submission_t2
@@ -19,6 +20,7 @@ from django.db.models import OuterRef, Subquery, Q
 from django.db.models.functions import Now
 from django.shortcuts import render
 from datetime import timedelta
+from django.views.decorators.csrf import csrf_exempt
 
 def new_application(request):
     assigned_user_id = request.session.get('login_id', None)
@@ -1648,6 +1650,7 @@ def submit_iee_application(request):
 
                     total_amount = main_amount + ancillary_amount
                     insert_app_payment_details(request, application_no, 'new_iee_application', total_amount, application_type)
+                    make_payment_request(application_no,total_amount,'NEW IEE APPLICATION',request.session['email'],"200")
                     send_payment_mail(request.session['name'], request.session['email'], total_amount)
                     data['message'] = "success"
 
@@ -2712,6 +2715,7 @@ def submit_ea_application(request):
 
                             total_amount = main_amount + ancillary_amount
                             insert_app_payment_details(request, application_no, 'new_ea_application', total_amount, application_type)
+                            make_payment_request(application_no,total_amount,'NEW EA APPLICATION',request.session['email'],"200")
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
 
@@ -2977,6 +2981,7 @@ def submit_transmission_application(request):
                             total_amount = main_amount
 
                         insert_app_payment_details(request, application_no, 'new_transmission_application', total_amount, application_type)
+                        make_payment_request(application_no,total_amount,'NEW TRANSMISSION APPLICATION',request.session['email'],"200")
                         send_payment_mail(request.session['name'], request.session['email'], total_amount)
                         data['message'] = "success"
 
@@ -3046,6 +3051,7 @@ def submit_general_application(request):
                             app_hist_details.update(remarks='Your Application Submitted')
                             app_hist_details.update(action_date=timezone.now())
                             insert_app_payment_details(request, application_no, 'new_general_application', total_amount, application_type)
+                            make_payment_request(application_no,total_amount,'NEW GENERAL APPLICATION',request.session['email'],"200")
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -3183,7 +3189,8 @@ def save_tor_form(request):
             ca_authority=ca_auth,
             application_source='ECSS'
         )
-        insert_app_payment_details(request, application_no, 'tor_form', 500, None)
+        insert_app_payment_details(request, application_no, 'NEW TOR APPLICATION', 500, None)
+        make_payment_request(application_no,"500",'NEW TOR APPLICATION',request.session['email'],"200")
         send_tor_payment_mail(request.session['name'], request.session['email'], 500)
         data['message'] = 'success'
     except Exception as e:
@@ -3408,25 +3415,34 @@ def view_tor_application_details(request):
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
 
-def insert_app_payment_details(request,application_no, identifier,total_amount,application_type):
-    if 'new' in identifier:
-        payment_details = payment_details_master.objects.filter(payment_type='NEW')
-        for pay_details in payment_details:      
-            t_payment_details.objects.create(application_no=application_no,
-                    application_type=application_type,
-                    application_date=date.today(), 
-                    proponent_name=request.session['name'],
-                    amount=total_amount,
-                    account_head_code=pay_details.account_head_code)
-    elif 'tor' in identifier:
-        payment_details = payment_details_master.objects.filter(payment_type='TOR')
-        for pay_details in payment_details:      
-            t_payment_details.objects.create(application_no=application_no,
-                    application_type=application_type,
-                    application_date=date.today(), 
-                    proponent_name=request.session['name'],
-                    amount=total_amount,
-                    account_head_code=pay_details.account_head_code)
+def insert_app_payment_details(request,application_no, identifier,total_amount):
+    cid_no = None
+    mob_no = None
+    app_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+    for app_det in app_details:
+        cid_no = app_det.cid
+        mob_no = app_det.contact_no
+    if 'NEW' in identifier:
+        t_payment_details.objects.create(ref_no=application_no,
+                payment_request_date=date.today(),
+                tax_payer_name=request.session['name'],
+                agency_code="DTH1552",
+                tax_payer_document_no=cid_no,
+                mobile_no=mob_no,
+                payer_email=request.session['email'],
+                description=identifier,
+                total_payable_amount=total_amount
+                )
+    elif 'TOR' in identifier:
+        t_payment_details.objects.create(ref_no=application_no,
+                payment_request_date=date.today(),
+                tax_payer_name=request.session['name'],
+                agency_code="DTH1552",
+                tax_payer_document_no=cid_no,
+                mobile_no=mob_no,
+                payer_email=request.session['email'],
+                description=identifier,
+                total_payable_amount=total_amount)
     return redirect(identifier)
 
 def insert_payment_details(request,application_no,account_head, identifier):
@@ -4369,6 +4385,7 @@ def submit_forest_application(request):
                             total_amount,
                             application_type
                         )
+                        make_payment_request(application_no,total_amount,'NEW FOREST APPLICATION',request.session['email'],"200")
                         send_payment_mail(request.session['name'], request.session['email'], total_amount)
 
                 data['message'] = "success"
@@ -4612,6 +4629,7 @@ def submit_ground_water_application(request):
                                 else:
                                     total_amount = main_amount
                                 insert_app_payment_details(request, application_no, 'new_ground_water_application', total_amount, application_type)
+                                make_payment_request(application_no,total_amount,'NEW GW APPLICATION',request.session['email'],"200")
                                 send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -4910,6 +4928,7 @@ def submit_quarry_application(request):
                                 total_amount = main_amount
 
                             insert_app_payment_details(request, application_no, 'new_quarry_application', total_amount, application_type)
+                            make_payment_request(application_no,total_amount,'NEW QUARRY APPLICATION',request.session['email'],"200")
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
 
                             data['message'] = "success"
@@ -5368,6 +5387,7 @@ def submit_energy_application(request):
                                 else:
                                     total_amount=main_amount
                                 insert_app_payment_details(request, application_no, 'submit_energy_application ',total_amount,application_type)
+                                make_payment_request(application_no,total_amount,'NEW ENERGY APPLICATION',request.session['email'],"200")
                                 send_payment_mail(request.session['name'],request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -5718,6 +5738,7 @@ def submit_tourism_application(request):
                                 else:
                                     total_amount=main_amount
                                 insert_app_payment_details(request, application_no, 'submit_tourism_application ',total_amount,application_type)
+                                make_payment_request(application_no,total_amount,'NEW TOURISM APPLICATION',request.session['email'],"200")
                                 send_payment_mail(request.session['name'],request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -7061,3 +7082,116 @@ def delete_application_attachment(request):
         file.delete()
     file_attach = t_file_attachment.objects.filter(application_no=application_no)
     return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
+
+def get_auth_token():
+    """
+    get an auth token
+    """
+    credentials = {'username': 'ECSS',
+                   'password': 'ECSs@2024!'
+                   }
+
+    headers = {'Accept': 'application/json'}
+
+    try:
+        # Send POST request to authenticate
+        res = requests.post('https://birmsstagging.drc.gov.bt/api-services/core-module/api/v1/auth/external-users/logMeIn',
+                            json=credentials, headers=headers, verify=False)
+
+        # Check if request was successful (status code 200)
+        if res.status_code == 200:
+            # Extract access token from response JSON
+            #print("Response content:", res.text)
+            json_data = res.json()
+            access_token = json_data['content']['tokenDto']['accessToken']
+            return access_token
+        else:
+            print("Authentication failed. Status code:", res.status_code)
+    except Exception as e:
+        print("An error occurred:", e)
+
+def make_payment_request(application_no,total_amount,description, email, service_code):
+    token = get_auth_token()
+    cid_no = None
+    mob_no = None
+    app_name = None
+    app_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+    for app_det in app_details:
+        cid_no = app_det.cid
+        mob_no = app_det.contact_no
+        app_name = app_det.applicant_name
+    # Endpoint URL
+    url = "https://birmsstagging.drc.gov.bt/api-services/moenr-service/api/v1/paymentdetails/create"
+
+    # Payload data
+    payload = {
+        "platform": "OFS",
+        "refNo": application_no,
+        "taxPayerNo": "",
+        "taxPayerDocumentNo": cid_no,#id card
+        "paymentRequestDate": date.today(),
+        "agencyCode": "DTH1552",
+        "payerEmail": email,
+        "mobileNo": mob_no,
+        "totalPayableAmount": total_amount,
+        "paymentDueDate": None,
+        "taxPayerName": app_name,
+        "paymentLists": [
+            {
+                "serviceCode": service_code,
+                "description": description,
+                "payableAmount": total_amount
+            }
+        ]
+    }
+
+    # Convert payload to JSON string
+    headers = {'Authorization': "Bearer {}".format(token)}
+    response = requests.POST(url, headers=headers,json=payload, verify=False)
+
+    # Check response status
+    if response.status_code == 200:
+        print("Payment request successful")
+        print("Response:", response.json())
+    else:
+        print("Payment request failed")
+        print("Response:", response.text)
+
+
+@csrf_exempt
+def ecss_payment_update(request):
+    ref_no = request.POST.get("refNo")
+    print(ref_no)
+    payment_detail = t_payment_details.objects.filter(ref_no=ref_no)
+        
+    payment_detail.response_date = request.POST.get("responseDate")
+    payment_detail.payment_advice_no = request.POST.get("paymentAdviceNo")
+    payment_detail.faultcode = request.POST.get("faultcode")
+    payment_detail.message = request.POST.get("message")
+    payment_detail.payment_method = request.POST.get("paymentMethod")
+    payment_detail.payment_mode = request.POST.get("paymentMode")
+    payment_detail.instrument_no = request.POST.get("instrumentNo")
+    payment_detail.instrument_date = request.POST.get("instrumentDate")
+    payment_detail.issuing_bank = request.POST.get("issuingBank")
+    payment_detail.payable_bank = request.POST.get("payableBank")
+    payment_detail.transaction_id = request.POST.get("transactionID")
+    payment_detail.payment_order_no = request.POST.get("paymentOrderNo")
+    payment_detail.journal_no = request.POST.get("journalNo")
+    payment_detail.receipt_list = request.POST.getlist("receiptList")
+
+    for receipt_details in payment_detail.receipt_list:
+        payment_detail.receipt_no = receipt_details.get('receiptNo')
+        payment_detail.receipt_date = receipt_details.get('receiptDate')
+        payment_detail.total_receipt_amount = receipt_details.get('totalReceiptAmount')
+        payment_detail.payment_advice_amount = receipt_details.get('paymentAdviceAmount')
+        payment_detail.payment_advice_amount_paid = receipt_details.get('paymentAdviceAmountPaid')
+        payment_detail.payment_advice_status = receipt_details.get('paymentAdviceStatus')
+
+    payment_detail.save()
+
+    response_data = {
+            "statusCode": "200",
+            "statusDescription": "Payment Details received successfully",
+        }
+        
+    return JsonResponse(response_data)
