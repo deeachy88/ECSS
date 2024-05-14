@@ -1003,7 +1003,7 @@ function authenticateWithAPI() {
 function registerauthenticateWithAPI() {
     $.ajax({
         type: "GET",
-        url: "/proof_request/", // This assumes the proof_request URL is mapped in your Django urls.py file
+        url: "/proof_request_proponent/", // This assumes the proof_request URL is mapped in your Django urls.py file
         success: function(data) {
             var verifierData = data.data;
             var proofRequestURL = verifierData.proofRequestURL;
@@ -1017,7 +1017,7 @@ function registerauthenticateWithAPI() {
                 $("#ndi_div_proponent").show();
                 $("#deepLink").show();
                 $('#deepLinkBtn').val(deepLinkURL);
-                nats_call(proofRequestThreadId);
+                nats_proponent_call(proofRequestThreadId);
             } else {
                 // Show QR code on larger screens
                 $('#registration_div').hide();
@@ -1046,7 +1046,7 @@ function registerauthenticateWithAPI() {
                 });
                 $('#qrcode').show(); // Show the QR code
                 $("#ndi_button").hide();
-                nats_call(proofRequestThreadId);
+                nats_proponent_call(proofRequestThreadId);
             }
         }
     });

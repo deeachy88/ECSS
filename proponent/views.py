@@ -7313,6 +7313,38 @@ def proof_request(request):
     response_data = response.json()
     return JsonResponse(response_data)
 
+def proof_request_proponent(request):
+    # Get NDI access token
+    ndi_token = get_access_token_ndi()
+    
+    # Define verifier API URL and headers
+    verifier_api_url = 'https://stageclient.bhutanndi.com/verifier/v1/proof-request'
+    headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
+    
+    # Define proof request data
+    proof_attributes = [
+        {
+            'name': "ID Number",
+            'restrictions': [
+                {
+                    'cred_def_id': "Ka4s9yvjDetTTME9KWuXAj:3:CL:51994:revocable"
+                }
+            ]
+        },
+        # Add other proofAttributes as needed
+    ]
+    proof_data = {
+        'proofName': 'ECSS Credentials',
+        'proofAttributes': proof_attributes
+    }
+    
+    # Make request to verifier API with proof data
+    response = requests.post(verifier_api_url, headers=headers, data=json.dumps(proof_data), verify=False)
+    
+    # Print or return the JSON response
+    response_data = response.json()
+    return JsonResponse(response_data)
+
 import asyncio
 import os
 from django.http import JsonResponse, HttpResponseBadRequest
