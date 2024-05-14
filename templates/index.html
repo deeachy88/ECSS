@@ -20,6 +20,7 @@
 
         <!-- App css -->
         <link href="{% static 'assets/css/app-saas.min.css' %}" rel="stylesheet" type="text/css" id="app-style" />
+        <link href="{% static 'assets/css/ndi.css' %}" rel="stylesheet" type="text/css" />
 
         <!-- Icons css -->
         <link href="{% static 'assets/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
@@ -44,6 +45,31 @@
 .dropdown-menu > li > a:hover:after {
     text-decoration: underline;
     transform: rotate(-90deg);
+}
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background-color: #124143;
+    border-color: rgba(101, 109, 119, .24);
+    white-space: nowrap;
+}
+.modal-body-video-btn .btn-ndi {
+    background-color: #5AC994;
+    color: white;
+}
+.modal-body-download-level {
+    color: #5AC994;
+}
+.modal-body-question {
+    text-align: center;
+    padding-top: 30px;
+}
+.btn-pill {
+    padding-right: 1.5em;
+    padding-left: 1.5em;
+    border-radius: 10rem;
 }
 </style>
 <body style="background-color:white;">
@@ -164,103 +190,146 @@
         {% endblock %}
     </div>
 
-    <div class="modal fade" id="loginModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div id="loginBox">
-        <div class="modal-header">
-            <h4 class="modal-title" id="fullWidthModalLabel"><strong><i class="uil uil-lock-alt"></i>
-												&nbsp;Please Enter Your Credentials</strong></h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-        </div>
-      <!--Body-->
-      <form action="{% url 'login' %}" id="loginForm" method="post">
-        {% csrf_token %}
-        {% if message %}
-            <div class="alert alert-danger" id="login_error">{{ message }}</div>
-        {% endif %}
-      <div class="modal-body mx-4">
-        <div class="md-form mb-2">
-          <input type="email" id="username" name="username" placeholder="Email" class="form-control validate" autocomplete="off">
-        </div>
-
-        <div class="md-form pb-3">
-            <div class="input-group input-group-merge">
-                <input type="password" name="password" id="password" class="form-control" placeholder="Password" autocomplete="off">
-                <div class="input-group-text" data-password="false">
-                    <span class="password-eye"></span>
+    <div class="modal fade" id="loginModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content form-elegant">
+            <div id="loginBox">
+              <div class="modal-header">
+                <h4 class="modal-title" id="fullWidthModalLabel">
+                  <strong><i class="uil uil-lock-alt"></i> &nbsp;Please Enter Your Credentials</strong>
+                </h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <form action="{% url 'login' %}" id="loginForm" method="post">
+                {% csrf_token %}
+                {% if message %}
+                <div class="alert alert-danger" id="login_error">{{ message }}</div>
+                {% endif %}
+                <div class="modal-body mx-4">
+                  <div class="md-form mb-2">
+                    <input type="email" id="username" name="username" placeholder="Email" class="form-control validate" autocomplete="off">
+                  </div>
+                  <div class="md-form pb-3">
+                    <div class="input-group input-group-merge">
+                      <input type="password" name="password" id="password" class="form-control" placeholder="Password" autocomplete="off">
+                      <div class="input-group-text" data-password="false">
+                        <span class="password-eye"></span>
+                      </div>
+                    </div>
+                  </div>
+                    <div class="text-center mb-0 d-flex justify-content-between">
+                        <button class="btn btn-primary btn-sm mt-1 me-2"><i class="uil uil-message me-1"></i>Log in</button>
+                        <a href="#" onclick="forgotPassword()" class="font-small blue-text forgot_button">Forgot Password?</a>
+                    </div>
                 </div>
+              </form>
             </div>
-        </div>
-        <div class="text-center mb-3">
-            <button class="btn btn-primary btn-sm mt-1"><i class="uil uil-message me-1"></i>Log in</button>
-        </div>
+            <div class="modal-footer mx-5 pt-3 mb-1 justify-content-center">
+                <a href="#" class="btn btn-vimeo w-100" style="background-color: #124143; color:white" id="ndiLoginId" onclick="authenticateWithAPI()">
+                    <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%">
+                    &nbsp; &nbsp; Login with Bhutan NDI
+                </a>
+            </div>
+            <div id="ForgotBox" style="display:none;">
+              <div class="modal-header text-center">
+                <h4 class="modal-title"><strong><i class="uil uil-lock-alt"></i>&nbsp;Reset Your Password</strong></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <div class="modal-body mx-4">
+                <form id="forgot_password_form" method="post">
+                  {% csrf_token %}
+                  <div class="alert alert-danger" id="errorMsg" style="display:none"></div>
+                  <div class="alert alert-info" id="successMsgReset" style="display:none"></div>
+                  <div class="form-group mt-1">
+                    <label>Email</label>
+                    <input type="email" name="email_id" class="form-control" id="email_id" required="required" placeholder="Your Email" onchange="validateemailId(this.value)" onblur="getSecurityQuestion(this.value)">
+                    <div class="alert" id="email_idErrorMsg" style="display:none"></div>
+                  </div>
+                  <div class="form-group mt-1">
+                    <label for="security_question">Security Question</label>
+                    <select class="form-control" id="security_question" name="security_question" tabindex="2" onchange="getAnswer(this.value)">
+                      <option value="">--SELECT SECURITY QUESTION--</option>
+                      {% for security in security %}
+                      <option value="{{ security.question_id }}">{{ security.question }}</option>
+                      {% endfor %}
+                    </select>
+                    <div class="alert" id="securityErrorMsg" style="display:none"></div>
+                  </div>
+                  <div class="form-group mt-1">
+                    <label for="answer">Security Answer</label>
+                    <input type="text" class="form-control" id="answer" name="answer" placeholder="Security Answer" tabindex="3">
+                    <div class="alert" id="answerErrorMsg" style="display:none"></div>
+                  </div>
+                  <div class="alert" id="sucessMsg" style="display:none"></div>
+                  <div class="text-center mb-3">
+                    <button class="btn btn-primary btn-sm mt-2" onclick="update_password()"><i class="uil uil-envelope-add me-1"></i>Reset Password</button>
+                  </div>
+                  <input type="hidden" id="securityAnswer">
+                  <div id="submitMsgDiv" style="display: none"></div>
+                </form>
+              </div>
+              
+              <div class="modal-footer mx-5 pt-3 mb-1 justify-content-center">
+                <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center">Back To Login</a>
+              </div>
+            </div>
 
+            <div class="modal-body" id="ndi_div" style="display: none; text-align: center">
+                <h2 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 500;">Scan QR code from <span style="color:#5AC994 ">Bhutan NDI </span> app</h2>
+                <div class="row" style="margin-top: 30px">
+                    <div class="col-lg-12 col-md-12 d-flex justify-content-center">
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12 col-xl-12">
+                                <div class="col-12 mt-3">
+                                <div id="deepLink" class="col-md-5 text-center" style="display: none;">
+                                    <button id="deepLinkBtn" class="button button1 text-white btn-bg cus-button">
+                                    <img src="{% static 'assets/images/NDI_logo.png' %}" alt="NDI Logo" class="ndi-logo">Open Bhutan NDI App
+                                    </button>
+                                </div>
+                                <div class="text-center" id="qrcode"><canvas width="200" height="200" style="display: none;"></canvas></div>
+                                    <img id="logo" src="{% static 'assets/images/NDIlogobg.png' %}" style="display: none;" />
+                                    <div class="row text-center">
+                                        <div class="counter" id="clockdiv" style="display: none;">
+                                            <div class="sq">
+                                                <span class="seconds bord" id="timer"></span> <span class="smalltext">Secs</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-9 custom-vertical-align-left">
+                        <ul class="list-unstyled">
+                            <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7">1. Open Bhutan NDI on your Phone</li>
+                            <li>2. Tab the Scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="QR Code">
+                                and capture code
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-body-video-btn">
+                    <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" class="btn btn-ndi btn-pill">
+                        Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i>
+                    </a>
+                </div>
+                <div class="modal-body-question">
+                    <ul class="list-unstyled">
+                        <li>
+                            Don't have the Bhutan NDI App? <a href="https://bhutanndi.app.link?t=https://iac-production-shortener.s3.ap-southeast-1.amazonaws.com/hZ4ycjxF" class="modal-body-download-level download-link">Download
+                            now
+                            !</a>
+                        </li>
+                    </ul>
+                </div>
+              </div>
+          </div>
+        </div>
       </div>
-      </form>
       
-      <!--Footer-->
-      <div class="modal-footer mx-5 pt-3 mb-1 justify-content-center">
-        <a href="#" onclick="forgotPassword()" class="font-small blue-text d-flex justify-content-center">
-			Forgot Password ?
-		</a>
-      </div>
-      </div>
-      <div id="ForgotBox" style="display:none;">
-          <div class="modal-header text-center">
-            <h4 class="modal-title"><strong><i class="uil uil-lock-alt"></i>
-												&nbsp;Reset Your Password</strong></h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-        </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-        <!--Body-->
-      <form id="forgot_password_form" method="post">
-            {% csrf_token %}
-        <div class="alert alert-danger" id="errorMsg" style="display:none"></div>
-		<div class="alert alert-info" id="successMsgReset" style="display:none"></div>
-       <div class="form-group mt-1">
-   			<label>Email</label>
-   			<input type="email" name="email_id" class="form-control" id="email_id" required="required" placeholder="Your Email"  onchange="validateemailId(this.value)" onblur="getSecurityQuestion(this.value)"/>
-  		    <div class="alert" id="email_idErrorMsg" style="display:none"></div>
-       </div>
-  		<div class="form-group mt-1">
-			<label for="security_question">Security Question</label>
-			<select class="form-control" id="security_question" name="security_question" tabindex="2" onchange="getAnswer(this.value)">
-				<option value="">--SELECT SECURITY QUESTION--</option>
-                {% for security in security %}
-                    <option value="{{ security.question_id }}">{{ security.question }}</option>
-                {% endfor %}
-			</select>
-            <div class="alert" id="securityErrorMsg" style="display:none"></div>
-		</div>
-		<div class="form-group mt-1">
-			<label for="answer">Security Answer</label>
-			<input type="text" class="form-control" id="answer" name="answer" placeholder="Security Answer" tabindex="3">
-		    <div class="alert" id="answerErrorMsg" style="display:none"></div>
-        </div>
-        <div class="alert" id="sucessMsg" style="display:none"></div>
-        <div class="text-center mb-3">
-            <button class="btn btn-primary btn-sm mt-2" onclick="update_password()"><i class="uil uil-envelope-add me-1"></i>Reset Password</button>
-        </div>
-        <input type="hidden" id="securityAnswer">
-		<div id="submitMsgDiv" style="display: none"></div>
-      </form>
-      </div>
-      <!--Footer-->
-      <div class="modal-footer mx-5 pt-3 mb-1 justify-content-center">
-        <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center">
-			Back To Login 
-		</a>
-      </div>
-      </div>
-    </div>
-    <!--/.Content-->
-  </div>
-</div>
 <!-- Modal -->
    <!-- Modal -->
 <div class="modal fade" id="registrationModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -273,11 +342,22 @@
         <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong><i class="fa fa-lock"></i>
 												&nbsp;Proponent Registration</strong></h3>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+        <br>
+        
       </div>
+      <div class="modal-body mx-4" id="registration_div">
+        <div class="row">
+            <div class="col-md-8"></div>
+            <div class="col-md-4 pb-2">
+                <a href="#" class="btn btn-vimeo" style="background-color: #124143; color:white"" id="generateQRCode"  onclick="registerauthenticateWithAPI()">
+                    <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%">
+                    &nbsp; &nbsp;Use Bhutan NDI
+                </a>
+            </div>
+        </div>
       <form method="post" id="client_registration_form">
       {% csrf_token %}
       <!--Body-->
-      <div class="modal-body mx-4">
         <div class="row">
             <div class="col-lg-6">
                 <div class="mb-3">
@@ -382,10 +462,62 @@
             </div>
         </div>
       </div>
+      <div class="modal-body" id="ndi_div_proponent" style="display: none; text-align: center">
+        <h2 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 500;">Scan QR code from <span style="color:#5AC994 ">Bhutan NDI </span> app</h2>
+        <div class="row" style="margin-top: 30px">
+            <div class="col-lg-12 col-md-12 d-flex justify-content-center">
+                <div class="row">
+                    <div class="col-md-12 col-lg-12 col-xl-12">
+                        <div class="col-12 mt-3">
+                        <div id="deepLink" class="col-md-5 text-center" style="display: none;">
+                            <button id="deepLinkBtn" class="button button1 text-white btn-bg cus-button">
+                            <img src="{% static 'assets/images/NDI_logo.png' %}" alt="NDI Logo" class="ndi-logo">Open Bhutan NDI App
+                            </button>
+                        </div>
+                        <div class="text-center" id="qrcodeproponent"><canvas width="200" height="200" style="display: none;"></canvas></div>
+                            <img id="logo" src="{% static 'assets/images/NDIlogobg.png' %}" style="display: none;" />
+                            <div class="row text-center">
+                                <div class="counter" id="clockdiv" style="display: none;">
+                                    <div class="sq">
+                                        <span class="seconds bord" id="timer"></span> <span class="smalltext">Secs</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-9 custom-vertical-align-left">
+                <ul class="list-unstyled">
+                    <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7">1. Open Bhutan NDI on your Phone</li>
+                    <li>2. Tab the Scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="QR Code">
+                        and capture code
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="modal-body-video-btn">
+            <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" class="btn btn-ndi btn-pill">
+                Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i>
+            </a>
+        </div>
+        <div class="modal-body-question">
+            <ul class="list-unstyled">
+                <li>
+                    Don't have the Bhutan NDI App? <a href="https://bhutanndi.app.link?t=https://iac-production-shortener.s3.ap-southeast-1.amazonaws.com/hZ4ycjxF" class="modal-body-download-level download-link">Download
+                    now
+                    !</a>
+                </li>
+            </ul>
+        </div>
+      </div>
       <div class="alert alert-success" id="client_registration_message_div" style="display:none"></div>
       <div class="alert alert-danger" id="client_registration_error_message_div" style="display:none"></div>
       <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-success" onclick="register_client()"><i class="uil uil-message me-1"></i>Submit</button>
+        <button type="button" class="btn btn-sm btn-success" onclick="register_client()" id="proponent_register_btn"><i class="uil uil-message me-1"></i>Submit</button>
         <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Cancel</button>
       </div>
       </form>
@@ -393,15 +525,17 @@
     <!--/.Content-->
   </div>
 </div>
-<!-- Vendor js -->
+        <!-- Vendor js -->
         <script src="{% static 'assets/js/vendor.min.js' %}"></script>
-
         <!-- Daterangepicker js -->
         <script src="{% static 'assets/vendor/daterangepicker/moment.min.js' %}"></script>
         <script src="{% static 'assets/vendor/daterangepicker/daterangepicker.js' %}"></script>
         <!-- App js -->
         <script src="{% static 'assets/js/app.min.js' %}"></script>
-    <!-- bootstrap -->
+        <!-- NDI -->
+        <script src="{% static 'assets/js/ndi.js' %}"></script>
+        <script src="{% static 'assets/js/jquery-qrcode.min.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/nats@2.1.7/dist/nats-base-client.umd.min.js"></script>
     <script>
         function forgotPassword()
         {
@@ -813,6 +947,112 @@
             }
         });
     }
+
+function authenticateWithAPI() {
+    $.ajax({
+        type: "GET",
+        url: "/proof_request/", // This assumes the proof_request URL is mapped in your Django urls.py file
+        success: function(data) {
+            var verifierData = data.data;
+            var proofRequestURL = verifierData.proofRequestURL;
+            var proofRequestThreadId = verifierData.proofRequestThreadId;
+            var deepLinkURL = verifierData.deepLinkURL;
+
+            $('.modal-footer').hide();
+            if (window.innerWidth < 992) {
+                // Show button on small and medium screens
+                $('#loginBox').hide();
+                $("#ndi_div").show();
+                $("#deepLink").show();
+                $('#deepLinkBtn').val(deepLinkURL);
+                nats_call(proofRequestThreadId);
+            } else {
+                // Show QR code on larger screens
+                $('#loginBox').hide();
+                $("#ndi_div").show();
+                $('#qrcode').qrcode({
+                    render: 'canvas',
+                    minVersion: 1,
+                    maxVersion: 40,
+                    ecLevel: 'L',
+                    left: 0,
+                    top: 0,
+                    size: 200,
+                    fill: '#000',
+                    background: '#fff',
+                    text: proofRequestURL,
+                    radius: 0,
+                    quiet: 0,
+                    mode: 4,
+                    mSize: 0.15,
+                    mPosX: 0.5,
+                    mPosY: 0.5,
+                    label: '',
+                    fontcolor: '#000',
+                    fontname: 'sans',
+                    image: document.getElementById('logo'),
+                });
+                $('#qrcode').show(); // Show the QR code
+                $("#ndi_button").hide();
+                nats_call(proofRequestThreadId);
+            }
+        }
+    });
+}
+
+function registerauthenticateWithAPI() {
+    $.ajax({
+        type: "GET",
+        url: "/proof_request/", // This assumes the proof_request URL is mapped in your Django urls.py file
+        success: function(data) {
+            var verifierData = data.data;
+            var proofRequestURL = verifierData.proofRequestURL;
+            var proofRequestThreadId = verifierData.proofRequestThreadId;
+            var deepLinkURL = verifierData.deepLinkURL;
+
+            $('.modal-footer').hide();
+            if (window.innerWidth < 992) {
+                // Show button on small and medium screens
+                $('#registration_div').hide();
+                $("#ndi_div_proponent").show();
+                $("#deepLink").show();
+                $('#deepLinkBtn').val(deepLinkURL);
+                nats_call(proofRequestThreadId);
+            } else {
+                // Show QR code on larger screens
+                $('#registration_div').hide();
+                $("#ndi_div_proponent").show();
+                $('#qrcodeproponent').qrcode({
+                    render: 'canvas',
+                    minVersion: 1,
+                    maxVersion: 40,
+                    ecLevel: 'L',
+                    left: 0,
+                    top: 0,
+                    size: 200,
+                    fill: '#000',
+                    background: '#fff',
+                    text: proofRequestURL,
+                    radius: 0,
+                    quiet: 0,
+                    mode: 4,
+                    mSize: 0.15,
+                    mPosX: 0.5,
+                    mPosY: 0.5,
+                    label: '',
+                    fontcolor: '#000',
+                    fontname: 'sans',
+                    image: document.getElementById('logo'),
+                });
+                $('#qrcode').show(); // Show the QR code
+                $("#ndi_button").hide();
+                nats_call(proofRequestThreadId);
+            }
+        }
+    });
+}
+
+
 
     </script>
 </body>

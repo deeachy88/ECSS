@@ -1,3 +1,4 @@
+import asyncio
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 from django.utils import timezone
@@ -14,12 +15,15 @@ from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password, check_password
 import string
 import random
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from datetime import date
 from ecs_main.models import t_application_history
 from datetime import datetime, timedelta
 from django.views.decorators.cache import cache_control
 from proponent.models import t_workflow_dtls
+
+from nats.aio.client import Client as NATS
+from nats.aio.errors import ErrConnectionClosed, ErrTimeout
 
 
 # Create your views here.
@@ -157,8 +161,8 @@ def dashboard(request):
         login_id =  request.session['login_id']
         app_hist_count = t_application_history.objects.filter(applicant_id=email_id).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=login_id).count()
-        payment_count = t_payment_details.objects.filter(transaction_no__isnull=True).count()
-        print(payment_count);
+        payment_count = t_payment_details.objects.filter(payment_advice_amount_paid__isnull=True).count()
+        
         t1_general_subquery = t_ec_industries_t1_general.objects.filter(
             tor_application_no=OuterRef('application_no')
         ).values('tor_application_no')
@@ -1311,3 +1315,4 @@ def get_auth_token():
 
     json = res.json()
     return json["access_token"]
+

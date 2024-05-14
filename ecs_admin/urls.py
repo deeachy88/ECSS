@@ -110,6 +110,8 @@ urlpatterns = [
     path('delete_bsic_code_master', views.delete_bsic_code_master, name='delete_bsic_code_master'),
 
     path('check_cid_exists', views.check_cid_exists, name='check_cid_exists'),
+
+    
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

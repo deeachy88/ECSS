@@ -1,6 +1,12 @@
 from datetime import date, timedelta
+import json
+import os
+import re
+import traceback
 from django.shortcuts import render, redirect
 import requests
+from ECS import settings
+from ECS.settings import BASE_DIR
 from ecs_main.models import t_application_history
 from ecs_main.views import client_application_list, payment_list
 from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t12_drainage_details, t_ec_industries_t13_dumpyard, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals, t_report_submission_t1, t_report_submission_t2
@@ -1612,7 +1618,7 @@ def submit_iee_application(request):
 
         for details in application_details:
             service_id = details.service_id
-            application_type = details.application_type
+            service_type = details.service_type
 
             if details.service_type in anc_forms:
                 anc_details += 1
@@ -1649,8 +1655,8 @@ def submit_iee_application(request):
                             ancillary_amount += int(anc_fees_detail.rate)
 
                     total_amount = main_amount + ancillary_amount
-                    insert_app_payment_details(request, application_no, 'new_iee_application', total_amount, application_type)
-                    make_payment_request(application_no,total_amount,'NEW IEE APPLICATION',request.session['email'],"200")
+                    insert_app_payment_details(request, application_no, 'new_iee_application', total_amount, service_type)
+                    make_payment_request(application_no,total_amount,'NEW IEE APPLICATION',request.session['email'],"208")
                     send_payment_mail(request.session['name'], request.session['email'], total_amount)
                     data['message'] = "success"
 
@@ -2674,7 +2680,7 @@ def submit_ea_application(request):
 
         for details in application_details:
             service_id = details.service_id
-            application_type = details.application_type
+            service_type = details.service_type
             anc_other_crushing_unit = details.anc_other_crushing_unit
             anc_other_surface_collection = details.anc_other_surface_collection
             anc_other_ground_water = details.anc_other_ground_water
@@ -2714,8 +2720,8 @@ def submit_ea_application(request):
                                     ancillary_amount += int(anc_fees_detail.rate)
 
                             total_amount = main_amount + ancillary_amount
-                            insert_app_payment_details(request, application_no, 'new_ea_application', total_amount, application_type)
-                            make_payment_request(application_no,total_amount,'NEW EA APPLICATION',request.session['email'],"200")
+                            insert_app_payment_details(request, application_no, 'new_ea_application', total_amount, service_type)
+                            make_payment_request(application_no,total_amount,'NEW EA APPLICATION',request.session['email'],"208")
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
 
@@ -2938,7 +2944,7 @@ def submit_transmission_application(request):
 
         if application_details_main:
             service_id = application_details_main.service_id
-            application_type = application_details_main.application_type
+            service_type = application_details_main.service_type
             anc_other_crushing_unit = application_details_main.anc_other_crushing_unit
             anc_other_surface_collection = application_details_main.anc_other_surface_collection
             anc_other_ground_water = application_details_main.anc_other_ground_water
@@ -2980,8 +2986,8 @@ def submit_transmission_application(request):
                         else:
                             total_amount = main_amount
 
-                        insert_app_payment_details(request, application_no, 'new_transmission_application', total_amount, application_type)
-                        make_payment_request(application_no,total_amount,'NEW TRANSMISSION APPLICATION',request.session['email'],"200")
+                        insert_app_payment_details(request, application_no, 'new_transmission_application', total_amount, service_type)
+                        make_payment_request(application_no,total_amount,'NEW TRANSMISSION APPLICATION',request.session['email'],"208")
                         send_payment_mail(request.session['name'], request.session['email'], total_amount)
                         data['message'] = "success"
 
@@ -3011,7 +3017,7 @@ def submit_general_application(request):
 
             if application_details_main:
                 service_id = application_details_main.service_id
-                application_type = application_details_main.application_type
+                service_type = application_details_main.service_type
                 anc_other_crushing_unit = application_details_main.anc_other_crushing_unit
                 anc_other_surface_collection = application_details_main.anc_other_surface_collection
                 anc_other_ground_water = application_details_main.anc_other_ground_water
@@ -3050,8 +3056,8 @@ def submit_general_application(request):
                             app_hist_details = t_application_history.objects.filter(application_no=application_no)
                             app_hist_details.update(remarks='Your Application Submitted')
                             app_hist_details.update(action_date=timezone.now())
-                            insert_app_payment_details(request, application_no, 'new_general_application', total_amount, application_type)
-                            make_payment_request(application_no,total_amount,'NEW GENERAL APPLICATION',request.session['email'],"200")
+                            insert_app_payment_details(request, application_no, 'new_general_application', total_amount, service_type)
+                            make_payment_request(application_no,total_amount,'NEW GENERAL APPLICATION',request.session['email'],"208")
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -3190,7 +3196,7 @@ def save_tor_form(request):
             application_source='ECSS'
         )
         insert_app_payment_details(request, application_no, 'NEW TOR APPLICATION', 500, None)
-        make_payment_request(application_no,"500",'NEW TOR APPLICATION',request.session['email'],"200")
+        make_payment_request(application_no,"500",'NEW TOR APPLICATION',request.session['email'],"208")
         send_tor_payment_mail(request.session['name'], request.session['email'], 500)
         data['message'] = 'success'
     except Exception as e:
@@ -3415,14 +3421,14 @@ def view_tor_application_details(request):
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
 
-def insert_app_payment_details(request,application_no, identifier,total_amount):
+def insert_app_payment_details(request,application_no, identifier,total_amount,service_type):
     cid_no = None
     mob_no = None
     app_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
     for app_det in app_details:
         cid_no = app_det.cid
         mob_no = app_det.contact_no
-    if 'NEW' in identifier:
+    if 'new' in identifier:
         t_payment_details.objects.create(ref_no=application_no,
                 payment_request_date=date.today(),
                 tax_payer_name=request.session['name'],
@@ -3431,9 +3437,10 @@ def insert_app_payment_details(request,application_no, identifier,total_amount):
                 mobile_no=mob_no,
                 payer_email=request.session['email'],
                 description=identifier,
-                total_payable_amount=total_amount
+                total_payable_amount=total_amount,
+                service_type=service_type
                 )
-    elif 'TOR' in identifier:
+    elif 'tor' in identifier:
         t_payment_details.objects.create(ref_no=application_no,
                 payment_request_date=date.today(),
                 tax_payer_name=request.session['name'],
@@ -3442,7 +3449,8 @@ def insert_app_payment_details(request,application_no, identifier,total_amount):
                 mobile_no=mob_no,
                 payer_email=request.session['email'],
                 description=identifier,
-                total_payable_amount=total_amount)
+                total_payable_amount=total_amount,
+                service_type=service_type)
     return redirect(identifier)
 
 def insert_payment_details(request,application_no,account_head, identifier):
@@ -4323,7 +4331,7 @@ def submit_forest_application(request):
 
         if application_details_main:
             service_id = application_details_main.service_id
-            application_type = application_details_main.application_type
+            service_type = application_details_main.service_type
             anc_other_crushing_unit = application_details_main.anc_other_crushing_unit
             anc_other_surface_collection = application_details_main.anc_other_surface_collection
             anc_other_ground_water = application_details_main.anc_other_ground_water
@@ -4383,9 +4391,9 @@ def submit_forest_application(request):
                             application_no,
                             'new_forest_application',
                             total_amount,
-                            application_type
+                            service_type
                         )
-                        make_payment_request(application_no,total_amount,'NEW FOREST APPLICATION',request.session['email'],"200")
+                        make_payment_request(application_no,total_amount,'NEW FOREST APPLICATION',request.session['email'],"208")
                         send_payment_mail(request.session['name'], request.session['email'], total_amount)
 
                 data['message'] = "success"
@@ -4592,7 +4600,7 @@ def submit_ground_water_application(request):
 
         if main_activity_form:
             service_id = main_activity_form.service_id
-            application_type = main_activity_form.application_type
+            service_type = main_activity_form.service_type
             ancillary_values = [getattr(main_activity_form, anc_type) for anc_type in anc_types]
 
         if any(ancillary_values):
@@ -4628,8 +4636,8 @@ def submit_ground_water_application(request):
                                     total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount = main_amount
-                                insert_app_payment_details(request, application_no, 'new_ground_water_application', total_amount, application_type)
-                                make_payment_request(application_no,total_amount,'NEW GW APPLICATION',request.session['email'],"200")
+                                insert_app_payment_details(request, application_no, 'new_ground_water_application', total_amount, service_type)
+                                make_payment_request(application_no,total_amount,'NEW GW APPLICATION',request.session['email'],"208")
                                 send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -4887,7 +4895,7 @@ def submit_quarry_application(request):
 
         for main_activity_detail in main_activity_details:
             service_id = main_activity_detail.service_id
-            application_type = main_activity_detail.application_type
+            service_type = main_activity_detail.service_type
             anc_other_values = [getattr(main_activity_detail, field) for field in anc_other_fields]
 
         if any(anc_other_value == 'Yes' for anc_other_value in anc_other_values):
@@ -4927,8 +4935,8 @@ def submit_quarry_application(request):
                             else:
                                 total_amount = main_amount
 
-                            insert_app_payment_details(request, application_no, 'new_quarry_application', total_amount, application_type)
-                            make_payment_request(application_no,total_amount,'NEW QUARRY APPLICATION',request.session['email'],"200")
+                            insert_app_payment_details(request, application_no, 'new_quarry_application', total_amount, service_type)
+                            make_payment_request(application_no,total_amount,'NEW QUARRY APPLICATION',request.session['email'],"208")
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
 
                             data['message'] = "success"
@@ -5339,7 +5347,7 @@ def submit_energy_application(request):
         
         for application_details in application_details:
             service_id = application_details.service_id
-            application_type = application_details.application_type
+            service_type = application_details.service_type
             anc_other_crushing_unit = application_details.anc_other_crushing_unit
             anc_other_surface_collection = application_details.anc_other_surface_collection
             anc_other_ground_water = application_details.anc_other_ground_water
@@ -5386,8 +5394,8 @@ def submit_energy_application(request):
                                         total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount=main_amount
-                                insert_app_payment_details(request, application_no, 'submit_energy_application ',total_amount,application_type)
-                                make_payment_request(application_no,total_amount,'NEW ENERGY APPLICATION',request.session['email'],"200")
+                                insert_app_payment_details(request, application_no, 'submit_energy_application ',total_amount,service_type)
+                                make_payment_request(application_no,total_amount,'NEW ENERGY APPLICATION',request.session['email'],"208")
                                 send_payment_mail(request.session['name'],request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -5690,7 +5698,7 @@ def submit_tourism_application(request):
 
         for application_details in application_details:
             service_id = application_details.service_id
-            application_type = application_details.application_type
+            service_type = application_details.service_type
             anc_other_crushing_unit = application_details.anc_other_crushing_unit
             anc_other_surface_collection = application_details.anc_other_surface_collection
             anc_other_ground_water = application_details.anc_other_ground_water
@@ -5737,8 +5745,8 @@ def submit_tourism_application(request):
                                         total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount=main_amount
-                                insert_app_payment_details(request, application_no, 'submit_tourism_application ',total_amount,application_type)
-                                make_payment_request(application_no,total_amount,'NEW TOURISM APPLICATION',request.session['email'],"200")
+                                insert_app_payment_details(request, application_no, 'submit_tourism_application ',total_amount,service_type)
+                                make_payment_request(application_no,total_amount,'NEW TOURISM APPLICATION',request.session['email'],"208")
                                 send_payment_mail(request.session['name'],request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -7087,31 +7095,48 @@ def get_auth_token():
     """
     get an auth token
     """
-    credentials = {'username': 'ECSS',
-                   'password': 'ECSs@2024!'
-                   }
+    credentials = {'client_id': 'Nx0tb25S3l87K6SmxnoTS_3FRjca',
+                   'client_secret': 'UiHRV8fI6iMX4iQwIfVSiEG7AeUa',
+                   'grant_type': 'client_credentials'}
 
-    headers = {'Accept': 'application/json'}
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
-    try:
-        # Send POST request to authenticate
-        res = requests.post('https://birmsstagging.drc.gov.bt/api-services/core-module/api/v1/auth/external-users/logMeIn',
-                            json=credentials, headers=headers, verify=False)
+    res = requests.post('https://stg-sso.dit.gov.bt/oauth2/token', params=credentials,
+                        headers=headers,verify=False)
 
-        # Check if request was successful (status code 200)
-        if res.status_code == 200:
-            # Extract access token from response JSON
-            #print("Response content:", res.text)
-            json_data = res.json()
-            access_token = json_data['content']['tokenDto']['accessToken']
-            return access_token
-        else:
-            print("Authentication failed. Status code:", res.status_code)
-    except Exception as e:
-        print("An error occurred:", e)
+    json = res.json()
+    return json["access_token"]
+#     """
+#     get an auth token
+#     """
+#     credentials = {'username': 'ECSS',
+#                    'password': 'ECSs@2024!'
+#                    }
+
+#     headers = {'Accept': 'application/json'}
+
+#     try:
+#         # Send POST request to authenticate
+#         res = requests.post('https://birmsstagging.drc.gov.bt/api-services/core-module/api/v1/auth/external-users/logMeIn',
+#                             json=credentials, headers=headers, verify=False)
+
+#         # Check if request was successful (status code 200)
+#         if res.status_code == 200:
+#             # Extract access token from response JSON
+#             #print("Response content:", res.text)
+#             json_data = res.json()
+#             access_token = json_data['content']['tokenDto']['accessToken']
+#             return access_token
+#         else:
+#             print("Authentication failed. Status code:", res.status_code)
+#     except Exception as e:
+#         print("An error occurred:", e)
+
+
 
 def make_payment_request(application_no,total_amount,description, email, service_code):
-    token = get_auth_token()
+    token = get_auth_token()#
+    print(token)
     cid_no = None
     mob_no = None
     app_name = None
@@ -7121,21 +7146,26 @@ def make_payment_request(application_no,total_amount,description, email, service
         mob_no = app_det.contact_no
         app_name = app_det.applicant_name
     # Endpoint URL
-    url = "https://birmsstagging.drc.gov.bt/api-services/moenr-service/api/v1/paymentdetails/create"
+    url = "https://staging-datahub-apim.dit.gov.bt/birms_paymentserviceapi/1.0.0/paymentdetails/create"
 
+    today_date = date.today()
+
+    # Convert date object to string
+    today_date_str = today_date.isoformat()
     # Payload data
     payload = {
-        "platform": "OFS",
+        "platform": "BLIMS",
         "refNo": application_no,
-        "taxPayerNo": "",
+        "taxPayerNo": cid_no,
         "taxPayerDocumentNo": cid_no,#id card
-        "paymentRequestDate": date.today(),
+        "paymentRequestDate": today_date_str,
         "agencyCode": "DTH1552",
         "payerEmail": email,
         "mobileNo": mob_no,
         "totalPayableAmount": total_amount,
         "paymentDueDate": None,
         "taxPayerName": app_name,
+        "code":"moenr",
         "paymentLists": [
             {
                 "serviceCode": service_code,
@@ -7147,8 +7177,8 @@ def make_payment_request(application_no,total_amount,description, email, service
 
     # Convert payload to JSON string
     headers = {'Authorization': "Bearer {}".format(token)}
-    response = requests.POST(url, headers=headers,json=payload, verify=False)
-
+    response = requests.post(url, headers=headers,json=payload, verify=False)
+    print(response.text)
     # Check response status
     if response.status_code == 200:
         print("Payment request successful")
@@ -7160,38 +7190,176 @@ def make_payment_request(application_no,total_amount,description, email, service
 
 @csrf_exempt
 def ecss_payment_update(request):
-    ref_no = request.POST.get("refNo")
-    print(ref_no)
-    payment_detail = t_payment_details.objects.filter(ref_no=ref_no)
+    # Check if the request method is POST
+    if request.method == "POST":
+        try:
+            # Decode and strip raw body
+            raw_body = request.body.decode('utf-8').strip()
+            
+            # Remove unwanted characters and prefix using regex
+            cleaned_body = re.sub(r'^Payload :', '', raw_body).strip()
+            
+            # Remove invisible or non-printable characters
+            cleaned_body = ''.join(char for char in cleaned_body if char.isprintable())
+            
+            # Check for empty body
+            if not cleaned_body:
+                return JsonResponse({"statusCode": "400", "statusDescription": "Empty request body"}, status=400)
+            
+            # Attempt to parse the JSON from cleaned_body
+            data = json.loads(cleaned_body)
+            ref_no = data['refNo']
+            
+            receipt_list = data['receiptList']
+            payment_method = data['paymentMethod']
+            payment_mode = data['paymentMode']
+            instrument_date = data['instrumentDate']
+            # Extracting values from receipt list
+            receipt = receipt_list[0]  # Assuming there's only one receipt in the list
+            receipt_no = receipt['receiptNo']
+            receipt_date = receipt['receiptDate']
+            payment_advice_status = receipt['paymentAdviceStatus']
+            responseDate = data['responseDate']
+            payment_advice_amount_paid = receipt['paymentAdviceAmountPaid']
+            
+            instrument_date_datetime = datetime.fromisoformat(instrument_date.replace('Z', '+00:00'))
+            instrument_date_datetime_utc = instrument_date_datetime.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+            original_receipt_date = datetime.strptime(receipt_date, "%Y-%m-%d %H:%M:%S")
+            formatted_receipt_date = original_receipt_date.strftime("%Y-%m-%d %H:%M:%S")
+            
+            original_responseDate = datetime.strptime(responseDate, "%a %b %d %H:%M:%S BTT %Y")
+            formatted_responseDate = original_responseDate.strftime("%Y-%m-%d %H:%M:%S")
+
+            payment_details = t_payment_details.objects.filter(ref_no=ref_no)
+            payment_details.update(
+                payment_method = payment_method,
+                payment_mode = payment_mode,
+                instrument_date = instrument_date_datetime_utc,
+                receipt_no = receipt_no,
+                receipt_date = formatted_receipt_date,
+                payment_advice_status = payment_advice_status,
+                response_date = formatted_responseDate,
+                payment_advice_amount_paid = payment_advice_amount_paid
+            )
+
+            response_data = {
+                "statusCode": "200",
+                "statusDescription": "Payment Details received successfully",
+            }
+            
+            return JsonResponse(response_data)
         
-    payment_detail.response_date = request.POST.get("responseDate")
-    payment_detail.payment_advice_no = request.POST.get("paymentAdviceNo")
-    payment_detail.faultcode = request.POST.get("faultcode")
-    payment_detail.message = request.POST.get("message")
-    payment_detail.payment_method = request.POST.get("paymentMethod")
-    payment_detail.payment_mode = request.POST.get("paymentMode")
-    payment_detail.instrument_no = request.POST.get("instrumentNo")
-    payment_detail.instrument_date = request.POST.get("instrumentDate")
-    payment_detail.issuing_bank = request.POST.get("issuingBank")
-    payment_detail.payable_bank = request.POST.get("payableBank")
-    payment_detail.transaction_id = request.POST.get("transactionID")
-    payment_detail.payment_order_no = request.POST.get("paymentOrderNo")
-    payment_detail.journal_no = request.POST.get("journalNo")
-    payment_detail.receipt_list = request.POST.getlist("receiptList")
-
-    for receipt_details in payment_detail.receipt_list:
-        payment_detail.receipt_no = receipt_details.get('receiptNo')
-        payment_detail.receipt_date = receipt_details.get('receiptDate')
-        payment_detail.total_receipt_amount = receipt_details.get('totalReceiptAmount')
-        payment_detail.payment_advice_amount = receipt_details.get('paymentAdviceAmount')
-        payment_detail.payment_advice_amount_paid = receipt_details.get('paymentAdviceAmountPaid')
-        payment_detail.payment_advice_status = receipt_details.get('paymentAdviceStatus')
-
-    payment_detail.save()
-
-    response_data = {
-            "statusCode": "200",
-            "statusDescription": "Payment Details received successfully",
-        }
+        except json.JSONDecodeError as e:
+            # Handle JSON parse error
+            print("JSONDecodeError:", str(e))
+            return JsonResponse({"statusCode": "400", "statusDescription": "Invalid JSON payload"}, status=400)
         
+        except Exception as e:
+            # Handle other exceptions
+            print("Error:", str(e))
+            return JsonResponse({"statusCode": "400", "statusDescription": "Bad Request"}, status=400)
+    else:
+        # Handle non-POST requests
+        return JsonResponse({"statusCode": "405", "statusDescription": "Method not allowed"}, status=405)
+
+def get_access_token_ndi():
+    authApiUrl = 'https://staging.bhutanndi.com/authentication/v1/authenticate';
+    clientId = '3tq7ho23g5risndd90a76jre5f';
+    clientSecret = '111rvn964mucumr6c3qq3n2poilvq5v92bkjh58p121nmoverquh';
+
+    credentials = {
+        'client_id': clientId,
+        'client_secret': clientSecret,
+        'grant_type': 'client_credentials'
+    }
+
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+
+    res = requests.post(authApiUrl, data=credentials, headers=headers, verify=False)
+
+    json_response = res.json()
+    return json_response['access_token']
+
+def proof_request(request):
+    # Get NDI access token
+    ndi_token = get_access_token_ndi()
+    
+    # Define verifier API URL and headers
+    verifier_api_url = 'https://stageclient.bhutanndi.com/verifier/v1/proof-request'
+    headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
+    
+    # Define proof request data
+    proof_attributes = [
+        {
+            'name': "ID Number",
+            'restrictions': [
+                {
+                    'cred_def_id': "Ka4s9yvjDetTTME9KWuXAj:3:CL:51994:revocable"
+                }
+            ]
+        },
+        # Add other proofAttributes as needed
+    ]
+    proof_data = {
+        'proofName': 'ECSS Credentials',
+        'proofAttributes': proof_attributes
+    }
+    
+    # Make request to verifier API with proof data
+    response = requests.post(verifier_api_url, headers=headers, data=json.dumps(proof_data), verify=False)
+    
+    # Print or return the JSON response
+    response_data = response.json()
     return JsonResponse(response_data)
+
+import asyncio
+import os
+from django.http import JsonResponse, HttpResponseBadRequest
+from pathlib import Path
+import nkeys
+from nats.aio.client import Client as NATS
+
+async def fetch_verified_user_data(request):
+    thread_id = request.GET.get('thread_id')
+    if not thread_id:
+        return HttpResponseBadRequest("Missing 'thread_id' parameter")
+
+    nats_server_url = "nats://13.229.203.54:4222"
+    nkeys_seed_path = os.path.join(settings.BASE_DIR, 'static/assets/nkey.txt')
+    if not nats_server_url or not os.path.exists(nkeys_seed_path):
+        return HttpResponseBadRequest("Environment variables for NATS configuration are missing or nkeys.txt file is not found")
+
+    try:
+        with open(nkeys_seed_path, 'rb') as f:
+            nkeys_seed_bytes = f.read()
+        nkeys_obj = nkeys.from_seed(nkeys_seed_bytes)
+        nc = NATS()
+        await nc.connect(servers=[nats_server_url])
+        await nc.add_nkey(nkeys_obj)
+        sub = await nc.subscribe(subject=thread_id, queue="my_queue")
+        try:
+            msg = await sub.next_msg(timeout=10)
+            message_data = msg.data.decode()
+            await nc.close()
+            return JsonResponse({"message": message_data})
+        except Exception as e:
+            await nc.close()
+            return JsonResponse({"error": "Error receiving message", "details": str(e)}, status=500)
+    except Exception as e:
+        return JsonResponse({"error": "Error connecting to NATS", "details": str(e)}, status=500)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

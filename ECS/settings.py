@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'proponent',
     'ecs_main',
     'report',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -53,9 +54,19 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+]
+
+CORS_ORIGIN_ALLOW_ALL = True  # Change to True if you want to allow all origins
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8000',  # Add your allowed origins here
+    'https://staging.bhutanndi.com',
+    # Add more origins as needed
 ]
 
 ROOT_URLCONF = 'ECS.urls'
+
+ASGI_APPLICATION = "ecss.asgi.application"
 
 TEMPLATES = [
     {
@@ -120,7 +131,10 @@ USE_I18N = True
 
 LOGIN_URL = 'index'
 
-
+os.environ["NDI_NATS_SEED"] = "SUAPXY7TJFUFE3IX3OEMSLE3JFZJ3FZZRSRSOGSG2ANDIFN77O2MIBHWUM"
+os.environ["NATS_SERVER_URL"] = "nats://13.229.203.54:4222"
+NATS_SERVER_URL = "nats://13.229.203.54:4222"
+NDI_NATS_SEED = "SUAPXY7TJFUFE3IX3OEMSLE3JFZJ3FZZRSRSOGSG2ANDIFN77O2MIBHWUM"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 

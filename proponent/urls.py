@@ -214,4 +214,11 @@ urlpatterns = [
 
     path('delete_application_attachment', views.delete_application_attachment, name='delete_application_attachment'),
 
+    #Payment_part
+    path('ecss_payment_update', views.ecss_payment_update, name='ecss_payment_update'),
+
+    #NDI
+    path('proof_request/', views.proof_request, name='proof_request'),
+    path('fetch_verified_user_data/', views.fetch_verified_user_data, name='fetch_verified_user_data'),
+
 ]

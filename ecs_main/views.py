@@ -21,7 +21,7 @@ def verify_application_list(request):
     ca_authority = request.session.get('ca_authority', None)
     application_list = t_workflow_dtls.objects.filter(application_status='P', assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='DEC',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority) | t_workflow_dtls.objects.filter(application_status='AL',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)  | t_workflow_dtls.objects.filter(application_status='FT',assigned_role_id='2', action_date__isnull=False,ca_authority=ca_authority)
     service_details = t_service_master.objects.all()
-    payment_details = t_payment_details.objects.all().exclude(application_type='AP')
+    payment_details = t_payment_details.objects.all().exclude(service_type='AP')
     pay_details = payment_details_master.objects.exclude(payment_type="TOR")
     if ca_authority is not None:
         v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority'],action_date__isnull=False).count()
@@ -43,7 +43,7 @@ def client_application_list(request):
     applicant_id = request.session.get('email', None)
     application_list = t_workflow_dtls.objects.filter(application_status='ALR', action_date__isnull=False,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='ALA', action_date__isnull=False,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='EATC', action_date__isnull=False,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='RS', action_date__isnull=False,assigned_user_id=login_id) | t_workflow_dtls.objects.filter(application_status='LU', action_date__isnull=False,assigned_user_id=login_id)
     service_details = t_service_master.objects.all()
-    payment_details = t_payment_details.objects.all().exclude(application_type='AP')
+    payment_details = t_payment_details.objects.all().exclude(service_type='AP')
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=login_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
@@ -69,7 +69,7 @@ def reviewer_application_list(request):
     ca_authority = request.session.get('ca_authority', None)
     login_id = request.session.get('login_id', None)
     service_details = t_service_master.objects.all()
-    payment_details = t_payment_details.objects.all().exclude(application_type='AP')
+    payment_details = t_payment_details.objects.all().exclude(service_type='AP')
     
     application_list = []  # Initialize application_list outside the if block
     
@@ -96,8 +96,8 @@ def payment_list(request):
     applicant_id = request.session.get('email', None)
     assigned_user_id = request.session.get('login_id', None)
     payment_details = t_payment_details.objects.filter(
-        transaction_no__isnull=True,
-        application_no__in=t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id).values('application_no')
+        receipt_no__isnull=True,
+        ref_no__in=t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id).values('application_no')
     )
     service_details = t_service_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
@@ -520,9 +520,9 @@ def update_payment_details(request):
     transaction_date = request.POST.get('transaction_date')
     applicant = None
     service_id = None
-    fine_details = t_payment_details.objects.filter(application_no=application_no, application_type='Fines And Penalties')
+    fine_details = t_payment_details.objects.filter(ref_no=application_no, service_type='Fines And Penalties')
     if fine_details.exists():
-        fine_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
+        fine_details.update(transaction_no=transaction_no, amount=amount,
                                instrument_no=instrument_no, transaction_date=transaction_date)
         work_details = t_fines_penalties.objects.filter(application_no=application_no)
         work_details.update(fines_status='FPP') # Fines Paid
@@ -541,7 +541,7 @@ def update_payment_details(request):
                     service_id=service_id,
                     ca_authority=ca_auth)
     else:
-        payment_details = t_payment_details.objects.filter(application_no=application_no, application_type='AP')
+        payment_details = t_payment_details.objects.filter(ref_no=application_no, service_type='AP')
         if payment_details.exists():
             payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
                                 instrument_no=instrument_no, transaction_date=transaction_date)
@@ -568,7 +568,7 @@ def update_payment_details(request):
                     service_id=service_id,
                     ca_authority=ca_auth)
         else:
-            payment_details = t_payment_details.objects.filter(application_no=application_no)
+            payment_details = t_payment_details.objects.filter(ref_no=application_no)
             payment_details.update(payment_type=payment_type, transaction_no=transaction_no, amount=amount,
                                     instrument_no=instrument_no, transaction_date=transaction_date)
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -914,7 +914,7 @@ def forward_application(request):
             workflow_details.update(application_status='AP')
 
             t_payment_details.objects.create(application_no=application_no,
-                            application_type='AP',
+                            service_type='AP',
                             application_date=date.today(), 
                             proponent_name=request.session['name'],
                             amount=addtional_payment_amount,
@@ -1623,7 +1623,7 @@ def fines_penalties(request):
 
 def insert_payment_details(request,application_no,account_head, proponent_name,total_amount,ec_no):
     t_payment_details.objects.create(application_no=application_no,
-            application_type='Fines And Penalties',
+            service_type='Fines And Penalties',
             application_date=date.today(), 
             proponent_name=proponent_name,
             amount=total_amount,
