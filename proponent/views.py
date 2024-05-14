@@ -7345,6 +7345,8 @@ def proof_request_proponent(request):
     response_data = response.json()
     return JsonResponse(response_data)
 
+
+# NATS SUBSCRIBE
 import asyncio
 import os
 from django.http import JsonResponse, HttpResponseBadRequest
