@@ -1905,7 +1905,7 @@
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" id="general_disclaimer_application_no">
                                     <div class="row industry_application" style="display:none;">
-                                        <a href="{% url 'new_industry_application' %}" class="btn btn-danger">
+                                        <a href="{% url 'new_iee_application' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for Industrial projects </a>
                                     </div>
                                     
@@ -6649,7 +6649,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_impact_details' %}",
+                url : "{% url 'save_other_impact_details' %}",
                 data : $('#impact_form').serialize(),
                 success : function(data)
                 {

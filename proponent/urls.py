@@ -221,5 +221,6 @@ urlpatterns = [
     path('proof_request/', views.proof_request, name='proof_request'),
     path('proof_request_proponent/', views.proof_request_proponent, name='proof_request_proponent'),
     path('fetch_verified_user_data/', views.fetch_verified_user_data, name='fetch_verified_user_data'),
+    path('webhook', views.webhook, name='webhook')
 
 ]

@@ -8288,13 +8288,13 @@ else if(status == 'ALR' || status == 'ALA' || status == 'EATC' || status == 'RS'
 
 function forwardApplication(identifier)
 {
-let application_no = $('#application_no').val();
-let additional_info_letter = $('#additional_info_letter').val();
-let additional_info = $('#additional_info').val();
-let resubmit_remarks = $('#resubmit_remarks').val();
-let ec_expiry_date = $('#ec_expiry_date').val();
-let addtional_payment_amount = $('#addtional_payment_amount').val();
-let tat = $('#tat').val();
+    let application_no = $('#application_no').val();
+    let additional_info_letter = $('#additional_info_letter').val();
+    let additional_info = $('#additional_info').val();
+    let resubmit_remarks = $('#resubmit_remarks').val();
+    let ec_expiry_date = $('#ec_expiry_date').val();
+    let addtional_payment_amount = $('#addtional_payment_amount').val();
+    let tat = $('#tat').val();
 
 if(identifier == 'R' || identifier == 'ALS')
 {
@@ -8405,9 +8405,6 @@ $.ajax
             setTimeout(function()
             {
                 $('#verifier_application_errorMsg').delay(2000).fadeOut('slow');
-            }, 2000);
-            setTimeout(function() {
-                location.reload();
             }, 2000);
         }
     }

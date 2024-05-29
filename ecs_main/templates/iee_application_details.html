@@ -8392,27 +8392,6 @@ $.ajax
             {
                 $('#verifier_application_successMsg').delay(2000).fadeOut('slow');
             }, 2000);
-            if(data.redirect_to == 'verify_application_list')
-            {
-                setTimeout(function()
-                {
-                    window.location.href = '/verify_application_list';
-                }, 2000);
-            }
-            else if(data.redirect_to == 'reviewer_application_list')
-            {
-                setTimeout(function()
-                {
-                    window.location.href = '/reviewer_application_list';
-                }, 2000);
-            }
-            else if(data.redirect_to == 'client_application_list')
-            {
-                setTimeout(function()
-                {
-                    window.location.href = '/client_application_list';
-                }, 2000);
-            }
         }
         else
         {
@@ -8421,9 +8400,6 @@ $.ajax
             setTimeout(function()
             {
                 $('#verifier_application_errorMsg').delay(2000).fadeOut('slow');
-            }, 2000);
-            setTimeout(function() {
-                location.reload();
             }, 2000);
         }
     }

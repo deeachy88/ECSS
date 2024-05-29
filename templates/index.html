@@ -71,6 +71,25 @@
     padding-left: 1.5em;
     border-radius: 10rem;
 }
+    /* Loader CSS */
+    #loader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: none; /* Hidden by default */
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
 </style>
 <body style="background-color:white;">
     <div class="container">
@@ -225,7 +244,7 @@
               </form>
             </div>
             <div class="modal-footer mx-5 pt-3 mb-1 justify-content-center">
-                <a href="#" class="btn btn-vimeo w-100" style="background-color: #124143; color:white" id="ndiLoginId" onclick="authenticateWithAPI()">
+                <a href="#" class="btn btn-vimeo w-100" style="background-color: #124143; color:white" id="ndiLoginId" onclick="authenticate_ndi()">
                     <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%">
                     &nbsp; &nbsp; Login with Bhutan NDI
                 </a>
@@ -353,6 +372,7 @@
                     <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%">
                     &nbsp; &nbsp;Use Bhutan NDI
                 </a>
+                <div id="loader"></div>
             </div>
         </div>
       <form method="post" id="client_registration_form">
@@ -948,7 +968,7 @@
         });
     }
 
-function authenticateWithAPI() {
+function authenticate_ndi() {
     $.ajax({
         type: "GET",
         url: "/proof_request/", // This assumes the proof_request URL is mapped in your Django urls.py file

@@ -6,7 +6,7 @@ function nats_call(proofRequestThreadId) {
             thread_id: proofRequestThreadId // Pass thread_id as a parameter
         },
         success: function(response) {
-            alert(response);
+            alert(response.data)
         },
         error: function(xhr, status, error) {
             console.error(error); // Log any errors to the console

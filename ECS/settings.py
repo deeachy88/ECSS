@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-!y+j-du+@82@b*2^^%fq84f!=&$rd#o3=vbg6!p2xhmda4&rgf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','localhost','staging-datahub-apim.dit.gov.bt', '172.30.78.130', '3d66-118-103-138-226.ngrok-free.app']
 
 
 # Application definition
@@ -155,6 +155,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'systems@moenr.gov.bt'
 EMAIL_HOST_PASSWORD = 'aqjsbjamnzxtadvl'
+
+NATS_SERVER_URL = 'nats://13.229.203.54:4222'
 
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'attachments')
 MEDIA_URL = '/attachments/'

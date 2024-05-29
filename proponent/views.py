@@ -7,10 +7,11 @@ from django.shortcuts import render, redirect
 import requests
 from ECS import settings
 from ECS.settings import BASE_DIR
+from ecs_admin.views import dashboard
 from ecs_main.models import t_application_history
 from ecs_main.views import client_application_list, payment_list
 from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t12_drainage_details, t_ec_industries_t13_dumpyard, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals, t_report_submission_t1, t_report_submission_t2
-from ecs_admin.models import payment_details_master, t_user_master, t_bsic_code, t_competant_authority_master, t_fees_schedule, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_service_master, t_thromde_master, t_village_master
+from ecs_admin.models import payment_details_master, t_role_master, t_security_question_master, t_user_master, t_bsic_code, t_competant_authority_master, t_fees_schedule, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_service_master, t_thromde_master, t_village_master
 # Create your views here.
 from django.db.models import Count, Subquery, OuterRef
 from datetime import datetime
@@ -7345,55 +7346,101 @@ def proof_request_proponent(request):
     response_data = response.json()
     return JsonResponse(response_data)
 
+from django.views.decorators.http import require_GET
 
-# NATS SUBSCRIBE
-import asyncio
-import os
-from django.http import JsonResponse, HttpResponseBadRequest
-from pathlib import Path
-import nkeys
-from nats.aio.client import Client as NATS
-
-async def fetch_verified_user_data(request):
+@require_GET
+def fetch_verified_user_data(request):
+    data = dict()
     thread_id = request.GET.get('thread_id')
-    if not thread_id:
-        return HttpResponseBadRequest("Missing 'thread_id' parameter")
 
-    nats_server_url = "nats://13.229.203.54:4222"
-    nkeys_seed_path = os.path.join(settings.BASE_DIR, 'static/assets/nkey.txt')
-    if not nats_server_url or not os.path.exists(nkeys_seed_path):
-        return HttpResponseBadRequest("Environment variables for NATS configuration are missing or nkeys.txt file is not found")
+    BASE_URL = 'https://stageclient.bhutanndi.com/webhook/v1/subscribe/'
+    token = get_access_token_ndi()
+    headers = {
+        'Authorization': f"Bearer {token}",
+    }
+    post_data = {
+        "webhookId": "ECSSDemo",
+        "threadId": thread_id
+    }
 
     try:
-        with open(nkeys_seed_path, 'rb') as f:
-            nkeys_seed_bytes = f.read()
-        nkeys_obj = nkeys.from_seed(nkeys_seed_bytes)
-        nc = NATS()
-        await nc.connect(servers=[nats_server_url])
-        await nc.add_nkey(nkeys_obj)
-        sub = await nc.subscribe(subject=thread_id, queue="my_queue")
+        res = requests.post(BASE_URL, json=post_data, headers=headers, verify=False, timeout=15)
+        res.raise_for_status()  # This will raise an HTTPError if the HTTP request returned an unsuccessful status code
+        response_data = res.json()
+    except requests.exceptions.Timeout:
+        return JsonResponse({"error": "The request timed out. Please try again later."}, status=504)
+    except requests.exceptions.HTTPError as e:
+        return JsonResponse({"error": f"HTTP error occurred: {str(e)}"}, status=res.status_code)
+    except requests.exceptions.RequestException as e:
+        return JsonResponse({"error": f"Request exception: {str(e)}"}, status=500)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON response from the server."}, status=500)
+
+    return JsonResponse(response_data, safe=False)
+
+@csrf_exempt
+def webhook(request):
+    if request.method == "POST":
         try:
-            msg = await sub.next_msg(timeout=10)
-            message_data = msg.data.decode()
-            await nc.close()
-            return JsonResponse({"message": message_data})
-        except Exception as e:
-            await nc.close()
-            return JsonResponse({"error": "Error receiving message", "details": str(e)}, status=500)
-    except Exception as e:
-        return JsonResponse({"error": "Error connecting to NATS", "details": str(e)}, status=500)
+            # Decode and strip raw body
+            raw_body = request.body.decode('utf-8').strip()
+            # Remove unwanted characters and prefix using regex
+            cleaned_body = re.sub(r'^Payload :', '', raw_body).strip()
+            
+            # Remove invisible or non-printable characters
+            cleaned_body = ''.join(char for char in cleaned_body if char.isprintable())
+            
+            # Check for empty body
+            if not cleaned_body:
+                return JsonResponse({"statusCode": "400", "statusDescription": "Empty request body"}, status=400)
+            
+            # Attempt to parse the JSON from cleaned_body
+            data = json.loads(cleaned_body)
+            cid = data['ID Number']
+            ndi_login(request, cid)
+            return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
+        except json.JSONDecodeError as e:
+            # Handle JSON parse error
+            print("JSONDecodeError:", str(e))
+            return JsonResponse({"statusCode": "400", "statusDescription": "Invalid JSON payload"}, status=400)
+        
+def ndi_login(request,cid):
+    print(cid)
+    check_user = t_user_master.objects.filter(cid=cid, is_active='Y', logical_delete='N')
+    if check_user is not None:
+        if not check_user.last_login_date:
+            request.session['login_id'] = check_user.login_id
+            request.session['email'] = check_user.email_id
+            security = t_security_question_master.objects.all()
+            response = render(request, 'update_password.html', {'security': security})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            # Set cache-control headers to prevent caching
+            response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            response['Pragma'] = 'no-cache'
+            response['Expires'] = '0'
+            return response
+        else:
+            if check_user.login_type == 'I':
+                role_details = t_role_master.objects.filter(role_id=check_user.role_id_id)
+                for roles in role_details:
+                    request.session['name'] = check_user.name
+                    request.session['role'] = roles.role_name
+                    request.session['email'] = check_user.email_id
+                    request.session['login_type'] = check_user.login_type
+                    request.session['login_id'] = check_user.login_id
+                    request.session['ca_authority'] = check_user.agency_code
+                    request.session['dzongkhag_code'] = check_user.dzongkhag_code
+                    # START: count no of EC due for renewal within 30 days
+                    return redirect(dashboard)
+            else:
+                request.session['name'] = check_user.proponent_name
+                request.session['email'] = check_user.email_id
+                request.session['login_type'] = check_user.login_type
+                request.session['login_id'] = check_user.login_id
+                request.session['address'] = check_user.address
+                request.session['contact_number'] = check_user.contact_number
+                return redirect(dashboard)
+    else:
+        _message = 'User ID or Password Not Matching.'
+    context = {'message': _message}
+    response = render(request, 'index.html', context)

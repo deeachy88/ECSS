@@ -31,8 +31,8 @@
                                         </td>
                                         {% else %}
                                             {% for payment_details in payment_details %}
-                                                {% if application_details.application_no == payment_details.application_no %}
-                                                    {% if payment_details.transaction_date %}
+                                                {% if application_details.application_no == payment_details.ref_no %}
+                                                    {% if payment_details.receipt_no %}
                                                         <td>
                                                             <a href="javascript: void(0);" class="btn btn-outline-primary" onclick="viewApplicationDetails('{{application_details.application_no}}','{{application_details.service_id}}','{{application_details.application_source}}')">{{application_details.application_no}}
                                                             </a>
@@ -64,9 +64,7 @@
         </div>
     </div>
 </div>
-
 <script>
-    
     function viewApplicationDetails(application_no,service_id, application_source)
     {
         $.ajax({
