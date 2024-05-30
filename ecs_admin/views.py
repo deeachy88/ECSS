@@ -134,7 +134,6 @@ def dashboard(request):
     payment_count = 0
     try:
         login_type = request.session['login_type']
-        print(login_type)
     except:
         login_type = None
     if login_type == 'I':

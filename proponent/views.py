@@ -4,10 +4,10 @@ import os
 import re
 import traceback
 from django.shortcuts import render, redirect
+from django.urls import reverse
 import requests
 from ECS import settings
 from ECS.settings import BASE_DIR
-from ecs_admin.views import dashboard
 from ecs_main.models import t_application_history
 from ecs_main.views import client_application_list, payment_list
 from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t12_drainage_details, t_ec_industries_t13_dumpyard, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals, t_report_submission_t1, t_report_submission_t2
@@ -7359,7 +7359,7 @@ def fetch_verified_user_data(request):
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ECSSDemo",
+        "webhookId": "ECSSdemo",
         "threadId": thread_id
     }
 
@@ -7380,67 +7380,115 @@ def fetch_verified_user_data(request):
 
 @csrf_exempt
 def webhook(request):
-    if request.method == "POST":
-        try:
-            # Decode and strip raw body
-            raw_body = request.body.decode('utf-8').strip()
-            # Remove unwanted characters and prefix using regex
-            cleaned_body = re.sub(r'^Payload :', '', raw_body).strip()
-            
-            # Remove invisible or non-printable characters
-            cleaned_body = ''.join(char for char in cleaned_body if char.isprintable())
-            
-            # Check for empty body
-            if not cleaned_body:
-                return JsonResponse({"statusCode": "400", "statusDescription": "Empty request body"}, status=400)
-            
-            # Attempt to parse the JSON from cleaned_body
-            data = json.loads(cleaned_body)
-            cid = data['ID Number']
-            ndi_login(request, cid)
-            return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
-        except json.JSONDecodeError as e:
-            # Handle JSON parse error
-            print("JSONDecodeError:", str(e))
-            return JsonResponse({"statusCode": "400", "statusDescription": "Invalid JSON payload"}, status=400)
+    try:
+        cleaned_body = request.body.decode('utf-8')
+        data = json.loads(cleaned_body)
+        id_number = data['requested_presentation']['revealed_attrs']['ID Number']['value']
         
-def ndi_login(request,cid):
-    print(cid)
-    check_user = t_user_master.objects.filter(cid=cid, is_active='Y', logical_delete='N')
-    if check_user is not None:
-        if not check_user.last_login_date:
-            request.session['login_id'] = check_user.login_id
-            request.session['email'] = check_user.email_id
-            security = t_security_question_master.objects.all()
-            response = render(request, 'update_password.html', {'security': security})
-
-            # Set cache-control headers to prevent caching
-            response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-            response['Pragma'] = 'no-cache'
-            response['Expires'] = '0'
-            return response
+        # Call ndi_login
+        login_response = ndi_login(request, id_number)
+        
+        # If the login response is a redirect, just return the JSON response
+        if login_response.status_code == 302:  # 302 is the status code for redirection
+            return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
         else:
-            if check_user.login_type == 'I':
-                role_details = t_role_master.objects.filter(role_id=check_user.role_id_id)
-                for roles in role_details:
-                    request.session['name'] = check_user.name
-                    request.session['role'] = roles.role_name
+            return login_response  # Return the actual response (rendered page, etc.)
+    except KeyError:
+        return JsonResponse({"statusCode": "400", "statusDescription": "Invalid request payload"}, status=400)
+    except json.JSONDecodeError:
+        return JsonResponse({"statusCode": "400", "statusDescription": "Invalid JSON"}, status=400)
+        
+def ndi_login(request, cid):
+    check_users = t_user_master.objects.filter(cid=cid, is_active='Y', logical_delete='N')
+    if check_users.exists():
+        for check_user in check_users:
+            if not check_user.last_login_date:
+                request.session['login_id'] = check_user.login_id
+                request.session['email'] = check_user.email_id
+                security = t_security_question_master.objects.all()
+                response = render(request, 'update_password.html', {'security': security})
+
+                # Set cache-control headers to prevent caching
+                response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+                response['Pragma'] = 'no-cache'
+                response['Expires'] = '0'
+                return response
+            else:
+                if check_user.login_type == 'I':
+                    role_details = t_role_master.objects.filter(role_id=check_user.role_id_id)
+                    for roles in role_details:
+                        request.session['name'] = check_user.name
+                        request.session['role'] = roles.role_name
+                        request.session['email'] = check_user.email_id
+                        request.session['login_type'] = check_user.login_type
+                        request.session['login_id'] = check_user.login_id
+                        request.session['ca_authority'] = check_user.agency_code
+                        request.session['dzongkhag_code'] = check_user.dzongkhag_code
+                else:
+                    request.session['name'] = check_user.proponent_name
                     request.session['email'] = check_user.email_id
                     request.session['login_type'] = check_user.login_type
                     request.session['login_id'] = check_user.login_id
-                    request.session['ca_authority'] = check_user.agency_code
-                    request.session['dzongkhag_code'] = check_user.dzongkhag_code
-                    # START: count no of EC due for renewal within 30 days
-                    return redirect(dashboard)
-            else:
-                request.session['name'] = check_user.proponent_name
-                request.session['email'] = check_user.email_id
-                request.session['login_type'] = check_user.login_type
-                request.session['login_id'] = check_user.login_id
-                request.session['address'] = check_user.address
-                request.session['contact_number'] = check_user.contact_number
-                return redirect(dashboard)
+                    request.session['address'] = check_user.address
+                    request.session['contact_number'] = check_user.contact_number
+                
+                # Redirect to dashboard
+                return redirect(reverse('dashboard'))  # Ensure 'dashboard' is the name of your dashboard URL
     else:
         _message = 'User ID or Password Not Matching.'
-    context = {'message': _message}
-    response = render(request, 'index.html', context)
+        context = {'message': _message}
+        return render(request, 'index.html', context)
+
+def dashboard(request):
+    v_application_count = 0
+    r_application_count = 0
+    ec_renewal_count = 0
+    payment_count = 0
+    try:
+        login_type = request.session['login_type']
+        print(login_type)
+    except KeyError:
+        login_type = None
+    if login_type == 'I':
+        role = request.session['role']
+        ca_authority = request.session['ca_authority']
+        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+        ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority,
+                                                            application_status='A',
+                                                            ec_expiry_date__lt=expiry_date_threshold).count()
+        # END: count no of EC due for renewal within 30 days
+        if role == 'Verifier':
+            v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=ca_authority, action_date__isnull=False).count()
+        elif role == 'Reviewer':
+            r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=ca_authority).count()
+        response = render(request, 'common_dashboard.html',{'v_application_count':v_application_count, 'r_application_count':r_application_count, 'ec_renewal_count':ec_renewal_count})
+
+        # Set cache-control headers to prevent caching
+        response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response['Pragma'] = 'no-cache'
+        response['Expires'] = '0'
+        return response
+    else:
+        email_id = request.session['email']
+        login_id =  request.session['login_id']
+        app_hist_count = t_application_history.objects.filter(applicant_id=email_id).count()
+        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=login_id).count()
+        payment_count = t_payment_details.objects.filter(payment_advice_amount_paid__isnull=True).count()
+        
+        t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+            tor_application_no=OuterRef('application_no')
+        ).values('tor_application_no')
+
+        # Query to count approved applications that are not in t1_general
+        tor_application_count = t_workflow_dtls.objects.filter(
+            application_status='A',application_no__contains='TOR'
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
+        response = render(request, 'common_dashboard.html',{'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'payment_count':payment_count, 'tor_application_count':tor_application_count})
+
+        # Set cache-control headers to prevent caching
+        response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response['Pragma'] = 'no-cache'
+        response['Expires'] = '0'
+        return response
