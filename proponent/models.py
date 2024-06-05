@@ -1224,3 +1224,7 @@ class t_report_submission_t2(models.Model):
     ec_terms = models.TextField(default=None, blank=True, null=True)
     action_taken = models.TextField(default=None, blank=True, null=True)
     remarks = models.TextField(default=None, blank=True, null=True)
+
+class t_ndi_login_temp(models.Model):
+    record_id = models.AutoField(primary_key=True)
+    cid_number = models.CharField(max_length=100, blank=True, null=True)
