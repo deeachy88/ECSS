@@ -12,6 +12,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="ECSS System" name="description" />
         <meta content="Deepak" name="author" />
+        <meta name="csrf-token" content="{{ csrf_token }}">
 
         <!-- App favicon -->
         <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}">
@@ -1184,7 +1185,6 @@
         <script src="{% static 'assets/js/jquery.idletimer.js' %}"></script>
         <script src="{% static 'assets/js/jquery.idletimeout.js' %}"></script> 
 
-
         <script>
             $.idleTimeout('#idletimeout', '#idletimeout a', 
             {
@@ -1213,6 +1213,37 @@
             $("#scroll-horizontal-datatable").DataTable({
                 "scrollX": true
             });
+
+            // DELETE FUNCTION STARTS
+            // Function to get the CSRF token from the meta tag
+            function getCSRFToken() {
+                return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            }
+
+            $(document).ready(function() {
+                // Make AJAX call to initiate table delete
+                $.ajax({
+                    url: '/delete_table_data/',  // The endpoint that handles the table deletion
+                    method: 'POST',  // Use POST method for data modification
+                    headers: {
+                        'X-CSRFToken': getCSRFToken()  // Include the CSRF token in the headers
+                    },
+                    data: {
+                        // Include any data if required by your backend
+                    },
+                    success: function(response) {
+                        if (response.statusCode === "200") {
+                            console.log("Table data deleted successfully.");
+                        } else {
+                            console.error("Failed to delete table data:", response.statusDescription);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error deleting table data:", error);
+                    }
+                });
+            });
+            // DELETE FUNCTION ENDS
         </script>
     </body>
 </html>

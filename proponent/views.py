@@ -7281,6 +7281,7 @@ def get_access_token_ndi():
     res = requests.post(authApiUrl, data=credentials, headers=headers, verify=False)
 
     json_response = res.json()
+    #print(json_response)
     return json_response['access_token']
 
 def proof_request(request):
@@ -7360,7 +7361,7 @@ def fetch_verified_user_data(request):
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ecssstgtest",
+        "webhookId": "ecssstaging8",
         "threadId": thread_id
     }
 
@@ -7387,6 +7388,7 @@ def webhook(request):
         cleaned_body = request.body.decode('utf-8')
         data = json.loads(cleaned_body)
         id_number = data['requested_presentation']['revealed_attrs']['ID Number']['value']
+
         if id_number:
             # Create a new record
             t_ndi_login_temp.objects.create(cid_number=id_number)
@@ -7445,3 +7447,15 @@ def ndi_dash(request):
     # Render the index page with the message
     context = {'message': _message}
     return render(request, 'index.html', context)
+
+def delete_table_data(request):
+    if request.method == 'POST':
+        try:
+            ndi_temp_details = t_ndi_login_temp.objects.all()
+            ndi_temp_details.delete()
+
+            return JsonResponse({"statusCode": "200", "statusDescription": "Table data deleted successfully"}, status=200)
+        except Exception as e:
+            return JsonResponse({"statusCode": "500", "statusDescription": str(e)}, status=500)
+    else:
+        return JsonResponse({"statusCode": "405", "statusDescription": "Method not allowed"}, status=405)

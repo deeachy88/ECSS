@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-!y+j-du+@82@b*2^^%fq84f!=&$rd#o3=vbg6!p2xhmda4&rgf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost','staging-datahub-apim.dit.gov.bt', '172.30.78.130', '5625-2405-d000-b109-678a-dca1-719a-4465-ee4a.ngrok-free.app']
+ALLOWED_HOSTS = ['127.0.0.1','localhost','staging-datahub-apim.dit.gov.bt', '172.30.78.130', '1a16-119-2-104-112.ngrok-free.app']
 
 
 # Application definition

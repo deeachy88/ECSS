@@ -223,4 +223,5 @@ urlpatterns = [
     path('fetch_verified_user_data/', views.fetch_verified_user_data, name='fetch_verified_user_data'),
     path('webhook', views.webhook, name='webhook'),
     path('ndi_dash/',views.ndi_dash, name='ndi_dash'),
+    path('delete_table_data/',views.delete_table_data, name='delete_table_data'),
 ]
