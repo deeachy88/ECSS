@@ -1,4 +1,6 @@
 from datetime import date, timedelta
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 import json
 import os
 import re
@@ -29,6 +31,7 @@ from django.db.models.functions import Now
 from django.shortcuts import render
 from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseRedirect
 
 def new_application(request):
     assigned_user_id = request.session.get('login_id', None)
@@ -7361,7 +7364,7 @@ def fetch_verified_user_data(request):
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ecssstaging8",
+        "webhookId": "ecssstaging12",
         "threadId": thread_id
     }
 
@@ -7388,10 +7391,16 @@ def webhook(request):
         cleaned_body = request.body.decode('utf-8')
         data = json.loads(cleaned_body)
         id_number = data['requested_presentation']['revealed_attrs']['ID Number']['value']
-
         if id_number:
-            # Create a new record
-            t_ndi_login_temp.objects.create(cid_number=id_number)
+            # Send ID number to WebSocket group
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                'id_number_group',
+                {
+                    'type': 'send_id_number',
+                    'id_number': id_number,
+                }
+            )
             return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
     except KeyError:
         return JsonResponse({"statusCode": "400", "statusDescription": "Invalid request payload"}, status=400)
@@ -7399,63 +7408,56 @@ def webhook(request):
         return JsonResponse({"statusCode": "400", "statusDescription": "Invalid JSON"}, status=400)
 
 def ndi_dash(request):
-    _message = 'Please sign in'
-    # Get the first record from t_ndi_login_temp
-    first_record = t_ndi_login_temp.objects.first()
-    cid_value = first_record.cid_number if first_record else None
+    if request.method == 'POST':
+        id_number = request.POST.get('id_number')
+        if id_number:
+            # Assuming cid_value is the 'cid' you want to use for querying t_user_master
+            check_user = t_user_master.objects.filter(cid=id_number, is_active='Y', logical_delete='N').first()
+            if check_user:
+                if not check_user.last_login_date:
+                    # First-time login, redirect to update password
+                    request.session['login_id'] = check_user.login_id
+                    request.session['email'] = check_user.email_id
+                    security = t_security_question_master.objects.all()
+                    response = render(request, 'update_password.html', {'security': security})
 
-    # Assuming cid_value is the 'cid' you want to use for querying t_user_master
-    check_user = t_user_master.objects.filter(cid=cid_value, is_active='Y', logical_delete='N').first()
+                    # Set cache-control headers to prevent caching
+                    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+                    response['Pragma'] = 'no-cache'
+                    response['Expires'] = '0'
+                    return response
+                else:
+                    # Returning user, setup session and redirect based on login type
+                    request.session['login_id'] = check_user.login_id
+                    request.session['email'] = check_user.email_id
+                    request.session['login_type'] = check_user.login_type
 
-    if check_user:
-        if not check_user.last_login_date:
-            # First-time login, redirect to update password
-            request.session['login_id'] = check_user.login_id
-            request.session['email'] = check_user.email_id
-            security = t_security_question_master.objects.all()
-            response = render(request, 'update_password.html', {'security': security})
+                    if check_user.login_type == 'I':
+                        role_details = t_role_master.objects.filter(role_id=check_user.role_id_id).first()
+                        if role_details:
+                            request.session['name'] = check_user.name
+                            request.session['role'] = role_details.role_name
+                            request.session['ca_authority'] = check_user.agency_code
+                            request.session['dzongkhag_code'] = check_user.dzongkhag_code
+                            return redirect(dashboard)
+                    else:
+                        request.session['name'] = check_user.proponent_name
+                        request.session['address'] = check_user.address
+                        request.session['contact_number'] = check_user.contact_number
+                        # Redirect to dashboard
+                        return redirect(dashboard)
 
-            # Set cache-control headers to prevent caching
-            response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-            response['Pragma'] = 'no-cache'
-            response['Expires'] = '0'
-            return response
-        else:
-            # Returning user, setup session and redirect based on login type
-            request.session['login_id'] = check_user.login_id
-            request.session['email'] = check_user.email_id
-            request.session['login_type'] = check_user.login_type
-
-            if check_user.login_type == 'I':
-                role_details = t_role_master.objects.filter(role_id=check_user.role_id_id).first()
-                if role_details:
-                    request.session['name'] = check_user.name
-                    request.session['role'] = role_details.role_name
-                    request.session['ca_authority'] = check_user.agency_code
-                    request.session['dzongkhag_code'] = check_user.dzongkhag_code
             else:
-                request.session['name'] = check_user.proponent_name
-                request.session['address'] = check_user.address
-                request.session['contact_number'] = check_user.contact_number
+                _message = 'Invalid Credentials, Please Try Again.'
+        else:
+            _message = 'ID number is missing.'
 
-            # Redirect to dashboard
-            return redirect(dashboard)
+        # Render the index page with the message
+        context = {'message': _message}
+        return render(request, 'index.html', context)
 
-    else:
-        _message = 'Invalid Credentials, Please Try Again.'
-
-    # Render the index page with the message
+    # If it's a GET request or any other method
+    _message = 'Please sign in'
     context = {'message': _message}
     return render(request, 'index.html', context)
 
-def delete_table_data(request):
-    if request.method == 'POST':
-        try:
-            ndi_temp_details = t_ndi_login_temp.objects.all()
-            ndi_temp_details.delete()
-
-            return JsonResponse({"statusCode": "200", "statusDescription": "Table data deleted successfully"}, status=200)
-        except Exception as e:
-            return JsonResponse({"statusCode": "500", "statusDescription": str(e)}, status=500)
-    else:
-        return JsonResponse({"statusCode": "405", "statusDescription": "Method not allowed"}, status=405)

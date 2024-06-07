@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
+from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,12 +27,14 @@ SECRET_KEY = 'django-insecure-!y+j-du+@82@b*2^^%fq84f!=&$rd#o3=vbg6!p2xhmda4&rgf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost','staging-datahub-apim.dit.gov.bt', '172.30.78.130', '1a16-119-2-104-112.ngrok-free.app']
+ALLOWED_HOSTS = ['127.0.0.1','localhost','staging-datahub-apim.dit.gov.bt', '172.30.78.130', 'e73c-119-2-104-112.ngrok-free.app']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,6 +47,7 @@ INSTALLED_APPS = [
     'ecs_main',
     'report',
     'corsheaders',
+
 ]
 
 MIDDLEWARE = [
@@ -63,10 +67,23 @@ CORS_ORIGIN_WHITELIST = [
     'https://staging.bhutanndi.com',
     # Add more origins as needed
 ]
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8000',  # Add your client-side application URL here
+
+    # Add more origins as needed
+]
+CORS_ALLOW_CREDENTIALS = True
+
 
 ROOT_URLCONF = 'ECS.urls'
 
-ASGI_APPLICATION = "ecss.asgi.application"
+ASGI_APPLICATION = "ECS.asgi.application"
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 TEMPLATES = [
     {

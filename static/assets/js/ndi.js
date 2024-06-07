@@ -1,5 +1,4 @@
 function nats_call(proofRequestThreadId) {
-    // Make AJAX call to fetch_verified_user_data
     $.ajax({
         url: '/fetch_verified_user_data/',
         method: 'GET',
@@ -7,19 +6,30 @@ function nats_call(proofRequestThreadId) {
             thread_id: proofRequestThreadId
         },
         success: function(response) {
-            setTimeout(function() {
-                $.ajax({
-                    url: '/ndi_dash/',
-                    method: 'GET',
-                    success: function(response) {
-                        // Redirect to the test_dashboard page after the ndi_dash AJAX call
-                        window.location.href = '/ndi_dash/';
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error fetching user data:", error);
-                    }
-                });
-            }, 20000); // 20 seconds delay
+            // Do nothing here
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching user data:", error);
+        }
+    });
+}
+
+
+// Function to make the second AJAX call to /ndi_dash/
+function makeNdiDashCall(id_number) {
+    $.ajax({
+        url: '/ndi_dash/',
+        method: 'POST',
+        data: {
+            id_number: id_number
+        },
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        success: function(response) {
+            // Do nothing here or perform any additional logic
+            // The redirection is handled separately
+            window.location.href = '/dashboard'; // Redirect to the test_dashboard page
         },
         error: function(xhr, status, error) {
             console.error("Error fetching user data:", error);
