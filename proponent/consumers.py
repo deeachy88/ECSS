@@ -31,5 +31,9 @@ class IdConsumer(WebsocketConsumer):
     def send_id_number(self, event):
         id_number = event['id_number']
         self.send(text_data=json.dumps({
-            'id_number': id_number
+            'id_number': event.get('id_number'),
+            'full_name': event.get('full_name'),
+            'dzongkhag': event.get('dzongkhag'),
+            'gewog': event.get('gewog'),
+            'village': event.get('village')
         }))

@@ -7305,6 +7305,7 @@ def proof_request(request):
                 }
             ]
         },
+
         # Add other proofAttributes as needed
     ]
     proof_data = {
@@ -7337,6 +7338,38 @@ def proof_request_proponent(request):
                 }
             ]
         },
+        {
+            'name': "Full Name",
+            'restrictions': [
+                {
+                    'cred_def_id': "Ka4s9yvjDetTTME9KWuXAj:3:CL:51994:revocable"
+                }
+            ]
+        },
+        {
+            'name': "Dzongkhag",
+            'restrictions': [
+                {
+                    'cred_def_id': "Ka4s9yvjDetTTME9KWuXAj:3:CL:52101:revocable"
+                }
+            ]
+        },
+        {
+            'name': "Gewog",
+            'restrictions': [
+                {
+                    'cred_def_id': "Ka4s9yvjDetTTME9KWuXAj:3:CL:52101:revocable"
+                }
+            ]
+        },
+        {
+            'name': "Village",
+            'restrictions': [
+                {
+                    'cred_def_id': "Ka4s9yvjDetTTME9KWuXAj:3:CL:52101:revocable"
+                }
+            ]
+        },
         # Add other proofAttributes as needed
     ]
     proof_data = {
@@ -7364,7 +7397,7 @@ def fetch_verified_user_data(request):
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ecssstaging12",
+        "webhookId": "ecssstaging13",
         "threadId": thread_id
     }
 
@@ -7386,22 +7419,38 @@ def fetch_verified_user_data(request):
 @csrf_exempt
 def webhook(request):
     request.session.clear()
-    request.session.flush()
     try:
         cleaned_body = request.body.decode('utf-8')
         data = json.loads(cleaned_body)
-        id_number = data['requested_presentation']['revealed_attrs']['ID Number']['value']
+
+        id_number = data['requested_presentation']['revealed_attrs'].get('ID Number', {}).get('value')
+        full_name = data['requested_presentation']['revealed_attrs'].get('Full Name', {}).get('value')
+        dzongkhag = data['requested_presentation']['revealed_attrs'].get('Dzongkhag', {}).get('value')
+        gewog = data['requested_presentation']['revealed_attrs'].get('Gewog', {}).get('value')
+        village = data['requested_presentation']['revealed_attrs'].get('Village', {}).get('value')
+
         if id_number:
-            # Send ID number to WebSocket group
+            # Prepare the payload for WebSocket
+            payload = {
+                'type': 'send_id_number',
+                'id_number': id_number,
+                'full_name': full_name,
+                'dzongkhag': dzongkhag,
+                'gewog': gewog,
+                'village': village
+            }
+            # Filter out None values from the payload
+            payload = {k: v for k, v in payload.items() if v is not None}
+            #print("Payload to be sent to WebSocket:", payload)
+            # Send the payload to WebSocket group
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 'id_number_group',
-                {
-                    'type': 'send_id_number',
-                    'id_number': id_number,
-                }
+                payload
             )
             return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
+        else:
+            return JsonResponse({"statusCode": "400", "statusDescription": "ID Number is missing"}, status=400)
     except KeyError:
         return JsonResponse({"statusCode": "400", "statusDescription": "Invalid request payload"}, status=400)
     except json.JSONDecodeError:

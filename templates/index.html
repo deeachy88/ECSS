@@ -28,24 +28,36 @@
         <link href="{% static 'assets/vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
         <link href="{% static 'assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
-        // Flag to track if makeNdiDashCall has been called
+        // Flags to track if the respective functions have been called
         let ndiDashCalled = false;
+        let ndiProponentRegCalled = false;
 
         // WebSocket setup
         let url = `ws://${window.location.host}/ws/socket-server/`;
         const socket = new WebSocket(url);
-        let socketIdNumber = null;
 
         socket.onmessage = function(e) {
             let data = JSON.parse(e.data);
             console.log('Data:', data);
-            const id_number = data.id_number;
 
-            if (id_number && !ndiDashCalled) {
-                // ID number is not null and makeNdiDashCall hasn't been called yet
-                //alert('CID at socket:' + id_number);
-                makeNdiDashCall(id_number);  // Pass the id_number to the function
-                ndiDashCalled = true; // Set flag to true to indicate that makeNdiDashCall has been called
+            const id_number = data.id_number;
+            const full_name = data.full_name;
+            const dzongkhag = data.dzongkhag;
+            const gewog = data.gewog;
+            const village = data.village;
+
+            if (id_number && !full_name && !ndiDashCalled) {
+                // ID number is present and full_name is not present
+                //alert('Calling makeNdiDashCall with ID Number: ' + id_number);
+                makeNdiDashCall(id_number);
+                ndiDashCalled = true;
+            } else if (full_name && !ndiProponentRegCalled) {
+                // Both ID number and full_name are present
+                //alert('Calling makeNdiProponentRegCall with ID Number: ' + id_number);
+                //makeNdiProponentRegCall(id_number, full_name, dzongkhag, gewog, village);
+                showRegistrationForm();
+                fillInputFields(id_number, full_name, dzongkhag, gewog, village);
+                ndiProponentRegCalled = true;
             }
         };
 
@@ -58,7 +70,6 @@
                 const cookies = document.cookie.split(';');
                 for (let i = 0; i < cookies.length; i++) {
                     const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
                     if (cookie.substring(0, name.length + 1) === (name + '=')) {
                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                         break;
@@ -67,6 +78,27 @@
             }
             return cookieValue;
         }
+
+        // Function to show the registration form and hide the QR code section
+        function showRegistrationForm() {
+            // Hide the QR code section
+            document.getElementById('ndi_div_proponent').style.display = 'none';
+            // Show the registration form section
+            document.getElementById('registration_div').style.display = 'block';
+            // Show the modal again
+            $('#registrationModalForm').modal('show');
+            $('.modal-footer').show();
+        }
+
+        // Function to fill input fields with data received
+        function fillInputFields(id_number, full_name, dzongkhag, gewog, village) {
+            document.getElementById('cid').value = id_number;
+            document.getElementById('proponent_name').value = full_name;
+            document.getElementById('i_dzongkhag').value = dzongkhag;
+            document.getElementById('i_gewog').value = gewog;
+            document.getElementById('i_village').value = village;
+        }
+
     </script>
 
 </head>
@@ -404,19 +436,10 @@
 												&nbsp;Proponent Registration</strong></h3>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
         <br>
-        
+
       </div>
       <div class="modal-body mx-4" id="registration_div">
-        <div class="row">
-            <div class="col-md-8"></div>
-            <div class="col-md-4 pb-2">
-                <a href="#" class="btn btn-vimeo" style="background-color: #124143; color:white"" id="generateQRCode"  onclick="registerauthenticateWithAPI()">
-                    <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%">
-                    &nbsp; &nbsp;Use Bhutan NDI
-                </a>
-                <div id="loader"></div>
-            </div>
-        </div>
+
       <form method="post" id="client_registration_form">
       {% csrf_token %}
       <!--Body-->
@@ -433,19 +456,34 @@
                 </div>
                 <div id="proponent_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
             </div>
-            <div class="col-lg-6 cid_details" style="display: none;">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">CID</label>
-                    <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onchange="getCitizenDetails(this.value)">
+            <div class="cid_details" style="display: none;">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <a href="#" class="btn btn-vimeo" style="background-color: #124143; color:white" id="generateQRCode"  onclick="registerauthenticateWithAPI()">
+                                <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%">
+                                &nbsp; &nbsp;Use Bhutan NDI
+                            </a>
+                            <div id="loader"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">CID</label>
+                            <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onchange="getCitizenDetails(this.value)">
+                            <div id="cidErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                    </div>
                 </div>
-                <div id="cidErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
             </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Proponent Name</label>
-                    <input type="text" name="proponent_name" class="form-control" id="proponent_name">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Proponent Name</label>
+                        <input type="text" name="proponent_name" class="form-control" id="proponent_name">
+                    </div>
+                    <div id="proponent_nameErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                 </div>
-                <div id="proponent_nameErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
             </div>
         </div>
          <div class="row">
