@@ -87,7 +87,7 @@ def login(request):
                         request.session['email'] = check_user.email_id
                         security = t_security_question_master.objects.all()
                         response = render(request, 'update_password.html', {'security': security})
-    
+
                         # Set cache-control headers to prevent caching
                         response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
                         response['Pragma'] = 'no-cache'
@@ -953,7 +953,7 @@ def change_mobile_number(request):
     email_id = request.session['email']
     new_contact_number = request.POST.get('new_contact_number')
     application_details = t_user_master.objects.filter(email_id=email_id)
-    application_details.update(mobile_no=new_contact_number)
+    application_details.update(contact_number=new_contact_number)
     data['message'] = "update_successful"
     return JsonResponse(data)
 
