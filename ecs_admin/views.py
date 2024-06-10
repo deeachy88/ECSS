@@ -1056,8 +1056,8 @@ def accept_mail(request, name, email_id, password):
     message = "Dear " + name + " Your Registration for ECS System Is Accepted. Your Login Id is " \
               + email_id + " And Password is " + password + ""
     recipient_list = [email_id]
-    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
-              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
+    send_mail(subject, message, 'sparkletechnologies0509@gmail.com', recipient_list, fail_silently=False,
+              auth_user='sparkletechnologies0509@gmail.com', auth_password='htosvqmtrozajpey',
               connection=None, html_message=None)
 
 def reject_mail(request, name, email_id):

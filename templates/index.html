@@ -990,6 +990,15 @@
             $('#i_dzongkhag').show();
             $('#i_gewog').show();
             $('#i_village').show();
+        // Clear the values of the fields
+            $('#dzongkhag').val('');
+            $('#gewog').val('');
+            $('#village').val('');
+            $('#cid').val('');
+            $('#proponent_name').val('');
+            $('#i_dzongkhag').val('');
+            $('#i_gewog').val('');
+            $('#i_village').val('');
         }
         else
         {
@@ -1000,7 +1009,16 @@
             $('.cid_details').hide();
             $('#i_dzongkhag').hide();
             $('#i_gewog').hide();
-            $('#i_village').hide(); 
+            $('#i_village').hide();
+        // Clear the values of the fields
+
+            $('#dzongkhag').val('');
+            $('#gewog').val('');
+            $('#village').val('');
+            $('#proponent_name').val('');
+            $('#i_dzongkhag').val('');
+            $('#i_gewog').val('');
+            $('#i_village').val('');
         }
     }
     function getCitizenDetails(cid)

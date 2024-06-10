@@ -7459,54 +7459,63 @@ def webhook(request):
 def ndi_dash(request):
     if request.method == 'POST':
         id_number = request.POST.get('id_number')
-        if id_number:
-            # Assuming cid_value is the 'cid' you want to use for querying t_user_master
-            check_user = t_user_master.objects.filter(cid=id_number, is_active='Y', logical_delete='N').first()
-            if check_user:
-                if not check_user.last_login_date:
-                    # First-time login, redirect to update password
-                    request.session['login_id'] = check_user.login_id
-                    request.session['email'] = check_user.email_id
-                    security = t_security_question_master.objects.all()
-                    response = render(request, 'update_password.html', {'security': security})
+        print(f"ID Number received: {id_number}")
 
-                    # Set cache-control headers to prevent caching
-                    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-                    response['Pragma'] = 'no-cache'
-                    response['Expires'] = '0'
-                    return response
-                else:
-                    # Returning user, setup session and redirect based on login type
-                    request.session['login_id'] = check_user.login_id
-                    request.session['email'] = check_user.email_id
-                    request.session['login_type'] = check_user.login_type
+        check_user = t_user_master.objects.filter(cid=id_number, is_active='Y', logical_delete='N').first()
 
-                    if check_user.login_type == 'I':
-                        role_details = t_role_master.objects.filter(role_id=check_user.role_id_id).first()
-                        if role_details:
-                            request.session['name'] = check_user.name
-                            request.session['role'] = role_details.role_name
-                            request.session['ca_authority'] = check_user.agency_code
-                            request.session['dzongkhag_code'] = check_user.dzongkhag_code
-                            return redirect(dashboard)
-                    else:
-                        request.session['name'] = check_user.proponent_name
-                        request.session['address'] = check_user.address
-                        request.session['contact_number'] = check_user.contact_number
-                        # Redirect to dashboard
-                        return redirect(dashboard)
+        if check_user is not None:
+            print(f"User found: {check_user.login_id}")
 
+            if not check_user.last_login_date:
+                # First-time login, send JSON response to redirect to update password
+                #print('User first-time login, rendering update_password.html')
+                request.session['login_id'] = check_user.login_id
+                request.session['email'] = check_user.email_id
+                security = t_security_question_master.objects.all()
+
+                response = JsonResponse({
+                    'redirect': 'update_password',
+                    'security_questions': list(security.values())
+                })
+                response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+                response['Pragma'] = 'no-cache'
+                response['Expires'] = '0'
+                return response
             else:
-                _message = 'Invalid Credentials, Please Try Again.'
+                # Returning user, setup session and redirect based on login type
+                print("User has logged in before, setting up session.")
+                request.session['login_id'] = check_user.login_id
+                request.session['email'] = check_user.email_id
+                request.session['login_type'] = check_user.login_type
+
+                if check_user.login_type == 'I':
+                    role_details = t_role_master.objects.filter(role_id=check_user.role_id_id).first()
+                    if role_details:
+                        request.session['name'] = check_user.name
+                        request.session['role'] = role_details.role_name
+                        request.session['ca_authority'] = check_user.agency_code
+                        request.session['dzongkhag_code'] = check_user.dzongkhag_code
+                        return JsonResponse({'redirect': 'dashboard'})
+                else:
+                    request.session['name'] = check_user.proponent_name
+                    request.session['address'] = check_user.address
+                    request.session['contact_number'] = check_user.contact_number
+                    return JsonResponse({'redirect': 'dashboard'})
         else:
-            _message = 'ID number is missing.'
-
-        # Render the index page with the message
+            _message = 'ID number is missing/ User Not Registered.'
+            print(_message)
+            context = {'message': _message}
+            return JsonResponse({'redirect': 'index', 'message': _message})
+    else:
+        _message = 'Please sign in'
+        print(_message)
         context = {'message': _message}
-        return render(request, 'index.html', context)
+        return JsonResponse({'redirect': 'index', 'message': _message})
 
-    # If it's a GET request or any other method
-    _message = 'Please sign in'
-    context = {'message': _message}
-    return render(request, 'index.html', context)
 
+def update_password_ndi(request):
+    # Fetch security questions for the form
+    #print('inside update_password def')
+    security_questions = t_security_question_master.objects.all()
+    context = {'security': security_questions}
+    return render(request, 'update_password.html', context)
