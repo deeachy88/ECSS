@@ -19,6 +19,7 @@
                     <table id="basic-datatable" class="table dt-responsive nowrap w-100">
                         <thead>
                             <th>#</th>
+                            <th>Employee Id</th>
                             <th>Name</th>
                             <th>Gender</th>
                             <th>Email</th>
@@ -31,6 +32,7 @@
                             {% for user in users %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
+                                    <td>{{user.employee_id}}</td>
                                     <td>{{user.name}}</td>
                                     {% if user.gender == "M" %}
                                     <td>Male</td>
@@ -83,11 +85,20 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
+                                <label class="form-label fw-bold">Employee Id</label>
+                                <input type="text" name="employee_id" class="form-control" id="employee_id">
+                            </div>
+                            <div id="employee_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
                                 <label class="form-label fw-bold">Name</label>
                                 <input type="text" name="name" class="form-control" id="name">
                             </div>
                             <div id="nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Gender</label>
@@ -104,8 +115,6 @@
                             </div>
                             <div id="genderErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Email</label>
@@ -113,6 +122,8 @@
                             </div>
                             <div id="emailErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Contact Number</label>
@@ -120,8 +131,6 @@
                             </div>
                             <div id="contact_numberErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Role</label>
@@ -134,6 +143,8 @@
                             </div>
                             <div id="roleErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-lg-6 com_auth_div">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Agency</label>
@@ -175,11 +186,20 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
+                                <label class="form-label fw-bold">Employee Id</label>
+                                <input type="text" name="edit_employee_id" class="form-control" id="edit_employee_id">
+                            </div>
+                            <div id="edit_employee_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
                                 <label class="form-label fw-bold">Name</label>
                                 <input type="text" name="edit_name" class="form-control" id="edit_name">
                             </div>
                             <div id="edit_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Gender</label>
@@ -196,8 +216,6 @@
                             </div>
                             <div id="edit_genderErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Email</label>
@@ -205,6 +223,8 @@
                             </div>
                             <div id="edit_emailErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Contact Number</label>
@@ -212,8 +232,6 @@
                             </div>
                             <div id="edit_contact_numberErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Role</label>
@@ -226,6 +244,8 @@
                             </div>
                             <div id="edit_roleErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-lg-6 edit_com_auth_div">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Agency</label>
@@ -317,6 +337,7 @@ function validate_email_id(emailId)
 
 function save_users()
 {
+        let employee_id = $('#employee_id').val();
         let name = $('#name').val();
         let gender = $("input[name=gender]:checked").length;
         let email = $('#email').val();
@@ -325,7 +346,13 @@ function save_users()
         let agency = $('#agency').val();
         let contact_number_count = $('#contact_number').val().length;
 
-        if(name == "")
+        if(employee_id == "")
+        {
+            $('#employee_idErrorMsg').html("Enter Employee Id.");
+            $('#employee_idErrorMsg').show();
+            $('#employee_idErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(name == "")
         {
             $('#nameErrorMsg').html("Enter Name.");
             $('#nameErrorMsg').show();
@@ -397,6 +424,7 @@ function save_users()
 
 function update_users()
 {
+    let employee_id = $('#edit_employee_id').val();
     let name = $('#edit_name').val();
     let gender = $("input[name=edit_gender]:checked").length;
     let email = $('#edit_email').val();
@@ -405,7 +433,13 @@ function update_users()
     let agency = $('#edit_agency').val();
     let contact_number_count = $('#edit_contact_number').val().length;
     
-    if(name == "")
+    if(employee_id == "")
+    {
+        $('#edit_employee_idErrorMsg').html("Enter Employee Id.");
+        $('#edit_employee_idErrorMsg').show();
+        $('#edit_employee_idErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(name == "")
     {
         $('#edit_nameErrorMsg').html("Enter Name.");
         $('#edit_nameErrorMsg').show();

@@ -317,9 +317,9 @@
                 </div>
               </form>
             </div>
-            <div class="modal-footer mx-5 pt-3 mb-1 justify-content-center">
-                <a href="#" class="btn btn-vimeo w-100" style="background-color: #124143; color:white" id="ndiLoginId" onclick="authenticate_ndi()">
-                    <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%">
+            <div class="modal-footer mx-5 pt-3 mb-1 justify-content-center" style="width: 250px;">
+                <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiLoginId" onclick="authenticate_ndi()">
+                    <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
                     &nbsp; &nbsp; Login with Bhutan NDI
                 </a>
             </div>
@@ -368,7 +368,8 @@
             </div>
 
             <div class="modal-body" id="ndi_div" style="display: none; text-align: center">
-                <h2 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 500;">Scan QR code from <span style="color:#5AC994 ">Bhutan NDI </span> app</h2>
+                <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
+                <h2 style="font-size: 1.0rem; margin-bottom: .5rem; font-weight: 500; color: black;">Scan with <span style="color:#5AC994 ">Bhutan NDI </span> Wallet</h2>
                 <div class="row" style="margin-top: 30px">
                     <div class="col-lg-12 col-md-12 d-flex justify-content-center">
                         <div class="row">
@@ -396,11 +397,9 @@
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-md-9 custom-vertical-align-left">
-                        <ul class="list-unstyled">
+                        <ul class="list-unstyled" style="text-align: left;">
                             <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7">1. Open Bhutan NDI on your Phone</li>
-                            <li>2. Tab the Scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="QR Code">
-                                and capture code
-                            </li>
+                            <li>2. Tab the Scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="QR Code"> and capture code</li>
                         </ul>
                     </div>
                 </div>
@@ -410,11 +409,12 @@
                     </a>
                 </div>
                 <div class="modal-body-question">
-                    <ul class="list-unstyled">
+                    <ul>
                         <li>
-                            Don't have the Bhutan NDI App? <a href="https://bhutanndi.app.link?t=https://iac-production-shortener.s3.ap-southeast-1.amazonaws.com/hZ4ycjxF" class="modal-body-download-level download-link">Download
-                            now
-                            !</a>
+                        Download Now!
+                        <div class="app-link">
+                            <a href="https://play.google.com/store/search?q=bhutan%20ndi&amp;c=apps&amp;hl=en_IN&amp;gl=US" target="_blank" ><img src="{% static 'assets/images/play_store.png' %}" style="height: 27px;"></a>
+                            <a href="https://apps.apple.com/in/app/bhutan-ndi/id1645493166" target="_blank" ><img src="{% static 'assets/images/app_store.png' %}" style="height: 27px;"></a></div> <button class="btn-plain c-lnk" style="margin-top: 10px;">Back to Login</button>
                         </li>
                     </ul>
                 </div>

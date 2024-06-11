@@ -157,6 +157,7 @@ class t_user_master(models.Model):
     proponent_name = models.CharField(max_length=255, default=None, blank=True, null=True)
     contact_person = models.CharField(max_length=255, default=None, blank=True, null=True)
     address = models.TextField(max_length=250, default=None, blank=True, null=True)
+    employee_id = models.CharField(max_length=100, default=None, blank=True, null=True)
 
 
 class t_forgot_password(models.Model):

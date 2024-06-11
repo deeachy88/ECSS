@@ -181,6 +181,7 @@ def dashboard(request):
         return response
 
 def add_user(request):
+    employee_id = request.POST.get('employee_id')
     name = request.POST.get('name')
     gender = request.POST.get('gender')
     email = request.POST.get('email')
@@ -190,13 +191,13 @@ def add_user(request):
     password = get_random_password_string(8)
     password_value = make_password(password)
     if role == '1':
-        t_user_master.objects.create(login_type="I", name=name, gender=gender,
+        t_user_master.objects.create(login_type="I", employee_id=employee_id, name=name, gender=gender,
                                         contact_number=contact_number, email_id=email,
                                         password=password_value, is_active="Y",agency_code=None,
                                         logical_delete="N", last_login_date=None, created_by=None,
                                         created_on=date.today(), modified_by=None, modified_on=None, role_id_id=role)
     else:
-        t_user_master.objects.create(login_type="I", name=name, gender=gender,
+        t_user_master.objects.create(login_type="I", employee_id=employee_id, name=name, gender=gender,
                                         contact_number=contact_number, email_id=email,
                                         password=password_value, is_active="Y",agency_code=agency,
                                         logical_delete="N", last_login_date=None, created_by=request.session['login_id'],
@@ -206,6 +207,7 @@ def add_user(request):
 
 def update_user(request):
     login_id = request.POST.get('editLoginId')
+    employee_id = request.POST.get('edit_employee_id')
     name = request.POST.get('edit_name')
     gender = request.POST.get('edit_gender')
     email = request.POST.get('edit_email')
@@ -217,12 +219,12 @@ def update_user(request):
     
     user_details = t_user_master.objects.filter(login_id=login_id)
     if role != '1':
-        user_details.update(name=name, gender=gender,
+        user_details.update(employee_id=employee_id, name=name, gender=gender,
                             contact_number=contact_number, email_id=email,
                             agency_code=agency, modified_by=request.session['login_id'],
                             modified_on=date.today(), role_id_id=role)
     else:
-        user_details.update(name=name, gender=gender,
+        user_details.update(employee_id=employee_id, name=name, gender=gender,
                             contact_number=contact_number, email_id=email,
                             modified_by=request.session['login_id'],
                             modified_on=date.today(), role_id_id=role)
@@ -500,9 +502,9 @@ def manage_user(request):
     user_list = t_user_master.objects.filter(login_id=login_id)
 
     if identifier == "Activate":
-        user_list.update(ii_active="Y")
+        user_list.update(is_active="Y")
     elif identifier == "Deactivate":
-        user_list.update(ii_active="N")
+        user_list.update(is_active="N")
     else:
         password = get_random_password_string(8)
         password_value = make_password(password)
