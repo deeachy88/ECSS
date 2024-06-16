@@ -66,3 +66,36 @@ function nats_proponent_call(proofRequestThreadId) {
         }
     });
 }
+
+function makeIssuanceCall(id_number) {
+    $.ajax({
+        url: '/issuance_call/',
+        method: 'POST',
+        data: {
+            id_number: id_number
+        },
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        success: function(response) {
+            if (response.message) {
+                alert(response.message);
+            } else if (response.error) {
+                alert(response.error);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error response received:", xhr.responseText); // Debug statement
+            try {
+                var response = JSON.parse(xhr.responseText);
+                alert("Error: " + response.error);
+                if (response.details) {
+                    console.error("Details:", response.details);
+                }
+            } catch (e) {
+                alert("An unexpected error occurred.");
+                console.error("Unexpected error:", e); // Debug statement
+            }
+        }
+    });
+}
