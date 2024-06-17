@@ -36,7 +36,8 @@ from django.http import HttpResponseRedirect
 def new_application(request):
     assigned_user_id = request.session.get('login_id', None)
     applicant_id = request.session.get('email', None)
-    bsic_details = t_bsic_code.objects.all()
+    #bsic_details = t_bsic_code.objects.all()
+    bsic_details = t_bsic_code.objects.values('broad_activity_code', 'activity_description').distinct()
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
@@ -1774,7 +1775,8 @@ def add_product_details(request):
 
 def get_specific_activity_description(request):
     broad_activity_code = request.GET.get('broad_activity_code')
-    specific_activity_description = t_bsic_code.objects.filter(broad_activity_code=broad_activity_code)
+    #specific_activity_description = t_bsic_code.objects.filter(broad_activity_code=broad_activity_code).distinct()
+    specific_activity_description = t_bsic_code.objects.values('specific_activity_code', 'specific_activity_description').filter(broad_activity_code=broad_activity_code).distinct()
     return render(request, 'specific_activity_description_list.html',
                   {'specific_activity_description':specific_activity_description})
 
