@@ -29,8 +29,8 @@
         <link href="{% static 'assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
         // Flags to track if the respective functions have been called
-        let ndiDashCalled = false;
-        let ndiProponentRegCalled = false;
+        // let ndiDashCalled = false;
+        // let ndiProponentRegCalled = false;
         let issuanceApiCalled = false;
 
         // WebSocket setup
@@ -47,20 +47,21 @@
             const gewog = data.gewog;
             const village = data.village;
 
-            if (id_number && !full_name && !ndiDashCalled) {
-                // ID number is present and full_name is not present
-                //alert('Calling makeNdiDashCall with ID Number: ' + id_number);
-                makeNdiDashCall(id_number);
-                ndiDashCalled = true;
-            } else if (full_name && !ndiProponentRegCalled) {
-                // Both ID number and full_name are present
-                //alert('Calling makeNdiProponentRegCall with ID Number: ' + id_number);
-                //makeNdiProponentRegCall(id_number, full_name, dzongkhag, gewog, village);
-                showRegistrationForm();
-                fillInputFields(id_number, full_name, dzongkhag, gewog, village);
-                ndiProponentRegCalled = true;
-            }
-            else if (id_number  && !issuanceApiCalled) {
+            // if (id_number && !full_name && !ndiDashCalled) {
+            //     // ID number is present and full_name is not present
+            //     //alert('Calling makeNdiDashCall with ID Number: ' + id_number);
+            //     makeNdiDashCall(id_number);
+            //     ndiDashCalled = true;
+            // } else if (full_name && !ndiProponentRegCalled) {
+            //     // Both ID number and full_name are present
+            //     //alert('Calling makeNdiProponentRegCall with ID Number: ' + id_number);
+            //     //makeNdiProponentRegCall(id_number, full_name, dzongkhag, gewog, village);
+            //     showRegistrationForm();
+            //     fillInputFields(id_number, full_name, dzongkhag, gewog, village);
+            //     ndiProponentRegCalled = true;
+            // }
+            // else
+            if (id_number  && !issuanceApiCalled) {
                 // ID number is present and full_name is not present
                 //alert('Calling makeNdiDashCall with ID Number: ' + id_number);
                 makeIssuanceCall(id_number);
@@ -346,6 +347,12 @@
                         <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiLoginId" onclick="authenticate_ndi()">
                             <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
                             &nbsp; &nbsp; Login with Bhutan NDI
+                        </a>
+                    </div>
+                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-center" style="width: 250px;">
+                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiLoginId" onclick="authenticate_ndi()">
+                            <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
+                            &nbsp; &nbsp; EC Issue To Bhutan NDI
                         </a>
                     </div>
                 </div>
