@@ -7521,3 +7521,126 @@ def update_password_ndi(request):
     security_questions = t_security_question_master.objects.all()
     context = {'security': security_questions}
     return render(request, 'update_password.html', context)
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+import requests
+
+@csrf_exempt
+def issuance_call(request):
+    if request.method == 'POST':
+        try:
+            id_number = request.POST.get('id_number')
+            thread_id = request.session['thread_id']
+
+            ndi_token = get_access_token_ndi()
+
+            # Define verifier API URL and headers
+            relation_url = 'https://stageclient.bhutanndi.com/verifier/v1/proof-request'
+            headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
+
+            # Define proof request payload with required fields
+            proof_attributes = [
+                {
+                    'name': "ID Number",
+                    'restrictions': [
+                        {
+                            'cred_def_id': "Ka4s9yvjDetTTME9KWuXAj:3:CL:51994:revocable"
+                        }
+                    ]
+                },
+                # Add other proofAttributes as needed
+            ]
+
+            proof_data = {
+                'threadId': thread_id,
+                'proofName': 'ECSS Credentials',
+                'proofAttributes': proof_attributes
+            }
+
+            # Convert the payload dictionary to a JSON string
+            data = json.dumps(proof_data)
+
+            # Send the POST request
+            response = requests.get(relation_url, headers=headers, data=data, verify=False)
+
+            # Check response content type
+            content_type = response.headers.get('Content-Type')
+
+            # Ensure response content is JSON
+            if 'application/json' not in content_type:
+                return JsonResponse({'error': 'Invalid response content type'}, status=500)
+
+            # Parse the JSON response
+            response_data = response.json()
+
+            print("Response Data:", response_data)  # Log the response data for debugging
+
+            # Check if response_data is a list
+            if not isinstance(response_data, list):
+                return JsonResponse({'error': 'Unexpected response format', 'response_data': response_data}, status=500)
+
+            # Extract relationshipDid
+            relationship_did = None
+            for item in response_data:
+                if isinstance(item, dict) and item.get('threadId') == thread_id:
+                    relationship_did = item.get('relationshipDid')
+                    break
+
+            if not relationship_did:
+                return JsonResponse({'error': 'relationshipDid not found in response for the provided thread_id', 'response_data': response_data}, status=500)
+
+            # Fetch application details
+            application_details = t_ec_industries_t1_general.objects.filter(cid=id_number, application_status='A').first()
+            if not application_details:
+                return JsonResponse({'error': 'No application details found for the provided ID number'}, status=404)
+
+            # Unpack application details
+            applicant_name = application_details.applicant_name
+            project_name = application_details.project_name
+            address = application_details.address
+            location_name = application_details.location_name
+            total_area_acre = application_details.total_area_acre
+            ec_approve_date = application_details.ec_approve_date
+            ec_expiry_date = application_details.ec_expiry_date
+            ec_reference_no = application_details.ec_reference_no
+
+            # Define API endpoint and headers
+            base_url = "https://stageclient.bhutanndi.com/issuer/v1/issue-credential"
+            headers = {
+                'Authorization': f"Bearer {ndi_token}",
+                'Content-Type': 'application/json'
+            }
+
+            # Define credential data
+            credential_data = {
+                "EC Reference Number": str(ec_reference_no),
+                "EC Approve Date": ec_approve_date.isoformat(),
+                "EC Expiry Date": ec_expiry_date.isoformat(),
+                "EC Status": "A",
+                "Applicant Name": str(applicant_name),
+                "Project Name": str(project_name),
+                "Address": str(address),
+                "Location Name": str(location_name),
+                "Total Area Acre": str(total_area_acre)
+            }
+
+            # Make API call
+            response = requests.post(base_url, headers=headers, json={
+                "credDefId": "9KXYYvCB5vV6ocLDRpgAh5:3:CL:60603:revocable",
+                "credentialData": credential_data,
+                "relationshipDid": relationship_did
+            })
+
+            # Check response status and handle accordingly
+            if response.status_code == 201:
+                return JsonResponse({'message': 'Credential issued successfully'})
+            else:
+                return JsonResponse({'error': 'Failed to issue credential', 'details': response.json()}, status=response.status_code)
+        except Exception as e:
+            print(f"Exception occurred: {e}")
+            return JsonResponse({'error': 'An unexpected error occurred.', 'details': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
