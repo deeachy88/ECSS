@@ -60,13 +60,12 @@
             //     fillInputFields(id_number, full_name, dzongkhag, gewog, village);
             //     ndiProponentRegCalled = true;
             // }
-            // else
             if (id_number  && !issuanceApiCalled) {
                 // ID number is present and full_name is not present
                 //alert('Calling makeNdiDashCall with ID Number: ' + id_number);
                 makeIssuanceCall(id_number);
                 issuanceApiCalled = true;
-            }
+            } 
         };
 
         const csrftoken = getCookie('csrftoken');

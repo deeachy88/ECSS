@@ -6,7 +6,19 @@ function nats_call(proofRequestThreadId) {
             thread_id: proofRequestThreadId
         },
         success: function(response) {
-            // Do nothing here
+            $.ajax({
+                url: '/fetch_relationship_data/',
+                method: 'GET',
+                data: {
+                    thread_id: proofRequestThreadId
+                },
+                success: function(response) {
+                    // Do nothing here
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching user data:", error);
+                }
+            });
         },
         error: function(xhr, status, error) {
             console.error("Error fetching user data:", error);
