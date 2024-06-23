@@ -35,5 +35,7 @@ class IdConsumer(WebsocketConsumer):
             'full_name': event.get('full_name'),
             'dzongkhag': event.get('dzongkhag'),
             'gewog': event.get('gewog'),
-            'village': event.get('village')
+            'village': event.get('village'),
+            'thid':event.get('thid'),
+            'relationshipDid':event.get('relationshipDid')
         }))

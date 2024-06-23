@@ -46,6 +46,8 @@
             const dzongkhag = data.dzongkhag;
             const gewog = data.gewog;
             const village = data.village;
+            const relationshipDid = data.relationshipDid;
+            const thid = data.thid;
 
             // if (id_number && !full_name && !ndiDashCalled) {
             //     // ID number is present and full_name is not present
@@ -60,13 +62,14 @@
             //     fillInputFields(id_number, full_name, dzongkhag, gewog, village);
             //     ndiProponentRegCalled = true;
             // }
-            if (id_number  && !issuanceApiCalled) {
+            if (id_number && !issuanceApiCalled) {
                 // ID number is present and full_name is not present
                 //alert('Calling makeNdiDashCall with ID Number: ' + id_number);
-                makeIssuanceCall(id_number);
+                makeIssuanceCall(relationshipDid,thid,id_number);
                 issuanceApiCalled = true;
             } 
         };
+
 
         const csrftoken = getCookie('csrftoken');
 

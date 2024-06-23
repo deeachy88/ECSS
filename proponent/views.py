@@ -7318,39 +7318,45 @@ def proof_request(request):
     
     # Print or return the JSON response
     response_data = response.json()
+    print(f"Proof request response: {response_data}")
+
     return JsonResponse(response_data)
 
-def fetch_relationship_data(request):
+def fetch_relationship_data(request,thread_id):
     ndi_token = get_access_token_ndi()
-    thread_id = request.GET.get('thread_id')
+    print(f"Received thread_id: {thread_id}")
     
     if not thread_id:
         return JsonResponse({'error': 'thread_id parameter is required'}, status=400)
     
     # Define verifier API URL and headers
     verifier_api_url = f'https://stageclient.bhutanndi.com/verifier/v1/proof-request?threadId={thread_id}'
+    print(f"API URL: {verifier_api_url}")
+    
     headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
     
-    # Make request to verifier API
     response = requests.get(verifier_api_url, headers=headers, verify=False)
+    print(f"API Response status code: {response.status_code}")
     
-    # Print the full response content for debugging
     # Check if the request was successful
     if response.status_code == 200:
         try:
             response_data = response.json()
+            print(f"Response data: {response_data}")
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {e}")
             return JsonResponse({'error': 'Invalid JSON response from verifier API'}, status=500)
         
-        # Print the parsed JSON data for debugging
         # Check if 'data' key exists and is a dictionary
         if 'data' in response_data and isinstance(response_data['data'], dict):
             relationship_did = response_data['data'].get('relationshipDid')
+            status = response_data['data'].get('status')
+            print(f"relationshipDid: {relationship_did}, status: {status}")
+            
             if relationship_did:
                 request.session['relationship_did'] = relationship_did
                 print(f"relationshipDid found: {relationship_did}")
-                return JsonResponse({'relationshipDid': relationship_did})
+                return JsonResponse({'relationshipDid': relationship_did, 'status': status})
             else:
                 print("No 'relationshipDid' found in data")
                 return JsonResponse({'error': 'No relationshipDid found in the response data'}, status=500)
@@ -7361,6 +7367,8 @@ def fetch_relationship_data(request):
         # Handle error response
         print(f"Error fetching data: {response.status_code}")
         return JsonResponse({'error': 'Failed to fetch data from verifier API'}, status=response.status_code)
+
+
 
 
 
@@ -7426,6 +7434,7 @@ def proof_request_proponent(request):
     
     # Print or return the JSON response
     response_data = response.json()
+    
     return JsonResponse(response_data)
 
 from django.views.decorators.http import require_GET
@@ -7441,7 +7450,7 @@ def fetch_verified_user_data(request):
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ecssstaging18",
+        "webhookId": "ecssstaging21",
         "threadId": thread_id
     }
 
@@ -7449,6 +7458,7 @@ def fetch_verified_user_data(request):
         res = requests.post(BASE_URL, json=post_data, headers=headers, verify=False, timeout=15)
         res.raise_for_status()  # This will raise an HTTPError if the HTTP request returned an unsuccessful status code
         response_data = res.json()
+        
     except requests.exceptions.Timeout:
         return JsonResponse({"error": "The request timed out. Please try again later."}, status=504)
     except requests.exceptions.HTTPError as e:
@@ -7472,6 +7482,10 @@ def webhook(request):
         dzongkhag = data['requested_presentation']['revealed_attrs'].get('Dzongkhag', {}).get('value')
         gewog = data['requested_presentation']['revealed_attrs'].get('Gewog', {}).get('value')
         village = data['requested_presentation']['revealed_attrs'].get('Village', {}).get('value')
+        relationshipDid = data['relationshipDid']
+        thid = data['thid']
+        print(f"Received relationshipDid: {relationshipDid}")
+        print(f"Received thid: {thid}")
 
         if id_number:
             # Prepare the payload for WebSocket
@@ -7481,7 +7495,9 @@ def webhook(request):
                 'full_name': full_name,
                 'dzongkhag': dzongkhag,
                 'gewog': gewog,
-                'village': village
+                'village': village,
+                'relationshipDid': relationshipDid,
+                'thid': thid
             }
             # Filter out None values from the payload
             payload = {k: v for k, v in payload.items() if v is not None}
@@ -7570,13 +7586,10 @@ def issuance_call(request):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
     try:
-        id_number = request.POST.get('id_number')  # Assuming you retrieve id_number from the request
-        thread_id = request.session.get('thread_id')
-        relationship_did = request.session.get('relationship_did')
+        id_number = request.POST.get('id_number')
+        thread_id =request.POST.get('thread_id')
+        relationship_did = request.POST.get('relationship_did')
         ndi_token = get_access_token_ndi()  # Replace with your method to get NDI access token
-
-        print(f"thread_id: {thread_id}")
-        print(f"relationship_did: {relationship_did}")
 
         # Fetch application details from your model
         application_details = t_ec_industries_t1_general.objects.filter(cid=id_number, application_status='A').first()
@@ -7586,7 +7599,6 @@ def issuance_call(request):
 
         # Unpack application details into credential_data
         credential_data = {
-            "Issuer Name":"ECSS",
             "EC Reference Number": str(application_details.ec_reference_no),
             "EC Approve Date": application_details.ec_approve_date.isoformat(),
             "EC Expiry Date": application_details.ec_expiry_date.isoformat(),
@@ -7597,9 +7609,12 @@ def issuance_call(request):
             "Location Name": str(application_details.location_name),
             "Total Area Acre": str(application_details.total_area_acre)
         }
-
-        print(credential_data)
-
+        proof_data = {
+            "credDefId": "9KXYYvCB5vV6ocLDRpgAh5:3:CL:60603:revocable",
+            "credentialData": credential_data,
+            "threadId":thread_id,
+            "forRelationship":relationship_did
+        }
         # Define API endpoint and headers for issuing credential
         issue_url = "https://stageclient.bhutanndi.com/issuer/v1/issue-credential"
         headers = {
@@ -7608,15 +7623,12 @@ def issuance_call(request):
         }
 
         # Make API call to issue credential
-        response = requests.post(issue_url, headers=headers, json={
-            "credDefId": "9KXYYvCB5vV6ocLDRpgAh5:3:CL:60603:revocable",  # Replace with your actual credDefId
-            "credentialData": credential_data,
-            "threadId":thread_id
-        })
-
+        response = requests.post(issue_url, headers=headers, data=json.dumps(proof_data))
+        response_data = response.json()
+        print(f"Issuance response: {response_data}")
         # Check response status and handle accordingly
         if response.status_code == 201:
-            return JsonResponse({'message': 'Issue credential request created successfully'}, status=response.status_code)
+            return JsonResponse({'message': 'Issue credential request sent successfully'}, status=response.status_code)
         else:
             return JsonResponse({'error': 'Failed to issue credential', 'details': response.json()}, status=response.status_code)
 

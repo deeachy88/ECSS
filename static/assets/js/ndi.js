@@ -6,26 +6,13 @@ function nats_call(proofRequestThreadId) {
             thread_id: proofRequestThreadId
         },
         success: function(response) {
-            $.ajax({
-                url: '/fetch_relationship_data/',
-                method: 'GET',
-                data: {
-                    thread_id: proofRequestThreadId
-                },
-                success: function(response) {
-                    // Do nothing here
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error fetching user data:", error);
-                }
-            });
+           
         },
         error: function(xhr, status, error) {
             console.error("Error fetching user data:", error);
         }
     });
 }
-
 
 // Function to make the second AJAX call to /ndi_dash/
 function makeNdiDashCall(id_number) {
@@ -79,12 +66,14 @@ function nats_proponent_call(proofRequestThreadId) {
     });
 }
 
-function makeIssuanceCall(id_number) {
+function makeIssuanceCall(relationshipDid,thid,id_number) {
     $.ajax({
         url: '/issuance_call/',
         method: 'POST',
         data: {
-            id_number: id_number
+            relationshipDid: relationshipDid,
+            thread_id:thid,
+            id_number:id_number
         },
         headers: {
             'X-CSRFToken': csrftoken
