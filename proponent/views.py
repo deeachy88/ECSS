@@ -13,7 +13,7 @@ from ECS.settings import BASE_DIR
 from ecs_admin.views import dashboard
 from ecs_main.models import t_application_history
 from ecs_main.views import client_application_list, payment_list
-from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t12_drainage_details, t_ec_industries_t13_dumpyard, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_renewal_t1, t_ec_renewal_t2, t_ndi_login_temp, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals, t_report_submission_t1, t_report_submission_t2
+from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t12_drainage_details, t_ec_industries_t13_dumpyard, t_ec_industries_t1_general, t_ec_industries_t2_partner_details, t_ec_industries_t3_machine_equipment, t_ec_industries_t4_project_product, t_ec_industries_t5_raw_materials, t_ec_industries_t6_ancillary_road, t_ec_industries_t7_ancillary_power_line, t_ec_industries_t8_forest_produce, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_workflow_dtls, t_ec_industries_t9_products_by_products, t_ec_industries_t10_hazardous_chemicals, t_report_submission_t1, t_report_submission_t2
 from ecs_admin.models import payment_details_master, t_role_master, t_security_question_master, t_user_master, t_bsic_code, t_competant_authority_master, t_fees_schedule, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_service_master, t_thromde_master, t_village_master
 # Create your views here.
 from django.db.models import Count, Subquery, OuterRef
@@ -1660,8 +1660,7 @@ def submit_iee_application(request):
                             ancillary_amount += int(anc_fees_detail.rate)
 
                     total_amount = main_amount + ancillary_amount
-                    insert_app_payment_details(request, application_no, 'new_iee_application', total_amount, service_type)
-                    make_payment_request(application_no,total_amount,'NEW IEE APPLICATION',request.session['email'],"208")
+                    make_payment_request(application_no,total_amount,'NEW IEE APPLICATION',request.session['email'],"208",service_type)
                     send_payment_mail(request.session['name'], request.session['email'], total_amount)
                     data['message'] = "success"
 
@@ -2725,8 +2724,7 @@ def submit_ea_application(request):
                                     ancillary_amount += int(anc_fees_detail.rate)
 
                             total_amount = main_amount + ancillary_amount
-                            insert_app_payment_details(request, application_no, 'new_ea_application', total_amount, service_type)
-                            make_payment_request(application_no,total_amount,'NEW EA APPLICATION',request.session['email'],"208")
+                            make_payment_request(application_no,total_amount,'NEW EA APPLICATION',request.session['email'],"208",service_type)
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
 
@@ -2991,8 +2989,7 @@ def submit_transmission_application(request):
                         else:
                             total_amount = main_amount
 
-                        insert_app_payment_details(request, application_no, 'new_transmission_application', total_amount, service_type)
-                        make_payment_request(application_no,total_amount,'NEW TRANSMISSION APPLICATION',request.session['email'],"208")
+                        make_payment_request(application_no,total_amount,'NEW TRANSMISSION APPLICATION',request.session['email'],"208",service_type)
                         send_payment_mail(request.session['name'], request.session['email'], total_amount)
                         data['message'] = "success"
 
@@ -3061,8 +3058,7 @@ def submit_general_application(request):
                             app_hist_details = t_application_history.objects.filter(application_no=application_no)
                             app_hist_details.update(remarks='Your Application Submitted')
                             app_hist_details.update(action_date=timezone.now())
-                            insert_app_payment_details(request, application_no, 'new_general_application', total_amount, service_type)
-                            make_payment_request(application_no,total_amount,'NEW GENERAL APPLICATION',request.session['email'],"208")
+                            make_payment_request(application_no,total_amount,'NEW GENERAL APPLICATION',request.session['email'],"208",service_type)
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -3200,8 +3196,7 @@ def save_tor_form(request):
             ca_authority=ca_auth,
             application_source='ECSS'
         )
-        insert_app_payment_details(request, application_no, 'NEW TOR APPLICATION', 500, None)
-        make_payment_request(application_no,"500",'NEW TOR APPLICATION',request.session['email'],"208")
+        make_payment_request(application_no,"500",'NEW TOR APPLICATION',request.session['email'],"208",service_type)
         send_tor_payment_mail(request.session['name'], request.session['email'], 500)
         data['message'] = 'success'
     except Exception as e:
@@ -3426,7 +3421,7 @@ def view_tor_application_details(request):
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
 
-def insert_app_payment_details(request,application_no, identifier,total_amount,service_type):
+def insert_app_payment_details(request,application_no, identifier,total_amount,service_type,paymentAdviceNo):
     cid_no = None
     mob_no = None
     app_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -3443,7 +3438,8 @@ def insert_app_payment_details(request,application_no, identifier,total_amount,s
                 payer_email=request.session['email'],
                 description=identifier,
                 total_payable_amount=total_amount,
-                service_type=service_type
+                service_type=service_type,
+                payment_advice_no=paymentAdviceNo
                 )
     elif 'tor' in identifier:
         t_payment_details.objects.create(ref_no=application_no,
@@ -3455,7 +3451,8 @@ def insert_app_payment_details(request,application_no, identifier,total_amount,s
                 payer_email=request.session['email'],
                 description=identifier,
                 total_payable_amount=total_amount,
-                service_type=service_type)
+                service_type=service_type,
+                payment_advice_no=paymentAdviceNo)
     return redirect(identifier)
 
 def insert_payment_details(request,application_no,account_head, identifier):
@@ -4391,14 +4388,7 @@ def submit_forest_application(request):
                         app_hist_details.update(remarks='Your Application Submitted')
                         app_hist_details.update(action_date=timezone.now())
 
-                        insert_app_payment_details(
-                            request,
-                            application_no,
-                            'new_forest_application',
-                            total_amount,
-                            service_type
-                        )
-                        make_payment_request(application_no,total_amount,'NEW FOREST APPLICATION',request.session['email'],"208")
+                        make_payment_request(application_no,total_amount,'NEW FOREST APPLICATION',request.session['email'],"208",service_type)
                         send_payment_mail(request.session['name'], request.session['email'], total_amount)
 
                 data['message'] = "success"
@@ -4641,8 +4631,7 @@ def submit_ground_water_application(request):
                                     total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount = main_amount
-                                insert_app_payment_details(request, application_no, 'new_ground_water_application', total_amount, service_type)
-                                make_payment_request(application_no,total_amount,'NEW GW APPLICATION',request.session['email'],"208")
+                                make_payment_request(application_no,total_amount,'NEW GW APPLICATION',request.session['email'],"208",service_type)
                                 send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -4940,8 +4929,7 @@ def submit_quarry_application(request):
                             else:
                                 total_amount = main_amount
 
-                            insert_app_payment_details(request, application_no, 'new_quarry_application', total_amount, service_type)
-                            make_payment_request(application_no,total_amount,'NEW QUARRY APPLICATION',request.session['email'],"208")
+                            make_payment_request(application_no,total_amount,'NEW QUARRY APPLICATION',request.session['email'],"208",service_type)
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
 
                             data['message'] = "success"
@@ -5399,8 +5387,7 @@ def submit_energy_application(request):
                                         total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount=main_amount
-                                insert_app_payment_details(request, application_no, 'submit_energy_application ',total_amount,service_type)
-                                make_payment_request(application_no,total_amount,'NEW ENERGY APPLICATION',request.session['email'],"208")
+                                make_payment_request(application_no,total_amount,'NEW ENERGY APPLICATION',request.session['email'],"208",service_type)
                                 send_payment_mail(request.session['name'],request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -5750,8 +5737,7 @@ def submit_tourism_application(request):
                                         total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount=main_amount
-                                insert_app_payment_details(request, application_no, 'submit_tourism_application ',total_amount,service_type)
-                                make_payment_request(application_no,total_amount,'NEW TOURISM APPLICATION',request.session['email'],"208")
+                                make_payment_request(application_no,total_amount,'NEW TOURISM APPLICATION',request.session['email'],"208",service_type)
                                 send_payment_mail(request.session['name'],request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -7139,7 +7125,7 @@ def get_auth_token():
 
 
 
-def make_payment_request(application_no,total_amount,description, email, service_code):
+def make_payment_request(application_no,total_amount,description, email, service_code,service_type):
     token = get_auth_token()#
     print(token)
     cid_no = None
@@ -7186,6 +7172,7 @@ def make_payment_request(application_no,total_amount,description, email, service
     print(response.text)
     # Check response status
     if response.status_code == 200:
+        insert_app_payment_details(application_no,description,total_amount,service_type,response.paymentAdviceNo)
         print("Payment request successful")
         print("Response:", response.json())
     else:
@@ -7268,6 +7255,51 @@ def ecss_payment_update(request):
         # Handle non-POST requests
         return JsonResponse({"statusCode": "405", "statusDescription": "Method not allowed"}, status=405)
 
+@csrf_exempt
+def ecss_payment_reversal(request):
+    if request.method == "POST":
+        try:
+            # Decode and strip raw body
+            raw_body = request.body.decode('utf-8').strip()
+            
+            # Remove unwanted characters and prefix using regex
+            cleaned_body = re.sub(r'^Payload :', '', raw_body).strip()
+            
+            # Remove invisible or non-printable characters
+            cleaned_body = ''.join(char for char in cleaned_body if char.isprintable())
+            
+            # Check for empty body
+            if not cleaned_body:
+                return JsonResponse({"statusCode": "400", "statusDescription": "Empty request body"}, status=400)
+            
+            # Attempt to parse the JSON from cleaned_body
+            data = json.loads(cleaned_body)
+            ref_no = data['refNo']
+            payment_details = t_payment_details.objects.filter(ref_no=ref_no)
+            payment_details.update(
+                receipt_date = None
+            )
+
+            response_data = {
+                "statusCode": "200",
+                "statusDescription": "Payment Details Cancelled Successfully",
+            }
+            
+            return JsonResponse(response_data)
+        
+        except json.JSONDecodeError as e:
+            # Handle JSON parse error
+            print("JSONDecodeError:", str(e))
+            return JsonResponse({"statusCode": "400", "statusDescription": "Invalid JSON payload"}, status=400)
+        
+        except Exception as e:
+            # Handle other exceptions
+            print("Error:", str(e))
+            return JsonResponse({"statusCode": "400", "statusDescription": "Bad Request"}, status=400)
+    else:
+        # Handle non-POST requests
+        return JsonResponse({"statusCode": "405", "statusDescription": "Method not allowed"}, status=405)
+
 def get_access_token_ndi():
     authApiUrl = 'https://staging.bhutanndi.com/authentication/v1/authenticate';
     clientId = '3tq7ho23g5risndd90a76jre5f';
@@ -7292,7 +7324,7 @@ def proof_request(request):
     ndi_token = get_access_token_ndi()
     
     # Define verifier API URL and headers
-    verifier_api_url = 'https://stageclient.bhutanndi.com/verifier/v1/proof-request'
+    verifier_api_url = 'https://demo-client.bhutanndi.com/verifier/v1/proof-request'
     headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
     
     # Define proof request data
@@ -7301,12 +7333,10 @@ def proof_request(request):
             'name': "ID Number",
             'restrictions': [
                 {
-                    'cred_def_id': "Ka4s9yvjDetTTME9KWuXAj:3:CL:51994:revocable"
+                    "schema_name": "https://dev-schema.ngotag.com/schemas/c7952a0a-e9b5-4a4b-a714-1e5d0a1ae076"
                 }
             ]
-        },
-
-        # Add other proofAttributes as needed
+        }
     ]
     proof_data = {
         'proofName': 'ECSS Credentials',
@@ -7330,7 +7360,7 @@ def fetch_relationship_data(request,thread_id):
         return JsonResponse({'error': 'thread_id parameter is required'}, status=400)
     
     # Define verifier API URL and headers
-    verifier_api_url = f'https://stageclient.bhutanndi.com/verifier/v1/proof-request?threadId={thread_id}'
+    verifier_api_url = f'https://demo-client.bhutanndi.com/verifier/v1/proof-request?threadId={thread_id}'
     print(f"API URL: {verifier_api_url}")
     
     headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
@@ -7370,14 +7400,12 @@ def fetch_relationship_data(request,thread_id):
 
 
 
-
-
 def proof_request_proponent(request):
     # Get NDI access token
     ndi_token = get_access_token_ndi()
     
     # Define verifier API URL and headers
-    verifier_api_url = 'https://stageclient.bhutanndi.com/verifier/v1/proof-request'
+    verifier_api_url = 'https://demo-client.bhutanndi.com/verifier/v1/proof-request'
     headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
     
     # Define proof request data
@@ -7386,7 +7414,7 @@ def proof_request_proponent(request):
             'name': "ID Number",
             'restrictions': [
                 {
-                    'cred_def_id': "Ka4s9yvjDetTTME9KWuXAj:3:CL:51994:revocable"
+                    "schema_name": "https://dev-schema.ngotag.com/schemas/c7952a0a-e9b5-4a4b-a714-1e5d0a1ae076"
                 }
             ]
         },
@@ -7394,7 +7422,7 @@ def proof_request_proponent(request):
             'name': "Full Name",
             'restrictions': [
                 {
-                    'cred_def_id': "Ka4s9yvjDetTTME9KWuXAj:3:CL:51994:revocable"
+                    "schema_name": "https://dev-schema.ngotag.com/schemas/c7952a0a-e9b5-4a4b-a714-1e5d0a1ae076"
                 }
             ]
         },
@@ -7402,7 +7430,7 @@ def proof_request_proponent(request):
             'name': "Dzongkhag",
             'restrictions': [
                 {
-                    'cred_def_id': "Ka4s9yvjDetTTME9KWuXAj:3:CL:52101:revocable"
+                    "schema_name": "https://dev-schema.ngotag.com/schemas/8e87108e-d446-4681-b4a5-7b0952951ea4"
                 }
             ]
         },
@@ -7410,7 +7438,7 @@ def proof_request_proponent(request):
             'name': "Gewog",
             'restrictions': [
                 {
-                    'cred_def_id': "Ka4s9yvjDetTTME9KWuXAj:3:CL:52101:revocable"
+                    "schema_name": "https://dev-schema.ngotag.com/schemas/8e87108e-d446-4681-b4a5-7b0952951ea4"
                 }
             ]
         },
@@ -7418,7 +7446,7 @@ def proof_request_proponent(request):
             'name': "Village",
             'restrictions': [
                 {
-                    'cred_def_id': "Ka4s9yvjDetTTME9KWuXAj:3:CL:52101:revocable"
+                    "schema_name": "https://dev-schema.ngotag.com/schemas/8e87108e-d446-4681-b4a5-7b0952951ea4"
                 }
             ]
         },
@@ -7443,14 +7471,17 @@ from django.views.decorators.http import require_GET
 def fetch_verified_user_data(request):
     data = dict()
     thread_id = request.GET.get('thread_id')
+    value = request.GET.get('value')
     request.session['thread_id'] = thread_id
-    BASE_URL = 'https://stageclient.bhutanndi.com/webhook/v1/subscribe/'
+    request.session['value'] = value
+    print(f"Value in fetch: {value}")
+    BASE_URL = 'https://demo-client.bhutanndi.com/webhook/v1/subscribe/'
     token = get_access_token_ndi()
     headers = {
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ecssstaging21",
+        "webhookId": "ecssstaging22",
         "threadId": thread_id
     }
 
@@ -7476,30 +7507,46 @@ def webhook(request):
     try:
         cleaned_body = request.body.decode('utf-8')
         data = json.loads(cleaned_body)
-
-        id_number = data['requested_presentation']['revealed_attrs'].get('ID Number', {}).get('value')
-        full_name = data['requested_presentation']['revealed_attrs'].get('Full Name', {}).get('value')
-        dzongkhag = data['requested_presentation']['revealed_attrs'].get('Dzongkhag', {}).get('value')
-        gewog = data['requested_presentation']['revealed_attrs'].get('Gewog', {}).get('value')
-        village = data['requested_presentation']['revealed_attrs'].get('Village', {}).get('value')
-        relationshipDid = data['relationshipDid']
+        
+        id_number = data['requested_presentation']['revealed_attrs']['ID Number'][0]['value']
+        relationshipDid = data['relationship_did']
         thid = data['thid']
-        print(f"Received relationshipDid: {relationshipDid}")
-        print(f"Received thid: {thid}")
+        holder_did = data['holder_did']
+        full_name = data['requested_presentation']['revealed_attrs']['Full Name'][0]['value']
+        dzongkhag = data['requested_presentation']['revealed_attrs']['Dzongkhag'][0]['value']
+        gewog = data['requested_presentation']['revealed_attrs']['Gewog'][0]['value']
+        village = data['requested_presentation']['revealed_attrs']['Village'][0]['value']
+       
 
-        if id_number:
+        if id_number and not full_name:
             # Prepare the payload for WebSocket
+            payload = {
+                'type': 'send_id_number',
+                'id_number': id_number,
+                'relationshipDid': relationshipDid,
+                'thid': thid,
+                'holder_did':holder_did
+            }
+            # Filter out None values from the payload
+            payload = {k: v for k, v in payload.items() if v is not None}
+            #print("Payload to be sent to WebSocket:", payload)
+            # Send the payload to WebSocket group
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                'id_number_group',
+                payload
+            )
+            return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
+        elif id_number and full_name:
+            
             payload = {
                 'type': 'send_id_number',
                 'id_number': id_number,
                 'full_name': full_name,
                 'dzongkhag': dzongkhag,
                 'gewog': gewog,
-                'village': village,
-                'relationshipDid': relationshipDid,
-                'thid': thid
-            }
-            # Filter out None values from the payload
+                'village': village
+             }
             payload = {k: v for k, v in payload.items() if v is not None}
             #print("Payload to be sent to WebSocket:", payload)
             # Send the payload to WebSocket group
@@ -7587,8 +7634,9 @@ def issuance_call(request):
 
     try:
         id_number = request.POST.get('id_number')
-        thread_id =request.POST.get('thread_id')
-        relationship_did = request.POST.get('relationship_did')
+        holder_did = request.POST.get('holder_did')
+        relationshipDid = request.POST.get('relationshipDid')
+        print(f"Relation DID: {relationshipDid}")
         ndi_token = get_access_token_ndi()  # Replace with your method to get NDI access token
 
         # Fetch application details from your model
@@ -7609,14 +7657,15 @@ def issuance_call(request):
             "Location Name": str(application_details.location_name),
             "Total Area Acre": str(application_details.total_area_acre)
         }
+        print(credential_data)
         proof_data = {
-            "credDefId": "9KXYYvCB5vV6ocLDRpgAh5:3:CL:60603:revocable",
+            "schemaId": "https://dev-schema.ngotag.com/schemas/086f404c-a0c1-43ca-86ce-7e292c928964",
             "credentialData": credential_data,
-            "threadId":thread_id,
-            "forRelationship":relationship_did
+            "holderDID":holder_did,
+            "forRelationship":relationshipDid
         }
         # Define API endpoint and headers for issuing credential
-        issue_url = "https://stageclient.bhutanndi.com/issuer/v1/issue-credential"
+        issue_url = "https://demo-client.bhutanndi.com/issuer/v1/issue-credential"
         headers = {
             'Authorization': f"Bearer {ndi_token}",
             'Content-Type': 'application/json'
@@ -7628,10 +7677,9 @@ def issuance_call(request):
         print(f"Issuance response: {response_data}")
         # Check response status and handle accordingly
         if response.status_code == 201:
-            return JsonResponse({'message': 'Issue credential request sent successfully'}, status=response.status_code)
+            return JsonResponse({'message': 'Credential offer created successfully'}, status=response.status_code)
         else:
             return JsonResponse({'error': 'Failed to issue credential', 'details': response.json()}, status=response.status_code)
-
     except Exception as e:
         print(f"Exception occurred: {e}")
         return JsonResponse({'error': 'An unexpected error occurred.', 'details': str(e)}, status=500)

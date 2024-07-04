@@ -1,9 +1,10 @@
-function nats_call(proofRequestThreadId) {
+function nats_call(proofRequestThreadId,value) {
     $.ajax({
         url: '/fetch_verified_user_data/',
         method: 'GET',
         data: {
-            thread_id: proofRequestThreadId
+            thread_id: proofRequestThreadId,
+            value:value
         },
         success: function(response) {
            
@@ -38,7 +39,7 @@ function makeNdiDashCall(id_number) {
                 // Handle index redirect, possibly display the message
                 window.location.href = '/';
                 if (response.message) {
-                    alert(response.message); // Or handle the message display appropriately
+                    //alert(response.message); // Or handle the message display appropriately
                 }
             }
         },
@@ -49,13 +50,14 @@ function makeNdiDashCall(id_number) {
 }
 
 
-function nats_proponent_call(proofRequestThreadId) {
+function nats_proponent_call(proofRequestThreadId,value) {
     //alert('inside nats_proponent_call');
     $.ajax({
         url: '/fetch_verified_user_data/',
         method: 'GET',
         data: {
-            thread_id: proofRequestThreadId
+            thread_id: proofRequestThreadId,
+            value:value
         },
         success: function(response) {
             // Do nothing here
@@ -66,14 +68,15 @@ function nats_proponent_call(proofRequestThreadId) {
     });
 }
 
-function makeIssuanceCall(relationshipDid,thid,id_number) {
+function makeIssuanceCall(relationshipDid,thid,id_number,holder_did) {
     $.ajax({
         url: '/issuance_call/',
         method: 'POST',
         data: {
             relationshipDid: relationshipDid,
             thread_id:thid,
-            id_number:id_number
+            id_number:id_number,
+            holder_did:holder_did
         },
         headers: {
             'X-CSRFToken': csrftoken
@@ -89,12 +92,10 @@ function makeIssuanceCall(relationshipDid,thid,id_number) {
             console.error("Error response received:", xhr.responseText); // Debug statement
             try {
                 var response = JSON.parse(xhr.responseText);
-                alert("Error: " + response.error);
                 if (response.details) {
                     console.error("Details:", response.details);
                 }
             } catch (e) {
-                alert("An unexpected error occurred.");
                 console.error("Unexpected error:", e); // Debug statement
             }
         }

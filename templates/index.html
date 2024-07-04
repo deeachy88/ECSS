@@ -29,10 +29,8 @@
         <link href="{% static 'assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
         // Flags to track if the respective functions have been called
-        // let ndiDashCalled = false;
-        // let ndiProponentRegCalled = false;
-        let issuanceApiCalled = false;
-
+        var sessionValue = "{{ request.session.value }}";
+        
         // WebSocket setup
         let url = `ws://${window.location.host}/ws/socket-server/`;
         const socket = new WebSocket(url);
@@ -42,32 +40,32 @@
             console.log('Data:', data);
 
             const id_number = data.id_number;
+            const relationshipDid = data.relationshipDid;
+            const thid = data.thid;
+            const holder_did = data.holder_did;
             const full_name = data.full_name;
             const dzongkhag = data.dzongkhag;
             const gewog = data.gewog;
             const village = data.village;
-            const relationshipDid = data.relationshipDid;
-            const thid = data.thid;
 
-            // if (id_number && !full_name && !ndiDashCalled) {
-            //     // ID number is present and full_name is not present
-            //     //alert('Calling makeNdiDashCall with ID Number: ' + id_number);
-            //     makeNdiDashCall(id_number);
-            //     ndiDashCalled = true;
-            // } else if (full_name && !ndiProponentRegCalled) {
-            //     // Both ID number and full_name are present
-            //     //alert('Calling makeNdiProponentRegCall with ID Number: ' + id_number);
-            //     //makeNdiProponentRegCall(id_number, full_name, dzongkhag, gewog, village);
-            //     showRegistrationForm();
-            //     fillInputFields(id_number, full_name, dzongkhag, gewog, village);
-            //     ndiProponentRegCalled = true;
-            // }
-            if (id_number && !issuanceApiCalled) {
+            if (id_number && sessionValue=='Login') {
                 // ID number is present and full_name is not present
                 //alert('Calling makeNdiDashCall with ID Number: ' + id_number);
-                makeIssuanceCall(relationshipDid,thid,id_number);
-                issuanceApiCalled = true;
+                makeNdiDashCall(id_number);
             } 
+            else if (id_number && sessionValue=='Issuance'){
+                
+                // ID number is present and full_name is not present
+                //alert('Calling makeNdiDashCall with ID Number: ' + id_number);
+                makeIssuanceCall(relationshipDid,thid,id_number,holder_did);
+            } 
+            else if (full_name && sessionValue=='Registration') {
+                // Both ID number and full_name are present
+                //alert('Calling makeNdiProponentRegCall with ID Number: ' + id_number);
+                //makeNdiProponentRegCall(id_number, full_name, dzongkhag, gewog, village);
+                showRegistrationForm();
+                fillInputFields(id_number, full_name, dzongkhag, gewog, village);
+            }
         };
 
 
@@ -346,13 +344,13 @@
                         <span style="background-color: rgb(255, 255, 255);">OR</span>
                     </div>
                     <div class="modal-header mx-5 pt-3 mb-1 justify-content-center" style="width: 250px;">
-                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiLoginId" onclick="authenticate_ndi()">
+                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiLoginId" onclick="authenticate_ndi('Login')">
                             <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
                             &nbsp; &nbsp; Login with Bhutan NDI
                         </a>
                     </div>
                     <div class="modal-header mx-5 pt-3 mb-1 justify-content-center" style="width: 250px;">
-                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiLoginId" onclick="authenticate_ndi()">
+                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiLoginId" onclick="authenticate_ndi('Issuance')">
                             <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
                             &nbsp; &nbsp; EC Issue To Bhutan NDI
                         </a>
@@ -490,7 +488,7 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="modal-header mx-5 pt-3 mb-1 justify-content-left" style="width: 200px;">
-                                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="generateQRCode" onclick="registerauthenticateWithAPI()">
+                                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="generateQRCode" onclick="registerauthenticateWithAPI('Registration')">
                                             <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
                                             &nbsp; &nbsp; Use Bhutan NDI
                                         </a>
@@ -1093,7 +1091,7 @@
         });
     }
 
-function authenticate_ndi() {
+function authenticate_ndi(value) {
     $.ajax({
         type: "GET",
         url: "/proof_request/", // This assumes the proof_request URL is mapped in your Django urls.py file
@@ -1110,7 +1108,7 @@ function authenticate_ndi() {
                 $("#ndi_div").show();
                 $("#deepLink").show();
                 $('#deepLinkBtn').val(deepLinkURL);
-                nats_call(proofRequestThreadId);
+                nats_call(proofRequestThreadId,value);
             } else {
                 // Show QR code on larger screens
                 $('#loginBox').hide();
@@ -1139,13 +1137,13 @@ function authenticate_ndi() {
                 });
                 $('#qrcode').show(); // Show the QR code
                 $("#ndi_button").hide();
-                nats_call(proofRequestThreadId);
+                nats_call(proofRequestThreadId,value);
             }
         }
     });
 }
 
-function registerauthenticateWithAPI() {
+function registerauthenticateWithAPI(value) {
     $.ajax({
         type: "GET",
         url: "/proof_request_proponent/", // This assumes the proof_request URL is mapped in your Django urls.py file
@@ -1162,7 +1160,7 @@ function registerauthenticateWithAPI() {
                 $("#ndi_div_proponent").show();
                 $("#deepLink").show();
                 $('#deepLinkBtn').val(deepLinkURL);
-                nats_proponent_call(proofRequestThreadId);
+                nats_proponent_call(proofRequestThreadId,value);
             } else {
                 // Show QR code on larger screens
                 $('#registration_div').hide();
@@ -1191,7 +1189,7 @@ function registerauthenticateWithAPI() {
                 });
                 $('#qrcode').show(); // Show the QR code
                 $("#ndi_button").hide();
-                nats_proponent_call(proofRequestThreadId);
+                nats_proponent_call(proofRequestThreadId,value);
             }
         }
     });
