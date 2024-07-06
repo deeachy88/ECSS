@@ -7481,7 +7481,7 @@ def fetch_verified_user_data(request):
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ecssstaging22",
+        "webhookId": "ecssstaging23",
         "threadId": thread_id
     }
 
@@ -7512,10 +7512,7 @@ def webhook(request):
         relationshipDid = data['relationship_did']
         thid = data['thid']
         holder_did = data['holder_did']
-        full_name = data['requested_presentation']['revealed_attrs']['Full Name'][0]['value']
-        dzongkhag = data['requested_presentation']['revealed_attrs']['Dzongkhag'][0]['value']
-        gewog = data['requested_presentation']['revealed_attrs']['Gewog'][0]['value']
-        village = data['requested_presentation']['revealed_attrs']['Village'][0]['value']
+        full_name = data.get('requested_presentation', {}).get('revealed_attrs', {}).get('Full Name', [{}])[0].get('value', None)
        
 
         if id_number and not full_name:
@@ -7538,7 +7535,9 @@ def webhook(request):
             )
             return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
         elif id_number and full_name:
-            
+            dzongkhag = data['requested_presentation']['revealed_attrs']['Dzongkhag'][0]['value']
+            gewog = data['requested_presentation']['revealed_attrs']['Gewog'][0]['value']
+            village = data['requested_presentation']['revealed_attrs']['Village'][0]['value']
             payload = {
                 'type': 'send_id_number',
                 'id_number': id_number,
