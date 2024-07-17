@@ -28,9 +28,6 @@
         <link href="{% static 'assets/vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
         <link href="{% static 'assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
-        // Flags to track if the respective functions have been called
-        var sessionValue = "{{ request.session.value }}";
-        
         // WebSocket setup
         let url = `ws://${window.location.host}/ws/socket-server/`;
         const socket = new WebSocket(url);
@@ -39,6 +36,7 @@
             let data = JSON.parse(e.data);
             console.log('Data:', data);
 
+            const eid = data.eid;
             const id_number = data.id_number;
             const relationshipDid = data.relationshipDid;
             const thid = data.thid;
@@ -47,27 +45,29 @@
             const dzongkhag = data.dzongkhag;
             const gewog = data.gewog;
             const village = data.village;
+            const category = data.category;
+            const thread_id = data.thread_id;
+            //alert(category);
+            //alert(thid);
+            //alert(id_number);
+            //alert(eid);
 
-            if (id_number && sessionValue=='Login') {
-                // ID number is present and full_name is not present
-                //alert('Calling makeNdiDashCall with ID Number: ' + id_number);
+            if (eid && category === 'Employee' && id_number === '1111') {
+                //alert('inside eid');
+                // EID number is present and category is 'Employee'
+                makeNdiDashCallEID(eid);
+            } else if (id_number && category === 'Login') {
+                // ID number is present and category is 'Login'
                 makeNdiDashCall(id_number);
-            } 
-            else if (id_number && sessionValue=='Issuance'){
-                
-                // ID number is present and full_name is not present
-                //alert('Calling makeNdiDashCall with ID Number: ' + id_number);
-                makeIssuanceCall(relationshipDid,thid,id_number,holder_did);
-            } 
-            else if (full_name && sessionValue=='Registration') {
-                // Both ID number and full_name are present
-                //alert('Calling makeNdiProponentRegCall with ID Number: ' + id_number);
-                //makeNdiProponentRegCall(id_number, full_name, dzongkhag, gewog, village);
+            } else if (id_number && category === 'Issuance') {
+                // ID number is present and category is 'Issuance'
+                makeIssuanceCall(relationshipDid, thid, id_number, holder_did);
+            } else if (full_name && category === 'Registration') {
+                // Both ID number and full_name are present and category is 'Registration'
                 showRegistrationForm();
                 fillInputFields(id_number, full_name, dzongkhag, gewog, village);
             }
         };
-
 
         const csrftoken = getCookie('csrftoken');
 
@@ -85,6 +85,12 @@
                 }
             }
             return cookieValue;
+        }
+
+        // Function to clear session value
+        function clearSessionValue() {
+            sessionValue = '';
+            console.log("Session value cleared.");
         }
 
         // Function to show the registration form and hide the QR code section
@@ -107,6 +113,16 @@
             document.getElementById('i_village').value = village;
         }
 
+    // Add event listener to handle window resize events
+    $(window).on('resize', function() {
+        if ($('#ndi_div').is(':visible')) {
+            var proofRequestURL = $('#qrcode canvas').data('proofRequestURL');
+            var deepLinkURL = $('#deepLinkBtn').val();
+            var proofRequestThreadId = $('#qrcode canvas').data('proofRequestThreadId');
+            var value = $('#qrcode canvas').data('value');
+            updateDisplay(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
+        }
+    });
     </script>
 
 </head>
@@ -190,6 +206,28 @@
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
+
+    @media (max-width: 767px) {
+        #deepLink {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #deepLinkBtn {
+            width: 100%;
+            padding: 10px;
+        }
+
+        #deepLinkBtn img {
+            max-width: 40%; /* Adjust the size as needed */
+            height: auto;
+        }
+
+        #qrcode {
+            display: block;
+        }
+    }
+
 </style>
 
 <body style="background-color:white;">
@@ -309,14 +347,30 @@
             </footer>
         {% endblock %}
     </div>
-    <div class="modal fade" id="loginModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content modal-custom">
-                <div id="loginBox">
-                    <div class="modal-header" style="text-align: center">
-                        <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+<!-- LOGIN Modal -->
+ <div class="modal fade" id="loginModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content modal-custom">
+            <div id="loginBox">
+                <div class="modal-header text-center">
+                    <h1 class="modal-title w-100" style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+
+                <div id="loginSelectionBox">
+                    <div class="modal-body mx-4">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="loginType" id="proponentLogin" value="proponent" checked onclick="toggleLoginForm()">
+                            <label class="form-check-label" for="proponentLogin">Proponent Login</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="loginType" id="agencyLogin" value="agency" onclick="toggleLoginForm()">
+                            <label class="form-check-label" for="agencyLogin">Agency Login</label>
+                        </div>
                     </div>
+                </div>
+
+                <div id="proponentLoginForm">
                     <form action="{% url 'login' %}" id="loginForm" method="post">
                         {% csrf_token %}
                         {% if message %}
@@ -329,9 +383,9 @@
                             <div class="md-form pb-3">
                                 <div class="input-group input-group-merge">
                                     <input type="password" name="password" id="password" class="form-control" placeholder="Password" autocomplete="off">
-                                        <div class="input-group-text" data-password="false">
-                                            <span class="password-eye"></span>
-                                        </div>
+                                    <div class="input-group-text" data-password="false">
+                                        <span class="password-eye"></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="text-center mb-0 d-flex justify-content-between">
@@ -350,109 +404,145 @@
                         </a>
                     </div>
                     <div class="modal-header mx-5 pt-3 mb-1 justify-content-center" style="width: 250px;">
-                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiLoginId" onclick="authenticate_ndi('Issuance')">
+                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiCredentialId" onclick="authenticate_ndi('Issuance')">
                             <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
-                            &nbsp; &nbsp; EC Issue To Bhutan NDI
+                            &nbsp; &nbsp; Receive Credential
                         </a>
                     </div>
                 </div>
 
-                <div id="ForgotBox" style="display:none;">
-                    <div class="modal-header text-center">
-                        <h4 class="modal-title"><strong><i class="uil uil-lock-alt"></i>&nbsp;Reset Your Password</strong></h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-                    </div>
-                    <div class="modal-body mx-4">
-                        <form id="forgot_password_form" method="post">
-                            {% csrf_token %}
-                            <div class="alert alert-danger" id="errorMsg" style="display:none"></div>
-                            <div class="alert alert-info" id="successMsgReset" style="display:none"></div>
-                            <div class="form-group mt-1">
-                            <label>Email</label>
-                            <input type="email" name="email_id" class="form-control" id="email_id" required="required" placeholder="Your Email" onchange="validateemailId(this.value)" onblur="getSecurityQuestion(this.value)">
-                                <div class="alert" id="email_idErrorMsg" style="display:none"></div>
+                <div id="agencyLoginForm" style="display:none;">
+                    <!-- Repeat the same login form for now -->
+                    <form action="{% url 'login' %}" id="loginForm" method="post">
+                        {% csrf_token %}
+                        {% if message %}
+                        <div class="alert alert-danger" id="login_error">{{ message }}</div>
+                        {% endif %}
+                        <div class="modal-body mx-4">
+                            <div class="md-form mb-2">
+                                <input type="email" id="username" name="username" placeholder="Email" class="form-control validate" autocomplete="off">
+                            </div>
+                            <div class="md-form pb-3">
+                                <div class="input-group input-group-merge">
+                                    <input type="password" name="password" id="password" class="form-control" placeholder="Password" autocomplete="off">
+                                    <div class="input-group-text" data-password="false">
+                                        <span class="password-eye"></span>
+                                    </div>
                                 </div>
-                            <div class="form-group mt-1">
-                                <label for="security_question">Security Question</label>
-                                <select class="form-control" id="security_question" name="security_question" tabindex="2" onchange="getAnswer(this.value)">
-                                  <option value="">--SELECT SECURITY QUESTION--</option>
-                                  {% for security in security %}
-                                  <option value="{{ security.question_id }}">{{ security.question }}</option>
-                                  {% endfor %}
-                                </select>
-                                <div class="alert" id="securityErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="form-group mt-1">
-                                <label for="answer">Security Answer</label>
-                                <input type="text" class="form-control" id="answer" name="answer" placeholder="Security Answer" tabindex="3">
-                                <div class="alert" id="answerErrorMsg" style="display:none"></div>
+                            <div class="text-center mb-0 d-flex justify-content-between">
+                                <button class="btn btn-primary btn-sm mt-1 me-2"><i class="uil uil-message me-1"></i>Log in</button>
+                                <a href="#" onclick="forgotPassword()" class="font-small blue-text forgot_button">Forgot Password?</a>
                             </div>
-                            <div class="alert" id="sucessMsg" style="display:none"></div>
-                            <div class="text-center mb-3">
-                                <button class="btn btn-primary btn-sm mt-2" onclick="update_password()"><i class="uil uil-envelope-add me-1"></i>Reset Password</button>
-                            </div>
-                            <input type="hidden" id="securityAnswer">
-                                <div id="submitMsgDiv" style="display: none"></div>
-                        </form>
-                        <div class="modal-header mx-5 pt-3 mb-1 justify-content-center">
-                            <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center">Back To Login</a>
                         </div>
-                    </div>
-                </div>
-                <div id="ndi_div" style="display: none; text-align: center">
-                    <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
+                    </form>
                     <div class="splitter">
+                        <span style="background-color: rgb(255, 255, 255);">OR</span>
                     </div>
-                    <h2 style="font-size: 1.0rem; margin-bottom: .5rem; font-weight: 500; color: black;">Scan with <span style="color:#5AC994 ">Bhutan NDI </span> Wallet</h2>
-                    <div class="qr-img" style="margin-top: 10px">
-                        <div id="deepLink" class="col-md-5 text-center" style="display: none;">
-                            <button id="deepLinkBtn" class="button button1 text-white btn-bg cus-button">
-                            <img src="{% static 'assets/images/NDI_logo.png' %}" alt="NDI Logo" class="ndi-logo">Open Bhutan NDI App
-                            </button>
-                        </div>
-                        <div class="text-center" id="qrcode"><canvas width="200" height="200" style="display: none;"></canvas>
-                        </div>
-                        <img id="logo" src="{% static 'assets/images/NDIlogobg.png' %}" style="display: none;" />
-                        <div class="row text-center">
-                            <div class="counter" id="clockdiv" style="display: none;">
-                                <div class="sq">
-                                    <span class="seconds bord" id="timer"></span> <span class="smalltext">Secs</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row justify-content-center">
-                        <div class="col-md-9 custom-vertical-align-left">
-                            <br>
-                            <ul class="list-unstyled" style="text-align: left;">
-                                <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7" style="margin-bottom: 10px;">1. Open Bhutan NDI on your Phone</li>
-                                <li>2. Tab the Scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="QR Code"> and capture code</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="modal-body-video-btn">
-                        <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" class="btn btn-ndi btn-pill">Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i>
+                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-center" style="width: 250px;">
+                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiEmployeeId" onclick="authenticate_ndi_empid('Employee')">
+                            <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
+                            &nbsp; &nbsp; Login with Bhutan NDI
                         </a>
-                    </div>
-                    <div class="modal-body-question">
-                        <ul>
-                            <li>
-                                Download Now!
-                                <div class="app-link">
-                                    <a href="https://play.google.com/store/search?q=bhutan%20ndi&amp;c=apps&amp;hl=en_IN&amp;gl=US" target="_blank" ><img src="{% static 'assets/images/play_store.png' %}" style="height: 35px;"></a>
-                                    <a href="https://apps.apple.com/in/app/bhutan-ndi/id1645493166" target="_blank" ><img src="{% static 'assets/images/app_store.png' %}" style="height: 35px;"></a>
-                                    <hr>
-                                    <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center">Back To Login</a>
-                                </div>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </div>
+
+            <div id="ForgotBox" style="display:none;">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title"><strong><i class="uil uil-lock-alt"></i>&nbsp;Reset Your Password</strong></h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body mx-4">
+                    <form id="forgot_password_form" method="post">
+                        {% csrf_token %}
+                        <div class="alert alert-danger" id="errorMsg" style="display:none"></div>
+                        <div class="alert alert-info" id="successMsgReset" style="display:none"></div>
+                        <div class="form-group mt-1">
+                            <label>Email</label>
+                            <input type="email" name="email_id" class="form-control" id="email_id" required="required" placeholder="Your Email" onchange="validateemailId(this.value)" onblur="getSecurityQuestion(this.value)">
+                            <div class="alert" id="email_idErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="form-group mt-1">
+                            <label for="security_question">Security Question</label>
+                            <select class="form-control" id="security_question" name="security_question" tabindex="2" onchange="getAnswer(this.value)">
+                              <option value="">--SELECT SECURITY QUESTION--</option>
+                              {% for security in security %}
+                              <option value="{{ security.question_id }}">{{ security.question }}</option>
+                              {% endfor %}
+                            </select>
+                            <div class="alert" id="securityErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="form-group mt-1">
+                            <label for="answer">Security Answer</label>
+                            <input type="text" class="form-control" id="answer" name="answer" placeholder="Security Answer" tabindex="3">
+                            <div class="alert" id="answerErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="alert" id="sucessMsg" style="display:none"></div>
+                        <div class="text-center mb-3">
+                            <button class="btn btn-primary btn-sm mt-2" onclick="update_password()"><i class="uil uil-envelope-add me-1"></i>Reset Password</button>
+                        </div>
+                        <input type="hidden" id="securityAnswer">
+                        <div id="submitMsgDiv" style="display: none"></div>
+                    </form>
+                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-center">
+                        <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center">Back To Login</a>
+                    </div>
+                </div>
+            </div>
+            <div id="ndi_div" style="display: none; text-align: center">
+                <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
+                <div class="splitter"></div>
+                <h2 style="font-size: 1.0rem; margin-bottom: .5rem; font-weight: 500; color: black;">Scan with <span style="color:#5AC994 ">Bhutan NDI </span> Wallet</h2>
+                <div class="qr-img" style="margin-top: 10px">
+                    <div id="deepLink" class="col-md-5 text-center" style="display: none;">
+                        <button id="deepLinkBtn" class="button button1 text-white btn-bg cus-button">
+                            <img src="{% static 'assets/images/NDI_logo.png' %}" alt="NDI Logo" class="ndi-logo">Open Bhutan NDI App
+                        </button>
+                    </div>
+                    <div class="text-center" id="qrcode"><canvas width="200" height="200" style="display: none;"></canvas>
+                    </div>
+                    <img id="logo" src="{% static 'assets/images/NDIlogobg.png' %}" style="display: none;" />
+                    <div class="row text-center">
+                        <div class="counter" id="clockdiv" style="display: none;">
+                            <div class="sq">
+                                <span class="seconds bord" id="timer"></span> <span class="smalltext">Secs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-md-9 custom-vertical-align-left">
+                        <br>
+                        <ul class="list-unstyled" style="text-align: left;">
+                            <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7" style="margin-bottom: 10px;">1. Open Bhutan NDI on your Phone</li>
+                            <li>2. Tab the Scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="QR Code"> and capture code</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-body-video-btn">
+                    <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" class="btn btn-ndi btn-pill">Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i>
+                    </a>
+                </div>
+                <div class="modal-body-question">
+                    <ul>
+                        <li>
+                            Download Now!
+                            <div class="app-link">
+                                <a href="https://play.google.com/store/search?q=bhutan%20ndi&amp;c=apps&amp;hl=en_IN&amp;gl=US" target="_blank" ><img src="{% static 'assets/images/play_store.png' %}" style="height: 35px;"></a>
+                                <a href="https://apps.apple.com/in/app/bhutan-ndi/id1645493166" target="_blank" ><img src="{% static 'assets/images/app_store.png' %}" style="height: 35px;"></a>
+                                <hr>
+                                <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center">Back To Login</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
-<!-- Modal -->
+    </div>
+</div>
+<!-- Modal LOGIN END-->
 
 <div class="modal fade" id="registrationModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -497,7 +587,7 @@
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">CID</label>
-                                        <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onchange="getCitizenDetails(this.value)">
+                                        <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onchange="getCitizenDetails(this.value)" readonly>
                                         <div id="cidErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                                     </div>
                                 </div>
@@ -1094,7 +1184,7 @@
 function authenticate_ndi(value) {
     $.ajax({
         type: "GET",
-        url: "/proof_request/", // This assumes the proof_request URL is mapped in your Django urls.py file
+        url: `/proof_request/?category=${value}`, // Pass category as a query parameter
         success: function(data) {
             var verifierData = data.data;
             var proofRequestURL = verifierData.proofRequestURL;
@@ -1102,51 +1192,117 @@ function authenticate_ndi(value) {
             var deepLinkURL = verifierData.deepLinkURL;
 
             $('.modal-footer').hide();
-            if (window.innerWidth < 992) {
-                // Show button on small and medium screens
-                $('#loginBox').hide();
-                $("#ndi_div").show();
-                $("#deepLink").show();
-                $('#deepLinkBtn').val(deepLinkURL);
-                nats_call(proofRequestThreadId,value);
-            } else {
-                // Show QR code on larger screens
-                $('#loginBox').hide();
-                $("#ndi_div").show();
-                $('#qrcode').qrcode({
-                    render: 'canvas',
-                    minVersion: 1,
-                    maxVersion: 40,
-                    ecLevel: 'L',
-                    left: 0,
-                    top: 0,
-                    size: 200,
-                    fill: '#000',
-                    background: '#fff',
-                    text: proofRequestURL,
-                    radius: 0,
-                    quiet: 0,
-                    mode: 4,
-                    mSize: 0.15,
-                    mPosX: 0.5,
-                    mPosY: 0.5,
-                    label: '',
-                    fontcolor: '#000',
-                    fontname: 'sans',
-                    image: document.getElementById('logo'),
-                });
-                $('#qrcode').show(); // Show the QR code
-                $("#ndi_button").hide();
-                nats_call(proofRequestThreadId,value);
-            }
+            updateDisplay(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
         }
     });
+}
+
+function updateDisplay(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
+    $('#loginBox').hide();
+    $("#ndi_div").show();
+
+    if (isMobileDevice()) {
+        // Show button on mobile devices
+        $("#deepLink").show();
+        $("#deepLinkBtn").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
+        $('#qrcode').hide();
+    } else {
+        // Show QR code on larger screens
+        $("#deepLink").hide();
+        $('#qrcode').empty(); // Clear previous QR code
+        $('#qrcode').qrcode({
+            render: 'canvas',
+            minVersion: 1,
+            maxVersion: 40,
+            ecLevel: 'L',
+            left: 0,
+            top: 0,
+            size: 200,
+            fill: '#000',
+            background: '#fff',
+            text: proofRequestURL,
+            radius: 0,
+            quiet: 0,
+            mode: 4,
+            mSize: 0.15,
+            mPosX: 0.5,
+            mPosY: 0.5,
+            label: '',
+            fontcolor: '#000',
+            fontname: 'sans',
+            image: document.getElementById('logo'),
+        });
+        $('#qrcode').show(); // Show the QR code
+    }
+    nats_call(proofRequestThreadId, value);
+}
+
+function isMobileDevice() {
+    return /Mobi|Android/i.test(navigator.userAgent);
+}
+
+function authenticate_ndi_empid(value) {
+    $.ajax({
+        type: "GET",
+        url: `/proof_request_employee/?category=${value}`, // Pass category as a query parameter
+        success: function(data) {
+            var verifierData = data.data;
+            var proofRequestURL = verifierData.proofRequestURL;
+            var proofRequestThreadId = verifierData.proofRequestThreadId;
+            var deepLinkURL = verifierData.deepLinkURL;
+
+            $('.modal-footer').hide();
+            updateDisplayEmp(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
+        }
+    });
+}
+
+function updateDisplayEmp(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
+    $('#loginBox').hide();
+    $("#ndi_div").show();
+
+    if (isMobileDevice()) {
+        // Show button on mobile devices
+        $("#deepLink").show();
+        $("#deepLinkBtn").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
+        $('#qrcode').hide();
+    } else {
+        // Show QR code on larger screens
+        // Clear previous QR code
+        $('#qrcode').empty();
+
+        // Generate new QR code
+        $('#qrcode').qrcode({
+            render: 'canvas',
+            minVersion: 1,
+            maxVersion: 40,
+            ecLevel: 'L',
+            left: 0,
+            top: 0,
+            size: 200,
+            fill: '#000',
+            background: '#fff',
+            text: proofRequestURL,
+            radius: 0,
+            quiet: 0,
+            mode: 4,
+            mSize: 0.15,
+            mPosX: 0.5,
+            mPosY: 0.5,
+            label: '',
+            fontcolor: '#000',
+            fontname: 'sans',
+            image: document.getElementById('logo'),
+        });
+        $('#qrcode').show(); // Show the QR code
+    }
+    nats_call(proofRequestThreadId, value);
 }
 
 function registerauthenticateWithAPI(value) {
     $.ajax({
         type: "GET",
-        url: "/proof_request_proponent/", // This assumes the proof_request URL is mapped in your Django urls.py file
+        url: `/proof_request_proponent/?category=${value}`, // Pass the category as a query parameter
         success: function(data) {
             var verifierData = data.data;
             var proofRequestURL = verifierData.proofRequestURL;
@@ -1154,49 +1310,70 @@ function registerauthenticateWithAPI(value) {
             var deepLinkURL = verifierData.deepLinkURL;
 
             $('.modal-footer').hide();
-            if (window.innerWidth < 992) {
-                // Show button on small and medium screens
-                $('#registration_div').hide();
-                $("#ndi_div_proponent").show();
-                $("#deepLink").show();
-                $('#deepLinkBtn').val(deepLinkURL);
-                nats_proponent_call(proofRequestThreadId,value);
-            } else {
-                // Show QR code on larger screens
-                $('#registration_div').hide();
-                $("#ndi_div_proponent").show();
-                $('#qrcodeproponent').qrcode({
-                    render: 'canvas',
-                    minVersion: 1,
-                    maxVersion: 40,
-                    ecLevel: 'L',
-                    left: 0,
-                    top: 0,
-                    size: 200,
-                    fill: '#000',
-                    background: '#fff',
-                    text: proofRequestURL,
-                    radius: 0,
-                    quiet: 0,
-                    mode: 4,
-                    mSize: 0.15,
-                    mPosX: 0.5,
-                    mPosY: 0.5,
-                    label: '',
-                    fontcolor: '#000',
-                    fontname: 'sans',
-                    image: document.getElementById('logo'),
-                });
-                $('#qrcode').show(); // Show the QR code
-                $("#ndi_button").hide();
-                nats_proponent_call(proofRequestThreadId,value);
-            }
+            updateDisplayProponent(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
         }
     });
 }
 
+function updateDisplayProponent(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
+    if (isMobileDevice()) {
+        // Show button on mobile devices
+        $('#registration_div').hide();
+        $("#ndi_div_proponent").show();
+        $("#deepLink").show();
+        $('#deepLinkBtn').val(deepLinkURL);
+    } else {
+        // Show QR code on larger screens
+        $('#registration_div').hide();
+        $("#ndi_div_proponent").show();
+
+        // Clear previous QR code
+        $('#qrcodeproponent').empty();
+
+        // Generate new QR code
+        $('#qrcodeproponent').qrcode({
+            render: 'canvas',
+            minVersion: 1,
+            maxVersion: 40,
+            ecLevel: 'L',
+            left: 0,
+            top: 0,
+            size: 200,
+            fill: '#000',
+            background: '#fff',
+            text: proofRequestURL,
+            radius: 0,
+            quiet: 0,
+            mode: 4,
+            mSize: 0.15,
+            mPosX: 0.5,
+            mPosY: 0.5,
+            label: '',
+            fontcolor: '#000',
+            fontname: 'sans',
+            image: document.getElementById('logo'),
+        });
+
+        $('#qrcodeproponent').show(); // Show the QR code
+        $("#ndi_button").hide();
+    }
+    nats_proponent_call(proofRequestThreadId, value);
+}
 
 
-    </script>
+function toggleLoginForm() {
+    var proponentLoginForm = document.getElementById('proponentLoginForm');
+    var agencyLoginForm = document.getElementById('agencyLoginForm');
+
+    if (document.getElementById('proponentLogin').checked) {
+        proponentLoginForm.style.display = 'block';
+        agencyLoginForm.style.display = 'none';
+    } else {
+        proponentLoginForm.style.display = 'none';
+        agencyLoginForm.style.display = 'block';
+    }
+}
+
+</script>
 </body>
 </html>

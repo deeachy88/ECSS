@@ -219,10 +219,12 @@ urlpatterns = [
 
     #NDI
     path('proof_request/', views.proof_request, name='proof_request'),
+    path('proof_request_employee/', views.proof_request_employee, name='proof_request_employee'),
     path('proof_request_proponent/', views.proof_request_proponent, name='proof_request_proponent'),
     path('fetch_verified_user_data/', views.fetch_verified_user_data, name='fetch_verified_user_data'),
     path('webhook', views.webhook, name='webhook'),
     path('ndi_dash/', views.ndi_dash, name='ndi_dash'),
+    path('ndi_dash_eid/', views.ndi_dash_eid, name='ndi_dash_eid'),
     path('update_password_ndi/', views.update_password_ndi, name='update_password_ndi'),
     path('issuance_call/', views.issuance_call, name='issuance_call'),
     path('fetch_relationship_data/', views.fetch_relationship_data, name='fetch_relationship_data')

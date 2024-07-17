@@ -32,8 +32,8 @@
                                 <td>{{application_details.ec_approve_date|date:"d-m-Y"}}</td>
                                 <td>{{application_details.ec_expiry_date|date:"d-m-Y"}}</td>
                                 {% for payment_details in payment_details %}
-                                    {% if application_details.application_no == payment_details.application_no %}
-                                        {% if payment_details.transaction_date %}
+                                    {% if application_details.application_no == payment_details.ref_no %}
+                                        {% if payment_details.receipt_date %}
                                             <td><button type="button" class="btn btn-sm btn-outline-primary px-1 py-0" onclick="view_print_details('{{application_details.ec_reference_no}}')"> <i class="uil uil-file-copy-alt font-16"></i> </button></td>
                                         {% endif %}
                                     {% endif %}
@@ -67,4 +67,3 @@
 </script>
 {% endblock %}       
 
-                    

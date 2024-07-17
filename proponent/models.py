@@ -1227,4 +1227,8 @@ class t_report_submission_t2(models.Model):
 
 class t_ndi_login_temp(models.Model):
     record_id = models.AutoField(primary_key=True)
-    cid_number = models.CharField(max_length=100, blank=True, null=True)
+    thread_id = models.CharField(max_length=100, blank=True, null=True)
+    category = models.CharField(max_length=100, blank=True, null=True)
+    created_date = models.DateField(blank=True, null=True)
+
+

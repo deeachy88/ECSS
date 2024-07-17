@@ -49,6 +49,41 @@ function makeNdiDashCall(id_number) {
     });
 }
 
+function makeNdiDashCallEID(eid) {
+    $.ajax({
+        url: '/ndi_dash_eid/',
+        method: 'POST',
+        data: {
+            eid: eid
+        },
+        headers: {
+            'X-CSRFToken': csrftoken  // Ensure csrftoken is defined
+        },
+        success: function(response) {
+            //alert(response.redirect);
+            if (response.redirect === 'update_password') {
+                if (response.security_questions) {
+                    // Store security questions in sessionStorage if they exist
+                    sessionStorage.setItem('security_questions', JSON.stringify(response.security_questions));
+                }
+                window.location.href = '/update_password_ndi'; // Redirect to update_password page
+            } else if (response.redirect === 'dashboard') {
+                window.location.href = '/dashboard'; // Redirect to dashboard
+            } else if (response.redirect === 'index') {
+                window.location.href = '/';
+                if (response.message) {
+                    // Optionally display the message
+                    alert(response.message); // Or handle the message display appropriately
+                }
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching user data:", error);
+            alert("An error occurred while processing your request. Please try again.");
+        }
+    });
+}
+
 
 function nats_proponent_call(proofRequestThreadId,value) {
     //alert('inside nats_proponent_call');

@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from django.db import connection
 import json
 import os
 import re
@@ -36,7 +37,8 @@ from django.http import HttpResponseRedirect
 def new_application(request):
     assigned_user_id = request.session.get('login_id', None)
     applicant_id = request.session.get('email', None)
-    bsic_details = t_bsic_code.objects.all()
+    #bsic_details = t_bsic_code.objects.all()
+    bsic_details = t_bsic_code.objects.values('broad_activity_code', 'activity_description').distinct()
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
@@ -3454,6 +3456,7 @@ def insert_app_payment_details(request,application_no, identifier,total_amount,s
                 service_type=service_type,
                 payment_advice_no=paymentAdviceNo)
     return redirect(identifier)
+
 
 def insert_payment_details(request,application_no,account_head, identifier):
     main_application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
@@ -7320,13 +7323,15 @@ def get_access_token_ndi():
     return json_response['access_token']
 
 def proof_request(request):
+    category = request.GET.get('category', '')  # Get the category from query parameters
+
     # Get NDI access token
     ndi_token = get_access_token_ndi()
-    
+
     # Define verifier API URL and headers
     verifier_api_url = 'https://demo-client.bhutanndi.com/verifier/v1/proof-request'
     headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
-    
+
     # Define proof request data
     proof_attributes = [
         {
@@ -7342,13 +7347,68 @@ def proof_request(request):
         'proofName': 'ECSS Credentials',
         'proofAttributes': proof_attributes
     }
-    
+
     # Make request to verifier API with proof data
     response = requests.post(verifier_api_url, headers=headers, data=json.dumps(proof_data), verify=False)
-    
+
     # Print or return the JSON response
     response_data = response.json()
     print(f"Proof request response: {response_data}")
+
+    # Get the thread_id from the response
+    thread_id = response_data.get('data', {}).get('proofRequestThreadId', '')
+
+    # Insert the thread_id and category into the t_ndi_login_temp table
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "INSERT INTO proponent_t_ndi_login_temp (thread_id, category, created_date) VALUES (%s, %s, CURRENT_DATE)",
+            [thread_id, category]
+        )
+
+    return JsonResponse(response_data)
+
+def proof_request_employee(request):
+    category = request.GET.get('category', '')  # Get the category from query parameters
+
+    # Get NDI access token
+    ndi_token = get_access_token_ndi()
+
+    # Define verifier API URL and headers
+    verifier_api_url = 'https://demo-client.bhutanndi.com/verifier/v1/proof-request'
+    headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
+
+    # Define proof request data
+    proof_attributes = [
+        {
+            'name': "EID",
+            'restrictions': [
+                {
+                    "schema_name": "https://dev-schema.ngotag.com/schemas/2f528ccc-d42f-4760-9758-625580ec2bf8"
+                }
+            ]
+        }
+    ]
+    proof_data = {
+        'proofName': 'ECSS Credentials',
+        'proofAttributes': proof_attributes
+    }
+
+    # Make request to verifier API with proof data
+    response = requests.post(verifier_api_url, headers=headers, data=json.dumps(proof_data), verify=False)
+
+    # Print or return the JSON response
+    response_data = response.json()
+    print(f"Proof request response: {response_data}")
+
+    # Get the thread_id from the response
+    thread_id = response_data.get('data', {}).get('proofRequestThreadId', '')
+
+    # Insert the thread_id and category into the t_ndi_login_temp table
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "INSERT INTO proponent_t_ndi_login_temp (thread_id, category, created_date) VALUES (%s, %s, CURRENT_DATE)",
+            [thread_id, category]
+        )
 
     return JsonResponse(response_data)
 
@@ -7401,13 +7461,15 @@ def fetch_relationship_data(request,thread_id):
 
 
 def proof_request_proponent(request):
+    category = request.GET.get('category', '')  # Get the category from query parameters
+
     # Get NDI access token
     ndi_token = get_access_token_ndi()
-    
+
     # Define verifier API URL and headers
     verifier_api_url = 'https://demo-client.bhutanndi.com/verifier/v1/proof-request'
     headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
-    
+
     # Define proof request data
     proof_attributes = [
         {
@@ -7449,20 +7511,27 @@ def proof_request_proponent(request):
                     "schema_name": "https://dev-schema.ngotag.com/schemas/8e87108e-d446-4681-b4a5-7b0952951ea4"
                 }
             ]
-        },
-        # Add other proofAttributes as needed
+        }
     ]
     proof_data = {
         'proofName': 'ECSS Credentials',
         'proofAttributes': proof_attributes
     }
-    
+
     # Make request to verifier API with proof data
     response = requests.post(verifier_api_url, headers=headers, data=json.dumps(proof_data), verify=False)
-    
+
     # Print or return the JSON response
     response_data = response.json()
-    
+
+    # Get the thread_id from the response
+    thread_id = response_data.get('data', {}).get('proofRequestThreadId', '')
+    # Insert the thread_id and category into the t_ndi_login_temp table
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "INSERT INTO proponent_t_ndi_login_temp (thread_id, category, created_date) VALUES (%s, %s, CURRENT_DATE)",
+            [thread_id, category]
+        )
     return JsonResponse(response_data)
 
 from django.views.decorators.http import require_GET
@@ -7481,7 +7550,7 @@ def fetch_verified_user_data(request):
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ecssstagin24",
+        "webhookId": "ecssstaging12345",
         "threadId": thread_id
     }
 
@@ -7507,48 +7576,89 @@ def webhook(request):
     try:
         cleaned_body = request.body.decode('utf-8')
         data = json.loads(cleaned_body)
-        
-        id_number = data['requested_presentation']['revealed_attrs']['ID Number'][0]['value']
-        relationshipDid = data['relationship_did']
-        thid = data['thid']
-        holder_did = data['holder_did']
-        full_name = data.get('requested_presentation', {}).get('revealed_attrs', {}).get('Full Name', [{}])[0].get('value', None)
-       
+        print("Received data:", data)
 
-        if id_number and not full_name:
-            # Prepare the payload for WebSocket
+        requested_presentation = data.get('requested_presentation', {})
+        revealed_attrs = requested_presentation.get('revealed_attrs', {})
+
+        id_number = revealed_attrs.get('ID Number', [{}])[0].get('value', None)
+        if id_number is None:
+            id_number = '1111'
+
+        eid = revealed_attrs.get('EID', [{}])[0].get('value', None)
+        full_name = revealed_attrs.get('Full Name', [{}])[0].get('value', None)
+
+        relationshipDid = data.get('relationship_did')
+        thid = data.get('thid')
+        holder_did = data.get('holder_did')
+
+        #print("EID:", eid)
+        #print("ID Number:", id_number)
+        #print("Full Name:", full_name)
+
+        # Fetch category from database based on thid
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT category FROM proponent_t_ndi_login_temp WHERE thread_id = %s",
+                [thid]
+            )
+            row = cursor.fetchone()
+            if row:
+                category = row[0]
+            else:
+                category = None
+
+        if eid is not None and id_number == '1111' and full_name is None:
             payload = {
                 'type': 'send_id_number',
                 'id_number': id_number,
+                'eid': eid,
                 'relationshipDid': relationshipDid,
                 'thid': thid,
-                'holder_did':holder_did
+                'holder_did': holder_did,
+                'category': category
             }
-            # Filter out None values from the payload
             payload = {k: v for k, v in payload.items() if v is not None}
-            #print("Payload to be sent to WebSocket:", payload)
-            # Send the payload to WebSocket group
+            print("Payload to be sent to WebSocket:", payload)
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 'id_number_group',
                 payload
             )
             return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
-        elif id_number and full_name:
-            dzongkhag = data['requested_presentation']['revealed_attrs']['Dzongkhag'][0]['value']
-            gewog = data['requested_presentation']['revealed_attrs']['Gewog'][0]['value']
-            village = data['requested_presentation']['revealed_attrs']['Village'][0]['value']
+        elif eid is None and id_number is not None and full_name is None:
+            payload = {
+                'type': 'send_id_number',
+                'id_number': id_number,
+                'relationshipDid': relationshipDid,
+                'thid': thid,
+                'holder_did': holder_did,
+                'category': category
+            }
+            payload = {k: v for k, v in payload.items() if v is not None}
+            print("Payload to be sent to WebSocket:", payload)
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                'id_number_group',
+                payload
+            )
+            return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
+        elif eid is None and id_number is not None and full_name is not None:
+            dzongkhag = revealed_attrs.get('Dzongkhag', [{}])[0].get('value', None)
+            gewog = revealed_attrs.get('Gewog', [{}])[0].get('value', None)
+            village = revealed_attrs.get('Village', [{}])[0].get('value', None)
             payload = {
                 'type': 'send_id_number',
                 'id_number': id_number,
                 'full_name': full_name,
                 'dzongkhag': dzongkhag,
                 'gewog': gewog,
-                'village': village
-             }
+                'village': village,
+                'thid': thid,
+                'category': category
+            }
             payload = {k: v for k, v in payload.items() if v is not None}
-            #print("Payload to be sent to WebSocket:", payload)
-            # Send the payload to WebSocket group
+            print("Payload to be sent to WebSocket:", payload)
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 'id_number_group',
@@ -7556,11 +7666,13 @@ def webhook(request):
             )
             return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
         else:
-            return JsonResponse({"statusCode": "400", "statusDescription": "ID Number is missing"}, status=400)
-    except KeyError:
+            return JsonResponse({"statusCode": "400", "statusDescription": "Invalid input combination"}, status=400)
+    except KeyError as e:
+        print(f"KeyError: {e}")
         return JsonResponse({"statusCode": "400", "statusDescription": "Invalid request payload"}, status=400)
     except json.JSONDecodeError:
         return JsonResponse({"statusCode": "400", "statusDescription": "Invalid JSON"}, status=400)
+
 
 def ndi_dash(request):
     if request.method == 'POST':
@@ -7571,42 +7683,80 @@ def ndi_dash(request):
 
         if check_user is not None:
             print(f"User found: {check_user.login_id}")
-
-            if not check_user.last_login_date:
-                # First-time login, send JSON response to redirect to update password
-                #print('User first-time login, rendering update_password.html')
-                request.session['login_id'] = check_user.login_id
-                request.session['email'] = check_user.email_id
-                security = t_security_question_master.objects.all()
-
-                response = JsonResponse({
-                    'redirect': 'update_password',
-                    'security_questions': list(security.values())
-                })
-                response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-                response['Pragma'] = 'no-cache'
-                response['Expires'] = '0'
-                return response
-            else:
+# force change password on first login commented
+#             if not check_user.last_login_date:
+#                 # First-time login, send JSON response to redirect to update password
+#                 #print('User first-time login, rendering update_password.html')
+#                 request.session['login_id'] = check_user.login_id
+#                 request.session['email'] = check_user.email_id
+#                 security = t_security_question_master.objects.all()
+#
+#                 response = JsonResponse({
+#                     'redirect': 'update_password',
+#                     'security_questions': list(security.values())
+#                 })
+#                 response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+#                 response['Pragma'] = 'no-cache'
+#                 response['Expires'] = '0'
+#                 return response
+#             else:
                 # Returning user, setup session and redirect based on login type
-                print("User has logged in before, setting up session.")
-                request.session['login_id'] = check_user.login_id
-                request.session['email'] = check_user.email_id
-                request.session['login_type'] = check_user.login_type
+                #print("User has logged in before, setting up session.")
+            request.session['login_id'] = check_user.login_id
+            request.session['email'] = check_user.email_id
+            request.session['login_type'] = check_user.login_type
 
-                if check_user.login_type == 'I':
-                    role_details = t_role_master.objects.filter(role_id=check_user.role_id_id).first()
-                    if role_details:
-                        request.session['name'] = check_user.name
-                        request.session['role'] = role_details.role_name
-                        request.session['ca_authority'] = check_user.agency_code
-                        request.session['dzongkhag_code'] = check_user.dzongkhag_code
-                        return JsonResponse({'redirect': 'dashboard'})
-                else:
-                    request.session['name'] = check_user.proponent_name
-                    request.session['address'] = check_user.address
-                    request.session['contact_number'] = check_user.contact_number
+            if check_user.login_type == 'I':
+                role_details = t_role_master.objects.filter(role_id=check_user.role_id_id).first()
+                if role_details:
+                    request.session['name'] = check_user.name
+                    request.session['role'] = role_details.role_name
+                    request.session['ca_authority'] = check_user.agency_code
+                    request.session['dzongkhag_code'] = check_user.dzongkhag_code
                     return JsonResponse({'redirect': 'dashboard'})
+            else:
+                request.session['name'] = check_user.proponent_name
+                request.session['address'] = check_user.address
+                request.session['contact_number'] = check_user.contact_number
+                return JsonResponse({'redirect': 'dashboard'})
+        else:
+            _message = 'ID number is missing/ User Not Registered.'
+            print(_message)
+            context = {'message': _message}
+            return JsonResponse({'redirect': 'index', 'message': _message})
+    else:
+        _message = 'Please sign in'
+        print(_message)
+        context = {'message': _message}
+        return JsonResponse({'redirect': 'index', 'message': _message})
+
+def ndi_dash_eid(request):
+    if request.method == 'POST':
+        eid = request.POST.get('eid')
+        print(f"EID Number received: {eid}")
+
+        check_user = t_user_master.objects.filter(employee_id=eid, is_active='Y', logical_delete='N').first()
+
+        if check_user is not None:
+            print(f"User found: {check_user.login_id}")
+
+            request.session['login_id'] = check_user.login_id
+            request.session['email'] = check_user.email_id
+            request.session['login_type'] = check_user.login_type
+
+            if check_user.login_type == 'I':
+                role_details = t_role_master.objects.filter(role_id=check_user.role_id_id).first()
+                if role_details:
+                    request.session['name'] = check_user.name
+                    request.session['role'] = role_details.role_name
+                    request.session['ca_authority'] = check_user.agency_code
+                    request.session['dzongkhag_code'] = check_user.dzongkhag_code
+                    return JsonResponse({'redirect': 'dashboard'})
+            else:
+                request.session['name'] = check_user.proponent_name
+                request.session['address'] = check_user.address
+                request.session['contact_number'] = check_user.contact_number
+                return JsonResponse({'redirect': 'dashboard'})
         else:
             _message = 'ID number is missing/ User Not Registered.'
             print(_message)
