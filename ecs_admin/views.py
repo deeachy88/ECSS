@@ -349,7 +349,7 @@ def agency_master(request):
 
 def proponent_master(request):
     proponent_list = t_proponent_type_master.objects.all()
-    response = rrender(request, 'proponent_master.html', {'proponent_list':proponent_list})
+    response = render(request, 'proponent_master.html', {'proponent_list':proponent_list})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'

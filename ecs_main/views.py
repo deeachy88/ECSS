@@ -1644,3 +1644,9 @@ def insert_payment_details(request,application_no,account_head, proponent_name,t
             account_head_code=account_head,
             ec_no=ec_no)
     return redirect(fines_penalties)
+
+def ec_expired_list(request):
+    current_date = timezone.now().date()
+    expired_list = t_ec_industries_t1_general.objects.filter(ec_expiry_date__lt=current_date)
+    return render(request,'expired_list.html',{'expired_list':expired_list})
+

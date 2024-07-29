@@ -1662,7 +1662,7 @@ def submit_iee_application(request):
                             ancillary_amount += int(anc_fees_detail.rate)
 
                     total_amount = main_amount + ancillary_amount
-                    make_payment_request(application_no,total_amount,'NEW IEE APPLICATION',request.session['email'],"208",service_type)
+                    make_payment_request(request,application_no,total_amount,'NEW IEE APPLICATION',request.session['email'],"208",service_type)
                     send_payment_mail(request.session['name'], request.session['email'], total_amount)
                     data['message'] = "success"
 
@@ -2726,7 +2726,7 @@ def submit_ea_application(request):
                                     ancillary_amount += int(anc_fees_detail.rate)
 
                             total_amount = main_amount + ancillary_amount
-                            make_payment_request(application_no,total_amount,'NEW EA APPLICATION',request.session['email'],"208",service_type)
+                            make_payment_request(request,application_no,total_amount,'NEW EA APPLICATION',request.session['email'],"208",service_type)
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
 
@@ -2991,7 +2991,7 @@ def submit_transmission_application(request):
                         else:
                             total_amount = main_amount
 
-                        make_payment_request(application_no,total_amount,'NEW TRANSMISSION APPLICATION',request.session['email'],"208",service_type)
+                        make_payment_request(request,application_no,total_amount,'NEW TRANSMISSION APPLICATION',request.session['email'],"208",service_type)
                         send_payment_mail(request.session['name'], request.session['email'], total_amount)
                         data['message'] = "success"
 
@@ -3060,7 +3060,7 @@ def submit_general_application(request):
                             app_hist_details = t_application_history.objects.filter(application_no=application_no)
                             app_hist_details.update(remarks='Your Application Submitted')
                             app_hist_details.update(action_date=timezone.now())
-                            make_payment_request(application_no,total_amount,'NEW GENERAL APPLICATION',request.session['email'],"208",service_type)
+                            make_payment_request(request,application_no,total_amount,'NEW GENERAL APPLICATION',request.session['email'],"208",service_type)
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -3198,7 +3198,7 @@ def save_tor_form(request):
             ca_authority=ca_auth,
             application_source='ECSS'
         )
-        make_payment_request(application_no,"500",'NEW TOR APPLICATION',request.session['email'],"208",service_type)
+        make_payment_request(request,application_no,"500",'NEW TOR APPLICATION',request.session['email'],"208",service_type)
         send_tor_payment_mail(request.session['name'], request.session['email'], 500)
         data['message'] = 'success'
     except Exception as e:
@@ -3427,6 +3427,29 @@ def insert_app_payment_details(request,application_no, identifier,total_amount,s
     cid_no = None
     mob_no = None
     app_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+    if identifier == "NEW GENERAL APPLICATION":
+        identifier == "new_general_application"
+    elif identifier == "NEW IEE APPLICATION":
+        identifier == "new_iee_application"
+    elif identifier == "NEW EA APPLICATION":
+        identifier == "new_ea_application"
+    elif identifier == "NEW FOREST APPLICATION":
+        identifier == "new_forestry_application"
+    elif identifier == "NEW GW APPLICATION":
+        identifier == "new_ground_water_application"
+    elif identifier == "NEW QUARRY APPLICATION":
+        identifier == "new_quarry_application"
+    elif identifier == "NEW ENERGY APPLICATION":
+        identifier == "new_energy_application"
+    elif identifier == "NEW TOURISM APPLICATION":
+        identifier == "new_tourism_application"
+    elif identifier == "NEW TRANSMISSION APPLICATION":
+        identifier == "new_transmission_application"
+    elif identifier == "NEW ROAD APPLICATION":
+        identifier == "tor_form"
+    else:
+        identifier == ""
+
     for app_det in app_details:
         cid_no = app_det.cid
         mob_no = app_det.contact_no
@@ -4391,7 +4414,7 @@ def submit_forest_application(request):
                         app_hist_details.update(remarks='Your Application Submitted')
                         app_hist_details.update(action_date=timezone.now())
 
-                        make_payment_request(application_no,total_amount,'NEW FOREST APPLICATION',request.session['email'],"208",service_type)
+                        make_payment_request(request,application_no,total_amount,'NEW FOREST APPLICATION',request.session['email'],"208",service_type)
                         send_payment_mail(request.session['name'], request.session['email'], total_amount)
 
                 data['message'] = "success"
@@ -4634,7 +4657,7 @@ def submit_ground_water_application(request):
                                     total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount = main_amount
-                                make_payment_request(application_no,total_amount,'NEW GW APPLICATION',request.session['email'],"208",service_type)
+                                make_payment_request(request,application_no,total_amount,'NEW GW APPLICATION',request.session['email'],"208",service_type)
                                 send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -4932,7 +4955,7 @@ def submit_quarry_application(request):
                             else:
                                 total_amount = main_amount
 
-                            make_payment_request(application_no,total_amount,'NEW QUARRY APPLICATION',request.session['email'],"208",service_type)
+                            make_payment_request(request,application_no,total_amount,'NEW QUARRY APPLICATION',request.session['email'],"208",service_type)
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
 
                             data['message'] = "success"
@@ -5390,7 +5413,7 @@ def submit_energy_application(request):
                                         total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount=main_amount
-                                make_payment_request(application_no,total_amount,'NEW ENERGY APPLICATION',request.session['email'],"208",service_type)
+                                make_payment_request(request,application_no,total_amount,'NEW ENERGY APPLICATION',request.session['email'],"208",service_type)
                                 send_payment_mail(request.session['name'],request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -5740,7 +5763,7 @@ def submit_tourism_application(request):
                                         total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount=main_amount
-                                make_payment_request(application_no,total_amount,'NEW TOURISM APPLICATION',request.session['email'],"208",service_type)
+                                make_payment_request(request,application_no,total_amount,'NEW TOURISM APPLICATION',request.session['email'],"208",service_type)
                                 send_payment_mail(request.session['name'],request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -7128,7 +7151,7 @@ def get_auth_token():
 
 
 
-def make_payment_request(application_no,total_amount,description, email, service_code,service_type):
+def make_payment_request(request,application_no,total_amount,description, email, service_code,service_type):
     token = get_auth_token()#
     print(token)
     cid_no = None
@@ -7175,7 +7198,7 @@ def make_payment_request(application_no,total_amount,description, email, service
     print(response.text)
     # Check response status
     if response.status_code == 200:
-        insert_app_payment_details(application_no,description,total_amount,service_type,response.paymentAdviceNo)
+        insert_app_payment_details(request,application_no,description,total_amount,service_type,response.paymentAdviceNo)
         print("Payment request successful")
         print("Response:", response.json())
     else:
@@ -7383,7 +7406,7 @@ def proof_request_employee(request):
             'name': "EID",
             'restrictions': [
                 {
-                    "schema_name": "https://dev-schema.ngotag.com/schemas/2f528ccc-d42f-4760-9758-625580ec2bf8"
+                    "schema_name": "https://dev-schema.ngotag.com/schemas/c7952a0a-e9b5-4a4b-a714-1e5d0a1ae076"
                 }
             ]
         }
@@ -7402,12 +7425,13 @@ def proof_request_employee(request):
 
     # Get the thread_id from the response
     thread_id = response_data.get('data', {}).get('proofRequestThreadId', '')
+    revocation_id = response_data.get('data', {}).get('revocationId', '')
 
     # Insert the thread_id and category into the t_ndi_login_temp table
     with connection.cursor() as cursor:
         cursor.execute(
-            "INSERT INTO proponent_t_ndi_login_temp (thread_id, category, created_date) VALUES (%s, %s, CURRENT_DATE)",
-            [thread_id, category]
+            "INSERT INTO proponent_t_ndi_login_temp (thread_id, category,revocation_id, created_date) VALUES (%s, %s,%s, CURRENT_DATE)",
+            [thread_id, category, revocation_id]
         )
 
     return JsonResponse(response_data)
@@ -7523,6 +7547,7 @@ def proof_request_proponent(request):
 
     # Print or return the JSON response
     response_data = response.json()
+    print(response_data)
 
     # Get the thread_id from the response
     thread_id = response_data.get('data', {}).get('proofRequestThreadId', '')
@@ -7546,11 +7571,12 @@ def fetch_verified_user_data(request):
     print(f"Value in fetch: {value}")
     BASE_URL = 'https://demo-client.bhutanndi.com/webhook/v1/subscribe/'
     token = get_access_token_ndi()
+    print(token)
     headers = {
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ecssstaging12345",
+        "webhookId": "ecssstaging30",
         "threadId": thread_id
     }
 
@@ -7806,7 +7832,6 @@ def issuance_call(request):
             "Location Name": str(application_details.location_name),
             "Total Area Acre": str(application_details.total_area_acre)
         }
-        print(credential_data)
         proof_data = {
             "schemaId": "https://dev-schema.ngotag.com/schemas/086f404c-a0c1-43ca-86ce-7e292c928964",
             "credentialData": credential_data,
@@ -7823,7 +7848,8 @@ def issuance_call(request):
         # Make API call to issue credential
         response = requests.post(issue_url, headers=headers, data=json.dumps(proof_data))
         response_data = response.json()
-        print(f"Issuance response: {response_data}")
+        revocation_id = response_data['data']['revocationId']
+        application_details.update(revocation_id=revocation_id)
         # Check response status and handle accordingly
         if response.status_code == 201:
             return JsonResponse({'message': 'Credential offer created successfully'}, status=response.status_code)
@@ -7832,3 +7858,21 @@ def issuance_call(request):
     except Exception as e:
         print(f"Exception occurred: {e}")
         return JsonResponse({'error': 'An unexpected error occurred.', 'details': str(e)}, status=500)
+    
+def revoke_ec(request):
+    revocation_id = request.POST.get(revocation_id)
+    
+    ndi_token = get_access_token_ndi()
+
+    url = f'https://demo-client.bhutanndi.com/issuer/v1/revoke_suspend?status=REVOKED&revocationId={revocation_id}'
+    headers = {
+        'accept': '*/*',
+        'Authorization': f'Bearer {ndi_token}',
+    }
+
+    response = requests.post(url, headers=headers, data='')
+
+    if response.status_code == 200:
+        return JsonResponse({'message': 'Revocation successful', 'data': response.json()})
+    else:
+        return JsonResponse({'error': 'Failed to revoke credential', 'details': response.json()}, status=response.status_code)

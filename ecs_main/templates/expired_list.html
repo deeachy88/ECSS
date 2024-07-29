@@ -1,0 +1,68 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+<div id="expired_list">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mt-1">
+                <div class="card-body">
+                    <h5 class="card-title mb-0 text-right">Application List</h5>
+                    <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
+                        <i class="ri-check-line me-2"></i>
+                    </div>
+                    <div id="cardCollpase1" class="collapse pt-3 show">
+                        <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Application No</th>
+                                    <th scope="col">Service Name</th>
+                                    <th scope="col">Approved Date</th>
+                                    <th scope="col">Expiry Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for expired_list in expired_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>
+                                            <a href="javascript: void(0);" class="btn btn-outline-primary" onclick="viewApplicationDetails('{{expired_list.application_no}}','{{expired_list.service_id}}','{{expired_list.application_source}}')">{{expired_list.application_no}}</a>
+                                        </td>
+                                        {% for service_details in service_details %}
+                                            {% if expired_list.service_id == service_details.service_id %}
+                                                <td>{{service_details.service_name}}</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <td>{{expired_list.ec_approve_date|date:"d-m-Y"}}</td>
+                                        <td>{{expired_list.ec_expiry_date|date:"d-m-Y"}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function viewApplicationDetails(application_no,service_id, application_source)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'view_application_details' %}",
+            data :{'application_no':application_no, 'service_id':service_id,'application_source':application_source},
+            success : function(data)
+            {
+                $('#expired_list').html(data);
+                $('#expired_list').show();
+            }
+        });
+    }
+</script>
+{% endblock %}       
+
+                    

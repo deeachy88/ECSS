@@ -498,6 +498,7 @@ class t_ec_industries_t1_general(models.Model):
     stripping_ratio = models.IntegerField(default=None, blank=True, null=True)
     bench_height = models.IntegerField(default=None, blank=True, null=True)
     bench_width = models.IntegerField(default=None, blank=True, null=True)
+    revocation_id = models.CharField(max_length=100,default=None, blank=True, null=True)
 
 class t_ec_industries_t1_general_audit(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -1229,6 +1230,7 @@ class t_ndi_login_temp(models.Model):
     record_id = models.AutoField(primary_key=True)
     thread_id = models.CharField(max_length=100, blank=True, null=True)
     category = models.CharField(max_length=100, blank=True, null=True)
+    revocation_id = models.CharField(max_length=100, blank=True, null=True)
     created_date = models.DateField(blank=True, null=True)
 
 

@@ -227,5 +227,6 @@ urlpatterns = [
     path('ndi_dash_eid/', views.ndi_dash_eid, name='ndi_dash_eid'),
     path('update_password_ndi/', views.update_password_ndi, name='update_password_ndi'),
     path('issuance_call/', views.issuance_call, name='issuance_call'),
-    path('fetch_relationship_data/', views.fetch_relationship_data, name='fetch_relationship_data')
+    path('fetch_relationship_data/', views.fetch_relationship_data, name='fetch_relationship_data'),
+    path('revoke_ec', views.revoke_ec, name='revoke_ec')
 ]

@@ -408,6 +408,12 @@
                                     <span> Fines And Penalties </span>
                                 </a>
                             </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'ec_expired_list' %}" class="side-nav-link">
+                                    <i class="uil-folder-plus"></i>
+                                    <span> EC Expired List </span>
+                                </a>
+                            </li>
                         </ul>
                     {% elif request.session.role == 'Reviewer' %}
                         <ul class="side-nav">

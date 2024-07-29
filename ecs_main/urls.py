@@ -55,5 +55,6 @@ urlpatterns = [
 # Payment Details
     path('payment_list', views.payment_list, name='payment_list'),
 
-
+# EC Expired List
+    path('ec_expired_list', views.ec_expired_list, name='ec_expired_list'),
 ]
