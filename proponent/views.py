@@ -3423,37 +3423,37 @@ def view_tor_application_details(request):
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
 
-def insert_app_payment_details(request,application_no, identifier,total_amount,service_type,paymentAdviceNo):
+def insert_app_payment_details(request,application_no, description,total_amount,service_type,paymentAdviceNo):
     cid_no = None
     mob_no = None
+    identifier = None
     app_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-    if identifier == "NEW GENERAL APPLICATION":
+    if description == "NEW GENERAL APPLICATION":
         identifier == "new_general_application"
-    elif identifier == "NEW IEE APPLICATION":
+    elif description == "NEW IEE APPLICATION":
         identifier == "new_iee_application"
-    elif identifier == "NEW EA APPLICATION":
+    elif description == "NEW EA APPLICATION":
         identifier == "new_ea_application"
-    elif identifier == "NEW FOREST APPLICATION":
+    elif description == "NEW FOREST APPLICATION":
         identifier == "new_forestry_application"
-    elif identifier == "NEW GW APPLICATION":
+    elif description == "NEW GW APPLICATION":
         identifier == "new_ground_water_application"
-    elif identifier == "NEW QUARRY APPLICATION":
+    elif description == "NEW QUARRY APPLICATION":
         identifier == "new_quarry_application"
-    elif identifier == "NEW ENERGY APPLICATION":
+    elif description == "NEW ENERGY APPLICATION":
         identifier == "new_energy_application"
-    elif identifier == "NEW TOURISM APPLICATION":
+    elif description == "NEW TOURISM APPLICATION":
         identifier == "new_tourism_application"
-    elif identifier == "NEW TRANSMISSION APPLICATION":
+    elif description == "NEW TRANSMISSION APPLICATION":
         identifier == "new_transmission_application"
-    elif identifier == "NEW ROAD APPLICATION":
-        identifier == "tor_form"
+    elif description == "NEW ROAD APPLICATION":
+        identifier == "new_road_application"
     else:
-        identifier == ""
-
+        description == "tor_form"
     for app_det in app_details:
         cid_no = app_det.cid
         mob_no = app_det.contact_no
-    if 'new' in identifier:
+    if 'new' in description:
         t_payment_details.objects.create(ref_no=application_no,
                 payment_request_date=date.today(),
                 tax_payer_name=request.session['name'],
@@ -3466,7 +3466,7 @@ def insert_app_payment_details(request,application_no, identifier,total_amount,s
                 service_type=service_type,
                 payment_advice_no=paymentAdviceNo
                 )
-    elif 'tor' in identifier:
+    elif 'tor' in description:
         t_payment_details.objects.create(ref_no=application_no,
                 payment_request_date=date.today(),
                 tax_payer_name=request.session['name'],
