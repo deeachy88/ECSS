@@ -7198,7 +7198,9 @@ def make_payment_request(request,application_no,total_amount,description, email,
     print(response.text)
     # Check response status
     if response.status_code == 200:
-        insert_app_payment_details(request,application_no,description,total_amount,service_type,response.paymentAdviceNo)
+        data = response.json()  # Parse response JSON
+        paymentAdviceNo = data['content']['paymentAdviceNo']
+        insert_app_payment_details(request,application_no,description,total_amount,service_type,paymentAdviceNo)
         print("Payment request successful")
         print("Response:", response.json())
     else:
