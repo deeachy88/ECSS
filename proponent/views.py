@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+import uuid
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db import connection
@@ -7349,7 +7350,7 @@ def get_access_token_ndi():
 
 def proof_request(request):
     category = request.GET.get('category', '')  # Get the category from query parameters
-
+    request.session['session_id'] = str(uuid.uuid4())
     # Get NDI access token
     ndi_token = get_access_token_ndi()
 
@@ -7432,8 +7433,8 @@ def proof_request_employee(request):
     # Insert the thread_id and category into the t_ndi_login_temp table
     with connection.cursor() as cursor:
         cursor.execute(
-            "INSERT INTO proponent_t_ndi_login_temp (thread_id, category,revocation_id, created_date) VALUES (%s, %s,%s, CURRENT_DATE)",
-            [thread_id, category, revocation_id]
+            "INSERT INTO proponent_t_ndi_login_temp (thread_id, category, created_date) VALUES (%s, %s, CURRENT_DATE)",
+            [thread_id, category]
         )
 
     return JsonResponse(response_data)
@@ -7578,7 +7579,7 @@ def fetch_verified_user_data(request):
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ecssstaging30",
+        "webhookId": "ecssstaging32",
         "threadId": thread_id
     }
 
@@ -7600,6 +7601,7 @@ def fetch_verified_user_data(request):
 
 @csrf_exempt
 def webhook(request):
+    print("Inside Webhook")
     request.session.clear()
     try:
         cleaned_body = request.body.decode('utf-8')
@@ -7711,25 +7713,6 @@ def ndi_dash(request):
 
         if check_user is not None:
             print(f"User found: {check_user.login_id}")
-# force change password on first login commented
-#             if not check_user.last_login_date:
-#                 # First-time login, send JSON response to redirect to update password
-#                 #print('User first-time login, rendering update_password.html')
-#                 request.session['login_id'] = check_user.login_id
-#                 request.session['email'] = check_user.email_id
-#                 security = t_security_question_master.objects.all()
-#
-#                 response = JsonResponse({
-#                     'redirect': 'update_password',
-#                     'security_questions': list(security.values())
-#                 })
-#                 response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-#                 response['Pragma'] = 'no-cache'
-#                 response['Expires'] = '0'
-#                 return response
-#             else:
-                # Returning user, setup session and redirect based on login type
-                #print("User has logged in before, setting up session.")
             request.session['login_id'] = check_user.login_id
             request.session['email'] = check_user.email_id
             request.session['login_type'] = check_user.login_type

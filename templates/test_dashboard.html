@@ -1,13 +1,43 @@
-<!-- templates/test_dashboard.html -->
+Client-side JavaScript / test_ws.html
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Dashboard</title>
+    <title>WebSocket Test</title>
 </head>
 <body>
-    <h1>Test Dashboard</h1>
-    <p>This is a test dashboard page.</p>
+    <h1>WebSocket Test</h1>
+    <button id="sendButton">Send Message</button>
+    <div id="messages"></div>
+
+    <script type="text/javascript">
+        const socket = new WebSocket('wss://ecss.systems.gov.bt/ws/test/');
+
+        socket.onopen = function(event) {
+            console.log('WebSocket is connected.');
+            document.getElementById('messages').innerHTML += '<p>WebSocket is connected.</p>';
+        };
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            console.log('Message from server: ', data);
+            document.getElementById('messages').innerHTML += '<p>Message from server: ' + data.message + '</p>';
+        };
+
+        socket.onerror = function(event) {
+            console.error('WebSocket error observed:', event);
+        };
+
+        socket.onclose = function(event) {
+            console.log('WebSocket is closed now.');
+        };
+
+        document.getElementById('sendButton').onclick = function() {
+            const message = 'Hello, server!';
+            console.log('Sending message: ', message);
+            socket.send(JSON.stringify({ 'message': message }));
+        };
+    </script>
 </body>
 </html>
