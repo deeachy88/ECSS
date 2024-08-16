@@ -47,23 +47,26 @@
             const village = data.village;
             const category = data.category;
             const thread_id = data.thread_id;
-            //alert(category);
-            //alert(thid);
+            const session_id = data.session_id;
+            //alert(session_id);
+            //alert(sessionId);
             //alert(id_number);
             //alert(eid);
 
+            // Check if session_id matches the stored sessionId
+            if (session_id !== sessionId) {
+                console.log('Session ID does not match. Ignoring message.');
+                return; // Exit the function if session_id does not match
+            }
+
+            // Execute conditions only if session_id matches
             if (eid && category === 'Employee' && id_number === '1111') {
-                //alert('inside eid');
-                // EID number is present and category is 'Employee'
                 makeNdiDashCallEID(eid);
             } else if (id_number && category === 'Login') {
-                // ID number is present and category is 'Login'
                 makeNdiDashCall(id_number);
             } else if (id_number && category === 'Issuance') {
-                // ID number is present and category is 'Issuance'
                 makeIssuanceCall(relationshipDid, thid, id_number, holder_did);
             } else if (full_name && category === 'Registration') {
-                // Both ID number and full_name are present and category is 'Registration'
                 showRegistrationForm();
                 fillInputFields(id_number, full_name, dzongkhag, gewog, village);
             }
@@ -127,6 +130,18 @@
 
 </head>
 <style>
+/* Ensure no container constrains the width */
+.container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+}
+
+/* Optional: Remove margins if needed */
+.navbar-nav {
+    margin: 0;
+}
+
 .modal-custom {
       width: 80%; /* Change this to the desired width */
       border-radius: 15px; /* Adjust the radius as needed */
@@ -170,6 +185,23 @@
     background-color: #124143;
     border-color: rgba(101, 109, 119, .24);
     white-space: nowrap;
+}
+.modal-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.modal-dialog-centered {
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - 1rem);
 }
 .modal-body-video-btn .btn-ndi {
     background-color: #5AC994;
@@ -228,13 +260,28 @@
         }
     }
 
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .spinner-border-custom {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-left-color: #007bff;
+        animation: spin 1s linear infinite;
+    }
+
+    .custom-shadow {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Darker shadow */
+    }
+
 </style>
 
 <body style="background-color:white;">
     <div class="container">
         <div class="row">
             <div class="col-md-11 mt-0">
-                <img class="mx-auto d-block" src="{% static 'assets/images/nec_header.png' %}" style="background:center;max-width:100%">  
+                <img class="mx-auto d-block" src="{% static 'assets/images/nec_header.png' %}" style="background:center;max-width:100%">
             </div>
         </div>
         {% include 'header.html' %}
@@ -243,7 +290,7 @@
             <div id="content_div">
                 <div class="row">
                     <div class="col-xl-8 col-lg-7">
-                        <div class="card d-block">
+                        <div class="card text-center mb-4 custom-shadow">
                             <div class="card-body">
                                 {% for homepage_details in homepage_details %}
                                     <h3 class="m-0">{{homepage_details.homepage_title}}</h3>
@@ -260,34 +307,33 @@
                         </div> <!-- end card -->
                     </div> <!-- end col -->
                     <div class="col-xl-4 col-lg-5">
+                        <!-- Acts and Rules Section -->
                         {% if pub_file_attachment_count > 0 %}
-                            <div class="card text-center">
+                            <div class="card text-center mb-4 custom-shadow">
                                 <div class="card-body">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <h4 class="header-title">Acts and Rules</h4>
-                                    </div>
+                                    <h4 class="header-title mb-3">Acts and Rules</h4>
                                     <hr>
                                     <div class="inbox-widget">
                                         {% for file_attachment in pub_file_attachment %}
                                             <div class="inbox-item">
                                                 <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
                                             </div>
-                                         {% endfor %}
-                                    </div> <!-- end inbox-widget
-                                    {% if form_file_attachment_count > 5 %}
-                                        <div class="text-center mt-1">
+                                        {% endfor %}
+                                    </div>
+                                    {% if pub_file_attachment_count > 5 %}
+                                        <div class="text-center mt-3">
                                             <a href="javascript:void(0);" class="text-danger"><i class="mdi mdi-spin mdi-loading me-1"></i> Load more </a>
                                         </div>
                                     {% endif %}
-                                </div> <!-- end card-body-->
+                                </div> <!-- end card-body -->
                             </div> <!-- end card -->
                         {% endif %}
+
+                        <!-- Notifications Section -->
                         {% if form_file_attachment_count > 0 %}
-                            <div class="card text-center">
+                            <div class="card text-center mb-4 custom-shadow">
                                 <div class="card-body">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <h4 class="header-title">Notifications</h4>
-                                    </div>
+                                    <h4 class="header-title mb-3">Notifications</h4>
                                     <hr>
                                     <div class="inbox-widget">
                                         {% for file_attachment in form_file_attachment %}
@@ -295,44 +341,39 @@
                                                 <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
                                             </div>
                                         {% endfor %}
-                                    </div> <!-- end inbox-widget -->
+                                    </div>
                                     {% if form_file_attachment_count > 5 %}
-                                        <div class="text-center mt-1">
+                                        <div class="text-center mt-3">
                                             <a href="javascript:void(0);" class="text-danger"><i class="mdi mdi-spin mdi-loading me-1"></i> Load more </a>
                                         </div>
                                     {% endif %}
-                                </div> <!-- end card-body-->
+                                </div> <!-- end card-body -->
                             </div> <!-- end card -->
                         {% endif %}
 
+                        <!-- Forms and Others Section -->
                         {% if down_file_attachment_count > 0 %}
-                            <div class="card text-center">
+                            <div class="card text-center mb-4 custom-shadow">
                                 <div class="card-body">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <h4 class="header-title">Forms and Others</h4>
-                                    </div>
+                                    <h4 class="header-title mb-3">Forms and Others</h4>
                                     <hr>
                                     <div class="inbox-widget">
-                                         {% for file_attachment in down_file_attachment %}
+                                        {% for file_attachment in down_file_attachment %}
                                             <div class="inbox-item">
                                                 <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
                                             </div>
-                                         {% endfor %}
-                                    </div> <!-- end inbox-widget -->
-                                    {% if form_file_attachment_count > 5 %}
-                                        <div class="text-center mt-1">
+                                        {% endfor %}
+                                    </div>
+                                    {% if down_file_attachment_count > 5 %}
+                                        <div class="text-center mt-3">
                                             <a href="javascript:void(0);" class="text-danger"><i class="mdi mdi-spin mdi-loading me-1"></i> Load more </a>
                                         </div>
                                     {% endif %}
-                                </div> <!-- end card-body-->
+                                </div> <!-- end card-body -->
                             </div> <!-- end card -->
                         {% endif %}
-
                     </div>
-
-
                 </div>
-
             </div>
             <footer class="bg-dark">
                 <div class="container">
@@ -397,17 +438,24 @@
                     <div class="splitter">
                         <span style="background-color: rgb(255, 255, 255);">OR</span>
                     </div>
-                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-center" style="width: 250px;">
+                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-center">
                         <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiLoginId" onclick="authenticate_ndi('Login')">
                             <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
                             &nbsp; &nbsp; Login with Bhutan NDI
                         </a>
                     </div>
-                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-center" style="width: 250px;">
+                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-center">
                         <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiCredentialId" onclick="authenticate_ndi('Issuance')">
                             <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
                             &nbsp; &nbsp; Receive Credential
                         </a>
+                    </div>
+                </div>
+
+                <!-- Progress indicator HTML -->
+                <div id="progressIndicator" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+                    <div class="spinner-border spinner-border-custom" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
 
@@ -439,7 +487,7 @@
                     <div class="splitter">
                         <span style="background-color: rgb(255, 255, 255);">OR</span>
                     </div>
-                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-center" style="width: 250px;">
+                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-center">
                         <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiEmployeeId" onclick="authenticate_ndi_empid('Employee')">
                             <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
                             &nbsp; &nbsp; Login with Bhutan NDI
@@ -577,11 +625,16 @@
                         <div class="cid_details" style="display: none;">
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-left" style="width: 200px;">
+                                    <div class="modal-header justify-content-center">
                                         <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="generateQRCode" onclick="registerauthenticateWithAPI('Registration')">
                                             <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
                                             &nbsp; &nbsp; Use Bhutan NDI
                                         </a>
+                                    </div>
+                                    <div id="progressIndicator1" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+                                        <div class="spinner-border spinner-border-custom" role="status" style="width: 3rem; height: 3rem;">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -1181,7 +1234,12 @@
         });
     }
 
+let sessionId = null; // Global variable to store the session ID
+
 function authenticate_ndi(value) {
+    // Show progress indicator
+    $('#progressIndicator').show();
+
     $.ajax({
         type: "GET",
         url: `/proof_request/?category=${value}`, // Pass category as a query parameter
@@ -1190,9 +1248,17 @@ function authenticate_ndi(value) {
             var proofRequestURL = verifierData.proofRequestURL;
             var proofRequestThreadId = verifierData.proofRequestThreadId;
             var deepLinkURL = verifierData.deepLinkURL;
+            sessionId = data.session_id; // Store session ID from response
 
             $('.modal-footer').hide();
             updateDisplay(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
+
+            // Hide progress indicator
+            $('#progressIndicator').hide();
+        },
+        error: function() {
+            // Hide progress indicator in case of error
+            $('#progressIndicator').hide();
         }
     });
 }
@@ -1241,7 +1307,11 @@ function isMobileDevice() {
     return /Mobi|Android/i.test(navigator.userAgent);
 }
 
+
 function authenticate_ndi_empid(value) {
+    // Show progress indicator
+    $('#progressIndicator').show();
+
     $.ajax({
         type: "GET",
         url: `/proof_request_employee/?category=${value}`, // Pass category as a query parameter
@@ -1250,9 +1320,17 @@ function authenticate_ndi_empid(value) {
             var proofRequestURL = verifierData.proofRequestURL;
             var proofRequestThreadId = verifierData.proofRequestThreadId;
             var deepLinkURL = verifierData.deepLinkURL;
+            sessionId = data.session_id; // Store session ID from response
 
             $('.modal-footer').hide();
             updateDisplayEmp(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
+
+        // Hide progress indicator
+            $('#progressIndicator').hide();
+        },
+        error: function() {
+            // Hide progress indicator in case of error
+            $('#progressIndicator').hide();
         }
     });
 }
@@ -1300,6 +1378,9 @@ function updateDisplayEmp(proofRequestURL, deepLinkURL, proofRequestThreadId, va
 }
 
 function registerauthenticateWithAPI(value) {
+    // Show progress indicator
+    $('#progressIndicator1').show();
+
     $.ajax({
         type: "GET",
         url: `/proof_request_proponent/?category=${value}`, // Pass the category as a query parameter
@@ -1308,20 +1389,29 @@ function registerauthenticateWithAPI(value) {
             var proofRequestURL = verifierData.proofRequestURL;
             var proofRequestThreadId = verifierData.proofRequestThreadId;
             var deepLinkURL = verifierData.deepLinkURL;
+            sessionId = data.session_id; // Store session ID from response
 
             $('.modal-footer').hide();
             updateDisplayProponent(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
+            // Hide progress indicator
+            $('#progressIndicator1').hide();
+        },
+        error: function() {
+            // Hide progress indicator in case of error
+            $('#progressIndicator1').hide();
         }
     });
 }
 
 function updateDisplayProponent(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
+
     if (isMobileDevice()) {
         // Show button on mobile devices
         $('#registration_div').hide();
         $("#ndi_div_proponent").show();
         $("#deepLink").show();
-        $('#deepLinkBtn').val(deepLinkURL);
+        $("#deepLinkBtn").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
+        $('#qrcode').hide();
     } else {
         // Show QR code on larger screens
         $('#registration_div').hide();

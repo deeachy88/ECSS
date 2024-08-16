@@ -41,6 +41,7 @@ class IdConsumer(WebsocketConsumer):
             'relationshipDid':event.get('relationshipDid'),
             'holder_did':event.get('holder_did'),
             'category': event.get('category'),  # Add category
-            'eid': event.get('eid')  # Add category
+            'eid': event.get('eid'),  # Add category
+            'session_id': event.get('session_id')  # Add category
 
         }))

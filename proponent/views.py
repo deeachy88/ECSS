@@ -3,6 +3,8 @@ import uuid
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db import connection
+from django.contrib.sessions.models import Session
+import logging
 import json
 import os
 import re
@@ -7348,96 +7350,138 @@ def get_access_token_ndi():
     #print(json_response)
     return json_response['access_token']
 
+# Set up logging
+logger = logging.getLogger(__name__)
+
 def proof_request(request):
-    category = request.GET.get('category', '')  # Get the category from query parameters
-    request.session['session_id'] = str(uuid.uuid4())
-    # Get NDI access token
-    ndi_token = get_access_token_ndi()
+    category = request.GET.get('category', '')
 
-    # Define verifier API URL and headers
-    verifier_api_url = 'https://demo-client.bhutanndi.com/verifier/v1/proof-request'
-    headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
+    try:
+        # Invalidate existing session and create a new session
+        session_id = request.session.session_key
+        if session_id:
+            Session.objects.filter(session_key=session_id).delete()  # Delete the old session
 
-    # Define proof request data
-    proof_attributes = [
-        {
-            'name': "ID Number",
-            'restrictions': [
-                {
-                    "schema_name": "https://dev-schema.ngotag.com/schemas/c7952a0a-e9b5-4a4b-a714-1e5d0a1ae076"
-                }
-            ]
+        request.session.create()  # Create a new session
+        new_session_id = request.session.session_key
+
+        # Get NDI access token
+        ndi_token = get_access_token_ndi()
+
+        # Define verifier API URL and headers
+        verifier_api_url = 'https://demo-client.bhutanndi.com/verifier/v1/proof-request'
+        headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
+
+        # Define proof request data
+        proof_attributes = [
+            {
+                'name': "ID Number",
+                'restrictions': [
+                    {
+                        "schema_name": "https://dev-schema.ngotag.com/schemas/c7952a0a-e9b5-4a4b-a714-1e5d0a1ae076"
+                    }
+                ]
+            }
+        ]
+        proof_data = {
+            'proofName': 'ECSS Credentials',
+            'proofAttributes': proof_attributes
         }
-    ]
-    proof_data = {
-        'proofName': 'ECSS Credentials',
-        'proofAttributes': proof_attributes
-    }
 
-    # Make request to verifier API with proof data
-    response = requests.post(verifier_api_url, headers=headers, data=json.dumps(proof_data), verify=False)
+        # Make request to verifier API
+        response = requests.post(verifier_api_url, headers=headers, data=json.dumps(proof_data), verify=False)
+        response.raise_for_status()  # Raise an exception for HTTP errors
 
-    # Print or return the JSON response
-    response_data = response.json()
-    print(f"Proof request response: {response_data}")
+        response_data = response.json()
+        logger.debug(f"Proof request response: {response_data}")
 
-    # Get the thread_id from the response
-    thread_id = response_data.get('data', {}).get('proofRequestThreadId', '')
+        # Get the thread_id from the response
+        thread_id = response_data.get('data', {}).get('proofRequestThreadId', '')
 
-    # Insert the thread_id and category into the t_ndi_login_temp table
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "INSERT INTO proponent_t_ndi_login_temp (thread_id, category, created_date) VALUES (%s, %s, CURRENT_DATE)",
-            [thread_id, category]
-        )
+        # Insert the new session_id and thread_id into the database
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO proponent_t_ndi_login_temp (session_id, thread_id, category, created_date) VALUES (%s, %s, %s, CURRENT_DATE)",
+                [new_session_id, thread_id, category]
+            )
 
-    return JsonResponse(response_data)
+        # Include session_id in the response data
+        response_data['session_id'] = new_session_id
+
+        return JsonResponse(response_data)
+
+    except requests.RequestException as e:
+        logger.error(f"Error making request to verifier API: {e}")
+        return JsonResponse({'error': 'Error making request to verifier API'}, status=500)
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        return JsonResponse({'error': 'Unexpected error occurred'}, status=500)
+
 
 def proof_request_employee(request):
-    category = request.GET.get('category', '')  # Get the category from query parameters
+    category = request.GET.get('category', '')
 
-    # Get NDI access token
-    ndi_token = get_access_token_ndi()
+    try:
+        # Invalidate existing session and create a new session
+        session_id = request.session.session_key
+        if session_id:
+            Session.objects.filter(session_key=session_id).delete()  # Delete the old session
 
-    # Define verifier API URL and headers
-    verifier_api_url = 'https://demo-client.bhutanndi.com/verifier/v1/proof-request'
-    headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
+        request.session.create()  # Create a new session
+        new_session_id = request.session.session_key
 
-    # Define proof request data
-    proof_attributes = [
-        {
-            'name': "EID",
-            'restrictions': [
-                {
-                    "schema_name": "https://dev-schema.ngotag.com/schemas/c7952a0a-e9b5-4a4b-a714-1e5d0a1ae076"
-                }
-            ]
+        # Get NDI access token
+        ndi_token = get_access_token_ndi()
+
+        # Define verifier API URL and headers
+        verifier_api_url = 'https://demo-client.bhutanndi.com/verifier/v1/proof-request'
+        headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
+
+        # Define proof request data
+        proof_attributes = [
+            {
+                'name': "EID",
+                'restrictions': [
+                    {
+                        "schema_name": "https://dev-schema.ngotag.com/schemas/2f528ccc-d42f-4760-9758-625580ec2bf8"
+                    }
+                ]
+            }
+        ]
+        proof_data = {
+            'proofName': 'ECSS Credentials',
+            'proofAttributes': proof_attributes
         }
-    ]
-    proof_data = {
-        'proofName': 'ECSS Credentials',
-        'proofAttributes': proof_attributes
-    }
 
-    # Make request to verifier API with proof data
-    response = requests.post(verifier_api_url, headers=headers, data=json.dumps(proof_data), verify=False)
+        # Make request to verifier API
+        response = requests.post(verifier_api_url, headers=headers, data=json.dumps(proof_data), verify=False)
+        response.raise_for_status()  # Raise an exception for HTTP errors
 
-    # Print or return the JSON response
-    response_data = response.json()
-    print(f"Proof request response: {response_data}")
+        response_data = response.json()
+        logger.debug(f"Proof request response: {response_data}")
 
-    # Get the thread_id from the response
-    thread_id = response_data.get('data', {}).get('proofRequestThreadId', '')
-    revocation_id = response_data.get('data', {}).get('revocationId', '')
+        # Get the thread_id and revocation_id from the response
+        thread_id = response_data.get('data', {}).get('proofRequestThreadId', '')
+        revocation_id = response_data.get('data', {}).get('revocationId', '')
 
-    # Insert the thread_id and category into the t_ndi_login_temp table
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "INSERT INTO proponent_t_ndi_login_temp (thread_id, category, created_date) VALUES (%s, %s, CURRENT_DATE)",
-            [thread_id, category]
-        )
+        # Insert the new session_id, thread_id, and revocation_id into the database
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO proponent_t_ndi_login_temp (session_id, thread_id, revocation_id, category, created_date) VALUES (%s, %s, %s, %s, CURRENT_DATE)",
+                [new_session_id, thread_id, revocation_id, category]
+            )
 
-    return JsonResponse(response_data)
+        # Include session_id in the response data
+        response_data['session_id'] = new_session_id
+
+        return JsonResponse(response_data)
+
+    except requests.RequestException as e:
+        logger.error(f"Error making request to verifier API: {e}")
+        return JsonResponse({'error': 'Error making request to verifier API'}, status=500)
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        return JsonResponse({'error': 'Unexpected error occurred'}, status=500)
 
 def fetch_relationship_data(request,thread_id):
     ndi_token = get_access_token_ndi()
@@ -7485,82 +7529,101 @@ def fetch_relationship_data(request,thread_id):
         print(f"Error fetching data: {response.status_code}")
         return JsonResponse({'error': 'Failed to fetch data from verifier API'}, status=response.status_code)
 
-
-
 def proof_request_proponent(request):
     category = request.GET.get('category', '')  # Get the category from query parameters
 
-    # Get NDI access token
-    ndi_token = get_access_token_ndi()
+    try:
+        # Invalidate existing session and create a new session
+        session_id = request.session.session_key
+        if session_id:
+            Session.objects.filter(session_key=session_id).delete()  # Delete the old session
 
-    # Define verifier API URL and headers
-    verifier_api_url = 'https://demo-client.bhutanndi.com/verifier/v1/proof-request'
-    headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
+        request.session.create()  # Create a new session
+        new_session_id = request.session.session_key
 
-    # Define proof request data
-    proof_attributes = [
-        {
-            'name': "ID Number",
-            'restrictions': [
-                {
-                    "schema_name": "https://dev-schema.ngotag.com/schemas/c7952a0a-e9b5-4a4b-a714-1e5d0a1ae076"
-                }
-            ]
-        },
-        {
-            'name': "Full Name",
-            'restrictions': [
-                {
-                    "schema_name": "https://dev-schema.ngotag.com/schemas/c7952a0a-e9b5-4a4b-a714-1e5d0a1ae076"
-                }
-            ]
-        },
-        {
-            'name': "Dzongkhag",
-            'restrictions': [
-                {
-                    "schema_name": "https://dev-schema.ngotag.com/schemas/8e87108e-d446-4681-b4a5-7b0952951ea4"
-                }
-            ]
-        },
-        {
-            'name': "Gewog",
-            'restrictions': [
-                {
-                    "schema_name": "https://dev-schema.ngotag.com/schemas/8e87108e-d446-4681-b4a5-7b0952951ea4"
-                }
-            ]
-        },
-        {
-            'name': "Village",
-            'restrictions': [
-                {
-                    "schema_name": "https://dev-schema.ngotag.com/schemas/8e87108e-d446-4681-b4a5-7b0952951ea4"
-                }
-            ]
+        # Get NDI access token
+        ndi_token = get_access_token_ndi()
+
+        # Define verifier API URL and headers
+        verifier_api_url = 'https://demo-client.bhutanndi.com/verifier/v1/proof-request'
+        headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
+
+        # Define proof request data
+        proof_attributes = [
+            {
+                'name': "ID Number",
+                'restrictions': [
+                    {
+                        "schema_name": "https://dev-schema.ngotag.com/schemas/c7952a0a-e9b5-4a4b-a714-1e5d0a1ae076"
+                    }
+                ]
+            },
+            {
+                'name': "Full Name",
+                'restrictions': [
+                    {
+                        "schema_name": "https://dev-schema.ngotag.com/schemas/c7952a0a-e9b5-4a4b-a714-1e5d0a1ae076"
+                    }
+                ]
+            },
+            {
+                'name': "Dzongkhag",
+                'restrictions': [
+                    {
+                        "schema_name": "https://dev-schema.ngotag.com/schemas/8e87108e-d446-4681-b4a5-7b0952951ea4"
+                    }
+                ]
+            },
+            {
+                'name': "Gewog",
+                'restrictions': [
+                    {
+                        "schema_name": "https://dev-schema.ngotag.com/schemas/8e87108e-d446-4681-b4a5-7b0952951ea4"
+                    }
+                ]
+            },
+            {
+                'name': "Village",
+                'restrictions': [
+                    {
+                        "schema_name": "https://dev-schema.ngotag.com/schemas/8e87108e-d446-4681-b4a5-7b0952951ea4"
+                    }
+                ]
+            }
+        ]
+        proof_data = {
+            'proofName': 'ECSS Credentials',
+            'proofAttributes': proof_attributes
         }
-    ]
-    proof_data = {
-        'proofName': 'ECSS Credentials',
-        'proofAttributes': proof_attributes
-    }
 
-    # Make request to verifier API with proof data
-    response = requests.post(verifier_api_url, headers=headers, data=json.dumps(proof_data), verify=False)
+        # Make request to verifier API with proof data
+        response = requests.post(verifier_api_url, headers=headers, data=json.dumps(proof_data), verify=False)
+        response.raise_for_status()  # Raise an exception for HTTP errors
 
-    # Print or return the JSON response
-    response_data = response.json()
-    print(response_data)
+        response_data = response.json()
+        logger.debug(f"Proof request response: {response_data}")
 
-    # Get the thread_id from the response
-    thread_id = response_data.get('data', {}).get('proofRequestThreadId', '')
-    # Insert the thread_id and category into the t_ndi_login_temp table
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "INSERT INTO proponent_t_ndi_login_temp (thread_id, category, created_date) VALUES (%s, %s, CURRENT_DATE)",
-            [thread_id, category]
-        )
-    return JsonResponse(response_data)
+        # Get the thread_id from the response
+        thread_id = response_data.get('data', {}).get('proofRequestThreadId', '')
+
+        # Insert the new session_id, thread_id, and category into the database
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO proponent_t_ndi_login_temp (session_id, thread_id, category, created_date) VALUES (%s, %s, %s, CURRENT_DATE)",
+                [new_session_id, thread_id, category]
+            )
+
+        # Include session_id in the response data
+        response_data['session_id'] = new_session_id
+
+        return JsonResponse(response_data)
+
+    except requests.RequestException as e:
+        logger.error(f"Error making request to verifier API: {e}")
+        return JsonResponse({'error': 'Error making request to verifier API'}, status=500)
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        return JsonResponse({'error': 'Unexpected error occurred'}, status=500)
 
 from django.views.decorators.http import require_GET
 
@@ -7579,7 +7642,7 @@ def fetch_verified_user_data(request):
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ecssstaging32",
+        "webhookId": "ecssstaging2233",
         "threadId": thread_id
     }
 
@@ -7611,32 +7674,28 @@ def webhook(request):
         requested_presentation = data.get('requested_presentation', {})
         revealed_attrs = requested_presentation.get('revealed_attrs', {})
 
-        id_number = revealed_attrs.get('ID Number', [{}])[0].get('value', None)
-        if id_number is None:
-            id_number = '1111'
-
+        id_number = revealed_attrs.get('ID Number', [{}])[0].get('value', '1111')
         eid = revealed_attrs.get('EID', [{}])[0].get('value', None)
         full_name = revealed_attrs.get('Full Name', [{}])[0].get('value', None)
-
         relationshipDid = data.get('relationship_did')
         thid = data.get('thid')
         holder_did = data.get('holder_did')
 
-        #print("EID:", eid)
-        #print("ID Number:", id_number)
-        #print("Full Name:", full_name)
-
-        # Fetch category from database based on thid
+        # Fetch category and session_id from database based on thid
         with connection.cursor() as cursor:
             cursor.execute(
-                "SELECT category FROM proponent_t_ndi_login_temp WHERE thread_id = %s",
+                "SELECT category, session_id FROM proponent_t_ndi_login_temp WHERE thread_id = %s",
                 [thid]
             )
             row = cursor.fetchone()
             if row:
-                category = row[0]
+                category, session_id = row
             else:
                 category = None
+                session_id = None
+
+        if session_id is None:
+            return JsonResponse({"statusCode": "400", "statusDescription": "Session not found"}, status=400)
 
         if eid is not None and id_number == '1111' and full_name is None:
             payload = {
@@ -7646,7 +7705,8 @@ def webhook(request):
                 'relationshipDid': relationshipDid,
                 'thid': thid,
                 'holder_did': holder_did,
-                'category': category
+                'category': category,
+                'session_id': session_id  # Include session_id in payload
             }
             payload = {k: v for k, v in payload.items() if v is not None}
             print("Payload to be sent to WebSocket:", payload)
@@ -7663,7 +7723,8 @@ def webhook(request):
                 'relationshipDid': relationshipDid,
                 'thid': thid,
                 'holder_did': holder_did,
-                'category': category
+                'category': category,
+                'session_id': session_id  # Include session_id in payload
             }
             payload = {k: v for k, v in payload.items() if v is not None}
             print("Payload to be sent to WebSocket:", payload)
@@ -7674,6 +7735,7 @@ def webhook(request):
             )
             return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
         elif eid is None and id_number is not None and full_name is not None:
+            print('inside proponent')
             dzongkhag = revealed_attrs.get('Dzongkhag', [{}])[0].get('value', None)
             gewog = revealed_attrs.get('Gewog', [{}])[0].get('value', None)
             village = revealed_attrs.get('Village', [{}])[0].get('value', None)
@@ -7685,7 +7747,8 @@ def webhook(request):
                 'gewog': gewog,
                 'village': village,
                 'thid': thid,
-                'category': category
+                'category': category,
+                'session_id': session_id  # Include session_id in payload
             }
             payload = {k: v for k, v in payload.items() if v is not None}
             print("Payload to be sent to WebSocket:", payload)
