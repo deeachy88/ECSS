@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-!y+j-du+@82@b*2^^%fq84f!=&$rd#o3=vbg6!p2xhmda4&rgf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.102','localhost','staging-datahub-apim.dit.gov.bt', '172.30.78.130', '1f5b-119-2-104-55.ngrok-free.app']
+ALLOWED_HOSTS = ['127.0.0.1','192.168.30.215', '192.168.0.102','localhost','staging-datahub-apim.dit.gov.bt', '172.30.78.130', 'cdfb-119-2-120-88.ngrok-free.app']
 
 
 # Application definition
@@ -110,7 +110,7 @@ WSGI_APPLICATION = 'ECS.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ecs_db',
+        'NAME': 'ecss_db',
         'USER': 'postgres',
         'PASSWORD': 'root',
         'HOST': 'localhost'

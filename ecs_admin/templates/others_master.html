@@ -98,9 +98,9 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Attachment</label>
-                    <input type="file" name="publication_document" class="form-control" id="publication_document" accept=".png,.jpg,.jpeg,.gif,.pdf,.docx,.doc">
+                    <input type="file" name="others_document" class="form-control" id="others_document" accept=".png,.jpg,.jpeg,.gif,.pdf,.docx,.doc">
                 </div>
-                <div class="alert alert-danger" id="publication_documentErrorMsg" style="display:none"></div>
+                <div class="alert alert-danger" id="others_documentErrorMsg" style="display:none"></div>
             </div>
         </div>
       </div>
@@ -182,93 +182,94 @@
     </div><!-- /.modal -->
 </form><!-- /.form -->
 <script>
-    function add_publication_details()
-    {
-        let type = $('#type').val();
-        let title = $('#title').val();
-        let file_length = document.getElementById("publication_document");
+    function add_publication_details() {
+    let type = $('#type').val();
+    let title = $('#title').val();
+    let fileInput = document.getElementById("others_document");
 
-        if(type = "")
-        {
-            $('#typeErrorMsg').html("Select Type");
-            $('#typeErrorMsg').show();
-            $('#typeErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(title = "")
-        {
-            $('#titleErrorMsg').html("Enter Title");
-            $('#titleErrorMsg').show();
-            $('#titleErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(file_length.value.length < 1)
-        {
-            $('#publication_documentErrorMsg').html("Please Choose A File");
-            $('#publication_documentErrorMsg').show();
-            $('#publication_documentErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else
-        {
-            $("#pageloader").show();
-            let fileName = document.getElementById('publication_document').files[0].name;
-            let fd = new FormData();
-            let file = document.getElementById('publication_document').files[0];
-            fd.append('publication_document', file);
-            token_value=$("input[name=csrfmiddlewaretoken]").val();
-            $.ajaxSetup
-            ({
-                beforeSend: function(xhr, settings)
-                {
-                    xhr.setRequestHeader("X-CSRFToken", token_value);
-                }
-            });
-                $.ajax({
-                type : "POST",
-                url : "{% url 'add_publication_file' %}",
-                data : fd,
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                success : function(data)
-                {
-                    if (data.form_is_valid)
-                    {
-                        let document_id = $('#document_id').val();
-                        let title = $('#title').val();
-                        let file_url = data.file_url
-                        let type = $('#type').val();
-                        $.ajax
-                        ({
-                            type : "POST",
-                            url : "{% url 'add_publication_attach' %}",
-                            data : {'document_id':document_id ,'type':type, 'title':title, 'filename':fileName, 'file_url':file_url},
-                            success : function(responseText)
-                            {
-                                $("#pageloader").hide();
-                                $('#publication_SuccessMsg').html("Add Successful");
-                                $('#publication_SuccessMsg').show();
-                                setTimeout(function()
-                                {
-                                    $('#publication_SuccessMsg').delay(2000).fadeOut('slow');
-                                }, 2000);
-                                setTimeout(function() {
-                                    $('#publication_modal').modal('hide');
-                                }, 2000);
-                                setTimeout(function() {
-                                    location.reload();
-                                }, 3000);
-                                $('#publication_form')[0].reset();
-                            }
-                        });
-                    }else
-                    {
-                        $('#publication_documentErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                        $('#publication_documentErrorMsg').show();
-                        $('#publication_documentErrorMsg').delay(2000).fadeOut('slow');
-                    }
-                }
-            });
-       }
+    // Validate input fields
+    if (!type) {
+        showErrorMessage('#typeErrorMsg', "Select Type");
+        return;
     }
+    
+    if (!title) {
+        showErrorMessage('#titleErrorMsg', "Enter Title");
+        return;
+    }
+
+    if (fileInput.files.length === 0) {
+        showErrorMessage('#others_documentErrorMsg', "Please Choose A File");
+        return;
+    }
+
+    // Show loading spinner
+    $("#pageloader").show();
+
+    // Prepare form data
+    let formData = new FormData();
+    let file = fileInput.files[0];
+    formData.append('others_document', file);
+
+    let tokenValue = $("input[name=csrfmiddlewaretoken]").val();
+
+    $.ajaxSetup({
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("X-CSRFToken", tokenValue);
+        }
+    });
+
+    $.ajax({
+        type: "POST",  // Use POST instead of GET for form submission
+        url: "{% url 'add_publication_file' %}",
+        data: formData,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success: function(data) {
+            if (data.form_is_valid) {
+                submitPublicationDetails(data.file_url, file.name);
+            } else {
+                showErrorMessage('#others_documentErrorMsg', "File Already Exists With Same Name. Please Upload Another File");
+            }
+        },
+        complete: function() {
+            $("#pageloader").hide();
+        }
+    });
+}
+
+function submitPublicationDetails(fileUrl, fileName) {
+    let documentId = $('#document_id').val();
+    let type = $('#type').val();
+    let title = $('#title').val();
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'add_publication_attach' %}",
+        data: {
+            'document_id': documentId,
+            'type': type,
+            'title': title,
+            'filename': fileName,
+            'file_url': fileUrl
+        },
+        success: function(responseText) {
+            $('#publication_SuccessMsg').html("Add Successful").show();
+            setTimeout(function() {
+                $('#publication_SuccessMsg').fadeOut('slow');
+                $('#publication_modal').modal('hide');
+                location.reload();
+            }, 2000);
+            $('#publication_form')[0].reset();
+        }
+    });
+}
+
+function showErrorMessage(selector, message) {
+    $(selector).html(message).show().delay(2000).fadeOut('slow');
+}
+
 
     function populateDeleteForm(publication_id, publication_title, document_id)
     {
@@ -313,7 +314,7 @@
     {
         var type = $('#edit_type').val();
         var title = $('#edit_title').val();
-        var file_length = document.getElementById("edit_publication_document");
+        var file_length = document.getElementById("edit_others_document");
 
         if(file_length == null)
         {
@@ -359,18 +360,18 @@
             }
             else if(file_length.value.length < 1)
             {
-                $('#edit_publication_documentErrorMsg').html("Please Choose A File");
-                $('#edit_publication_documentErrorMsg').show();
-                $('#edit_publication_documentErrorMsg').delay(2000).fadeOut('slow');
+                $('#edit_others_documentErrorMsg').html("Please Choose A File");
+                $('#edit_others_documentErrorMsg').show();
+                $('#edit_others_documentErrorMsg').delay(2000).fadeOut('slow');
             }
             else
             {
                 $("#editpageloader").show();
-                var fileName = document.getElementById('edit_publication_document').files[0].name;
+                var fileName = document.getElementById('edit_others_document').files[0].name;
                 var fd = new FormData();
-                var file = document.getElementById('edit_publication_document').files[0];
+                var file = document.getElementById('edit_others_document').files[0];
                 var document_id = $('#edit_document_id').val();
-                fd.append('edit_publication_document', file);
+                fd.append('edit_others_document', file);
                 fd.append('document_id', document_id);
                 token_value=$("input[name=csrfmiddlewaretoken]").val();
                 $.ajaxSetup
@@ -419,9 +420,9 @@
                             });
                         }else
                         {
-                            $('#edit_publication_documentErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                            $('#edit_publication_documentErrorMsg').show();
-                            $('#edit_publication_documentErrorMsg').delay(2000).fadeOut('slow');
+                            $('#edit_others_documentErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                            $('#edit_others_documentErrorMsg').show();
+                            $('#edit_others_documentErrorMsg').delay(2000).fadeOut('slow');
                         }
                     }
                 });

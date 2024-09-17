@@ -37,9 +37,14 @@ function makeNdiDashCall(id_number) {
                 window.location.href = '/dashboard'; // Redirect to dashboard
             } else if (response.redirect === 'index') {
                 // Handle index redirect, possibly display the message
-                window.location.href = '/';
-                if (response.message) {
-                    //alert(response.message); // Or handle the message display appropriately
+                if(response.message === 'ID Not Found')
+                {
+                    $("#loginModalForm").modal('show');
+                    $("#ndi_div").hide();
+                    $("#loginBox").show();
+                    $('#ndi_login_error').html("CID Not Found. Please Register First To Login");
+                    $('#ndi_login_error').show();
+                    $('#ndi_login_error').delay(2000).fadeOut('slow');
                 }
             }
         },
@@ -73,7 +78,12 @@ function makeNdiDashCallEID(eid) {
                 window.location.href = '/';
                 if (response.message) {
                     // Optionally display the message
-                    alert(response.message); // Or handle the message display appropriately
+                    $("#loginModalForm").modal('show');
+                    $("#ndi_div").hide();
+                    $("#loginBox").show();
+                    $('#ndi_login_error').html("CID Not Found. Please Register First To Login");
+                    $('#ndi_login_error').show();
+                    $('#ndi_login_error').delay(2000).fadeOut('slow');
                 }
             }
         },
@@ -103,36 +113,32 @@ function nats_proponent_call(proofRequestThreadId,value) {
     });
 }
 
-function makeIssuanceCall(relationshipDid,thid,id_number,holder_did) {
+function makeIssuanceCall(relationshipDid, thid, id_number, holder_did) {
     $.ajax({
         url: '/issuance_call/',
         method: 'POST',
         data: {
             relationshipDid: relationshipDid,
-            thread_id:thid,
-            id_number:id_number,
-            holder_did:holder_did
+            thread_id: thid,
+            id_number: id_number,
+            holder_did: holder_did
         },
         headers: {
             'X-CSRFToken': csrftoken
         },
         success: function(response) {
             if (response.message) {
-                alert(response.message);
+                $('#ndi_div').hide();
+                $('#issuanceMessageDiv').show();
             } else if (response.error) {
-                alert(response.error);
+                $('#loginBox').hide();
+                $('#issuanceMessageError').hide();
             }
         },
         error: function(xhr, status, error) {
-            console.error("Error response received:", xhr.responseText); // Debug statement
-            try {
-                var response = JSON.parse(xhr.responseText);
-                if (response.details) {
-                    console.error("Details:", response.details);
-                }
-            } catch (e) {
-                console.error("Unexpected error:", e); // Debug statement
-            }
         }
     });
 }
+
+
+

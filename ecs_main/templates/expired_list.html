@@ -9,6 +9,7 @@
                     <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
                         <i class="ri-check-line me-2"></i>
                     </div>
+                    <div id="revocation-status"></div>
                     <div id="cardCollpase1" class="collapse pt-3 show">
                         <table id="basic-datatable" class="table dt-responsive nowrap w-100">
                             <thead>
@@ -18,6 +19,7 @@
                                     <th scope="col">Service Name</th>
                                     <th scope="col">Approved Date</th>
                                     <th scope="col">Expiry Date</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -25,19 +27,22 @@
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>
-                                            <a href="javascript: void(0);" class="btn btn-outline-primary" onclick="viewApplicationDetails('{{expired_list.application_no}}','{{expired_list.service_id}}','{{expired_list.application_source}}')">{{expired_list.application_no}}</a>
+                                            {{expired_list.application_no}}
                                         </td>
                                         {% for service_details in service_details %}
-                                            {% if expired_list.service_id == service_details.service_id %}
+                                            {% if service_details.service_id == expired_list.service_id %}
                                                 <td>{{service_details.service_name}}</td>
                                             {% endif %}
                                         {% endfor %}
                                         <td>{{expired_list.ec_approve_date|date:"d-m-Y"}}</td>
                                         <td>{{expired_list.ec_expiry_date|date:"d-m-Y"}}</td>
+                                        <td>
+                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Revoke" onclick="revoke_ec('{{ expired_list.revocation_id }}')"><i class="uil uil-lock-alt"></i></button>
+                                        </td>
                                     </tr>
                                     {% empty %}
                                     <tr>
-                                        <td colspan="5" class="text-center">No Data</td>
+                                        <td colspan="6" class="text-center">No Data</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -49,19 +54,45 @@
     </div>
 </div>
 <script>
-    function viewApplicationDetails(application_no,service_id, application_source)
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'view_application_details' %}",
-            data :{'application_no':application_no, 'service_id':service_id,'application_source':application_source},
-            success : function(data)
-            {
-                $('#expired_list').html(data);
-                $('#expired_list').show();
+function revoke_ec(revocation_id) {
+    $.ajax({
+        type: "POST",
+        url: "{% url 'revoke_ec' %}",
+        data: { 'revocation_id': revocation_id ,  csrfmiddlewaretoken: '{{ csrf_token }}'},
+        success: function(data) {
+            let alertBox = '';
+
+            if (data.message) {
+                // Create a Bootstrap success alert
+                alertBox = `
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        ${data.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`;
+            } else if (data.error) {
+                // Create a Bootstrap error alert
+                alertBox = `
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Error: ${data.error}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`;
             }
-        });
-    }
+
+            // Display the alert in a specific div
+            $("#revocation-status").html(alertBox);
+        },
+        error: function(xhr, status, error) {
+            // Handle any unexpected errors
+            let alertBox = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    An unexpected error occurred: ${error}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>`;
+            
+            $("#revocation-status").html(alertBox);
+        }
+    });
+}
 </script>
 {% endblock %}       
 

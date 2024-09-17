@@ -29,7 +29,7 @@
         <link href="{% static 'assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
         // WebSocket setup
-        let url = `ws://${window.location.host}/ws/socket-server/`;
+        let url = `ws://${window.location.host}/ws/socketserver/`;
         const socket = new WebSocket(url);
 
         socket.onmessage = function(e) {
@@ -48,19 +48,37 @@
             const category = data.category;
             const thread_id = data.thread_id;
             const session_id = data.session_id;
-            //alert(session_id);
-            //alert(sessionId);
-            //alert(id_number);
-            //alert(eid);
-
+            const proof_type = data.proof_type;
             // Check if session_id matches the stored sessionId
             if (session_id !== sessionId) {
                 console.log('Session ID does not match. Ignoring message.');
                 return; // Exit the function if session_id does not match
             }
-
+            if(proof_type == 'present-proof/rejected')
+            {
+                if(category=='Login')
+                {
+                    $("#ndi_div").hide();
+                    $("#loginBox").show();
+                    $('#ndi_login_error').html("Proof Not Shared From Wallet");
+                    $('#ndi_login_error').show();
+                    $('#ndi_login_error').delay(4000).fadeOut('slow');
+                }
+                else if(category=='Issuance')
+                {
+                    $('#ndi_div').hide();
+                    $('#issuanceMessageError').show();
+                }
+                else
+                {
+                    $('#proponent_ErrorMsg').html("Proof Not Shared From Wallet");
+                    $('#proponent_ErrorMsg').show();
+                    $('#proponent_ErrorMsg').delay(4000).fadeOut('slow');
+                }
+                return;
+            }
             // Execute conditions only if session_id matches
-            if (eid && category === 'Employee' && id_number === '1111') {
+            if (eid && category === 'Employee' && id_number) {
                 makeNdiDashCallEID(eid);
             } else if (id_number && category === 'Login') {
                 makeNdiDashCall(id_number);
@@ -96,19 +114,26 @@
             console.log("Session value cleared.");
         }
 
-        // Function to show the registration form and hide the QR code section
         function showRegistrationForm() {
-            // Hide the QR code section
-            document.getElementById('ndi_div_proponent').style.display = 'none';
-            // Show the registration form section
-            document.getElementById('registration_div').style.display = 'block';
-            // Show the modal again
-            $('#registrationModalForm').modal('show');
-            $('.modal-footer').show();
-        }
+    // Show the modal if it's not already visible
+    if (!$("#registrationModalForm").hasClass('show')) {
+        $("#registrationModalForm").modal('show');
+    }
+
+    // Hide the QR code section
+    $('#ndi_div_proponent').hide();
+    
+    // Show the registration form section
+    $('#registration_div').show();
+
+    // Show the modal footer (if hidden)
+    $('.modal-footer').show();
+}
+
 
         // Function to fill input fields with data received
         function fillInputFields(id_number, full_name, dzongkhag, gewog, village) {
+	    sessionStorage.setItem('modalShown', 'true');
             document.getElementById('cid').value = id_number;
             document.getElementById('proponent_name').value = full_name;
             document.getElementById('i_dzongkhag').value = dzongkhag;
@@ -255,6 +280,21 @@
             height: auto;
         }
 
+        #deepLinkPro {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #deepLinkBtnPro {
+            width: 100%;
+            padding: 10px;
+        }
+
+        #deepLinkBtnPro img {
+            max-width: 40%; /* Adjust the size as needed */
+            height: auto;
+        }
+
         #qrcode {
             display: block;
         }
@@ -275,9 +315,32 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Darker shadow */
     }
 
+    .credential-card {
+            max-width: 400px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+        .credential-card img {
+            width: 50px;
+            height: 50px;
+        }
+        .credential-card .btn-home {
+            margin-top: 20px;
+            display: block;
+            width: 100%;
+            text-decoration: none;
+            color: #007bff;
+        }
 </style>
 
 <body style="background-color:white;">
+	<div id="progressloader" class="spinner-border text-primary" role="status" style="display: none; width: 4rem; height: 4rem; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border-width: 0.5rem;">
+    <span class="visually-hidden">Loading...</span>
+</div>
     <div class="container">
         <div class="row">
             <div class="col-md-11 mt-0">
@@ -391,13 +454,13 @@
 <!-- LOGIN Modal -->
  <div class="modal fade" id="loginModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content modal-custom">
+        <div class="modal-content modal-custom non-issuance">
             <div id="loginBox">
                 <div class="modal-header text-center">
                     <h1 class="modal-title w-100" style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                 </div>
-
+                <div class="alert alert-danger" id="ndi_login_error" style="display: none;"></div>
                 <div id="loginSelectionBox">
                     <div class="modal-body mx-4">
                         <div class="form-check form-check-inline">
@@ -444,12 +507,12 @@
                             &nbsp; &nbsp; Login with Bhutan NDI
                         </a>
                     </div>
-                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-center">
+                    <!-- <div class="modal-header mx-5 pt-3 mb-1 justify-content-center">
                         <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiCredentialId" onclick="authenticate_ndi('Issuance')">
                             <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
                             &nbsp; &nbsp; Receive Credential
                         </a>
-                    </div>
+                    </div> -->
                 </div>
 
                 <!-- Progress indicator HTML -->
@@ -466,6 +529,7 @@
                         {% if message %}
                         <div class="alert alert-danger" id="login_error">{{ message }}</div>
                         {% endif %}
+                        
                         <div class="modal-body mx-4">
                             <div class="md-form mb-2">
                                 <input type="email" id="username" name="username" placeholder="Email" class="form-control validate" autocomplete="off">
@@ -587,6 +651,47 @@
                     </ul>
                 </div>
             </div>
+            <div id="issuanceMessageDiv"  style="display: none; text-align: center">
+                <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
+                <div class="splitter"></div>
+                <i class="mdi mdi-account-check-outline"></i>
+                <div class="row justify-content-center">
+                    <div class="col-md-9 custom-vertical-align-left">
+                        <br>
+                        <ul class="list-unstyled" style="text-align: left;">
+                            <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7" style="margin-bottom: 10px;">Credential for Environment Clearance sent to your wallet. New credentials will automatically revoke any previously issued credentials.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="splitter"></div>
+                <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center mb-1">Back To Login</a>
+            </div>
+            <div id="issuanceMessageError"  style="display: none; text-align: center">
+                <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
+                <div class="col-md-9 custom-vertical-align-left">
+                    <br>
+                    <ul class="list-unstyled" style="text-align: left;">
+                        <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7" style="margin-bottom: 10px;">Proof Not Shared From Wallet.</li>
+                    </ul>
+                </div>
+                <div class="splitter"></div>
+            </div>
+            
+            <div id="issuanceMessageDiv"  style="display: none; text-align: center">
+                <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
+                <div class="splitter"></div>
+                <i class="mdi mdi-account-check-outline"></i>
+                <div class="row justify-content-center">
+                    <div class="col-md-9 custom-vertical-align-left">
+                        <br>
+                        <ul class="list-unstyled" style="text-align: left;">
+                            <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7" style="margin-bottom: 10px;">Credential for Environment Clearance sent to your wallet. New credentials will automatically revoke any previously issued credentials.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="splitter"></div>
+                <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center mb-1">Back To Login</a>
+            </div>
         </div>
     </div>
 </div>
@@ -596,6 +701,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <!--Content-->
         <div class="modal-content modal-custom">
+            <div id="proponent_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
             <!--Header-->
             <div style="display: flex; align-items: center; justify-content: space-between; margin-right: 20px;">
                 <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black; text-align: center; margin-top: 20px; flex: 1;">Environmental Clearance Services System</h1>
@@ -737,8 +843,8 @@
                             Scan QR code from <span style="color:#5AC994 ">Bhutan NDI </span> app
                         </h2>
                         <div class="qr-img" style="margin-top: 10px">
-                            <div id="deepLink" class="col-md-5 text-center" style="display: none;">
-                                <button id="deepLinkBtn" class="button button1 text-white btn-bg cus-button">
+                            <div id="deepLinkPro" class="col-md-5 text-center" style="display: none;">
+                                <button id="deepLinkBtnPro" class="button button1 text-white btn-bg cus-button">
                                     <img src="{% static 'assets/images/NDI_logo.png' %}" alt="NDI Logo" class="ndi-logo">Open Bhutan NDI App
                                 </button>
                             </div>
@@ -804,6 +910,13 @@
         <script src="{% static 'assets/js/jquery-qrcode.min.js' %}"></script>
         <script src="https://cdn.jsdelivr.net/npm/nats@2.1.7/dist/nats-base-client.umd.min.js"></script>
     <script>
+	    $('.modal').on('hide.bs.modal', function (e) {
+            // Check if the event was triggered by clicking outside the modal
+            if ($(e.target).hasClass('modal')) {
+                location.reload(); // Reload the page
+            }
+        });
+        
         function forgotPassword()
         {
 			$('#loginBox').hide();
@@ -815,6 +928,7 @@
 			$('#loginBox').show();
 			$('#ForgotBox').hide();
 			$('#ndi_div').hide();
+            $('#issuanceMessageDiv').hide();
 	 	}
 
         function get_gewog(dzongkhag_id)
@@ -1238,6 +1352,16 @@ let sessionId = null; // Global variable to store the session ID
 
 function authenticate_ndi(value) {
     // Show progress indicator
+    $('#progressloader').show();
+
+    if(value=="Issuance")
+    {
+        $('#loginBox').hide();
+            // Show the modal
+        $('#loginModalForm').modal('show');
+        $('#progressloader').show();
+    }
+    
     $('#progressIndicator').show();
 
     $.ajax({
@@ -1407,11 +1531,17 @@ function updateDisplayProponent(proofRequestURL, deepLinkURL, proofRequestThread
 
     if (isMobileDevice()) {
         // Show button on mobile devices
-        $('#registration_div').hide();
-        $("#ndi_div_proponent").show();
-        $("#deepLink").show();
-        $("#deepLinkBtn").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
-        $('#qrcode').hide();
+	if (!$("#registrationModalForm").hasClass('show')) {
+        	$("#registrationModalForm").modal('show');
+   	 }
+
+    	// Ensure that the required elements are shown/hidden without refreshing or closing the modal
+    	$('#registration_div').hide();
+    	$("#ndi_div_proponent").show();
+    	$("#deepLinkPro").show();
+    	$("#deepLinkBtnPro").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
+    	$('#qrcode').hide();
+	sessionStorage.setItem('modalShown', 'true');
     } else {
         // Show QR code on larger screens
         $('#registration_div').hide();
@@ -1450,6 +1580,11 @@ function updateDisplayProponent(proofRequestURL, deepLinkURL, proofRequestThread
     nats_proponent_call(proofRequestThreadId, value);
 }
 
+document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible' && sessionStorage.getItem('modalShown') === 'true') {
+        $("#registrationModalForm").modal('show');
+    }
+});
 
 function toggleLoginForm() {
     var proponentLoginForm = document.getElementById('proponentLoginForm');

@@ -499,6 +499,7 @@ class t_ec_industries_t1_general(models.Model):
     bench_height = models.IntegerField(default=None, blank=True, null=True)
     bench_width = models.IntegerField(default=None, blank=True, null=True)
     revocation_id = models.CharField(max_length=100,default=None, blank=True, null=True)
+    is_revoked = models.CharField(max_length=100,default=None, blank=True, null=True)
 
 class t_ec_industries_t1_general_audit(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -1170,7 +1171,10 @@ class t_payment_details(models.Model):
     receipt_no = models.CharField(max_length=255,default=None, blank=True, null=True)
     receipt_date = models.DateTimeField(default=None, blank=True, null=True)
     total_receipt_amount = models.DecimalField(max_digits=10, decimal_places=2,default=None, blank=True, null=True)
-    service_type = models.CharField(max_length=100, default=None, blank=True, null=True)
+    service_type = models.CharField(max_length=100, default=None, blank=True, null=True),
+    cancelled_date = models.DateTimeField(default=None, blank=True, null=True)
+    cancelled_reason = models.CharField(max_length=255,default=None, blank=True, null=True)
+    remarks = models.CharField(max_length=255,default=None, blank=True, null=True)
 
 class t_workflow_dtls(models.Model):
     instance_id = models.AutoField(primary_key=True)

@@ -708,7 +708,7 @@ def save_iee_application(request):
             'applicant_id': request.session['email'],
             'applicant_name': request.POST.get('applicant_name'),
             'address': request.POST.get('address'),
-            'cid':request.POST.get('cid'),
+            'cid':request.session['cid'],
             'contact_no':request.POST.get('contact_no'),
             'email':request.POST.get('email'),
             'focal_person':request.POST.get('focal_person'),
@@ -1684,7 +1684,7 @@ def save_industry_ancillary_application(request):
         application_type = request.POST.get('application_type')
         applicant_name = request.POST.get('applicant_name')
         address = request.POST.get('address')
-        cid = request.POST.get('cid')
+        cid = request.session['cid']
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
         focal_person = request.POST.get('focal_person')
@@ -3064,7 +3064,7 @@ def submit_general_application(request):
                             app_hist_details.update(remarks='Your Application Submitted')
                             app_hist_details.update(action_date=timezone.now())
                             make_payment_request(request,application_no,total_amount,'NEW GENERAL APPLICATION',request.session['email'],"208",service_type)
-                            send_payment_mail(request.session['name'], request.session['email'], total_amount)
+                            #send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -3426,61 +3426,56 @@ def view_tor_application_details(request):
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
 
-def insert_app_payment_details(request,application_no, description,total_amount,service_type,paymentAdviceNo):
+def insert_app_payment_details(request, application_no, description, total_amount, service_type, paymentAdviceNo):
+    print("insert_app_payment_details")
     cid_no = None
     mob_no = None
     identifier = None
+    
     app_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+    
     if description == "NEW GENERAL APPLICATION":
-        identifier == "new_general_application"
+        identifier = "new_general_application"
     elif description == "NEW IEE APPLICATION":
-        identifier == "new_iee_application"
+        identifier = "new_iee_application"
     elif description == "NEW EA APPLICATION":
-        identifier == "new_ea_application"
+        identifier = "new_ea_application"
     elif description == "NEW FOREST APPLICATION":
-        identifier == "new_forestry_application"
+        identifier = "new_forestry_application"
     elif description == "NEW GW APPLICATION":
-        identifier == "new_ground_water_application"
+        identifier = "new_ground_water_application"
     elif description == "NEW QUARRY APPLICATION":
-        identifier == "new_quarry_application"
+        identifier = "new_quarry_application"
     elif description == "NEW ENERGY APPLICATION":
-        identifier == "new_energy_application"
+        identifier = "new_energy_application"
     elif description == "NEW TOURISM APPLICATION":
-        identifier == "new_tourism_application"
+        identifier = "new_tourism_application"
     elif description == "NEW TRANSMISSION APPLICATION":
-        identifier == "new_transmission_application"
+        identifier = "new_transmission_application"
     elif description == "NEW ROAD APPLICATION":
-        identifier == "new_road_application"
+        identifier = "new_road_application"
     else:
-        description == "tor_form"
+        identifier = "tor_form"
+    
     for app_det in app_details:
         cid_no = app_det.cid
         mob_no = app_det.contact_no
-    if 'new' in description:
-        t_payment_details.objects.create(ref_no=application_no,
-                payment_request_date=date.today(),
-                tax_payer_name=request.session['name'],
-                agency_code="DTH1552",
-                tax_payer_document_no=cid_no,
-                mobile_no=mob_no,
-                payer_email=request.session['email'],
-                description=identifier,
-                total_payable_amount=total_amount,
-                service_type=service_type,
-                payment_advice_no=paymentAdviceNo
-                )
-    elif 'tor' in description:
-        t_payment_details.objects.create(ref_no=application_no,
-                payment_request_date=date.today(),
-                tax_payer_name=request.session['name'],
-                agency_code="DTH1552",
-                tax_payer_document_no=cid_no,
-                mobile_no=mob_no,
-                payer_email=request.session['email'],
-                description=identifier,
-                total_payable_amount=total_amount,
-                service_type=service_type,
-                payment_advice_no=paymentAdviceNo)
+    
+    if 'new' in identifier or 'tor' in identifier:
+        t_payment_details.objects.create(
+            ref_no=application_no,
+            payment_request_date=date.today(),
+            tax_payer_name=request.session['name'],
+            agency_code="DTH1552",
+            tax_payer_document_no="11303003082",
+            mobile_no=mob_no,
+            payer_email=request.session['email'],
+            description=identifier,
+            total_payable_amount=total_amount,
+            service_type=service_type,
+            payment_advice_no=paymentAdviceNo
+        )
+    
     return redirect(identifier)
 
 
@@ -3655,7 +3650,7 @@ def save_road_application(request):
         project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
         address = request.POST.get('address')
-        cid = request.POST.get('cid')
+        cid = request.session['cid']
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
@@ -4092,6 +4087,7 @@ def save_general_application(request):
                         ca_authority=ca_auth,
                         applicant_id=request.session['email'],
                         colour_code=request.session['colour_code'],
+                        cid=request.session['cid'],
                         project_name=project_name,
                         project_category=project_category,
                         applicant_name=applicant_name,
@@ -4135,6 +4131,7 @@ def save_general_application(request):
                         address=address,
                         contact_no=contact_no,
                         email=email,
+                        cid=request.session['cid'],
                         focal_person=focal_person,
                         dzongkhag_throm=dzongkhag_throm,
                         thromde_id=thromde_id,
@@ -4168,6 +4165,7 @@ def save_general_application(request):
                     thromde_id=thromde_id,
                     location_name=project_site,
                     email=email,
+                    cid=request.session['cid'],
                     focal_person=focal_person,
                     dzongkhag_code=dzongkhag_code,
                     gewog_code=gewog_code,
@@ -4261,7 +4259,7 @@ def save_forest_application(request):
             'project_category': request.POST.get('project_category'),
             'applicant_name': request.POST.get('applicant_name'),
             'address': request.POST.get('address'),
-            'cid': request.POST.get('cid'),
+            'cid': request.session['cid'],
             'contact_no': request.POST.get('contact_no'),
             'email': request.POST.get('email'),
             'focal_person': request.POST.get('focal_person'),
@@ -4438,7 +4436,7 @@ def save_ground_water_application(request):
         applicant_name = request.POST.get('applicant_name')
         application_type = request.POST.get('application_type')
         address = request.POST.get('address')
-        cid = request.POST.get('cid')
+        cid = request.session['cid']
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
@@ -4696,7 +4694,7 @@ def save_quarry_application(request):
         project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
         address = request.POST.get('address')
-        cid = request.POST.get('cid')
+        cid = request.session['cid']
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
         focal_person = request.POST.get('focal_person')
@@ -5143,7 +5141,7 @@ def save_energy_application(request):
         project_name = request.POST.get('project_name')
         applicant_name = request.POST.get('applicant_name')
         address = request.POST.get('address')
-        cid = request.POST.get('cid')
+        cid = request.session['cid']
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
@@ -5433,7 +5431,7 @@ def save_tourism_application(request):
         project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
         address = request.POST.get('address')
-        cid = request.POST.get('cid')
+        cid = request.session['cid']
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
@@ -7156,7 +7154,6 @@ def get_auth_token():
 
 def make_payment_request(request,application_no,total_amount,description, email, service_code,service_type):
     token = get_auth_token()#
-    print(token)
     cid_no = None
     mob_no = None
     app_name = None
@@ -7308,7 +7305,12 @@ def ecss_payment_reversal(request):
             ref_no = data['refNo']
             payment_details = t_payment_details.objects.filter(ref_no=ref_no)
             payment_details.update(
-                receipt_date = None
+                instrument_no=data['instrumentNo'],
+                instrument_date=data['instrumentDate'],
+                issuing_bank=data['issuingBank'],
+                cancelled_date=data['cancelledDate'],
+                cancelled_reason=data['cancelledReason'],
+                remarks=data['remarks']
             )
 
             response_data = {
@@ -7409,7 +7411,6 @@ def proof_request(request):
         response_data['session_id'] = new_session_id
 
         return JsonResponse(response_data)
-
     except requests.RequestException as e:
         logger.error(f"Error making request to verifier API: {e}")
         return JsonResponse({'error': 'Error making request to verifier API'}, status=500)
@@ -7642,7 +7643,7 @@ def fetch_verified_user_data(request):
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ecssstaging2233",
+        "webhookId": "ecsstestwebhooknine",
         "threadId": thread_id
     }
 
@@ -7650,6 +7651,7 @@ def fetch_verified_user_data(request):
         res = requests.post(BASE_URL, json=post_data, headers=headers, verify=False, timeout=15)
         res.raise_for_status()  # This will raise an HTTPError if the HTTP request returned an unsuccessful status code
         response_data = res.json()
+        print("fetch verified data:", response_data)
         
     except requests.exceptions.Timeout:
         return JsonResponse({"error": "The request timed out. Please try again later."}, status=504)
@@ -7669,12 +7671,12 @@ def webhook(request):
     try:
         cleaned_body = request.body.decode('utf-8')
         data = json.loads(cleaned_body)
-        print("Received data:", data)
-
+        
+    
         requested_presentation = data.get('requested_presentation', {})
         revealed_attrs = requested_presentation.get('revealed_attrs', {})
 
-        id_number = revealed_attrs.get('ID Number', [{}])[0].get('value', '1111')
+        id_number = revealed_attrs.get('ID Number', [{}])[0].get('value', None)
         eid = revealed_attrs.get('EID', [{}])[0].get('value', None)
         full_name = revealed_attrs.get('Full Name', [{}])[0].get('value', None)
         relationshipDid = data.get('relationship_did')
@@ -7697,7 +7699,7 @@ def webhook(request):
         if session_id is None:
             return JsonResponse({"statusCode": "400", "statusDescription": "Session not found"}, status=400)
 
-        if eid is not None and id_number == '1111' and full_name is None:
+        if eid is not None and id_number is not None and full_name is None:
             payload = {
                 'type': 'send_id_number',
                 'id_number': id_number,
@@ -7706,7 +7708,8 @@ def webhook(request):
                 'thid': thid,
                 'holder_did': holder_did,
                 'category': category,
-                'session_id': session_id  # Include session_id in payload
+                'session_id': session_id,  # Include session_id in payload
+                'proof_type': data.get('type')
             }
             payload = {k: v for k, v in payload.items() if v is not None}
             print("Payload to be sent to WebSocket:", payload)
@@ -7724,7 +7727,8 @@ def webhook(request):
                 'thid': thid,
                 'holder_did': holder_did,
                 'category': category,
-                'session_id': session_id  # Include session_id in payload
+                'session_id': session_id,  # Include session_id in payload
+                'proof_type': data.get('type')
             }
             payload = {k: v for k, v in payload.items() if v is not None}
             print("Payload to be sent to WebSocket:", payload)
@@ -7748,7 +7752,8 @@ def webhook(request):
                 'village': village,
                 'thid': thid,
                 'category': category,
-                'session_id': session_id  # Include session_id in payload
+                'session_id': session_id , # Include session_id in payload
+                'proof_type': data.get('type')
             }
             payload = {k: v for k, v in payload.items() if v is not None}
             print("Payload to be sent to WebSocket:", payload)
@@ -7759,13 +7764,26 @@ def webhook(request):
             )
             return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
         else:
-            return JsonResponse({"statusCode": "400", "statusDescription": "Invalid input combination"}, status=400)
+            payload = {
+                'type': 'send_id_number',
+                'id_number': None,
+                'category': category,
+                'session_id': session_id , # Include session_id in payload
+                'proof_type': data.get('type')
+            }
+            payload = {k: v for k, v in payload.items() if v is not None}
+            print("Payload to be sent to WebSocket:", payload)
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                'id_number_group',
+                payload
+            )
+            return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
     except KeyError as e:
         print(f"KeyError: {e}")
         return JsonResponse({"statusCode": "400", "statusDescription": "Invalid request payload"}, status=400)
     except json.JSONDecodeError:
         return JsonResponse({"statusCode": "400", "statusDescription": "Invalid JSON"}, status=400)
-
 
 def ndi_dash(request):
     if request.method == 'POST':
@@ -7794,7 +7812,7 @@ def ndi_dash(request):
                 request.session['contact_number'] = check_user.contact_number
                 return JsonResponse({'redirect': 'dashboard'})
         else:
-            _message = 'ID number is missing/ User Not Registered.'
+            _message = 'ID Not Found'
             print(_message)
             context = {'message': _message}
             return JsonResponse({'redirect': 'index', 'message': _message})
@@ -7860,67 +7878,120 @@ def issuance_call(request):
         holder_did = request.POST.get('holder_did')
         relationshipDid = request.POST.get('relationshipDid')
         print(f"Relation DID: {relationshipDid}")
+        
         ndi_token = get_access_token_ndi()  # Replace with your method to get NDI access token
-
-        # Fetch application details from your model
-        application_details = t_ec_industries_t1_general.objects.filter(cid=id_number, application_status='A').first()
-
-        if not application_details:
+        
+        # Fetch application details with necessary filtering in one query
+        application_details = t_ec_industries_t1_general.objects.filter(cid=id_number, application_status='A')
+        
+        if not application_details.exists():
             return JsonResponse({'error': 'No application details found for the provided ID number'}, status=404)
 
-        # Unpack application details into credential_data
-        credential_data = {
-            "EC Reference Number": str(application_details.ec_reference_no),
-            "EC Approve Date": application_details.ec_approve_date.isoformat(),
-            "EC Expiry Date": application_details.ec_expiry_date.isoformat(),
-            "EC Status": "A",
-            "Applicant Name": str(application_details.applicant_name),
-            "Project Name": str(application_details.project_name),
-            "Address": str(application_details.address),
-            "Location Name": str(application_details.location_name),
-            "Total Area Acre": str(application_details.total_area_acre)
-        }
-        proof_data = {
-            "schemaId": "https://dev-schema.ngotag.com/schemas/086f404c-a0c1-43ca-86ce-7e292c928964",
-            "credentialData": credential_data,
-            "holderDID":holder_did,
-            "forRelationship":relationshipDid
-        }
-        # Define API endpoint and headers for issuing credential
-        issue_url = "https://demo-client.bhutanndi.com/issuer/v1/issue-credential"
-        headers = {
-            'Authorization': f"Bearer {ndi_token}",
-            'Content-Type': 'application/json'
-        }
+        # Check if any of the application details have a non-null revocation_id
+        issuance_details = application_details.filter(revocation_id__isnull=False,is_revoked__isnull=True).exists()
 
-        # Make API call to issue credential
-        response = requests.post(issue_url, headers=headers, data=json.dumps(proof_data))
-        response_data = response.json()
-        revocation_id = response_data['data']['revocationId']
-        application_details.update(revocation_id=revocation_id)
-        # Check response status and handle accordingly
-        if response.status_code == 201:
-            return JsonResponse({'message': 'Credential offer created successfully'}, status=response.status_code)
-        else:
-            return JsonResponse({'error': 'Failed to issue credential', 'details': response.json()}, status=response.status_code)
+        if issuance_details:
+            revocation_response = revoke_vc(request, id_number)
+            if revocation_response.status_code != 201:
+                return JsonResponse({'error': 'Failed to revoke existing credential. Issuance aborted.', 'details': revocation_response.json()}, status=revocation_response.status_code)
+
+        credentials_issued = []
+
+        # Loop through the application details and issue credentials
+        for application_detail in application_details:
+            credential_data = {
+                "EC Reference Number": str(application_detail.ec_reference_no),
+                "EC Approve Date": application_detail.ec_approve_date.isoformat(),
+                "EC Expiry Date": application_detail.ec_expiry_date.isoformat(),
+                "EC Status": "A",
+                "Applicant Name": str(application_detail.applicant_name),
+                "Project Name": str(application_detail.project_name),
+                "Address": str(application_detail.address),
+                "Location Name": str(application_detail.location_name),
+                "Total Area Acre": str(application_detail.total_area_acre)
+            }
+            proof_data = {
+                "schemaId": "https://dev-schema.ngotag.com/schemas/086f404c-a0c1-43ca-86ce-7e292c928964",
+                "credentialData": credential_data,
+                "holderDID": holder_did,
+                "forRelationship": relationshipDid
+            }
+
+            issue_url = "https://demo-client.bhutanndi.com/issuer/v1/issue-credential"
+            headers = {
+                'Authorization': f"Bearer {ndi_token}",
+                'Content-Type': 'application/json'
+            }
+
+            # Make API call to issue credential
+            response = requests.post(issue_url, headers=headers, data=json.dumps(proof_data))
+            response_data = response.json()
+
+            if response.status_code == 201:
+                revocation_id = response_data['data'].get('revocationId')
+                if revocation_id:
+                    application_detail.revocation_id = revocation_id
+                    application_detail.save()
+                credentials_issued.append(f"Credential for EC Reference Number {application_detail.ec_reference_no} issued successfully")
+            else:
+                return JsonResponse({'error': 'Failed to issue credential', 'details': response_data}, status=response.status_code)
+
+        return JsonResponse({'message': 'Credentials issued successfully', 'details': credentials_issued}, status=201)
+
     except Exception as e:
         print(f"Exception occurred: {e}")
         return JsonResponse({'error': 'An unexpected error occurred.', 'details': str(e)}, status=500)
-    
-def revoke_ec(request):
-    revocation_id = request.POST.get(revocation_id)
-    
-    ndi_token = get_access_token_ndi()
 
-    url = f'https://demo-client.bhutanndi.com/issuer/v1/revoke_suspend?status=REVOKED&revocationId={revocation_id}'
+def revoke_vc(request, id_number):
+    issuance_detail = t_ec_industries_t1_general.objects.filter(
+        cid=id_number, application_status='A', revocation_id__isnull=False
+    ).first()
+
+    if not issuance_detail:
+        return JsonResponse({'error': 'No credential found to revoke.'}, status=404)
+
+    revocation_id = issuance_detail.revocation_id
+    ndi_token = get_access_token_ndi()
+    url = 'https://demo-client.bhutanndi.com/issuer/v1/revoke_suspend'
+    params = {
+        'status': 'REVOKED',
+        'revocationId': revocation_id
+    }
     headers = {
         'accept': '*/*',
         'Authorization': f'Bearer {ndi_token}',
     }
 
-    response = requests.post(url, headers=headers, data='')
+    response = requests.post(url, headers=headers, params=params)
 
-    if response.status_code == 200:
+    return response
+
+def revoke_ec(request):
+    revocation_id = request.POST.get('revocation_id')
+    print(f"REVOCATION ID: {revocation_id}")
+    
+    if not revocation_id:
+        return JsonResponse({'error': 'Revocation ID is required'}, status=400)
+
+    ndi_token = get_access_token_ndi()
+
+    url = 'https://demo-client.bhutanndi.com/issuer/v1/revoke_suspend'
+    params = {
+        'status': 'REVOKED',
+        'revocationId': revocation_id
+    }
+    headers = {
+        'accept': '*/*',
+        'Authorization': f'Bearer {ndi_token}',
+    }
+    app_details = t_ec_industries_t1_general.objects.filter(revocation_id=revocation_id)
+    app_details.update(is_revoked='Y')
+    response = requests.post(url, headers=headers, params=params)
+
+    if response.status_code == 201:
         return JsonResponse({'message': 'Revocation successful', 'data': response.json()})
+    elif response.status_code == 403:
+        return JsonResponse({'error': 'Forbidden', 'details': response.text}, status=403)
     else:
         return JsonResponse({'error': 'Failed to revoke credential', 'details': response.json()}, status=response.status_code)
+

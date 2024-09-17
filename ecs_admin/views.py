@@ -22,10 +22,6 @@ from datetime import datetime, timedelta
 from django.views.decorators.cache import cache_control
 from proponent.models import t_workflow_dtls
 
-from nats.aio.client import Client as NATS
-from nats.aio.errors import ErrConnectionClosed, ErrTimeout
-
-
 # Create your views here.
 def home(request):
     proponent_type = t_proponent_type_master.objects.all()
@@ -85,6 +81,7 @@ def login(request):
                     if not check_user.last_login_date:
                         request.session['login_id'] = check_user.login_id
                         request.session['email'] = check_user.email_id
+                        
                         security = t_security_question_master.objects.all()
                         response = render(request, 'update_password.html', {'security': security})
 
@@ -113,6 +110,10 @@ def login(request):
                             request.session['login_id'] = check_user.login_id
                             request.session['address'] = check_user.address
                             request.session['contact_number'] = check_user.contact_number
+                            if check_user.proponent_type == 4:
+                                request.session['cid'] = check_user.cid
+                            else:
+                                request.session['cid'] = None
                             return redirect(dashboard)
                 else:
                     _message = 'User ID or Password Not Matching.'
@@ -1149,17 +1150,22 @@ def manage_others(request):
 
 def add_publication_file(request):
     data = dict()
-    attachment_name = request.FILES['publication_document']
+    myFile = request.FILES['others_document']  # Use get to avoid MultiValueDictKeyError
 
-    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/others")
-    if fs.exists(attachment_name.name):
-        data['form_is_valid'] = False
+    if myFile:
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/others")
+        if fs.exists(myFile.name):
+            data['form_is_valid'] = False
+        else:
+            fs.save(myFile.name, myFile)
+            file_url = "attachments" + "/" + str(timezone.now().year) + "/others" + "/" + myFile.name
+            data['form_is_valid'] = True
+            data['file_url'] = file_url
+            data['file_name'] = myFile.name
     else:
-        fs.save(attachment_name.name, attachment_name)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/others" + "/" + attachment_name.name
-        data['form_is_valid'] = True
-        data['file_url'] = file_url
-        data['file_name'] = attachment_name.name
+        data['form_is_valid'] = False
+        data['error'] = 'No file uploaded'
+
     return JsonResponse(data)
 
 def add_publication_attach(request):
@@ -1225,7 +1231,7 @@ def delete_publication_attachment(request):
 
 def update_publication_file(request):
     data = dict()
-    attachment_name = request.FILES['edit_publication_document']
+    attachment_name = request.FILES['edit_others_document']
     document_id = request.POST.get('document_id')
 
     file_attachment = t_file_attachment.objects.filter(document_id=document_id)
