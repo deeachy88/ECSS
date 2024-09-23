@@ -69,6 +69,11 @@
                     $('#ndi_div').hide();
                     $('#issuanceMessageError').show();
                 }
+                else if(category=='Issuance')
+                {
+                    $('#ndi_div').hide();
+                    $('#issuanceMessageError').show();
+                }
                 else
                 {
                     $('#proponent_ErrorMsg').html("Proof Not Shared From Wallet");
@@ -78,7 +83,7 @@
                 return;
             }
             // Execute conditions only if session_id matches
-            if (eid && category === 'Employee' && id_number) {
+            if (eid && category === 'Employee' && id_number === '1111') {
                 makeNdiDashCallEID(eid);
             } else if (id_number && category === 'Login') {
                 makeNdiDashCall(id_number);

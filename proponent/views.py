@@ -7763,7 +7763,7 @@ def webhook(request):
                 payload
             )
             return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
-        else:
+        elif data.get('type') == 'present-proof/rejected':
             payload = {
                 'type': 'send_id_number',
                 'id_number': None,

@@ -44,7 +44,7 @@ function makeNdiDashCall(id_number) {
                     $("#loginBox").show();
                     $('#ndi_login_error').html("CID Not Found. Please Register First To Login");
                     $('#ndi_login_error').show();
-                    $('#ndi_login_error').delay(2000).fadeOut('slow');
+                    $('#ndi_login_error').delay(10000).fadeOut('slow');
                 }
             }
         },
@@ -75,15 +75,15 @@ function makeNdiDashCallEID(eid) {
             } else if (response.redirect === 'dashboard') {
                 window.location.href = '/dashboard'; // Redirect to dashboard
             } else if (response.redirect === 'index') {
-                window.location.href = '/';
-                if (response.message) {
-                    // Optionally display the message
+                // Handle index redirect, possibly display the message
+                if(response.message === 'ID Not Found')
+                {
                     $("#loginModalForm").modal('show');
                     $("#ndi_div").hide();
                     $("#loginBox").show();
-                    $('#ndi_login_error').html("CID Not Found. Please Register First To Login");
+                    $('#ndi_login_error').html("EID Not Found. Please Register First To Login");
                     $('#ndi_login_error').show();
-                    $('#ndi_login_error').delay(2000).fadeOut('slow');
+                    $('#ndi_login_error').delay(10000).fadeOut('slow');
                 }
             }
         },
