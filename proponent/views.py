@@ -7643,7 +7643,7 @@ def fetch_verified_user_data(request):
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ecsstestwebhooknine",
+        "webhookId": "ecsstestwebhookten",
         "threadId": thread_id
     }
 
@@ -7676,7 +7676,7 @@ def webhook(request):
         requested_presentation = data.get('requested_presentation', {})
         revealed_attrs = requested_presentation.get('revealed_attrs', {})
 
-        id_number = revealed_attrs.get('ID Number', [{}])[0].get('value', None)
+        id_number = revealed_attrs.get('ID Number', [{}])[0].get('value', '1111')
         eid = revealed_attrs.get('EID', [{}])[0].get('value', None)
         full_name = revealed_attrs.get('Full Name', [{}])[0].get('value', None)
         relationshipDid = data.get('relationship_did')
@@ -7699,7 +7699,7 @@ def webhook(request):
         if session_id is None:
             return JsonResponse({"statusCode": "400", "statusDescription": "Session not found"}, status=400)
 
-        if eid is not None and id_number is not None and full_name is None:
+        if eid is not None and id_number == '1111' and full_name is None:
             payload = {
                 'type': 'send_id_number',
                 'id_number': id_number,
