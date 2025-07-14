@@ -3,7 +3,7 @@
     <div class="col-xl-12">
         <div class="card mt-1">
             <div class="card-body">
-                <h4 class="header-title mb-3"> Initial Environmental Examination (IEE) Form for General Projects -2022</h4>
+                <h4 class="header-title mb-3"> Initials Environmental Examination (IEE) Form for General Projects -2022</h4>
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
@@ -223,10 +223,10 @@
                                             <div id="total_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="application_form_successMsg" style="display:none">
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="application_form_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="application_form_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="application_form_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-4">
@@ -267,27 +267,18 @@
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Slope/Gradient</label>
                                                 <select class="form-select" name="terrain_slope" id="terrain_slope">
-                                                    <option selected>Choose One</option>
-                                                    {% if application_details.terrain_slope == "Flat land (below 20 degrees)" %}
-                                                        <option value="Flat land (below 20 degrees)" selected>Flat land (below 20 degrees)</option>
-                                                        <option value="Gentle slope (21-45 degrees)">Gentle slope (21-45 degrees)</option>
-                                                        <option value="Steep slope (46 – 60 degrees)">Steep slope (46 – 60 degrees)</option>
-                                                        <option value="Very steep slope (above 60 degrees)">Very steep slope (above 60 degrees)</option>
-                                                    {% elif application_details.terrain_slope == "Gentle slope (21-45 degrees)" %}
-                                                        <option value="Flat land (below 20 degrees)">Flat land (below 20 degrees)</option>
-                                                        <option value="Gentle slope (21-45 degrees)" selected>Gentle slope (21-45 degrees)</option>
-                                                        <option value="Steep slope (46 – 60 degrees)">Steep slope (46 – 60 degrees)</option>
-                                                        <option value="Very steep slope (above 60 degrees)">Very steep slope (above 60 degrees)</option>
-                                                    {% elif application_details.terrain_slope == "Steep slope (46 – 60 degrees)" %}
-                                                        <option value="Flat land (below 20 degrees)">Flat land (below 20 degrees)</option>
-                                                        <option value="Gentle slope (21-45 degrees)">Gentle slope (21-45 degrees)</option>
-                                                        <option value="Steep slope (46 – 60 degrees)" selected>Steep slope (46 – 60 degrees)</option>
-                                                        <option value="Very steep slope (above 60 degrees)">Very steep slope (above 60 degrees)</option>
+                                                    {% if application_details.terrain_slope %}
+                                                        <option value="">Choose One</option>
+                                                        <option value="Flat_Land" {% if application_details.terrain_slope == "Flat_Land" %}selected{% endif %}>Flat land (below 20 degrees)</option>
+                                                        <option value="Gentle_Slope" {% if application_details.terrain_slope == "Gentle_Slope" %}selected{% endif %}>Gentle slope (21-45 degrees)</option>
+                                                        <option value="Steep_Slope" {% if application_details.terrain_slope == "Steep_Slope" %}selected{% endif %}>Steep slope (46 – 60 degrees)</option>
+                                                        <option value="Very_Steep_Slope" {% if application_details.terrain_slope == "Very_Steep_Slope" %}selected{% endif %}>Very steep slope (above 60 degrees)</option>
                                                     {% else %}
-                                                        <option value="Flat land (below 20 degrees)">Flat land (below 20 degrees)</option>
-                                                        <option value="Gentle slope (21-45 degrees)">Gentle slope (21-45 degrees)</option>
-                                                        <option value="Steep slope (46 – 60 degrees)">Steep slope (46 – 60 degrees)</option>
-                                                        <option value="Very steep slope (above 60 degrees)" selected>Very steep slope (above 60 degrees)</option>
+                                                        <option value="" selected>Choose One</option>
+                                                        <option value="Flat_Land">Flat land (below 20 degrees)</option>
+                                                        <option value="Gentle_Slope">Gentle slope (21-45 degrees)</option>
+                                                        <option value="Steep_Slope">Steep slope (46 – 60 degrees)</option>
+                                                        <option value="Very_Steep_Slope">Very steep slope (above 60 degrees)</option>
                                                     {% endif %}
                                                 </select>
                                             </div>
@@ -311,86 +302,86 @@
                                             <tr>
                                                 <td>a)</td>
                                                 <td>Protected Areas and zonation (multiple use/buffer/core)</td>
-                                                <td><input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="{{ application_details.bl_protected_area_name }}"></td>
-                                                <td><input type="text" name="bl_protected_area_distance" class="form-control col-lg-6" id="bl_protected_area_distance" value="{{ application_details.bl_protected_area_distance }}"></td>
+                                                <td><input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="{{ application_details.bl_protected_area_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_protected_area_distance" class="form-control col-lg-6" id="bl_protected_area_distance" value="{{ application_details.bl_protected_area_distance|default:'0' }}"></td>
                                             </tr>
                                             <tr>
                                                 <td>b)</td>
                                                 <td>Migratory route/habitat/key biodiversity areas</td>
-                                                <td><input type="text" name="bl_migratory_route_name" class="form-control col-lg-6" id="bl_migratory_route_name" value="{{ application_details.bl_migratory_route_name }}"></td>
-                                                <td><input type="text" name="bl_migratory_route_distance" class="form-control col-lg-6" id="bl_migratory_route_distance"value="{{ application_details.bl_migratory_route_distance }}"></td>
+                                                <td><input type="text" name="bl_migratory_route_name" class="form-control col-lg-6" id="bl_migratory_route_name" value="{{ application_details.bl_migratory_route_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_migratory_route_distance" class="form-control col-lg-6" id="bl_migratory_route_distance" value="{{ application_details.bl_migratory_route_distance|default:'0' }}"></td>
                                             </tr>
                                             <tr>
                                                 <td>c)</td>
                                                 <td>Wetland/catchment area</td>
-                                                <td><input type="text" name="bl_wetland_name" class="form-control col-lg-6" id="bl_wetland_name" value="{{application_details.bl_wetland_name}}"></td>
-                                                <td><input type="text" name="bl_wetland_distance" class="form-control col-lg-6" id="bl_wetland_distance" value="{{application_details.bl_wetland_distance}}"></td>
+                                                <td><input type="text" name="bl_wetland_name" class="form-control col-lg-6" id="bl_wetland_name" value="{{ application_details.bl_wetland_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_wetland_distance" class="form-control col-lg-6" id="bl_wetland_distance" value="{{ application_details.bl_wetland_distance|default:'0' }}"></td>
                                             </tr>
                                             <tr>
                                                 <td>d)</td>
                                                 <td>Water bodies/resources/source (rivers, streams, springs, lakes, etc.)</td>
-                                                <td><input type="text" name="bl_water_bodies_name" class="form-control col-lg-6" id="bl_water_bodies_name" value="{{application_details.bl_water_bodies_name}}"></td>
-                                                <td><input type="text" name="bl_water_bodies_distance" class="form-control col-lg-6" id="bl_water_bodies_distance" value="{{application_details.bl_water_bodies_distance}}"></td>
+                                                <td><input type="text" name="bl_water_bodies_name" class="form-control col-lg-6" id="bl_water_bodies_name" value="{{ application_details.bl_water_bodies_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_water_bodies_distance" class="form-control col-lg-6" id="bl_water_bodies_distance" value="{{ application_details.bl_water_bodies_distance|default:'0' }}"></td>
                                             </tr>
                                             <tr>
                                                 <td>e)</td>
                                                 <td>FMUs/Community forests/private forests</td>
-                                                <td><input type="text" name="bl_fmu_name" class="form-control col-lg-6" id="bl_fmu_name" value="{{application_details.bl_fmu_name}}"></td>
-                                                <td><input type="text" name="bl_fmu_distance" class="form-control col-lg-6" id="bl_fmu_distance" value="{{application_details.bl_fmu_distance}}"></td>
+                                                <td><input type="text" name="bl_fmu_name" class="form-control col-lg-6" id="bl_fmu_name" value="{{ application_details.bl_fmu_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_fmu_distance" class="form-control col-lg-6" id="bl_fmu_distance" value="{{ application_details.bl_fmu_distance|default:'0' }}"></td>
                                             </tr>
                                             <tr>
                                                 <td>f)</td>
                                                 <td>Agricultural lands/private lands</td>
-                                                <td><input type="text" name="bl_agricultural_name" class="form-control col-lg-6" id="bl_agricultural_name" value="{{application_details.bl_agricultural_name}}"></td>
-                                                <td><input type="text" name="bl_agricultural_distance" class="form-control col-lg-6" id="bl_agricultural_distance" value="{{application_details.bl_agricultural_distance}}"></td>
+                                                <td><input type="text" name="bl_agricultural_name" class="form-control col-lg-6" id="bl_agricultural_name" value="{{ application_details.bl_agricultural_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_agricultural_distance" class="form-control col-lg-6" id="bl_agricultural_distance" value="{{ application_details.bl_agricultural_distance|default:'0' }}"></td>
                                             </tr>
                                             <tr>
                                                 <td>g)</td>
                                                 <td>Settlements</td>
-                                                <td><input type="text" name="bl_settlement_name" class="form-control col-lg-6" id="bl_settlement_name" value="{{application_details.bl_settlement_name}}"></td>
-                                                <td><input type="text" name="bl_settlement_distance" class="form-control col-lg-6" id="bl_settlement_distance" value="{{application_details.bl_settlement_distance}}"></td>
+                                                <td><input type="text" name="bl_settlement_name" class="form-control col-lg-6" id="bl_settlement_name" value="{{ application_details.bl_settlement_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_settlement_distance" class="form-control col-lg-6" id="bl_settlement_distance" value="{{ application_details.bl_settlement_distance|default:'0' }}"></td>
                                             </tr>
                                             <tr>
                                                 <td>h)</td>
                                                 <td>Roads</td>
-                                                <td><input type="text" name="bl_road_name" class="form-control col-lg-6" id="bl_road_name" value="{{application_details.bl_road_name}}"></td>
-                                                <td><input type="text" name="bl_road_distance" class="form-control col-lg-6" id="bl_road_distance" value="{{application_details.bl_road_distance}}"></td>
+                                                <td><input type="text" name="bl_road_name" class="form-control col-lg-6" id="bl_road_name" value="{{ application_details.bl_road_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_road_distance" class="form-control col-lg-6" id="bl_road_distance" value="{{ application_details.bl_road_distance|default:'0' }}"></td>
                                             </tr>
                                             <tr>
                                                 <td>i)</td>
                                                 <td>Public infrastructures (irrigation canals/drinking water supply/Powerlines/Telecommunication towers, etc)</td>
-                                                <td><input type="text" name="bl_public_infra_name" class="form-control col-lg-6" id="bl_public_infra_name" value="{{application_details.bl_public_infra_name}}"></td>
-                                                <td><input type="text" name="bl_public_infra_distance" class="form-control col-lg-6" id="bl_public_infra_distance" value="{{application_details.bl_public_infra_distance}}"></td>
+                                                <td><input type="text" name="bl_public_infra_name" class="form-control col-lg-6" id="bl_public_infra_name" value="{{ application_details.bl_public_infra_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_public_infra_distance" class="form-control col-lg-6" id="bl_public_infra_distance" value="{{ application_details.bl_public_infra_distance|default:'0' }}"></td>
                                             </tr>
                                             <tr>
                                                 <td>j)</td>
                                                 <td>Schools/Institutions/Hospitals/BHUs</td>
-                                                <td><input type="text" name="bl_school_name" class="form-control col-lg-6" id="bl_school_name" value="{{application_details.bl_school_name}}"></td>
-                                                <td><input type="text" name="bl_school_distance" class="form-control col-lg-6" id="bl_school_distance" value="{{application_details.bl_school_distance}}"></td>
+                                                <td><input type="text" name="bl_school_name" class="form-control col-lg-6" id="bl_school_name" value="{{ application_details.bl_school_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_school_distance" class="form-control col-lg-6" id="bl_school_distance" value="{{ application_details.bl_school_distance|default:'0' }}"></td>
                                             </tr>
                                             <tr>
                                                 <td>k)</td>
                                                 <td>Heritage/religious/archaeological /cultural sites</td>
-                                                <td><input type="text" name="bl_heritage_name" class="form-control col-lg-6" id="bl_heritage_name" value="{{application_details.bl_heritage_name}}"></td>
-                                                <td><input type="text" name="bl_heritage_distance" class="form-control col-lg-6" id="bl_heritage_distance" value="{{application_details.bl_heritage_distance}}"></td>
+                                                <td><input type="text" name="bl_heritage_name" class="form-control col-lg-6" id="bl_heritage_name" value="{{ application_details.bl_heritage_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_heritage_distance" class="form-control col-lg-6" id="bl_heritage_distance" value="{{ application_details.bl_heritage_distance|default:'0' }}"></td>
                                             </tr>
                                             <tr>
                                                 <td>l)</td>
                                                 <td>Tourist facilities/tourism sites/ Nature recreation sites</td>
-                                                <td><input type="text" name="bl_tourist_facility_name" class="form-control col-lg-6" id="bl_tourist_facility_name" value="{{application_details.bl_tourist_facility_name}}"></td>
-                                                <td><input type="text" name="bl_tourist_facility_distance" class="form-control col-lg-6" id="bl_tourist_facility_distance" value="{{application_details.bl_tourist_facility_distance}}"></td>
+                                                <td><input type="text" name="bl_tourist_facility_name" class="form-control col-lg-6" id="bl_tourist_facility_name" value="{{ application_details.bl_tourist_facility_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_tourist_facility_distance" class="form-control col-lg-6" id="bl_tourist_facility_distance" value="{{ application_details.bl_tourist_facility_distance|default:'0' }}"></td>
                                             </tr>
                                             <tr>
                                                 <td>l)</td>
                                                 <td>Important installations (early warning systems, weather stations, flood mitigation activities, etc.)</td>
-                                                <td><input type="text" name="bl_impt_installation_name" class="form-control col-lg-6" id="bl_impt_installation_name" value="{{application_details.bl_impt_installation_name}}"></td>
-                                                <td><input type="text" name="bl_impt_installation_distance" class="form-control col-lg-6" id="bl_impt_installation_distance" value="{{application_details.bl_impt_installation_distance}}"></td>
+                                                <td><input type="text" name="bl_impt_installation_name" class="form-control col-lg-6" id="bl_impt_installation_name" value="{{ application_details.bl_impt_installation_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_impt_installation_distance" class="form-control col-lg-6" id="bl_impt_installation_distance" value="{{ application_details.bl_impt_installation_distance|default:'0' }}"></td>
                                             </tr>
                                             <tr>
                                                 <td>l)</td>
                                                 <td>Industries</td>
-                                                <td><input type="text" name="bl_industries_name" class="form-control col-lg-6" id="bl_industries_name" value="{{application_details.bl_industries_name}}"></td>
-                                                <td><input type="text" name="bl_industries_distance" class="form-control col-lg-6" id="bl_industries_distance" value="{{application_details.bl_industries_distance}}"></td>
+                                                <td><input type="text" name="bl_industries_name" class="form-control col-lg-6" id="bl_industries_name" value="{{ application_details.bl_industries_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_industries_distance" class="form-control col-lg-6" id="bl_industries_distance" value="{{ application_details.bl_industries_distance|default:'0' }}"></td>
                                             </tr>
                                             <tr>
                                                 <td>o)</td>
@@ -398,12 +389,12 @@
                                                     <div class="row">
                                                         <label for="bl_others" class="col-sm-4 col-form-label">Others Specify</label>
                                                         <div class="col-sm-8">
-                                                            <input type="text" class="form-control" id="bl_others" name="bl_others" value="{{application_details.bl_others}}">
+                                                            <input type="text" class="form-control" id="bl_others" name="bl_others" value="{{ application_details.bl_others|default:'NA' }}">
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td><input type="text" name="bl_others_name" class="form-control col-lg-6" id="bl_others_name" value="{{application_details.bl_others_name}}"></td>
-                                                <td><input type="text" name="bl_others_distance" class="form-control col-lg-6" id="bl_others_distance" value="{{application_details.bl_others_distance}}"></td>
+                                                <td><input type="text" name="bl_others_name" class="form-control col-lg-6" id="bl_others_name" value="{{ application_details.bl_others_name|default:'NA' }}"></td>
+                                                <td><input type="text" name="bl_others_distance" class="form-control col-lg-6" id="bl_others_distance" value="{{ application_details.bl_others_distance|default:'0' }}"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -5370,15 +5361,17 @@
                     });
             }
         
-        function save_general_info()
-        {
+        function save_general_info() {
+            // First hide all error messages
+            $('.alert-danger').hide();
+
+            // Get all field values
             let project_name = $('#project_name').val();
             let applicant_name = $('#applicant_name').val();
             let address = $('#address').val();
             let contact_no = $('#contact_no').val();
-            let contact_no_length = $('#contact_no').val().length;
+            let contact_no_length = contact_no.length;
             let email = $('#email').val();
-            let focal_person = $('#focal_person').val();
             let industry_type = $('#industry_type').val();
             let establishment_type = $('#establishment_type').val();
             let industry_classification = $('#industry_classification').val();
@@ -5395,187 +5388,129 @@
             let others_area = $('#others_area').val();
             let others_area_acre = $('#others_area_acre').val();
             let total_area_acre = $('#total_area_acre').val();
-            
 
-            if(project_name == "")
-            {
-                $('#project_nameErrorMsg').html("Enter Name of Project");
-                $('#project_nameErrorMsg').show();
-                $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
-                $('#project_name').focus();
+            // Validation checks
+            if (project_name === "") {
+                showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');
+                return false;
             }
-            else if(applicant_name == "")
-            {
-                $('#applicant_nameErrorMsg').html("Enter Name of The Applicant");
-                $('#applicant_nameErrorMsg').show();
-                $('#applicant_nameErrorMsg').delay(2000).fadeOut('slow');
-                $('#applicant_name').focus();
+            else if (applicant_name === "") {
+                showErrorAndFocus('#applicant_nameErrorMsg', 'Enter Name of The Applicant', '#applicant_name');
+                return false;
             }
-            else if(address == "")
-            {
-                $('#addressErrorMsg').html("Enter Address");
-                $('#addressErrorMsg').show();
-                $('#addressErrorMsg').delay(2000).fadeOut('slow');
-                $('#address').focus();
+            else if (address === "") {
+                showErrorAndFocus('#addressErrorMsg', 'Enter Address', '#address');
+                return false;
             }
-            else if(contact_no == "")
-            {
-                $('#contact_noErrorMsg').html("Enter Contact No");
-                $('#contact_noErrorMsg').show();
-                $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-                $('#contact_no').focus();
+            else if (contact_no === "") {
+                showErrorAndFocus('#contact_noErrorMsg', 'Enter Contact No', '#contact_no');
+                return false;
             }
-            else if(contact_no_length < 8)
-            {
-                $('#contact_noErrorMsg').html("Cannot Be Less Than Eight Digits");
-                $('#contact_noErrorMsg').show();
-                $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-                $('#contact_no').focus();
+            else if (contact_no_length < 8) {
+                showErrorAndFocus('#contact_noErrorMsg', 'Cannot Be Less Than Eight Digits', '#contact_no');
+                return false;
             }
-            else if(email == "")
-            {
-                $('#emailErrorMsg').html("Enter Email");
-                $('#emailErrorMsg').show();
-                $('#emailErrorMsg').delay(2000).fadeOut('slow');
-                $('#email').focus();
+            else if (email === "") {
+                showErrorAndFocus('#emailErrorMsg', 'Enter Email', '#email');
+                return false;
             }
-            else if(industry_type == "")
-            {
-                $('#industry_typeErrorMsg').html("Enter Industry Type");
-                $('#industry_typeErrorMsg').show();
-                $('#industry_typeErrorMsg').delay(2000).fadeOut('slow');
-                $('#industry_type').focus();
+            else if (industry_type === "") {
+                showErrorAndFocus('#industry_typeErrorMsg', 'Enter Industry Type', '#industry_type');
+                return false;
             }
-            else if(establishment_type == "")
-            {
-                $('#establishment_typeErrorMsg').html("Enter Establishment Type");
-                $('#establishment_typeErrorMsg').show();
-                $('#establishment_typeErrorMsg').delay(2000).fadeOut('slow');
-                $('#establishment_type').focus();
+            else if (establishment_type === "") {
+                showErrorAndFocus('#establishment_typeErrorMsg', 'Enter Establishment Type', '#establishment_type');
+                return false;
             }
-            else if(industry_classification == "")
-            {
-                $('#industry_classificationErrorMsg').html("Enter Classification of Industry");
-                $('#industry_classificationErrorMsg').show();
-                $('#industry_classificationErrorMsg').delay(2000).fadeOut('slow');
-                $('#industry_classification').focus();
+            else if (industry_classification === "") {
+                showErrorAndFocus('#industry_classificationErrorMsg', 'Enter Classification of Industry', '#industry_classification');
+                return false;
             }
-            else if(dzongkhag_throm == "")
-            {
-                $('#dzongkhag_thromErrorMsg').html("Choose One");
-                $('#dzongkhag_thromErrorMsg').show();
-                $('#dzongkhag_thromErrorMsg').delay(2000).fadeOut('slow');
-                $('#dzongkhag_throm').focus();
+            else if (dzongkhag_throm === 0) {
+                showErrorAndFocus('#dzongkhag_thromErrorMsg', 'Choose One', "input[name=dzongkhag_throm]:first");
+                return false;
             }
-            else if(dzongkhag_throm_val == "Thromde" && thromde_id == "")
-            {
-                $('#thromde_idErrorMsg').html("Select Dzongkhag");
-                $('#thromde_idErrorMsg').show();
-                $('#thromde_idErrorMsg').delay(2000).fadeOut('slow');
-                $('#thromde_id').focus();
+            else if (dzongkhag_throm_val === "Thromde" && thromde_id === "") {
+                showErrorAndFocus('#thromde_idErrorMsg', 'Select Thromde', '#thromde_id');
+                return false;
             }
-            else if(dzongkhag_throm_val == "Dzongkhag" && dzongkhag_code == "")
-            {
-                $('#dzongkhagErrorMsg').html("Select Dzongkhag");
-                $('#dzongkhagErrorMsg').show();
-                $('#dzongkhag').focus();
-                $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+            else if (dzongkhag_throm_val === "Dzongkhag" && dzongkhag_code === "") {
+                showErrorAndFocus('#dzongkhagErrorMsg', 'Select Dzongkhag', '#dzongkhag');
+                return false;
             }
-            else if(dzongkhag_throm_val == "Dzongkhag" && gewog_code == "")
-            {
-                $('#gewogErrorMsg').html("Select Gewog");
-                $('#gewogErrorMsg').show();
-                $('#gewogErrorMsg').delay(2000).fadeOut('slow');
-                $('#gewog').focus();
+            else if (dzongkhag_throm_val === "Dzongkhag" && gewog_code === "") {
+                showErrorAndFocus('#gewogErrorMsg', 'Select Gewog', '#gewog');
+                return false;
             }
-            else if(dzongkhag_throm_val == "Dzongkhag" && village_code == "")
-            {
-                $('#vil_chiwogErrorMsg').html("Select Village");
-                $('#vil_chiwogErrorMsg').show();
-                $('#vil_chiwogErrorMsg').delay(2000).fadeOut('slow');
-                $('#vil_chiwog').focus();
+            else if (dzongkhag_throm_val === "Dzongkhag" && village_code === "") {
+                showErrorAndFocus('#vil_chiwogErrorMsg', 'Select Village', '#vil_chiwog');
+                return false;
             }
-            else if(project_site == "")
-            {
-                $('#project_siteErrorMsg').html("Enter Project Site");
-                $('#project_siteErrorMsg').show();
-                $('#project_siteErrorMsg').delay(2000).fadeOut('slow');
-                $('#project_site').focus();
+            else if (project_site === "") {
+                showErrorAndFocus('#project_siteErrorMsg', 'Enter Project Site', '#project_site');
+                return false;
             }
-            else if(industrial_area_acre == "")
-            {
-                $('#industrial_area_acreErrorMsg').html("Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)");
-                $('#industrial_area_acreErrorMsg').show();
-                $('#industrial_area_acreErrorMsg').delay(2000).fadeOut('slow');
-                $('#industrial_area_acre').focus();
+            else if (industrial_area_acre === "") {
+                showErrorAndFocus('#industrial_area_acreErrorMsg', 'Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)', '#industrial_area_acre');
+                return false;
             }
-            else if(industrial_area_acre == "")
-            {
-                $('#industrial_area_acreErrorMsg').html("Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)");
-                $('#industrial_area_acreErrorMsg').show();
-                $('#industrial_area_acreErrorMsg').delay(2000).fadeOut('slow');
-                $('#industrial_area_acre').focus();
+            else if (state_reserve_forest_acre === "") {
+                showErrorAndFocus('#state_reserve_forest_acreErrorMsg', 'Enter State Reserve Forest Area', '#state_reserve_forest_acre');
+                return false;
             }
-            else if(state_reserve_forest_acre == "")
-            {
-                $('#state_reserve_forest_acreErrorMsg').html("Enter State Reserve Forest Area");
-                $('#state_reserve_forest_acreErrorMsg').show();
-                $('#state_reserve_forest_acreErrorMsg').delay(2000).fadeOut('slow');
-                $('#state_reserve_forest_acre').focus();
+            else if (private_area_acre === "") {
+                showErrorAndFocus('#private_area_acreErrorMsg', 'Enter Private Area', '#private_area_acre');
+                return false;
             }
-            else if(private_area_acre == "")
-            {
-                $('#private_area_acreErrorMsg').html("Enter Private Area");
-                $('#private_area_acreErrorMsg').show();
-                $('#private_area_acreErrorMsg').delay(2000).fadeOut('slow');
-                $('#private_area_acre').focus();
+            else if ((others_area !== "NA" && others_area !== "") && others_area_acre === "") {
+                showErrorAndFocus('#others_area_acreErrorMsg', 'Enter Others Area', '#others_area_acre');
+                return false;
             }
-            else if(others_area != "NA" || others_area != "" && others_area_acre == "")
-            {
-                $('#others_area_acreErrorMsg').html("Enter Others Area");
-                $('#others_area_acreErrorMsg').show();
-                $('#others_area_acreErrorMsg').delay(2000).fadeOut('slow');
-                $('#others_area_acre').focus();
-            }
-            else
-            {
-                $.ajax
-                ({
-                    type : "POST",
-                    url : "{% url 'save_general_info' %}",
-                    data : $('#general_application_form').serialize(),
-                    success : function(data)
-                    {
-                        if(data.message == 'success')
-                        {
-                            $('#application_form_successMsg').focus();
-                            $('#application_form_successMsg').html("Saved Successfully");
-                            $('#application_form_successMsg').show();
-                            setTimeout(function()
-                            {
-                                $('#application_form_successMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
+            else {
+                // Submit the form via AJAX
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'save_general_info' %}",
+                    data: $('#general_application_form').serialize(),
+                    success: function(data) {
+                        if (data.message == 'success') {
+                            $('#application_form_successMsg').html("Saved Successfully").show().focus();
                             setTimeout(function() {
+                                $('#application_form_successMsg').fadeOut('slow');
                                 $("#headingTwoBtn").removeAttr("disabled");
                                 $("#collapseTwo").addClass("show");
                                 $("#collapseOne").removeClass("show");
                             }, 2000);
                         }
-                        else
-                        {
-                            var errorMsg = data.error;
-        
-                            $('#application_form_errorMsg').html(`Application Error: ${data.error}`);
-                            $('#application_form_errorMsg').show();
-                            $('#application_form_errorMsg').focus();
-                            
+                        else {
+                            $('#application_form_errorMsg').html(`Application Error: ${data.error}`).show().focus();
                             setTimeout(function() {
-                                $('#application_form_errorMsg').delay(2000).fadeOut('slow');
+                                $('#application_form_errorMsg').fadeOut('slow');
                             }, 2000);
                         }
                     }
                 });
             }
+        }
+
+        // Helper function to show error and focus on field
+        function showErrorAndFocus(errorElement, message, focusElement) {
+            $(errorElement).html(message).show();
+            
+            // Use setTimeout to ensure the focus happens after the DOM updates
+            setTimeout(function() {
+                $(focusElement).focus();
+                
+                // Scroll to the element if needed
+                $('html, body').animate({
+                    scrollTop: $(focusElement).offset().top - 100
+                }, 100);
+            }, 50);
+            
+            // Hide the error after 2 seconds
+            setTimeout(function() {
+                $(errorElement).fadeOut('slow');
+            }, 2000);
         }
         
             function check_anc_other_crushing_unit()

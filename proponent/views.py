@@ -3894,6 +3894,7 @@ def save_general_application(request):
     data = {}
     try:
         identifier = request.POST.get('identifier')
+        application_no = request.POST.get('application_no')
         tor_application_no = request.POST.get('tor_application_no')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         service_type = request.POST.get('service_type')
@@ -3911,12 +3912,10 @@ def save_general_application(request):
         application_type = "New"
         colour_code = request.session.get('colour_code')
         service_id = request.session.get('service_id')
-        print(f"The service ID here is {service_id}")
         ca_auth = None
 
         # Determine competent authority
         if identifier not in ['DR', 'NC', 'OC'] and tor_application_no is None:
-            # For new applications not from TOR
             auth_filter = t_competant_authority_master.objects.filter(
                 competent_authority=request.session.get('ca_auth'),
                 dzongkhag_code_id=dzongkhag_code if request.session.get('ca_auth') in ['DEC', 'THROMDE'] else None
@@ -3924,14 +3923,12 @@ def save_general_application(request):
             if auth_filter.exists():
                 ca_auth = auth_filter.first().competent_authority_id
         elif identifier in ['NC', 'OC']:
-            # For NC/OC applications
             auth_filter = t_ec_industries_t1_general.objects.filter(
-                application_no=request.POST.get('application_no')
+                application_no=application_no
             )
             if auth_filter.exists():
                 ca_auth = auth_filter.first().ca_authority
         elif tor_application_no:
-            # For applications with TOR reference
             auth_filter = t_ec_industries_t1_general.objects.filter(
                 application_no=tor_application_no
             )
@@ -3940,7 +3937,6 @@ def save_general_application(request):
 
         # Prepare application details
         application_details = {
-            'application_no': request.POST.get('application_no'),
             'application_date': timezone.now().date(),
             'application_type': application_type,
             'project_name': request.POST.get('project_name'),
@@ -3960,7 +3956,7 @@ def save_general_application(request):
             'industrial_area_acre': request.POST.get('industrial_area_acre'),
             'state_reserve_forest_acre': request.POST.get('state_reserve_forest_acre'),
             'private_area_acre': request.POST.get('private_area_acre'),
-            'others_area':request.POST.get('others_area'),
+            'others_area': request.POST.get('others_area'),
             'others_area_acre': request.POST.get('others_area_acre'),
             'total_area_acre': request.POST.get('total_area_acre'),
             'service_type': service_type,
@@ -3976,49 +3972,94 @@ def save_general_application(request):
             'tor_application_no': tor_application_no
         }
 
-        # Database operations
         with transaction.atomic():
-            if identifier == 'NC':
-                application_instance = t_ec_industries_t1_general.objects.filter(
-                    application_no=request.POST.get('application_no')).first()
-                if application_instance:
+            application_exists = t_ec_industries_t1_general.objects.filter(
+                application_no=application_no).exists()
+            
+            if application_exists:
+                application_instance = t_ec_industries_t1_general.objects.get(
+                    application_no=application_no)
+                
+                if identifier == 'NC':
                     application_instance.project_name = request.POST.get('project_name')
                     application_instance.service_type = identifier
-                    application_instance.save()
-                else:
-                    raise ValueError("Application does not exist.")
-            elif identifier == 'OC':
-                application_instance = t_ec_industries_t1_general.objects.filter(
-                    application_no=request.POST.get('application_no')).first()
-                if application_instance:
+                elif identifier == 'OC':
                     application_instance.applicant_name = request.POST.get('applicant_name')
                     application_instance.service_type = identifier
-                    application_instance.save()
-                else:
-                    raise ValueError("Application does not exist.")
-            elif identifier == 'DR':
-                application_instance, created = t_ec_industries_t1_general.objects.get_or_create(
-                    application_no=request.POST.get('application_no'))
-                if not created:
+                elif identifier == 'DR':
+                    # For DR, protect specific fields from being updated
+                    protected_fields = {
+                        'service_type',
+                        'ca_authority',
+                        'applicant_id',
+                        'colour_code',
+                        'service_id',
+                        'broad_activity_code',
+                        'specific_activity_code',
+                        'category',
+                        'application_source',
+                        'application_status'
+                    }
+                    # Get current values of protected fields
+                    current_values = {field: getattr(application_instance, field) for field in protected_fields}
+                    # Update all fields except protected ones
                     for field, value in application_details.items():
+                        if field not in protected_fields:
+                            setattr(application_instance, field, value)
+                    # Restore protected fields to their original values
+                    for field, value in current_values.items():
                         setattr(application_instance, field, value)
-                    application_instance.save()
-                else:
-                    raise ValueError("Application does not exist.")
-            elif identifier in ['TC', 'PC', 'LC', 'CC']:
-                for app_det in t_ec_industries_t1_general.objects.filter(
-                    application_no=request.POST.get('application_no')):
+                elif identifier in ['TC', 'PC', 'LC', 'CC']:
+                    app_det = t_ec_industries_t1_general.objects.get(
+                        application_no=application_no)
                     t_ec_industries_t1_general.objects.create(
-                        application_no=request.POST.get('application_no'),
+                        application_no=application_no,
                         ec_reference_no=app_det.ec_reference_no,
                         **application_details
                     )
+                else:
+                    # For all other identifiers, update all fields normally
+                    for field, value in application_details.items():
+                        setattr(application_instance, field, value)
+                
+                if identifier not in ['TC', 'PC', 'LC', 'CC']:
+                    application_instance.save()
             else:
-                t_ec_industries_t1_general.objects.create(**application_details)
+                if identifier in ['NC', 'OC', 'DR']:
+                    raise ValueError(f"Application {application_no} does not exist for {identifier} operation")
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    **application_details
+                )
 
-            # Create application history
+            # Workflow handling
+            workflow_exists = t_workflow_dtls.objects.filter(
+                application_no=application_no).exists()
+            
+            workflow_update_data = {
+                'application_status': 'P',
+                'actor_id': request.session.get('login_id'),
+                'actor_name': request.session.get('name'),
+                'assigned_role_id': '2',
+                'assigned_role_name': 'Verifier',
+                'service_id': service_id,
+                'ca_authority': ca_auth,
+                'application_source': 'ECSS',
+                'service_type': service_type
+            }
+
+            if workflow_exists:
+                t_workflow_dtls.objects.filter(
+                    application_no=application_no
+                ).update(**workflow_update_data)
+            else:
+                t_workflow_dtls.objects.create(
+                    application_no=application_no,
+                    **workflow_update_data
+                )
+
             t_application_history.objects.create(
-                application_no=request.POST.get('application_no'),
+                application_no=application_no,
                 application_date=timezone.now().date(),
                 applicant_id=request.session.get('email'),
                 ca_authority=ca_auth,
@@ -4028,36 +4069,10 @@ def save_general_application(request):
                 actor_name=request.session.get('name')
             )
 
-            # Update workflow details
-            if identifier in ['NC', 'OC']:
-                t_workflow_dtls.objects.filter(
-                    application_no=request.POST.get('application_no')
-                ).update(
-                    application_status='P',
-                    actor_id=request.session.get('login_id'),
-                    actor_name=request.session.get('name'),
-                    assigned_role_id='2',
-                    assigned_role_name='Verifier'
-                )
-            else:
-                t_workflow_dtls.objects.create(
-                    application_no=request.POST.get('application_no'),
-                    service_id=service_id,
-                    application_status='P',
-                    actor_id=request.session.get('login_id'),
-                    actor_name=request.session.get('name'),
-                    assigned_role_id='2',
-                    assigned_role_name='Verifier',
-                    ca_authority=ca_auth,
-                    application_source='ECSS',
-                    service_type=service_type
-                )
-
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        error_msg = str(e)
-        data['error'] = str(error_msg.split("\n")[0])
+        data['error'] = str(e).split("\n")[0]
     return JsonResponse(data)
 
 # Forest Application Details
