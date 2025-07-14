@@ -7,6 +7,7 @@ from .views import logout_view
 
 urlpatterns = [
     path('', views.home, name='index'),
+    path('proponent_registration', views.proponent_registration, name='proponent_registration'),
     path('login', views.login, name='login'),
     path('dashboard', views.dashboard, name='dashboard'),
     path('user_login', views.user_login, name='user_login'),
@@ -20,6 +21,7 @@ urlpatterns = [
     path('client_registration', views.client_registration, name='client_registration'),
     path('manage_user', views.manage_user, name='manage_user'),
     path('check_email_id', views.check_email_id, name='check_email_id'),
+    path('check_emp_id', views.check_emp_id, name='check_emp_id'),
     path('logout/', logout_view, name='logout'),
     path('account_setting', views.account_setting, name='account_setting'),
 
@@ -108,7 +110,7 @@ urlpatterns = [
     path('get_bsic_code_details/<int:bsic_id>', views.get_bsic_code_details, name='get_bsic_code_details'),
     path('edit_bsic_code_master', views.edit_bsic_code_master, name='edit_bsic_code_master'),
     path('delete_bsic_code_master', views.delete_bsic_code_master, name='delete_bsic_code_master'),
-
+    path('check_cid', views.check_cid, name='check_cid'),
     path('check_cid_exists', views.check_cid_exists, name='check_cid_exists'),
 
     

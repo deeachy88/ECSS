@@ -12,7 +12,7 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Name of Project</label>
+                                    <label class="form-label fw-bold">Name of the Project</label>
                                     <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" disabled>
                                 </div>
                             </div>
@@ -23,7 +23,7 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Applicant Name</label>
+                                    <label class="form-label fw-bold">Name of the Applicant</label>
                                     <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
                                 </div>
                             </div>
@@ -152,7 +152,7 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                    <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                     <<input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
                                 </div>
                                 <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -331,6 +331,7 @@
     $(function() {
         let status = $('#status').val();
         let role_id = $('#role_id').val();
+        alert(role_id);
 
         if(status == 'P' && role_id=='2')
         {

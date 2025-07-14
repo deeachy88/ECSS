@@ -26,7 +26,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Applicant</label>
+                                                <label class="form-label fw-bold">Name of the Applicant</label>
                                                 <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -58,23 +58,8 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Project</label>
-                                                <select class="form-control" id="project_name" name="project_name">
-                                                    <option value="">--SELECT--</option>
-                                                    {% if application_details.project_name == 'Sand_dredging' %}
-                                                        <option value="Sand_dredging" selected>Sand-dredging</option>
-                                                        <option value="Surface_Collection">Surface Collection</option>
-                                                        <option value="RBM_dredging_collection">RBM dredging/collection</option>
-                                                    {% if application_details.project_name == 'Surface_Collection' %}
-                                                        <option value="Sand_dredging">Sand-dredging</option>
-                                                        <option value="Surface_Collection" selected>Surface Collection</option>
-                                                        <option value="RBM_dredging_collection">RBM dredging/collection</option>
-                                                    {% if application_details.project_name == 'RBM_dredging_collection' %}
-                                                        <option value="Sand_dredging">Sand-dredging</option>
-                                                        <option value="Surface_Collection">Surface Collection</option>
-                                                        <option value="RBM_dredging_collection" selected>RBM dredging/collection</option>
-                                                    {% endif %}
-                                                </select>
+                                                <label class="form-label fw-bold">Name of the Project</label>
+                                                <input type="text" class="form-control" id="project_name" name="project_name" value="{{application_details.project_name}}" readonly>
                                             </div>
                                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -243,7 +228,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Elevation(meters)</label>
+                                                <label class="form-label fw-bold">Elevation (meters)</label>
                                                 <input type="number" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{application_details.terrain_elevation}}">
                                             </div>
                                             <div id="terrain_elevationErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -618,7 +603,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                 {% if application_details.water_excavated_muck == "Yes" %}
                                                     <div class="mt-2">
                                                         <div class="form-check form-check-inline">
@@ -2636,7 +2621,7 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Area of the dumpyard</label>
+                            <label class="form-label fw-bold">Area of the dumpyard (acres)</label>
                             <input type="text" name="dumpyard_area" class="form-control" id="dumpyard_area">
                         </div>
                         <div class="alert alert-danger" id="dumpyard_areaErrorMsg" style="display:none"></div>
@@ -2697,7 +2682,7 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Area of the dumpyard</label>
+                            <label class="form-label fw-bold">Area of the dumpyard (acres)</label>
                             <input type="text" name="edit_dumpyard_area" class="form-control" id="edit_dumpyard_area">
                         </div>
                         <div class="alert alert-danger" id="edit_dumpyard_areaErrorMsg" style="display:none"></div>

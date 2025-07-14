@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>DECC | Environmental Clearance Services System</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}">
+
+        <!-- Theme Config Js -->
+        <script src="{% static 'assets/js/hyper-config.js' %}"></script>
+
+        <!-- App css -->
+        <link href="{% static 'assets/css/app-saas.min.css' %}" rel="stylesheet" type="text/css" id="app-style" />
+
+        <!-- Icons css -->
+        <link href="{% static 'assets/css/icons.min.css' %}" rel="stylesheet" type="text/css" />        
+
+    </head>
+
+    <body style="background-color:white;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-11 mt-0">
+                <img class="mx-auto d-block" src="{% static 'assets/images/nec_header.png' %}" style="background:center;max-width:100%">
+            </div>
+        </div>
+        {% include 'header.html' %}
+        <hr>
+        {% block content %}
+            <div id="content_div">
+                <div class="row">
+                    <div class="col-xl-8 col-lg-7">
+                        <div class="card text-center mb-4 custom-shadow">
+                            <div class="card-body">
+                                {% for homepage_details in homepage_details %}
+                                    <h3 class="m-0">{{homepage_details.homepage_title}}</h3>
+                                {% endfor %}<br>
+                                <a href="javascript: void(0);" class="text-center d-block mb-4">
+                                {% for home_attachment in home_attachment %}
+                                    <img src="{{home_attachment.file_path }}" class="img-fluid rounded"  alt="Product-img">
+                                {% endfor %}
+                                </a>
+                                {% for homepage_details in homepage_details %}
+                                        <h5 class="m-0">{{homepage_details.homepage_content|safe}}</h5>
+                                {% endfor %}
+                            </div> <!-- end card body -->
+                        </div> <!-- end card -->
+                    </div> <!-- end col -->
+                    <div class="col-xl-4 col-lg-5">
+                        <!-- Acts and Rules Section -->
+                        {% if pub_file_attachment_count > 0 %}
+                            <div class="card text-center mb-4 custom-shadow" id="attachments-card-{{ forloop.counter }}">
+                                <div class="card-body">
+                                    <h4 class="header-title mb-3 acts" style="display: none;"> Acts and Rules</h4>
+                                    <hr class="acts" style="display: none;">
+                                    <div class="inbox-widget">
+                                        {# Hidden items for counts >5 #}
+                                        
+                                        {% if pub_file_attachment_count > 0 %}
+                                        <ul class="ps-3">
+                                            <div class="more-attachments" style="display:none;">
+                                                <ul class="ps-3">
+                                                    {% for file_attachment in pub_file_attachment %}
+                                                        <li class="mb-1 inbox-item">
+                                                            <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    {% if pub_file_attachment_count > 0 %}
+                                        <div class="text-center mt-3">
+                                            <a href="javascript:void(0);" class="text-danger load-more-btn" 
+                                            data-target="attachments-card-{{ forloop.counter }}">
+                                                <i class="mdi mdi-chevron-down me-1"></i> 
+                                                Acts and Rules ({{ pub_file_attachment_count }})
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                        <!-- Notifications Section -->
+                        {% if form_file_attachment_count > 0 %}
+                            <div class="card text-center mb-4 custom-shadow" id="form-attachments-card-{{ forloop.counter }}">
+                                <div class="card-body">
+                                    <h4 class="header-title mb-3 notification" style="display: none;"> Notifications</h4>
+                                    <hr class="notification" style="display: none;">
+                                    <div class="inbox-widget">
+                                        {# Hidden items for counts >5 #}
+                                        
+                                        {% if form_file_attachment_count > 0 %}
+                                            <div class="form-more-attachments" style="display:none;">
+                                                <ul class="ps-3">
+                                                    {% for file_attachment in form_file_attachment %}
+                                                        <li class="mb-1 inbox-item">
+                                                            <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+                                        
+                                    </div>
+                                    
+                                    {% if form_file_attachment_count > 0 %}
+                                        <div class="text-center mt-3">
+                                            <a href="javascript:void(0);" class="text-danger form-load-more-btn" 
+                                            data-target="form-attachments-card-{{ forloop.counter }}">
+                                                <i class="mdi mdi-chevron-down me-1"></i> 
+                                                Notifications ({{ form_file_attachment_count }})
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div> <!-- end card-body -->
+                            </div> <!-- end card -->
+                        {% endif %}
+
+                        <!-- Forms and Others Section -->
+                        {% if down_file_attachment_count > 0 %}
+                        <div class="card text-center mb-4 custom-shadow" id="down-attachments-card-{{ forloop.counter }}">
+                            <div class="card-body">
+                                <h4 class="header-title mb-3 forms" style="display: none;"> Forms and Others</h4>
+                                <hr class="forms" style="display: none;">
+                                <div class="inbox-widget">
+                                    {# Hidden items for counts >5 #}
+                                    {% if down_file_attachment_count > 0 %}
+                                        <div class="down-more-attachments" style="display:none;">
+                                            <ul class="ps-3">
+                                                {% for file_attachment in down_file_attachment %}
+                                                    <li class="mb-1 inbox-item">
+                                                        <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if down_file_attachment_count > 0 %}
+                                    <div class="text-center mt-3">
+                                        <a href="javascript:void(0);" class="text-danger down-load-more-btn" 
+                                        data-target="down-attachments-card-{{ forloop.counter }}">
+                                            <i class="mdi mdi-chevron-down me-1"></i> 
+                                            Forms and Others ({{ down_file_attachment_count }})
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-dark">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div>
+                                <p class="text-muted mt-4 text-center mb-0">© <script>document.write(new Date().getFullYear())</script> Department of Environment and Climate Change</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        {% endblock %}
+    </div>
+        
+        <script src="{% static 'assets/js/vendor.min.js' %}"></script>
+
+        <!-- App js -->
+        <script src="{% static 'assets/js/app.min.js' %}"></script>
+
+    </body>
+</html>

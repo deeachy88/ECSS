@@ -6,7 +6,7 @@
     <div class="col-xl-12">
         <div class="card mt-1">
             <div class="card-body">
-                <h4 class="header-title mb-3"> New Application</h4>
+                <h4 class="header-title mb-3"> Ancillary Transmission Form</h4>
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
@@ -22,73 +22,37 @@
                                     {% csrf_token %}
                                     <input type="text" class="form-control" value="{{application_no}}" name="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="Ancillary" name="service_type" style="display:none;">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Project</label>
-                                                <select class="form-control" id="project_name" name="project_name">
-                                                    <option value="">--SELECT--</option>
-                                                    <option value="Resort">Resort</option>
-                                                    <option value="Ecolodge">Ecolodge</option>
-                                                    <option value="Others">Other-specify</option>
-                                                </select>
-                                            </div>
-                                            <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Application Type</label>
-                                                <select class="form-control" id="application_type" name="application_type">
-                                                    <option value="">--SELECT--</option>
-                                                    <option value="New">New</option>
-                                                    <option value="Expansion">Expansion</option>
-                                                    <option value="Relocation">Relocation</option>
-                                                    <option value="Other Modification">Other Modification</option>
-                                                </select>
-                                            </div>
-                                            <div id="application_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">CID</label>
-                                                <input type="number" min="1" name="cid" class="form-control" id="cid" maxlength="11" onchange="getCitizenDetails(this.value)">
-                                            </div>
-                                            <div id="cidErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Applicant</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly>
+                                                <label class="form-label fw-bold">Name of the Applicant</label>
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Address</label>
-                                                <input type="text" name="address" class="form-control" id="address">
+                                                <input type="text" name="address" class="form-control" id="address" value="{{request.session.address}}" readonly>
                                             </div>
                                             <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Contact No</label>
-                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8">
-                                            </div>
-                                            <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
+                                                <label class="form-label fw-bold">Contact No</label>
+                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{request.session.contact_number}}" readonly>
+                                            </div>
+                                            <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
                                                 <label class="form-label fw-bold">Email</label>
-                                                <input type="email" name="email" class="form-control" id="email">
+                                                <input type="email" name="email" class="form-control" id="email" value="{{request.session.email}}" readonly>
                                             </div>
                                             <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -96,8 +60,15 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
+                                                <label class="form-label fw-bold">Name of the Project</label>
+                                                <input type="text" name="project_name" class="form-control" id="project_name">
+                                            </div>
+                                            <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
                                                 <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
-                                                <textarea class="form-control" name="example-textarea" id="example-textarea" rows="3"></textarea>
+                                                <textarea class="form-control" name="focal_person" id="focal_person" rows="3"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -179,7 +150,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                                <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                                 <input type="text" name="project_site" class="form-control" id="project_site">
                                             </div>
                                             <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -189,14 +160,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
-                                                <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" onchange="get_total_area_acre()">
+                                                <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" onchange="get_total_area_acre()" value="0">
                                             </div>
                                             <div id="industrial_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">State Forest Reserve (acres)</label>
-                                                <input type="number" min="0" name="state_reserve_forest_acre" class="form-control" id="state_reserve_forest_acre" onchange="get_total_area_acre()">
+                                                <input type="number" min="0" name="state_reserve_forest_acre" class="form-control" id="state_reserve_forest_acre" onchange="get_total_area_acre()" value="0">
                                             </div>
                                             <div id="state_reserve_forest_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -205,14 +176,21 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Private Area (acres)</label>
-                                                <input type="number" min="0" name="private_area_acre" class="form-control" id="private_area_acre" onchange="get_total_area_acre()">
+                                                <input type="number" min="0" name="private_area_acre" class="form-control" id="private_area_acre" onchange="get_total_area_acre()" value="0">
                                             </div>
                                             <div id="private_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Others Specify (acres)</label>
-                                                <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()">
+                                                <label class="form-label fw-bold">Others Specify</label>
+                                                <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()">
+                                            </div>
+                                            <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Others(acres)</label>
+                                                <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()" value="0">
                                             </div>
                                             <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -262,6 +240,9 @@
                                 <form method="post" id="terrain_baseline_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="terrain_baseline_application_no">
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable
+                                    </div>
                                     <table class="table table-hover table-bordered table-centered mb-0">
                                         <thead>
                                             <tr>
@@ -426,7 +407,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                 <input type="text" name="project_cost" class="form-control" id="project_cost">
                                             </div>
                                             <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -1491,7 +1472,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Attachment</label>
-                    <input type="file" name="transmission_attach" class="form-control" id="transmission_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                    <input type="file" name="transmission_attach" class="form-control" id="transmission_attach" accept=".png,.jpg,.jpeg,.pdf,.doc,.kmz">
                 </div>
                 <div class="alert alert-danger" id="transmission_attachErrorMsg" style="display:none"></div>
             </div>
@@ -1509,6 +1490,24 @@
 
 
 <script>
+    function toggleAcreField() {
+        const othersArea = document.getElementById('others_area');
+        const acreFieldContainer = document.getElementById('acreFieldContainer');
+        
+        // Show acre field if others_area has any value, hide if empty
+        if (othersArea.value.trim() !== '') {
+            acreFieldContainer.style.display = 'block';
+        } else {
+            acreFieldContainer.style.display = 'none';
+            // Clear the acre value when hiding
+            document.getElementById('others_area_acre').value = '';
+            // Trigger the change event to update totals if needed
+            if (typeof get_total_area_acre === 'function') {
+                get_total_area_acre();
+            }
+        }
+    }
+    
     function check_industry_radio(value)
     {
         if(value == 'Yes')
@@ -1524,38 +1523,37 @@
 
     function save_terrain_baseline_details()
     {
-        
-        bl_protected_area_name = $('#bl_protected_area_name').val();
-        bl_protected_area_distance = $('#bl_protected_area_distance').val();
-        bl_migratory_route_name = $('#bl_migratory_route_name').val();
-        bl_migratory_route_distance = $('#bl_migratory_route_distance').val();
-        bl_wetland_name = $('#bl_wetland_name').val();
-        bl_wetland_distance = $('#bl_wetland_distance').val();
-        bl_water_bodies_name = $('#bl_water_bodies_name').val();
-        bl_water_bodies_distance = $('#bl_water_bodies_distance').val();
-        bl_fmu_name = $('#bl_fmu_name').val();
-        bl_fmu_distance = $('#bl_fmu_distance').val();
-        bl_agricultural_name = $('#bl_agricultural_name').val();
-        bl_agricultural_distance = $('#bl_agricultural_distance').val();
-        bl_settlement_name = $('#bl_settlement_name').val();
-        bl_settlement_distance = $('#bl_settlement_distance').val();
-        bl_road_name = $('#bl_road_name').val();
-        bl_road_distance = $('#bl_road_distance').val();
-        bl_public_infra_name = $('#bl_public_infra_name').val();
-        bl_public_infra_distance = $('#bl_public_infra_distance').val();
-        bl_school_name = $('#bl_school_name').val();
-        bl_school_distance = $('#bl_school_distance').val();
-        bl_heritage_name = $('#bl_heritage_name').val();
-        bl_heritage_distance = $('#bl_heritage_distance').val();
-        bl_tourist_facility_name = $('#bl_tourist_facility_name').val();
-        bl_tourist_facility_distance = $('#bl_tourist_facility_distance').val();
-        bl_impt_installation_name = $('#bl_impt_installation_name').val();
-        bl_impt_installation_distance = $('#bl_impt_installation_distance').val();
-        bl_industries_name = $('#bl_industries_name').val();
-        bl_industries_distance = $('#bl_industries_distance').val();
-        bl_others = $('#bl_others').val();
-        bl_others_name = $('#bl_others_name').val();
-        bl_others_distance = $('#bl_others_distance').val();
+        let bl_protected_area_name = $('#bl_protected_area_name').val();
+        let bl_protected_area_distance = $('#bl_protected_area_distance').val();
+        let bl_migratory_route_name = $('#bl_migratory_route_name').val();
+        let bl_migratory_route_distance = $('#bl_migratory_route_distance').val();
+        let bl_wetland_name = $('#bl_wetland_name').val();
+        let bl_wetland_distance = $('#bl_wetland_distance').val();
+        let bl_water_bodies_name = $('#bl_water_bodies_name').val();
+        let bl_water_bodies_distance = $('#bl_water_bodies_distance').val();
+        let bl_fmu_name = $('#bl_fmu_name').val();
+        let bl_fmu_distance = $('#bl_fmu_distance').val();
+        let bl_agricultural_name = $('#bl_agricultural_name').val();
+        let bl_agricultural_distance = $('#bl_agricultural_distance').val();
+        let bl_settlement_name = $('#bl_settlement_name').val();
+        let bl_settlement_distance = $('#bl_settlement_distance').val();
+        let bl_road_name = $('#bl_road_name').val();
+        let bl_road_distance = $('#bl_road_distance').val();
+        let bl_public_infra_name = $('#bl_public_infra_name').val();
+        let bl_public_infra_distance = $('#bl_public_infra_distance').val();
+        let bl_school_name = $('#bl_school_name').val();
+        let bl_school_distance = $('#bl_school_distance').val();
+        let bl_heritage_name = $('#bl_heritage_name').val();
+        let bl_heritage_distance = $('#bl_heritage_distance').val();
+        let bl_tourist_facility_name = $('#bl_tourist_facility_name').val();
+        let bl_tourist_facility_distance = $('#bl_tourist_facility_distance').val();
+        let bl_impt_installation_name = $('#bl_impt_installation_name').val();
+        let bl_impt_installation_distance = $('#bl_impt_installation_distance').val();
+        let bl_industries_name = $('#bl_industries_name').val();
+        let bl_industries_distance = $('#bl_industries_distance').val();
+        let bl_others = $('#bl_others').val();
+        let bl_others_name = $('#bl_others_name').val();
+        let bl_others_distance = $('#bl_others_distance').val();
 
         if(bl_protected_area_name == "")
         {
@@ -1799,7 +1797,9 @@
                     }
                     else
                     {
-                        $('#terrain_baseline_application_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#terrain_baseline_application_errorMsg').html(`Application Error: ${data.error}`);
                         $('#terrain_baseline_application_errorMsg').show();
                         setTimeout(function()
                         {
@@ -1952,8 +1952,11 @@
                     }
                     else
                     {
-                        $('#project_details_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#project_details_errorMsg').html(`Application Error: ${data.error}`);
                         $('#project_details_errorMsg').show();
+                        $('#project_details_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_errorMsg').delay(2000).fadeOut('slow');
@@ -1981,28 +1984,28 @@
 
     function save_general_water_requirement()
     {
-        water_excavated_muck = $("input[name=water_excavated_muck]:checked").length;
-        water_required = $("input[name=water_required]:checked").length;
-        water_required_value = $("input[name=water_required]:checked").val();
-        water_provided_by = $("input[name=water_provided_by]:checked").length;
-        water_raw_material_source = $('#water_raw_material_source').val();
-        water_raw_material_qty_day = $('#water_raw_material_qty_day').val();
-        water_raw_material_recycle_day = $('#water_raw_material_recycle_day').val();
-        water_cleaning_source = $('#water_cleaning_source').val();
-        water_cleaning_qty_day = $('#water_cleaning_qty_day').val();
-        water_cleaning_recycle_day = $('#water_cleaning_recycle_day').val();
-        water_process_source = $('#water_process_source').val();
-        water_process_qty_day = $('#water_process_qty_day').val();
-        water_process_recycle_day = $('#water_process_recycle_day').val();
-        water_domestic_source = $('#water_domestic_source').val();
-        water_domestic_qty_day = $('#water_domestic_qty_day').val();
-        water_domestic_recycle_day = $('#water_domestic_recycle_day').val();
-        water_dust_compression_source = $('#water_dust_compression_source').val();
-        water_dust_compression_qty_day = $('#water_dust_compression_qty_day').val();
-        water_dust_compression_recycle_day = $('#water_dust_compression_recycle_day').val();
-        water_others_name = $('#water_others_name').val();
-        water_others_source = $('#water_others_source').val();
-        water_others_qty_day = $('#water_others_qty_day').val();
+        let water_excavated_muck = $("input[name=water_excavated_muck]:checked").length;
+        let water_required = $("input[name=water_required]:checked").length;
+        let water_required_value = $("input[name=water_required]:checked").val();
+        let water_provided_by = $("input[name=water_provided_by]:checked").length;
+        let water_raw_material_source = $('#water_raw_material_source').val();
+        let water_raw_material_qty_day = $('#water_raw_material_qty_day').val();
+        let water_raw_material_recycle_day = $('#water_raw_material_recycle_day').val();
+        let water_cleaning_source = $('#water_cleaning_source').val();
+        let water_cleaning_qty_day = $('#water_cleaning_qty_day').val();
+        let water_cleaning_recycle_day = $('#water_cleaning_recycle_day').val();
+        let water_process_source = $('#water_process_source').val();
+        let water_process_qty_day = $('#water_process_qty_day').val();
+        let water_process_recycle_day = $('#water_process_recycle_day').val();
+        let water_domestic_source = $('#water_domestic_source').val();
+        let water_domestic_qty_day = $('#water_domestic_qty_day').val();
+        let water_domestic_recycle_day = $('#water_domestic_recycle_day').val();
+        let water_dust_compression_source = $('#water_dust_compression_source').val();
+        let water_dust_compression_qty_day = $('#water_dust_compression_qty_day').val();
+        let water_dust_compression_recycle_day = $('#water_dust_compression_recycle_day').val();
+        let water_others_name = $('#water_others_name').val();
+        let water_others_source = $('#water_others_source').val();
+        let water_others_qty_day = $('#water_others_qty_day').val();
 
         if(water_excavated_muck < 1)
         {
@@ -2162,7 +2165,9 @@
                     }
                     else
                     {
-                        $('#water_requirement_application_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#water_requirement_application_errorMsg').html(`Application Error: ${data.error}`);
                         $('#water_requirement_application_errorMsg').show();
                         setTimeout(function()
                         {
@@ -2178,27 +2183,27 @@
     
     function save_solid_waste_details()
     {
-        en_impact_allocated_budget = $('#en_impact_allocated_budget').val();
-        en_impact_hazardous_waste_list = $('#en_impact_hazardous_waste_list').val();
-        en_impact_hazardous_waste_source = $('#en_impact_hazardous_waste_source').val();
-        en_impact_hazardous_waste_qty_annum = $('#en_impact_hazardous_waste_qty_annum').val();
-        en_impact_hazardous_waste_mgt_plan = $('#en_impact_hazardous_waste_mgt_plan').val();
-        en_impact_non_hazardous_waste_list = $('#en_impact_non_hazardous_waste_list').val();
-        en_impact_non_hazardous_waste_source = $('#en_impact_non_hazardous_waste_source').val();
-        en_impact_non_hazardous_waste_qty_annum = $('#en_impact_non_hazardous_waste_qty_annum').val();
-        en_impact_non_hazardous_waste_mgt_plan = $('#en_impact_non_hazardous_waste_mgt_plan').val();
-        en_impact_medical_waste_list = $('#en_impact_medical_waste_list').val();
-        en_impact_medical_waste_source = $('#en_impact_medical_waste_source').val();
-        en_impact_medical_waste_qty_annum = $('#en_impact_medical_waste_qty_annum').val();
-        en_impact_medical_waste_mgt_plan = $('#en_impact_medical_waste_mgt_plan').val();
-        en_impact_ewaste_list = $('#en_impact_ewaste_list').val();
-        en_impact_ewaste_source = $('#en_impact_ewaste_source').val();
-        en_impact_ewaste_qty_annum = $('#en_impact_ewaste_qty_annum').val();
-        en_impact_ewaste_mgt_plan = $('#en_impact_ewaste_mgt_plan').val();
-        en_impact_others_waste_list = $('#en_impact_others_waste_list').val();
-        en_impact_others_waste_source = $('#en_impact_others_waste_source').val();
-        en_impact_others_waste_qty_annum = $('#en_impact_others_waste_qty_annum').val();
-        en_impact_others_waste_mgt_plan = $('#en_impact_others_waste_mgt_plan').val();
+        let en_impact_allocated_budget = $('#en_impact_allocated_budget').val();
+        let en_impact_hazardous_waste_list = $('#en_impact_hazardous_waste_list').val();
+        let en_impact_hazardous_waste_source = $('#en_impact_hazardous_waste_source').val();
+        let en_impact_hazardous_waste_qty_annum = $('#en_impact_hazardous_waste_qty_annum').val();
+        let en_impact_hazardous_waste_mgt_plan = $('#en_impact_hazardous_waste_mgt_plan').val();
+        let en_impact_non_hazardous_waste_list = $('#en_impact_non_hazardous_waste_list').val();
+        let en_impact_non_hazardous_waste_source = $('#en_impact_non_hazardous_waste_source').val();
+        let en_impact_non_hazardous_waste_qty_annum = $('#en_impact_non_hazardous_waste_qty_annum').val();
+        let en_impact_non_hazardous_waste_mgt_plan = $('#en_impact_non_hazardous_waste_mgt_plan').val();
+        let en_impact_medical_waste_list = $('#en_impact_medical_waste_list').val();
+        let en_impact_medical_waste_source = $('#en_impact_medical_waste_source').val();
+        let en_impact_medical_waste_qty_annum = $('#en_impact_medical_waste_qty_annum').val();
+        let en_impact_medical_waste_mgt_plan = $('#en_impact_medical_waste_mgt_plan').val();
+        let en_impact_ewaste_list = $('#en_impact_ewaste_list').val();
+        let en_impact_ewaste_source = $('#en_impact_ewaste_source').val();
+        let en_impact_ewaste_qty_annum = $('#en_impact_ewaste_qty_annum').val();
+        let en_impact_ewaste_mgt_plan = $('#en_impact_ewaste_mgt_plan').val();
+        let en_impact_others_waste_list = $('#en_impact_others_waste_list').val();
+        let en_impact_others_waste_source = $('#en_impact_others_waste_source').val();
+        let en_impact_others_waste_qty_annum = $('#en_impact_others_waste_qty_annum').val();
+        let en_impact_others_waste_mgt_plan = $('#en_impact_others_waste_mgt_plan').val();
 
         if(en_impact_allocated_budget == "")
         {
@@ -2360,20 +2365,24 @@
                     {
                         $('#solid_waste_successMsg').html("Saved Successfully");
                         $('#solid_waste_successMsg').show();
+                        $('#solid_waste_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#solid_waste_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                         setTimeout(function() {
-                            $("#headingNineBtn").removeAttr("disabled");
-                            $("#collapseNine").addClass("show");
+                            $("#headingTwelveBtn").removeAttr("disabled");
+                            $("#collapseTwelve").addClass("show");
                             $("#collapseEight").removeClass("show");
                         }, 2000);
                     }
                     else
                     {
-                        $('#solid_waste_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#solid_waste_errorMsg').html(`Application Error: ${data.error}`);
                         $('#solid_waste_errorMsg').show();
+                        $('#solid_waste_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#solid_waste_errorMsg').delay(2000).fadeOut('slow');
@@ -2386,15 +2395,15 @@
 
     function save_noise_level_details()
     {
-        en_noise_ind_area_day = $('#en_noise_ind_area_day').val();
-        en_noise_ind_area_night = $('#en_noise_ind_area_night').val();
-        en_noise_ind_area_mgt_plan = $('#en_noise_ind_area_mgt_plan').val();
-        en_noise_mixed_area_day = $('#en_noise_mixed_area_day').val();
-        en_noise_mixed_area_night = $('#en_noise_mixed_area_night').val();
-        en_noise_mixed_area_mgt_plan = $('#en_noise_mixed_area_mgt_plan').val();
-        en_noise_sen_area_day = $('#en_noise_sen_area_day').val();
-        en_noise_sen_area_night = $('#en_noise_sen_area_night').val();
-        en_noise_sen_area_mgt_plan = $('#en_noise_sen_area_mgt_plan').val();
+        let en_noise_ind_area_day = $('#en_noise_ind_area_day').val();
+        let en_noise_ind_area_night = $('#en_noise_ind_area_night').val();
+        let en_noise_ind_area_mgt_plan = $('#en_noise_ind_area_mgt_plan').val();
+        let en_noise_mixed_area_day = $('#en_noise_mixed_area_day').val();
+        let en_noise_mixed_area_night = $('#en_noise_mixed_area_night').val();
+        let en_noise_mixed_area_mgt_plan = $('#en_noise_mixed_area_mgt_plan').val();
+        let en_noise_sen_area_day = $('#en_noise_sen_area_day').val();
+        let en_noise_sen_area_night = $('#en_noise_sen_area_night').val();
+        let en_noise_sen_area_mgt_plan = $('#en_noise_sen_area_mgt_plan').val();
 
         if(en_noise_ind_area_day == "")
         {
@@ -2472,6 +2481,7 @@
                     {
                         $('#noise_level_successMsg').html("Saved Successfully");
                         $('#noise_level_successMsg').show();
+                        $('#noise_level_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#noise_level_successMsg').delay(2000).fadeOut('slow');
@@ -2484,8 +2494,11 @@
                     }
                     else
                     {
-                        $('#noise_level_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#noise_level_errorMsg').html(`Application Error: ${data.error}`);
                         $('#noise_level_errorMsg').show();
+                        $('#noise_level_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#noise_level_errorMsg').delay(2000).fadeOut('slow');
@@ -2498,42 +2511,43 @@
 
     function save_other_impact_details()
     {
-        en_other_impact_odour_source = $('#en_other_impact_odour_source').val();
-        en_other_impact_odour_qty = $('#en_other_impact_odour_qty').val();
-        en_other_impact_odour_mgt_plan = $('#en_other_impact_odour_mgt_plan').val();
-        en_other_impact_fugutive_source = $('#en_other_impact_fugutive_source').val();
-        en_other_impact_fugutive_qty = $('#en_other_impact_fugutive_qty').val();
-        en_other_impact_fugutive_mgt_plan = $('#en_other_impact_fugutive_mgt_plan').val();
-        en_other_impact_slope_source = $('#en_other_impact_slope_source').val();
-        en_other_impact_slope_qty = $('#en_other_impact_slope_qty').val();
-        en_other_impact_slope_mgt_plan = $('#en_other_impact_slope_mgt_plan').val();
-        en_other_impact_aesthetic_source = $('#en_other_impact_aesthetic_source').val();
-        en_other_impact_aesthetic_qty = $('#en_other_impact_aesthetic_qty').val();
-        en_other_impact_aesthetic_mgt_plan = $('#en_other_impact_aesthetic_mgt_plan').val();
-        en_other_impact_mucks_source = $('#en_other_impact_mucks_source').val();
-        en_other_impact_mucks_qty = $('#en_other_impact_mucks_qty').val();
-        en_other_impact_mucks_mgt_plan = $('#en_other_impact_mucks_mgt_plan').val();
-        en_other_impact_sewerage_source = $('#en_other_impact_sewerage_source').val();
-        en_other_impact_sewerage_qty = $('#en_other_impact_sewerage_qty').val();
-        en_other_impact_sewerage_mgt_plan = $('#en_other_impact_sewerage_mgt_plan').val();
-        en_other_impact_erosion_source = $('#en_other_impact_erosion_source').val();
-        en_other_impact_erosion_qty = $('#en_other_impact_erosion_qty').val();
-        en_other_impact_erosion_mgt_plan = $('#en_other_impact_erosion_mgt_plan').val();
-        en_other_impact_storm_water_source = $('#en_other_impact_storm_water_source').val();
-        en_other_impact_storm_water_qty = $('#en_other_impact_storm_water_qty').val();
-        en_other_impact_storm_water_mgt_plan = $('#en_other_impact_storm_water_mgt_plan').val();
-        en_other_impact_habitat_source = $('#en_other_impact_habitat_source').val();
-        en_other_impact_habitat_qty = $('#en_other_impact_habitat_qty').val();
-        en_other_impact_habitat_mgt_plan = $('#en_other_impact_habitat_mgt_plan').val();
-        en_other_impact_socio_source = $('#en_other_impact_socio_source').val();
-        en_other_impact_socio_qty = $('#en_other_impact_socio_qty').val();
-        en_other_impact_socio_mgt_plan = $('#en_other_impact_socio_mgt_plan').val();
-        en_other_impact_water_source_source = $('#en_other_impact_water_source_source').val();
-        en_other_impact_water_source_qty = $('#en_other_impact_water_source_qty').val();
-        en_other_impact_water_source_mgt_plan = $('#en_other_impact_water_source_mgt_plan').val();
-        en_other_impact_other_source = $('#en_other_impact_other_source').val();
-        en_other_impact_other_qty = $('#en_other_impact_other_qty').val();
-        en_other_impact_other_mgt_plan = $('#en_other_impact_other_mgt_plan').val();
+        let en_other_impact_odour_source = $('#en_other_impact_odour_source').val();
+        let en_other_impact_odour_qty = $('#en_other_impact_odour_qty').val();
+        let en_other_impact_odour_mgt_plan = $('#en_other_impact_odour_mgt_plan').val();
+        let en_other_impact_fugutive_source = $('#en_other_impact_fugutive_source').val();
+        let en_other_impact_fugutive_qty = $('#en_other_impact_fugutive_qty').val();
+        let en_other_impact_fugutive_mgt_plan = $('#en_other_impact_fugutive_mgt_plan').val();
+        let en_other_impact_slope_source = $('#en_other_impact_slope_source').val();
+        let en_other_impact_slope_qty = $('#en_other_impact_slope_qty').val();
+        let en_other_impact_slope_mgt_plan = $('#en_other_impact_slope_mgt_plan').val();
+        let en_other_impact_aesthetic_source = $('#en_other_impact_aesthetic_source').val();
+        let en_other_impact_aesthetic_qty = $('#en_other_impact_aesthetic_qty').val();
+        let en_other_impact_aesthetic_mgt_plan = $('#en_other_impact_aesthetic_mgt_plan').val();
+        let en_other_impact_mucks_source = $('#en_other_impact_mucks_source').val();
+        let en_other_impact_mucks_qty = $('#en_other_impact_mucks_qty').val();
+        let en_other_impact_mucks_mgt_plan = $('#en_other_impact_mucks_mgt_plan').val();
+        let en_other_impact_sewerage_source = $('#en_other_impact_sewerage_source').val();
+        let en_other_impact_sewerage_qty = $('#en_other_impact_sewerage_qty').val();
+        let en_other_impact_sewerage_mgt_plan = $('#en_other_impact_sewerage_mgt_plan').val();
+        let en_other_impact_erosion_source = $('#en_other_impact_erosion_source').val();
+        let en_other_impact_erosion_qty = $('#en_other_impact_erosion_qty').val();
+        let en_other_impact_erosion_mgt_plan = $('#en_other_impact_erosion_mgt_plan').val();
+        let en_other_impact_storm_water_source = $('#en_other_impact_storm_water_source').val();
+        let en_other_impact_storm_water_qty = $('#en_other_impact_storm_water_qty').val();
+        let en_other_impact_storm_water_mgt_plan = $('#en_other_impact_storm_water_mgt_plan').val();
+        let en_other_impact_habitat_source = $('#en_other_impact_habitat_source').val();
+        let en_other_impact_habitat_qty = $('#en_other_impact_habitat_qty').val();
+        let en_other_impact_habitat_mgt_plan = $('#en_other_impact_habitat_mgt_plan').val();
+        let en_other_impact_socio_source = $('#en_other_impact_socio_source').val();
+        let en_other_impact_socio_qty = $('#en_other_impact_socio_qty').val();
+        let en_other_impact_socio_mgt_plan = $('#en_other_impact_socio_mgt_plan').val();
+        let en_other_impact_water_source_source = $('#en_other_impact_water_source_source').val();
+        let en_other_impact_water_source_qty = $('#en_other_impact_water_source_qty').val();
+        let en_other_impact_water_source_mgt_plan = $('#en_other_impact_water_source_mgt_plan').val();
+        let en_other_impact_other_source = $('#en_other_impact_other_source').val();
+        let en_other_impact_other_qty = $('#en_other_impact_other_qty').val();
+        let en_other_impact_other_mgt_plan = $('#en_other_impact_other_mgt_plan').val();
+
 
         if(en_other_impact_odour_source == "")
         {
@@ -2800,6 +2814,7 @@
                     {
                         $('#other_impact_successMsg').html("Saved Successfully");
                         $('#other_impact_successMsg').show();
+                        $('#other_impact_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#other_impact_successMsg').delay(2000).fadeOut('slow');
@@ -2812,8 +2827,11 @@
                     }
                     else
                     {
-                        $('#other_impact_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#other_impact_errorMsg').html(`Application Error: ${data.error}`);
                         $('#other_impact_errorMsg').show();
+                        $('#other_impact_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#other_impact_errorMsg').delay(2000).fadeOut('slow');
@@ -2850,32 +2868,83 @@
             data : $('#transmission_submit_form').serialize(),
             success : function(data)
             {
+                $("#pageloader").hide();
                 if(data.message == 'success')
                 {
+                    $('#transmission_submit_successMsg').focus();
                     $('#transmission_submit_successMsg').html("Application Submitted Successfully");
                     $('#transmission_submit_successMsg').show();
                     setTimeout(function()
                     {
                         $('#transmission_submit_successMsg').delay(2000).fadeOut('slow');
                     }, 2000);
-                    setTimeout(function()
+                    if(data.draft_count > 0)
                     {
-                        window.location.href = '/new_application_form';
-                    }, 2000);
+                        if(data.type == 'IEE')
+                        {
+                            window.location.href = '/draft_iee_application';
+                        }
+                        else if(data.type == 'IEA')
+                        {
+                            window.location.href = '/draft_ea_application';
+                        }
+                        else if(data.type == 'ENE')
+                        {
+                            window.location.href = '/draft_energy_application';
+                        }
+                        else if(data.type == 'ROA')
+                        {
+                            window.location.href = '/draft_road_application';
+                        }
+                        else if(data.type == 'TRA')
+                        {
+                            window.location.href = '/draft_transmission_application';
+                        }
+                        else if(data.type == 'TOU')
+                        {
+                            window.location.href = '/draft_tourism_application';
+                        }
+                        else if(data.type == 'GWA')
+                        {
+                            window.location.href = '/draft_ground_water_application';
+                        }
+                        else if(data.type == 'FOR')
+                        {
+                            window.location.href = '/draft_forestry_application';
+                        }
+                        else if(data.type == 'QUA')
+                        {
+                            window.location.href = '/draft_quarry_application';
+                        }
+                        else if(data.type == 'GEN')
+                        {
+                            window.location.href = '/draft_general_application';
+                        }
+                    }
+                    else
+                    {
+                        setTimeout(function() {
+                            location.reload()
+                        }, 2000);
+                    }
                 }
                 else if(data.message == 'not submitted')
                 {
-                    $('#iee_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
-                    $('#iee_submit_errorMsg').show();
+                    var errorMsg = data.error;
+                    $('#transmission_submit_errorMsg').html(`Application Error: ${data.error}`);
+                    $('#transmission_submit_errorMsg').show();
+                    $('#transmission_submit_errorMsg').focus();
                     setTimeout(function()
                     {
-                        $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
+                        $('#transmission_submit_errorMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                 }
                 else
                 {
-                    $('#transmission_submit_errorMsg').html("Please Check And Submit Again");
+                    var errorMsg = data.error;
+                    $('#transmission_submit_errorMsg').html(`Application Error: ${data.error}`);
                     $('#transmission_submit_errorMsg').show();
+                    $('#transmission_submit_errorMsg').focus();
                     setTimeout(function()
                     {
                         $('#transmission_submit_errorMsg').delay(2000).fadeOut('slow');
@@ -2888,11 +2957,11 @@
 
     function add_raw_material_details()
     {
-        application_no = $('#application_no').val();
-        raw_material = $('#raw_material').val();
-        raw_material_qty = $('#raw_material_qty').val();
-        raw_material_source = $('#raw_material_source').val();
-        raw_material_storage_method = $('#raw_material_storage_method').val();
+        let application_no = $('#application_no').val();
+        let raw_material = $('#raw_material').val();
+        let raw_material_qty = $('#raw_material_qty').val();
+        let raw_material_source = $('#raw_material_source').val();
+        let raw_material_storage_method = $('#raw_material_storage_method').val();
 
         if(raw_material == "")
         {
@@ -2928,7 +2997,7 @@
             ({
                 type : "POST",
                 url : "{% url 'add_raw_materials' %}",
-                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method},
+                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#raw_material_SuccessMsg').html("Add Successful");
@@ -2962,12 +3031,12 @@
 
     function update_raw_material_details()
     {
-        record_id = $('#edit_raw_material_record_id').val();
-        application_no = $('#edit_raw_material_app_no').val();
-        raw_material = $('#edit_raw_material').val();
-        raw_material_qty = $('#edit_raw_material_qty').val();
-        raw_material_source = $('#edit_raw_material_source').val();
-        raw_material_storage_method = $('#edit_raw_material_storage_method').val();
+        let record_id = $('#edit_raw_material_record_id').val();
+        let application_no = $('#edit_raw_material_app_no').val();
+        let raw_material = $('#edit_raw_material').val();
+        let raw_material_qty = $('#edit_raw_material_qty').val();
+        let raw_material_source = $('#edit_raw_material_source').val();
+        let raw_material_storage_method = $('#edit_raw_material_storage_method').val();
 
         if(raw_material == "")
         {
@@ -3003,10 +3072,10 @@
             ({
                 type : "POST",
                 url : "{% url 'update_raw_materials' %}",
-                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method},
+                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
-                    $('#edit_raw_material_SuccessMsg').html("Add Successful");
+                    $('#edit_raw_material_SuccessMsg').html("Update Successful");
                     $('#edit_raw_material_SuccessMsg').show();
                     setTimeout(function()
                     {
@@ -3032,8 +3101,8 @@
 
     function delete_raw_material_details()
     {
-        record_id = $('#delete_raw_material_record_id').val();
-        application_no = $('#delete_raw_material_app_no').val();
+        let record_id = $('#delete_raw_material_record_id').val();
+        let application_no = $('#delete_raw_material_app_no').val();
 
         $.ajax
         ({
@@ -3060,10 +3129,10 @@
 
     function add_partner_details()
     {
-        application_no = $('#application_no').val();
-        partner_type = $('#partner_type').val();
-        partner_type_name = $('#partner_type_name').val();
-        partner_type_address = $('#partner_type_address').val();
+        let application_no = $('#application_no').val();
+        let partner_type = $('#partner_type').val();
+        let partner_type_name = $('#partner_type_name').val();
+        let partner_type_address = $('#partner_type_address').val();
 
         if(partner_type == "")
         {
@@ -3122,8 +3191,8 @@
 
     function delete_partner_details()
     {
-        record_id = $('#delete_partner_details_record_id').val();
-        application_no = $('#delete_partner_details_app_no').val();
+        let record_id = $('#delete_partner_details_record_id').val();
+        let application_no = $('#delete_partner_details_app_no').val();
 
         $.ajax
         ({
@@ -3170,6 +3239,7 @@
         let industrial_area_acre = $('#industrial_area_acre').val();
         let state_reserve_forest_acre = $('#state_reserve_forest_acre').val();
         let private_area_acre = $('#private_area_acre').val();
+        let others_area = $('#others_area').val();
         let others_area_acre = $('#others_area_acre').val();
         let total_area_acre = $('#total_area_acre').val();
         let green_area_acre = $('#green_area_acre').val();
@@ -3319,9 +3389,9 @@
             $('#private_area_acreErrorMsg').delay(2000).fadeOut('slow');
             $('#private_area_acre').focus();
         }
-        else if(others_area_acre == "")
+        else if(others_area != "NA" || others_area != "" && others_area_acre == "")
         {
-            $('#others_area_acreErrorMsg').html("Enter Others");
+            $('#others_area_acreErrorMsg').html("Enter Others Area");
             $('#others_area_acreErrorMsg').show();
             $('#others_area_acreErrorMsg').delay(2000).fadeOut('slow');
             $('#others_area_acre').focus();
@@ -3381,6 +3451,7 @@
                     {
                         $('#application_form_successMsg').html("Saved Successfully");
                         $('#application_form_successMsg').show();
+                        $('#application_form_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#application_form_successMsg').delay(2000).fadeOut('slow');
@@ -3394,10 +3465,13 @@
                     }
                     else
                     {
-                        $('#application_form_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#application_form_errorMsg').html(`Application Error: ${data.error}`);
                         $('#application_form_errorMsg').show();
-                        setTimeout(function()
-                        {
+                        $('#application_form_errorMsg').focus();
+                        
+                        setTimeout(function() {
                             $('#application_form_errorMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                     }

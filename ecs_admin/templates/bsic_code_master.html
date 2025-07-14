@@ -139,11 +139,9 @@
                         <label class="form-label fw-bold">Competent Authority</label>
                         <select type="text" name="competent_authority" class="form-control" id="competent_authority">
                             <option value="">--SELECT--</option>
-                            <option value="DECC">DECC</option>
-                            <option value="Thromde">Thromde</option>
-                            <option value="DEC">DEC</option>
-                            <option value="DOL">DOL</option>
-                            <option value="DoFPS">DoFPS</option>
+                            {% for competant_authority in competant_authority %}
+                                <option value="{{ competant_authority.competent_authority}}">{{ competant_authority.competent_authority }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="alert alert-danger" id="competent_authorityErrorMsg" style="display:none"></div>
@@ -160,7 +158,26 @@
                     </div>
                     <div class="alert alert-danger" id="serviceErrorMsg" style="display:none"></div>
                 </div>
+                <div class="col-lg-6">
+                    <label class="form-label fw-bold">Has TOR</label>
+                    <div class="mb-3">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="has_tor" value="Yes">
+                            <label class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="has_tor" value="No">
+                            <label class="form-check-label">No</label>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger" id="has_torErrorMsg" style="display:none"></div>
+                </div>
+                
               </div>
+               <button id="editpageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    Loading...
+               </button>
               <div class="alert alert-success" id="bsic_code_SuccessMsg" style="display:none"></div>
               <div class="modal-footer flex-center justify-content-center">
                 <button type="button" class="btn btn-sm btn-primary" onclick="add_bsic_code_details()">Add</button>
@@ -214,6 +231,7 @@ function add_bsic_code_details()
         let colour_code = $('#colour_code').val();
         let competent_authority = $('#competent_authority').val();
         let service_id = $('#service_id').val();
+        let has_tor = $('input[name="has_tor"]:checked').val();
 
         if(broad_activity_code == "")
         {
@@ -269,14 +287,22 @@ function add_bsic_code_details()
             $('#serviceErrorMsg').show();
             $('#serviceErrorMsg').delay(2000).fadeOut('slow');
         }
+        else if(has_tor == "")
+        {
+            $('#has_torErrorMsg').html("Select One");
+            $('#has_torErrorMsg').show();
+            $('#has_torErrorMsg').delay(2000).fadeOut('slow');
+        }
         else
         {
+            $("#pageloader").show();
             $.ajax({
                 type : "GET",
                 url : "{% url 'add_bsic_code_master' %}",
                 data : $('#bsic_code_form').serialize(),
                 success : function()
                 {
+                    $("#pageloader").hide();
                     $('#bsic_code_SuccessMsg').html("Add Successful");
                     $('#bsic_code_SuccessMsg').show();
                     setTimeout(function()

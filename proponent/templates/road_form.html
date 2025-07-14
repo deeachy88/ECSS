@@ -6,7 +6,7 @@
     <div class="col-xl-12">
         <div class="card mt-1">
             <div class="card-body">
-                <h4 class="header-title mb-3"> New Application</h4>
+                <h4 class="header-title mb-3"> Initial Environmental Examination (IEE) Form for Road Projects - 2022</h4>
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
@@ -28,7 +28,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Applicant</label>
+                                                <label class="form-label fw-bold">Name of the Applicant</label>
                                                 <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -60,16 +60,8 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Project</label>
-                                                <select class="form-control" id="project_name" name="project_name">
-                                                    <option value="">--SELECT--</option>
-                                                    <option value="National_Highway_Bypass">National Highway Bypass</option>
-                                                    <option value="Dzongkhag_Road">Dzongkhag Road</option>
-                                                    <option value="Thromde_Road">Thromde Road</option>
-                                                    <option value="Farm_Road">Farm Road</option>
-                                                    <option value="Access_Road">Access Road</option>
-                                                    <option value="Others">Others</option>
-                                                </select>
+                                                <label class="form-label fw-bold">Name of the Project</label>
+                                                <input type="text" class="form-control" id="project_name" name="project_name">
                                             </div>
                                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -156,6 +148,9 @@
                                     </div>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Baseline/Existing information
+                                    </div>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable
                                     </div>
                                     <div class="row">
                                         <table class="table table-hover table-bordered table-centered mb-0">
@@ -268,10 +263,10 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="application_form_successMsg" style="display:none">
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="application_form_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="application_form_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="application_form_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-4">
@@ -316,7 +311,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                 <input type="number" name="project_cost" class="form-control" id="project_cost">
                                             </div>
                                             <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -576,10 +571,10 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="project_details_successMsg" style="display:none">
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="project_details_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="project_details_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="project_details_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-4">
@@ -691,10 +686,10 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="project_details_one_successMsg" style="display:none">
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="project_details_one_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="project_details_one_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="project_details_one_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-4">
@@ -876,10 +871,10 @@
                                             <div id="water_source_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="project_details_two_successMsg" style="display:none">
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="project_details_two_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="project_details_two_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="project_details_two_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-4">
@@ -951,10 +946,10 @@
                                         <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                         <label class="form-check-label">Others</label>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_others_successMsg" style="display:none">
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="anc_others_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="anc_others_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="anc_others_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-2">
@@ -1043,10 +1038,10 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="solid_waste_successMsg" style="display:none">
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="solid_waste_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="solid_waste_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="solid_waste_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-2">
@@ -1112,10 +1107,10 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="noise_level_successMsg" style="display:none">
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="noise_level_successMsg" style="display:none">
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="noise_level_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert"  tabindex="-1" id="noise_level_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-2">
@@ -1231,10 +1226,10 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="other_impact_successMsg" style="display:none">
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="other_impact_successMsg" style="display:none">
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="other_impact_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="other_impact_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-2">
@@ -1306,7 +1301,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="alert alert-success border-0 rounded-0" role="alert" id="road_attachment_successMsg" style="display:none">
+                                <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="road_attachment_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                 </div>
                                 <div class="row mt-2">
@@ -1359,10 +1354,10 @@
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
                                     
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="road_submit_successMsg" style="display:none">
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="road_submit_successMsg" style="display:none">
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="road_submit_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="road_submit_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     
@@ -1418,7 +1413,7 @@
                 <div class="col-lg-6"> 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Attachment</label>
-                        <input type="file" name="road_attach" class="form-control" id="road_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                        <input type="file" name="road_attach" class="form-control" id="road_attach" accept=".png,.jpg,.jpeg,.pdf,.doc,.kmz">
                     </div>
                     <div class="alert alert-danger" id="road_attachErrorMsg" style="display:none"></div>
                 </div>
@@ -2539,10 +2534,10 @@
 
     function add_machine_tool_details()
     {
-        application_no = $('#application_no').val();
-        machine_tool = $('#machine_tool').val();
-        machine_tool_qty = $('#machine_tool_qty').val();
-        machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
+        let application_no = $('#application_no').val();
+        let machine_tool = $('#machine_tool').val();
+        let machine_tool_qty = $('#machine_tool_qty').val();
+        let machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
 
         if(machine_tool == "")
         {
@@ -2604,11 +2599,11 @@
 
     function update_machine_equipment_populate(record_id, application_no, machine_name, qty, installed_capacity)
     {
-        record_id = $('#edit_machine_tool_record_id').val();
-        application_no = $('#edit_machine_tool_app_no').val();
-        machine_tool = $('#edit_machine_tool').val();
-        qty = $('#edit_machine_tool_qty').val();
-        machine_tool_installed_capacity = $('#edit_machine_tool_installed_capacity').val();
+        let record_id = $('#edit_machine_tool_record_id').val();
+        let application_no = $('#edit_machine_tool_app_no').val();
+        let machine_tool = $('#edit_machine_tool').val();
+        let qty = $('#edit_machine_tool_qty').val();
+        let machine_tool_installed_capacity = $('#edit_machine_tool_installed_capacity').val();
 
         if(machine_tool == "")
         {
@@ -2666,8 +2661,8 @@
 
     function delete_machine_tool_details()
     {
-        $('#delete_machine_tool_record_id').val();
-        $('#delete_machine_tool_app_no').val();
+        let record_id = $('#delete_machine_tool_record_id').val();
+        let application_no = $('#delete_machine_tool_app_no').val();
 
         $.ajax
             ({
@@ -2768,12 +2763,12 @@
 
     function update_raw_material_details()
     {
-        record_id = $('#edit_raw_material_record_id').val();
-        application_no = $('#edit_raw_material_app_no').val();
-        raw_material = $('#edit_raw_material').val();
-        raw_material_qty = $('#edit_raw_material_qty').val();
-        raw_material_source = $('#edit_raw_material_source').val();
-        raw_material_storage_method = $('#edit_raw_material_storage_method').val();
+        let record_id = $('#edit_raw_material_record_id').val();
+        let application_no = $('#edit_raw_material_app_no').val();
+        let raw_material = $('#edit_raw_material').val();
+        let raw_material_qty = $('#edit_raw_material_qty').val();
+        let raw_material_source = $('#edit_raw_material_source').val();
+        let raw_material_storage_method = $('#edit_raw_material_storage_method').val();
 
         if(raw_material == "")
         {
@@ -2838,8 +2833,8 @@
 
     function delete_raw_material_details()
     {
-        record_id = $('#delete_raw_material_record_id').val();
-        application_no = $('#delete_raw_material_app_no').val();
+        let record_id = $('#delete_raw_material_record_id').val();
+        let application_no = $('#delete_raw_material_app_no').val();
 
         $.ajax
         ({
@@ -2866,10 +2861,10 @@
 
     function add_partner_details()
     {
-        application_no = $('#application_no').val();
-        partner_type = $('#partner_type').val();
-        partner_type_name = $('#partner_type_name').val();
-        partner_type_address = $('#partner_type_address').val();
+        let application_no = $('#application_no').val();
+        let partner_type = $('#partner_type').val();
+        let partner_type_name = $('#partner_type_name').val();
+        let partner_type_address = $('#partner_type_address').val();
 
         if(partner_type == "")
         {
@@ -2928,8 +2923,8 @@
 
     function delete_partner_details()
     {
-        record_id = $('#delete_partner_details_record_id').val();
-        application_no = $('#delete_partner_details_app_no').val();
+        let record_id = $('#delete_partner_details_record_id').val();
+        let application_no = $('#delete_partner_details_app_no').val();
 
         $.ajax
         ({
@@ -3272,6 +3267,7 @@
                     {
                         $('#application_form_successMsg').html("Saved Successfully");
                         $('#application_form_successMsg').show();
+                        $('#application_form_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#application_form_successMsg').delay(2000).fadeOut('slow');
@@ -3284,10 +3280,13 @@
                     }
                     else
                     {
-                        $('#application_form_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#application_form_errorMsg').html(`Application Error: ${data.error}`);
                         $('#application_form_errorMsg').show();
-                        setTimeout(function()
-                        {
+                        $('#application_form_errorMsg').focus();
+                        
+                        setTimeout(function() {
                             $('#application_form_errorMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                     }
@@ -3489,6 +3488,7 @@
                     {
                         $('#project_details_successMsg').html("Saved Successfully");
                         $('#project_details_successMsg').show();
+                        $('#project_details_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_successMsg').delay(2000).fadeOut('slow');
@@ -3501,8 +3501,11 @@
                     }
                     else
                     {
-                        $('#project_details_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#project_details_errorMsg').html(`Application Error: ${data.error}`);
                         $('#project_details_errorMsg').show();
+                        $('#project_details_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_errorMsg').delay(2000).fadeOut('slow');
@@ -3570,6 +3573,7 @@
                     {
                         $('#project_details_one_successMsg').html("Saved Successfully");
                         $('#project_details_one_successMsg').show();
+                        $('#project_details_one_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_one_successMsg').delay(2000).fadeOut('slow');
@@ -3582,8 +3586,11 @@
                     }
                     else
                     {
-                        $('#project_details_one_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#project_details_one_errorMsg').html(`Application Error: ${data.error}`);
                         $('#project_details_one_errorMsg').show();
+                        $('#project_details_one_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_one_errorMsg').delay(2000).fadeOut('slow');
@@ -3765,6 +3772,7 @@
                     {
                         $('#project_details_two_successMsg').html("Saved Successfully");
                         $('#project_details_two_successMsg').show();
+                        $('#project_details_two_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_two_successMsg').delay(2000).fadeOut('slow');
@@ -3777,8 +3785,11 @@
                     }
                     else
                     {
-                        $('#project_details_two_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#project_details_two_errorMsg').html(`Application Error: ${data.error}`);
                         $('#project_details_two_errorMsg').show();
+                        $('#project_details_two_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_two_errorMsg').delay(2000).fadeOut('slow');
@@ -3791,17 +3802,17 @@
 
     function save_anc_road_details()
     {
-        application_no = $('#application_no').val();
-        road_line_chainage_from = $('#road_line_chainage_from').val();
-        road_line_chainage_to = $('#road_line_chainage_to').val();
-        road_land_type = $('#road_land_type').val();
-        road_terrain = $('#road_terrain').val();
-        road_width = $('#road_width').val();
-        road_row = $('#road_row').val();
-        road_area_required = $('#road_area_required').val();
-        dzongkhag = $('#roaddzonkhag').val();
-        gewog = $('#roadgewog').val();
-        village = $('#roadvillage').val();
+        let application_no = $('#application_no').val();
+        let road_line_chainage_from = $('#road_line_chainage_from').val();
+        let road_line_chainage_to = $('#road_line_chainage_to').val();
+        let road_land_type = $('#road_land_type').val();
+        let road_terrain = $('#road_terrain').val();
+        let road_width = $('#road_width').val();
+        let road_row = $('#road_row').val();
+        let road_area_required = $('#road_area_required').val();
+        let dzongkhag = $('#roaddzonkhag').val();
+        let gewog = $('#roadgewog').val();
+        let village = $('#roadvillage').val();
 
         if(road_line_chainage_from == "")
         {
@@ -3941,18 +3952,18 @@
 
     function update_anc_road_details()
     {
-        record_id = $('#edit_anc_record_id').val();
-        application_no = $('#edit_anc_road_application_no').val();
-        line_chainage_from = $('#edit_road_line_chainage_from').val();
-        line_chainage_to = $('#edit_road_line_chainage_to').val();
-        land_type = $('#edit_road_land_type').val();
-        terrain = $('#edit_road_terrain').val();
-        road_width = $('#edit_road_width').val();
-        row = $('#edit_road_row').val();
-        area_required = $('#edit_road_area_required').val();
-        dzongkhag = $('#edit_roaddzongkhag').val();
-        gewog = $('#edit_roadgewog').val();
-        village = $('#edit_roadvillage').val();
+        let record_id = $('#edit_anc_record_id').val();
+        let application_no = $('#edit_anc_road_application_no').val();
+        let line_chainage_from = $('#edit_road_line_chainage_from').val();
+        let line_chainage_to = $('#edit_road_line_chainage_to').val();
+        let land_type = $('#edit_road_land_type').val();
+        let terrain = $('#edit_road_terrain').val();
+        let road_width = $('#edit_road_width').val();
+        let row = $('#edit_road_row').val();
+        let area_required = $('#edit_road_area_required').val();
+        let dzongkhag = $('#edit_roaddzongkhag').val();
+        let gewog = $('#edit_roadgewog').val();
+        let village = $('#edit_roadvillage').val();
 
         if(line_chainage_from == "")
         {
@@ -4093,7 +4104,9 @@
                     }
                     else
                     {
-                        $('#anc_others_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#anc_others_errorMsg').html(`Application Error: ${data.error}`);
                         $('#anc_others_errorMsg').show();
                         setTimeout(function()
                         {
@@ -4107,27 +4120,27 @@
 
     function save_solid_waste_details()
     {
-        en_impact_allocated_budget = $('#en_impact_allocated_budget').val();
-        en_impact_hazardous_waste_list = $('#en_impact_hazardous_waste_list').val();
-        en_impact_hazardous_waste_source = $('#en_impact_hazardous_waste_source').val();
-        en_impact_hazardous_waste_qty_annum = $('#en_impact_hazardous_waste_qty_annum').val();
-        en_impact_hazardous_waste_mgt_plan = $('#en_impact_hazardous_waste_mgt_plan').val();
-        en_impact_non_hazardous_waste_list = $('#en_impact_non_hazardous_waste_list').val();
-        en_impact_non_hazardous_waste_source = $('#en_impact_non_hazardous_waste_source').val();
-        en_impact_non_hazardous_waste_qty_annum = $('#en_impact_non_hazardous_waste_qty_annum').val();
-        en_impact_non_hazardous_waste_mgt_plan = $('#en_impact_non_hazardous_waste_mgt_plan').val();
-        en_impact_medical_waste_list = $('#en_impact_medical_waste_list').val();
-        en_impact_medical_waste_source = $('#en_impact_medical_waste_source').val();
-        en_impact_medical_waste_qty_annum = $('#en_impact_medical_waste_qty_annum').val();
-        en_impact_medical_waste_mgt_plan = $('#en_impact_medical_waste_mgt_plan').val();
-        en_impact_ewaste_list = $('#en_impact_ewaste_list').val();
-        en_impact_ewaste_source = $('#en_impact_ewaste_source').val();
-        en_impact_ewaste_qty_annum = $('#en_impact_ewaste_qty_annum').val();
-        en_impact_ewaste_mgt_plan = $('#en_impact_ewaste_mgt_plan').val();
-        en_impact_others_waste_list = $('#en_impact_others_waste_list').val();
-        en_impact_others_waste_source = $('#en_impact_others_waste_source').val();
-        en_impact_others_waste_qty_annum = $('#en_impact_others_waste_qty_annum').val();
-        en_impact_others_waste_mgt_plan = $('#en_impact_others_waste_mgt_plan').val();
+        let en_impact_allocated_budget = $('#en_impact_allocated_budget').val();
+        let en_impact_hazardous_waste_list = $('#en_impact_hazardous_waste_list').val();
+        let en_impact_hazardous_waste_source = $('#en_impact_hazardous_waste_source').val();
+        let en_impact_hazardous_waste_qty_annum = $('#en_impact_hazardous_waste_qty_annum').val();
+        let en_impact_hazardous_waste_mgt_plan = $('#en_impact_hazardous_waste_mgt_plan').val();
+        let en_impact_non_hazardous_waste_list = $('#en_impact_non_hazardous_waste_list').val();
+        let en_impact_non_hazardous_waste_source = $('#en_impact_non_hazardous_waste_source').val();
+        let en_impact_non_hazardous_waste_qty_annum = $('#en_impact_non_hazardous_waste_qty_annum').val();
+        let en_impact_non_hazardous_waste_mgt_plan = $('#en_impact_non_hazardous_waste_mgt_plan').val();
+        let en_impact_medical_waste_list = $('#en_impact_medical_waste_list').val();
+        let en_impact_medical_waste_source = $('#en_impact_medical_waste_source').val();
+        let en_impact_medical_waste_qty_annum = $('#en_impact_medical_waste_qty_annum').val();
+        let en_impact_medical_waste_mgt_plan = $('#en_impact_medical_waste_mgt_plan').val();
+        let en_impact_ewaste_list = $('#en_impact_ewaste_list').val();
+        let en_impact_ewaste_source = $('#en_impact_ewaste_source').val();
+        let en_impact_ewaste_qty_annum = $('#en_impact_ewaste_qty_annum').val();
+        let en_impact_ewaste_mgt_plan = $('#en_impact_ewaste_mgt_plan').val();
+        let en_impact_others_waste_list = $('#en_impact_others_waste_list').val();
+        let en_impact_others_waste_source = $('#en_impact_others_waste_source').val();
+        let en_impact_others_waste_qty_annum = $('#en_impact_others_waste_qty_annum').val();
+        let en_impact_others_waste_mgt_plan = $('#en_impact_others_waste_mgt_plan').val();
 
         if(en_impact_allocated_budget == "")
         {
@@ -4289,6 +4302,7 @@
                     {
                         $('#solid_waste_successMsg').html("Saved Successfully");
                         $('#solid_waste_successMsg').show();
+                        $('#solid_waste_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#solid_waste_successMsg').delay(2000).fadeOut('slow');
@@ -4301,8 +4315,11 @@
                     }
                     else
                     {
-                        $('#solid_waste_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#solid_waste_errorMsg').html(`Application Error: ${data.error}`);
                         $('#solid_waste_errorMsg').show();
+                        $('#solid_waste_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#solid_waste_errorMsg').delay(2000).fadeOut('slow');
@@ -4315,15 +4332,15 @@
 
     function save_noise_level_details()
     {
-        en_noise_ind_area_day = $('#en_noise_ind_area_day').val();
-        en_noise_ind_area_night = $('#en_noise_ind_area_night').val();
-        en_noise_ind_area_mgt_plan = $('#en_noise_ind_area_mgt_plan').val();
-        en_noise_mixed_area_day = $('#en_noise_mixed_area_day').val();
-        en_noise_mixed_area_night = $('#en_noise_mixed_area_night').val();
-        en_noise_mixed_area_mgt_plan = $('#en_noise_mixed_area_mgt_plan').val();
-        en_noise_sen_area_day = $('#en_noise_sen_area_day').val();
-        en_noise_sen_area_night = $('#en_noise_sen_area_night').val();
-        en_noise_sen_area_mgt_plan = $('#en_noise_sen_area_mgt_plan').val();
+        let en_noise_ind_area_day = $('#en_noise_ind_area_day').val();
+        let en_noise_ind_area_night = $('#en_noise_ind_area_night').val();
+        let en_noise_ind_area_mgt_plan = $('#en_noise_ind_area_mgt_plan').val();
+        let en_noise_mixed_area_day = $('#en_noise_mixed_area_day').val();
+        let en_noise_mixed_area_night = $('#en_noise_mixed_area_night').val();
+        let en_noise_mixed_area_mgt_plan = $('#en_noise_mixed_area_mgt_plan').val();
+        let en_noise_sen_area_day = $('#en_noise_sen_area_day').val();
+        let en_noise_sen_area_night = $('#en_noise_sen_area_night').val();
+        let en_noise_sen_area_mgt_plan = $('#en_noise_sen_area_mgt_plan').val();
 
         if(en_noise_ind_area_day == "")
         {
@@ -4401,6 +4418,7 @@
                     {
                         $('#noise_level_successMsg').html("Saved Successfully");
                         $('#noise_level_successMsg').show();
+                        $('#noise_level_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#noise_level_successMsg').delay(2000).fadeOut('slow');
@@ -4413,8 +4431,11 @@
                     }
                     else
                     {
-                        $('#noise_level_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#noise_level_errorMsg').html(`Application Error: ${data.error}`);
                         $('#noise_level_errorMsg').show();
+                        $('#noise_level_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#noise_level_errorMsg').delay(2000).fadeOut('slow');
@@ -4427,42 +4448,42 @@
 
     function save_other_impact_details()
     {
-        en_other_impact_odour_source = $('#en_other_impact_odour_source').val();
-        en_other_impact_odour_qty = $('#en_other_impact_odour_qty').val();
-        en_other_impact_odour_mgt_plan = $('#en_other_impact_odour_mgt_plan').val();
-        en_other_impact_fugutive_source = $('#en_other_impact_fugutive_source').val();
-        en_other_impact_fugutive_qty = $('#en_other_impact_fugutive_qty').val();
-        en_other_impact_fugutive_mgt_plan = $('#en_other_impact_fugutive_mgt_plan').val();
-        en_other_impact_slope_source = $('#en_other_impact_slope_source').val();
-        en_other_impact_slope_qty = $('#en_other_impact_slope_qty').val();
-        en_other_impact_slope_mgt_plan = $('#en_other_impact_slope_mgt_plan').val();
-        en_other_impact_aesthetic_source = $('#en_other_impact_aesthetic_source').val();
-        en_other_impact_aesthetic_qty = $('#en_other_impact_aesthetic_qty').val();
-        en_other_impact_aesthetic_mgt_plan = $('#en_other_impact_aesthetic_mgt_plan').val();
-        en_other_impact_mucks_source = $('#en_other_impact_mucks_source').val();
-        en_other_impact_mucks_qty = $('#en_other_impact_mucks_qty').val();
-        en_other_impact_mucks_mgt_plan = $('#en_other_impact_mucks_mgt_plan').val();
-        en_other_impact_sewerage_source = $('#en_other_impact_sewerage_source').val();
-        en_other_impact_sewerage_qty = $('#en_other_impact_sewerage_qty').val();
-        en_other_impact_sewerage_mgt_plan = $('#en_other_impact_sewerage_mgt_plan').val();
-        en_other_impact_erosion_source = $('#en_other_impact_erosion_source').val();
-        en_other_impact_erosion_qty = $('#en_other_impact_erosion_qty').val();
-        en_other_impact_erosion_mgt_plan = $('#en_other_impact_erosion_mgt_plan').val();
-        en_other_impact_storm_water_source = $('#en_other_impact_storm_water_source').val();
-        en_other_impact_storm_water_qty = $('#en_other_impact_storm_water_qty').val();
-        en_other_impact_storm_water_mgt_plan = $('#en_other_impact_storm_water_mgt_plan').val();
-        en_other_impact_habitat_source = $('#en_other_impact_habitat_source').val();
-        en_other_impact_habitat_qty = $('#en_other_impact_habitat_qty').val();
-        en_other_impact_habitat_mgt_plan = $('#en_other_impact_habitat_mgt_plan').val();
-        en_other_impact_socio_source = $('#en_other_impact_socio_source').val();
-        en_other_impact_socio_qty = $('#en_other_impact_socio_qty').val();
-        en_other_impact_socio_mgt_plan = $('#en_other_impact_socio_mgt_plan').val();
-        en_other_impact_water_source_source = $('#en_other_impact_water_source_source').val();
-        en_other_impact_water_source_qty = $('#en_other_impact_water_source_qty').val();
-        en_other_impact_water_source_mgt_plan = $('#en_other_impact_water_source_mgt_plan').val();
-        en_other_impact_other_source = $('#en_other_impact_other_source').val();
-        en_other_impact_other_qty = $('#en_other_impact_other_qty').val();
-        en_other_impact_other_mgt_plan = $('#en_other_impact_other_mgt_plan').val();
+        let en_other_impact_odour_source = $('#en_other_impact_odour_source').val();
+        let en_other_impact_odour_qty = $('#en_other_impact_odour_qty').val();
+        let en_other_impact_odour_mgt_plan = $('#en_other_impact_odour_mgt_plan').val();
+        let en_other_impact_fugutive_source = $('#en_other_impact_fugutive_source').val();
+        let en_other_impact_fugutive_qty = $('#en_other_impact_fugutive_qty').val();
+        let en_other_impact_fugutive_mgt_plan = $('#en_other_impact_fugutive_mgt_plan').val();
+        let en_other_impact_slope_source = $('#en_other_impact_slope_source').val();
+        let en_other_impact_slope_qty = $('#en_other_impact_slope_qty').val();
+        let en_other_impact_slope_mgt_plan = $('#en_other_impact_slope_mgt_plan').val();
+        let en_other_impact_aesthetic_source = $('#en_other_impact_aesthetic_source').val();
+        let en_other_impact_aesthetic_qty = $('#en_other_impact_aesthetic_qty').val();
+        let en_other_impact_aesthetic_mgt_plan = $('#en_other_impact_aesthetic_mgt_plan').val();
+        let en_other_impact_mucks_source = $('#en_other_impact_mucks_source').val();
+        let en_other_impact_mucks_qty = $('#en_other_impact_mucks_qty').val();
+        let en_other_impact_mucks_mgt_plan = $('#en_other_impact_mucks_mgt_plan').val();
+        let en_other_impact_sewerage_source = $('#en_other_impact_sewerage_source').val();
+        let en_other_impact_sewerage_qty = $('#en_other_impact_sewerage_qty').val();
+        let en_other_impact_sewerage_mgt_plan = $('#en_other_impact_sewerage_mgt_plan').val();
+        let en_other_impact_erosion_source = $('#en_other_impact_erosion_source').val();
+        let en_other_impact_erosion_qty = $('#en_other_impact_erosion_qty').val();
+        let en_other_impact_erosion_mgt_plan = $('#en_other_impact_erosion_mgt_plan').val();
+        let en_other_impact_storm_water_source = $('#en_other_impact_storm_water_source').val();
+        let en_other_impact_storm_water_qty = $('#en_other_impact_storm_water_qty').val();
+        let en_other_impact_storm_water_mgt_plan = $('#en_other_impact_storm_water_mgt_plan').val();
+        let en_other_impact_habitat_source = $('#en_other_impact_habitat_source').val();
+        let en_other_impact_habitat_qty = $('#en_other_impact_habitat_qty').val();
+        let en_other_impact_habitat_mgt_plan = $('#en_other_impact_habitat_mgt_plan').val();
+        let en_other_impact_socio_source = $('#en_other_impact_socio_source').val();
+        let en_other_impact_socio_qty = $('#en_other_impact_socio_qty').val();
+        let en_other_impact_socio_mgt_plan = $('#en_other_impact_socio_mgt_plan').val();
+        let en_other_impact_water_source_source = $('#en_other_impact_water_source_source').val();
+        let en_other_impact_water_source_qty = $('#en_other_impact_water_source_qty').val();
+        let en_other_impact_water_source_mgt_plan = $('#en_other_impact_water_source_mgt_plan').val();
+        let en_other_impact_other_source = $('#en_other_impact_other_source').val();
+        let en_other_impact_other_qty = $('#en_other_impact_other_qty').val();
+        let en_other_impact_other_mgt_plan = $('#en_other_impact_other_mgt_plan').val();
 
 
         if(en_other_impact_odour_source == "")
@@ -4730,6 +4751,7 @@
                     {
                         $('#other_impact_successMsg').html("Saved Successfully");
                         $('#other_impact_successMsg').show();
+                        $('#other_impact_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#other_impact_successMsg').delay(2000).fadeOut('slow');
@@ -4742,8 +4764,11 @@
                     }
                     else
                     {
-                        $('#other_impact_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#other_impact_errorMsg').html(`Application Error: ${data.error}`);
                         $('#other_impact_errorMsg').show();
+                        $('#other_impact_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#other_impact_errorMsg').delay(2000).fadeOut('slow');
@@ -4758,6 +4783,7 @@
     {
         $('#road_attachment_successMsg').html("Saved Successfully");
         $('#road_attachment_successMsg').show();
+        $('#road_attachment_successMsg').focus();
         setTimeout(function()
         {
             $('#road_attachment_successMsg').delay(2000).fadeOut('slow');
@@ -4784,6 +4810,7 @@
                 {
                     $('#road_submit_successMsg').html("Application Submitted Successfully");
                     $('#road_submit_successMsg').show();
+                    $('#road_submit_successMsg').focus();
                     setTimeout(function()
                     {
                         $('#road_submit_successMsg').delay(2000).fadeOut('slow');
@@ -4794,8 +4821,11 @@
                 }
                 else
                 {
-                    $('#road_submit_errorMsg').html("Please Check And Submit Again");
+                    var errorMsg = data.error;
+        
+                    $('#road_submit_errorMsg').html(`Application Error: ${data.error}`);
                     $('#road_submit_errorMsg').show();
+                    $('#road_submit_errorMsg').focus();
                     setTimeout(function()
                     {
                         $('#road_submit_errorMsg').delay(2000).fadeOut('slow');
@@ -5077,8 +5107,8 @@
 
     function delete_drain_details()
     {
-        record_id = $('#delete_drain_record_id').val();
-        application_no = $('#delete_drain_application_no').val();
+        let record_id = $('#delete_drain_record_id').val();
+        let application_no = $('#delete_drain_application_no').val();
 
         $.ajax
         ({

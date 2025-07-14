@@ -3,7 +3,7 @@
         <div class="col-xl-12">
             <div class="card mt-1">
                 <div class="card-body">
-                    <h4 class="header-title mb-3"> General Application Details</h4>
+                    <h4 class="header-title mb-3"> Initial Environmental Examination (IEE) Form for General Projects -2022</h4>
                     <ul class="nav nav-pills bg-nav-pills mb-3" role="tablist">
                         <li class="nav-item" role="presentation">
                             <a href="#bordered-tabs-preview" data-bs-toggle="tab" aria-expanded="false" class="nav-link rounded-0 active" aria-selected="true" role="tab">
@@ -47,7 +47,7 @@
                                                 </div> -->
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Name of Applicant</label>
+                                                        <label class="form-label fw-bold">Name of the Applicant</label>
                                                         <input type="text" name="applicant_name" class="form-control" id="applicant_name" readonly value="{{application_details.applicant_name}}"> 
                                                     </div>
                                                     <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -83,24 +83,6 @@
                                                         <input type="text" name="project_name" class="form-control" id="project_name" disabled value="{{application_details.project_name}}">
                                                     </div>
                                                     <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-bold">Application Type</label>
-                                                        <select class="form-control" id="application_type" name="application_type" disabled>
-                                                            <option value="">--SELECT--</option>
-                                                            {% if application_details.application_type == "New" %}
-                                                                <option value="New" selected>New</option>
-                                                            {% elif application_details.application_type == "Expansion" %}
-                                                                <option value="Expansion" selected>Expansion</option>
-                                                            {% elif application_details.application_type == "Relocation" %}
-                                                                <option value="Relocation" selected>Relocation</option>
-                                                            {% else %}
-                                                                <option value="Other_Modification" selected>Other Modification</option>
-                                                            {% endif %}
-                                                        </select>
-                                                    </div>
-                                                    <div id="application_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -209,7 +191,7 @@
                                             <div class="row">
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                                        <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                                         <<input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
                                                     </div>
                                                     <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -241,11 +223,20 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Others Specify (acres)</label>
-                                                        <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" value="{{ application_details.others_area_acre }}" disabled>
+                                                        <label class="form-label fw-bold">Others Specify</label>
+                                                        <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()" value="{{ application_details.others_area|default:'' }}" disabled>
                                                     </div>
                                                     <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                                 </div>
+                                                {% if application_details.others_area %}
+                                                    <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-bold">Others(acres)</label>
+                                                            <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()" disabled>
+                                                        </div>
+                                                        <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                    </div>
+                                                {% endif %}
                                             </div>
                                             <div class="row">
                                                 <div class="col-lg-6">
@@ -275,7 +266,7 @@
                                             <div class="row">
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Elevation(meters)</label>
+                                                        <label class="form-label fw-bold">Elevation (meters)</label>
                                                         <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                     </div>
                                                 </div>
@@ -567,7 +558,7 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                        <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                         <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                                     </div>
                                                     <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -595,7 +586,7 @@
                                                                 <thead>
                                                                     <tr>
                                                                         <th>Sl.no.</th>
-                                                                        <th>Product (Name)</th>
+                                                                        <th>Name of Products/By-products</th>
                                                                         <th>Installed capacity/quantity per annum</th>
                                                                         <th>Method of storage</th>
                                                                     </tr>
@@ -659,7 +650,7 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                        <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                         {% if application_details.water_excavated_muck == 'Yes' %}
                                                             <div class="mt-2">
                                                                 <div class="form-check form-check-inline">
@@ -698,7 +689,7 @@
                                                                             <th>Sl.no.</th>
                                                                             <th>Number of Dumpyards</th>
                                                                             <th>Capacities of the dumpyards (in MT)</th>
-                                                                            <th>Area of the dumpyard</th>
+                                                                            <th>Area of the dumpyard (acres)</th>
                                                                             <th>Locations of the dumpyard</th>
                                                                         </tr>
                                                                     </thead>
@@ -1667,7 +1658,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Applicant Name</label>
+                                                                    <label class="form-label fw-bold">Name of the Applicant</label>
                                                                     <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
                                                                 </div>
                                                                 <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -1834,7 +1825,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                                                    <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                                                     <<input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
                                                                 </div>
                                                                 <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -1863,10 +1854,20 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Others Specify (acres)</label>
-                                                                    <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" value="{{ application_details.others_area_acre }}" disabled>
+                                                                    <label class="form-label fw-bold">Others Specify</label>
+                                                                    <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()" value="{{ application_details.others_area|default:'' }}" disabled>
                                                                 </div>
+                                                                <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                                             </div>
+                                                            {% if application_details.others_area %}
+                                                                <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Others(acres)</label>
+                                                                        <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()" disabled>
+                                                                    </div>
+                                                                    <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                            {% endif %}
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-lg-6">
@@ -1952,7 +1953,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -2061,7 +2062,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -2353,7 +2354,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                                     <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                                                 </div>
                                                                 <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -2381,7 +2382,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -2445,7 +2446,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                                    <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                                     {% if application_details.water_excavated_muck == 'Yes' %}
                                                                         <div class="mt-2">
                                                                             <div class="form-check form-check-inline">
@@ -2484,7 +2485,7 @@
                                                                                         <th>Sl.no.</th>
                                                                                         <th>Number of Dumpyards</th>
                                                                                         <th>Capacities of the dumpyards (in MT)</th>
-                                                                                        <th>Area of the dumpyard</th>
+                                                                                        <th>Area of the dumpyard (acres)</th>
                                                                                         <th>Locations of the dumpyard</th>
                                                                                     </tr>
                                                                                 </thead>
@@ -3057,7 +3058,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Applicant Name</label>
+                                                                    <label class="form-label fw-bold">Name of the Applicant</label>
                                                                     <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
                                                                 </div>
                                                                 <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -3224,7 +3225,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                                                    <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                                                     <<input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
                                                                 </div>
                                                                 <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -3253,10 +3254,20 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Others Specify (acres)</label>
-                                                                    <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" value="{{ application_details.others_area_acre }}" disabled>
+                                                                    <label class="form-label fw-bold">Others Specify</label>
+                                                                    <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()" value="{{ application_details.others_area|default:'' }}" disabled>
                                                                 </div>
+                                                                <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                                             </div>
+                                                            {% if application_details.others_area %}
+                                                                <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Others(acres)</label>
+                                                                        <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()" disabled>
+                                                                    </div>
+                                                                    <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                            {% endif %}
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-lg-6">
@@ -3343,7 +3354,7 @@
                                                                                 <thead>
                                                                                     <tr>
                                                                                         <th>Sl.no.</th>
-                                                                                        <th>Product (Name)</th>
+                                                                                        <th>Name of Products/By-products</th>
                                                                                         <th>Installed capacity/quantity per annum</th>
                                                                                         <th>Method of storage</th>
                                                                                     </tr>
@@ -3453,7 +3464,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -3746,7 +3757,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                                     <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                                                 </div>
                                                                 <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -3774,7 +3785,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -3838,7 +3849,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                                    <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                                     {% if application_details.water_excavated_muck == 'Yes' %}
                                                                         <div class="mt-2">
                                                                             <div class="form-check form-check-inline">
@@ -3877,7 +3888,7 @@
                                                                                         <th>Sl.no.</th>
                                                                                         <th>Number of Dumpyards</th>
                                                                                         <th>Capacities of the dumpyards (in MT)</th>
-                                                                                        <th>Area of the dumpyard</th>
+                                                                                        <th>Area of the dumpyard (acres)</th>
                                                                                         <th>Locations of the dumpyard</th>
                                                                                     </tr>
                                                                                 </thead>
@@ -4798,7 +4809,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Applicant Name</label>
+                                                                    <label class="form-label fw-bold">Name of the Applicant</label>
                                                                     <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
                                                                 </div>
                                                                 <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -4965,7 +4976,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                                                    <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                                                     <<input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
                                                                 </div>
                                                                 <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -4994,10 +5005,20 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Others Specify (acres)</label>
-                                                                    <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" value="{{ application_details.others_area_acre }}" disabled>
+                                                                    <label class="form-label fw-bold">Others Specify</label>
+                                                                    <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()" value="{{ application_details.others_area|default:'' }}" disabled>
                                                                 </div>
+                                                                <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                                             </div>
+                                                            {% if application_details.others_area %}
+                                                                <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Others(acres)</label>
+                                                                        <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()" disabled>
+                                                                    </div>
+                                                                    <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                            {% endif %}
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-lg-6">
@@ -5083,7 +5104,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -5192,7 +5213,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -5484,7 +5505,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                                     <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                                                 </div>
                                                                 <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -5512,7 +5533,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -6031,7 +6052,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Applicant Name</label>
+                                                                    <label class="form-label fw-bold">Name of the Applicant</label>
                                                                     <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ ancillary_details.applicant_name }}" disabled>
                                                                 </div>
                                                                 <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -6198,7 +6219,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                                                    <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                                                     <<input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
                                                                 </div>
                                                                 <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -6227,10 +6248,20 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Others Specify (acres)</label>
-                                                                    <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" value="{{ ancillary_details.others_area_acre }}" disabled>
+                                                                    <label class="form-label fw-bold">Others Specify</label>
+                                                                    <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()" value="{{ application_details.others_area|default:'' }}" disabled>
                                                                 </div>
+                                                                <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                                             </div>
+                                                            {% if application_details.others_area %}
+                                                                <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Others(acres)</label>
+                                                                        <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()" disabled>
+                                                                    </div>
+                                                                    <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                            {% endif %}
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-lg-6">
@@ -6316,7 +6347,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -6425,7 +6456,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ ancillary_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -6717,7 +6748,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                                     <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{ancillary_details.project_cost}}" disabled>
                                                                 </div>
                                                                 <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -6744,7 +6775,7 @@
                                                                         <thead>
                                                                             <tr>
                                                                                 <th>Sl.no.</th>
-                                                                                <th>Product (Name)</th>
+                                                                                <th>Name of Products/By-products</th>
                                                                                 <th>Installed capacity/quantity per annum</th>
                                                                                 <th>Method of storage</th>
                                                                             </tr>
@@ -6807,7 +6838,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                                    <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                                     {% if ancillary_details.water_excavated_muck == 'Yes' %}
                                                                         <div class="mt-2">
                                                                             <div class="form-check form-check-inline">
@@ -6846,7 +6877,7 @@
                                                                                         <th>Sl.no.</th>
                                                                                         <th>Number of Dumpyards</th>
                                                                                         <th>Capacities of the dumpyards (in MT)</th>
-                                                                                        <th>Area of the dumpyard</th>
+                                                                                        <th>Area of the dumpyard (acres)</th>
                                                                                         <th>Locations of the dumpyard</th>
                                                                                     </tr>
                                                                                 </thead>
@@ -7418,9 +7449,9 @@
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
-                                    <td>
+                                    <!-- <td>
                                         <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_ai_attachment('{{ file_attach.file_id }}','{{ file_attach.application_no }}')"><i class="uil-trash"></i></button>
-                                    </td>
+                                    </td> -->
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -7867,6 +7898,9 @@
                 <div class="alert alert-danger border-0 rounded-0" role="alert" id="verifier_application_errorMsg" style="display:none">
                     <i class="uil-folder-heart me-1 h4 align-middle"></i>
                 </div>
+                <div class="spinner-border" role="status" style="display: none;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>  
                 <div class="row">
                     <div class="mb-3 R_button" style="display:none;">
                             <a href="#" class="btn btn-success" onclick="forwardApplication('R')">
@@ -8069,8 +8103,13 @@ aria-hidden="true">
 <div class="row">
     <div class="col-lg-12">
         <div class="mb-3">
-            <label class="form-label fw-bold">EC Terms</label>
-            <textarea rows="3" name="ec_terms" class="form-control" id="ec_terms"></textarea>
+            <div class="mb-3">
+                <label class="form-label fw-bold">EC Terms</label>
+                <!-- This div will be converted to the Quill editor -->
+                <div id="ec_terms_editor" style="height: 200px;"></div>
+                <!-- Hidden input to store the HTML content -->
+                <input type="hidden" name="ec_terms" id="ec_terms">
+            </div>
         </div>
         <div class="alert alert-danger" id="ec_termsErrorMsg" style="display:none"></div>
     </div>
@@ -8134,7 +8173,9 @@ aria-hidden="true">
     <div class="col-lg-12">
         <div class="mb-3">
             <label class="form-label fw-bold">EC Terms</label>
-            <textarea rows="3" name="edit_ec_terms" class="form-control" id="edit_ec_terms"></textarea>
+            <div id="edit_ec_terms_editor" style="height: 200px;"></div>
+                <!-- Hidden input to store the HTML content -->
+            <input type="hidden" name="edit_ec_terms" id="edit_ec_terms">
         </div>
         <div class="alert alert-danger" id="edit_ec_termsErrorMsg" style="display:none"></div>
     </div>
@@ -8192,6 +8233,68 @@ aria-hidden="true">
 </form>
 
 <script>
+    var editQuill;
+
+   $(document).ready(function() {
+    // Initialize Quill editor
+
+    var quill = new Quill('#ec_terms_editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline', 'strike'],
+                ['blockquote', 'code-block'],
+                [{ 'header': 1 }, { 'header': 2 }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'script': 'sub'}, { 'script': 'super' }],
+                [{ 'indent': '-1'}, { 'indent': '+1' }],
+                [{ 'direction': 'rtl' }],
+                [{ 'size': ['small', false, 'large', 'huge'] }],
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'font': [] }],
+                [{ 'align': [] }],
+                ['clean'],
+                ['link', 'image']
+            ]
+        },
+        placeholder: 'Enter your terms here...',
+    });
+
+
+    editQuill = new Quill('#edit_ec_terms_editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline', 'strike'],
+                ['blockquote', 'code-block'],
+                [{ 'header': 1 }, { 'header': 2 }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'script': 'sub'}, { 'script': 'super' }],
+                [{ 'indent': '-1'}, { 'indent': '+1' }],
+                [{ 'direction': 'rtl' }],
+                [{ 'size': ['small', false, 'large', 'huge'] }],
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'font': [] }],
+                [{ 'align': [] }],
+                ['clean'],
+                ['link', 'image']
+            ]
+        },
+        placeholder: 'Enter your terms here...',
+    });
+
+});
+
+
+$('#draft_ec_form').on('submit', function() {
+    var html = quill.root.innerHTML;
+    $('#ec_terms').val(html);
+});
+
+
+
 $(function() {
     let status = $('#status').val();
 
@@ -8227,7 +8330,7 @@ else if(status == 'R' || status == 'ALS' || status == 'FEATC' || status == 'RSS'
     }
     else if(status == 'ALS')
     {
-        $('.EATC_button').show();
+        $('.information_complete_div').show();
         $('.additional_info').show();
     }
     else if(status == 'FEATC')
@@ -8286,8 +8389,7 @@ else if(status == 'ALR' || status == 'ALA' || status == 'EATC' || status == 'RS'
 }
 });
 
-function forwardApplication(identifier)
-{
+function forwardApplication(identifier) {
     let application_no = $('#application_no').val();
     let additional_info_letter = $('#additional_info_letter').val();
     let additional_info = $('#additional_info').val();
@@ -8295,122 +8397,95 @@ function forwardApplication(identifier)
     let ec_expiry_date = $('#ec_expiry_date').val();
     let addtional_payment_amount = $('#addtional_payment_amount').val();
     let tat = $('#tat').val();
+    let forward_to = $('#forward_to').val();
 
-if(identifier == 'R' || identifier == 'ALS')
-{
-let forward_to = $('#forward_to').val();
-$.ajax
-({
-    type : "POST",
-    url : "{% url 'forward_application' %}",
-    data : {'application_no':application_no, 'identifier':identifier, 'forward_to':forward_to, 'additional_info':additional_info, csrfmiddlewaretoken: '{{ csrf_token }}'},
-    success : function(data)
-    {
-        if(data.message == 'success')
-        {
-            $('#verifier_application_successMsg').html("Application Forwarded Successfully");
-            $('#verifier_application_successMsg').show();
-            setTimeout(function()
-            {
-                $('#verifier_application_successMsg').delay(2000).fadeOut('slow');
-            }, 2000);
-            if(data.redirect_to == 'verify_application_list')
-            {
-                setTimeout(function()
-                {
-                    window.location.href = '/verify_application_list';
-                }, 2000);
-            }
-            else if(data.redirect_to == 'reviewer_application_list')
-            {
-                setTimeout(function()
-                {
-                    window.location.href = '/reviewer_application_list';
-                }, 2000);
-            }
-            else if(data.redirect_to == 'client_application_list')
-            {
-                setTimeout(function()
-                {
-                    window.location.href = '/client_application_list';
-                }, 2000);
-            }
-        }
-        else
-        {
-            $('#verifier_application_errorMsg').html("Please Check And Try Again");
-            $('#verifier_application_errorMsg').show();
-            setTimeout(function()
-            {
-                $('#verifier_application_errorMsg').delay(2000).fadeOut('slow');
-            }, 2000);
-            setTimeout(function() {
-                location.reload();
-            }, 2000);
-        }
+    // Show the loader
+    $('.spinner-border').show();
+
+    let postData = {
+        'application_no': application_no,
+        'identifier': identifier,
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+    };
+
+    if (identifier === 'R' || identifier === 'ALS') {
+        postData['forward_to'] = forward_to;
+        postData['additional_info'] = additional_info;
+    } else {
+        Object.assign(postData, {
+            'additional_info_letter': additional_info_letter,
+            'resubmit_remarks': resubmit_remarks,
+            'ec_expiry_date': ec_expiry_date,
+            'tat': tat,
+            'addtional_payment_amount': addtional_payment_amount
+        });
     }
-});
-}
-else
-{
-$.ajax
-({
-    type : "POST",
-    url : "{% url 'forward_application' %}",
-    data : {'application_no':application_no, 'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}','additional_info_letter':additional_info_letter ,'resubmit_remarks':resubmit_remarks,'ec_expiry_date':ec_expiry_date,'tat':tat,'addtional_payment_amount':addtional_payment_amount},
-    success : function(data)
-    {
-        if(data.message == 'success')
-        {
-            if(identifier == 'A')
-            {
-                $('#verifier_application_successMsg').html("Application Approved");
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'forward_application' %}",
+        data: postData,
+        success: function (data) {
+            // Hide the loader
+            $('.spinner-border').hide();
+
+            if (data.message === 'success') {
+                let successMsg = identifier === 'A' ? "Application Approved" : "Application Forwarded Successfully";
+                $('#verifier_application_successMsg').html(successMsg).show();
+
+                setTimeout(() => {
+                    $('#verifier_application_successMsg').fadeOut('slow');
+                }, 2000);
+
+                // Redirect based on the response
+                let redirectUrl = '';
+                switch (data.redirect_to) {
+                    case 'verify_application_list':
+                        redirectUrl = '/verify_application_list';
+                        break;
+                    case 'reviewer_application_list':
+                        redirectUrl = '/reviewer_application_list';
+                        break;
+                    case 'client_application_list':
+                        redirectUrl = '/client_application_list';
+                        break;
+                }
+                if (redirectUrl) {
+                    setTimeout(() => {
+                        window.location.href = redirectUrl;
+                    }, 2000);
+                }
+            } else {
+                var errorMsg = data.error;
+        
+                $('#verifier_application_errorMsg').html(`Application Error: ${data.error}`).show();
+                $('#verifier_application_errorMsg').focus();
+
+                setTimeout(() => {
+                    $('#verifier_application_errorMsg').fadeOut('slow');
+                }, 2000);
+
+                // Reload the page after a delay
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
             }
-            else
-            {
-                $('#verifier_application_successMsg').html("Application Forwarded Successfully");
-            }
-            
-            $('#verifier_application_successMsg').show();
-            setTimeout(function()
-            {
-                $('#verifier_application_successMsg').delay(2000).fadeOut('slow');
+        },
+        error: function () {
+            // Hide the loader in case of an error
+            $('.spinner-border').hide();
+            var errorMsg = data.error;
+        
+            $('#verifier_application_errorMsg').html(`Application Error: ${data.error}`).show();
+            $('#verifier_application_errorMsg').focus();
+
+            setTimeout(() => {
+                $('#verifier_application_errorMsg').fadeOut('slow');
             }, 2000);
-            if(data.redirect_to == 'verify_application_list')
-            {
-                setTimeout(function()
-                {
-                    window.location.href = '/verify_application_list';
-                }, 2000);
-            }
-            else if(data.redirect_to == 'reviewer_application_list')
-            {
-                setTimeout(function()
-                {
-                    window.location.href = '/reviewer_application_list';
-                }, 2000);
-            }
-            else if(data.redirect_to == 'client_application_list')
-            {
-                setTimeout(function()
-                {
-                    window.location.href = '/client_application_list';
-                }, 2000);
-            }
         }
-        else
-        {
-            $('#verifier_application_errorMsg').html("Please Check And Try Again");
-            $('#verifier_application_errorMsg').show();
-            setTimeout(function()
-            {
-                $('#verifier_application_errorMsg').delay(2000).fadeOut('slow');
-            }, 2000);
-        }
-    }
-});
+    });
 }
-}
+
 
 function check_information_radio(value)
 {
@@ -8463,59 +8538,71 @@ $('.lu_attachment_div').hide();
 }
 
 }
-function save_ec_draft()
-{
-let application_no = $('#application_no').val();
-let ec_type = $('#ec_type').val();
-let ec_heading = $('#ec_heading').val();
-let ec_terms = $('#ec_terms').val();
+function save_ec_draft() {
+    let application_no = $('#application_no').val();
+    let ec_type = $('#ec_type').val();
+    let ec_heading = $('#ec_heading').val();
+    
+    // Get the HTML content from Quill editor
+    let quill = new Quill('#ec_terms_editor');
+    let ec_terms = quill.root.innerHTML; // This gets the HTML content
+    
+    // Or if you already have a Quill instance defined globally:
+    // let ec_terms = quill.root.innerHTML;
 
-if(ec_type == "")
-{
-$('#ec_typeErrorMsg').html("Select One");
-$('#ec_typeErrorMsg').show();
-$('#ec_typeErrorMsg').delay(2000).fadeOut('slow');
-$('#ec_type').focus();
-}
-else if(ec_type == 'Terms' && ec_heading == "")
-{
-$('#ec_headingErrorMsg').html("Enter EC Heading");
-$('#ec_headingErrorMsg').show();
-$('#ec_headingErrorMsg').delay(2000).fadeOut('slow');
-$('#ec_heading').focus();
-}
-else if(ec_terms == "")
-{
-$('#ec_termsErrorMsg').html("Enter EC Terms");
-$('#ec_termsErrorMsg').show();
-$('#ec_termsErrorMsg').delay(2000).fadeOut('slow');
-$('#ec_terms').focus();
-}
-else
-{
-$.ajax
-({
-    type : "POST",
-    url : "{% url 'save_draft_ec_details' %}",
-    data : {'application_no':application_no, 'ec_type':ec_type,  'ec_heading':ec_heading,'ec_terms':ec_terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
-    success : function(responseText)
-    {
-        $('#ec_draft_successMsg').html("Saved Successfully");
-        $('#ec_draft_successMsg').show();
-        setTimeout(function()
-        {
-            $('#ec_draft_successMsg').delay(2000).fadeOut('slow');
-        }, 2000);
-        setTimeout(function() {
-            $('#draft_ec_form')[0].reset();
-            $('#draft_ec_modal').modal('hide');
-            $('#draft_ec_details').html(responseText);
-            $('#draft_ec_div').focus();
-        }, 2000);
+    if(ec_type == "") {
+        $('#ec_typeErrorMsg').html("Select One");
+        $('#ec_typeErrorMsg').show();
+        $('#ec_typeErrorMsg').delay(2000).fadeOut('slow');
+        $('#ec_type').focus();
     }
-});
-}
-
+    else if(ec_type == 'Terms' && ec_heading == "") {
+        $('#ec_headingErrorMsg').html("Enter EC Heading");
+        $('#ec_headingErrorMsg').show();
+        $('#ec_headingErrorMsg').delay(2000).fadeOut('slow');
+        $('#ec_heading').focus();
+    }
+    else if(ec_terms == "" || ec_terms == "<p><br></p>") { // Quill's default empty state
+        $('#ec_termsErrorMsg').html("Enter EC Terms");
+        $('#ec_termsErrorMsg').show();
+        $('#ec_termsErrorMsg').delay(2000).fadeOut('slow');
+        // You might want to focus the editor here
+    }
+    else {
+        // Set the value in the hidden input (if you're using one)
+        $('#ec_terms').val(ec_terms);
+        
+        $.ajax({
+            type: "POST",
+            url: "{% url 'save_draft_ec_details' %}",
+            data: {
+                'application_no': application_no, 
+                'ec_type': ec_type,  
+                'ec_heading': ec_heading,
+                'ec_terms': ec_terms, 
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(responseText) {
+                $('#ec_draft_successMsg').html("Saved Successfully");
+                $('#ec_draft_successMsg').show();
+                setTimeout(function() {
+                    $('#ec_draft_successMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#draft_ec_form')[0].reset();
+                    // Clear the Quill editor
+                    quill.setContents([]);
+                    $('#draft_ec_modal').modal('hide');
+                    $('#draft_ec_details').html(responseText);
+                    $('#draft_ec_div').focus();
+                }, 2000);
+            },
+            error: function(xhr, status, error) {
+                // Handle error if needed
+                console.error("Error saving draft:", error);
+            }
+        });
+    }
 }
 
 function save_ai_attachment()
@@ -8792,11 +8879,25 @@ $('.rectification_button').hide();
 
 function populate_ec_details(record_id, application_no,ec_type, ec_heading, ec_terms)
 {
+    if(ec_type == 'Terms')
+    {
+        $('.edit_heading_div').show();
+        $('#edit_ec_heading').val(ec_heading);
+    }
 $('#ec_draft_record_id').val(record_id);
 $('#ec_draft_application_no').val(application_no);
 $('#edit_ec_type').val(ec_type);
-$('#edit_ec_heading').val(ec_heading);
+
+
+
+// Also set the hidden input value
 $('#edit_ec_terms').val(ec_terms);
+
+const plainText = new DOMParser().parseFromString(ec_terms, 'text/html').body.textContent;
+
+// Set plain text into the Quill editor
+editQuill.setText(plainText);
+
 
 $('#edit_draft_ec_modal').modal('show');
 }
@@ -8809,59 +8910,67 @@ $('#delete_ec_draft_application_no').val(application_no);
 $('#delete_draft_ec_modal').modal('show');
 }
 
-function update_ec_draft()
-{
-let record_id = $('#ec_draft_record_id').val();
-let application_no = $('#ec_draft_application_no').val();
-let ec_type = $('#edit_ec_type').val();
-let ec_heading = $('#edit_ec_heading').val();
-let ec_terms = $('#edit_ec_terms').val();
+function update_ec_draft() {
+    // 🔥 Get HTML content from Quill editor
+    const ec_terms_html = editQuill.root.innerHTML.trim();
 
-if(ec_type == "")
-{
-$('#edit_ec_typeErrorMsg').html("Choose One");
-$('#edit_ec_typeErrorMsg').show();
-$('#edit_ec_typeErrorMsg').delay(2000).fadeOut('slow');
-$('#edit_ec_type').focus();
-}
-else if(ec_heading == "")
-{
-$('#edit_ec_headingErrorMsg').html("Enter EC Heading");
-$('#edit_ec_headingErrorMsg').show();
-$('#edit_ec_headingErrorMsg').delay(2000).fadeOut('slow');
-$('#edit_ec_heading').focus();
-}
-else if(ec_terms == "")
-{
-$('#edit_ec_termsErrorMsg').html("Enter EC Terms");
-$('#edit_ec_termsErrorMsg').show();
-$('#edit_ec_termsErrorMsg').delay(2000).fadeOut('slow');
-$('#edit_ec_terms').focus();
-}
-else
-{
-$.ajax
-({
-    type : "POST",
-    url : "{% url 'update_draft_ec_details' %}",
-    data : {'record_id':record_id, 'application_no':application_no, 'ec_type':ec_type, 'ec_heading':ec_heading,'ec_terms':ec_terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
-    success : function(responseText)
+    // Optional: check if content is empty (excluding tags like <p><br></p>)
+    const ec_terms_text = editQuill.getText().trim();
+
+    // Set the hidden input (in case you want to use form serialization later)
+    $('#edit_ec_terms').val(ec_terms_html);
+
+    // Get values
+    let record_id = $('#ec_draft_record_id').val();
+    let application_no = $('#ec_draft_application_no').val();
+    let ec_type = $('#edit_ec_type').val();
+    let ec_heading = $('#edit_ec_heading').val();
+    let ec_terms = ec_terms_html; 
+
+    if(ec_type == "")
     {
-        $('#edit_ec_draft_successMsg').html("Updated Successfully");
-        $('#edit_ec_draft_successMsg').show();
-        setTimeout(function()
-        {
-            $('#edit_ec_draft_successMsg').delay(2000).fadeOut('slow');
-        }, 2000);
-        setTimeout(function() {
-            $('#edit_draft_ec_modal').modal('hide');
-            $('#draft_ec_details').html(responseText);
-            $('#draft_ec_div').focus();
-        }, 2000);
+        $('#edit_ec_typeErrorMsg').html("Choose One").show().delay(2000).fadeOut('slow');
+        $('#edit_ec_type').focus();
     }
-});
+    else if(ec_heading == "")
+    {
+        $('#edit_ec_headingErrorMsg').html("Enter EC Heading").show().delay(2000).fadeOut('slow');
+        $('#edit_ec_heading').focus();
+    }
+    else if(ec_terms_text == "") 
+    {
+        $('#edit_ec_termsErrorMsg').html("Enter EC Terms").show().delay(2000).fadeOut('slow');
+        $('#edit_ec_terms_editor').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_draft_ec_details' %}",
+            data : {
+                'record_id': record_id,
+                'application_no': application_no,
+                'ec_type': ec_type,
+                'ec_heading': ec_heading,
+                'ec_terms': ec_terms, // HTML content
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success : function(responseText)
+            {
+                $('#edit_ec_draft_successMsg').html("Updated Successfully").show();
+                setTimeout(function() {
+                    $('#edit_ec_draft_successMsg').fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#edit_draft_ec_modal').modal('hide');
+                    $('#draft_ec_details').html(responseText);
+                    $('#draft_ec_div').focus();
+                }, 2000);
+            }
+        });
+    }
 }
-}
+
 
 function delete_ec_draft()
 {
@@ -8911,6 +9020,7 @@ function check_edit_ec_draft_type(value)
     else
     {
         $('.edit_heading_div').hide();
+        $('#edit_ec_heading').val("");
     }
 }
 </script>

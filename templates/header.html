@@ -1,53 +1,100 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary px-0 py-3">
-    <!-- No container class here, to ensure full-width -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="min-height: 50px;">
+    <style>
+        /* Reduce the height of the navbar */
+        .navbar {
+            min-height: 50px !important;  /* Set the navbar's height to 50px */
+            padding-top: 0.5rem;           /* Reduced top padding */
+            padding-bottom: 0.5rem;        /* Reduced bottom padding */
+        }
+
+        /* Active link styles */
+        .navbar-dark .navbar-nav .nav-link.active {
+            color: #ffffff !important;
+            font-weight: bold;
+            border: 2px solid white;
+            border-radius: 5px;
+            padding: 6px 12px;
+            background-color: rgba(255, 255, 255, 0.1); /* optional subtle highlight */
+        }
+
+        /* Optional spacing adjustment for nav items */
+        .navbar-nav .nav-item {
+            margin-right: 0.75rem;
+        }
+
+        /* Optional smooth transition */
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Further reduced padding for the nav-link items */
+        .navbar .nav-link {
+            padding-top: 0.75rem;   /* Reduced padding-top for the nav links */
+            padding-bottom: 0.75rem; /* Reduced padding-bottom for the nav links */
+        }
+    </style>
+
     <div class="container-fluid px-0">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
             <i class="mdi mdi-menu"></i>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav me-auto align-items-center">
-                <li class="nav-item mx-lg-1">
-                    <a class="nav-link" href="{% url 'index' %}">Home</a>
+            <ul class="navbar-nav align-items-center">
+                <!-- Home link -->
+                <li class="nav-item ms-3">
+                    <a class="nav-link px-2 py-2 active" href="{% url 'index' %}" onclick="setActiveNav(this)">Home</a>
                 </li>
+
+                <!-- Dynamic menu rendering -->
                 {% for menu_details in menu_details %}
                     {% if menu_details.has_sub_menu == 'Yes' %}
-                     <li class="nav-item dropdown mx-lg-1">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{ menu_details.menu_name }} </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            {% for submenu_details in submenu_details %}
-                                {% if menu_details.menu_id == submenu_details.menu_id %}
-                                    <li><a class="dropdown-item" href="#" onclick="loadSubMenuPage('{{ submenu_details.sub_menu_id }}')">{{ submenu_details.sub_menu_name }}</a></li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                     </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link px-2 py-2 dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                {{ menu_details.menu_name }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                {% for submenu_details in submenu_details %}
+                                    {% if menu_details.menu_id == submenu_details.menu_id %}
+                                        <li>
+                                            <a class="dropdown-item" href="#"
+                                               onclick="loadSubMenuPage('{{ submenu_details.sub_menu_id }}'); setActiveNav(this)">
+                                                {{ submenu_details.sub_menu_name }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </li>
                     {% else %}
-                        <li class="nav-item mx-lg-1">
-                            <a class="nav-link" href="#" onclick="loadMenuPage('{{ menu_details.menu_id }}')">{{ menu_details.menu_name }}</a>
+                        <li class="nav-item">
+                            <a class="nav-link px-2 py-2" 
+                               href="#" 
+                               onclick="loadMenuPage('{{ menu_details.menu_id }}'); setActiveNav(this)">
+                                {{ menu_details.menu_name }}
+                            </a>
                         </li>
                     {% endif %}
                 {% endfor %}
             </ul>
-            <ul class="navbar-nav ms-auto align-items-center">
-                <li class="nav-item me-0">
-                    <a href="{% url 'user_login' %}" data-bs-toggle="modal" data-bs-target="#loginModalForm" class="nav-link d-lg-none">Login</a>
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#registrationModalForm" class="nav-link d-lg-none">Proponent Register</a>
-                    <a href="#"  class="nav-link d-lg-none" id="ndiCredentialId" onclick="authenticate_ndi('Issuance')">
-                        <img src="{% static 'assets/images/NDI_logo.png' %}" width="20" height="20" class="me-1">
-                        Receive Credentials
-                    </a>
-                    <a href="#" class="btn btn-sm btn-light rounded-pill d-none d-lg-inline-flex align-items-center" id="ndiCredentialId" onclick="authenticate_ndi('Issuance')">
-                        <img src="/static/assets/images/NDI_logo.png" width="20" height="20" class="me-1"> Receive Credentials
-                    </a>
-                    <a href="{% url 'user_login' %}" data-bs-toggle="modal" data-bs-target="#loginModalForm" class="btn btn-sm btn-light rounded-pill d-none d-lg-inline-flex">
-                        <i class="mdi mdi-account-key me-2"></i> Login
-                    </a>
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#registrationModalForm" class="btn btn-sm btn-light rounded-pill d-none d-lg-inline-flex">
-                        <i class="mdi mdi-account-multiple-plus me-2"></i> Proponent Register
-                    </a>
-                </li>
-            </ul>
         </div>
     </div>
+
+    <!-- JS to handle active class -->
+    <script>
+        function setActiveNav(element) {
+            // Remove 'active' from all nav links
+            const links = document.querySelectorAll('.navbar-nav .nav-link');
+            links.forEach(link => link.classList.remove('active'));
+
+            // Add 'active' to the clicked one
+            element.classList.add('active');
+        }
+    </script>
 </nav>
+
+
+
+
+

@@ -33,13 +33,31 @@ def home(request):
     submenu_details = t_submenu_master.objects.filter(is_active='Y',is_deleted='N').order_by('order')
     other_details = t_other_details.objects.filter(is_active='Y',is_deleted='N')
     homepage_details = t_homepage_master.objects.filter(homepage_id='1')
-    pub_file_attachment = t_file_attachment.objects.filter(attachment_type='P')
-    down_file_attachment = t_file_attachment.objects.filter(attachment_type='D')
-    form_file_attachment = t_file_attachment.objects.filter(attachment_type='C')
+    pub_file_attachment = t_file_attachment.objects.filter(attachment_type='P',document_id__in=t_other_details.objects.filter(
+        is_active='Y',  # Assuming 'Y' means active
+        is_deleted='N'   # Assuming 'N' means not deleted
+    ).values('document_id'))
+    down_file_attachment = t_file_attachment.objects.filter(attachment_type='D',document_id__in=t_other_details.objects.filter(
+        is_active='Y',  # Assuming 'Y' means active
+        is_deleted='N'   # Assuming 'N' means not deleted
+    ).values('document_id'))
+    form_file_attachment = t_file_attachment.objects.filter(attachment_type='C',document_id__in=t_other_details.objects.filter(
+        is_active='Y',  # Assuming 'Y' means active
+        is_deleted='N'   # Assuming 'N' means not deleted
+    ).values('document_id'))
     home_attachment = t_file_attachment.objects.filter(attachment_type='H')
-    pub_file_attachment_count = t_file_attachment.objects.filter(attachment_type='P').count()
-    down_file_attachment_count = t_file_attachment.objects.filter(attachment_type='D').count()
-    form_file_attachment_count = t_file_attachment.objects.filter(attachment_type='C').count()
+    pub_file_attachment_count = t_file_attachment.objects.filter(attachment_type='P',document_id__in=t_other_details.objects.filter(
+        is_active='Y',  # Assuming 'Y' means active
+        is_deleted='N'   # Assuming 'N' means not deleted
+    ).values('document_id')).count()
+    down_file_attachment_count = t_file_attachment.objects.filter(attachment_type='D',document_id__in=t_other_details.objects.filter(
+        is_active='Y',  # Assuming 'Y' means active
+        is_deleted='N'   # Assuming 'N' means not deleted
+    ).values('document_id')).count()
+    form_file_attachment_count = t_file_attachment.objects.filter(attachment_type='C',document_id__in=t_other_details.objects.filter(
+        is_active='Y',  # Assuming 'Y' means active
+        is_deleted='N'   # Assuming 'N' means not deleted
+    ).values('document_id')).count()
     return render(request, 'index.html',{'proponent_type':proponent_type,'dzongkhag':dzongkhag,
                                          'gewog':gewog,'village':village,'security':security,'menu_details':menu_details,
                                          'submenu_details':submenu_details, 'other_details':other_details,
@@ -49,6 +67,14 @@ def home(request):
                                          'pub_file_attachment_count':pub_file_attachment_count,
                                          'down_file_attachment_count':down_file_attachment_count,
                                          'form_file_attachment_count':form_file_attachment_count})
+
+def proponent_registration(request):
+    proponent_type = t_proponent_type_master.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'proponent_registration.html',{'proponent_type':proponent_type,'dzongkhag':dzongkhag,
+                                         'gewog':gewog,'village':village})
 
 def user_login(request):
     return render(request, 'login.html')
@@ -96,6 +122,7 @@ def login(request):
                             for roles in role_details:
                                 request.session['name'] = check_user.name
                                 request.session['role'] = roles.role_name
+                                request.session['role_id'] = roles.role_id
                                 request.session['email'] = check_user.email_id
                                 request.session['login_type'] = check_user.login_type
                                 request.session['login_id'] = check_user.login_id
@@ -133,53 +160,90 @@ def dashboard(request):
     r_application_count = 0
     ec_renewal_count = 0
     payment_count = 0
+    cl_application_count = 0
+    client_application_count = 0  # Initialize here to avoid UnboundLocalError
+    ibls_appluication_count = 0
+    
     try:
         login_type = request.session['login_type']
     except:
         login_type = None
+        
     if login_type == 'I':
         role = request.session['role']
         ca_authority = request.session['ca_authority']
         expiry_date_threshold = datetime.now().date() + timedelta(days=30)
-        ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority,
-                                                            application_status='A',
-                                                            ec_expiry_date__lt=expiry_date_threshold).count()
-        # END: count no of EC due for renewal within 30 days
+        ec_renewal_count = t_ec_industries_t1_general.objects.filter(
+            ca_authority=ca_authority,
+            application_status='A',
+            ec_expiry_date__lt=expiry_date_threshold
+        ).count()
+        
         if role == 'Verifier':
-            v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=ca_authority, action_date__isnull=False).count()
+            v_application_count = t_workflow_dtls.objects.filter(
+                assigned_role_id='2', 
+                assigned_role_name='Verifier', 
+                ca_authority=ca_authority, 
+                action_date__isnull=False
+            ).count()
         elif role == 'Reviewer':
-            r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=ca_authority).count()
-        response = render(request, 'common_dashboard.html',{'v_application_count':v_application_count, 'r_application_count':r_application_count, 'ec_renewal_count':ec_renewal_count})
-
-        # Set cache-control headers to prevent caching
-        response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-        response['Pragma'] = 'no-cache'
-        response['Expires'] = '0'
-        return response
+            r_application_count = t_workflow_dtls.objects.filter(
+                assigned_role_id='3', 
+                assigned_role_name='Reviewer', 
+                ca_authority=ca_authority
+            ).count()
+        elif role == 'Admin':
+            client_application_count = t_user_master.objects.filter(
+                accept_reject__isnull=True,
+                login_type='C'
+            ).count()
+            ibls_appluication_count = t_workflow_dtls.objects.filter(application_status='P', assigned_role_id=request.session['role_id'], action_date__isnull=False).count()
+            
+        response = render(request, 'dashboard.html', {
+            'v_application_count': v_application_count,
+            'r_application_count': r_application_count,
+            'ec_renewal_count': ec_renewal_count,
+            'client_application_count': client_application_count,  # Now always defined
+            'ibls_appluication_count':ibls_appluication_count
+        })
     else:
         email_id = request.session['email']
-        login_id =  request.session['login_id']
+        login_id = request.session['login_id']
         app_hist_count = t_application_history.objects.filter(applicant_id=email_id).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=login_id).count()
         payment_count = t_payment_details.objects.filter(payment_advice_amount_paid__isnull=True).count()
+        draft_count = t_ec_industries_t1_general.objects.filter(
+            applicant_id=email_id,
+            application_status='P',
+            service_type='Main Activity',
+            action_date__isnull=True
+        ).count()
         
         t1_general_subquery = t_ec_industries_t1_general.objects.filter(
             tor_application_no=OuterRef('application_no')
         ).values('tor_application_no')
 
-        # Query to count approved applications that are not in t1_general
-        tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A',application_no__contains='TOR'
+        tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=email_id
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-        response = render(request, 'common_dashboard.html',{'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'payment_count':payment_count, 'tor_application_count':tor_application_count})
+        
+        response = render(request, 'dashboard.html', {
+            'app_hist_count': app_hist_count,
+            'cl_application_count': cl_application_count,
+            'payment_count': payment_count,
+            'tor_application_count': tor_application_count,
+            'draft_count': draft_count,
+            'ibls_appluication_count':ibls_appluication_count
+        })
 
-        # Set cache-control headers to prevent caching
-        response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-        response['Pragma'] = 'no-cache'
-        response['Expires'] = '0'
-        return response
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def add_user(request):
     employee_id = request.POST.get('employee_id')
@@ -260,13 +324,27 @@ def check_email_id(request):
     data['count'] = message_count
     return JsonResponse(data)
 
+def check_cid(request):
+    data = dict()
+    cid = request.POST.get('cid')
+    message_count = t_user_master.objects.filter(cid=cid).count()
+    data['count'] = message_count
+    return JsonResponse(data)
+
+def check_emp_id(request):
+    data = dict()
+    employee_id = request.POST.get('employee_id')
+    message_count = t_user_master.objects.filter(employee_id=employee_id).count()
+    data['count'] = message_count
+    return JsonResponse(data)
+
 def sendmail(request, name, email, password):
     subject = 'USER CREATED'
     message = "Dear " + name + " Login Id has been created for ECS System. Your Login Id is " \
               + email + " And Password is " + password + ""
     recipient_list = [email]
     send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
-              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
+              auth_user='systems@moenr.gov.bt', auth_password='wdiigzpprtutwmdc',
               connection=None, html_message=None)
 
 
@@ -274,8 +352,9 @@ def manage_menu(request):
     menu_details = t_menu_master.objects.all().order_by('order')
     document_id = get_random_document_id_string(5)
     file_attachment = t_file_attachment.objects.all()
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
     response = render(request, 'manage_menu.html',{'menu_details':menu_details,'document_id':document_id,
-                                               'file_attachment':file_attachment})
+                                               'file_attachment':file_attachment,'client_application_count':client_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -288,8 +367,9 @@ def manage_submenu(request):
     sub_menu_details = t_submenu_master.objects.all()
     document_id = get_random_document_id_string(5)
     file_attachment = t_file_attachment.objects.all()
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
     response = render(request, 'manage_sub_menu.html',{'menu_details':menu_details,'sub_menu_details':sub_menu_details,
-                                                   'document_id':document_id, 'file_attachment':file_attachment})
+                                                   'document_id':document_id, 'file_attachment':file_attachment,'client_application_count':client_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -329,8 +409,9 @@ def user_master(request):
     users = t_user_master.objects.filter(login_type='I')
     roles = t_role_master.objects.all().order_by('role_name')
     agency = t_competant_authority_master.objects.all().order_by('remarks')
-    response = render(request, 'user_master.html', {'users': users, 'role': roles, 'agency':agency})
-
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
+    response = render(request, 'user_master.html', {'users': users, 'role': roles, 'agency':agency,'client_application_count':client_application_count})
+    
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response['Pragma'] = 'no-cache'
@@ -340,7 +421,8 @@ def user_master(request):
 def agency_master(request):
     agency_list = t_competant_authority_master.objects.all().order_by('competent_authority_id')
     dzongkhag_list = t_dzongkhag_master.objects.all()
-    response = render(request, 'agency_master.html', {'agency_list': agency_list, 'dzongkhag_list': dzongkhag_list})
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
+    response = render(request, 'agency_master.html', {'agency_list': agency_list, 'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -350,7 +432,8 @@ def agency_master(request):
 
 def proponent_master(request):
     proponent_list = t_proponent_type_master.objects.all()
-    response = render(request, 'proponent_master.html', {'proponent_list':proponent_list})
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
+    response = render(request, 'proponent_master.html', {'proponent_list':proponent_list,'client_application_count':client_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -360,7 +443,8 @@ def proponent_master(request):
 
 def role_master(request):
     role_list = t_role_master.objects.all()
-    response = render(request, 'role_master.html', {'role':role_list})
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
+    response = render(request, 'role_master.html', {'role':role_list,'client_application_count':client_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -370,7 +454,8 @@ def role_master(request):
 
 def service_master(request):
     service_list = t_service_master.objects.all().order_by('service_name')
-    response = render(request, 'service_master.html', {'service':service_list})
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
+    response = render(request, 'service_master.html', {'service':service_list,'client_application_count':client_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -380,7 +465,8 @@ def service_master(request):
 
 def fee_schedule_master(request):
     fees_schedule_list = t_fees_schedule.objects.all().order_by('service_name')
-    response = render(request, 'fees_schedule.html', {'fees_schedule':fees_schedule_list})
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
+    response = render(request, 'fees_schedule.html', {'fees_schedule':fees_schedule_list,'client_application_count':client_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -403,9 +489,11 @@ def delete_fee_schedule_master(request):
     return render(request, 'fees_schedule.html', {'fees_schedule':fees_schedule_list})
 
 def bsic_master(request):
-    bsic_code_list = t_bsic_code.objects.all().order_by('activity_description')
+    bsic_code_list = t_bsic_code.objects.all().order_by('broad_activity_code').distinct()
     service_list = t_service_master.objects.all()
-    response = render(request, 'bsic_code_master.html', {'bsic_code_list':bsic_code_list, 'service_list':service_list})
+    competant_authority = t_competant_authority_master.objects.values('competent_authority').distinct()
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
+    response = render(request, 'bsic_code_master.html', {'client_application_count':client_application_count,'bsic_code_list':bsic_code_list, 'service_list':service_list, 'competant_authority':competant_authority})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -424,17 +512,19 @@ def add_bsic_code_master(request):
     competent_authority = request.GET.get('competent_authority')
     entry_point = 'ECSS'
     service_id = request.GET.get('service_id')
+    has_tor = request.GET.get('has_tor')
     t_bsic_code.objects.create(broad_activity_code=broad_activity_code, activity_description=activity_description,
                                specific_activity_code=specific_activity_code,
                                specific_activity_description=specific_activity_description,
                                classification=classification, category=category, colour_code=colour_code,
-                               competent_authority=competent_authority, entry_point=entry_point, service_id=service_id)
+                               competent_authority=competent_authority, entry_point=entry_point, service_id=service_id,has_tor=has_tor)
     return redirect(bsic_master)
 
 def get_bsic_code_details(request, bsic_id):
     bsic_code_details = t_bsic_code.objects.filter(bsic_id=bsic_id)
     service_list = t_service_master.objects.all()
-    return render(request, 'edit_bsic_code.html', {'bsic_code_details': bsic_code_details, 'service_list':service_list})
+    competant_authority = t_competant_authority_master.objects.values('competent_authority').distinct()
+    return render(request, 'edit_bsic_code.html', {'competant_authority':competant_authority,'bsic_code_details': bsic_code_details, 'service_list':service_list})
 
 def edit_bsic_code_master(request):
     edit_bsic_id = request.POST.get('bsic_id')
@@ -447,8 +537,9 @@ def edit_bsic_code_master(request):
     edit_colour_code = request.POST.get('colour_code')
     edit_competent_authority = request.POST.get('competent_authority')
     edit_service_id = request.POST.get('service_id')
+    has_tor = request.POST.get('has_tor')
     bsic_code_details = t_bsic_code.objects.filter(bsic_id=edit_bsic_id)
-    bsic_code_details.update(broad_activity_code=edit_broad_activity_code, activity_description=edit_activity_description, specific_activity_code=edit_specific_activity_code, specific_activity_description=edit_specific_activity_description, classification=edit_classification, category=edit_category, colour_code=edit_colour_code, competent_authority=edit_competent_authority, service_id=edit_service_id)
+    bsic_code_details.update(broad_activity_code=edit_broad_activity_code, activity_description=edit_activity_description, specific_activity_code=edit_specific_activity_code, specific_activity_description=edit_specific_activity_description, classification=edit_classification, category=edit_category, colour_code=edit_colour_code, competent_authority=edit_competent_authority, service_id=edit_service_id,has_tor=has_tor)
     return redirect(bsic_master)
 
 def delete_bsic_code_master(request):
@@ -459,19 +550,23 @@ def delete_bsic_code_master(request):
 
 def add_agency_master(request):
     agency_name = request.POST.get('agency_name')
-    t_agency_master.objects.create(agency_name=agency_name)
+    remarks = request.POST.get('remarks')
+    dzongkhag = request.POST.get('dzongkhag')
+    t_competant_authority_master.objects.create(competent_authority=agency_name,remarks=remarks,dzongkhag_code=dzongkhag)
     return redirect(agency_master)
 
 def edit_agency_master(request):
     agency_code = request.POST.get('edit_agency_code')
     agency_name = request.POST.get('edit_agency_name')
-    agency_details = t_agency_master.objects.filter(agency_code=agency_code)
-    agency_details.update(agency_name=agency_name)
+    remarks = request.POST.get('edit_remarks')
+    dzongkhag = request.POST.get('edit_dzongkhag')
+    competant_authority_master = t_competant_authority_master.objects.filter(agency_code=agency_code)
+    competant_authority_master.update(competent_authority=agency_name,remarks=remarks,dzongkhag_code=dzongkhag)
     return redirect(agency_master)
 
 def delete_agency_master(request):
     agency_code = request.POST.get('delete_agency_code')
-    agency_details = t_agency_master.objects.filter(agency_code=agency_code)
+    agency_details = t_competant_authority_master.objects.filter(agency_code=agency_code)
     agency_details.delete()
     return redirect(agency_master)
 
@@ -518,11 +613,11 @@ def manage_user(request):
 
 def user_password_reset_mail(Name, Email_Id, password):
     subject = 'PASSWORD RESET'
-    message = "Dear " + Name + " Your Password Has Been Reset for Bhutan Bio-Food Security System. Your Login Id is " \
+    message = "Dear " + Name + " Your Password Has Been Reset for ECS System. Your Login Id is " \
               + Email_Id + " And Password is " + password + ""
     recipient_list = [Email_Id]
     send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
-              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
+              auth_user='systems@moenr.gov.bt', auth_password='wdiigzpprtutwmdc',
               connection=None, html_message=None)
 
 def logout_view(request):
@@ -881,7 +976,8 @@ def manage_live_statistics(request):
 def manage_home_page(request):
     home_page_details = t_homepage_master.objects.filter(homepage_id='1')
     file_attachment = t_file_attachment.objects.filter(attachment_type='H')
-    response = render(request, 'manage_home_page.html', {'home_page_details': home_page_details,
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
+    response = render(request, 'manage_home_page.html', {'client_application_count':client_application_count,'home_page_details': home_page_details,
                                                 'file_attach': file_attachment})
 
     # Set cache-control headers to prevent caching
@@ -964,6 +1060,7 @@ def change_mobile_number(request):
 def client_registration(request):
     data = dict()
     proponent_type = request.POST.get('proponent_type')
+    print(proponent_type)
     cid = request.POST.get('cid')
     proponent_name = request.POST.get('proponent_name')
     address = request.POST.get('proponent_address')
@@ -1050,7 +1147,7 @@ def manage_client(request):
         send_reset_pass_mail(name, email_id, password)
     elif identifier == 'Activate':
         reg_clients.update(is_active='Y')
-    elif identifier == 'Activate':
+    elif identifier == 'Deactivate':
         reg_clients.update(is_active='N')
     return redirect(new_client_registration)
 
@@ -1059,8 +1156,8 @@ def accept_mail(request, name, email_id, password):
     message = "Dear " + name + " Your Registration for ECS System Is Accepted. Your Login Id is " \
               + email_id + " And Password is " + password + ""
     recipient_list = [email_id]
-    send_mail(subject, message, 'sparkletechnologies0509@gmail.com', recipient_list, fail_silently=False,
-              auth_user='sparkletechnologies0509@gmail.com', auth_password='htosvqmtrozajpey',
+    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moenr.gov.bt', auth_password='wdiigzpprtutwmdc',
               connection=None, html_message=None)
 
 def reject_mail(request, name, email_id):
@@ -1069,7 +1166,7 @@ def reject_mail(request, name, email_id):
                 ""
     recipient_list = [email_id]
     send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
-              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
+              auth_user='systems@moenr.gov.bt', auth_password='wdiigzpprtutwmdc',
               connection=None, html_message=None)
 
 def send_reset_pass_mail(name, email, password):
@@ -1078,7 +1175,7 @@ def send_reset_pass_mail(name, email, password):
               + email + " And Password is " + password + ""
     recipient_list = [email]
     send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
-              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
+              auth_user='systems@moenr.gov.bt', auth_password='wdiigzpprtutwmdc',
               connection=None, html_message=None)
 
 def update_first_login_details(request):
@@ -1139,7 +1236,8 @@ def manage_others(request):
     other_details = t_other_details.objects.filter(is_deleted='N')
     document_id = get_random_document_id_string(5)
     file_attachment = t_file_attachment.objects.all()
-    response = render(request,'others_master.html', {'other_details': other_details,
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
+    response = render(request,'others_master.html', {'other_details': other_details,'client_application_count':client_application_count,
                                                       'file_attachment':file_attachment,'document_id':document_id})
 
     # Set cache-control headers to prevent caching
@@ -1311,13 +1409,13 @@ def get_auth_token():
     """
     get an auth token
     """
-    credentials = {'client_id': 'Nx0tb25S3l87K6SmxnoTS_3FRjca',
-                   'client_secret': 'UiHRV8fI6iMX4iQwIfVSiEG7AeUa',
+    credentials = {'client_id': 'oKvI_XucoWSSNGmfpvRIIlwE4yAa',
+                   'client_secret': 'Ux3nnEgJWYhn4BiBBNlTE9LANFYa',
                    'grant_type': 'client_credentials'}
 
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
-    res = requests.post('https://stg-sso.dit.gov.bt/oauth2/token', params=credentials,
+    res = requests.post('https://sso.tech.gov.bt/oauth2/token', params=credentials,
                         headers=headers,verify=False)
 
     json = res.json()

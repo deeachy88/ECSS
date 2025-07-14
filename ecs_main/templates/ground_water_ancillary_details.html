@@ -51,7 +51,7 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Applicant Name</label>
+                                            <label class="form-label fw-bold">Name of the Applicant</label>
                                             <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
                                         </div>
                                         <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -168,7 +168,7 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                            <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                             <input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
                                         </div>
                                     </div>
@@ -176,7 +176,7 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
+                                            <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) in acres</label>
                                             <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{ application_details.industrial_area_acre }}" disabled>
                                         </div>
                                     </div>
@@ -196,10 +196,20 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Others Specify (acres)</label>
-                                            <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" value="{{ application_details.others_area_acre }}" disabled>
+                                            <label class="form-label fw-bold">Others Specify</label>
+                                            <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()" value="{{ application_details.others_area|default:'' }}" disabled>
                                         </div>
+                                        <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
+                                    {% if application_details.others_area %}
+                                        <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Others(acres)</label>
+                                                <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()" disabled>
+                                            </div>
+                                            <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    {% endif %}
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-6">
@@ -349,7 +359,7 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Elevation(meters)</label>
+                                            <label class="form-label fw-bold">Elevation (meters)</label>
                                             <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                         </div>
                                     </div>
@@ -681,7 +691,7 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                            <label class="form-label fw-bold">Project Cost (Nu)</label>
                                             <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                         </div>
                                     </div>

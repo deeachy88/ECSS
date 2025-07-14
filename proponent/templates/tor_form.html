@@ -11,7 +11,7 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Name of Project</label>
+                                <label class="form-label fw-bold">Name of the Project</label>
                                 <input type="text" name="project_name" class="form-control" id="project_name">
                             </div>
                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -23,7 +23,7 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Name of Applicant</label>
+                                <label class="form-label fw-bold">Name of the Applicant</label>
                                 <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
                             </div>
                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -134,7 +134,7 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Name of Particular Project Site</label>
+                            <label class="form-label fw-bold">Name of the Particular Project Site</label>
                             <input type="text" name="location_name" class="form-control" id="location_name">
                         </div>
                         <div id="location_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -195,7 +195,7 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Attachment</label>
-                        <input type="file" name="tor_attach" class="form-control" id="tor_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                        <input type="file" name="tor_attach" class="form-control" id="tor_attach" accept=".png,.jpg,.jpeg,.pdf,.doc,.kmz">
                     </div>
                     <div class="alert alert-danger" id="tor_attachErrorMsg" style="display:none"></div>
                 </div>
@@ -364,7 +364,7 @@
                             $('#tor_form_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                         setTimeout(function() {
-                            location.reload()
+                            window.location.href = '/dashboard';
                         }, 2000);
                     }
                     else

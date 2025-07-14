@@ -9,10 +9,10 @@
                 <div class="card-body">
                     <h4 class="header-title mb-3"> New Application</h4>
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-12">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Activity Description</label>
-                                <select class="form-control" name="activity_description" id="activity_description" onchange="get_specific_activity_description(this.value)">
+                                <select class="form-control select2" data-toggle="select2" name="activity_description" id="activity_description" onchange="get_specific_activity_description(this.value)">
                                     <option value="">--SELECT-</option>
                                     {% for bsic_details in bsic_details %}
                                         <option value="{{ bsic_details.broad_activity_code }}">{{ bsic_details.activity_description }}</option>
@@ -21,10 +21,10 @@
                             </div>
                             <div id="activity_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-12">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Specific Activity Description</label>
-                                <select class="form-control" name="specific_activity_description" id="specific_activity_description" onchange="get_category(this.value)">
+                                <select class="form-control select2" data-toggle="select2" name="specific_activity_description" id="specific_activity_description" onchange="get_category(this.value)">
                                     <option value="">--SELECT--</option>
                                     {% for bsic_details in bsic_details %}
                                         <option value="{{ bsic_details.specific_activity_code }}">{{ bsic_details.specific_activity_description }}</option>
@@ -35,10 +35,10 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-12">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Category</label>
-                                <select class="form-control" name="category" id="category">
+                                <select class="form-control select2" data-toggle="select2" name="category" id="category">
                                     <option value="">--SELECT--</option>
                                     {% for bsic_details in bsic_details %}
                                         <option value="{{ bsic_details.category }}" extra-attr="{{ bsic_details.service_id }}">{{ bsic_details.category }}</option>
@@ -48,7 +48,7 @@
                             <div id="categoryErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
                     </div>
-
+                    
                     <div class="text-center">
                         <a href="#" onclick="get_application_details()" class="btn btn-primary btn-sm mt-1">Submit <i class="mdi mdi-arrow-right ms-1"></i></a>
                     </div>
@@ -58,6 +58,7 @@
         </div>
     </div>
 <script>
+    
     function get_specific_activity_description(broad_activity_code)
     {
         $.ajax({

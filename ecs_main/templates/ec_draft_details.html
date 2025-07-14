@@ -14,7 +14,7 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ec_details.ec_type}}</td>
                 <td>{{ec_details.ec_heading}}</td>
-                <td>{{ec_details.ec_terms}}</td>
+                <td>{{ec_details.ec_terms|safe}}</td>
                 <td>
                     <div class="btn-group btn-group-sm">
                         <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="populate_ec_details('{{ec_details.record_id}}','{{ec_details.application_no}}','{{ec_details.ec_type}}','{{ec_details.ec_heading}}','{{ec_details.ec_terms}}')"><i class="mdi mdi-square-edit-outline"></i></a>

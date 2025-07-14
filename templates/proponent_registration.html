@@ -1,0 +1,202 @@
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+
+<div class="row mt-2">
+    <div class="col-xxl-12 col-md-12">
+        <div class="card ribbon-box">
+            <div class="card-body">
+            <div id="proponent_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
+            <!--Header-->
+            <div style="text-align: center; margin-left: 20px;">
+                <h2 style="font-size: 1.0rem; margin-bottom: .5rem; font-weight: 500; color: black;">Proponent Registration</h2>
+            </div>
+            <hr>
+            <div id="registration_div">
+                <form method="post" id="client_registration_form">
+                    {% csrf_token %}
+                    <!--Body-->
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Proponent Type</label>
+                                <select id="proponent_type" name="proponent_type" class="form-select" onchange="show_details(this.value)">
+                                    <option value="">--SELECT--</option>
+                                    {% for proponent_type in proponent_type %}
+                                    <option value="{{ proponent_type.proponent_type_id }}">{{ proponent_type.proponent_type_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="proponent_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="cid_details" style="display: none;">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="modal-header justify-content-center">
+                                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="generateQRCode" onclick="registerauthenticateWithAPI('Registration')">
+                                            <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
+                                            &nbsp; &nbsp; Use Bhutan NDI
+                                        </a>
+                                    </div>
+                                    <div id="progressIndicator1" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+                                        <div class="spinner-border spinner-border-custom" role="status" style="width: 3rem; height: 3rem;">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">CID</label>
+                                        <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onchange="getCitizenDetails(this.value)" readonly>
+                                        <div id="cidErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Proponent Name</label>
+                                    <input type="text" name="proponent_name" class="form-control" id="proponent_name">
+                                </div>
+                                <div id="proponent_nameErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Address</label>
+                                <input type="text" name="proponent_address" class="form-control" id="proponent_address">
+                            </div>
+                            <div id="proponent_addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Contact Person</label>
+                                <input type="text" name="contact_person" class="form-control" id="contact_person">
+                            </div>
+                            <div id="contact_personErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Official Email</label>
+                                <input type="email" name="email" class="form-control" id="email" onchange="validate_email_id(this.value)">
+                            </div>
+                            <div id="emailErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Contact Number</label>
+                                <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" name="contact_number" maxlength="8">
+                            </div>
+                            <div id="mobileErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Dzongkhag</label>
+                                <select id="dzongkhag" name="dzongkhag" class="form-select" onchange="get_gewog(this.value)">
+                                    <option value="">--SELECT DZONGKHAG--</option>
+                                    {% for dzongkhag in dzongkhag %}
+                                    <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="text" id="i_dzongkhag" name="i_dzongkhag" class="form-control" style="display: none;" readonly>
+                            </div>
+                            <div id="dzongkhagErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Gewog</label>
+                                <select id="gewog" name="gewog" class="form-select" onchange="get_village(this.value)">
+                                    <option value="">--SELECT GEWOG--</option>
+                                    {% for gewog in gewog %}
+                                    <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="text" id="i_gewog" name="i_gewog" class="form-control" style="display: none;" readonly>
+                            </div>
+                            <div id="gewogErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Village</label>
+                                <select id="village" name="village" class="form-select">
+                                    <option value="">--SELECT VILLAGE--</option>
+                                    {% for village in village %}
+                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="text" id="i_village" name="i_village" class="form-control" style="display: none;" readonly>
+                            </div>
+                            <div id="villageErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+                    <div id="ndi_div_proponent" style="display: none; text-align: center">
+                        <h2 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 500;">
+                            Scan QR code from <span style="color:#5AC994 ">Bhutan NDI </span> app
+                        </h2>
+                        <div class="qr-img" style="margin-top: 10px">
+                            <div id="deepLinkPro" class="col-md-5 text-center" style="display: none;">
+                                <button id="deepLinkBtnPro" class="button button1 text-white btn-bg cus-button">
+                                    <img src="{% static 'assets/images/NDI_logo.png' %}" alt="NDI Logo" class="ndi-logo">Open Bhutan NDI App
+                                </button>
+                            </div>
+                            <div class="text-center" id="qrcodeproponent">
+                                <canvas width="200" height="200" style="display: none;"></canvas>
+                            </div>
+                            <img id="logo" src="{% static 'assets/images/NDIlogobg.png' %}" style="display: none;" />
+                            <div class="row text-center">
+                                <div class="counter" id="clockdiv" style="display: none;">
+                                    <div class="sq">
+                                        <span class="seconds bord" id="timer"></span> <span class="smalltext">Secs</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-md-9 custom-vertical-align-left">
+                                <br>
+                                <ul class="list-unstyled" style="text-align: left;">
+                                    <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7">1. Open Bhutan NDI on your Phone</li>
+                                    <li>2. Tab the Scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="QR Code"> and capture code</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="modal-body-video-btn">
+                            <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" class="btn btn-ndi btn-pill">Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i>
+                            </a>
+                        </div>
+                        <div class="modal-body-question">
+                            <ul>
+                                <li>
+                                    Download Now!
+                                    <div class="app-link">
+                                        <a href="https://play.google.com/store/search?q=bhutan%20ndi&amp;c=apps&amp;hl=en_IN&amp;gl=US" target="_blank"><img src="{% static 'assets/images/play_store.png' %}" style="height: 35px;"></a>
+                                        <a href="https://apps.apple.com/in/app/bhutan-ndi/id1645493166" target="_blank"><img src="{% static 'assets/images/app_store.png' %}" style="height: 35px;"></a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="alert alert-success" id="client_registration_message_div" style="display:none"></div>
+                    <div class="alert alert-danger" id="client_registration_error_message_div" style="display:none"></div>
+                    <div class="card-footer flex-center justify-content-center">
+                        <button type="button" class="btn btn-sm btn-success" onclick="register_client()" id="proponent_register_btn"><i class="uil uil-message me-1"></i>Submit</button>
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+                

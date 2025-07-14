@@ -3,7 +3,7 @@
         <div class="col-xl-12">
             <div class="card mt-1">
                 <div class="card-body">
-                    <h4 class="header-title mb-3"> Forest Application Details</h4>
+                    <h4 class="header-title mb-3"> Initial Environmental Examination (IEE) Form for Forestry Projects -2022</h4>
                     <ul class="nav nav-pills bg-nav-pills mb-3" role="tablist">
                         <li class="nav-item" role="presentation">
                             <a href="#bordered-tabs-preview" data-bs-toggle="tab" aria-expanded="false" class="nav-link rounded-0 active" aria-selected="true" role="tab">
@@ -35,7 +35,7 @@
 											<div class="row">
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Name of Applicant</label>
+                                                        <label class="form-label fw-bold">Name of the Applicant</label>
                                                         <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
                                                     </div>
                                                     <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -67,7 +67,7 @@
                                             <div class="row">
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Name of Project</label>
+                                                        <label class="form-label fw-bold">Name of the Project</label>
                                                         <select class="form-control" id="project_name" name="project_name">
                                                             <option value="">--SELECT--</option>
                                                             {% if application_details.project_name == 'Sand_dredging' %}
@@ -192,7 +192,7 @@
                                             <div class="row">
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                                        <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                                         <<input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
                                                     </div>
                                                     <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -201,7 +201,7 @@
                                             <div class="row">
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
+                                                        <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) in acres</label>
                                                         <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" onchange="get_total_area_acre()" value="{{ application_details.industrial_area_acre }}">
                                                     </div>
                                                     <div id="industrial_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -224,11 +224,20 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Others Specify (acres)</label>
-                                                        <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()" value="{{ application_details.others_area_acre }}">
+                                                        <label class="form-label fw-bold">Others Specify</label>
+                                                        <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()" value="{{ application_details.others_area }}" disabled>
                                                     </div>
                                                     <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                                 </div>
+                                                {% if application_details.others_area %}
+                                                    <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-bold">Others(acres)</label>
+                                                            <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()" disabled>
+                                                        </div>
+                                                        <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                    </div>
+                                                {% endif %}
                                             </div>
                                             <div class="row">
                                                 <div class="col-lg-6">
@@ -252,7 +261,7 @@
                                             <div class="row">
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Elevation(meters)</label>
+                                                        <label class="form-label fw-bold">Elevation (meters)</label>
                                                         <input type="text" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{application_details.terrain_elevation}}">
                                                     </div>
                                                     <div id="terrain_elevationErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -614,7 +623,7 @@
                                                     </div>
                                                     <div class="col-lg-6">
                                                         <div class="mb-3">
-                                                            <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                            <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                             {% if application_details.water_excavated_muck == "Yes" %}
                                                                 <div class="mt-2">
                                                                     <div class="form-check form-check-inline">
@@ -1730,7 +1739,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Name of Project</label>
+                                                                    <label class="form-label fw-bold">Name of the Project</label>
                                                                     <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" disabled>
                                                                 </div>
                                                             </div>
@@ -1757,7 +1766,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Applicant Name</label>
+                                                                    <label class="form-label fw-bold">Name of the Applicant</label>
                                                                     <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
                                                                 </div>
                                                                 <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -1924,7 +1933,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                                                    <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                                                     <<input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
                                                                 </div>
                                                                 <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -1933,7 +1942,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
+                                                                    <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) in acres</label>
                                                                     <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{ application_details.industrial_area_acre }}" disabled>
                                                                 </div>
                                                             </div>
@@ -2106,7 +2115,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -2522,7 +2531,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                                    <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                                     {% if application_details.excavated_muck == 'Yes' %}
                                                                         <div class="mt-2">
                                                                             <div class="form-check form-check-inline">
@@ -3326,7 +3335,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Name of Project</label>
+                                                                    <label class="form-label fw-bold">Name of the Project</label>
                                                                     <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" disabled>
                                                                 </div>
                                                             </div>
@@ -3353,7 +3362,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Applicant Name</label>
+                                                                    <label class="form-label fw-bold">Name of the Applicant</label>
                                                                     <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
                                                                 </div>
                                                                 <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -3520,7 +3529,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                                                    <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                                                     <<input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
                                                                 </div>
                                                                 <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -3529,7 +3538,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
+                                                                    <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) in acres</label>
                                                                     <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{ application_details.industrial_area_acre }}" disabled>
                                                                 </div>
                                                             </div>
@@ -3702,7 +3711,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -4034,7 +4043,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                                     <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                                                 </div>
                                                             </div>
@@ -4527,7 +4536,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Name of Project</label>
+                                                                    <label class="form-label fw-bold">Name of the Project</label>
                                                                     <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" disabled>
                                                                 </div>
                                                             </div>
@@ -4554,7 +4563,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Applicant Name</label>
+                                                                    <label class="form-label fw-bold">Name of the Applicant</label>
                                                                     <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
                                                                 </div>
                                                                 <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -4721,7 +4730,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                                                    <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                                                     <<input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
                                                                 </div>
                                                                 <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -4730,7 +4739,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
+                                                                    <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) in acres</label>
                                                                     <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{ application_details.industrial_area_acre }}" disabled>
                                                                 </div>
                                                             </div>
@@ -4903,7 +4912,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -5235,7 +5244,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                                     <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                                                 </div>
                                                             </div>
@@ -5344,7 +5353,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                                    <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                                     {% if application_details.excavated_muck == 'Yes' %}
                                                                         <div class="mt-2">
                                                                             <div class="form-check form-check-inline">
@@ -6500,833 +6509,903 @@
                 </div>
                 </form>
             
-            <form method="post" id="draft_ec_form" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="modal fade" id="draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-            <!--Content-->
-            <div class="modal-content form-elegant">
-            <!--Header-->
-            <div class="modal-header text-center">
-            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;EC Draft</strong></h3>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-            </div>
-            <!--Body-->
-            <div class="modal-body mx-4">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Type</label>
-                        <select class="form-control" id="ec_type" name="ec_type" onchange="check_ec_draft_type(this.value)">
-                            <option>-SELECT-</option>
-                            <option value="Header">Header</option>
-                            <option value="Footer">Footer</option>
-                            <option value="Terms">Terms</option>
-                        </select>
-                    </div>
-                    <div class="alert alert-danger" id="ec_headingErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-6 heading_div" style="display:none">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">EC Heading</label>
-                        <input type="text" name="ec_heading" class="form-control" id="ec_heading">
-                    </div>
-                    <div class="alert alert-danger" id="ec_headingErrorMsg" style="display:none"></div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">EC Terms</label>
-                        <textarea rows="3" name="ec_terms" class="form-control" id="ec_terms"></textarea>
-                    </div>
-                    <div class="alert alert-danger" id="ec_termsErrorMsg" style="display:none"></div>
-                </div>
-            </div>
-            </div>
-            <div class="alert alert-success border-0 rounded-0" role="alert" id="ec_draft_successMsg" style="display:none">
-                <i class="uil-folder-heart me-1 h4 align-middle"></i>
-            </div>
-            <div class="alert alert-danger border-0 rounded-0" role="alert" id="ec_draft_errorMsg" style="display:none">
-                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
-            </div>
-            <div class="modal-footer flex-center justify-content-center">
-            <button type="button" class="btn btn-sm btn-primary" onclick="save_ec_draft()">Add</button>
-            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-            </div>
-            </div>
-            <!--/.Content-->
-            </div>
-            </div>
-            </form>
             
-            <form method="post" id="edit_draft_ec_form" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="modal fade" id="edit_draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-            <!--Content-->
-            <div class="modal-content form-elegant">
-            <!--Header-->
-            <div class="modal-header text-center">
-            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;Edit EC Draft</strong></h3>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+<form method="post" id="draft_ec_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+    <!--Header-->
+    <div class="modal-header text-center">
+    <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                            &nbsp;EC Draft</strong></h3>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+    </div>
+    <!--Body-->
+    <div class="modal-body mx-4">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Type</label>
+                <select class="form-control" id="ec_type" name="ec_type" onchange="check_ec_draft_type(this.value)">
+                    <option>-SELECT-</option>
+                    <option value="Header">Header</option>
+                    <option value="Footer">Footer</option>
+                    <option value="Terms">Terms</option>
+                </select>
             </div>
-            <!--Body-->
-            <div class="modal-body mx-4">
-            <input type="hidden" class="form-control" name="ec_draft_application_no" id="ec_draft_application_no">
-            <input type="hidden" class="form-control" name="ec_draft_record_id" id="ec_draft_record_id">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Type</label>
-                        <select class="form-control" id="edit_ec_type" name="edit_ec_type" onchange="check_edit_ec_draft_type(this.value)">
-                            <option>-SELECT-</option>
-                            <option value="Header">Header</option>
-                            <option value="Footer">Footer</option>
-                            <option value="Terms">Terms</option>
-                        </select>
-                    </div>
-                    <div class="alert alert-danger" id="ec_headingErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-6 edit_heading_div" style="display:none">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">EC Heading</label>
-                        <input type="text" name="edit_ec_heading" class="form-control" id="edit_ec_heading">
-                    </div>
-                    <div class="alert alert-danger" id="edit_ec_headingErrorMsg" style="display:none"></div>
+            <div class="alert alert-danger" id="ec_headingErrorMsg" style="display:none"></div>
+        </div>
+        <div class="col-lg-6 heading_div" style="display:none">
+            <div class="mb-3">
+                <label class="form-label fw-bold">EC Heading</label>
+                <input type="text" name="ec_heading" class="form-control" id="ec_heading">
+            </div>
+            <div class="alert alert-danger" id="ec_headingErrorMsg" style="display:none"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="mb-3">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">EC Terms</label>
+                    <!-- This div will be converted to the Quill editor -->
+                    <div id="ec_terms_editor" style="height: 200px;"></div>
+                    <!-- Hidden input to store the HTML content -->
+                    <input type="hidden" name="ec_terms" id="ec_terms">
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">EC Terms</label>
-                        <textarea rows="3" name="edit_ec_terms" class="form-control" id="edit_ec_terms"></textarea>
-                    </div>
-                    <div class="alert alert-danger" id="edit_ec_termsErrorMsg" style="display:none"></div>
-                </div>
+            <div class="alert alert-danger" id="ec_termsErrorMsg" style="display:none"></div>
+        </div>
+    </div>
+    </div>
+    <div class="alert alert-success border-0 rounded-0" role="alert" id="ec_draft_successMsg" style="display:none">
+        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+    </div>
+    <div class="alert alert-danger border-0 rounded-0" role="alert" id="ec_draft_errorMsg" style="display:none">
+            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+    </div>
+    <div class="modal-footer flex-center justify-content-center">
+    <button type="button" class="btn btn-sm btn-primary" onclick="save_ec_draft()">Add</button>
+    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+    </div>
+    </div>
+    <!--/.Content-->
+    </div>
+    </div>
+    </form>
+    
+    <form method="post" id="edit_draft_ec_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="edit_draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+    <!--Header-->
+    <div class="modal-header text-center">
+    <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                            &nbsp;Edit EC Draft</strong></h3>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+    </div>
+    <!--Body-->
+    <div class="modal-body mx-4">
+    <input type="hidden" class="form-control" name="ec_draft_application_no" id="ec_draft_application_no">
+    <input type="hidden" class="form-control" name="ec_draft_record_id" id="ec_draft_record_id">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Type</label>
+                <select class="form-control" id="edit_ec_type" name="edit_ec_type" onchange="check_edit_ec_draft_type(this.value)">
+                    <option>-SELECT-</option>
+                    <option value="Header">Header</option>
+                    <option value="Footer">Footer</option>
+                    <option value="Terms">Terms</option>
+                </select>
             </div>
+            <div class="alert alert-danger" id="ec_headingErrorMsg" style="display:none"></div>
+        </div>
+        <div class="col-lg-6 edit_heading_div" style="display:none">
+            <div class="mb-3">
+                <label class="form-label fw-bold">EC Heading</label>
+                <input type="text" name="edit_ec_heading" class="form-control" id="edit_ec_heading">
             </div>
-            <div class="alert alert-success border-0 rounded-0" role="alert" id="edit_ec_draft_successMsg" style="display:none">
-                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+            <div class="alert alert-danger" id="edit_ec_headingErrorMsg" style="display:none"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="mb-3">
+                <label class="form-label fw-bold">EC Terms</label>
+                <div id="edit_ec_terms_editor" style="height: 200px;"></div>
+                    <!-- Hidden input to store the HTML content -->
+                <input type="hidden" name="edit_ec_terms" id="edit_ec_terms">
             </div>
-            <div class="alert alert-danger border-0 rounded-0" role="alert" id="edit_ec_draft_errorMsg" style="display:none">
-                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
-            </div>
-            <div class="modal-footer flex-center justify-content-center">
-            <button type="button" class="btn btn-sm btn-primary" onclick="update_ec_draft()">Update</button>
-            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-            </div>
-            </div>
-            <!--/.Content-->
-            </div>
-            </div>
-            </form>
-            
-            <form method="post" id="delete_draft_ec_form" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="modal fade" id="delete_draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-sm" role="document">
-            <!--Content-->
-            <div class="modal-content form-elegant">
-            <!--Header-->
-            <div class="modal-header text-center">
-            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;Delete EC Draft</strong></h3>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-            </div>
-            <!--Body-->
-            <div class="modal-body mx-4">
-            <input type="hidden" class="form-control" name="delete_ec_draft_application_no" id="delete_ec_draft_application_no">
-            <input type="hidden" class="form-control" name="delete_ec_draft_record_id" id="delete_ec_draft_record_id">
-            <p>Are You SUre You Want TO Delete?</p>
-            </div>
-            <div class="alert alert-success border-0 rounded-0" role="alert" id="delete_ec_draft_successMsg" style="display:none">
-                <i class="uil-folder-heart me-1 h4 align-middle"></i>
-            </div>
-            <div class="alert alert-danger border-0 rounded-0" role="alert" id="delete_ec_draft_errorMsg" style="display:none">
-                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
-            </div>
-            <div class="modal-footer flex-center justify-content-center">
-            <button type="button" class="btn btn-sm btn-primary" onclick="delete_ec_draft()">Yes</button>
-            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">No</button>
-            </div>
-            </div>
-            <!--/.Content-->
-            </div>
-            </div>
-            </form>
-            
-            <script>
-            $(function() {
-            let status = $('#status').val();
-            
-            if(status == 'P' || status == 'DEC' || status == 'AL')
-            {
-            if(status == 'P')
-            {
-                $('.forwardTo').show();
-                $('.R_button').show();
-            }
-            else if(status == 'AL')
-            {
-                $('.verifier_additional_info_letter').show();
-                $('.ALR_button').show();
-                $('.ALA_button').show();
-            }
-            else if(status == 'DEC')
-            {
-                $('.forwardTo').hide();
-                $('.approveButton').show();
-                $('.verifier_ec_draft_div').show();
-            }
-            $('#verifier_details_accordian').show();
-            
-            }
-            else if(status == 'R' || status == 'ALS' || status == 'FEATC' || status == 'RSS' || status == 'LUS' || status == 'APP')
-            {
-            if(status == 'R')
-            {
-                $('.information_complete_div').show();
-                $('input[name="information"]').focus();
-                $('.AL_button').show();
-                
-            }
-            else if(status == 'ALS')
-            {
-                $('.EATC_button').show();
-                $('.additional_info').show();
-            }
-            else if(status == 'FEATC')
-            {
-                $('.information_complete_div').hide();
-                $('.rectification_div').show();
-                $('.rectification_button').show();
-            }
-            else if(status == 'LUS')
-            {
-                $('.information_complete_div').hide();
-                $('.draft_ec_div').show();
-                $('.ec_draft_button').show();
-            }
-            else if(status == 'RSS')
-            {
-                
-                $('.information_complete_div').hide();
-                $('.rev_resubmit_remarks_div').show();
-            }
-            else if(status == 'APP')
-            {
-                $('.eatc_attachment_div').show();
-                $('.rev_lu_attachment_div').show();
-                $('.LU_button').show();
-            }
-            
-            $('#reviewer_details_accordian').show();
-            
-            }
-            else if(status == 'ALR' || status == 'ALA' || status == 'EATC' || status == 'RS' || status == 'LU')
-            {
-            if(status == 'ALR' || status == 'ALA')
-            {
-                $('.ALS_button').show();
-            }
-            else if(status == 'EATC')
-            {
-                $('.eatc_attachment_details').show();
-                $('.additional_info_div').hide();
-                $('.FEATC_button').show();
-            }
-            else if(status == 'RS')
-            {
-                $('.additional_info_div').hide();
-                $('.resubmit_remarks_div').show();
-                $('.RSS_button').show();
-            }
-            else if(status == 'LU')
-            {
-                $('.additional_info_div').hide();
-                $('.client_lu_attachment_div').show();
-                $('.LUS_button').show();
-            }
-            $('#client_details_accordian').show();
-            $('#client_details_accordian').focus();
-            }
-            });
-            
-            function forwardApplication(identifier)
-            {
-            let application_no = $('#application_no').val();
-            let additional_info_letter = $('#additional_info_letter').val();
-            let additional_info = $('#additional_info').val();
-            let resubmit_remarks = $('#resubmit_remarks').val();
-            let ec_expiry_date = $('#ec_expiry_date').val();
-            let addtional_payment_amount = $('#addtional_payment_amount').val();
-            let tat = $('#tat').val();
-            
-            if(identifier == 'R' || identifier == 'ALS')
-            {
-            let forward_to = $('#forward_to').val();
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'forward_application' %}",
-                data : {'application_no':application_no, 'identifier':identifier, 'forward_to':forward_to, 'additional_info':additional_info, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(data)
-                {
-                    if(data.message == 'success')
-                    {
-                        $('#verifier_application_successMsg').html("Application Forwarded Successfully");
-                        $('#verifier_application_successMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#verifier_application_successMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        if(data.redirect_to == 'verify_application_list')
-                        {
-                            setTimeout(function()
-                            {
-                                window.location.href = '/verify_application_list';
-                            }, 2000);
-                        }
-                        else if(data.redirect_to == 'reviewer_application_list')
-                        {
-                            setTimeout(function()
-                            {
-                                window.location.href = '/reviewer_application_list';
-                            }, 2000);
-                        }
-                        else if(data.redirect_to == 'client_application_list')
-                        {
-                            setTimeout(function()
-                            {
-                                window.location.href = '/client_application_list';
-                            }, 2000);
-                        }
-                    }
-                    else
-                    {
-                        $('#verifier_application_errorMsg').html("Please Check And Try Again");
-                        $('#verifier_application_errorMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#verifier_application_errorMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
-                            location.reload();
-                        }, 2000);
-                    }
-                }
-            });
-            }
-            else
-            {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'forward_application' %}",
-                data : {'application_no':application_no, 'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}','additional_info_letter':additional_info_letter ,'resubmit_remarks':resubmit_remarks,'ec_expiry_date':ec_expiry_date,'tat':tat,'addtional_payment_amount':addtional_payment_amount},
-                success : function(data)
-                {
-                    if(data.message == 'success')
-                    {
-                        if(identifier == 'A')
-                        {
-                            $('#verifier_application_successMsg').html("Application Approved");
-                        }
-                        else
-                        {
-                            $('#verifier_application_successMsg').html("Application Forwarded Successfully");
-                        }
-                        
-                        $('#verifier_application_successMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#verifier_application_successMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        if(data.redirect_to == 'verify_application_list')
-                        {
-                            setTimeout(function()
-                            {
-                                window.location.href = '/verify_application_list';
-                            }, 2000);
-                        }
-                        else if(data.redirect_to == 'reviewer_application_list')
-                        {
-                            setTimeout(function()
-                            {
-                                window.location.href = '/reviewer_application_list';
-                            }, 2000);
-                        }
-                        else if(data.redirect_to == 'client_application_list')
-                        {
-                            setTimeout(function()
-                            {
-                                window.location.href = '/client_application_list';
-                            }, 2000);
-                        }
-                    }
-                    else
-                    {
-                        $('#verifier_application_errorMsg').html("Please Check And Try Again");
-                        $('#verifier_application_errorMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#verifier_application_errorMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
-                            location.reload();
-                        }, 2000);
-                    }
-                }
-            });
-            }
-            }
-            
-            function check_information_radio(value)
-            {
-            if(value == 'Yes')
-            {
-            $('.additional_payment_info').show();
-            $('.additional_info_letter').hide();
-            $('.LU_button').show();
-            $('.AL_button').hide();
-            }
-            else
-            {
-            
-            $('.additional_info_letter').show();
-            $('.additional_payment_info').hide();
-            $('.LU_button').hide();
+            <div class="alert alert-danger" id="edit_ec_termsErrorMsg" style="display:none"></div>
+        </div>
+    </div>
+    </div>
+    <div class="alert alert-success border-0 rounded-0" role="alert" id="edit_ec_draft_successMsg" style="display:none">
+        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+    </div>
+    <div class="alert alert-danger border-0 rounded-0" role="alert" id="edit_ec_draft_errorMsg" style="display:none">
+            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+    </div>
+    <div class="modal-footer flex-center justify-content-center">
+    <button type="button" class="btn btn-sm btn-primary" onclick="update_ec_draft()">Update</button>
+    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+    </div>
+    </div>
+    <!--/.Content-->
+    </div>
+    </div>
+    </form>
+    
+    <form method="post" id="delete_draft_ec_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="delete_draft_ec_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+    <!--Content-->
+    <div class="modal-content form-elegant">
+    <!--Header-->
+    <div class="modal-header text-center">
+    <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                            &nbsp;Delete EC Draft</strong></h3>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+    </div>
+    <!--Body-->
+    <div class="modal-body mx-4">
+    <input type="hidden" class="form-control" name="delete_ec_draft_application_no" id="delete_ec_draft_application_no">
+    <input type="hidden" class="form-control" name="delete_ec_draft_record_id" id="delete_ec_draft_record_id">
+    <p>Are You SUre You Want TO Delete?</p>
+    </div>
+    <div class="alert alert-success border-0 rounded-0" role="alert" id="delete_ec_draft_successMsg" style="display:none">
+        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+    </div>
+    <div class="alert alert-danger border-0 rounded-0" role="alert" id="delete_ec_draft_errorMsg" style="display:none">
+            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+    </div>
+    <div class="modal-footer flex-center justify-content-center">
+    <button type="button" class="btn btn-sm btn-primary" onclick="delete_ec_draft()">Yes</button>
+    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">No</button>
+    </div>
+    </div>
+    <!--/.Content-->
+    </div>
+    </div>
+    </form>
+    
+    <script>
+        var editQuill;
+    
+       $(document).ready(function() {
+        // Initialize Quill editor
+    
+        var quill = new Quill('#ec_terms_editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['blockquote', 'code-block'],
+                    [{ 'header': 1 }, { 'header': 2 }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'direction': 'rtl' }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'font': [] }],
+                    [{ 'align': [] }],
+                    ['clean'],
+                    ['link', 'image']
+                ]
+            },
+            placeholder: 'Enter your terms here...',
+        });
+    
+    
+        editQuill = new Quill('#edit_ec_terms_editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['blockquote', 'code-block'],
+                    [{ 'header': 1 }, { 'header': 2 }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'direction': 'rtl' }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'font': [] }],
+                    [{ 'align': [] }],
+                    ['clean'],
+                    ['link', 'image']
+                ]
+            },
+            placeholder: 'Enter your terms here...',
+        });
+    
+    });
+    
+    
+    $('#draft_ec_form').on('submit', function() {
+        var html = quill.root.innerHTML;
+        $('#ec_terms').val(html);
+    });
+    
+    
+    
+    $(function() {
+        let status = $('#status').val();
+    
+        if(status == 'P' || status == 'DEC' || status == 'AL')
+        {
+        if(status == 'P')
+        {
+            $('.forwardTo').show();
+            $('.R_button').show();
+        }
+        else if(status == 'AL')
+        {
+            $('.verifier_additional_info_letter').show();
+            $('.ALR_button').show();
+            $('.ALA_button').show();
+        }
+        else if(status == 'DEC')
+        {
+            $('.forwardTo').hide();
+            $('.approveButton').show();
+            $('.verifier_ec_draft_div').show();
+        }
+        $('#verifier_details_accordian').show();
+    }
+    else if(status == 'R' || status == 'ALS' || status == 'FEATC' || status == 'RSS' || status == 'LUS' || status == 'APP')
+    {
+        if(status == 'R')
+        {
+            $('.information_complete_div').show();
+            $('input[name="information"]').focus();
             $('.AL_button').show();
-            }
-            }
             
-            function check_eatc_addtional_payment(value)
-            {
-            if(value == 'Yes')
-            {
-                $('.eatc_attachment_div').hide();
-                $('.rev_lu_attachment_div').hide();
-                $('.addtional_payment_div').show();
-                $('.additonal_payment_button').show();
-                $('.LU_button').hide();
-            }
-            else
-            {
-                $('.eatc_attachment_div').show();
-                $('.rev_lu_attachment_div').show();
-                $('.addtional_payment_div').hide();
-                $('.additonal_payment_button').hide();
-                $('.LU_button').show();
-            }
-            }
+        }
+        else if(status == 'ALS')
+        {
+            $('.information_complete_div').show();
+            $('.additional_info').show();
+        }
+        else if(status == 'FEATC')
+        {
+            $('.information_complete_div').hide();
+            $('.rectification_div').show();
+            $('.rectification_button').show();
+        }
+        else if(status == 'LUS')
+        {
+            $('.information_complete_div').hide();
+            $('.draft_ec_div').show();
+            $('.ec_draft_button').show();
+        }
+        else if(status == 'RSS')
+        {
             
-            function check_fines_and_penalty(value)
-            {
-            if(value == 'No')
-            {
-            $('.lu_attachment_div').show();
+            $('.information_complete_div').hide();
+            $('.rev_resubmit_remarks_div').show();
+        }
+        else if(status == 'APP')
+        {
+            $('.eatc_attachment_div').show();
+            $('.rev_lu_attachment_div').show();
+            $('.LU_button').show();
+        }
+    
+        $('#reviewer_details_accordian').show();
+    }
+    else if(status == 'ALR' || status == 'ALA' || status == 'EATC' || status == 'RS' || status == 'LU')
+    {
+        if(status == 'ALR' || status == 'ALA')
+        {
+            $('.ALS_button').show();
+        }
+        else if(status == 'EATC')
+        {
+            $('.eatc_attachment_details').show();
+            $('.additional_info_div').hide();
+            $('.FEATC_button').show();
+        }
+        else if(status == 'RS')
+        {
+            $('.additional_info_div').hide();
+            $('.resubmit_remarks_div').show();
+            $('.RSS_button').show();
+        }
+        else if(status == 'LU')
+        {
+            $('.additional_info_div').hide();
+            $('.client_lu_attachment_div').show();
+            $('.LUS_button').show();
+        }
+        $('#client_details_accordian').show();
+        $('#client_details_accordian').focus();
+    }
+    });
+    
+    function forwardApplication(identifier) {
+        let application_no = $('#application_no').val();
+        let additional_info_letter = $('#additional_info_letter').val();
+        let additional_info = $('#additional_info').val();
+        let resubmit_remarks = $('#resubmit_remarks').val();
+        let ec_expiry_date = $('#ec_expiry_date').val();
+        let addtional_payment_amount = $('#addtional_payment_amount').val();
+        let tat = $('#tat').val();
+        let forward_to = $('#forward_to').val();
+    
+        // Show the loader
+        $('.spinner-border').show();
+    
+        let postData = {
+            'application_no': application_no,
+            'identifier': identifier,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        };
+    
+        if (identifier === 'R' || identifier === 'ALS') {
+            postData['forward_to'] = forward_to;
+            postData['additional_info'] = additional_info;
+        } else {
+            Object.assign(postData, {
+                'additional_info_letter': additional_info_letter,
+                'resubmit_remarks': resubmit_remarks,
+                'ec_expiry_date': ec_expiry_date,
+                'tat': tat,
+                'addtional_payment_amount': addtional_payment_amount
+            });
+        }
+    
+        $.ajax({
+            type: "POST",
+            url: "{% url 'forward_application' %}",
+            data: postData,
+            success: function (data) {
+                // Hide the loader
+                $('.spinner-border').hide();
+    
+                if (data.message === 'success') {
+                    let successMsg = identifier === 'A' ? "Application Approved" : "Application Forwarded Successfully";
+                    $('#verifier_application_successMsg').html(successMsg).show();
+    
+                    setTimeout(() => {
+                        $('#verifier_application_successMsg').fadeOut('slow');
+                    }, 2000);
+    
+                    // Redirect based on the response
+                    let redirectUrl = '';
+                    switch (data.redirect_to) {
+                        case 'verify_application_list':
+                            redirectUrl = '/verify_application_list';
+                            break;
+                        case 'reviewer_application_list':
+                            redirectUrl = '/reviewer_application_list';
+                            break;
+                        case 'client_application_list':
+                            redirectUrl = '/client_application_list';
+                            break;
+                    }
+                    if (redirectUrl) {
+                        setTimeout(() => {
+                            window.location.href = redirectUrl;
+                        }, 2000);
+                    }
+                } else {
+                    var errorMsg = data.error;
+        
+                    $('#verifier_application_errorMsg').html(`Application Error: ${data.error}`).show();
+                    $('#verifier_application_errorMsg').focus();
+    
+                    setTimeout(() => {
+                        $('#verifier_application_errorMsg').fadeOut('slow');
+                    }, 2000);
+    
+                    // Reload the page after a delay
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                }
+            },
+            error: function () {
+                // Hide the loader in case of an error
+                $('.spinner-border').hide();
+                var errorMsg = data.error;
+        
+                $('#verifier_application_errorMsg').html(`Application Error: ${data.error}`).show();
+                $('#verifier_application_errorMsg').focus();
+    
+                setTimeout(() => {
+                    $('#verifier_application_errorMsg').fadeOut('slow');
+                }, 2000);
             }
-            else
-            { 
-            $('.lu_attachment_div').hide();
-            }
-            
-            }
-            function save_ec_draft()
-            {
-            let application_no = $('#application_no').val();
-            let ec_type = $('#ec_type').val();
-            let ec_heading = $('#ec_heading').val();
-            let ec_terms = $('#ec_terms').val();
-            
-            if(ec_type == "")
-            {
+        });
+    }
+    
+    
+    function check_information_radio(value)
+    {
+    if(value == 'Yes')
+    {
+    $('.additional_payment_info').show();
+    $('.additional_info_letter').hide();
+    $('.LU_button').show();
+    $('.AL_button').hide();
+    }
+    else
+    {
+    
+    $('.additional_info_letter').show();
+    $('.additional_payment_info').hide();
+    $('.LU_button').hide();
+    $('.AL_button').show();
+    }
+    }
+    
+    function check_eatc_addtional_payment(value)
+    {
+    if(value == 'Yes')
+    {
+        $('.eatc_attachment_div').hide();
+        $('.rev_lu_attachment_div').hide();
+        $('.addtional_payment_div').show();
+        $('.additonal_payment_button').show();
+        $('.LU_button').hide();
+    }
+    else
+    {
+        $('.eatc_attachment_div').show();
+        $('.rev_lu_attachment_div').show();
+        $('.addtional_payment_div').hide();
+        $('.additonal_payment_button').hide();
+        $('.LU_button').show();
+    }
+    }
+    
+    function check_fines_and_penalty(value)
+    {
+    if(value == 'No')
+    {
+    $('.lu_attachment_div').show();
+    }
+    else
+    { 
+    $('.lu_attachment_div').hide();
+    }
+    
+    }
+    function save_ec_draft() {
+        let application_no = $('#application_no').val();
+        let ec_type = $('#ec_type').val();
+        let ec_heading = $('#ec_heading').val();
+        
+        // Get the HTML content from Quill editor
+        let quill = new Quill('#ec_terms_editor');
+        let ec_terms = quill.root.innerHTML; // This gets the HTML content
+        
+        // Or if you already have a Quill instance defined globally:
+        // let ec_terms = quill.root.innerHTML;
+    
+        if(ec_type == "") {
             $('#ec_typeErrorMsg').html("Select One");
             $('#ec_typeErrorMsg').show();
             $('#ec_typeErrorMsg').delay(2000).fadeOut('slow');
             $('#ec_type').focus();
-            }
-            else if(ec_type == 'Terms' && ec_heading == "")
-            {
+        }
+        else if(ec_type == 'Terms' && ec_heading == "") {
             $('#ec_headingErrorMsg').html("Enter EC Heading");
             $('#ec_headingErrorMsg').show();
             $('#ec_headingErrorMsg').delay(2000).fadeOut('slow');
             $('#ec_heading').focus();
-            }
-            else if(ec_terms == "")
-            {
+        }
+        else if(ec_terms == "" || ec_terms == "<p><br></p>") { // Quill's default empty state
             $('#ec_termsErrorMsg').html("Enter EC Terms");
             $('#ec_termsErrorMsg').show();
             $('#ec_termsErrorMsg').delay(2000).fadeOut('slow');
-            $('#ec_terms').focus();
-            }
-            else
-            {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'save_draft_ec_details' %}",
-                data : {'application_no':application_no, 'ec_type':ec_type,  'ec_heading':ec_heading,'ec_terms':ec_terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(responseText)
-                {
+            // You might want to focus the editor here
+        }
+        else {
+            // Set the value in the hidden input (if you're using one)
+            $('#ec_terms').val(ec_terms);
+            
+            $.ajax({
+                type: "POST",
+                url: "{% url 'save_draft_ec_details' %}",
+                data: {
+                    'application_no': application_no, 
+                    'ec_type': ec_type,  
+                    'ec_heading': ec_heading,
+                    'ec_terms': ec_terms, 
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(responseText) {
                     $('#ec_draft_successMsg').html("Saved Successfully");
                     $('#ec_draft_successMsg').show();
-                    setTimeout(function()
-                    {
+                    setTimeout(function() {
                         $('#ec_draft_successMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                     setTimeout(function() {
                         $('#draft_ec_form')[0].reset();
+                        // Clear the Quill editor
+                        quill.setContents([]);
                         $('#draft_ec_modal').modal('hide');
                         $('#draft_ec_details').html(responseText);
                         $('#draft_ec_div').focus();
                     }, 2000);
+                },
+                error: function(xhr, status, error) {
+                    // Handle error if needed
+                    console.error("Error saving draft:", error);
                 }
             });
-            }
-            
-            }
-            
-            function save_ai_attachment()
+        }
+    }
+    
+    function save_ai_attachment()
+    {
+        let file_length = document.getElementById("ai_attach");
+        if(file_length.value.length < 1)
+        {
+        $('#ai_attachErrorMsg').html("Please Choose A Attachment");
+        $('#ai_attachErrorMsg').show();
+        $('#ai_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+        let application_no = $('#application_no').val();
+        var fileName = document.getElementById('ai_attach').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('ai_attach').files[0];
+        fd.append('ai_attach', file);
+        fd.append('application_no', application_no);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
             {
-                let file_length = document.getElementById("ai_attach");
-                if(file_length.value.length < 1)
+            xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'save_ai_attachment' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+                if (data.form_is_valid)
                 {
-                $('#ai_attachErrorMsg').html("Please Choose A Attachment");
-                $('#ai_attachErrorMsg').show();
-                $('#ai_attachErrorMsg').delay(2000).fadeOut('slow');
+                    let file_url = data.file_url;
+                    let application_no = $('#application_no').val();
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'save_ai_attachment_details' %}",
+                        data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                        success : function(responseText)
+                        {
+                            $('#ai_attachment_modal').modal('hide');
+                            $('#ai_file_attachment').html(responseText);
+                            $('.modal-backdrop').remove();
+                            $('#ai_attachment_form')[0].reset();
+                        }
+                    });
                 }
                 else
                 {
-                let application_no = $('#application_no').val();
-                var fileName = document.getElementById('ai_attach').files[0].name;
-                var fd = new FormData();
-                var file = document.getElementById('ai_attach').files[0];
-                fd.append('ai_attach', file);
-                fd.append('application_no', application_no);
-                token_value=$("input[name=csrfmiddlewaretoken]").val();
-                $.ajaxSetup
-                ({
-                    beforeSend: function(xhr, settings)
-                    {
-                    xhr.setRequestHeader("X-CSRFToken", token_value);
-                    }
-                });
-                $.ajax
-                ({
-                    type : "POST",
-                    url : "{% url 'save_ai_attachment' %}",
-                    data : fd,
-                    dataType: 'json',
-                    contentType: false,
-                    processData: false,
-                    success : function(data)
-                    {
-                        if (data.form_is_valid)
-                        {
-                            let file_url = data.file_url;
-                            let application_no = $('#application_no').val();
-                            $.ajax
-                            ({
-                                type : "POST",
-                                url : "{% url 'save_ai_attachment_details' %}",
-                                data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
-                                success : function(responseText)
-                                {
-                                    $('#ai_attachment_modal').modal('hide');
-                                    $('#ai_file_attachment').html(responseText);
-                                    $('.modal-backdrop').remove();
-                                    $('#ai_attachment_form')[0].reset();
-                                }
-                            });
-                        }
-                        else
-                        {
-                            $('#ai_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                            $('#ai_attachErrorMsg').show();
-                            $('#ai_attachErrorMsg').delay(2000).fadeOut('slow');
-                        }
-                    }
-                });
+                    $('#ai_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#ai_attachErrorMsg').show();
+                    $('#ai_attachErrorMsg').delay(2000).fadeOut('slow');
                 }
             }
-            
-            
-            function save_eatc_attachment()
+        });
+        }
+    }
+    
+    
+    function save_eatc_attachment()
+    {
+        let file_length = document.getElementById("eatc_attach");
+        if(file_length.value.length < 1)
+        {
+        $('#eatc_attachErrorMsg').html("Please Choose A Attachment");
+        $('#eatc_attachErrorMsg').show();
+        $('#eatc_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+        let application_no = $('#application_no').val();
+        var fileName = document.getElementById('eatc_attach').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('eatc_attach').files[0];
+        fd.append('eatc_attach', file);
+        fd.append('application_no', application_no);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
             {
-                let file_length = document.getElementById("eatc_attach");
-                if(file_length.value.length < 1)
+            xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'save_eatc_attachment' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+                if (data.form_is_valid)
                 {
-                $('#eatc_attachErrorMsg').html("Please Choose A Attachment");
-                $('#eatc_attachErrorMsg').show();
-                $('#eatc_attachErrorMsg').delay(2000).fadeOut('slow');
+                    let file_url = data.file_url;
+                    let application_no = $('#application_no').val();
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'save_eatc_attachment_details' %}",
+                        data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                        success : function(responseText)
+                        {
+                            $('#eatc_attachment_modal').modal('hide');
+                            $('#eatc_file_attachment').html(responseText);
+                            $('.modal-backdrop').remove();
+                            $('#eatc_attachment_form')[0].reset();
+                        }
+                    });
                 }
                 else
                 {
+                    $('#eatc_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#eatc_attachErrorMsg').show();
+                    $('#eatc_attachErrorMsg').delay(2000).fadeOut('slow');
+                }
+            }
+        });
+        }
+    }
+    
+    
+    function save_lu_attachment()
+    {
+    let file_length = document.getElementById("lu_attach");
+    if(file_length.value.length < 1)
+    {
+    $('#lu_attachErrorMsg').html("Please Choose A Attachment");
+    $('#lu_attachErrorMsg').show();
+    $('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+    let application_no = $('#application_no').val();
+    var fileName = document.getElementById('lu_attach').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('lu_attach').files[0];
+    fd.append('lu_attach', file);
+    fd.append('application_no', application_no);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+        {
+        xhr.setRequestHeader("X-CSRFToken", token_value);
+        }
+    });
+    $.ajax
+    ({
+        type : "POST",
+        url : "{% url 'save_lu_attachment' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+            if (data.form_is_valid)
+            {
+                let file_url = data.file_url;
                 let application_no = $('#application_no').val();
-                var fileName = document.getElementById('eatc_attach').files[0].name;
-                var fd = new FormData();
-                var file = document.getElementById('eatc_attach').files[0];
-                fd.append('eatc_attach', file);
-                fd.append('application_no', application_no);
-                token_value=$("input[name=csrfmiddlewaretoken]").val();
-                $.ajaxSetup
-                ({
-                    beforeSend: function(xhr, settings)
-                    {
-                    xhr.setRequestHeader("X-CSRFToken", token_value);
-                    }
-                });
                 $.ajax
                 ({
                     type : "POST",
-                    url : "{% url 'save_eatc_attachment' %}",
-                    data : fd,
-                    dataType: 'json',
-                    contentType: false,
-                    processData: false,
-                    success : function(data)
+                    url : "{% url 'save_lu_attachment_details' %}",
+                    data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
                     {
-                        if (data.form_is_valid)
-                        {
-                            let file_url = data.file_url;
-                            let application_no = $('#application_no').val();
-                            $.ajax
-                            ({
-                                type : "POST",
-                                url : "{% url 'save_eatc_attachment_details' %}",
-                                data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
-                                success : function(responseText)
-                                {
-                                    $('#eatc_attachment_modal').modal('hide');
-                                    $('#eatc_file_attachment').html(responseText);
-                                    $('.modal-backdrop').remove();
-                                    $('#eatc_attachment_form')[0].reset();
-                                }
-                            });
-                        }
-                        else
-                        {
-                            $('#eatc_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                            $('#eatc_attachErrorMsg').show();
-                            $('#eatc_attachErrorMsg').delay(2000).fadeOut('slow');
-                        }
+                        $('#lu_attachment_modal').modal('hide');
+                        $('#lu_file_attachment').html(responseText);
+                        $('.modal-backdrop').remove();
+                        $('#lu_attachment_form')[0].reset();
                     }
                 });
-                }
-            }
-            
-            
-            function save_lu_attachment()
-            {
-            let file_length = document.getElementById("lu_attach");
-            if(file_length.value.length < 1)
-            {
-            $('#lu_attachErrorMsg').html("Please Choose A Attachment");
-            $('#lu_attachErrorMsg').show();
-            $('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
             }
             else
             {
-            let application_no = $('#application_no').val();
-            var fileName = document.getElementById('lu_attach').files[0].name;
-            var fd = new FormData();
-            var file = document.getElementById('lu_attach').files[0];
-            fd.append('lu_attach', file);
-            fd.append('application_no', application_no);
-            token_value=$("input[name=csrfmiddlewaretoken]").val();
-            $.ajaxSetup
-            ({
-                beforeSend: function(xhr, settings)
-                {
-                xhr.setRequestHeader("X-CSRFToken", token_value);
-                }
-            });
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'save_lu_attachment' %}",
-                data : fd,
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                success : function(data)
-                {
-                    if (data.form_is_valid)
-                    {
-                        let file_url = data.file_url;
-                        let application_no = $('#application_no').val();
-                        $.ajax
-                        ({
-                            type : "POST",
-                            url : "{% url 'save_lu_attachment_details' %}",
-                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
-                            success : function(responseText)
-                            {
-                                $('#lu_attachment_modal').modal('hide');
-                                $('#lu_file_attachment').html(responseText);
-                                $('.modal-backdrop').remove();
-                                $('#lu_attachment_form')[0].reset();
-                            }
-                        });
-                    }
-                    else
-                    {
-                        $('#lu_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                        $('#lu_attachErrorMsg').show();
-                        $('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
-                    }
-                }
-            });
+                $('#lu_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#lu_attachErrorMsg').show();
+                $('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
             }
-            }
-            
-            function save_rev_lu_attachment()
+        }
+    });
+    }
+    }
+    
+    function save_rev_lu_attachment()
+    {
+    let file_length = document.getElementById("rev_lu_attach");
+    if(file_length.value.length < 1)
+    {
+    $('#rev_lu_attachErrorMsg').html("Please Choose A Attachment");
+    $('#rev_lu_attachErrorMsg').show();
+    $('#rev_lu_attachErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+    let application_no = $('#application_no').val();
+    var fileName = document.getElementById('rev_lu_attach').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('rev_lu_attach').files[0];
+    fd.append('rev_lu_attach', file);
+    fd.append('application_no', application_no);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+        {
+        xhr.setRequestHeader("X-CSRFToken", token_value);
+        }
+    });
+    $.ajax
+    ({
+        type : "POST",
+        url : "{% url 'save_rev_lu_attachment' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+            if (data.form_is_valid)
             {
-            let file_length = document.getElementById("rev_lu_attach");
-            if(file_length.value.length < 1)
-            {
-            $('#rev_lu_attachErrorMsg').html("Please Choose A Attachment");
-            $('#rev_lu_attachErrorMsg').show();
-            $('#rev_lu_attachErrorMsg').delay(2000).fadeOut('slow');
+                let file_url = data.file_url;
+                let application_no = $('#application_no').val();
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'save_rev_lu_attachment_details' %}",
+                    data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#rev_lu_attachment_modal').modal('hide');
+                        $('#rev_lu_file_attachment').html(responseText);
+                        $('.modal-backdrop').remove();
+                        $('#rev_lu_attachment_form')[0].reset();
+                    }
+                });
             }
             else
             {
-            let application_no = $('#application_no').val();
-            var fileName = document.getElementById('rev_lu_attach').files[0].name;
-            var fd = new FormData();
-            var file = document.getElementById('rev_lu_attach').files[0];
-            fd.append('rev_lu_attach', file);
-            fd.append('application_no', application_no);
-            token_value=$("input[name=csrfmiddlewaretoken]").val();
-            $.ajaxSetup
-            ({
-                beforeSend: function(xhr, settings)
-                {
-                xhr.setRequestHeader("X-CSRFToken", token_value);
-                }
-            });
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'save_rev_lu_attachment' %}",
-                data : fd,
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                success : function(data)
-                {
-                    if (data.form_is_valid)
-                    {
-                        let file_url = data.file_url;
-                        let application_no = $('#application_no').val();
-                        $.ajax
-                        ({
-                            type : "POST",
-                            url : "{% url 'save_rev_lu_attachment_details' %}",
-                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
-                            success : function(responseText)
-                            {
-                                $('#rev_lu_attachment_modal').modal('hide');
-                                $('#rev_lu_file_attachment').html(responseText);
-                                $('.modal-backdrop').remove();
-                                $('#rev_lu_attachment_form')[0].reset();
-                            }
-                        });
-                    }
-                    else
-                    {
-                        $('#rev_lu_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                        $('#rev_lu_attachErrorMsg').show();
-                        $('#rev_lu_attachErrorMsg').delay(2000).fadeOut('slow');
-                    }
-                }
-            });
+                $('#rev_lu_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#rev_lu_attachErrorMsg').show();
+                $('#rev_lu_attachErrorMsg').delay(2000).fadeOut('slow');
             }
-            }
-            
-            function check_rectification(value)
-            {
-            if(value=="Yes")
-            {
-            $('.rectification_button').show();
-            $('.LU_button').hide();
-            }
-            else
-            {
-            $('.LU_button').show();
-            $('.rectification_button').hide();
-            }
-            }
-            
-            function populate_ec_details(record_id, application_no,ec_type, ec_heading, ec_terms)
-            {
-            $('#ec_draft_record_id').val(record_id);
-            $('#ec_draft_application_no').val(application_no);
-            $('#edit_ec_type').val(ec_type);
+        }
+    });
+    }
+    }
+    
+    function check_rectification(value)
+    {
+    if(value=="Yes")
+    {
+    $('.rectification_button').show();
+    $('.LU_button').hide();
+    }
+    else
+    {
+    $('.LU_button').show();
+    $('.rectification_button').hide();
+    }
+    }
+    
+    function populate_ec_details(record_id, application_no,ec_type, ec_heading, ec_terms)
+    {
+        if(ec_type == 'Terms')
+        {
+            $('.edit_heading_div').show();
             $('#edit_ec_heading').val(ec_heading);
-            $('#edit_ec_terms').val(ec_terms);
-            
-            $('#edit_draft_ec_modal').modal('show');
-            }
-            
-            function populate_delete_ec_details(record_id, application_no)
-            {
-            $('#delete_ec_draft_record_id').val(record_id);
-            $('#delete_ec_draft_application_no').val(application_no);
-            
-            $('#delete_draft_ec_modal').modal('show');
-            }
-            
-            function update_ec_draft()
-            {
-            let record_id = $('#ec_draft_record_id').val();
-            let application_no = $('#ec_draft_application_no').val();
-            let ec_type = $('#edit_ec_type').val();
-            let ec_heading = $('#edit_ec_heading').val();
-            let ec_terms = $('#edit_ec_terms').val();
-            
-            if(ec_type == "")
-            {
-            $('#edit_ec_typeErrorMsg').html("Choose One");
-            $('#edit_ec_typeErrorMsg').show();
-            $('#edit_ec_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+    $('#ec_draft_record_id').val(record_id);
+    $('#ec_draft_application_no').val(application_no);
+    $('#edit_ec_type').val(ec_type);
+    
+    
+    
+    // Also set the hidden input value
+    $('#edit_ec_terms').val(ec_terms);
+    
+    const plainText = new DOMParser().parseFromString(ec_terms, 'text/html').body.textContent;
+    
+    // Set plain text into the Quill editor
+    editQuill.setText(plainText);
+    
+    
+    $('#edit_draft_ec_modal').modal('show');
+    }
+    
+    function populate_delete_ec_details(record_id, application_no)
+    {
+    $('#delete_ec_draft_record_id').val(record_id);
+    $('#delete_ec_draft_application_no').val(application_no);
+    
+    $('#delete_draft_ec_modal').modal('show');
+    }
+    
+    function update_ec_draft() {
+        // 🔥 Get HTML content from Quill editor
+        const ec_terms_html = editQuill.root.innerHTML.trim();
+    
+        // Optional: check if content is empty (excluding tags like <p><br></p>)
+        const ec_terms_text = editQuill.getText().trim();
+    
+        // Set the hidden input (in case you want to use form serialization later)
+        $('#edit_ec_terms').val(ec_terms_html);
+    
+        // Get values
+        let record_id = $('#ec_draft_record_id').val();
+        let application_no = $('#ec_draft_application_no').val();
+        let ec_type = $('#edit_ec_type').val();
+        let ec_heading = $('#edit_ec_heading').val();
+        let ec_terms = ec_terms_html; 
+    
+        if(ec_type == "")
+        {
+            $('#edit_ec_typeErrorMsg').html("Choose One").show().delay(2000).fadeOut('slow');
             $('#edit_ec_type').focus();
-            }
-            else if(ec_heading == "")
-            {
-            $('#edit_ec_headingErrorMsg').html("Enter EC Heading");
-            $('#edit_ec_headingErrorMsg').show();
-            $('#edit_ec_headingErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(ec_heading == "")
+        {
+            $('#edit_ec_headingErrorMsg').html("Enter EC Heading").show().delay(2000).fadeOut('slow');
             $('#edit_ec_heading').focus();
-            }
-            else if(ec_terms == "")
-            {
-            $('#edit_ec_termsErrorMsg').html("Enter EC Terms");
-            $('#edit_ec_termsErrorMsg').show();
-            $('#edit_ec_termsErrorMsg').delay(2000).fadeOut('slow');
-            $('#edit_ec_terms').focus();
-            }
-            else
-            {
-            $.ajax
-            ({
+        }
+        else if(ec_terms_text == "") 
+        {
+            $('#edit_ec_termsErrorMsg').html("Enter EC Terms").show().delay(2000).fadeOut('slow');
+            $('#edit_ec_terms_editor').focus();
+        }
+        else
+        {
+            $.ajax({
                 type : "POST",
                 url : "{% url 'update_draft_ec_details' %}",
-                data : {'record_id':record_id, 'application_no':application_no, 'ec_type':ec_type, 'ec_heading':ec_heading,'ec_terms':ec_terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {
+                    'record_id': record_id,
+                    'application_no': application_no,
+                    'ec_type': ec_type,
+                    'ec_heading': ec_heading,
+                    'ec_terms': ec_terms, // HTML content
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
                 success : function(responseText)
                 {
-                    $('#edit_ec_draft_successMsg').html("Updated Successfully");
-                    $('#edit_ec_draft_successMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#edit_ec_draft_successMsg').delay(2000).fadeOut('slow');
+                    $('#edit_ec_draft_successMsg').html("Updated Successfully").show();
+                    setTimeout(function() {
+                        $('#edit_ec_draft_successMsg').fadeOut('slow');
                     }, 2000);
                     setTimeout(function() {
                         $('#edit_draft_ec_modal').modal('hide');
@@ -7335,57 +7414,59 @@
                     }, 2000);
                 }
             });
-            }
-            }
-            
-            function delete_ec_draft()
-            {
-            let record_id = $('#delete_ec_draft_record_id').val();
-            let application_no = $('#delete_ec_draft_application_no').val();
-            
-            $.ajax
-            ({
-            type : "POST",
-            url : "{% url 'delete_draft_ec_details' %}",
-            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
-            success : function(responseText)
-            {
-                $('#delete_ec_draft_successMsg').html("Deleted Successfully");
-                $('#delete_ec_draft_successMsg').show();
-                setTimeout(function()
-                {
-                    $('#delete_ec_draft_successMsg').delay(2000).fadeOut('slow');
-                }, 2000);
-                setTimeout(function() {
-                    $('#delete_draft_ec_modal').modal('hide');
-                    $('#draft_ec_details').html(responseText);
-                    $('#draft_ec_div').focus();
-                }, 2000);
-            }
-            });
-            }
-            
-            function check_ec_draft_type(value)
-            {
-                if(value=="Terms")
-                {
-                    $('.heading_div').show();
-                }
-                else
-                {
-                    $('.heading_div').hide();
-                }
-            }
-            
-            function check_edit_ec_draft_type(value)
-            {
-                if(value=="Terms")
-                {
-                    $('.edit_heading_div').show();
-                }
-                else
-                {
-                    $('.edit_heading_div').hide();
-                }
-            }
-</script>
+        }
+    }
+    
+    
+    function delete_ec_draft()
+    {
+    let record_id = $('#delete_ec_draft_record_id').val();
+    let application_no = $('#delete_ec_draft_application_no').val();
+    
+    $.ajax
+    ({
+    type : "POST",
+    url : "{% url 'delete_draft_ec_details' %}",
+    data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+    success : function(responseText)
+    {
+        $('#delete_ec_draft_successMsg').html("Deleted Successfully");
+        $('#delete_ec_draft_successMsg').show();
+        setTimeout(function()
+        {
+            $('#delete_ec_draft_successMsg').delay(2000).fadeOut('slow');
+        }, 2000);
+        setTimeout(function() {
+            $('#delete_draft_ec_modal').modal('hide');
+            $('#draft_ec_details').html(responseText);
+            $('#draft_ec_div').focus();
+        }, 2000);
+    }
+    });
+    }
+    
+    function check_ec_draft_type(value)
+    {
+        if(value=="Terms")
+        {
+            $('.heading_div').show();
+        }
+        else
+        {
+            $('.heading_div').hide();
+        }
+    }
+    
+    function check_edit_ec_draft_type(value)
+    {
+        if(value=="Terms")
+        {
+            $('.edit_heading_div').show();
+        }
+        else
+        {
+            $('.edit_heading_div').hide();
+            $('#edit_ec_heading').val("");
+        }
+    }
+    </script>

@@ -17,10 +17,16 @@
                                 <input type="text" class="form-control" value="{{status}}" id="status" name="status" style="display:none;">
                                 <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
                                 <div class="accordion-body">
+                                    <div class="alert alert-danger" role="alert">
+                                    <p class="mb-0">Note 1: In accordance with section 47 of the Regulation for Environmental Clearance of Projects 2016, consent must be obtained from individual or juristic person if activity has direct impact on a property.</p>
+                                    <p class="mb-0">Note 2: The completed EA form shall be submitted to the NECS.</p>
+                                    <p class="mb-0">Note 3: The completed EA form shall be the basis to determine the requirement of detailed Environment Assessment (EA). If detailed EA is required, applicant will be notified to submit Terms of Reference for the project. </p>
+                                    <p class="mb-0">Note 4: The application shall be subjected to Fee Schedules to cover the cost of administering the Environmental Assessment Act 2000.</p>
+                                </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Project</label>
+                                                <label class="form-label fw-bold">Name of the Project</label>
                                                 <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" disabled>
                                             </div>
                                         </div>
@@ -47,7 +53,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Applicant Name</label>
+                                                <label class="form-label fw-bold">Name of the Applicant</label>
                                                 <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -124,55 +130,106 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Dzongkhag/Thromde</label>
-                                                <select class="form-select" name="dzo_throm"  id="dzo_throm" disabled>
-                                                    {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
-                                                            {{ dzongkhag.dzongkhag_name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
+                                                <label class="form-label fw-bold">Site</label>
+                                                {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                                    <div class="mt-2">
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" checked>
+                                                            <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)">
+                                                            <label class="form-check-label" for="customRadio4">Thromde</label>
+                                                        </div>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="mt-2">
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)">
+                                                            <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" checked>
+                                                            <label class="form-check-label" for="customRadio4">Thromde</label>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        {% if application_details.dzongkhag_throm == 'Thromde' %} 
+                                            <div class="col-lg-6 thromde_div">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select">
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                                                {{ thromde.thromde_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="row">
+                                        {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                            <div class="col-lg-6 dzongkhag_div">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select">
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                                {{ dzongkhag.dzongkhag_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select">
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                                {{ gewog.gewog_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select">
+                                                        {% for village in village %}
+                                                            <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                                {{ village.village_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Gewog</label>
-                                                <select class="form-select" name="gewog" id="gewog" disabled>
-                                                    {% for gewog in gewog %}
-                                                        <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
-                                                            {{ gewog.gewog_name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
+                                                <label class="form-label fw-bold">Name of the Particular Project Site</label>
+                                                <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}">
                                             </div>
-                                        </div>
+                                            <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div> 
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog" disabled>
-                                                    {% for village in village %}
-                                                    <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
-                                                        {{ village.village_name }}
-                                                    </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Particular Project Site</label>
-                                                <input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" disabled>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
+                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) in acres</label>
                                                 <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{ application_details.industrial_area_acre }}" disabled>
                                             </div>
                                         </div>
@@ -225,9 +282,6 @@
                                     <div class="col-md-12">
                                         <div class="card">
                                             <div class="card-body">
-                                                <div class="card-widgets mb-3">
-                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#machine_equipment_tool_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                                </div>
                                                 <div class="collapse pt-3 show">
                                                     <div id="machine_details_div">
                                                         {% include 'details_machine_equipment_tool.html' %}
@@ -273,9 +327,6 @@
                                     <div class="col-md-12">
                                         <div class="card">
                                             <div class="card-body">
-                                                <div class="card-widgets mb-3">
-                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#final_products_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                                </div>
                                                 <div class="collapse pt-3 show">
                                                     <div id="final_products_div">
                                                         {% include 'final_products.html' %}
@@ -290,9 +341,6 @@
                                     <div class="col-md-12">
                                         <div class="card">
                                             <div class="card-body">
-                                                <div class="card-widgets mb-3">
-                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#raw_materials_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                                </div>
                                                 <div class="collapse pt-3 show">
                                                     <div id="raw_materials_div">
                                                         {% include 'raw_materials.html' %}
@@ -307,9 +355,6 @@
                                     <div class="col-md-12">
                                         <div class="card">
                                             <div class="card-body">
-                                                <div class="card-widgets mb-3">
-                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#partner_details_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                                </div>
                                                 <div class="collapse pt-3 show">
                                                     <div id="partner_details_div">
                                                         {% include 'partner_details.html' %}
@@ -345,7 +390,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Elevation(meters)</label>
+                                                <label class="form-label fw-bold">Elevation (meters)</label>
                                                 <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                             </div>
                                         </div>

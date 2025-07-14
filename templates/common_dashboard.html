@@ -16,6 +16,7 @@
 
         <!-- App favicon -->
         <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}">
+        <link href="{% static 'assets/vendor/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
 
         <!-- Plugin css -->
         <link rel="stylesheet" href="{% static 'assets/vendor/daterangepicker/daterangepicker.css' %}">
@@ -34,6 +35,7 @@
         <link href="{% static 'assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
         <link href="{% static 'assets/vendor/quill/quill.core.css' %}" rel="stylesheet" type="text/css" />
         <link href="{% static 'assets/vendor/quill/quill.snow.css' %}" rel="stylesheet" type="text/css" />
+        
         <style>
             .badge {
                 display: block;
@@ -65,6 +67,7 @@
                 border-radius: 10px;
                 border-color: #f84343;
             }
+            
             .re-badge {
                 display: block;
                 position: absolute;
@@ -180,7 +183,7 @@
                             <li class="side-nav-title side-nav-item">Navigation</li>
 
                             <li class="side-nav-item">
-                                <a href="http://localhost:8000/login" class="side-nav-link">
+                                <a href="{% url 'dashboard' %}" class="side-nav-link">
                                     <i class="uil-home-alt"></i>
                                     <span> Home </span>
                                 </a>
@@ -193,14 +196,24 @@
                                     <i class="mdi mdi-account-network"></i>
                                     <span> Manage Proponent </span>
                                     <span class="menu-arrow"></span>
+                                    {% if client_application_count > 0 %}</span>
+                                        <span class="badge badge-danger cl-badge">{{ client_application_count }}</span>
+                                    {% endif %}
                                 </a>
                                 <div class="collapse" id="sidebarProponent">
                                     <ul class="side-nav-second-level">
                                         <li>
-                                            <a href="{% url 'new_client_registration' %}">New Registration</a>
+                                            <a href="{% url 'new_client_registration' %}">New Registration
+                                                {% if client_application_count > 0 %}</span>
+                                                    <span class="badge badge-danger cl-badge">{{ client_application_count }}</span>
+                                                {% endif %}
+                                            </a>
                                         </li>
                                         <li>
-                                            <a href="{% url 'registered_client' %}">Registered List</a>
+                                            <a href="{% url 'registered_client' %}">
+                                                Registered List
+                                                
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -278,6 +291,7 @@
                                     </ul>
                                 </div>
                             </li>
+                            
                             <li class="side-nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarAdminReports" aria-expanded="false" aria-controls="sidebarAdminReports" class="side-nav-link">
                                     <i class="uil-clipboard-alt"></i>
@@ -316,6 +330,15 @@
                                     <span> View Application Status </span>
                                 </a>
                             </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'ibls_application_list' %}" class="side-nav-link">
+                                    <i class="mdi mdi-account-reactivate-outline"></i>
+                                    <span> IBLS Applications </span>
+                                    {% if ibls_appluication_count > 0 %}</span>
+                                        <span class="badge badge-danger client_count">{{ ibls_appluication_count }}</span>
+                                    {% endif %}
+                                </a>
+                            </li>
 
                         </ul>
                     {% elif request.session.role == 'Verifier' %}
@@ -333,7 +356,7 @@
                                     <i class="uil-home-alt"></i>
                                     <span> Application List</span>
                                     {% if v_application_count > 0 %}</span>
-                                        <span class="badge badge-danger">{{ v_application_count }}</span>
+                                        <span class="badge badge-danger client_count">{{ v_application_count }}</span>
                                     {% endif %}
                                 </a>
                             </li>
@@ -493,6 +516,43 @@
                                 </a>
                             </li>
                         </ul>
+                    {% elif request.session.role == 'NECS Head' %}
+                        <ul class="side-nav">
+                            <li class="side-nav-title side-nav-item">Navigation</li>
+
+                            <li class="side-nav-item">
+                                <a href="{% url 'dashboard' %}" class="side-nav-link">
+                                    <i class="uil-home-alt"></i>
+                                    <span> Home </span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarReviewerReports" aria-expanded="false" aria-controls="sidebarReviewerReports" class="side-nav-link">
+                                    <i class="uil-clipboard-alt"></i>
+                                    <span> Report </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarReviewerReports">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="{% url 'ec_report_form' %}">1. List of EC Issued</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'ec_reject_report_form' %}">2. List of EC Rejected</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'ec_pending_report_form' %}">3. List of Pending Application</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'land_use_report_form' %}">4. Land Use Report</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'revenue_report_form' %}">5. Revenue Report</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
                     {% else %}
                         <ul class="side-nav">
                             <li class="side-nav-title side-nav-item">Navigation</li>
@@ -532,7 +592,7 @@
                                     {% endif %}
                                 </a>
                             </li>
-                            <li class="side-nav-item">
+                            <!-- <li class="side-nav-item">
                                 <a href="{% url 'payment_list' %}" class="side-nav-link">
                                     <i class="uil-home-alt"></i>
                                     <span> Payment Update
@@ -541,7 +601,7 @@
                                         {% endif %}
                                     </span>
                                 </a>
-                            </li>
+                            </li> -->
                             <li class="side-nav-item">
                                 <a href="{% url 'ec_renewal' %}" class="side-nav-link">
                                     <i class="uil-document-layout-center"></i>
@@ -1169,16 +1229,15 @@
         <script src="{% static 'assets/js/vendor.min.js' %}"></script>
 
         <!-- Daterangepicker js -->
-        <script src="{% static 'assets/vendor/daterangepicker/moment.min.js' %}"></script>
-        <script src="{% static 'assets/vendor/daterangepicker/daterangepicker.js' %}"></script>
-        <!-- App js -->
         <script src="{% static 'assets/js/app.min.js' %}"></script>
+        <script src="{% static 'assets/js/hyper-syntax.js' %}"></script>
         <!-- Datatables js -->
+        <script src="{% static 'assets/vendor/select2/js/select2.min.js' %}"></script>
         <script src="{% static 'assets/vendor/datatables.net/js/jquery.dataTables.min.js' %}"></script>
         <script src="{% static 'assets/vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
         <script src="{% static 'assets/vendor/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
         <script src="{% static 'assets/vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js' %}"></script>
-
+        
         <!-- Datatable Init js -->
         <script src="{% static 'assets/js/pages/demo.datatable-init.js' %}"></script>
 
@@ -1190,8 +1249,24 @@
         <script type="text/javascript" src="{% static 'assets/js/printThis.js' %}"></script>
         <script src="{% static 'assets/js/jquery.idletimer.js' %}"></script>
         <script src="{% static 'assets/js/jquery.idletimeout.js' %}"></script> 
+        <!-- <script src="{% static 'assets/js/application.js' %}"></script>  -->
 
         <script>
+            $(document).ready(function() {
+                $('.select2').select2();
+                
+                // Activity Description change handler
+                $('#activity_description').on('change', function() {
+                    var broadActivityCode = $(this).val();
+                    get_specific_activity_description(broadActivityCode);
+                });
+                
+                // Specific Activity Description change handler
+                $('#specific_activity_description').on('change', function() {
+                    var specificActivityCode = $(this).val();
+                    get_category(specificActivityCode);
+                });
+            });
             $.idleTimeout('#idletimeout', '#idletimeout a', 
             {
                 idleAfter: 300,

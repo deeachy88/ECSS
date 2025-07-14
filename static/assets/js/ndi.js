@@ -127,18 +127,32 @@ function makeIssuanceCall(relationshipDid, thid, id_number, holder_did) {
             'X-CSRFToken': csrftoken
         },
         success: function(response) {
-            if (response.message) {
+            if (response.success) {
                 $('#ndi_div').hide();
                 $('#issuanceMessageDiv').show();
-            } else if (response.error) {
+            } else {
                 $('#loginBox').hide();
-                $('#issuanceMessageError').hide();
+                $('#issuanceMessageError').show();
+                // Display the error message from the response
+                $('#issuanceMessageError').text(response.error || 'An error occurred');
             }
         },
         error: function(xhr, status, error) {
+            // Handle HTTP errors (like 500, 404, etc.)
+            let errorMessage = 'Request failed';
+            try {
+                const response = JSON.parse(xhr.responseText);
+                if (response.error) {
+                    errorMessage = response.error;
+                }
+            } catch (e) {
+                errorMessage = `${xhr.statusText}: ${error}`;
+            }
+            
+            $('#loginBox').hide();
+            $('#issuanceMessageError').show().text(errorMessage);
+            $('#issuanceMessageError').delay(10000).fadeOut('slow');
+            location.reload
         }
     });
 }
-
-
-

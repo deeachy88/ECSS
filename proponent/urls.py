@@ -12,7 +12,7 @@ urlpatterns = [
     path('new_ground_water_application', views.new_ground_water_application, name='new_ground_water_application'),
     path('new_energy_application', views.new_energy_application, name='new_energy_application'),
     path('new_tourism_application', views.new_tourism_application, name='new_tourism_application'),
-     path('new_quarry_application', views.new_quarry_application, name='new_quarry_application'),
+    path('new_quarry_application', views.new_quarry_application, name='new_quarry_application'),
     path('new_application_form', views.new_application_form, name='new_application_form'),
 
 
@@ -132,8 +132,8 @@ urlpatterns = [
 
     #Road Application Details
     path('save_road_application', views.save_road_application, name='save_road_application'),
-    path('save_road_attachment', views.save_general_attachment, name='save_road_attachment'),
-    path('save_road_attachment_details', views.save_general_attachment_details, name='save_road_attachment_details'),
+    path('save_road_attachment', views.save_road_attachment, name='save_road_attachment'),
+    path('save_road_attachment_details', views.save_road_attachment_details, name='save_road_attachment_details'),
     path('road_project_details', views.road_project_details, name='road_project_details'),
     path('road_project_details_one', views.road_project_details_one, name='road_project_details_one'),
     path('road_project_details_two', views.road_project_details_two, name='road_project_details_two'),
@@ -175,6 +175,13 @@ urlpatterns = [
     # Draft Application Details
     path('draft_application_list', views.draft_application_list, name='draft_application_list'),
     path('view_draft_application_details', views.view_draft_application_details, name='view_draft_application_details'),
+    
+    path('draft_general_application', views.draft_application, name='draft_general_application'),
+    path('draft_iee_application', views.draft_application, name='draft_iee_application'),
+    path('draft_road_application', views.draft_application, name='draft_road_application'),
+    path('draft_ground_water_application', views.draft_application, name='draft_ground_water_application'),
+    path('draft_forestry_application', views.draft_application, name='draft_forestry_application'),
+    
     path('update_draft_application', views.update_draft_application, name='update_draft_application'),
     
     # Renewal Application Details

@@ -57,7 +57,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Applicant Name</label>
+                                                <label class="form-label fw-bold">Name of the Applicant</label>
                                                 <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" disabled>
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -204,7 +204,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                                <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                                 <input type="text" name="project_site" class="form-control" id="project_site">
                                             </div>
                                             <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -213,7 +213,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
+                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) in acres</label>
                                                 <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{ application_details.industrial_area_acre }}" disabled>
                                             </div>
                                         </div>
@@ -233,9 +233,17 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Others Specify (acres)</label>
-                                                <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" value="{{ application_details.others_area_acre }}" disabled>
+                                                <label class="form-label fw-bold">Others Specify</label>
+                                                <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()">
                                             </div>
+                                            <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Others(acres)</label>
+                                                <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()">
+                                            </div>
+                                            <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -348,7 +356,7 @@
                                         </div>
                                     </div>
                                 {% endfor %}
-                                <div class="alert alert-success border-0 rounded-0" role="alert" id="application_form_successMsg" style="display:none">
+                                <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="application_form_successMsg" style="display:none">
                                     <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                 </div>
                                 <div class="row mt-4">
@@ -373,6 +381,7 @@
                                 <form method="post" id="terrain_baseline_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" id="terrain_baseline_application_no">
+                                    
                                     <div class="row">
                                         <div class="col-lg-8">
                                             <div class="mb-3">
@@ -388,7 +397,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Elevation(meters)</label>
+                                                <label class="form-label fw-bold">Elevation (meters)</label>
                                                 <input type="number" name="terrain_elevation" class="form-control" id="terrain_elevation">
                                             </div>
                                             <div id="terrain_elevationErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -409,6 +418,9 @@
                                     </div>
                                     <div class="alert alert-secondary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Baseline/Existing Information
+                                    </div>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable
                                     </div>
                                     <table class="table table-hover table-bordered table-centered mb-0">
                                         <thead>
@@ -1888,22 +1900,22 @@
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" id="general_disclaimer_application_no">
                                     <div class="row industry_application" style="display:none;">
-                                        <a href="{% url 'new_industry_application' %}" class="btn btn-danger">
+                                        <a href="{% url 'industry_ancillary_form ' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for Industrial projects </a>
                                     </div>
                                     
                                     <div class="row forestry_application mt-1" style="display:none;">
-                                        <a href="{% url 'new_forestry_application' %}" class="btn btn-danger">
+                                        <a href="{% url 'forest_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for Forestry projects </a>
                                     </div>
                                     
                                     <div class="row ground_water_application mt-1" style="display:none;">
-                                        <a href="{% url 'new_ground_water_application' %}" class="btn btn-danger">
+                                        <a href="{% url 'ground_water_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for Ground Water projects </a>
                                     </div>
                                     
                                     <div class="row general_application mt-1" style="display:none;">
-                                        <a href="{% url 'new_general_application' %}" class="btn btn-danger">
+                                        <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
 
@@ -2412,7 +2424,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Attachment</label>
-                    <input type="file" name="ea_attach" class="form-control" id="ea_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                    <input type="file" name="ea_attach" class="form-control" id="ea_attach" accept=".png,.jpg,.jpeg,.pdf,.doc,.kmz">
                 </div>
                 <div class="alert alert-danger" id="ea_attachErrorMsg" style="display:none"></div>
             </div>
@@ -3220,6 +3232,24 @@
 </div>
 </form>
 <script>
+    function toggleAcreField() {
+        const othersArea = document.getElementById('others_area');
+        const acreFieldContainer = document.getElementById('acreFieldContainer');
+        
+        // Show acre field if others_area has any value, hide if empty
+        if (othersArea.value.trim() !== '') {
+            acreFieldContainer.style.display = 'block';
+        } else {
+            acreFieldContainer.style.display = 'none';
+            // Clear the acre value when hiding
+            document.getElementById('others_area_acre').value = '';
+            // Trigger the change event to update totals if needed
+            if (typeof get_total_area_acre === 'function') {
+                get_total_area_acre();
+            }
+        }
+    }
+
     function check_industry_radio(value)
     {
         if(value == 'Yes')
@@ -3297,44 +3327,44 @@
 
     function save_terrain_baseline_details()
     {
-        proposed_location_justification_value = $('#proposed_location_justification').val();
-        terrain_elevation = $('#terrain_elevation').val();
-        terrain_slope = $('#terrain_slope').val();
-        bl_protected_area_name = $('#bl_protected_area_name').val();
-        bl_protected_area_distance = $('#bl_protected_area_distance').val();
-        bl_migratory_route_name = $('#bl_migratory_route_name').val();
-        bl_migratory_route_distance = $('#bl_migratory_route_distance').val();
-        bl_wetland_name = $('#bl_wetland_name').val();
-        bl_wetland_distance = $('#bl_wetland_distance').val();
-        bl_water_bodies_name = $('#bl_water_bodies_name').val();
-        bl_water_bodies_distance = $('#bl_water_bodies_distance').val();
-        bl_fmu_name = $('#bl_fmu_name').val();
-        bl_fmu_distance = $('#bl_fmu_distance').val();
-        bl_agricultural_name = $('#bl_agricultural_name').val();
-        bl_agricultural_distance = $('#bl_agricultural_distance').val();
-        bl_settlement_name = $('#bl_settlement_name').val();
-        bl_settlement_distance = $('#bl_settlement_distance').val();
-        bl_road_name = $('#bl_road_name').val();
-        bl_road_distance = $('#bl_road_distance').val();
-        bl_public_infra_name = $('#bl_public_infra_name').val();
-        bl_public_infra_distance = $('#bl_public_infra_distance').val();
-        bl_school_name = $('#bl_school_name').val();
-        bl_school_distance = $('#bl_school_distance').val();
-        bl_heritage_name = $('#bl_heritage_name').val();
-        bl_heritage_distance = $('#bl_heritage_distance').val();
-        bl_tourist_facility_name = $('#bl_tourist_facility_name').val();
-        bl_tourist_facility_distance = $('#bl_tourist_facility_distance').val();
-        bl_impt_installation_name = $('#bl_impt_installation_name').val();
-        bl_impt_installation_distance = $('#bl_impt_installation_distance').val();
-        bl_industries_name = $('#bl_industries_name').val();
-        bl_industries_distance = $('#bl_industries_distance').val();
-        bl_others = $('#bl_others').val();
-        bl_others_name = $('#bl_others_name').val();
-        bl_others_distance = $('#bl_others_distance').val();
-        technology_used = $('#technology_used').val();
-        technology_total_capacity = $('#technology_total_capacity').val();
-        energy_source = $('#energy_source').val();
-        energy_source_justification = $('#energy_source_justification').val();
+        let proposed_location_justification_value = $('#proposed_location_justification').val();
+        let terrain_elevation = $('#terrain_elevation').val();
+        let terrain_slope = $('#terrain_slope').val();
+        let bl_protected_area_name = $('#bl_protected_area_name').val();
+        let bl_protected_area_distance = $('#bl_protected_area_distance').val();
+        let bl_migratory_route_name = $('#bl_migratory_route_name').val();
+        let bl_migratory_route_distance = $('#bl_migratory_route_distance').val();
+        let bl_wetland_name = $('#bl_wetland_name').val();
+        let bl_wetland_distance = $('#bl_wetland_distance').val();
+        let bl_water_bodies_name = $('#bl_water_bodies_name').val();
+        let bl_water_bodies_distance = $('#bl_water_bodies_distance').val();
+        let bl_fmu_name = $('#bl_fmu_name').val();
+        let bl_fmu_distance = $('#bl_fmu_distance').val();
+        let bl_agricultural_name = $('#bl_agricultural_name').val();
+        let bl_agricultural_distance = $('#bl_agricultural_distance').val();
+        let bl_settlement_name = $('#bl_settlement_name').val();
+        let bl_settlement_distance = $('#bl_settlement_distance').val();
+        let bl_road_name = $('#bl_road_name').val();
+        let bl_road_distance = $('#bl_road_distance').val();
+        let bl_public_infra_name = $('#bl_public_infra_name').val();
+        let bl_public_infra_distance = $('#bl_public_infra_distance').val();
+        let bl_school_name = $('#bl_school_name').val();
+        let bl_school_distance = $('#bl_school_distance').val();
+        let bl_heritage_name = $('#bl_heritage_name').val();
+        let bl_heritage_distance = $('#bl_heritage_distance').val();
+        let bl_tourist_facility_name = $('#bl_tourist_facility_name').val();
+        let bl_tourist_facility_distance = $('#bl_tourist_facility_distance').val();
+        let bl_impt_installation_name = $('#bl_impt_installation_name').val();
+        let bl_impt_installation_distance = $('#bl_impt_installation_distance').val();
+        let bl_industries_name = $('#bl_industries_name').val();
+        let bl_industries_distance = $('#bl_industries_distance').val();
+        let bl_others = $('#bl_others').val();
+        let bl_others_name = $('#bl_others_name').val();
+        let bl_others_distance = $('#bl_others_distance').val();
+        let technology_used = $('#technology_used').val();
+        let technology_total_capacity = $('#technology_total_capacity').val();
+        let energy_source = $('#energy_source').val();
+        let energy_source_justification = $('#energy_source_justification').val();
 
         if(proposed_location_justification == "")
         {
@@ -3345,7 +3375,7 @@
         }
         else if(terrain_elevation == "")
         {
-            $('#terrain_elevationErrorMsg').html("Enter Elevation(meters)");
+            $('#terrain_elevationErrorMsg').html("Enter Elevation (meters)");
             $('#terrain_elevationErrorMsg').show();
             $('#terrain_elevationErrorMsg').delay(2000).fadeOut('slow');
             $('#terrain_elevation').focus();
@@ -3615,6 +3645,7 @@
                     {
                         $('#terrain_baseline_application_successMsg').html("Added Successfully");
                         $('#terrain_baseline_application_successMsg').show();
+                        $('#terrain_baseline_application_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#terrain_baseline_application_successMsg').delay(2000).fadeOut('slow');
@@ -3627,8 +3658,11 @@
                     }
                     else
                     {
-                        $('#terrain_baseline_application_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#terrain_baseline_application_errorMsg').html(`Application Error: ${data.error}`);
                         $('#terrain_baseline_application_errorMsg').show();
+                        $('#terrain_baseline_application_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#terrain_baseline_application_errorMsg').delay(2000).fadeOut('slow');
@@ -3863,6 +3897,7 @@
                     {
                         $('#terrain_baseline_application_one_successMsg').html("Saved Successfully");
                         $('#terrain_baseline_application_one_successMsg').show();
+                        $('#terrain_baseline_application_one_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#terrain_baseline_application_one_successMsg').delay(2000).fadeOut('slow');
@@ -3875,8 +3910,11 @@
                     }
                     else
                     {
-                        $('#terrain_baseline_application_one_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#terrain_baseline_application_one_errorMsg').html(`Application Error: ${data.error}`);
                         $('#terrain_baseline_application_one_errorMsg').show();
+                        $('#terrain_baseline_application_one_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#terrain_baseline_application_one_errorMsg').delay(2000).fadeOut('slow');
@@ -3889,22 +3927,22 @@
 
     function save_terrain_baseline_details_two()
     {
-        bl_nb_sampling_location = $('#terrain_elevation').val();
-        bl_sb_sampling_location = $('#terrain_elevation').val();
-        bl_eb_sampling_location = $('#terrain_elevation').val();
-        bl_wb_sampling_location = $('#terrain_elevation').val();
-        bl_others_sampling_location = $('#terrain_elevation').val();
-        bl_ambient_ph = $('#terrain_elevation').val();
-        bl_ambient_tss = $('#terrain_elevation').val();
-        bl_ambient_tds = $('#terrain_elevation').val();
-        bl_ambient_conductivity = $('#terrain_elevation').val();
-        bl_ambient_bod = $('#terrain_elevation').val();
-        bl_ambient_cod = $('#terrain_elevation').val();
-        bl_ambient_flora = $('#terrain_elevation').val();
-        bl_ambient_fauna = $('#terrain_elevation').val();
-        bl_socio_settlement_name = $('#terrain_elevation').val();
-        bl_socio_total_population = $('#terrain_elevation').val();
-        bl_socio_income_source = $('#terrain_elevation').val();
+        let bl_nb_sampling_location = $('#terrain_elevation').val();
+        let bl_sb_sampling_location = $('#terrain_elevation').val();
+        let bl_eb_sampling_location = $('#terrain_elevation').val();
+        let bl_wb_sampling_location = $('#terrain_elevation').val();
+        let bl_others_sampling_location = $('#terrain_elevation').val();
+        let bl_ambient_ph = $('#terrain_elevation').val();
+        let bl_ambient_tss = $('#terrain_elevation').val();
+        let bl_ambient_tds = $('#terrain_elevation').val();
+        let bl_ambient_conductivity = $('#terrain_elevation').val();
+        let bl_ambient_bod = $('#terrain_elevation').val();
+        let bl_ambient_cod = $('#terrain_elevation').val();
+        let bl_ambient_flora = $('#terrain_elevation').val();
+        let bl_ambient_fauna = $('#terrain_elevation').val();
+        let bl_socio_settlement_name = $('#terrain_elevation').val();
+        let bl_socio_total_population = $('#terrain_elevation').val();
+        let bl_socio_income_source = $('#terrain_elevation').val();
 
         if(bl_nb_sampling_location == "")
         {
@@ -4031,6 +4069,7 @@
                     {
                         $('#terrain_baseline_application_two_successMsg').html("Saved Successfully");
                         $('#terrain_baseline_application_two_successMsg').show();
+                        $('#terrain_baseline_application_two_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#terrain_baseline_application_two_successMsg').delay(2000).fadeOut('slow');
@@ -4043,8 +4082,11 @@
                     }
                     else
                     {
-                        $('#terrain_baseline_application_two_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#terrain_baseline_application_two_errorMsg').html(`Application Error: ${data.error}`);
                         $('#terrain_baseline_application_two_errorMsg').show();
+                        $('#terrain_baseline_application_two_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#terrain_baseline_application_two_errorMsg').delay(2000).fadeOut('slow');
@@ -4057,10 +4099,10 @@
 
     function add_machine_tool_details()
     {
-        application_no = $('#application_no').val();
-        machine_tool = $('#machine_tool').val();
-        machine_tool_qty = $('#machine_tool_qty').val();
-        machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
+        let application_no = $('#application_no').val();
+        let machine_tool = $('#machine_tool').val();
+        let machine_tool_qty = $('#machine_tool_qty').val();
+        let machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
 
         if(machine_tool == "")
         {
@@ -4120,13 +4162,13 @@
         $('#edit_machine_equipment_tool_modal').modal('show');
     }
 
-    function update_machine_equipment_populate(record_id, application_no, machine_name, qty, installed_capacity)
+    function update_machine_equipment_populate()
     {
-        record_id = $('#edit_machine_tool_record_id').val();
-        application_no = $('#edit_machine_tool_app_no').val();
-        machine_tool = $('#edit_machine_tool').val();
-        qty = $('#edit_machine_tool_qty').val();
-        machine_tool_installed_capacity = $('#edit_machine_tool_installed_capacity').val();
+        let record_id = $('#edit_machine_tool_record_id').val();
+        let application_no = $('#edit_machine_tool_app_no').val();
+        let machine_tool = $('#edit_machine_tool').val();
+        let qty = $('#edit_machine_tool_qty').val();
+        let machine_tool_installed_capacity = $('#edit_machine_tool_installed_capacity').val();
 
         if(machine_tool == "")
         {
@@ -4184,8 +4226,8 @@
 
     function delete_machine_tool_details()
     {
-        $('#delete_machine_tool_record_id').val();
-        $('#delete_machine_tool_app_no').val();
+        let record_id = $('#delete_machine_tool_record_id').val();
+        let application_no = $('#delete_machine_tool_app_no').val();
 
         $.ajax
             ({
@@ -4212,11 +4254,11 @@
 
     function add_raw_material_details()
     {
-        application_no = $('#application_no').val();
-        raw_material = $('#raw_material').val();
-        raw_material_qty = $('#raw_material_qty').val();
-        raw_material_source = $('#raw_material_source').val();
-        raw_material_storage_method = $('#raw_material_storage_method').val();
+        let application_no = $('#application_no').val();
+        let raw_material = $('#raw_material').val();
+        let raw_material_qty = $('#raw_material_qty').val();
+        let raw_material_source = $('#raw_material_source').val();
+        let raw_material_storage_method = $('#raw_material_storage_method').val();
 
         if(raw_material == "")
         {
@@ -4286,12 +4328,12 @@
 
     function update_raw_material_details()
     {
-        record_id = $('#edit_raw_material_record_id').val();
-        application_no = $('#edit_raw_material_app_no').val();
-        raw_material = $('#edit_raw_material').val();
-        raw_material_qty = $('#edit_raw_material_qty').val();
-        raw_material_source = $('#edit_raw_material_source').val();
-        raw_material_storage_method = $('#edit_raw_material_storage_method').val();
+        let record_id = $('#edit_raw_material_record_id').val();
+        let application_no = $('#edit_raw_material_app_no').val();
+        let raw_material = $('#edit_raw_material').val();
+        let raw_material_qty = $('#edit_raw_material_qty').val();
+        let raw_material_source = $('#edit_raw_material_source').val();
+        let raw_material_storage_method = $('#edit_raw_material_storage_method').val();
 
         if(raw_material == "")
         {
@@ -4356,8 +4398,8 @@
 
     function delete_raw_material_details()
     {
-        record_id = $('#delete_raw_material_record_id').val();
-        application_no = $('#delete_raw_material_app_no').val();
+        let record_id = $('#delete_raw_material_record_id').val();
+        let application_no = $('#delete_raw_material_app_no').val();
 
         $.ajax
         ({
@@ -4384,10 +4426,10 @@
 
     function add_partner_details()
     {
-        application_no = $('#application_no').val();
-        partner_type = $('#partner_type').val();
-        partner_type_name = $('#partner_type_name').val();
-        partner_type_address = $('#partner_type_address').val();
+        let application_no = $('#application_no').val();
+        let partner_type = $('#partner_type').val();
+        let partner_type_name = $('#partner_type_name').val();
+        let partner_type_address = $('#partner_type_address').val();
 
         if(partner_type == "")
         {
@@ -4446,8 +4488,8 @@
 
     function delete_partner_details()
     {
-        record_id = $('#delete_partner_details_record_id').val();
-        application_no = $('#delete_partner_details_app_no').val();
+        let record_id = $('#delete_partner_details_record_id').val();
+        let application_no = $('#delete_partner_details_app_no').val();
 
         $.ajax
         ({
@@ -4570,15 +4612,15 @@
 
     function save_power_line_details()
     {
-        application_no = $('#application_no').val();
-        line_chainage_from = $('#line_chainage_from').val();
-        line_chainage_to = $('#line_chainage_to').val();
-        land_type = $('#land_type').val();
-        terrain = $('#terrain').val();
-        tower_type = $('#tower_type').val();
-        no_of_tower = $('#no_of_tower').val();
-        row = $('#row').val();
-        area_required = $('#area_required').val();
+        let application_no = $('#application_no').val();
+        let line_chainage_from = $('#line_chainage_from').val();
+        let line_chainage_to = $('#line_chainage_to').val();
+        let land_type = $('#land_type').val();
+        let terrain = $('#terrain').val();
+        let tower_type = $('#tower_type').val();
+        let no_of_tower = $('#no_of_tower').val();
+        let row = $('#row').val();
+        let area_required = $('#area_required').val();
 
         if(line_chainage_from == "")
         {
@@ -4675,8 +4717,8 @@
 
     function delete_power_line_details()
     {
-        record_id =$('#delete_anc_record_id').val();
-        application_no =$('#delete_anc_record_id').val();
+        let record_id = $('#delete_anc_record_id').val();
+        let application_no = $('#delete_anc_record_id').val();
 
         $.ajax
         ({
@@ -4697,16 +4739,16 @@
 
     function update_power_line_details()
     {
-        record_id = $('#edit_anc_record_id').val();
-        application_no = $('#edit_anc_application_no').val();
-        line_chainage_from = $('#edit_line_chainage_from').val();
-        line_chainage_to = $('#edit_line_chainage_to').val();
-        land_type = $('#edit_land_type').val();
-        terrain = $('#edit_terrain').val();
-        tower_type = $('#edit_tower_type').val();
-        no_of_tower = $('#edit_no_of_tower').val();
-        row = $('#edit_row').val();
-        area_required = $('#edit_area_required').val();
+        let record_id = $('#edit_anc_record_id').val();
+        let application_no = $('#edit_anc_application_no').val();
+        let line_chainage_from = $('#edit_line_chainage_from').val();
+        let line_chainage_to = $('#edit_line_chainage_to').val();
+        let land_type = $('#edit_land_type').val();
+        let terrain = $('#edit_terrain').val();
+        let tower_type = $('#edit_tower_type').val();
+        let no_of_tower = $('#edit_no_of_tower').val();
+        let row = $('#edit_row').val();
+        let area_required = $('#edit_area_required').val();
 
         if(line_chainage_from == "")
         {
@@ -4797,14 +4839,14 @@
 
     function save_anc_road_details()
     {
-        application_no = $('#application_no').val();
-        road_line_chainage_from = $('#road_line_chainage_from').val();
-        road_line_chainage_to = $('#road_line_chainage_to').val();
-        road_land_type = $('#road_land_type').val();
-        road_terrain = $('#road_terrain').val();
-        road_width = $('#road_width').val();
-        road_row = $('#road_row').val();
-        road_area_required = $('#road_area_required').val();
+        let application_no = $('#application_no').val();
+        let road_line_chainage_from = $('#road_line_chainage_from').val();
+        let road_line_chainage_to = $('#road_line_chainage_to').val();
+        let road_land_type = $('#road_land_type').val();
+        let road_terrain = $('#road_terrain').val();
+        let road_width = $('#road_width').val();
+        let road_row = $('#road_row').val();
+        let road_area_required = $('#road_area_required').val();
 
         if(road_line_chainage_from == "")
         {
@@ -4916,15 +4958,15 @@
 
     function update_anc_road_details()
     {
-        record_id = $('#edit_anc_road_record_id').val();
-        application_no = $('#edit_anc_road_application_no').val();
-        line_chainage_from = $('#edit_road_line_chainage_from').val();
-        line_chainage_to = $('#edit_road_line_chainage_to').val();
-        land_type = $('#edit_road_land_type').val();
-        terrain = $('#edit_road_terrain').val();
-        road_width = $('#edit_road_width').val();
-        row = $('#edit_road_row').val();
-        area_required = $('#edit_road_area_required').val();
+        let record_id = $('#edit_anc_road_record_id').val();
+        let application_no = $('#edit_anc_road_application_no').val();
+        let line_chainage_from = $('#edit_road_line_chainage_from').val();
+        let line_chainage_to = $('#edit_road_line_chainage_to').val();
+        let land_type = $('#edit_road_land_type').val();
+        let terrain = $('#edit_road_terrain').val();
+        let road_width = $('#edit_road_width').val();
+        let row = $('#edit_road_row').val();
+        let area_required = $('#edit_road_area_required').val();
 
         if(line_chainage_from == "")
         {
@@ -4990,32 +5032,32 @@
 
     function save_water_requirement_details()
     {
-        water_required = $("input[name=water_required]:checked").length;
-        water_required_value = $("input[name=water_required]:checked").value();
-        water_provided_by = $("input[name=water_provided_by]:checked").length;
-        water_raw_material_source = $('#water_raw_material_source').val();
-        water_raw_material_qty_day = $('#water_raw_material_qty_day').val();
-        water_raw_material_recycle_day = $('#water_raw_material_recycle_day').val();
-        water_cleaning_source = $('#water_cleaning_source').val();
-        water_cleaning_qty_day = $('#water_cleaning_qty_day').val();
-        water_cleaning_recycle_day = $('#water_cleaning_recycle_day').val();
-        water_process_source = $('#water_process_source').val();
-        water_process_qty_day = $('#water_process_qty_day').val();
-        water_process_recycle_day = $('#water_process_recycle_day').val();
-        water_domestic_source = $('#water_domestic_source').val();
-        water_domestic_qty_day = $('#water_domestic_qty_day').val();
-        water_domestic_recycle_day = $('#water_domestic_recycle_day').val();
-        water_dust_compression_source = $('#water_dust_compression_source').val();
-        water_dust_compression_qty_day = $('#water_dust_compression_qty_day').val();
-        water_dust_compression_recycle_day = $('#water_dust_compression_recycle_day').val();
-        water_others_name = $('#water_others_name').val();
-        water_others_source = $('#water_others_source').val();
-        water_others_qty_day = $('#water_others_qty_day').val();
-        total_water_consumption = $('#total_water_consumption').val();
-        total_water_recycled = $('#total_water_recycled').val();
-        water_downstream_users = $('#water_downstream_users').val();
-        water_flow_rate_lean = $('#water_flow_rate_lean').val();
-        water_source_distance = $('#water_source_distance').val();
+        let water_required = $("input[name=water_required]:checked").length;
+        let water_required_value = $("input[name=water_required]:checked").value();
+        let water_provided_by = $("input[name=water_provided_by]:checked").length;
+        let water_raw_material_source = $('#water_raw_material_source').val();
+        let water_raw_material_qty_day = $('#water_raw_material_qty_day').val();
+        let water_raw_material_recycle_day = $('#water_raw_material_recycle_day').val();
+        let water_cleaning_source = $('#water_cleaning_source').val();
+        let water_cleaning_qty_day = $('#water_cleaning_qty_day').val();
+        let water_cleaning_recycle_day = $('#water_cleaning_recycle_day').val();
+        let water_process_source = $('#water_process_source').val();
+        let water_process_qty_day = $('#water_process_qty_day').val();
+        let water_process_recycle_day = $('#water_process_recycle_day').val();
+        let water_domestic_source = $('#water_domestic_source').val();
+        let water_domestic_qty_day = $('#water_domestic_qty_day').val();
+        let water_domestic_recycle_day = $('#water_domestic_recycle_day').val();
+        let water_dust_compression_source = $('#water_dust_compression_source').val();
+        let water_dust_compression_qty_day = $('#water_dust_compression_qty_day').val();
+        let water_dust_compression_recycle_day = $('#water_dust_compression_recycle_day').val();
+        let water_others_name = $('#water_others_name').val();
+        let water_others_source = $('#water_others_source').val();
+        let water_others_qty_day = $('#water_others_qty_day').val();
+        let total_water_consumption = $('#total_water_consumption').val();
+        let total_water_recycled = $('#total_water_recycled').val();
+        let water_downstream_users = $('#water_downstream_users').val();
+        let water_flow_rate_lean = $('#water_flow_rate_lean').val();
+        let water_source_distance = $('#water_source_distance').val();
 
         if(water_required < 1)
         {
@@ -5198,6 +5240,7 @@
                     {
                         $('#water_requirement_application_successMsg').html("Saved Successfully");
                         $('#water_requirement_application_successMsg').show();
+                        $('#water_requirement_application_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#water_requirement_application_successMsg').delay(2000).fadeOut('slow');
@@ -5210,8 +5253,11 @@
                     }
                     else
                     {
-                        $('#water_requirement_application_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#water_requirement_application_errorMsg').html(`Application Error: ${data.error}`);
                         $('#water_requirement_application_errorMsg').show();
+                        $('#water_requirement_application_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#water_requirement_application_errorMsg').delay(2000).fadeOut('slow');
@@ -5225,17 +5271,17 @@
     function save_anc_approach_road_details()
     {
 
-        anc_road_required = $("input[name=anc_road_required]:checked").length;
-        anc_road_required_value = $("input[name=anc_road_required]:checked").value();
-        anc_road_length = $('#anc_road_length').val();
-        anc_road_start_point = $('#anc_road_start_point').val();
-        anc_road_end_point  = $('#anc_road_end_point').val();
-        anc_road_blast_required= $("input[name=anc_road_required]:checked").length;
-        anc_road_blast_required_value = $("input[name=anc_road_required]:checked").value();
-        anc_road_blast_type = $('#anc_road_blast_type').val();
-        anc_road_blast_qty = $('#anc_road_blast_qty').val();
-        anc_road_blast_location = $('#anc_road_blast_location').val();
-        anc_road_blast_frequency_time = $('#anc_road_blast_frequency_time').val();
+        let anc_road_required = $("input[name=anc_road_required]:checked").length;
+        let anc_road_required_value = $("input[name=anc_road_required]:checked").value();
+        let anc_road_length = $('#anc_road_length').val();
+        let anc_road_start_point = $('#anc_road_start_point').val();
+        let anc_road_end_point  = $('#anc_road_end_point').val();
+        let anc_road_blast_required= $("input[name=anc_road_required]:checked").length;
+        let anc_road_blast_required_value = $("input[name=anc_road_required]:checked").value();
+        let anc_road_blast_type = $('#anc_road_blast_type').val();
+        let anc_road_blast_qty = $('#anc_road_blast_qty').val();
+        let anc_road_blast_location = $('#anc_road_blast_location').val();
+        let anc_road_blast_frequency_time = $('#anc_road_blast_frequency_time').val();
 
         if(anc_road_required < 1)
         {
@@ -5313,6 +5359,7 @@
                     {
                         $('#anc_approach_road_successMsg').html("Saved Successfully");
                         $('#anc_approach_road_successMsg').show();
+                        $('#anc_approach_road_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#anc_approach_road_successMsg').delay(2000).fadeOut('slow');
@@ -5325,8 +5372,11 @@
                     }
                     else
                     {
-                        $('#anc_approach_road_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#anc_approach_road_errorMsg').html(`Application Error: ${data.error}`);
                         $('#anc_approach_road_errorMsg').show();
+                        $('#anc_approach_road_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#anc_approach_road_errorMsg').delay(2000).fadeOut('slow');
@@ -5339,13 +5389,13 @@
 
     function save_anc_power_line_form()
     {
-        anc_power_line_required = $("input[name=anc_power_line_required]:checked").length;
-        anc_power_line_required_value = $("input[name=anc_power_line_required]:checked").value();
-        anc_power_line_voltage = $('#anc_power_line_voltage').val();
-        anc_power_line_length = $('#anc_power_line_length').val();
-        anc_power_line_start_point = $('#anc_power_line_start_point').val();
-        anc_power_line_end_point = $('#anc_power_line_end_point').val();
-        anc_power_line_storing_method = $('#anc_power_line_storing_method').val();
+        let anc_power_line_required = $("input[name=anc_power_line_required]:checked").length;
+        let anc_power_line_required_value = $("input[name=anc_power_line_required]:checked").value();
+        let anc_power_line_voltage = $('#anc_power_line_voltage').val();
+        let anc_power_line_length = $('#anc_power_line_length').val();
+        let anc_power_line_start_point = $('#anc_power_line_start_point').val();
+        let anc_power_line_end_point = $('#anc_power_line_end_point').val();
+        let anc_power_line_storing_method = $('#anc_power_line_storing_method').val();
 
         if(anc_power_line_required < 1)
         {
@@ -5402,6 +5452,7 @@
                     {
                         $('#anc_power_line_successMsg').html("Saved Successfully");
                         $('#anc_power_line_successMsg').show();
+                        $('#anc_power_line_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#anc_power_line_successMsg').delay(2000).fadeOut('slow');
@@ -5414,8 +5465,11 @@
                     }
                     else
                     {
-                        $('#anc_power_line_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#anc_power_line_errorMsg').html(`Application Error: ${data.error}`);
                         $('#anc_power_line_errorMsg').show();
+                        $('#anc_power_line_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#anc_power_line_errorMsg').delay(2000).fadeOut('slow');
@@ -5439,6 +5493,7 @@
                 {
                     $('#anc_others_successMsg').html("Saved Successfully");
                     $('#anc_others_successMsg').show();
+                    $('#anc_others_successMsg').focus();
                     setTimeout(function()
                     {
                         $('#anc_others_successMsg').delay(2000).fadeOut('slow');
@@ -5453,6 +5508,7 @@
                 {
                     $('#anc_others_errorMsg').html("Please Check And Submit Again");
                     $('#anc_others_errorMsg').show();
+                    $('#anc_others_errorMsg').focus();
                     setTimeout(function()
                     {
                         $('#anc_others_errorMsg').delay(2000).fadeOut('slow');
@@ -5466,6 +5522,7 @@
     {
         $('#hazardous_successMsg').html("Saved Successfully");
         $('#hazardous_successMsg').show();
+        $('#hazardous_successMsg').focus();
         setTimeout(function()
         {
             $('#hazardous_successMsg').delay(2000).fadeOut('slow');
@@ -5481,6 +5538,7 @@
     {
         $('#products_successMsg').html("Saved Successfully");
         $('#products_successMsg').show();
+        $('#products_successMsg').focus();
         setTimeout(function()
         {
             $('#products_successMsg').delay(2000).fadeOut('slow');
@@ -5548,6 +5606,7 @@
                     {
                         $('#solid_waste_successMsg').html("Saved Successfully");
                         $('#solid_waste_successMsg').show();
+                        $('#solid_waste_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#solid_waste_successMsg').delay(2000).fadeOut('slow');
@@ -5560,8 +5619,11 @@
                     }
                     else
                     {
-                        $('#solid_waste_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#solid_waste_errorMsg').html(`Application Error: ${data.error}`);
                         $('#solid_waste_errorMsg').show();
+                        $('#solid_waste_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#solid_waste_errorMsg').delay(2000).fadeOut('slow');
@@ -5574,15 +5636,15 @@
 
     function save_noise_level_details()
     {
-        en_noise_ind_area_day = $('#en_noise_ind_area_day').val();
-        en_noise_ind_area_night = $('#en_noise_ind_area_night').val();
-        en_noise_ind_area_mgt_plan = $('#en_noise_ind_area_mgt_plan').val();
-        en_noise_mixed_area_day = $('#en_noise_mixed_area_day').val();
-        en_noise_mixed_area_night = $('#en_noise_mixed_area_night').val();
-        en_noise_mixed_area_mgt_plan = $('#en_noise_mixed_area_mgt_plan').val();
-        en_noise_sen_area_day = $('#en_noise_sen_area_day').val();
-        en_noise_sen_area_night = $('#en_noise_sen_area_night').val();
-        en_noise_sen_area_mgt_plan = $('#en_noise_sen_area_mgt_plan').val();
+        let en_noise_ind_area_day = $('#en_noise_ind_area_day').val();
+        let en_noise_ind_area_night = $('#en_noise_ind_area_night').val();
+        let en_noise_ind_area_mgt_plan = $('#en_noise_ind_area_mgt_plan').val();
+        let en_noise_mixed_area_day = $('#en_noise_mixed_area_day').val();
+        let en_noise_mixed_area_night = $('#en_noise_mixed_area_night').val();
+        let en_noise_mixed_area_mgt_plan = $('#en_noise_mixed_area_mgt_plan').val();
+        let en_noise_sen_area_day = $('#en_noise_sen_area_day').val();
+        let en_noise_sen_area_night = $('#en_noise_sen_area_night').val();
+        let en_noise_sen_area_mgt_plan = $('#en_noise_sen_area_mgt_plan').val();
 
         if(en_noise_ind_area_day == "")
         {
@@ -5660,6 +5722,7 @@
                     {
                         $('#noise_level_successMsg').html("Saved Successfully");
                         $('#noise_level_successMsg').show();
+                        $('#noise_level_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#noise_level_successMsg').delay(2000).fadeOut('slow');
@@ -5672,8 +5735,11 @@
                     }
                     else
                     {
-                        $('#noise_level_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#noise_level_errorMsg').html(`Application Error: ${data.error}`);
                         $('#noise_level_errorMsg').show();
+                        $('#noise_level_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#noise_level_errorMsg').delay(2000).fadeOut('slow');
@@ -5688,6 +5754,7 @@
     {
         $('#ea_attachment_successMsg').html("Saved Successfully");
         $('#ea_attachment_successMsg').show();
+        $('#ea_attachment_successMsg').focus();
         setTimeout(function()
         {
             $('#ea_attachment_successMsg').delay(2000).fadeOut('slow');
@@ -5724,17 +5791,23 @@
                 }
                 else if(data.message == 'not submitted')
                 {
-                    $('#iee_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
-                    $('#iee_submit_errorMsg').show();
+                    var errorMsg = data.error;
+        
+                    $('#ea_submit_errorMsg').html(`Application Error: ${data.error}`);
+                    $('#ea_submit_errorMsg').show();
+                    $('#ea_submit_errorMsg').focus();
                     setTimeout(function()
                     {
-                        $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
+                        $('#ea_submit_errorMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                 }
                 else
                 {
-                    $('#ea_submit_errorMsg').html("Please Check And Submit Again");
+                    var errorMsg = data.error;
+        
+                    $('#ea_submit_errorMsg').html(`Application Error: ${data.error}`);
                     $('#ea_submit_errorMsg').show();
+                    $('#ea_submit_errorMsg').focus();
                     setTimeout(function()
                     {
                         $('#ea_submit_errorMsg').delay(2000).fadeOut('slow');
@@ -5746,14 +5819,14 @@
 
     function save_anc_road_details()
     {
-        application_no = $('#application_no').val();
-        road_line_chainage_from = $('#road_line_chainage_from').val();
-        road_line_chainage_to = $('#road_line_chainage_to').val();
-        road_land_type = $('#road_land_type').val();
-        road_terrain = $('#road_terrain').val();
-        road_width = $('#road_width').val();
-        road_row = $('#road_row').val();
-        road_area_required = $('#road_area_required').val();
+        let application_no = $('#application_no').val();
+        let road_line_chainage_from = $('#road_line_chainage_from').val();
+        let road_line_chainage_to = $('#road_line_chainage_to').val();
+        let road_land_type = $('#road_land_type').val();
+        let road_terrain = $('#road_terrain').val();
+        let road_width = $('#road_width').val();
+        let road_row = $('#road_row').val();
+        let road_area_required = $('#road_area_required').val();
 
         if(road_line_chainage_from == "")
         {
@@ -5865,15 +5938,15 @@
 
     function update_anc_road_details()
     {
-        record_id = $('#edit_anc_road_record_id').val();
-        application_no = $('#edit_anc_road_application_no').val();
-        line_chainage_from = $('#edit_road_line_chainage_from').val();
-        line_chainage_to = $('#edit_road_line_chainage_to').val();
-        land_type = $('#edit_road_land_type').val();
-        terrain = $('#edit_road_terrain').val();
-        road_width = $('#edit_road_width').val();
-        row = $('#edit_road_row').val();
-        area_required = $('#edit_road_area_required').val();
+        let record_id = $('#edit_anc_road_record_id').val();
+        let application_no = $('#edit_anc_road_application_no').val();
+        let line_chainage_from = $('#edit_road_line_chainage_from').val();
+        let line_chainage_to = $('#edit_road_line_chainage_to').val();
+        let land_type = $('#edit_road_land_type').val();
+        let terrain = $('#edit_road_terrain').val();
+        let road_width = $('#edit_road_width').val();
+        let row = $('#edit_road_row').val();
+        let area_required = $('#edit_road_area_required').val();
 
         if(line_chainage_from == "")
         {
@@ -5939,15 +6012,15 @@
 
     function save_power_line_details()
     {
-        application_no = $('#application_no').val();
-        line_chainage_from = $('#line_chainage_from').val();
-        line_chainage_to = $('#line_chainage_to').val();
-        land_type = $('#land_type').val();
-        terrain = $('#terrain').val();
-        tower_type = $('#tower_type').val();
-        no_of_tower = $('#no_of_tower').val();
-        row = $('#row').val();
-        area_required = $('#area_required').val();
+        let application_no = $('#application_no').val();
+        let line_chainage_from = $('#line_chainage_from').val();
+        let line_chainage_to = $('#line_chainage_to').val();
+        let land_type = $('#land_type').val();
+        let terrain = $('#terrain').val();
+        let tower_type = $('#tower_type').val();
+        let no_of_tower = $('#no_of_tower').val();
+        let row = $('#row').val();
+        let area_required = $('#area_required').val();
 
         if(line_chainage_from == "")
         {
@@ -6044,8 +6117,8 @@
 
     function delete_power_line_details()
     {
-        record_id =$('#delete_anc_record_id').val();
-        application_no =$('#delete_anc_record_id').val();
+        let record_id =$('#delete_anc_record_id').val();
+        let application_no =$('#delete_anc_record_id').val();
 
         $.ajax
         ({
@@ -6066,16 +6139,16 @@
 
     function update_power_line_details()
     {
-        record_id = $('#edit_anc_record_id').val();
-        application_no = $('#edit_anc_application_no').val();
-        line_chainage_from = $('#edit_line_chainage_from').val();
-        line_chainage_to = $('#edit_line_chainage_to').val();
-        land_type = $('#edit_land_type').val();
-        terrain = $('#edit_terrain').val();
-        tower_type = $('#edit_tower_type').val();
-        no_of_tower = $('#edit_no_of_tower').val();
-        row = $('#edit_row').val();
-        area_required = $('#edit_area_required').val();
+        let record_id = $('#edit_anc_record_id').val();
+        let application_no = $('#edit_anc_application_no').val();
+        let line_chainage_from = $('#edit_line_chainage_from').val();
+        let line_chainage_to = $('#edit_line_chainage_to').val();
+        let land_type = $('#edit_land_type').val();
+        let terrain = $('#edit_terrain').val();
+        let tower_type = $('#edit_tower_type').val();
+        let no_of_tower = $('#edit_no_of_tower').val();
+        let row = $('#edit_row').val();
+        let area_required = $('#edit_area_required').val();
 
         if(line_chainage_from == "")
         {
@@ -6147,42 +6220,42 @@
 
     function save_impact_details()
     {
-        en_other_impact_odour_source = $('#en_other_impact_odour_source').val();
-        en_other_impact_odour_qty = $('#en_other_impact_odour_qty').val();
-        en_other_impact_odour_mgt_plan = $('#en_other_impact_odour_mgt_plan').val();
-        en_other_impact_fugutive_source = $('#en_other_impact_fugutive_source').val();
-        en_other_impact_fugutive_qty = $('#en_other_impact_fugutive_qty').val();
-        en_other_impact_fugutive_mgt_plan = $('#en_other_impact_fugutive_mgt_plan').val();
-        en_other_impact_slope_source = $('#en_other_impact_slope_source').val();
-        en_other_impact_slope_qty = $('#en_other_impact_slope_qty').val();
-        en_other_impact_slope_mgt_plan = $('#en_other_impact_slope_mgt_plan').val();
-        en_other_impact_aesthetic_source = $('#en_other_impact_aesthetic_source').val();
-        en_other_impact_aesthetic_qty = $('#en_other_impact_aesthetic_qty').val();
-        en_other_impact_aesthetic_mgt_plan = $('#en_other_impact_aesthetic_mgt_plan').val();
-        en_other_impact_mucks_source = $('#en_other_impact_mucks_source').val();
-        en_other_impact_mucks_qty = $('#en_other_impact_mucks_qty').val();
-        en_other_impact_mucks_mgt_plan = $('#en_other_impact_mucks_mgt_plan').val();
-        en_other_impact_sewerage_source = $('#en_other_impact_sewerage_source').val();
-        en_other_impact_sewerage_qty = $('#en_other_impact_sewerage_qty').val();
-        en_other_impact_sewerage_mgt_plan = $('#en_other_impact_sewerage_mgt_plan').val();
-        en_other_impact_erosion_source = $('#en_other_impact_erosion_source').val();
-        en_other_impact_erosion_qty = $('#en_other_impact_erosion_qty').val();
-        en_other_impact_erosion_mgt_plan = $('#en_other_impact_erosion_mgt_plan').val();
-        en_other_impact_storm_water_source = $('#en_other_impact_storm_water_source').val();
-        en_other_impact_storm_water_qty = $('#en_other_impact_storm_water_qty').val();
-        en_other_impact_storm_water_mgt_plan = $('#en_other_impact_storm_water_mgt_plan').val();
-        en_other_impact_habitat_source = $('#en_other_impact_habitat_source').val();
-        en_other_impact_habitat_qty = $('#en_other_impact_habitat_qty').val();
-        en_other_impact_habitat_mgt_plan = $('#en_other_impact_habitat_mgt_plan').val();
-        en_other_impact_socio_source = $('#en_other_impact_socio_source').val();
-        en_other_impact_socio_qty = $('#en_other_impact_socio_qty').val();
-        en_other_impact_socio_mgt_plan = $('#en_other_impact_socio_mgt_plan').val();
-        en_other_impact_water_source_source = $('#en_other_impact_water_source_source').val();
-        en_other_impact_water_source_qty = $('#en_other_impact_water_source_qty').val();
-        en_other_impact_water_source_mgt_plan = $('#en_other_impact_water_source_mgt_plan').val();
-        en_other_impact_other_source = $('#en_other_impact_other_source').val();
-        en_other_impact_other_qty = $('#en_other_impact_other_qty').val();
-        en_other_impact_other_mgt_plan = $('#en_other_impact_other_mgt_plan').val();
+        let en_other_impact_odour_source = $('#en_other_impact_odour_source').val();
+        let en_other_impact_odour_qty = $('#en_other_impact_odour_qty').val();
+        let en_other_impact_odour_mgt_plan = $('#en_other_impact_odour_mgt_plan').val();
+        let en_other_impact_fugutive_source = $('#en_other_impact_fugutive_source').val();
+        let en_other_impact_fugutive_qty = $('#en_other_impact_fugutive_qty').val();
+        let en_other_impact_fugutive_mgt_plan = $('#en_other_impact_fugutive_mgt_plan').val();
+        let en_other_impact_slope_source = $('#en_other_impact_slope_source').val();
+        let en_other_impact_slope_qty = $('#en_other_impact_slope_qty').val();
+        let en_other_impact_slope_mgt_plan = $('#en_other_impact_slope_mgt_plan').val();
+        let en_other_impact_aesthetic_source = $('#en_other_impact_aesthetic_source').val();
+        let en_other_impact_aesthetic_qty = $('#en_other_impact_aesthetic_qty').val();
+        let en_other_impact_aesthetic_mgt_plan = $('#en_other_impact_aesthetic_mgt_plan').val();
+        let en_other_impact_mucks_source = $('#en_other_impact_mucks_source').val();
+        let en_other_impact_mucks_qty = $('#en_other_impact_mucks_qty').val();
+        let en_other_impact_mucks_mgt_plan = $('#en_other_impact_mucks_mgt_plan').val();
+        let en_other_impact_sewerage_source = $('#en_other_impact_sewerage_source').val();
+        let en_other_impact_sewerage_qty = $('#en_other_impact_sewerage_qty').val();
+        let en_other_impact_sewerage_mgt_plan = $('#en_other_impact_sewerage_mgt_plan').val();
+        let en_other_impact_erosion_source = $('#en_other_impact_erosion_source').val();
+        let en_other_impact_erosion_qty = $('#en_other_impact_erosion_qty').val();
+        let en_other_impact_erosion_mgt_plan = $('#en_other_impact_erosion_mgt_plan').val();
+        let en_other_impact_storm_water_source = $('#en_other_impact_storm_water_source').val();
+        let en_other_impact_storm_water_qty = $('#en_other_impact_storm_water_qty').val();
+        let en_other_impact_storm_water_mgt_plan = $('#en_other_impact_storm_water_mgt_plan').val();
+        let en_other_impact_habitat_source = $('#en_other_impact_habitat_source').val();
+        let en_other_impact_habitat_qty = $('#en_other_impact_habitat_qty').val();
+        let en_other_impact_habitat_mgt_plan = $('#en_other_impact_habitat_mgt_plan').val();
+        let en_other_impact_socio_source = $('#en_other_impact_socio_source').val();
+        let en_other_impact_socio_qty = $('#en_other_impact_socio_qty').val();
+        let en_other_impact_socio_mgt_plan = $('#en_other_impact_socio_mgt_plan').val();
+        let en_other_impact_water_source_source = $('#en_other_impact_water_source_source').val();
+        let en_other_impact_water_source_qty = $('#en_other_impact_water_source_qty').val();
+        let en_other_impact_water_source_mgt_plan = $('#en_other_impact_water_source_mgt_plan').val();
+        let en_other_impact_other_source = $('#en_other_impact_other_source').val();
+        let en_other_impact_other_qty = $('#en_other_impact_other_qty').val();
+        let en_other_impact_other_mgt_plan = $('#en_other_impact_other_mgt_plan').val();
 
         if(en_other_impact_odour_source == "")
         {
@@ -6449,6 +6522,7 @@
                     {
                         $('#impact_successMsg').html("Saved Successfully");
                         $('#impact_successMsg').show();
+                        $('#impact_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#impact_successMsg').delay(2000).fadeOut('slow');
@@ -6461,8 +6535,11 @@
                     }
                     else
                     {
-                        $('#impact_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#impact_errorMsg').html(`Application Error: ${data.error}`);
                         $('#impact_errorMsg').show();
+                        $('#impact_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#impact_errorMsg').delay(2000).fadeOut('slow');
@@ -6474,11 +6551,11 @@
     }
     function save_products_by_products_details()
     {
-        application_no = $('#application_no').val();
-        products_by_products_type = $('#products_by_products_type').val();
-        products_by_products_name = $('#products_by_products_name').val();
-        products_by_products_quantity = $('#products_by_products_quantity').val();
-        products_by_products_storage = $('#products_by_products_storage').val();
+        let application_no = $('#application_no').val();
+        let products_by_products_type = $('#products_by_products_type').val();
+        let products_by_products_name = $('#products_by_products_name').val();
+        let products_by_products_quantity = $('#products_by_products_quantity').val();
+        let products_by_products_storage = $('#products_by_products_storage').val();
 
         if(products_by_products_type == "")
         {
@@ -6536,11 +6613,11 @@
 
     function update_products_by_products_details()
     {
-        application_no = $('#application_no').val();
-        products_by_products_type = $('#edit_products_by_products_type').val();
-        products_by_products_name = $('#edit_products_by_products_name').val();
-        products_by_products_quantity = $('#edit_products_by_products_quantity').val();
-        products_by_products_storage = $('#edit_products_by_products_storage').val();
+        let application_no = $('#application_no').val();
+        let products_by_products_type = $('#edit_products_by_products_type').val();
+        let products_by_products_name = $('#edit_products_by_products_name').val();
+        let products_by_products_quantity = $('#edit_products_by_products_quantity').val();
+        let products_by_products_storage = $('#edit_products_by_products_storage').val();
 
         if(products_by_products_type == "")
         {

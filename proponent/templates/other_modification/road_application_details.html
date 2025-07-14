@@ -3,7 +3,7 @@
     <div class="col-xl-12">
         <div class="card mt-1">
             <div class="card-body">
-                <h4 class="header-title mb-3"> New Application</h4>
+                <h4 class="header-title mb-3"> Road Application</h4>
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
@@ -26,7 +26,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Applicant</label>
+                                                <label class="form-label fw-bold">Name of the Applicant</label>
                                                 <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -58,53 +58,8 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Project</label>
-                                                <select class="form-control" id="project_name" name="project_name">
-                                                    <option value="">--SELECT--</option>
-                                                    {% if application_details.project_name == 'National_Highway_Bypass' %}
-                                                    <option value="National_Highway_Bypass" selected>National Highway Bypass</option>
-                                                    <option value="Dzongkhag_Road">Dzongkhag Road</option>
-                                                    <option value="Thromde_Road">Thromde Road</option>
-                                                    <option value="Farm_Road">Farm Road</option>
-                                                    <option value="Access_Road">Access Road</option>
-                                                    <option value="Others">Others</option>
-                                                    {% elif application_details.project_name == 'Dzongkhag_Road' %}
-                                                    <option value="National_Highway_Bypass">National Highway Bypass</option>
-                                                    <option value="Dzongkhag_Road" selected>Dzongkhag Road</option>
-                                                    <option value="Thromde_Road">Thromde Road</option>
-                                                    <option value="Farm_Road">Farm Road</option>
-                                                    <option value="Access_Road">Access Road</option>
-                                                    <option value="Others">Others</option>
-                                                    {% elif application_details.project_name == 'Thromde_Road' %}
-                                                    <option value="National_Highway_Bypass">National Highway Bypass</option>
-                                                    <option value="Dzongkhag_Road">Dzongkhag Road</option>
-                                                    <option value="Thromde_Road" selected>Thromde Road</option>
-                                                    <option value="Farm_Road">Farm Road</option>
-                                                    <option value="Access_Road">Access Road</option>
-                                                    <option value="Others">Others</option>
-                                                    {% elif application_details.project_name == 'Farm_Road' %}
-                                                    <option value="National_Highway_Bypass">National Highway Bypass</option>
-                                                    <option value="Dzongkhag_Road">Dzongkhag Road</option>
-                                                    <option value="Thromde_Road">Thromde Road</option>
-                                                    <option value="Farm_Road" selected>Farm Road</option>
-                                                    <option value="Access_Road">Access Road</option>
-                                                    <option value="Others">Others</option>
-                                                    {% elif application_details.project_name == 'Access_Road' %}
-                                                    <option value="National_Highway_Bypass">National Highway Bypass</option>
-                                                    <option value="Dzongkhag_Road">Dzongkhag Road</option>
-                                                    <option value="Thromde_Road">Thromde Road</option>
-                                                    <option value="Farm_Road">Farm Road</option>
-                                                    <option value="Access_Road" selected>Access Road</option>
-                                                    <option value="Others">Others</option>
-                                                    {% else %}
-                                                    <option value="National_Highway_Bypass">National Highway Bypass</option>
-                                                    <option value="Dzongkhag_Road">Dzongkhag Road</option>
-                                                    <option value="Thromde_Road">Thromde Road</option>
-                                                    <option value="Farm_Road">Farm Road</option>
-                                                    <option value="Access_Road">Access Road</option>
-                                                    <option value="Others" selected>Others</option>
-                                                    {% endif %}
-                                                </select>
+                                                <label class="form-label fw-bold">Name of the Project</label>
+                                                <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}">
                                             </div>
                                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -383,7 +338,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                 <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}">
                                             </div>
                                             <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>

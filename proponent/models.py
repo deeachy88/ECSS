@@ -33,6 +33,7 @@ class t_ec_industries_t1_general(models.Model):
     state_reserve_forest_acre = models.IntegerField(default=None, blank=True, null=True)
     private_area_acre = models.IntegerField(default=None, blank=True, null=True)
     others_area_acre = models.IntegerField(default=None, blank=True, null=True)
+    others_area = models.CharField(max_length=250,default=None, blank=True, null=True)
     total_area_acre = models.IntegerField(default=None, blank=True, null=True)
     green_area_acre = models.IntegerField(default=None, blank=True, null=True)
     total_buildup_acre = models.IntegerField(default=None, blank=True, null=True)
@@ -476,7 +477,7 @@ class t_ec_industries_t1_general(models.Model):
     application_status = models.CharField(max_length=20,default=None, blank=True, null=True)
     resubmit_remarks = models.TextField(max_length=250, default=None, blank=True, null=True)
     resubmit_date = models.DateField(default=None, blank=True, null=True)
-    service_id = models.IntegerField(default=None, blank=True, null=True)
+    service_id = models.IntegerField(default=1, blank=True)
     application_source = models.CharField(max_length=20,default=None, blank=True, null=True)
     service_type = models.CharField(max_length=100,default=None, blank=True, null=True)
     additional_info = models.TextField(max_length=250, default=None, blank=True, null=True)
@@ -500,6 +501,7 @@ class t_ec_industries_t1_general(models.Model):
     bench_width = models.IntegerField(default=None, blank=True, null=True)
     revocation_id = models.CharField(max_length=100,default=None, blank=True, null=True)
     is_revoked = models.CharField(max_length=100,default=None, blank=True, null=True)
+    establishment_type = models.CharField(max_length=100,default=None, blank=True, null=True)
 
 class t_ec_industries_t1_general_audit(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -530,7 +532,7 @@ class t_ec_industries_t1_general_audit(models.Model):
     industrial_area_acre = models.IntegerField(default=None, blank=True, null=True)
     state_reserve_forest_acre = models.IntegerField(default=None, blank=True, null=True)
     private_area_acre = models.IntegerField(default=None, blank=True, null=True)
-    others_area_acre = models.IntegerField(default=None, blank=True, null=True)
+    
     total_area_acre = models.IntegerField(default=None, blank=True, null=True)
     green_area_acre = models.IntegerField(default=None, blank=True, null=True)
     total_buildup_acre = models.IntegerField(default=None, blank=True, null=True)
@@ -1171,8 +1173,8 @@ class t_payment_details(models.Model):
     receipt_no = models.CharField(max_length=255,default=None, blank=True, null=True)
     receipt_date = models.DateTimeField(default=None, blank=True, null=True)
     total_receipt_amount = models.DecimalField(max_digits=10, decimal_places=2,default=None, blank=True, null=True)
-    service_type = models.CharField(max_length=100, default=None, blank=True, null=True),
-    cancelled_date = models.DateTimeField(default=None, blank=True, null=True)
+    service_type = models.CharField(max_length=255, default=None, blank=True, null=True)
+    cancelled_date = models.DateField(default=None, blank=True, null=True)
     cancelled_reason = models.CharField(max_length=255,default=None, blank=True, null=True)
     remarks = models.CharField(max_length=255,default=None, blank=True, null=True)
 
@@ -1190,6 +1192,7 @@ class t_workflow_dtls(models.Model):
     ca_authority = models.IntegerField(default=None, blank=True, null=True)
     result = models.CharField(max_length=250, default=None, blank=True, null=True)
     application_source = models.CharField(max_length=20,default=None, blank=True, null=True)
+    service_type = models.CharField(max_length=20,default=None, blank=True, null=True)
 
 class t_workflow_dtls_audit(models.Model):
     instance_id = models.AutoField(primary_key=True)
@@ -1205,6 +1208,7 @@ class t_workflow_dtls_audit(models.Model):
     ca_authority = models.IntegerField(default=None, blank=True, null=True)
     result = models.CharField(max_length=250, default=None, blank=True, null=True)
     application_source = models.CharField(max_length=20,default=None, blank=True, null=True)
+    service_type = models.CharField(max_length=20,default=None, blank=True, null=True)
 
 # ReportSubmission
 class t_report_submission_t1(models.Model):

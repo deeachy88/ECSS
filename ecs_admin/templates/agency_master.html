@@ -11,9 +11,9 @@
     <div class="col-md-12">
         <div class="card mt-1">
             <div class="card-body">
-                <!--<div class="card-widgets">
+                <div class="card-widgets">
                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add_agency_modal"><i class="mdi mdi-plus-circle me-2"></i>Add</button>
-                </div>-->
+                </div>
                 <h5 class="card-title mb-0">Competent Authority Master</h5>
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
@@ -39,12 +39,12 @@
                                     {% endfor %}
                                     </th>
                                     <td>
-                                        <!--<div class="btn-group btn-group-sm">
+                                        <div class="btn-group btn-group-sm">
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit Agency"
                                                      onclick="populateEditForm('{{agency_details.agency_id}}', '{{agency_details.agency_name}}')"><i class="mdi mdi-square-edit-outline"></i> </button>
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Delete Agency"
                                                      onclick="populateDeleteForm('{{agency_details.agency_id}}', '{{agency_details.agency_name}}')"><i class="mdi mdi-delete"></i> </button>
-                                        </div>-->
+                                        </div>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -72,10 +72,29 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Agency Name</label>
+                                <label class="form-label fw-bold">Competant Authority</label>
                                 <input type="text" name="agency_name" class="form-control" id="agency_name">
                             </div>
                             <div id="agency_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Type</label>
+                                <input type="text" name="remarks" class="form-control" id="remarks">
+                            </div>
+                            <div id="remarksErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Dzongkhag</label>
+                                <select id="dzongkhag" name="dzongkhag" class="form-select">
+                                    <option value="">--SELECT DZONGKHAG--</option>
+                                    {% for dzongkhag in dzongkhag_list %}
+                                    <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
                     </div>
                 </div>
@@ -94,7 +113,7 @@
         <div class="modal-dialog modal-md modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add Agency Master</h4>
+                    <h4 class="modal-title">Edit Competent Authority</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                 </div>
                 <div class="modal-body">
@@ -109,6 +128,25 @@
                                 <input type="hidden" name="edit_agency_id" class="form-control" id="edit_agency_id">
                             </div>
                             <div id="edit_agency_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Type</label>
+                                <input type="text" name="edit_remarks" class="form-control" id="edit_remarks">
+                            </div>
+                            <div id="edit_remarksErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Dzongkhag</label>
+                                <select id="edit_dzongkhag" name="edit_dzongkhag" class="form-select">
+                                    <option value="">--SELECT DZONGKHAG--</option>
+                                    {% for dzongkhag in dzongkhag_list %}
+                                    <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="edit_dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
                     </div>
                 </div>
@@ -168,12 +206,26 @@ function populateDeleteForm(agency_id, agency_name)
 function save_agency()
 {
         let agency_name = $('#agency_name').val();
+        let remarks = $('#remarks').val();
+        let dzongkhag = $('#dzongkhag').val();
 
         if(agency_name == "")
         {
             $('#agency_nameErrorMsg').html("Enter Agency.");
             $('#agency_nameErrorMsg').show();
             $('#agency_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(remarks == "")
+        {
+            $('#remarksErrorMsg').html("Enter Type.");
+            $('#remarksErrorMsg').show();
+            $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(dzongkhag == "")
+        {
+            $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+            $('#dzongkhagErrorMsg').show();
+            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
         }
         else
         {
@@ -203,12 +255,26 @@ function save_agency()
 function edit_agency_details()
 {
         let edit_agency_name = $('#edit_agency_name').val();
+        let edit_remarks = $('#edit_remarks').val();
+        let edit_dzongkhag = $('#edit_dzongkhag').val();
 
         if(edit_agency_name == "")
         {
             $('#edit_agency_nameErrorMsg').html("Enter Agency.");
             $('#edit_agency_nameErrorMsg').show();
             $('#edit_agency_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(edit_remarks == "")
+        {
+            $('#edit_remarksErrorMsg').html("Enter Type.");
+            $('#edit_remarksErrorMsg').show();
+            $('#edit_remarksErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(edit_dzongkhag == "")
+        {
+            $('#edit_dzongkhagErrorMsg').html("Select Dzongkhag.");
+            $('#edit_dzongkhagErrorMsg').show();
+            $('#edit_dzongkhagErrorMsg').delay(2000).fadeOut('slow');
         }
         else
         {

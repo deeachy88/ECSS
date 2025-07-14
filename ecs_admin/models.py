@@ -208,7 +208,7 @@ class t_other_details(models.Model):
     others_id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=255, default=None, blank=True, null=True)
     title = models.CharField(max_length=255, default=None, blank=True, null=True)
-    document_id = models.BigIntegerField(blank=True, null=True)
+    document_id = models.IntegerField(blank=True, null=True)
     is_active = models.CharField(max_length=3, default=None, blank=True, null=True)
     is_deleted = models.CharField(max_length=3, default=None, blank=True, null=True)
 

@@ -3,7 +3,7 @@
     <div class="col-xl-12">
         <div class="card mt-1">
             <div class="card-body">
-                <h4 class="header-title mb-3"> New Application</h4>
+                <h4 class="header-title mb-3"> Initial Environmental Examination (IEE) Form for Quarry Projects -2022</h4>
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
@@ -23,15 +23,15 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Applicant</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{application_details.name}}" readonly> 
+                                                <label class="form-label fw-bold">Name of the Applicant</label>
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Address</label>
-                                                <input type="text" name="address" class="form-control" id="address" value="{{application_details.address}}" readonly>
+                                                <input type="text" name="address" class="form-control" id="address" value="{{request.session.address}}" readonly>
                                             </div>
                                             <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -40,7 +40,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Contact No</label>
-                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{application_details.contact_number}}" readonly>
+                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{request.session.contact_number}}" readonly>
                                             </div>
                                             <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -55,7 +55,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Project</label>
+                                                <label class="form-label fw-bold">Name of the Project</label>
                                                 <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}">
                                             </div>
                                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -164,7 +164,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                                <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                                 <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}">
                                             </div>
                                             <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -173,15 +173,15 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
-                                                <input type="text" name="industrial_area_acre" class="form-control" id="industrial_area_acre">
+                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) in acres</label>
+                                                <input type="text" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{application_details.industrial_area_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="industrial_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">State Forest Reserve (acres)</label>
-                                                <input type="text" name="state_reserve_forest_acre" class="form-control" id="state_reserve_forest_acre">
+                                                <input type="text" name="state_reserve_forest_acre" class="form-control" id="state_reserve_forest_acre" value="{{application_details.state_reserve_forest_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="state_reserve_forest_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -190,30 +190,39 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Private Area (acres)</label>
-                                                <input type="text" name="private_area_acre" class="form-control" id="private_area_acre">
+                                                <input type="text" name="private_area_acre" class="form-control" id="private_area_acre" value="{{application_details.private_area_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="private_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Others Specify (acres)</label>
-                                                <input type="text" name="state_reserve_forest_acre" class="form-control" id="others_area_acre">
+                                                <label class="form-label fw-bold">Others Specify</label>
+                                                <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()" value="{{ application_details.others_area|default:'' }}">
                                             </div>
                                             <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
+                                        {% if application_details.others_area and application_details.others_area != "NA" %}
+                                            <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Others(acres)</label>
+                                                    <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()">
+                                                </div>
+                                                <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        {% endif %}
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Total land area required (acre)</label>
-                                                <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" disabled>
+                                                <input type="number" name="total_area_acre" class="form-control" id="total_area_acre" value="{{application_details.total_area_acre}}" readonly>
                                             </div>
                                             <div id="total_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Actual Mineable area(acre)</label>
-                                                <input type="text" name="actual_mineable_area" class="form-control" id="actual_mineable_area">
+                                                <input type="text" name="actual_mineable_area" class="form-control" id="actual_mineable_area" value="{{application_details.actual_mineable_area}}">
                                             </div>
                                             <div id="actual_mineable_areaErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -222,7 +231,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Green Belt Area(acre)</label>
-                                                <input type="text" name="green_area_acre" class="form-control" id="green_area_acre" disabled>
+                                                <input type="text" name="green_area_acre" class="form-control" id="green_area_acre" value="{{application_details.green_belt_area}}" >
                                             </div>
                                             <div id="green_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -230,8 +239,8 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Elevation(meters)</label>
-                                                <input type="number" name="terrain_elevation" class="form-control" id="terrain_elevation">
+                                                <label class="form-label fw-bold">Elevation (meters)</label>
+                                                <input type="number" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{application_details.terrain_elevation}}">
                                             </div>
                                             <div id="terrain_elevationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -240,10 +249,27 @@
                                                 <label class="form-label fw-bold">Slope/Gradient</label>
                                                 <select class="form-select" name="terrain_slope" id="terrain_slope">
                                                     <option selected>Choose One</option>
-                                                    <option value="Flat land (below 20 degrees)">Flat land (below 20 degrees)</option>
-                                                    <option value="Gentle slope (21-45 degrees)">Gentle slope (21-45 degrees)</option>
-                                                    <option value="Steep slope (46 – 60 degrees)">Steep slope (46 – 60 degrees)</option>
-                                                    <option value="Very steep slope (above 60 degrees)">Very steep slope (above 60 degrees)</option>
+                                                    {% if application_details.terrain_slope == "Flat land (below 20 degrees)" %}
+                                                        <option value="Flat land (below 20 degrees)" selected>Flat land (below 20 degrees)</option>
+                                                        <option value="Gentle slope (21-45 degrees)">Gentle slope (21-45 degrees)</option>
+                                                        <option value="Steep slope (46 – 60 degrees)">Steep slope (46 – 60 degrees)</option>
+                                                        <option value="Very steep slope (above 60 degrees)">Very steep slope (above 60 degrees)</option>
+                                                    {% elif application_details.terrain_slope == "Gentle slope (21-45 degrees)" %}
+                                                        <option value="Flat land (below 20 degrees)">Flat land (below 20 degrees)</option>
+                                                        <option value="Gentle slope (21-45 degrees)" selected>Gentle slope (21-45 degrees)</option>
+                                                        <option value="Steep slope (46 – 60 degrees)">Steep slope (46 – 60 degrees)</option>
+                                                        <option value="Very steep slope (above 60 degrees)">Very steep slope (above 60 degrees)</option>
+                                                    {% elif application_details.terrain_slope == "Steep slope (46 – 60 degrees)" %}
+                                                        <option value="Flat land (below 20 degrees)">Flat land (below 20 degrees)</option>
+                                                        <option value="Gentle slope (21-45 degrees)">Gentle slope (21-45 degrees)</option>
+                                                        <option value="Steep slope (46 – 60 degrees)" selected>Steep slope (46 – 60 degrees)</option>
+                                                        <option value="Very steep slope (above 60 degrees)">Very steep slope (above 60 degrees)</option>
+                                                    {% else %}
+                                                        <option value="Flat land (below 20 degrees)">Flat land (below 20 degrees)</option>
+                                                        <option value="Gentle slope (21-45 degrees)">Gentle slope (21-45 degrees)</option>
+                                                        <option value="Steep slope (46 – 60 degrees)">Steep slope (46 – 60 degrees)</option>
+                                                        <option value="Very steep slope (above 60 degrees)" selected>Very steep slope (above 60 degrees)</option>
+                                                    {% endif %}
                                                 </select>
                                             </div>
                                             <div id="terrain_slopeErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -278,6 +304,9 @@
                                 <form method="post" id="terrain_baseline_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="terrain_baseline_application_no">
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable
+                                    </div>
                                     <table class="table table-hover table-bordered table-centered mb-0">
                                         <thead>
                                             <tr>
@@ -429,7 +458,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                 <input type="text" name="project_cost" class="form-control" id="project_cost">
                                             </div>
                                             <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -975,143 +1004,34 @@
                                     </div>
                                     <br>
                                     {% if application_details.anc_other_required == 'Yes' %}
-                                        {% if application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_surface_collection == 'Yes' and application_details.anc_other_mineral == 'Yes' and  application_details.anc_other_general =='Yes' %}
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()" checked>
-                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_surface_collection()" checked>
-                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()"  checked>
-                                                <label class="form-check-label">Mineral stockyards outside the quarry lease area</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()" checked>
-                                                <label class="form-check-label">Others</label>
-                                            </div>
-                                        {% elif application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_surface_collection == 'Yes' %}
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()" checked>
-                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_surface_collection()" checked>
-                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()">
-                                                <label class="form-check-label">Mineral stockyards outside the quarry lease area</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()">
-                                                <label class="form-check-label">Others</label>
-                                            </div>
-                                        {% elif application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_surface_collection == 'Yes' and application_details.anc_other_mineral == 'Yes'%}
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()" checked>
-                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_surface_collection()" checked>
-                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()"  checked>
-                                                <label class="form-check-label">Mineral stockyards outside the quarry lease area</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()">
-                                                <label class="form-check-label">Others</label>
-                                            </div>
-                                        {% elif application_details.anc_other_surface_collection == 'Yes' and application_details.anc_other_mineral == 'Yes' and  application_details.anc_other_general =='Yes' %}
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()">
-                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_surface_collection()" checked>
-                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()"  checked>
-                                                <label class="form-check-label">Mineral stockyards outside the quarry lease area</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()" checked>
-                                                <label class="form-check-label">Others</label>
-                                            </div>
-                                        {% elif application_details.anc_other_surface_collection == 'Yes' and application_details.anc_other_mineral == 'Yes' %}
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()" checked>
-                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_surface_collection()" checked>
-                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()"  checked>
-                                                <label class="form-check-label">Mineral stockyards outside the quarry lease area</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()">
-                                                <label class="form-check-label">Others</label>
-                                            </div>
-                                        {% elif application_details.anc_other_crushing_unit == 'Yes' and  application_details.anc_other_general =='Yes' %}
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()">
-                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_surface_collection()" checked>
-                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()"  checked>
-                                                <label class="form-check-label">Mineral stockyards outside the quarry lease area</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()">
-                                                <label class="form-check-label">Others</label>
-                                            </div>
-                                        {% elif application_details.anc_other_mineral == 'Yes' and  application_details.anc_other_general =='Yes' %}
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()">
-                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_surface_collection()">
-                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()"  checked>
-                                                <label class="form-check-label">Mineral stockyards outside the quarry lease area</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()" checked>
-                                                <label class="form-check-label">Others</label>
-                                            </div>
-                                        {% else %}
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_crushing_unit()">
-                                                <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_surface_collection()">
-                                                <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()">
-                                                <label class="form-check-label">Mineral stockyards outside the quarry lease area</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input anc_other_required_details" value="Yes" onclick="check_anc_other_general()">
-                                                <label class="form-check-label">Others</label>
-                                            </div>
-                                        {% endif %}
+                                        <div class="form-check">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" 
+                                                class="form-check-input anc_other_required_details" value="Yes" 
+                                                onclick="check_anc_other_crushing_unit()"
+                                                {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" 
+                                                class="form-check-input anc_other_required_details" value="Yes" 
+                                                onclick="check_anc_other_surface_collection()"
+                                                {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" 
+                                                class="form-check-input anc_other_required_details" value="Yes" 
+                                                onclick="check_anc_other_general()"
+                                                {% if application_details.anc_other_mineral == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Mineral stockyards outside the quarry lease area</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general" 
+                                                class="form-check-input anc_other_required_details" value="Yes" 
+                                                onclick="check_anc_other_general()"
+                                                {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Others</label>
+                                        </div>
                                     {% endif %}
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_others_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
@@ -2035,142 +1955,24 @@
 </form>
 
 <script>
-    $(function() {
-            if 
-            (
-                $('#anc_other_crushing_unit').prop('checked') &&
-                $('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                $('#anc_other_general').prop('checked')
-            ) 
-            {
-                $('.industry_application').show();
-                $('.forestry_application').show();
-                $('.general_application').show();
-                $('.mineral_application').show();
-            } 
-            else if 
-            (
-                $('#anc_other_crushing_unit').prop('checked') &&
-                !$('#anc_other_surface_collection').prop('checked') &&
-                !$('#anc_other_mineral').prop('checked') &&
-                !$('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.industry_application').show();
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                $('#anc_other_surface_collection').prop('checked') &&
-                !$('#anc_other_mineral').prop('checked') &&
-                !$('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.forestry_application').show();
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                !$('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                !$('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.mineral_application').show();
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                !$('#anc_other_surface_collection').prop('checked') &&
-                !$('#anc_other_mineral').prop('checked') &&
-                $('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.general_application').show();    
-            }
-            else if 
-            (
-                $('#anc_other_crushing_unit').prop('checked') &&
-                $('#anc_other_surface_collection').prop('checked') &&
-                !$('#anc_other_mineral').prop('checked') &&
-                !$('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.industry_application').show();
-                $('.forestry_application').show();
-            }
-            else if 
-            (
-                $('#anc_other_crushing_unit').prop('checked') &&
-                $('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                !$('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.industry_application').show();
-                $('.forestry_application').show();
-                $('.mineral_application').show();
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                $('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                !$('#anc_other_general').prop('checked')
-            )  
-            {
-                
-                $('.forestry_application').show();
-                $('.mineral_application').show();
-                
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                $('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                $('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.forestry_application').show();
-                $('.general_application').show();
-                $('.mineral_application').show();
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                !$('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                !$('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.mineral_application').show();
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                !$('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                $('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.general_application').show();
-                $('.mineral_application').show();
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                !$('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                $('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.general_application').show();
-                $('.mineral_application').show();
-            }
-        });
+    function toggleAcreField() {
+        const othersArea = document.getElementById('others_area');
+        const acreFieldContainer = document.getElementById('acreFieldContainer');
         
+        // Show acre field if others_area has any value, hide if empty
+        if (othersArea.value.trim() !== '') {
+            acreFieldContainer.style.display = 'block';
+        } else {
+            acreFieldContainer.style.display = 'none';
+            // Clear the acre value when hiding
+            document.getElementById('others_area_acre').value = '';
+            // Trigger the change event to update totals if needed
+            if (typeof get_total_area_acre === 'function') {
+                get_total_area_acre();
+            }
+        }
+    }
+    
     function check_industry_radio(value)
     {
         if(value == 'Yes')
@@ -2188,10 +1990,12 @@
         if(value == 'Yes')
         {
             $('#approach_road_details').show();
+            $('#approach_road_details_table').show();
         }
         else
         {
             $('#approach_road_details').hide();
+            $('#approach_road_details_table').hide();
         }
     }
 
@@ -2250,11 +2054,19 @@
     {
         if(value == 'Yes')
         {
-            $('.anc_other_required_details').show();
+            $('.other_ancillary_facilities').show();
         }
         else
         {
-            $('.anc_other_required_details').hide();
+            $('.other_ancillary_facilities').hide();
+            $('#anc_other_crushing_unit').prop('checked', false);
+            $('#anc_other_surface_collection').prop('checked', false);
+            $('#anc_other_mineral').prop('checked', false);
+            $('#anc_other_general').prop('checked', false);
+            $('.industry_application').hide();
+            $('.forestry_application').hide();
+            $('.mineral_application').hide();
+            $('.general_application').hide();
         }
     }
 
@@ -2297,6 +2109,7 @@
                 {
                     $('#machine_tool_SuccessMsg').html("Add Successful");
                     $('#machine_tool_SuccessMsg').show();
+                    $('#machine_tool_SuccessMsg').focus();
                     setTimeout(function()
                     {
                         $('#machine_tool_SuccessMsg').delay(2000).fadeOut('slow');
@@ -2455,7 +2268,7 @@
             ({
                 type : "POST",
                 url : "{% url 'add_raw_materials' %}",
-                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method},
+                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#raw_material_SuccessMsg').html("Add Successful");
@@ -2489,12 +2302,12 @@
 
     function update_raw_material_details()
     {
-        record_id = $('#edit_raw_material_record_id').val();
-        application_no = $('#edit_raw_material_app_no').val();
-        raw_material = $('#edit_raw_material').val();
-        raw_material_qty = $('#edit_raw_material_qty').val();
-        raw_material_source = $('#edit_raw_material_source').val();
-        raw_material_storage_method = $('#edit_raw_material_storage_method').val();
+        let record_id = $('#edit_raw_material_record_id').val();
+        let application_no = $('#edit_raw_material_app_no').val();
+        let raw_material = $('#edit_raw_material').val();
+        let raw_material_qty = $('#edit_raw_material_qty').val();
+        let raw_material_source = $('#edit_raw_material_source').val();
+        let raw_material_storage_method = $('#edit_raw_material_storage_method').val();
 
         if(raw_material == "")
         {
@@ -2530,10 +2343,10 @@
             ({
                 type : "POST",
                 url : "{% url 'update_raw_materials' %}",
-                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method},
+                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
-                    $('#edit_raw_material_SuccessMsg').html("Add Successful");
+                    $('#edit_raw_material_SuccessMsg').html("Update Successful");
                     $('#edit_raw_material_SuccessMsg').show();
                     setTimeout(function()
                     {
@@ -2550,7 +2363,7 @@
         }
     }
 
-    function populate_delete_machine_equipment(record_id, application_no)
+    function populate_delete_raw_materials(record_id, application_no)
     {
         $('#delete_raw_material_record_id').val(record_id);
         $('#delete_raw_material_app_no').val(application_no);
@@ -2559,17 +2372,17 @@
 
     function delete_raw_material_details()
     {
-        record_id = $('#delete_raw_material_record_id').val();
-        application_no = $('#delete_raw_material_app_no').val();
+        let record_id = $('#delete_raw_material_record_id').val();
+        let application_no = $('#delete_raw_material_app_no').val();
 
         $.ajax
         ({
             type : "POST",
             url : "{% url 'delete_raw_materials' %}",
-            data : {'record_id':record_id, 'application_no':application_no},
+            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
-                $('#delete_raw_material_SuccessMsg').html("Add Successful");
+                $('#delete_raw_material_SuccessMsg').html("Delete Successful");
                 $('#delete_raw_material_SuccessMsg').show();
                 setTimeout(function()
                 {
@@ -2587,10 +2400,10 @@
 
     function add_partner_details()
     {
-        application_no = $('#application_no').val();
-        partner_type = $('#partner_type').val();
-        partner_type_name = $('#partner_type_name').val();
-        partner_type_address = $('#partner_type_address').val();
+        let application_no = $('#application_no').val();
+        let partner_type = $('#partner_type').val();
+        let partner_type_name = $('#partner_type_name').val();
+        let partner_type_address = $('#partner_type_address').val();
 
         if(partner_type == "")
         {
@@ -2649,8 +2462,8 @@
 
     function delete_partner_details()
     {
-        record_id = $('#delete_partner_details_record_id').val();
-        application_no = $('#delete_partner_details_app_no').val();
+        let record_id = $('#delete_partner_details_record_id').val();
+        let application_no = $('#delete_partner_details_app_no').val();
 
         $.ajax
         ({
@@ -2690,22 +2503,16 @@
     function save_quarry_application()
     {
         let project_name = $('#project_name').val();
-        let application_type = $('#application_type').val();
-        let cid = $('#cid').val();
-        let cid_length = $('#cid').val().length;
-        let applicant_name = $('#applicant_name').val();
-        let address = $('#address').val();
-        let contact_no = $('#contact_no').val();
-        let contact_no_length = $('#contact_no').val().length;
-        let email = $('#email').val();
-        let focal_person = $('#focal_person').val();
-        let dzongkhag_code = $('#dzo_throm').val();
+        let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
+        let dzongkhag_throm_val = $("input[name=dzongkhag_throm]:checked").val();
+        let thromde_id = $('#thromde_id').val();
+        let dzongkhag_code = $('#dzongkhag').val();
         let gewog_code = $('#gewog').val();
         let village_code = $('#vil_chiwog').val();
-        let location_name = $('#location_name').val();
         let industrial_area_acre = $('#industrial_area_acre').val();
         let state_reserve_forest_acre = $('#state_reserve_forest_acre').val();
         let private_area_acre = $('#private_area_acre').val();
+        let others_area = $('#others_area').val();
         let others_area_acre = $('#others_area_acre').val();
         let actual_mineable_area = $('#actual_mineable_area').val();
         let green_area_acre = $('#green_area_acre').val();
@@ -2720,89 +2527,40 @@
             $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
             $('#project_name').focus();
         }
-        else if(application_type == "")
+        else if(dzongkhag_throm == "")
         {
-            $('#application_typeErrorMsg').html("Enter Application Type");
-            $('#application_typeErrorMsg').show();
-            $('#application_typeErrorMsg').delay(2000).fadeOut('slow');
-            $('#application_type').focus();
+            $('#dzongkhag_thromErrorMsg').html("Choose One");
+            $('#dzongkhag_thromErrorMsg').show();
+            $('#dzongkhag_thromErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag_throm').focus();
         }
-        else if(cid == "")
+        else if(dzongkhag_throm_val == "Thromde" && thromde_id == "")
         {
-            $('#cidErrorMsg').html("Enter CID");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
+            $('#thromde_idErrorMsg').html("Select Dzongkhag");
+            $('#thromde_idErrorMsg').show();
+            $('#thromde_idErrorMsg').delay(2000).fadeOut('slow');
+            $('#thromde_id').focus();
         }
-        else if(cid_length < 11)
+        else if(dzongkhag_throm_val == "Dzongkhag" && dzongkhag_code == "")
         {
-            $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
+            $('#dzongkhagErrorMsg').html("Select Dzongkhag");
+            $('#dzongkhagErrorMsg').show();
+            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag').focus();
         }
-        else if(applicant_name == "")
-        {
-            $('#applicant_nameErrorMsg').html("Enter Name of The Applicant");
-            $('#applicant_nameErrorMsg').show();
-            $('#applicant_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#applicant_name').focus();
-        }
-        else if(address == "")
-        {
-            $('#addressErrorMsg').html("Enter Address");
-            $('#addressErrorMsg').show();
-            $('#addressErrorMsg').delay(2000).fadeOut('slow');
-            $('#address').focus();
-        }
-        else if(contact_no == "")
-        {
-            $('#contact_noErrorMsg').html("Enter Contact No");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
-        }
-        else if(contact_no_length < 8)
-        {
-            $('#contact_noErrorMsg').html("Cannot Be Less Than Eight Digits");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
-        }
-        else if(email == "")
-        {
-            $('#emailErrorMsg').html("Enter Email");
-            $('#emailErrorMsg').show();
-            $('#emailErrorMsg').delay(2000).fadeOut('slow');
-            $('#email').focus();
-        }
-        else if(dzongkhag_code == "")
-        {
-            $('#dzo_thromErrorMsg').html("Select Dzongkhag");
-            $('#dzo_thromErrorMsg').show();
-            $('#dzo_thromErrorMsg').delay(2000).fadeOut('slow');
-            $('#dzo_throm').focus();
-        }
-        else if(gewog_code == "")
+        else if(dzongkhag_throm_val == "Dzongkhag" && gewog_code == "")
         {
             $('#gewogErrorMsg').html("Select Gewog");
             $('#gewogErrorMsg').show();
             $('#gewogErrorMsg').delay(2000).fadeOut('slow');
             $('#gewog').focus();
         }
-        else if(village_code == "")
+        else if(dzongkhag_throm_val == "Dzongkhag" && village_code == "")
         {
             $('#vil_chiwogErrorMsg').html("Select Village");
             $('#vil_chiwogErrorMsg').show();
             $('#vil_chiwogErrorMsg').delay(2000).fadeOut('slow');
             $('#vil_chiwog').focus();
-        }
-        else if(location_name == "")
-        {
-            $('#location_nameErrorMsg').html("Enter Name of The Particular Project Site");
-            $('#location_nameErrorMsg').show();
-            $('#location_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#location_name').focus();
         }
         else if(industrial_area_acre == "")
         {
@@ -2832,9 +2590,9 @@
             $('#private_area_acreErrorMsg').delay(2000).fadeOut('slow');
             $('#private_area_acre').focus();
         }
-        else if(others_area_acre == "")
+        else if(others_area != "NA" || others_area != "" && others_area_acre == "")
         {
-            $('#others_area_acreErrorMsg').html("Enter Others");
+            $('#others_area_acreErrorMsg').html("Enter Others Area");
             $('#others_area_acreErrorMsg').show();
             $('#others_area_acreErrorMsg').delay(2000).fadeOut('slow');
             $('#others_area_acre').focus();
@@ -2880,6 +2638,7 @@
                     {
                         $('#application_form_successMsg').html("Saved Successfully");
                         $('#application_form_successMsg').show();
+                        $('#application_form_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#application_form_successMsg').delay(2000).fadeOut('slow');
@@ -2892,10 +2651,13 @@
                     }
                     else
                     {
-                        $('#application_form_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#application_form_errorMsg').html(`Application Error: ${data.error}`);
                         $('#application_form_errorMsg').show();
-                        setTimeout(function()
-                        {
+                        $('#application_form_errorMsg').focus();
+                        
+                        setTimeout(function() {
                             $('#application_form_errorMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                     }
@@ -2906,37 +2668,37 @@
 
     function save_terrain_baseline_details()
     {
-        bl_protected_area_name = $('#bl_protected_area_name').val();
-        bl_protected_area_distance = $('#bl_protected_area_distance').val();
-        bl_migratory_route_name = $('#bl_migratory_route_name').val();
-        bl_migratory_route_distance = $('#bl_migratory_route_distance').val();
-        bl_wetland_name = $('#bl_wetland_name').val();
-        bl_wetland_distance = $('#bl_wetland_distance').val();
-        bl_water_bodies_name = $('#bl_water_bodies_name').val();
-        bl_water_bodies_distance = $('#bl_water_bodies_distance').val();
-        bl_fmu_name = $('#bl_fmu_name').val();
-        bl_fmu_distance = $('#bl_fmu_distance').val();
-        bl_agricultural_name = $('#bl_agricultural_name').val();
-        bl_agricultural_distance = $('#bl_agricultural_distance').val();
-        bl_settlement_name = $('#bl_settlement_name').val();
-        bl_settlement_distance = $('#bl_settlement_distance').val();
-        bl_road_name = $('#bl_road_name').val();
-        bl_road_distance = $('#bl_road_distance').val();
-        bl_public_infra_name = $('#bl_public_infra_name').val();
-        bl_public_infra_distance = $('#bl_public_infra_distance').val();
-        bl_school_name = $('#bl_school_name').val();
-        bl_school_distance = $('#bl_school_distance').val();
-        bl_heritage_name = $('#bl_heritage_name').val();
-        bl_heritage_distance = $('#bl_heritage_distance').val();
-        bl_tourist_facility_name = $('#bl_tourist_facility_name').val();
-        bl_tourist_facility_distance = $('#bl_tourist_facility_distance').val();
-        bl_impt_installation_name = $('#bl_impt_installation_name').val();
-        bl_impt_installation_distance = $('#bl_impt_installation_distance').val();
-        bl_industries_name = $('#bl_industries_name').val();
-        bl_industries_distance = $('#bl_industries_distance').val();
-        bl_others = $('#bl_others').val();
-        bl_others_name = $('#bl_others_name').val();
-        bl_others_distance = $('#bl_others_distance').val();
+        let bl_protected_area_name = $('#bl_protected_area_name').val();
+        let bl_protected_area_distance = $('#bl_protected_area_distance').val();
+        let bl_migratory_route_name = $('#bl_migratory_route_name').val();
+        let bl_migratory_route_distance = $('#bl_migratory_route_distance').val();
+        let bl_wetland_name = $('#bl_wetland_name').val();
+        let bl_wetland_distance = $('#bl_wetland_distance').val();
+        let bl_water_bodies_name = $('#bl_water_bodies_name').val();
+        let bl_water_bodies_distance = $('#bl_water_bodies_distance').val();
+        let bl_fmu_name = $('#bl_fmu_name').val();
+        let bl_fmu_distance = $('#bl_fmu_distance').val();
+        let bl_agricultural_name = $('#bl_agricultural_name').val();
+        let bl_agricultural_distance = $('#bl_agricultural_distance').val();
+        let bl_settlement_name = $('#bl_settlement_name').val();
+        let bl_settlement_distance = $('#bl_settlement_distance').val();
+        let bl_road_name = $('#bl_road_name').val();
+        let bl_road_distance = $('#bl_road_distance').val();
+        let bl_public_infra_name = $('#bl_public_infra_name').val();
+        let bl_public_infra_distance = $('#bl_public_infra_distance').val();
+        let bl_school_name = $('#bl_school_name').val();
+        let bl_school_distance = $('#bl_school_distance').val();
+        let bl_heritage_name = $('#bl_heritage_name').val();
+        let bl_heritage_distance = $('#bl_heritage_distance').val();
+        let bl_tourist_facility_name = $('#bl_tourist_facility_name').val();
+        let bl_tourist_facility_distance = $('#bl_tourist_facility_distance').val();
+        let bl_impt_installation_name = $('#bl_impt_installation_name').val();
+        let bl_impt_installation_distance = $('#bl_impt_installation_distance').val();
+        let bl_industries_name = $('#bl_industries_name').val();
+        let bl_industries_distance = $('#bl_industries_distance').val();
+        let bl_others = $('#bl_others').val();
+        let bl_others_name = $('#bl_others_name').val();
+        let bl_others_distance = $('#bl_others_distance').val();
 
         if(bl_protected_area_name == "")
         {
@@ -3168,20 +2930,24 @@
                     {
                         $('#terrain_baseline_application_successMsg').html("Added Successfully");
                         $('#terrain_baseline_application_successMsg').show();
+                        $('#terrain_baseline_application_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#terrain_baseline_application_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                         setTimeout(function() {
-                            $("#headingFourBtn").removeAttr("disabled");
-                            $("#collapseFour").addClass("show");
+                            $("#headingForestButton").removeAttr("disabled");
+                            $("#collapseForest").addClass("show");
                             $("#collapseTwo").removeClass("show");
                         }, 2000);
                     }
                     else
                     {
-                        $('#terrain_baseline_application_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#terrain_baseline_application_errorMsg').html(`Application Error: ${data.error}`);
                         $('#terrain_baseline_application_errorMsg').show();
+                        $('#terrain_baseline_application_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#terrain_baseline_application_errorMsg').delay(2000).fadeOut('slow');
@@ -3198,6 +2964,10 @@
         let proposed_location_justification = $('#proposed_location_justification').val();
         let project_cost = $('#project_cost').val();
         let project_duration = $('#project_duration').val();
+        let production_capacity = $('#production_capacity').val();
+        let stripping_ratio = $('#stripping_ratio').val();
+        let bench_height= $('#bench_height').val();
+        let bench_width= $('#bench_width').val();
         let blast_required = $("input[name=blast_required]:checked").length;
         let blast_required_value = $("input[name=blast_required]:checked").val();
         let blast_type = $('#blast_type').val();
@@ -3231,6 +3001,34 @@
             $('#project_durationErrorMsg').show();
             $('#project_durationErrorMsg').delay(2000).fadeOut('slow');
             $('#project_duration').focus();
+        }
+        else if(production_capacity == "")
+        {
+            $('#production_capacityErrorMsg').html("Enter Production Capacity");
+            $('#production_capacityErrorMsg').show();
+            $('#production_capacityErrorMsg').delay(2000).fadeOut('slow');
+            $('#production_capacity').focus();
+        }
+        else if(stripping_ratio == "")
+        {
+            $('#stripping_ratioErrorMsg').html("Enter Stripping Ratio");
+            $('#stripping_ratioErrorMsg').show();
+            $('#stripping_ratioErrorMsg').delay(2000).fadeOut('slow');
+            $('#stripping_ratio').focus();
+        }
+        else if(bench_height == "")
+        {
+            $('#bench_heightErrorMsg').html("Enter Bench Height");
+            $('#bench_heightErrorMsg').show();
+            $('#bench_heightErrorMsg').delay(2000).fadeOut('slow');
+            $('#bench_height').focus();
+        }
+        else if(bench_width == "")
+        {
+            $('#bench_widthErrorMsg').html("Enter Bench Width");
+            $('#bench_widthErrorMsg').show();
+            $('#bench_widthErrorMsg').delay(2000).fadeOut('slow');
+            $('#bench_width').focus();
         }
         else if(blast_required < 1)
         {
@@ -3273,6 +3071,7 @@
                     {
                         $('#project_details_successMsg').html("Saved Successfully");
                         $('#project_details_successMsg').show();
+                        $('#project_details_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_successMsg').delay(2000).fadeOut('slow');
@@ -3280,13 +3079,16 @@
                         setTimeout(function() {
                             $("#collapseFourBtn").removeAttr("disabled");
                             $("#collapseFour").addClass("show");
-                            $("#collapseProjectDetails").removeClass("show");
+                            $("#collapseForest").removeClass("show");
                         }, 2000);
                     }
                     else
                     {
-                        $('#project_details_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#project_details_errorMsg').html(`Application Error: ${data.error}`);
                         $('#project_details_errorMsg').show();
+                        $('#project_details_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_errorMsg').delay(2000).fadeOut('slow');
@@ -3299,28 +3101,28 @@
 
     function save_water_requirement()
     {
-        water_excavated_muck = $("input[name=water_excavated_muck]:checked").length;
-        water_required = $("input[name=water_required]:checked").length;
-        water_required_value = $("input[name=water_required]:checked").val();
-        water_provided_by = $("input[name=water_provided_by]:checked").length;
-        water_raw_material_source = $('#water_raw_material_source').val();
-        water_raw_material_qty_day = $('#water_raw_material_qty_day').val();
-        water_raw_material_recycle_day = $('#water_raw_material_recycle_day').val();
-        water_cleaning_source = $('#water_cleaning_source').val();
-        water_cleaning_qty_day = $('#water_cleaning_qty_day').val();
-        water_cleaning_recycle_day = $('#water_cleaning_recycle_day').val();
-        water_process_source = $('#water_process_source').val();
-        water_process_qty_day = $('#water_process_qty_day').val();
-        water_process_recycle_day = $('#water_process_recycle_day').val();
-        water_domestic_source = $('#water_domestic_source').val();
-        water_domestic_qty_day = $('#water_domestic_qty_day').val();
-        water_domestic_recycle_day = $('#water_domestic_recycle_day').val();
-        water_dust_compression_source = $('#water_dust_compression_source').val();
-        water_dust_compression_qty_day = $('#water_dust_compression_qty_day').val();
-        water_dust_compression_recycle_day = $('#water_dust_compression_recycle_day').val();
-        water_others_name = $('#water_others_name').val();
-        water_others_source = $('#water_others_source').val();
-        water_others_qty_day = $('#water_others_qty_day').val();
+        let water_excavated_muck = $("input[name=water_excavated_muck]:checked").length;
+        let water_required = $("input[name=water_required]:checked").length;
+        let water_required_value = $("input[name=water_required]:checked").val();
+        let water_provided_by = $("input[name=water_provided_by]:checked").length;
+        let water_raw_material_source = $('#water_raw_material_source').val();
+        let water_raw_material_qty_day = $('#water_raw_material_qty_day').val();
+        let water_raw_material_recycle_day = $('#water_raw_material_recycle_day').val();
+        let water_cleaning_source = $('#water_cleaning_source').val();
+        let water_cleaning_qty_day = $('#water_cleaning_qty_day').val();
+        let water_cleaning_recycle_day = $('#water_cleaning_recycle_day').val();
+        let water_process_source = $('#water_process_source').val();
+        let water_process_qty_day = $('#water_process_qty_day').val();
+        let water_process_recycle_day = $('#water_process_recycle_day').val();
+        let water_domestic_source = $('#water_domestic_source').val();
+        let water_domestic_qty_day = $('#water_domestic_qty_day').val();
+        let water_domestic_recycle_day = $('#water_domestic_recycle_day').val();
+        let water_dust_compression_source = $('#water_dust_compression_source').val();
+        let water_dust_compression_qty_day = $('#water_dust_compression_qty_day').val();
+        let water_dust_compression_recycle_day = $('#water_dust_compression_recycle_day').val();
+        let water_others_name = $('#water_others_name').val();
+        let water_others_source = $('#water_others_source').val();
+        let water_others_qty_day = $('#water_others_qty_day').val();
 
         if(water_excavated_muck < 1)
         {
@@ -3468,6 +3270,7 @@
                     {
                         $('#water_requirement_application_successMsg').html("Saved Successfully");
                         $('#water_requirement_application_successMsg').show();
+                        $('#water_requirement_application_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#water_requirement_application_successMsg').delay(2000).fadeOut('slow');
@@ -3480,8 +3283,11 @@
                     }
                     else
                     {
-                        $('#water_requirement_application_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#water_requirement_application_errorMsg').html(`Application Error: ${data.error}`);
                         $('#water_requirement_application_errorMsg').show();
+                        $('#water_requirement_application_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#water_requirement_application_errorMsg').delay(2000).fadeOut('slow');
@@ -3495,17 +3301,17 @@
     function save_anc_approach_road_details()
     {
 
-        anc_road_required = $("input[name=anc_road_required]:checked").length;
-        anc_road_required_value = $("input[name=anc_road_required]:checked").val();
-        anc_road_length = $('#anc_road_length').val();
-        anc_road_start_point = $('#anc_road_start_point').val();
-        anc_road_end_point  = $('#anc_road_end_point').val();
-        anc_road_blast_required= $("input[name=anc_road_required]:checked").length;
-        anc_road_blast_required_value = $("input[name=anc_road_required]:checked").val();
-        anc_road_blast_type = $('#anc_road_blast_type').val();
-        anc_road_blast_qty = $('#anc_road_blast_qty').val();
-        anc_road_blast_location = $('#anc_road_blast_location').val();
-        anc_road_blast_frequency_time = $('#anc_road_blast_frequency_time').val();
+        let anc_road_required = $("input[name=anc_road_required]:checked").length;
+        let anc_road_required_value = $("input[name=anc_road_required]:checked").val();
+        let anc_road_length = $('#anc_road_length').val();
+        let anc_road_start_point = $('#anc_road_start_point').val();
+        let anc_road_end_point  = $('#anc_road_end_point').val();
+        let anc_road_blast_required= $("input[name=anc_road_required]:checked").length;
+        let anc_road_blast_required_value = $("input[name=anc_road_required]:checked").val();
+        let anc_road_blast_type = $('#anc_road_blast_type').val();
+        let anc_road_blast_qty = $('#anc_road_blast_qty').val();
+        let anc_road_blast_location = $('#anc_road_blast_location').val();
+        let anc_road_blast_frequency_time = $('#anc_road_blast_frequency_time').val();
 
         if(anc_road_required < 1)
         {
@@ -3583,6 +3389,7 @@
                     {
                         $('#anc_approach_road_successMsg').html("Saved Successfully");
                         $('#anc_approach_road_successMsg').show();
+                        $('#anc_approach_road_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#anc_approach_road_successMsg').delay(2000).fadeOut('slow');
@@ -3595,8 +3402,11 @@
                     }
                     else
                     {
-                        $('#anc_approach_road_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#anc_approach_road_errorMsg').html(`Application Error: ${data.error}`);
                         $('#anc_approach_road_errorMsg').show();
+                        $('#anc_approach_road_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#anc_approach_road_errorMsg').delay(2000).fadeOut('slow');
@@ -3609,13 +3419,13 @@
 
     function save_anc_power_line_form()
     {
-        anc_power_line_required = $("input[name=anc_power_line_required]:checked").length;
-        anc_power_line_required_value = $("input[name=anc_power_line_required]:checked").val();
-        anc_power_line_voltage = $('#anc_power_line_voltage').val();
-        anc_power_line_length = $('#anc_power_line_length').val();
-        anc_power_line_start_point = $('#anc_power_line_start_point').val();
-        anc_power_line_end_point = $('#anc_power_line_end_point').val();
-        anc_power_line_storing_method = $('#anc_power_line_storing_method').val();
+        let anc_power_line_required = $("input[name=anc_power_line_required]:checked").length;
+        let anc_power_line_required_value = $("input[name=anc_power_line_required]:checked").val();
+        let anc_power_line_voltage = $('#anc_power_line_voltage').val();
+        let anc_power_line_length = $('#anc_power_line_length').val();
+        let anc_power_line_start_point = $('#anc_power_line_start_point').val();
+        let anc_power_line_end_point = $('#anc_power_line_end_point').val();
+        let anc_power_line_storing_method = $('#anc_power_line_storing_method').val();
 
         if(anc_power_line_required < 1)
         {
@@ -3672,6 +3482,7 @@
                     {
                         $('#anc_power_line_successMsg').html("Saved Successfully");
                         $('#anc_power_line_successMsg').show();
+                        $('#anc_power_line_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#anc_power_line_successMsg').delay(2000).fadeOut('slow');
@@ -3684,8 +3495,11 @@
                     }
                     else
                     {
-                        $('#anc_power_line_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#anc_power_line_errorMsg').html(`Application Error: ${data.error}`);
                         $('#anc_power_line_errorMsg').show();
+                        $('#anc_power_line_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#anc_power_line_errorMsg').delay(2000).fadeOut('slow');
@@ -3698,7 +3512,7 @@
 
     function save_anc_other_details()
     {
-        let anc_other_required = $("input[name=anc_road_required]:checked").length;
+        let anc_other_required = $("input[name=anc_other_required]:checked").length;
         let anc_other_required_value = $("input[name=anc_other_required]:checked").val();
         
         if(anc_other_required < 1)
@@ -3707,6 +3521,13 @@
             $('#anc_other_requiredErrorMsg').show();
             $('#anc_other_requiredErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_other_required').focus();   
+        }
+        else if(anc_other_required_value == "Yes" && !$('#anc_other_crushing_unit').is(":checked") && !$('#anc_other_surface_collection').is(":checked") && !$('#anc_other_mineral').is(":checked") && !$('#anc_other_general').is(":checked"))
+        {
+            $('#anc_others_errorMsg').html("Please select one ancillary.");
+            $('#anc_others_errorMsg').show();
+            $('#anc_others_errorMsg').delay(2000).fadeOut('slow');
+            $('.anc_others').focus();
         }
         else
         {
@@ -3721,6 +3542,7 @@
                     {
                         $('#anc_others_successMsg').html("Saved Successfully");
                         $('#anc_others_successMsg').show();
+                        $('#anc_others_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#anc_others_successMsg').delay(2000).fadeOut('slow');
@@ -3733,8 +3555,11 @@
                     }
                     else
                     {
-                        $('#anc_others_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#anc_others_errorMsg').html(`Application Error: ${data.error}`);
                         $('#anc_others_errorMsg').show();
+                        $('#anc_others_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#anc_others_errorMsg').delay(2000).fadeOut('slow');
@@ -3747,27 +3572,27 @@
 
     function save_solid_waste_details()
     {
-        en_impact_allocated_budget = $('#en_impact_allocated_budget').val();
-        en_impact_hazardous_waste_list = $('#en_impact_hazardous_waste_list').val();
-        en_impact_hazardous_waste_source = $('#en_impact_hazardous_waste_source').val();
-        en_impact_hazardous_waste_qty_annum = $('#en_impact_hazardous_waste_qty_annum').val();
-        en_impact_hazardous_waste_mgt_plan = $('#en_impact_hazardous_waste_mgt_plan').val();
-        en_impact_non_hazardous_waste_list = $('#en_impact_non_hazardous_waste_list').val();
-        en_impact_non_hazardous_waste_source = $('#en_impact_non_hazardous_waste_source').val();
-        en_impact_non_hazardous_waste_qty_annum = $('#en_impact_non_hazardous_waste_qty_annum').val();
-        en_impact_non_hazardous_waste_mgt_plan = $('#en_impact_non_hazardous_waste_mgt_plan').val();
-        en_impact_medical_waste_list = $('#en_impact_medical_waste_list').val();
-        en_impact_medical_waste_source = $('#en_impact_medical_waste_source').val();
-        en_impact_medical_waste_qty_annum = $('#en_impact_medical_waste_qty_annum').val();
-        en_impact_medical_waste_mgt_plan = $('#en_impact_medical_waste_mgt_plan').val();
-        en_impact_ewaste_list = $('#en_impact_ewaste_list').val();
-        en_impact_ewaste_source = $('#en_impact_ewaste_source').val();
-        en_impact_ewaste_qty_annum = $('#en_impact_ewaste_qty_annum').val();
-        en_impact_ewaste_mgt_plan = $('#en_impact_ewaste_mgt_plan').val();
-        en_impact_others_waste_list = $('#en_impact_others_waste_list').val();
-        en_impact_others_waste_source = $('#en_impact_others_waste_source').val();
-        en_impact_others_waste_qty_annum = $('#en_impact_others_waste_qty_annum').val();
-        en_impact_others_waste_mgt_plan = $('#en_impact_others_waste_mgt_plan').val();
+        let en_impact_allocated_budget = $('#en_impact_allocated_budget').val();
+        let en_impact_hazardous_waste_list = $('#en_impact_hazardous_waste_list').val();
+        let en_impact_hazardous_waste_source = $('#en_impact_hazardous_waste_source').val();
+        let en_impact_hazardous_waste_qty_annum = $('#en_impact_hazardous_waste_qty_annum').val();
+        let en_impact_hazardous_waste_mgt_plan = $('#en_impact_hazardous_waste_mgt_plan').val();
+        let en_impact_non_hazardous_waste_list = $('#en_impact_non_hazardous_waste_list').val();
+        let en_impact_non_hazardous_waste_source = $('#en_impact_non_hazardous_waste_source').val();
+        let en_impact_non_hazardous_waste_qty_annum = $('#en_impact_non_hazardous_waste_qty_annum').val();
+        let en_impact_non_hazardous_waste_mgt_plan = $('#en_impact_non_hazardous_waste_mgt_plan').val();
+        let en_impact_medical_waste_list = $('#en_impact_medical_waste_list').val();
+        let en_impact_medical_waste_source = $('#en_impact_medical_waste_source').val();
+        let en_impact_medical_waste_qty_annum = $('#en_impact_medical_waste_qty_annum').val();
+        let en_impact_medical_waste_mgt_plan = $('#en_impact_medical_waste_mgt_plan').val();
+        let en_impact_ewaste_list = $('#en_impact_ewaste_list').val();
+        let en_impact_ewaste_source = $('#en_impact_ewaste_source').val();
+        let en_impact_ewaste_qty_annum = $('#en_impact_ewaste_qty_annum').val();
+        let en_impact_ewaste_mgt_plan = $('#en_impact_ewaste_mgt_plan').val();
+        let en_impact_others_waste_list = $('#en_impact_others_waste_list').val();
+        let en_impact_others_waste_source = $('#en_impact_others_waste_source').val();
+        let en_impact_others_waste_qty_annum = $('#en_impact_others_waste_qty_annum').val();
+        let en_impact_others_waste_mgt_plan = $('#en_impact_others_waste_mgt_plan').val();
 
         if(en_impact_allocated_budget == "")
         {
@@ -3929,20 +3754,24 @@
                     {
                         $('#solid_waste_successMsg').html("Saved Successfully");
                         $('#solid_waste_successMsg').show();
+                        $('#solid_waste_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#solid_waste_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                         setTimeout(function() {
-                            $("#headingNineBtn").removeAttr("disabled");
-                            $("#collapseNine").addClass("show");
+                            $("#headingTwelveBtn").removeAttr("disabled");
+                            $("#collapseTwelve").addClass("show");
                             $("#collapseEight").removeClass("show");
                         }, 2000);
                     }
                     else
                     {
-                        $('#solid_waste_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#solid_waste_errorMsg').html(`Application Error: ${data.error}`);
                         $('#solid_waste_errorMsg').show();
+                        $('#solid_waste_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#solid_waste_errorMsg').delay(2000).fadeOut('slow');
@@ -3955,15 +3784,15 @@
 
     function save_noise_level_details()
     {
-        en_noise_ind_area_day = $('#en_noise_ind_area_day').val();
-        en_noise_ind_area_night = $('#en_noise_ind_area_night').val();
-        en_noise_ind_area_mgt_plan = $('#en_noise_ind_area_mgt_plan').val();
-        en_noise_mixed_area_day = $('#en_noise_mixed_area_day').val();
-        en_noise_mixed_area_night = $('#en_noise_mixed_area_night').val();
-        en_noise_mixed_area_mgt_plan = $('#en_noise_mixed_area_mgt_plan').val();
-        en_noise_sen_area_day = $('#en_noise_sen_area_day').val();
-        en_noise_sen_area_night = $('#en_noise_sen_area_night').val();
-        en_noise_sen_area_mgt_plan = $('#en_noise_sen_area_mgt_plan').val();
+        let en_noise_ind_area_day = $('#en_noise_ind_area_day').val();
+        let en_noise_ind_area_night = $('#en_noise_ind_area_night').val();
+        let en_noise_ind_area_mgt_plan = $('#en_noise_ind_area_mgt_plan').val();
+        let en_noise_mixed_area_day = $('#en_noise_mixed_area_day').val();
+        let en_noise_mixed_area_night = $('#en_noise_mixed_area_night').val();
+        let en_noise_mixed_area_mgt_plan = $('#en_noise_mixed_area_mgt_plan').val();
+        let en_noise_sen_area_day = $('#en_noise_sen_area_day').val();
+        let en_noise_sen_area_night = $('#en_noise_sen_area_night').val();
+        let en_noise_sen_area_mgt_plan = $('#en_noise_sen_area_mgt_plan').val();
 
         if(en_noise_ind_area_day == "")
         {
@@ -4041,6 +3870,7 @@
                     {
                         $('#noise_level_successMsg').html("Saved Successfully");
                         $('#noise_level_successMsg').show();
+                        $('#noise_level_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#noise_level_successMsg').delay(2000).fadeOut('slow');
@@ -4053,8 +3883,11 @@
                     }
                     else
                     {
-                        $('#noise_level_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#noise_level_errorMsg').html(`Application Error: ${data.error}`);
                         $('#noise_level_errorMsg').show();
+                        $('#noise_level_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#noise_level_errorMsg').delay(2000).fadeOut('slow');
@@ -4067,42 +3900,42 @@
 
     function save_other_impact_details()
     {
-        en_other_impact_odour_source = $('#en_other_impact_odour_source').val();
-        en_other_impact_odour_qty = $('#en_other_impact_odour_qty').val();
-        en_other_impact_odour_mgt_plan = $('#en_other_impact_odour_mgt_plan').val();
-        en_other_impact_fugutive_source = $('#en_other_impact_fugutive_source').val();
-        en_other_impact_fugutive_qty = $('#en_other_impact_fugutive_qty').val();
-        en_other_impact_fugutive_mgt_plan = $('#en_other_impact_fugutive_mgt_plan').val();
-        en_other_impact_slope_source = $('#en_other_impact_slope_source').val();
-        en_other_impact_slope_qty = $('#en_other_impact_slope_qty').val();
-        en_other_impact_slope_mgt_plan = $('#en_other_impact_slope_mgt_plan').val();
-        en_other_impact_aesthetic_source = $('#en_other_impact_aesthetic_source').val();
-        en_other_impact_aesthetic_qty = $('#en_other_impact_aesthetic_qty').val();
-        en_other_impact_aesthetic_mgt_plan = $('#en_other_impact_aesthetic_mgt_plan').val();
-        en_other_impact_mucks_source = $('#en_other_impact_mucks_source').val();
-        en_other_impact_mucks_qty = $('#en_other_impact_mucks_qty').val();
-        en_other_impact_mucks_mgt_plan = $('#en_other_impact_mucks_mgt_plan').val();
-        en_other_impact_sewerage_source = $('#en_other_impact_sewerage_source').val();
-        en_other_impact_sewerage_qty = $('#en_other_impact_sewerage_qty').val();
-        en_other_impact_sewerage_mgt_plan = $('#en_other_impact_sewerage_mgt_plan').val();
-        en_other_impact_erosion_source = $('#en_other_impact_erosion_source').val();
-        en_other_impact_erosion_qty = $('#en_other_impact_erosion_qty').val();
-        en_other_impact_erosion_mgt_plan = $('#en_other_impact_erosion_mgt_plan').val();
-        en_other_impact_storm_water_source = $('#en_other_impact_storm_water_source').val();
-        en_other_impact_storm_water_qty = $('#en_other_impact_storm_water_qty').val();
-        en_other_impact_storm_water_mgt_plan = $('#en_other_impact_storm_water_mgt_plan').val();
-        en_other_impact_habitat_source = $('#en_other_impact_habitat_source').val();
-        en_other_impact_habitat_qty = $('#en_other_impact_habitat_qty').val();
-        en_other_impact_habitat_mgt_plan = $('#en_other_impact_habitat_mgt_plan').val();
-        en_other_impact_socio_source = $('#en_other_impact_socio_source').val();
-        en_other_impact_socio_qty = $('#en_other_impact_socio_qty').val();
-        en_other_impact_socio_mgt_plan = $('#en_other_impact_socio_mgt_plan').val();
-        en_other_impact_water_source_source = $('#en_other_impact_water_source_source').val();
-        en_other_impact_water_source_qty = $('#en_other_impact_water_source_qty').val();
-        en_other_impact_water_source_mgt_plan = $('#en_other_impact_water_source_mgt_plan').val();
-        en_other_impact_other_source = $('#en_other_impact_other_source').val();
-        en_other_impact_other_qty = $('#en_other_impact_other_qty').val();
-        en_other_impact_other_mgt_plan = $('#en_other_impact_other_mgt_plan').val();
+        let en_other_impact_odour_source = $('#en_other_impact_odour_source').val();
+        let en_other_impact_odour_qty = $('#en_other_impact_odour_qty').val();
+        let en_other_impact_odour_mgt_plan = $('#en_other_impact_odour_mgt_plan').val();
+        let en_other_impact_fugutive_source = $('#en_other_impact_fugutive_source').val();
+        let en_other_impact_fugutive_qty = $('#en_other_impact_fugutive_qty').val();
+        let en_other_impact_fugutive_mgt_plan = $('#en_other_impact_fugutive_mgt_plan').val();
+        let en_other_impact_slope_source = $('#en_other_impact_slope_source').val();
+        let en_other_impact_slope_qty = $('#en_other_impact_slope_qty').val();
+        let en_other_impact_slope_mgt_plan = $('#en_other_impact_slope_mgt_plan').val();
+        let en_other_impact_aesthetic_source = $('#en_other_impact_aesthetic_source').val();
+        let en_other_impact_aesthetic_qty = $('#en_other_impact_aesthetic_qty').val();
+        let en_other_impact_aesthetic_mgt_plan = $('#en_other_impact_aesthetic_mgt_plan').val();
+        let en_other_impact_mucks_source = $('#en_other_impact_mucks_source').val();
+        let en_other_impact_mucks_qty = $('#en_other_impact_mucks_qty').val();
+        let en_other_impact_mucks_mgt_plan = $('#en_other_impact_mucks_mgt_plan').val();
+        let en_other_impact_sewerage_source = $('#en_other_impact_sewerage_source').val();
+        let en_other_impact_sewerage_qty = $('#en_other_impact_sewerage_qty').val();
+        let en_other_impact_sewerage_mgt_plan = $('#en_other_impact_sewerage_mgt_plan').val();
+        let en_other_impact_erosion_source = $('#en_other_impact_erosion_source').val();
+        let en_other_impact_erosion_qty = $('#en_other_impact_erosion_qty').val();
+        let en_other_impact_erosion_mgt_plan = $('#en_other_impact_erosion_mgt_plan').val();
+        let en_other_impact_storm_water_source = $('#en_other_impact_storm_water_source').val();
+        let en_other_impact_storm_water_qty = $('#en_other_impact_storm_water_qty').val();
+        let en_other_impact_storm_water_mgt_plan = $('#en_other_impact_storm_water_mgt_plan').val();
+        let en_other_impact_habitat_source = $('#en_other_impact_habitat_source').val();
+        let en_other_impact_habitat_qty = $('#en_other_impact_habitat_qty').val();
+        let en_other_impact_habitat_mgt_plan = $('#en_other_impact_habitat_mgt_plan').val();
+        let en_other_impact_socio_source = $('#en_other_impact_socio_source').val();
+        let en_other_impact_socio_qty = $('#en_other_impact_socio_qty').val();
+        let en_other_impact_socio_mgt_plan = $('#en_other_impact_socio_mgt_plan').val();
+        let en_other_impact_water_source_source = $('#en_other_impact_water_source_source').val();
+        let en_other_impact_water_source_qty = $('#en_other_impact_water_source_qty').val();
+        let en_other_impact_water_source_mgt_plan = $('#en_other_impact_water_source_mgt_plan').val();
+        let en_other_impact_other_source = $('#en_other_impact_other_source').val();
+        let en_other_impact_other_qty = $('#en_other_impact_other_qty').val();
+        let en_other_impact_other_mgt_plan = $('#en_other_impact_other_mgt_plan').val();
 
         if(en_other_impact_odour_source == "")
         {
@@ -4369,6 +4202,7 @@
                     {
                         $('#other_impact_successMsg').html("Saved Successfully");
                         $('#other_impact_successMsg').show();
+                        $('#other_impact_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#other_impact_successMsg').delay(2000).fadeOut('slow');
@@ -4381,8 +4215,11 @@
                     }
                     else
                     {
-                        $('#other_impact_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#other_impact_errorMsg').html(`Application Error: ${data.error}`);
                         $('#other_impact_errorMsg').show();
+                        $('#other_impact_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#other_impact_errorMsg').delay(2000).fadeOut('slow');
@@ -4397,6 +4234,7 @@
     {
         $('#quarry_attachment_successMsg').html("Saved Successfully");
         $('#quarry_attachment_successMsg').show();
+        $('#quarry_attachment_successMsg').focus();
         setTimeout(function()
         {
             $('#quarry_attachment_successMsg').delay(2000).fadeOut('slow');
@@ -4423,6 +4261,7 @@
                 {
                     $('#quarry_submit_successMsg').html("Application Submitted Successfully");
                     $('#quarry_submit_successMsg').show();
+                    $('#quarry_submit_successMsg').focus();
                     setTimeout(function()
                     {
                         $('#quarry_submit_successMsg').delay(2000).fadeOut('slow');
@@ -4433,17 +4272,23 @@
                 }
                 else if(data.message == 'not submitted')
                 {
-                    $('#iee_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
-                    $('#iee_submit_errorMsg').show();
+                    var errorMsg = data.error;
+        
+                    $('#quarry_submit_errorMsg').html(`Application Error: ${data.error}`);
+                    $('#quarry_submit_errorMsg').show();
+                    $('#quarry_submit_errorMsg').focus();
                     setTimeout(function()
                     {
-                        $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
+                        $('#quarry_submit_errorMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                 }
                 else
                 {
-                    $('#quarry_submit_errorMsg').html("Please Check And Submit Again");
+                    var errorMsg = data.error;
+        
+                    $('#quarry_submit_errorMsg').html(`Application Error: ${data.error}`);
                     $('#quarry_submit_errorMsg').show();
+                    $('#quarry_submit_errorMsg').focus();
                     setTimeout(function()
                     {
                         $('#quarry_submit_errorMsg').delay(2000).fadeOut('slow');
@@ -4479,26 +4324,65 @@
 
     function check_anc_other_general()
     {
-        if($('#anc_other_general').is(":checked") || $('#anc_other_mineral').is(":checked"))
+        if($('#anc_other_general').is(":checked"))
         {
             $('.general_application').show();
-            $('.mineral_application').show();
         }
-        else if($('#anc_other_general').is(":checked") && $('#anc_other_mineral').not(":checked"))
-        {
-            $('.general_application').show();
-            $('.mineral_application').hide();
-        }
-        else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').is(":checked"))
+        else
         {
             $('.general_application').hide();
+        }
+    }
+
+    function check_anc_other_mineral()
+    {
+        if($('#anc_other_mineral').is(":checked"))
+        {
             $('.mineral_application').show();
         }
-        else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').not(":checked"))
+        else
         {
-            $('.general_application').hide();
-            $('.mineral_application').hide();
+            $('.mineral_application').show();
         }
+    }
+
+    function getCitizenDetails(cid)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'check_cid_exists' %}",
+            data :{'cid':cid},
+            success : function(data)
+            {
+                if(data.count > 0)
+                {
+                    $('#cid').val("");
+                    $('#applicant_name').val("");
+                    $('#cidErrorMsg').html("CID Already Exists.Try With Another one");
+                    $('#cidErrorMsg').show();
+                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    const myObj =data.response;
+                    if(myObj.citizendatas.citizendata == undefined)
+                    {
+                        $('#cid').val("");
+                        $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                        $('#cidErrorMsg').show();
+                        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        var CitizenName = myObj.citizendatas.citizendata[0].Name
+                        var dzongkhagName = myObj.citizendatas.citizendata[0].Dzongkhag_Name
+                        var villageName = myObj.citizendatas.citizendata[0].Gewog_Name
+                        var gewogName = myObj.citizendatas.citizendata[0].Village_Name
+                        $('#applicant_name').val(CitizenName);
+                    }
+                }
+            }
+        });
     }
 
     function check_dzong_throm(value)
@@ -4514,16 +4398,756 @@
             $('.dzongkhag').hide();
         }
     }
-
     function check_terms()
     {
         if($("#ec_terms").prop('checked') == true)
         {
-            $('#quarry_submit_btn').show();
+            $('#qua_submit_btn').show();
         }
         else
         {
-            $('#quarry_submit_btn').hide();
+            $('#qua_submit_btn').hide();
+        }
+    }
+
+    function get_total_area_acre()
+    {
+        let industrial_area_acre = $('#industrial_area_acre').val();
+        let state_reserve_forest_acre = $('#state_reserve_forest_acre').val();
+        let private_area_acre = $('#private_area_acre').val();
+        let others_area_acre = $('#others_area_acre').val();
+        let sum = 0;
+        sum += parseFloat(industrial_area_acre) || 0;
+        sum += parseFloat(state_reserve_forest_acre) || 0;
+        sum += parseFloat(private_area_acre) || 0;
+        sum += parseFloat(others_area_acre) || 0;
+
+        $('#total_area_acre').val(sum);
+    }
+
+    function getGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#gewog').html(data);
+            }
+        });
+    }
+
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#vil_chiwog').html(data);
+            }
+        });
+    }
+
+    function add_dumpyard_details()
+    {
+        let application_no = $('#application_no').val();
+        let dumpyard_number = $('#dumpyard_number').val();
+        let dumpyard_capacity = $('#dumpyard_capacity').val();
+        let dumpyard_area = $('#dumpyard_area').val();
+        let dumpyard_location = $('#dumpyard_location').val();
+        
+        if(dumpyard_number == "")
+        {
+            $('#dumpyard_numberErrorMsg').html("Enter Dumpyard Number");
+            $('#dumpyard_numberErrorMsg').show();
+            $('#dumpyard_numberErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_number').focus();
+        }
+        else if(dumpyard_capacity == "")
+        {
+            $('#dumpyard_capacityErrorMsg').html("Enter Dumpyard Capacity");
+            $('#dumpyard_capacityErrorMsg').show();
+            $('#dumpyard_capacityErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_capacity').focus();
+        }
+        else if(dumpyard_area == "")
+        {
+            $('#dumpyard_areaErrorMsg').html("Enter Dumpyard Area");
+            $('#dumpyard_areaErrorMsg').show();
+            $('#dumpyard_areaErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_area').focus();
+        }
+        else if(dumpyard_location == "")
+        {
+            $('#dumpyard_locationErrorMsg').html("Enter Dumpyard Location");
+            $('#dumpyard_locationErrorMsg').show();
+            $('#dumpyard_locationErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_location').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'add_dumpyard_details' %}",
+                data : {'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#dumpyard_SuccessMsg').html("Add Successful");
+                    $('#dumpyard_SuccessMsg').show();
+                    $('#dumpyard_SuccessMsg').focus();
+
+                    setTimeout(function()
+                    {
+                        $('#dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#dumyard_details_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#dump_yard_details_div').html(responseText);
+                    }, 2000);
+                    $('#dumyard_details_form')[0].reset();
+                }
+            });
+        }
+    }
+
+    function populate_dumpyard_data(record_id, application_no, dumpyard_number, dumpyard_capacity, dumpyard_area, dumpyard_location)
+    {
+        $('#dumpyard_record_id').val(record_id);
+        $('#dumpyard_application_no').val(application_no);
+        $('#edit_dumpyard_number').val(dumpyard_number);
+        $('#edit_dumpyard_capacity').val(dumpyard_capacity);
+        $('#edit_dumpyard_area').val(dumpyard_area);
+        $('#edit_dumpyard_location').val(dumpyard_location);
+        
+        $('#edit_dumyard_details_modal').modal('show');
+    }
+
+    function update_dumpyard_details()
+    {
+        let record_id = $('#dumpyard_record_id').val();
+        let application_no = $('#dumpyard_application_no').val();
+        let dumpyard_number = $('#edit_dumpyard_number').val();
+        let dumpyard_capacity = $('#edit_dumpyard_capacity').val();
+        let dumpyard_area = $('#edit_dumpyard_area').val();
+        let dumpyard_location = $('#edit_dumpyard_location').val();
+        
+        if(dumpyard_number == "")
+        {
+            $('#edit_dumpyard_numberErrorMsg').html("Enter Dumpyard Number");
+            $('#edit_dumpyard_numberErrorMsg').show();
+            $('#edit_dumpyard_numberErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_number').focus();
+        }
+        else if(dumpyard_capacity == "")
+        {
+            $('#edit_dumpyard_capacityErrorMsg').html("Enter Dumpyard Capacity");
+            $('#edit_dumpyard_capacityErrorMsg').show();
+            $('#edit_dumpyard_capacityErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_capacity').focus();
+        }
+        else if(dumpyard_area == "")
+        {
+            $('#edit_dumpyard_areaErrorMsg').html("Enter Dumpyard Area");
+            $('#edit_dumpyard_areaErrorMsg').show();
+            $('#edit_dumpyard_areaErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_area').focus();
+        }
+        else if(dumpyard_location == "")
+        {
+            $('#edit_dumpyard_locationErrorMsg').html("Enter Dumpyard Location");
+            $('#edit_dumpyard_locationErrorMsg').show();
+            $('#edit_dumpyard_locationErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_location').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_dumpyard_details' %}",
+                data : {'record_id':record_id,'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#edit_dumpyard_SuccessMsg').html("Update Successful");
+                    $('#edit_dumpyard_SuccessMsg').show();
+                    $('#edit_dumpyard_SuccessMsg').focus();
+                    setTimeout(function()
+                    {
+                        $('#edit_dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_dumyard_details_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#dump_yard_details_div').html(responseText);
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function populate_delete_dumpyard_data(record_id, application_no)
+    {
+        $('#delete_dumpyard_record_id').val(record_id);
+        $('#delete_dumpyard_application_no').val(application_no);
+        $('#delete_dumyard_details_modal').modal('show');
+    }
+
+    function delete_dumpyard_details()
+    {
+        let record_id = $('#delete_dumpyard_record_id').val();
+        let application_no = $('#delete_dumpyard_application_no').val();
+
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_dumpyard_details' %}",
+            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#delete_dumpyard_SuccessMsg').html("Delete Successful");
+                $('#delete_dumpyard_SuccessMsg').show();
+                $('#delete_dumpyard_SuccessMsg').focus();
+                setTimeout(function()
+                {
+                    $('#delete_dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#delete_dumyard_details_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#dump_yard_details_div').html(responseText);
+                }, 2000);
+            }
+        });
+    }
+
+    function save_anc_road_details()
+    {
+        let application_no = $('#application_no').val();
+        let road_line_chainage_from = $('#road_line_chainage_from').val();
+        let road_line_chainage_to = $('#road_line_chainage_to').val();
+        let road_land_type = $('#road_land_type').val();
+        let road_terrain = $('#road_terrain').val();
+        let road_width = $('#road_width').val();
+        let road_row = $('#road_row').val();
+        let road_area_required = $('#road_area_required').val();
+
+        if(road_line_chainage_from == "")
+        {
+            $('#road_line_chainage_fromErrorMsg').html("Enter Road Chainage From");
+            $('#road_line_chainage_fromErrorMsg').show();
+            $('#road_line_chainage_fromErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(road_line_chainage_to == "")
+        {
+            $('#road_line_chainage_toErrorMsg').html("Enter Road Chainage To");
+            $('#road_line_chainage_toErrorMsg').show();
+            $('#road_line_chainage_toErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(road_land_type == "")
+        {
+            $('#road_land_typeErrorMsg').html("Enter Land Type");
+            $('#road_land_typeErrorMsg').show();
+            $('#road_land_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(terrain == "")
+        {
+            $('#road_terrainErrorMsg').html("Select One ");
+            $('#road_terrainErrorMsg').show();
+            $('#road_terrainErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(road_width == "")
+        {
+            $('#road_widthErrorMsg').html("Enter Road Width");
+            $('#road_widthErrorMsg').show();
+            $('#road_widthErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(road_row == "")
+        {
+            $('#road_rowErrorMsg').html("Enter Right of way");
+            $('#road_rowErrorMsg').show();
+            $('#road_rowErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(road_area_required == "")
+        {
+            $('#road_area_requiredErrorMsg').html("Enter Area Required");
+            $('#road_area_requiredErrorMsg').show();
+            $('#road_area_requiredErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_anc_road_details' %}",
+                data : {'application_no':application_no,'road_line_chainage_from':road_line_chainage_from,'road_line_chainage_to':road_line_chainage_to,'road_land_type':road_land_type,'road_terrain':road_terrain,'road_width':road_width,'road_row':road_row,'road_area_required':road_area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#anc_road_successMsg').html("Approach Road Details Added Successfully");
+                    $('#anc_road_successMsg').show();
+                    $('#anc_road_successMsg').delay(2000).fadeOut('slow');
+                    setTimeout(function() {
+                        $('#anc_approach_road_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_approach_road_details').html(responseText);
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_approach_road_form')[0].reset();
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function populate_approach_road_details(record_id, application_no, line_chainage_from, line_chainage_to, land_type, terrain, road_width, row, area_required)
+    {
+        $('#edit_anc_app_record_id').val(record_id);
+        $('#edit_anc_road_application_no').val(application_no);
+        $('#edit_road_line_chainage_from').val(line_chainage_from);
+        $('#edit_road_line_chainage_to').val(line_chainage_to);
+        $('#edit_road_land_type').val(land_type);
+        $('#edit_road_terrain').val(terrain);
+        $('#edit_road_width').val(road_width);
+        $('#edit_road_row').val(row);
+        $('#edit_road_area_required').val(area_required);
+        $('#edit_anc_approach_road_modal').modal('show');
+    }
+
+    function populate_delete_approach_road(record_id, application_no)
+    {
+        $('#delete_anc_road_record_id').val(record_id);
+        $('#delete_anc_road_application_no').val(application_no);
+        $('#delete_anc_approach_road_modal').modal('show');
+    }
+
+    function delete_anc_road_details()
+    {
+        let record_id =$('#delete_anc_road_record_id').val();
+        let application_no =$('#delete_anc_road_application_no').val();
+
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_anc_road_details' %}",
+            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#delete_road_successMsg').html("Approach Road Details Deleted Successfully");
+                $('#delete_road_successMsg').show();
+                $('#delete_road_successMsg').delay(2000).fadeOut('slow');
+                setTimeout(function() {
+                    $('#delete_anc_approach_road_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#anc_approach_road_details').html(responseText);
+                }, 2000);
+            }
+        });
+    }
+
+    function update_anc_road_details()
+    {
+        let record_id = $('#edit_anc_app_record_id').val();
+        let application_no = $('#edit_anc_road_application_no').val();
+        let line_chainage_from = $('#edit_road_line_chainage_from').val();
+        let line_chainage_to = $('#edit_road_line_chainage_to').val();
+        let land_type = $('#edit_road_land_type').val();
+        let terrain = $('#edit_road_terrain').val();
+        let road_width = $('#edit_road_width').val();
+        let row = $('#edit_road_row').val();
+        let area_required = $('#edit_road_area_required').val();
+
+        if(line_chainage_from == "")
+        {
+            $('#edit_road_line_chainage_fromErrorMsg').html("Enter Transmission line Chainage From");
+            $('#edit_road_line_chainage_fromErrorMsg').show();
+            $('#edit_road_line_chainage_fromErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(line_chainage_to == "")
+        {
+            $('#edit_road_line_chainage_toErrorMsg').html("Enter Transmission line Chainage To");
+            $('#edit_road_line_chainage_toErrorMsg').show();
+            $('#edit_road_line_chainage_toErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(land_type == "")
+        {
+            $('#edit_road_land_typeErrorMsg').html("Select One");
+            $('#edit_road_land_typeErrorMsg').show();
+            $('#edit_road_land_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(terrain == "")
+        {
+            $('#edit_road_terrainErrorMsg').html("Select One ");
+            $('#edit_road_terrainErrorMsg').show();
+            $('#edit_road_terrainErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(road_width == "")
+        {
+            $('#edit_road_widthErrorMsg').html("Enter Type of Tower");
+            $('#edit_road_widthErrorMsg').show();
+            $('#edit_road_widthErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(row == "")
+        {
+            $('#edit_road_rowErrorMsg').html("Enter Type of Tower");
+            $('#edit_road_roweErrorMsg').show();
+            $('#edit_road_rowErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(area_required == "")
+        {
+            $('#edit_road_area_requiredErrorMsg').html("Enter Area Required");
+            $('#edit_road_area_requiredErrorMsg').show();
+            $('#edit_road_area_requiredErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_anc_road_details' %}",
+                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'road_width':road_width,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#edit_road_successMsg').html("Approach Road Details Updated Successfully");
+                    $('#edit_road_successMsg').show();
+                    $('#edit_road_successMsg').delay(2000).fadeOut('slow');
+                    setTimeout(function() {
+                        $('#edit_anc_approach_road_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_approach_road_details').html(responseText);
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function save_power_line_details()
+    {
+        let application_no = $('#application_no').val();
+        let line_chainage_from = $('#line_chainage_from').val();
+        let line_chainage_to = $('#line_chainage_to').val();
+        let land_type = $('#land_type').val();
+        let terrain = $('#terrain').val();
+        let tower_type = $('#tower_type').val();
+        let no_of_tower = $('#no_of_tower').val();
+        let row = $('#row').val();
+        let area_required = $('#area_required').val();
+
+        if(line_chainage_from == "")
+        {
+            $('#line_chainage_fromErrorMsg').html("Enter Transmission line Chainage From");
+            $('#line_chainage_fromErrorMsg').show();
+            $('#line_chainage_fromErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(line_chainage_to == "")
+        {
+            $('#line_chainage_toErrorMsg').html("Enter Transmission line Chainage To");
+            $('#line_chainage_toErrorMsg').show();
+            $('#line_chainage_toErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(land_type == "")
+        {
+            $('#land_typeErrorMsg').html("Enter Land Type");
+            $('#land_typeErrorMsg').show();
+            $('#land_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(terrain == "")
+        {
+            $('#terrainErrorMsg').html("Select One ");
+            $('#terrainErrorMsg').show();
+            $('#terrainErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(tower_type == "")
+        {
+            $('#tower_typeErrorMsg').html("Enter Type of Tower");
+            $('#tower_typeErrorMsg').show();
+            $('#tower_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(no_of_tower == "")
+        {
+            $('#no_of_towerErrorMsg').html("Enter No. of Towers");
+            $('#no_of_towerErrorMsg').show();
+            $('#no_of_towerErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(row == "")
+        {
+            $('#rowErrorMsg').html("Enter Right of way");
+            $('#rowErrorMsg').show();
+            $('#rowErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(area_required == "")
+        {
+            $('#area_requiredErrorMsg').html("Enter Area Required");
+            $('#area_requiredErrorMsg').show();
+            $('#area_requiredErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_anc_power_line_details' %}",
+                data : {'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#power_line_successMsg').html("Power Line Details Added Successfully");
+                    $('#power_line_successMsg').show();
+                    $('#power_line_successMsg').delay(2000).fadeOut('slow');
+                    setTimeout(function() {
+                        $('#anc_power_line_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_power_line_details').html(responseText);
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_power_line_form')[0].reset();
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function populate_power_line_details(record_id, application_no, line_chainage_from, line_chainage_to, land_type, terrain, tower_type, no_of_tower, row, area_required)
+    {
+        $('#edit_anc_record_id').val(record_id);
+        $('#edit_anc_application_no').val(application_no);
+        $('#edit_line_chainage_from').val(line_chainage_from);
+        $('#edit_line_chainage_to').val(line_chainage_to);
+        $('#edit_land_type').val(land_type);
+        $('#edit_terrain').val(terrain);
+        $('#edit_tower_type').val(tower_type);
+        $('#edit_no_of_tower').val(no_of_tower);
+        $('#edit_row').val(row);
+        $('#edit_area_required').val(area_required);
+        $('#edit_anc_power_line_modal').modal('show');
+    }
+
+    function populate_delete_power_line(record_id, application_no)
+    {
+        $('#delete_anc_record_id').val(record_id);
+        $('#delete_anc_application_no').val(application_no);
+        $('#delete_anc_power_line_modal').modal('show');
+    }
+
+    function delete_power_line_details()
+    {
+        let record_id =$('#delete_anc_record_id').val();
+        let application_no =$('#delete_anc_application_no').val();
+
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_anc_power_line_details' %}",
+            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
+                $('#delete_power_line_successMsg').show();
+                $('#delete_power_line_successMsg').delay(2000).fadeOut('slow');
+                setTimeout(function() {
+                    $('#delete_anc_power_line_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#anc_power_line_details').html(responseText);
+                }, 2000);
+            }
+        });
+    }
+
+    function update_power_line_details()
+    {
+        let record_id = $('#edit_anc_record_id').val();
+        let application_no = $('#edit_anc_application_no').val();
+        let line_chainage_from = $('#edit_line_chainage_from').val();
+        let line_chainage_to = $('#edit_line_chainage_to').val();
+        let land_type = $('#edit_land_type').val();
+        let terrain = $('#edit_terrain').val();
+        let tower_type = $('#edit_tower_type').val();
+        let no_of_tower = $('#edit_no_of_tower').val();
+        let row = $('#edit_row').val();
+        let area_required = $('#edit_area_required').val();
+
+        if(line_chainage_from == "")
+        {
+            $('#line_chainage_fromErrorMsg').html("Enter Transmission line Chainage From");
+            $('#line_chainage_fromErrorMsg').show();
+            $('#line_chainage_fromErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(line_chainage_to == "")
+        {
+            $('#line_chainage_toErrorMsg').html("Enter Transmission line Chainage To");
+            $('#line_chainage_toErrorMsg').show();
+            $('#line_chainage_toErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(land_type == "")
+        {
+            $('#land_typeErrorMsg').html("Enter Land Type");
+            $('#land_typeErrorMsg').show();
+            $('#land_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(terrain == "")
+        {
+            $('#terrainErrorMsg').html("Select One ");
+            $('#terrainErrorMsg').show();
+            $('#terrainErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(tower_type == "")
+        {
+            $('#tower_typeErrorMsg').html("Enter Type of Tower");
+            $('#tower_typeErrorMsg').show();
+            $('#tower_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(no_of_tower == "")
+        {
+            $('#no_of_towerErrorMsg').html("Enter No. of Towers");
+            $('#no_of_towerErrorMsg').show();
+            $('#no_of_towerErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(row == "")
+        {
+            $('#rowErrorMsg').html("Enter Right of way");
+            $('#rowErrorMsg').show();
+            $('#rowErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(area_required == "")
+        {
+            $('#area_requiredErrorMsg').html("Enter Area Required");
+            $('#area_requiredErrorMsg').show();
+            $('#area_requiredErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_anc_power_line_details' %}",
+                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#edit_power_line_successMsg').html("Power Line Details Updated Successfully");
+                    $('#edit_power_line_successMsg').show();
+                    $('#edit_power_line_successMsg').delay(2000).fadeOut('slow');
+                    setTimeout(function() {
+                        $('#edit_anc_power_line_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_power_line_details').html(responseText);
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function calculate_area_required()
+    {
+        let line_chainage_from_val = 0;
+        let line_chainage_to_val = 0;
+        let line_chainage_from = $('#line_chainage_from').val();
+        let line_chainage_to = $('#line_chainage_to').val();
+        let row = $('#row').val();
+
+        if(line_chainage_from == "")
+        {
+            line_chainage_from = line_chainage_from_val;
+        }
+        else
+        {
+            line_chainage_to = line_chainage_to_val;
+        }
+        let sum_line_chainage = line_chainage_from + line_chainage_to ;
+        let total = row * sum_line_chainage;
+        $('#area_required').val(total);
+    }
+
+    function calculate_edit_area_required()
+    {
+        let line_chainage_from_val = 0;
+        let line_chainage_to_val = 0;
+        let line_chainage_from = $('#edit_line_chainage_from').val();
+        let line_chainage_to = $('#edit_line_chainage_to').val();
+        let row = $('#edit_row').val();
+
+        if(line_chainage_from == "")
+        {
+            line_chainage_from = line_chainage_from_val;
+        }
+        else
+        {
+            line_chainage_to = line_chainage_to_val;
+        }
+        let sum_line_chainage = line_chainage_from + line_chainage_to ;
+        let total = row * sum_line_chainage;
+        $('#edit_area_required').val(total);
+    }
+
+    function save_quarry_attachment()
+    {
+        let file_length = document.getElementById("quarry_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#quarry_attachErrorMsg').html("Please Choose A Attachment");
+            $('#quarry_attachErrorMsg').show();
+            $('#quarry_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var fileName = document.getElementById('quarry_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('quarry_attach').files[0];
+            fd.append('quarry_attach', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_quarry_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_quarry_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#quarry_attachment_modal').modal('hide');
+                                $('#quarry_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#quarry_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#quarry_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#quarry_attachErrorMsg').show();
+                        $('#quarry_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
         }
     }
 </script>

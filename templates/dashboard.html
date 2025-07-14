@@ -1,0 +1,24 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+
+{% if request.session.role == 'Admin' %}
+{% elif request.session.role == 'Verifier' %}
+{% elif request.session.role == 'Reviewer' %}
+{% elif request.session.role == 'NECS Head' %}
+{% else %}
+<div class="row mt-2">
+    <div class="col-xxl-3 col-md-3">
+        <div class="card ribbon-box">
+            <div class="card-body">
+                <div class="ribbon ribbon-primary float-start"><i class="mdi mdi-access-point me-1"></i> {{draft_count}} Draft Applications</div>
+                <div class="ribbon-content">
+                    <a href="{% url 'draft_application_list' %}">Click Here To View</a>
+                </div>
+            </div> <!-- end card-body -->
+        </div> <!-- end card-->
+    </div> <!-- end col -->
+</div>
+{% endif %}
+{% endblock %}

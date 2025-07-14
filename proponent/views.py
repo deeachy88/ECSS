@@ -49,8 +49,8 @@ def new_application(request):
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A',application_no__contains='TOR'
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',application_no__contains='TOR',applicant_id=applicant_id
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
@@ -723,6 +723,7 @@ def save_iee_application(request):
             'industrial_area_acre':request.POST.get('industrial_area_acre'),
             'state_reserve_forest_acre':request.POST.get('state_reserve_forest_acre'),
             'private_area_acre':request.POST.get('private_area_acre'),
+            'others_area':request.POST.get('others_area'),
             'others_area_acre':request.POST.get('others_area_acre'),
             'total_area_acre':request.POST.get('total_area_acre'),
             'green_area_acre':request.POST.get('green_area_acre'),
@@ -836,7 +837,8 @@ def save_iee_application(request):
             data['message'] = 'success'
     except Exception as e:
         print('An error occurred:', e)
-    
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 
@@ -927,8 +929,9 @@ def save_terrain_baseline_details(request):
         return JsonResponse(data)
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
-        return JsonResponse(data)
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
+    return JsonResponse(data)
 
 def save_water_requirement_details(request):
     data = dict()
@@ -991,7 +994,8 @@ def save_water_requirement_details(request):
         return JsonResponse(data)
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 def save_anc_approach_road_details(request):
@@ -1026,7 +1030,8 @@ def save_anc_approach_road_details(request):
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 def save_anc_power_line_form(request):
@@ -1055,7 +1060,8 @@ def save_anc_power_line_form(request):
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 def save_anc_other_details(request):
@@ -1073,7 +1079,9 @@ def save_anc_other_details(request):
         anc_other_concrete_building = request.POST.get('anc_other_concrete_building')
         anc_other_asphalt_plant = request.POST.get('anc_other_asphalt_plant')
         anc_other_ropeway = request.POST.get('anc_other_ropeway')
+        anc_other_required = request.POST.get('anc_other_required')
 
+        anc_other_required = anc_other_required if anc_other_required else None
         anc_other_crushing_unit = anc_other_crushing_unit if anc_other_crushing_unit else None
         anc_other_surface_collection = anc_other_surface_collection if anc_other_surface_collection else None
         anc_other_ground_water = anc_other_ground_water if anc_other_ground_water else None
@@ -1087,7 +1095,8 @@ def save_anc_other_details(request):
         anc_other_ropeway = anc_other_ropeway if anc_other_ropeway else None
 
         anc_other_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        anc_other_details.update(anc_other_crushing_unit=anc_other_crushing_unit,
+        anc_other_details.update(anc_other_required=anc_other_required,
+                                 anc_other_crushing_unit=anc_other_crushing_unit,
                                     anc_other_surface_collection=anc_other_surface_collection,
                                     anc_other_ground_water=anc_other_ground_water,
                                     anc_other_mineral=anc_other_mineral,
@@ -1102,7 +1111,8 @@ def save_anc_other_details(request):
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 def save_solid_waste_details(request):
@@ -1130,6 +1140,8 @@ def save_solid_waste_details(request):
         en_impact_others_waste_source = request.POST.get('en_impact_others_waste_source')
         en_impact_others_waste_qty_annum = request.POST.get('en_impact_others_waste_qty_annum')
         en_impact_others_waste_mgt_plan = request.POST.get('en_impact_others_waste_mgt_plan')
+        en_air_pollution_control_device_capacity = request.POST.get('en_air_pollution_control_device_capacity')
+        en_air_pollution_control_pcd_dimension = request.POST.get('en_air_pollution_control_pcd_dimension')
 
         anc_other_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         anc_other_details.update(en_impact_allocated_budget=en_impact_allocated_budget,
@@ -1152,12 +1164,15 @@ def save_solid_waste_details(request):
                                  en_impact_others_waste_list=en_impact_others_waste_list,
                                  en_impact_others_waste_source=en_impact_others_waste_source,
                                  en_impact_others_waste_qty_annum=en_impact_others_waste_qty_annum,
-                                 en_impact_others_waste_mgt_plan=en_impact_others_waste_mgt_plan
+                                 en_impact_others_waste_mgt_plan=en_impact_others_waste_mgt_plan,
+                                 en_air_pollution_control_device_capacity=en_air_pollution_control_device_capacity,
+                                 en_air_pollution_control_pcd_dimension=en_air_pollution_control_pcd_dimension
                                  )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 def save_effluent_details(request):
@@ -1446,7 +1461,8 @@ def save_effluent_details(request):
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 def save_industry_emission_details(request):
@@ -1487,7 +1503,8 @@ def save_industry_emission_details(request):
         return JsonResponse(data)
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
         return JsonResponse(data)
 
 def save_noise_level_details(request):
@@ -1519,7 +1536,8 @@ def save_noise_level_details(request):
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 def save_other_impact_details(request):
@@ -1604,7 +1622,8 @@ def save_other_impact_details(request):
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 def submit_iee_application(request):
@@ -1665,14 +1684,14 @@ def submit_iee_application(request):
                             ancillary_amount += int(anc_fees_detail.rate)
 
                     total_amount = main_amount + ancillary_amount
-                    make_payment_request(request,application_no,total_amount,'NEW IEE APPLICATION',request.session['email'],"208",service_type)
+                    make_payment_request(request,application_no,total_amount,'NEW IEE APPLICATION',request.session['email'],"100123",service_type)
                     send_payment_mail(request.session['name'], request.session['email'], total_amount)
                     data['message'] = "success"
 
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
-
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 def save_industry_ancillary_application(request):
@@ -1681,7 +1700,6 @@ def save_industry_ancillary_application(request):
         application_no = request.POST.get('application_no')
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
-        application_type = request.POST.get('application_type')
         applicant_name = request.POST.get('applicant_name')
         address = request.POST.get('address')
         cid = request.session['cid']
@@ -1689,7 +1707,7 @@ def save_industry_ancillary_application(request):
         email = request.POST.get('email')
         focal_person = request.POST.get('focal_person')
         industry_type = request.POST.get('industry_type')
-        establishment_type = request.POST.get('establishment_type')
+        establishment_name = request.POST.get('establishment_name')
         industry_classification = request.POST.get('industry_classification')
         dzongkhag_code = request.POST.get('dzo_throm')
         gewog_code = request.POST.get('gewog')
@@ -1698,6 +1716,7 @@ def save_industry_ancillary_application(request):
         industrial_area_acre = request.POST.get('industrial_area_acre')
         state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
         private_area_acre = request.POST.get('private_area_acre')
+        others_area = request.POST.get('others_area')
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
         green_area_acre = request.POST.get('green_area_acre')
@@ -1724,7 +1743,7 @@ def save_industry_ancillary_application(request):
             email=email,
             focal_person=focal_person,
             industry_type=industry_type,
-            establishment_type=establishment_type,
+            establishment_name=establishment_name,
             industry_classification=industry_classification,
             dzongkhag_code=dzongkhag_code,
             gewog_code=gewog_code,
@@ -1733,6 +1752,7 @@ def save_industry_ancillary_application(request):
             industrial_area_acre=industrial_area_acre,
             state_reserve_forest_acre=state_reserve_forest_acre,
             private_area_acre=private_area_acre,
+            others_area=others_area,
             others_area_acre=others_area_acre,
             total_area_acre=total_area_acre,
             green_area_acre=green_area_acre,
@@ -1742,24 +1762,23 @@ def save_industry_ancillary_application(request):
             project_cost=project_cost,
             project_duration=project_duration
             )
-        t_workflow_dtls.objects.create(application_no=application_no, 
-                                        service_id=request.session['service_id'],
-                                        application_status='P',
-                                        action_date=None,
-                                        actor_id=None,
-                                        actor_name=None,
-                                        assigned_user_id=None,
-                                        assigned_role_id='2',
-                                        assigned_role_name='Verifier',
-                                        result=None,
-                                        ca_authority=None,
-                                        dzongkhag_thromde_id=None,
-                                        application_source='ECSS'
-                                    )
+        t_workflow_dtls.objects.create(
+                    application_no=application_no,
+                    service_id=1,
+                    application_status='P',
+                    actor_id=request.session['login_id'],
+                    actor_name=request.session['name'],
+                    assigned_role_id='2',
+                    assigned_role_name='Verifier',
+                    ca_authority=None,
+                    application_source='ECSS',
+                    service_type='Ancillary'
+                )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 
@@ -1778,13 +1797,15 @@ def add_product_details(request):
 
 def get_specific_activity_description(request):
     broad_activity_code = request.GET.get('broad_activity_code')
-    specific_activity_description = t_bsic_code.objects.filter(broad_activity_code=broad_activity_code)
+    specific_activity_descriptions = t_bsic_code.objects.filter(broad_activity_code=broad_activity_code).distinct('specific_activity_description')
     return render(request, 'specific_activity_description_list.html',
-                  {'specific_activity_description':specific_activity_description})
+                  {'specific_activity_description':specific_activity_descriptions})
 
 def get_category(request):
     specific_activity_code = request.GET.get('specific_activity_code')
-    category_details = t_bsic_code.objects.filter(specific_activity_code=specific_activity_code)
+    category_details = t_bsic_code.objects.filter(
+        specific_activity_code=specific_activity_code
+    ).distinct('category')
     return render(request, 'category_list.html',
                   {'category_details':category_details})
 
@@ -2270,7 +2291,7 @@ def save_tor_attachment(request):
 
 def save_tor_attachment_details(request):
     file_name = request.POST.get('filename')
-    file_url = request.POST.get('file_url')
+    file_url = request.POST.get('file_url') 
     application_no = request.POST.get('application_no')
 
     t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='TOR')
@@ -2621,7 +2642,8 @@ def save_terrain_baseline_details_one(request):
         return JsonResponse(data)
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
         return JsonResponse(data)
     
 def save_terrain_baseline_details_two(request):
@@ -2666,7 +2688,8 @@ def save_terrain_baseline_details_two(request):
         return JsonResponse(data)
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
         return JsonResponse(data)
 
 def submit_ea_application(request):
@@ -2729,14 +2752,14 @@ def submit_ea_application(request):
                                     ancillary_amount += int(anc_fees_detail.rate)
 
                             total_amount = main_amount + ancillary_amount
-                            make_payment_request(request,application_no,total_amount,'NEW EA APPLICATION',request.session['email'],"208",service_type)
+                            make_payment_request(request,application_no,total_amount,'NEW EA APPLICATION',request.session['email'],"100123",service_type)
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
 
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
-
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 
@@ -2821,7 +2844,8 @@ def save_project_details(request):
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 def ec_renewal(request):
@@ -2838,8 +2862,9 @@ def ec_renewal(request):
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A',application_no__contains='TOR'
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=applicant_id
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
@@ -2937,7 +2962,8 @@ def save_general_water_requirement(request):
         return JsonResponse(data)
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
     
 def submit_transmission_application(request):
@@ -2994,14 +3020,14 @@ def submit_transmission_application(request):
                         else:
                             total_amount = main_amount
 
-                        make_payment_request(request,application_no,total_amount,'NEW TRANSMISSION APPLICATION',request.session['email'],"208",service_type)
+                        make_payment_request(request,application_no,total_amount,'NEW TRANSMISSION APPLICATION',request.session['email'],"100123",service_type)
                         send_payment_mail(request.session['name'], request.session['email'], total_amount)
                         data['message'] = "success"
 
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
-
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 
@@ -3010,8 +3036,23 @@ def submit_general_application(request):
     data = dict()
     try:
         application_no = request.POST.get('general_disclaimer_application_no')
+        application_source = request.POST.get('application_source')
+        request.session['application_no'] = application_no
         identifier = request.POST.get('anc_identifier')
         disclaimer_identifier = request.POST.get('disclaimer_identifier')
+        service_value = application_no[:3]
+        service_to_id = {
+            'IEE': 1,
+            'IEA': 1,
+            'ENE': 2,
+            'ROA': 3,
+            'TRA': 4,
+            'TOU': 5,
+            'GWA': 6,
+            'FOR': 7,
+            'QUA': 8,
+            'GEN': 9,
+        }
         
         if disclaimer_identifier in ('OC', 'NC'):
             t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
@@ -3021,6 +3062,7 @@ def submit_general_application(request):
             application_details_main = application_details.filter(service_type='Main Activity').first()
             application_details_ancillary = application_details.filter(service_type='Ancillary').first()
             anc_details = application_details.filter(service_type='Ancillary').count()
+            draft_count = application_details.filter(service_type='Main Activity', action_date__isnull=True).count()
 
             if application_details_main:
                 service_id = application_details_main.service_id
@@ -3041,7 +3083,14 @@ def submit_general_application(request):
                         application_details_ancillary.action_date = timezone.now()
                         application_details_ancillary.save()
                         t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
-                        data['message'] = "success"
+                        data = {
+                            "message": "success",
+                            "type": application_no[:3],
+                            "draft_count":draft_count
+                        }
+                        service_id = service_to_id.get(service_value)
+                        request.session['service_id'] = service_id
+                        request.session['application_source'] = application_details_ancillary.application_source
                     else:
                         ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary', application_status='P').count()
                         if ancillary_count > 0:
@@ -3049,7 +3098,10 @@ def submit_general_application(request):
                         else:
                             application_details_main.action_date = timezone.now()
                             application_details_main.save()
-                            t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
+                            if application_source == 'IBLS':
+                                t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now(),assigned_role_id='1',assigned_role_name='Admin')
+                            else:
+                                t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
 
                             fees_details = t_fees_schedule.objects.filter(service_id=service_id).first()
                             main_amount = fees_details.rate + fees_details.application_fee
@@ -3063,13 +3115,13 @@ def submit_general_application(request):
                             app_hist_details = t_application_history.objects.filter(application_no=application_no)
                             app_hist_details.update(remarks='Your Application Submitted')
                             app_hist_details.update(action_date=timezone.now())
-                            make_payment_request(request,application_no,total_amount,'NEW GENERAL APPLICATION',request.session['email'],"208",service_type)
-                            #send_payment_mail(request.session['name'], request.session['email'], total_amount)
+                            make_payment_request(request,application_no,total_amount,'NEW GENERAL APPLICATION',request.session['email'],"100123",service_type)
+                            send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
-
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 def send_payment_mail(name, email_id, amount):
@@ -3078,7 +3130,7 @@ def send_payment_mail(name, email_id, amount):
               + str(amount) + ""
     recipient_list = [email_id]
     send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
-              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
+              auth_user='systems@moenr.gov.bt', auth_password='wdiigzpprtutwmdc',
               connection=None, html_message=None)
     
 def send_tor_payment_mail(name, email_id, amount):
@@ -3087,7 +3139,7 @@ def send_tor_payment_mail(name, email_id, amount):
               + str(amount) + ""
     recipient_list = [email_id]
     send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
-              auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
+              auth_user='systems@moenr.gov.bt', auth_password='wdiigzpprtutwmdc',
               connection=None, html_message=None)
     
 #TOR
@@ -3201,33 +3253,37 @@ def save_tor_form(request):
             ca_authority=ca_auth,
             application_source='ECSS'
         )
-        make_payment_request(request,application_no,"500",'NEW TOR APPLICATION',request.session['email'],"208",service_type)
+        amount = t_fees_schedule.objects.filter(service_name='TOR')
+        make_payment_request(request,application_no,"500",'NEW TOR APPLICATION',request.session['email'],"100123","TOR")
         send_tor_payment_mail(request.session['name'], request.session['email'], 500)
         data['message'] = 'success'
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = 'failure'
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 
 def tor_list(request):
+    applicant_id = request.session.get('email', None)
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no') 
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_details = t_workflow_dtls.objects.filter(
-        application_status='A',application_no__contains='TOR'
+    tor_details = t_ec_industries_t1_general.objects.filter(
+        application_status='A',application_no__contains='TOR',applicant_id=applicant_id
     ).exclude(
         application_no__in=Subquery(t1_general_subquery)
     )
-    tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A',application_no__contains='TOR'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=applicant_id
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     service_details = t_service_master.objects.all()
-    applicant_id = request.session.get('email', None)
+    
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
     response = render(request, 'tor/tor_list.html', {'tor_application_count':tor_application_count,'tor_details':tor_details,'service_details':service_details, 'app_hist_count':app_hist_count})
 
@@ -3238,6 +3294,7 @@ def tor_list(request):
     return response
 
 def view_tor_application_details(request):
+    applicant_id = request.session.get('email', None)
     tor_application_no = request.GET.get('application_no')
     service_id = request.GET.get('service_id')
     app_det = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
@@ -3246,11 +3303,12 @@ def view_tor_application_details(request):
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_workflow_dtls.objects.filter(
-        application_status='A',application_no__contains='TOR'
-    ).exclude(
-        application_no__in=Subquery(t1_general_subquery)
-    ).count()
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=applicant_id
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
     for app_det in app_det:
         request.session['ca_auth'] = app_det.ca_authority
         request.session['colour_code'] = app_det.colour_code
@@ -3292,7 +3350,7 @@ def view_tor_application_details(request):
         thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'energy_form.html',{'tor_application_count':tor_application_count,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'tor/energy_form.html',{'tor_application_count':tor_application_count,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
     elif service_id == '3':
@@ -3312,7 +3370,7 @@ def view_tor_application_details(request):
         thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'road_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'tor/road_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'drainage_type':drainage_type, 'thromde':thromde})
     elif service_id == '4':
@@ -3331,7 +3389,7 @@ def view_tor_application_details(request):
         thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'transmission_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'tor/transmission_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
     elif service_id == '5':
@@ -3350,7 +3408,7 @@ def view_tor_application_details(request):
         thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'tourism_form.html',{'tor_application_count':tor_application_count,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'tor/tourism_form.html',{'tor_application_count':tor_application_count,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
     elif service_id == '6':
@@ -3369,7 +3427,7 @@ def view_tor_application_details(request):
         thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'ground_water_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'tor/ground_water_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
     elif service_id == '7':
@@ -3385,7 +3443,7 @@ def view_tor_application_details(request):
         thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'forest_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'forest_produce':forest_produce,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
+        return render(request, 'tor/forest_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'forest_produce':forest_produce,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                     'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
     elif service_id == '8':
         service_code = 'QUA' 
@@ -3403,7 +3461,7 @@ def view_tor_application_details(request):
         thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'quarry_form.html',{'tor_application_count':tor_application_count,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'tor/quarry_form.html',{'tor_application_count':tor_application_count,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
     elif service_id == '9':
@@ -3422,7 +3480,7 @@ def view_tor_application_details(request):
         thromde = t_thromde_master.objects.all()
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'general_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
+        return render(request, 'tor/general_form.html',{'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
                                                         'project_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'thromde':thromde})
 
@@ -3461,7 +3519,7 @@ def insert_app_payment_details(request, application_no, description, total_amoun
         cid_no = app_det.cid
         mob_no = app_det.contact_no
     
-    if 'new' in identifier or 'tor' in identifier:
+    if 'new' in identifier or 'tor' in identifier or 'ec_renewal' in identifier or 'fines' in identifier:
         t_payment_details.objects.create(
             ref_no=application_no,
             payment_request_date=date.today(),
@@ -3476,169 +3534,6 @@ def insert_app_payment_details(request, application_no, description, total_amoun
             payment_advice_no=paymentAdviceNo
         )
     
-    return redirect(identifier)
-
-
-def insert_payment_details(request,application_no,account_head, identifier):
-    main_application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
-    ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary').count()
-
-    service_id = request.session['service_id']
-    industry_classification = None
-    main_amount = 0
-    ancillary_amount = 0
-    total_amount = 0
-    power_generation = None
-    road_length = None
-    length_of_transmission = None
-    total_area_acre = None
-
-    for application in main_application_details:
-        industry_classification = application.industry_classification
-        power_generation = application.power_generation
-        road_length = application.road_length
-
-        if service_id == 1 and industry_classification == 'Small':
-            fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
-            for fees_details in fees_details:
-                main_amount = fees_details.rate + fees_details.application_fee
-        elif service_id == 1 and industry_classification == 'Medium':
-            fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
-            for fees_details in fees_details:
-                main_amount = fees_details.rate + fees_details.application_fee
-        elif service_id == 1 and industry_classification == 'Large':
-            fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
-            for fees_details in fees_details:
-                main_amount = fees_details.rate + fees_details.application_fee
-        elif service_id == 1 and industry_classification == 'Cottage':
-            fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
-            for fees_details in fees_details:
-                main_amount = fees_details.rate + fees_details.application_fee
-        elif service_id == 2:
-            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-            for fees_details in fees_details:
-                main_amount = (fees_details.rate * power_generation) + fees_details.application_fee
-        elif service_id == 3:
-            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-            for fees_details in fees_details:
-                main_amount = (fees_details.rate * road_length) + fees_details.application_fee
-        elif service_id == 4:
-            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-            for fees_details in fees_details:
-                main_amount = (fees_details.rate * length_of_transmission) + fees_details.application_fee
-        elif service_id == 5:
-            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-            for fees_details in fees_details:
-                main_amount = fees_details.rate  + fees_details.application_fee
-        elif service_id == 6:
-            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-            for fees_details in fees_details:
-                main_amount = fees_details.rate  + fees_details.application_fee
-        elif service_id == 7:
-            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-            for fees_details in fees_details:
-                main_amount = (fees_details.rate * total_area_acre) + fees_details.application_fee
-        elif service_id == 8:
-            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-            for fees_details in fees_details:
-                main_amount = (fees_details.rate * total_area_acre) * fees_details.application_fee
-        elif service_id == 9:
-            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-            for fees_details in fees_details:
-                main_amount = fees_details.rate + fees_details.application_fee
-        elif service_id == 10:
-            fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-            for fees_details in fees_details:
-                main_amount = fees_details.rate + fees_details.application_fee
-
-    if ancillary_application_details_count > 0:
-        ancillary_application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
-        
-        for ancillary_application in ancillary_application_details:
-            industry_classification = ancillary_application.industry_classification
-            power_generation = ancillary_application.power_generation
-            road_length = ancillary_application.road_length
-        
-            if service_id == 1 and industry_classification == 'Small':
-                fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
-                for fees_details in fees_details:
-                    ancillary_amount = fees_details.rate
-            elif service_id == 1 and industry_classification == 'Medium':
-                fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
-                for fees_details in fees_details:
-                    main_amount = fees_details.rate
-            elif service_id == 1 and industry_classification == 'Large':
-                fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
-                for fees_details in fees_details:
-                    ancillary_amount = fees_details.rate
-            elif service_id == 1 and industry_classification == 'Cottage':
-                fees_details = t_fees_schedule.objects.filter(service_id=service_id, parameter=industry_classification)
-                for fees_details in fees_details:
-                    ancillary_amount = fees_details.rate
-            elif service_id == 2:
-                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                for fees_details in fees_details:
-                    ancillary_amount = (fees_details.rate * power_generation)
-            elif service_id == 3:
-                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                for fees_details in fees_details:
-                    ancillary_amount = (fees_details.rate * road_length)
-            elif service_id == 4:
-                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                for fees_details in fees_details:
-                    ancillary_amount = (fees_details.rate * length_of_transmission)
-            elif service_id == 5:
-                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                for fees_details in fees_details:
-                    ancillary_amount = fees_details.rate
-            elif service_id == 6:
-                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                for fees_details in fees_details:
-                    ancillary_amount = fees_details.rate
-            elif service_id == 7:
-                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                for fees_details in fees_details:
-                    ancillary_amount = (fees_details.rate * total_area_acre)
-            elif service_id == 8:
-                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                for fees_details in fees_details:
-                    ancillary_amount = (fees_details.rate * total_area_acre)
-            elif service_id == 9:
-                fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-                for fees_details in fees_details:
-                    ancillary_amount = fees_details.rate
-        
-        total_amount = main_amount + ancillary_amount
-        print(total_amount)
-
-        t_payment_details.objects.create(application_no=application_no,
-            application_type= application.application_type,
-            application_date=application.application_date, 
-            proponent_name=application.applicant_name,
-            amount=total_amount,
-            account_head_code=account_head)
-    return redirect(identifier)
-
-
-def insert_renewal_payment_details(request,application_no,ec_reference_no,service_id,account_head, identifier):
-    main_application_details = t_payment_details.objects.filter(ec_no=ec_reference_no,account_head_code='131370003')
-
-    main_amount = 0
-    amount = 0
-
-    fees_details = t_fees_schedule.objects.filter(service_id=service_id)
-    for main_application_details in main_application_details:
-        amount = main_application_details.amount
-    for fees_details in fees_details:
-        main_amount = (fees_details.rate * amount)/100 + fees_details.application_fee
-        
-    for application in main_application_details:
-        t_payment_details.objects.create(application_no=application_no,
-            application_type= application.application_type,
-            application_date=application.application_date, 
-            proponent_name=application.applicant_name,
-            amount=main_amount,
-            account_head_code=account_head)
     return redirect(identifier)
 
 # Road Application Details
@@ -3984,318 +3879,296 @@ def save_road_application(request):
                 assigned_role_id='2',
                 assigned_role_name='Verifier',
                 ca_authority=ca_auth,
-                application_source='ECSS'
+                application_source='ECSS',
+                service_type=service_type
             )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 # General Application Details
 def save_general_application(request):
     data = {}
     try:
-        application_no = request.POST.get('application_no')
-        project_name = request.POST.get('project_name')
-        project_category = request.POST.get('project_category')
-        applicant_name = request.POST.get('applicant_name')
-        address = request.POST.get('address')
-        contact_no = request.POST.get('contact_no')
-        email = request.POST.get('email')
+        identifier = request.POST.get('identifier')
+        tor_application_no = request.POST.get('tor_application_no')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
-        focal_person = request.POST.get('focal_person')
+        service_type = request.POST.get('service_type')
+
+        # Initialize location variables
+        dzongkhag_code, gewog_code, village_code, thromde_id = None, None, None, None
         if dzongkhag_throm == 'Thromde':
-            dzongkhag_code = None
-            gewog_code = None
-            village_code = None
             thromde_id = request.POST.get('thromde_id')
         else:
             dzongkhag_code = request.POST.get('dzongkhag')
             gewog_code = request.POST.get('gewog')
             village_code = request.POST.get('vil_chiwog')
-            thromde_id = None
-        industrial_area_acre = request.POST.get('industrial_area_acre')
-        state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
-        private_area_acre = request.POST.get('private_area_acre')
-        others_area_acre = request.POST.get('others_area_acre')
-        total_area_acre = request.POST.get('total_area_acre')
-        project_site = request.POST.get('project_site')
-        identifier = request.POST.get('identifier')
-        tor_application_no = request.POST.get('tor_application_no')
-        service_type = request.POST.get('service_type')
+
+        # Initialize application attributes
+        application_type = "New"
+        colour_code = request.session.get('colour_code')
+        service_id = request.session.get('service_id')
+        print(f"The service ID here is {service_id}")
         ca_auth = None
-        if tor_application_no is None:
-            if identifier in ['DR', 'NC', 'OC']:
-                if identifier == 'NC' or identifier == 'OC':
-                    auth_filter = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-                    ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
-                else:
-                    auth_filter = t_competant_authority_master.objects.filter(
-                        competent_authority=request.session['ca_auth'],
-                        dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
-                    )
-                    ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-            else:
-                auth_filter = t_competant_authority_master.objects.filter(
-                    competent_authority=request.session['ca_auth'],
-                    dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
-                )
-                ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-        else:
-            auth_filter = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
-            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
 
-        print(ca_auth)
+        # Determine competent authority
+        if identifier not in ['DR', 'NC', 'OC'] and tor_application_no is None:
+            # For new applications not from TOR
+            auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session.get('ca_auth'),
+                dzongkhag_code_id=dzongkhag_code if request.session.get('ca_auth') in ['DEC', 'THROMDE'] else None
+            )
+            if auth_filter.exists():
+                ca_auth = auth_filter.first().competent_authority_id
+        elif identifier in ['NC', 'OC']:
+            # For NC/OC applications
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=request.POST.get('application_no')
+            )
+            if auth_filter.exists():
+                ca_auth = auth_filter.first().ca_authority
+        elif tor_application_no:
+            # For applications with TOR reference
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=tor_application_no
+            )
+            if auth_filter.exists():
+                ca_auth = auth_filter.first().ca_authority
 
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        # Prepare application details
+        application_details = {
+            'application_no': request.POST.get('application_no'),
+            'application_date': timezone.now().date(),
+            'application_type': application_type,
+            'project_name': request.POST.get('project_name'),
+            'project_category': request.POST.get('project_category'),
+            'applicant_name': request.POST.get('applicant_name'),
+            'address': request.POST.get('address'),
+            'cid': request.session.get('cid'),
+            'contact_no': request.POST.get('contact_no'),
+            'email': request.POST.get('email'),
+            'focal_person': request.POST.get('focal_person'),
+            'location_name': request.POST.get('project_site'),
+            'dzongkhag_throm': dzongkhag_throm,
+            'dzongkhag_code': dzongkhag_code,
+            'gewog_code': gewog_code,
+            'village_code': village_code,
+            'thromde_id': thromde_id,
+            'industrial_area_acre': request.POST.get('industrial_area_acre'),
+            'state_reserve_forest_acre': request.POST.get('state_reserve_forest_acre'),
+            'private_area_acre': request.POST.get('private_area_acre'),
+            'others_area':request.POST.get('others_area'),
+            'others_area_acre': request.POST.get('others_area_acre'),
+            'total_area_acre': request.POST.get('total_area_acre'),
+            'service_type': service_type,
+            'ca_authority': ca_auth,
+            'applicant_id': request.session.get('email'),
+            'colour_code': colour_code,
+            'service_id': service_id,
+            'broad_activity_code': request.session.get('broad_activity_code'),
+            'specific_activity_code': request.session.get('specific_activity_code'),
+            'category': request.session.get('category'),
+            'application_source': 'ECSS',
+            'application_status': 'P',
+            'tor_application_no': tor_application_no
+        }
 
+        # Database operations
         with transaction.atomic():
             if identifier == 'NC':
-                application_details.update(project_name=project_name, service_type=identifier)
-            elif identifier == 'OC':
-                application_details.update(applicant_name=applicant_name, application_type=identifier)
-            elif identifier == 'DR':
-                if application_details.exists():
-                    application_details.update(
-                        application_type='New',
-                        project_name=project_name,
-                        project_category=project_category,
-                        applicant_name=applicant_name,
-                        address=address,
-                        contact_no=contact_no,
-                        email=email,
-                        location_name=project_site,
-                        dzongkhag_throm=dzongkhag_throm,
-                        thromde_id=thromde_id,
-                        focal_person=focal_person,
-                        dzongkhag_code=dzongkhag_code,
-                        gewog_code=gewog_code,
-                        village_code=village_code,
-                        industrial_area_acre=industrial_area_acre,
-                        state_reserve_forest_acre=state_reserve_forest_acre,
-                        private_area_acre=private_area_acre,
-                        others_area_acre=others_area_acre,
-                        total_area_acre=total_area_acre,
-                    )
+                application_instance = t_ec_industries_t1_general.objects.filter(
+                    application_no=request.POST.get('application_no')).first()
+                if application_instance:
+                    application_instance.project_name = request.POST.get('project_name')
+                    application_instance.service_type = identifier
+                    application_instance.save()
                 else:
-                    t_ec_industries_t1_general.objects.create(
-                        application_no=application_no,
-                        application_date=timezone.now().date(),
-                        application_type='New',
-                        service_type=service_type,
-                        ca_authority=ca_auth,
-                        applicant_id=request.session['email'],
-                        colour_code=request.session['colour_code'],
-                        cid=request.session['cid'],
-                        project_name=project_name,
-                        project_category=project_category,
-                        applicant_name=applicant_name,
-                        address=address,
-                        contact_no=contact_no,
-                        email=email,
-                        location_name=project_site,
-                        dzongkhag_throm=dzongkhag_throm,
-                        thromde_id=thromde_id,
-                        focal_person=focal_person,
-                        dzongkhag_code=dzongkhag_code,
-                        gewog_code=gewog_code,
-                        village_code=village_code,
-                        industrial_area_acre=industrial_area_acre,
-                        state_reserve_forest_acre=state_reserve_forest_acre,
-                        private_area_acre=private_area_acre,
-                        others_area_acre=others_area_acre,
-                        total_area_acre=total_area_acre,
-                        application_status='P',
-                        service_id=request.session['service_id'],
-                        broad_activity_code=request.session['broad_activity_code'],
-                        specific_activity_code=request.session['specific_activity_code'],
-                        category=request.session['category'],
-                        application_source='ECSS',
-                        tor_application_no=tor_application_no
-                    )
+                    raise ValueError("Application does not exist.")
+            elif identifier == 'OC':
+                application_instance = t_ec_industries_t1_general.objects.filter(
+                    application_no=request.POST.get('application_no')).first()
+                if application_instance:
+                    application_instance.applicant_name = request.POST.get('applicant_name')
+                    application_instance.service_type = identifier
+                    application_instance.save()
+                else:
+                    raise ValueError("Application does not exist.")
+            elif identifier == 'DR':
+                application_instance, created = t_ec_industries_t1_general.objects.get_or_create(
+                    application_no=request.POST.get('application_no'))
+                if not created:
+                    for field, value in application_details.items():
+                        setattr(application_instance, field, value)
+                    application_instance.save()
+                else:
+                    raise ValueError("Application does not exist.")
             elif identifier in ['TC', 'PC', 'LC', 'CC']:
-                for app_det in application_details:
+                for app_det in t_ec_industries_t1_general.objects.filter(
+                    application_no=request.POST.get('application_no')):
                     t_ec_industries_t1_general.objects.create(
-                        application_no=application_no,
-                        application_date=timezone.now().date(),
-                        application_type='New',
-                        service_type=identifier,
-                        ca_authority=app_det.ca_authority,
-                        applicant_id=request.session['email'],
-                        colour_code=app_det.colour_code,
-                        project_name=project_name,
-                        project_category=project_category,
-                        applicant_name=applicant_name,
-                        location_name=project_site,
-                        address=address,
-                        contact_no=contact_no,
-                        email=email,
-                        cid=request.session['cid'],
-                        focal_person=focal_person,
-                        dzongkhag_throm=dzongkhag_throm,
-                        thromde_id=thromde_id,
-                        dzongkhag_code=dzongkhag_code,
-                        gewog_code=gewog_code,
-                        village_code=village_code,
-                        industrial_area_acre=industrial_area_acre,
-                        state_reserve_forest_acre=state_reserve_forest_acre,
-                        private_area_acre=private_area_acre,
-                        others_area_acre=others_area_acre,
-                        total_area_acre=total_area_acre,
-                        application_status='P',
-                        service_id=app_det.service_id,
-                        application_source='ECSS'
+                        application_no=request.POST.get('application_no'),
+                        ec_reference_no=app_det.ec_reference_no,
+                        **application_details
                     )
             else:
-                t_ec_industries_t1_general.objects.create(
-                    application_no=application_no,
-                    application_date=timezone.now().date(),
-                    application_type='New',
-                    service_type=service_type,
-                    ca_authority=ca_auth,
-                    applicant_id=request.session['email'],
-                    colour_code=request.session['colour_code'],
-                    project_name=project_name,
-                    project_category=project_category,
-                    applicant_name=applicant_name,
-                    address=address,
-                    contact_no=contact_no,
-                    dzongkhag_throm=dzongkhag_throm,
-                    thromde_id=thromde_id,
-                    location_name=project_site,
-                    email=email,
-                    cid=request.session['cid'],
-                    focal_person=focal_person,
-                    dzongkhag_code=dzongkhag_code,
-                    gewog_code=gewog_code,
-                    village_code=village_code,
-                    industrial_area_acre=industrial_area_acre,
-                    state_reserve_forest_acre=state_reserve_forest_acre,
-                    private_area_acre=private_area_acre,
-                    others_area_acre=others_area_acre,
-                    total_area_acre=total_area_acre,
-                    application_status='P',
-                    service_id=request.session['service_id'],
-                    broad_activity_code=request.session['broad_activity_code'],
-                    specific_activity_code=request.session['specific_activity_code'],
-                    category=request.session['category'],
-                    application_source='ECSS',
-                    tor_application_no=tor_application_no
-                )
+                t_ec_industries_t1_general.objects.create(**application_details)
 
+            # Create application history
             t_application_history.objects.create(
-                application_no=application_no,
+                application_no=request.POST.get('application_no'),
                 application_date=timezone.now().date(),
-                applicant_id=request.session['email'],
+                applicant_id=request.session.get('email'),
                 ca_authority=ca_auth,
-                service_id=request.session['service_id'],
+                service_id=service_id,
                 application_status='P',
-                actor_id=request.session['login_id'],
-                actor_name=request.session['name']
+                actor_id=request.session.get('login_id'),
+                actor_name=request.session.get('name')
             )
-            if identifier == 'NC' or identifier == 'OC':
-                work_details = t_workflow_dtls.objects.filter(application_no=application_no)
-                work_details.update(application_status='P',
-                    actor_id=request.session['login_id'],
-                    actor_name=request.session['name'],
+
+            # Update workflow details
+            if identifier in ['NC', 'OC']:
+                t_workflow_dtls.objects.filter(
+                    application_no=request.POST.get('application_no')
+                ).update(
+                    application_status='P',
+                    actor_id=request.session.get('login_id'),
+                    actor_name=request.session.get('name'),
                     assigned_role_id='2',
-                    assigned_role_name='Verifier')
+                    assigned_role_name='Verifier'
+                )
             else:
                 t_workflow_dtls.objects.create(
-                    application_no=application_no,
-                    service_id=request.session['service_id'],
+                    application_no=request.POST.get('application_no'),
+                    service_id=service_id,
                     application_status='P',
-                    actor_id=request.session['login_id'],
-                    actor_name=request.session['name'],
+                    actor_id=request.session.get('login_id'),
+                    actor_name=request.session.get('name'),
                     assigned_role_id='2',
                     assigned_role_name='Verifier',
                     ca_authority=ca_auth,
-                    application_source='ECSS'
+                    application_source='ECSS',
+                    service_type=service_type
                 )
-        data['message'] = 'success'
+
+        data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = 'failure'
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
-
 
 # Forest Application Details
 def save_forest_application(request):
     data = {}
     try:
-        print(request.session['ca_auth'])
         identifier = request.POST.get('identifier')
-        # Fetch ca_auth for non-draft applications
         tor_application_no = request.POST.get('tor_application_no')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
+        service_type = request.POST.get('service_type')
+
+        # Initialize location variables
+        dzongkhag_code, gewog_code, village_code, thromde_id = None, None, None, None
         if dzongkhag_throm == 'Thromde':
-            dzongkhag_code, gewog_code, village_code, thromde_id = None, None, None, request.POST.get('thromde_id')
+            thromde_id = request.POST.get('thromde_id')
         else:
-            dzongkhag_code, gewog_code, village_code, thromde_id = request.POST.get('dzongkhag'), request.POST.get('gewog'), request.POST.get('vil_chiwog'), None
-        # Application details
+            dzongkhag_code = request.POST.get('dzongkhag')
+            gewog_code = request.POST.get('gewog')
+            village_code = request.POST.get('vil_chiwog')
+
+        # Initialize application attributes
+        application_type = "New"
+        colour_code = request.session.get('colour_code')
+        service_id = request.session.get('service_id')
         ca_auth = None
-        if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
+
+        # Determine competent authority
+        if identifier not in ['DR', 'NC', 'OC'] and tor_application_no is None:
+            # For new applications not from TOR
             auth_filter = t_competant_authority_master.objects.filter(
-                competent_authority=request.session['ca_auth'],
-                dzongkhag_code_id=request.POST.get('dzo_throm') if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+                competent_authority=request.session.get('ca_auth'),
+                dzongkhag_code_id=request.POST.get('dzo_throm') if request.session.get('ca_auth') in ['DEC', 'THROMDE'] else None
             )
-            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-        elif identifier == 'NC' or identifier == 'OC':
+            if auth_filter.exists():
+                ca_auth = auth_filter.first().competent_authority_id
+        elif identifier in ['NC', 'OC']:
+            # For NC/OC applications
             auth_filter = t_ec_industries_t1_general.objects.filter(
                 application_no=request.POST.get('application_no')
             )
-            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
-        else:
+            if auth_filter.exists():
+                ca_auth = auth_filter.first().ca_authority
+        elif tor_application_no:
+            # For applications with TOR reference
             auth_filter = t_ec_industries_t1_general.objects.filter(
                 application_no=tor_application_no
             )
-            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+            if auth_filter.exists():
+                ca_auth = auth_filter.first().ca_authority
+
+        # Prepare application details
         application_details = {
-            'application_no':request.POST.get('application_no'),
-            'application_date':timezone.now().date(),
-            'application_type':'New',
+            'application_no': request.POST.get('application_no'),
+            'application_date': timezone.now().date(),
+            'application_type': application_type,
             'project_name': request.POST.get('project_name'),
             'project_category': request.POST.get('project_category'),
             'applicant_name': request.POST.get('applicant_name'),
             'address': request.POST.get('address'),
-            'cid': request.session['cid'],
+            'cid': request.session.get('cid'),
             'contact_no': request.POST.get('contact_no'),
             'email': request.POST.get('email'),
             'focal_person': request.POST.get('focal_person'),
-            'dzongkhag_throm': request.POST.get('dzongkhag_throm'),
+            'location_name': request.POST.get('project_site'),
+            'dzongkhag_throm': dzongkhag_throm,
             'dzongkhag_code': dzongkhag_code,
             'gewog_code': gewog_code,
             'village_code': village_code,
-            'thromde_id': thromde_id,        
+            'thromde_id': thromde_id,
             'industrial_area_acre': request.POST.get('industrial_area_acre'),
             'state_reserve_forest_acre': request.POST.get('state_reserve_forest_acre'),
             'private_area_acre': request.POST.get('private_area_acre'),
+            'others_area':request.POST.get('others_area'),
             'others_area_acre': request.POST.get('others_area_acre'),
             'total_area_acre': request.POST.get('total_area_acre'),
             'max_evacuation_depth': request.POST.get('max_evacuation_depth'),
             'terrain_elevation': request.POST.get('terrain_elevation'),
             'terrain_slope': request.POST.get('terrain_slope'),
-            'service_type': request.POST.get('service_type'),
-            'ca_authority':ca_auth,
-            'applicant_id':request.session['email'],
-            'colour_code':request.session['colour_code'],
-            'service_id':request.session['service_id'],
-            'application_source':'ECSS'
+            'service_type': service_type,
+            'ca_authority': ca_auth,
+            'applicant_id': request.session.get('email'),
+            'colour_code': colour_code,
+            'service_id': service_id,
+            'application_source': 'ECSS',
+            'application_status': 'P',
+            'tor_application_no': tor_application_no
         }
 
+        # Database operations
         with transaction.atomic():
-            if identifier == 'NC' or identifier == 'OC':
-                application_instance = t_ec_industries_t1_general.objects.filter(application_no=request.POST.get('application_no')).first()
+            if identifier == 'NC':
+                application_instance = t_ec_industries_t1_general.objects.filter(
+                    application_no=request.POST.get('application_no')).first()
                 if application_instance:
-                    application_instance.project_name = request.POST.get('project_name') if identifier == 'NC' else application_instance.project_name
-                    application_instance.applicant_name = request.POST.get('applicant_name') if identifier == 'OC' else application_instance.applicant_name
-                    application_instance.service_type=identifier
+                    application_instance.project_name = request.POST.get('project_name')
+                    application_instance.service_type = identifier
+                    application_instance.save()
+                else:
+                    raise ValueError("Application does not exist.")
+            elif identifier == 'OC':
+                application_instance = t_ec_industries_t1_general.objects.filter(
+                    application_no=request.POST.get('application_no')).first()
+                if application_instance:
+                    application_instance.applicant_name = request.POST.get('applicant_name')
+                    application_instance.service_type = identifier
                     application_instance.save()
                 else:
                     raise ValueError("Application does not exist.")
             elif identifier == 'DR':
-                application_instance, created = t_ec_industries_t1_general.objects.get_or_create(application_no=request.POST.get('application_no'))
+                application_instance, created = t_ec_industries_t1_general.objects.get_or_create(
+                    application_no=request.POST.get('application_no'))
                 if not created:
                     for field, value in application_details.items():
                         setattr(application_instance, field, value)
@@ -4304,46 +4177,58 @@ def save_forest_application(request):
                     raise ValueError("Application does not exist.")
             elif identifier in ['TC', 'PC', 'LC', 'CC']:
                 ec_reference_no = request.POST.get('ec_reference_no')
-                for app_det in t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no):
-                    t_ec_industries_t1_general.objects.create(application_no=request.POST.get('application_no'), ec_reference_no=ec_reference_no, **application_details)
+                for app_det in t_ec_industries_t1_general.objects.filter(
+                    ec_reference_no=ec_reference_no):
+                    t_ec_industries_t1_general.objects.create(
+                        application_no=request.POST.get('application_no'),
+                        ec_reference_no=ec_reference_no,
+                        **application_details
+                    )
             else:
                 t_ec_industries_t1_general.objects.create(**application_details)
 
+            # Create application history
             t_application_history.objects.create(
                 application_no=request.POST.get('application_no'),
                 application_date=timezone.now().date(),
-                applicant_id=request.session['email'],
+                applicant_id=request.session.get('email'),
                 ca_authority=ca_auth,
-                service_id=request.session['service_id'],
+                service_id=service_id,
                 application_status='P',
-                actor_id=request.session['login_id'],
-                actor_name=request.session['name']
+                actor_id=request.session.get('login_id'),
+                actor_name=request.session.get('name')
             )
 
-        if identifier == 'NC' or identifier == 'OC':
-            work_details = t_workflow_dtls.objects.filter(application_no=request.POST.get('application_no'))
-            work_details.update(application_status='P',
-                actor_id=request.session['login_id'],
-                actor_name=request.session['name'],
-                assigned_role_id='2',
-                assigned_role_name='Verifier')
-        else:
-            t_workflow_dtls.objects.create(
-                application_no=request.POST.get('application_no'),
-                service_id=request.session['service_id'],
-                application_status='P',
-                actor_id=request.session['login_id'],
-                actor_name=request.session['name'],
-                assigned_role_id='2',
-                assigned_role_name='Verifier',
-                ca_authority=ca_auth,
-                application_source='ECSS'
-            )
+            # Update workflow details
+            if identifier in ['NC', 'OC']:
+                t_workflow_dtls.objects.filter(
+                    application_no=request.POST.get('application_no')
+                ).update(
+                    application_status='P',
+                    actor_id=request.session.get('login_id'),
+                    actor_name=request.session.get('name'),
+                    assigned_role_id='2',
+                    assigned_role_name='Verifier'
+                )
+            else:
+                t_workflow_dtls.objects.create(
+                    application_no=request.POST.get('application_no'),
+                    service_id=service_id,
+                    application_status='P',
+                    actor_id=request.session.get('login_id'),
+                    actor_name=request.session.get('name'),
+                    assigned_role_id='2',
+                    assigned_role_name='Verifier',
+                    ca_authority=ca_auth,
+                    application_source='ECSS',
+                    service_type=service_type
+                )
 
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 
@@ -4415,7 +4300,7 @@ def submit_forest_application(request):
                         app_hist_details.update(remarks='Your Application Submitted')
                         app_hist_details.update(action_date=timezone.now())
 
-                        make_payment_request(request,application_no,total_amount,'NEW FOREST APPLICATION',request.session['email'],"208",service_type)
+                        make_payment_request(request,application_no,total_amount,'NEW FOREST APPLICATION',request.session['email'],"100123",service_type)
                         send_payment_mail(request.session['name'], request.session['email'], total_amount)
 
                 data['message'] = "success"
@@ -4454,6 +4339,7 @@ def save_ground_water_application(request):
         industrial_area_acre = request.POST.get('industrial_area_acre')
         state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
         private_area_acre = request.POST.get('private_area_acre')
+        others_area = request.POST.get('others_area')
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
         max_evacuation_depth = request.POST.get('max_evacuation_depth')
@@ -4500,6 +4386,7 @@ def save_ground_water_application(request):
             'industrial_area_acre': industrial_area_acre,
             'state_reserve_forest_acre': state_reserve_forest_acre,
             'private_area_acre': private_area_acre,
+            'others_area':others_area,
             'others_area_acre': others_area_acre,
             'total_area_acre': total_area_acre,
             'max_evacuation_depth': max_evacuation_depth,
@@ -4571,13 +4458,15 @@ def save_ground_water_application(request):
                 assigned_role_id='2',
                 assigned_role_name='Verifier',
                 ca_authority=ca_auth,
-                application_source='ECSS'
+                application_source='ECSS',
+                service_type=service_type
             )
 
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 
@@ -4601,7 +4490,8 @@ def save_ground_water_requirement(request):
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 def submit_ground_water_application(request):
@@ -4658,7 +4548,7 @@ def submit_ground_water_application(request):
                                     total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount = main_amount
-                                make_payment_request(request,application_no,total_amount,'NEW GW APPLICATION',request.session['email'],"208",service_type)
+                                make_payment_request(request,application_no,total_amount,'NEW GW APPLICATION',request.session['email'],"100123",service_type)
                                 send_payment_mail(request.session['name'], request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -4683,7 +4573,8 @@ def save_alternative_analysis(request):
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 # Quarry Application Details
 def save_quarry_application(request):
@@ -4713,6 +4604,7 @@ def save_quarry_application(request):
         industrial_area_acre = request.POST.get('industrial_area_acre')
         state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
         private_area_acre = request.POST.get('private_area_acre')
+        others_area = request.POST.get('others_area')
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
         actual_mineable_area = request.POST.get('actual_mineable_area')
@@ -4773,6 +4665,7 @@ def save_quarry_application(request):
                     industrial_area_acre=industrial_area_acre,
                     state_reserve_forest_acre=state_reserve_forest_acre,
                     private_area_acre=private_area_acre,
+                    others_area=others_area,
                     others_area_acre=others_area_acre,
                     total_area_acre=total_area_acre,
                     actual_mineable_area=actual_mineable_area,
@@ -4811,6 +4704,7 @@ def save_quarry_application(request):
                     industrial_area_acre=industrial_area_acre,
                     state_reserve_forest_acre=state_reserve_forest_acre,
                     private_area_acre=private_area_acre,
+                    others_area=others_area,
                     others_area_acre=others_area_acre,
                     total_area_acre=total_area_acre,
                     actual_mineable_area=actual_mineable_area,
@@ -4845,6 +4739,7 @@ def save_quarry_application(request):
                 industrial_area_acre=industrial_area_acre,
                 state_reserve_forest_acre=state_reserve_forest_acre,
                 private_area_acre=private_area_acre,
+                others_area=others_area,
                 others_area_acre=others_area_acre,
                 total_area_acre=total_area_acre,
                 actual_mineable_area=actual_mineable_area,
@@ -4889,13 +4784,15 @@ def save_quarry_application(request):
                 assigned_role_id='2',
                 assigned_role_name='Verifier',
                 ca_authority=ca_auth,
-                application_source='ECSS'
+                application_source='ECSS',
+                service_type=service_type
             )
 
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 
@@ -4956,13 +4853,14 @@ def submit_quarry_application(request):
                             else:
                                 total_amount = main_amount
 
-                            make_payment_request(request,application_no,total_amount,'NEW QUARRY APPLICATION',request.session['email'],"208",service_type)
+                            make_payment_request(request,application_no,total_amount,'NEW QUARRY APPLICATION',request.session['email'],"100123",service_type)
                             send_payment_mail(request.session['name'], request.session['email'], total_amount)
 
                             data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 
@@ -5110,27 +5008,66 @@ def submit_road_application(request):
     data = dict()
     try:
         application_no = request.POST.get('road_disclaimer_application_no')
-        identifier = request.POST.get('disc_identifier')
-        app_hist_details = t_application_history.objects.filter(application_no=application_no)
-        app_hist_details.update(action_date=date.today())
-        if identifier == 'OC' or identifier == 'NC':
-            workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-            workflow_dtls.update(action_date=date.today())
+        identifier = request.POST.get('anc_identifier')
+        disclaimer_identifier = request.POST.get('disclaimer_identifier')
+        
+        if disclaimer_identifier in ('OC', 'NC'):
+            t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
             data['message'] = "success"
         else:
-            ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary', application_status='P').count()
-            if(ancillary_count > 0):
-                data['message'] = "not submitted"
-            else:
-                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-                application_details.update(action_date=date.today())
-                workflow_dtls = t_workflow_dtls.objects.filter(application_no=application_no)
-                workflow_dtls.update(action_date=date.today())
-                insert_payment_details(request, application_no, 'submit_road_application')
-                data['message'] = "success"
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details_main = application_details.filter(service_type='Main Activity').first()
+            application_details_ancillary = application_details.filter(service_type='Ancillary').first()
+            anc_details = application_details.filter(service_type='Ancillary').count()
+
+            if application_details_main:
+                service_id = application_details_main.service_id
+                service_type = application_details_main.service_type
+                anc_other_crushing_unit = application_details_main.anc_other_crushing_unit
+                anc_other_surface_collection = application_details_main.anc_other_surface_collection
+                anc_other_ground_water = application_details_main.anc_other_ground_water
+                anc_other_mineral = application_details_main.anc_other_mineral
+                anc_other_general = application_details_main.anc_other_general
+                anc_other_transmission = application_details_main.anc_other_transmission
+
+                if (anc_other_crushing_unit == 'Yes' or anc_other_surface_collection == 'Yes' or
+                    anc_other_ground_water == 'Yes' or anc_other_mineral == 'Yes' or
+                    anc_other_general == 'Yes' or anc_other_transmission == 'Yes') and anc_details == 0:
+                    data['message'] = "not submitted"
+                else:
+                    if identifier == 'Ancillary':
+                        application_details_ancillary.action_date = timezone.now()
+                        application_details_ancillary.save()
+                        t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
+                        data['message'] = "success"
+                    else:
+                        ancillary_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary', application_status='P').count()
+                        if ancillary_count > 0:
+                            data['message'] = "not submitted"
+                        else:
+                            application_details_main.action_date = timezone.now()
+                            application_details_main.save()
+                            t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
+
+                            fees_details = t_fees_schedule.objects.filter(service_id=service_id).first()
+                            main_amount = fees_details.rate + fees_details.application_fee
+
+                            ancillary_application_details_count = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary').count()
+                            if ancillary_application_details_count > 0:
+                                ancillary_amount = fees_details.rate
+                                total_amount = main_amount + ancillary_amount
+                            else:
+                                total_amount = main_amount
+                            app_hist_details = t_application_history.objects.filter(application_no=application_no)
+                            app_hist_details.update(remarks='Your Application Submitted')
+                            app_hist_details.update(action_date=timezone.now())
+                            make_payment_request(request,application_no,total_amount,'NEW ROAD APPLICATION',request.session['email'],"100123",service_type)
+                            send_payment_mail(request.session['name'], request.session['email'], total_amount)
+                            data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
         data['message'] = "failure"
+
     return JsonResponse(data)
 
 #Energy Application Details
@@ -5159,6 +5096,7 @@ def save_energy_application(request):
         industrial_area_acre = request.POST.get('industrial_area_acre')
         state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
         private_area_acre = request.POST.get('private_area_acre')
+        others_area = request.POST.get('others_area'),
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
         identifier = request.POST.get('identifier')
@@ -5210,6 +5148,7 @@ def save_energy_application(request):
                     industrial_area_acre=industrial_area_acre,
                     state_reserve_forest_acre=state_reserve_forest_acre,
                     private_area_acre=private_area_acre,
+                    others_area=others_area,
                     others_area_acre=others_area_acre,
                     total_area_acre=total_area_acre,
                     )
@@ -5236,6 +5175,7 @@ def save_energy_application(request):
                     industrial_area_acre=industrial_area_acre,
                     state_reserve_forest_acre=state_reserve_forest_acre,
                     private_area_acre=private_area_acre,
+                    others_area=others_area,
                     others_area_acre=others_area_acre,
                     total_area_acre=total_area_acre,
                     application_status='P',
@@ -5268,6 +5208,7 @@ def save_energy_application(request):
                     industrial_area_acre=industrial_area_acre,
                     state_reserve_forest_acre=state_reserve_forest_acre,
                     private_area_acre=private_area_acre,
+                    others_area=others_area,
                     others_area_acre=others_area_acre,
                     total_area_acre=total_area_acre,
                     application_status='P',
@@ -5295,6 +5236,7 @@ def save_energy_application(request):
                 industrial_area_acre=industrial_area_acre,
                 state_reserve_forest_acre=state_reserve_forest_acre,
                 private_area_acre=private_area_acre,
+                others_area=others_area,
                 others_area_acre=others_area_acre,
                 total_area_acre=total_area_acre,
                 application_status='P',
@@ -5335,12 +5277,14 @@ def save_energy_application(request):
                 assigned_role_id='2',
                 assigned_role_name='Verifier',
                 ca_authority=ca_auth,
-                application_source='ECSS'
+                application_source='ECSS',
+                service_type=service_type
             )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 def submit_energy_application(request):
@@ -5414,12 +5358,13 @@ def submit_energy_application(request):
                                         total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount=main_amount
-                                make_payment_request(request,application_no,total_amount,'NEW ENERGY APPLICATION',request.session['email'],"208",service_type)
+                                make_payment_request(request,application_no,total_amount,'NEW ENERGY APPLICATION',request.session['email'],"100123",service_type)
                                 send_payment_mail(request.session['name'],request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 
@@ -5449,6 +5394,7 @@ def save_tourism_application(request):
         industrial_area_acre = request.POST.get('industrial_area_acre')
         state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
         private_area_acre = request.POST.get('private_area_acre')
+        others_area = request.POST.get('others_area')
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
         identifier = request.POST.get('identifier')
@@ -5499,6 +5445,7 @@ def save_tourism_application(request):
                         industrial_area_acre=industrial_area_acre,
                         state_reserve_forest_acre=state_reserve_forest_acre,
                         private_area_acre=private_area_acre,
+                        others_area=others_area,
                         others_area_acre=others_area_acre,
                         total_area_acre=total_area_acre
                     )
@@ -5527,13 +5474,15 @@ def save_tourism_application(request):
                     industrial_area_acre=industrial_area_acre,
                     state_reserve_forest_acre=state_reserve_forest_acre,
                     private_area_acre=private_area_acre,
+                    others_area=others_area,
                     others_area_acre=others_area_acre,
                     total_area_acre=total_area_acre,
                     application_status='P',
                     service_id=request.session['service_id'],
                     broad_activity_code=request.session['broad_activity_code'] ,
                     specific_activity_code=request.session['specific_activity_code'],
-                    category=request.session['category']
+                    category=request.session['category'],
+                    application_source='ECSS'
                     )
         elif identifier== 'TC' or identifier== 'PC' or identifier == 'LC' or identifier == 'CC':
             for app_det in application_details:
@@ -5561,9 +5510,11 @@ def save_tourism_application(request):
                     industrial_area_acre=industrial_area_acre,
                     state_reserve_forest_acre=state_reserve_forest_acre,
                     private_area_acre=private_area_acre,
+                    others_area=others_area,
                     others_area_acre=others_area_acre,
                     total_area_acre=total_area_acre,
                     application_status='P',
+                    application_source='ECSS',
                     service_id=app_det.service_id
                 )
         else:
@@ -5591,12 +5542,14 @@ def save_tourism_application(request):
                 industrial_area_acre=industrial_area_acre,
                 state_reserve_forest_acre=state_reserve_forest_acre,
                 private_area_acre=private_area_acre,
+                others_area=others_area,
                 others_area_acre=others_area_acre,
                 total_area_acre=total_area_acre,
                 application_status='P',
                 service_id=request.session['service_id'],
                 broad_activity_code=request.session['broad_activity_code'] ,
                 specific_activity_code=request.session['specific_activity_code'],
+                application_source='ECSS',
                 category=request.session['category']
                 )
         
@@ -5631,12 +5584,14 @@ def save_tourism_application(request):
                 assigned_role_id='2',
                 assigned_role_name='Verifier',
                 ca_authority=ca_auth,
-                application_source='ECSS'
+                application_source='ECSS',
+                service_type=service_type
             )
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        data['message'] = "failure"
+        error_msg = str(e)
+        data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
 def save_tourism_sewerage_details(request):
@@ -5764,7 +5719,7 @@ def submit_tourism_application(request):
                                         total_amount = main_amount + ancillary_amount
                                 else:
                                     total_amount=main_amount
-                                make_payment_request(request,application_no,total_amount,'NEW TOURISM APPLICATION',request.session['email'],"208",service_type)
+                                make_payment_request(request,application_no,total_amount,'NEW TOURISM APPLICATION',request.session['email'],"100123",service_type)
                                 send_payment_mail(request.session['name'],request.session['email'], total_amount)
                             data['message'] = "success"
     except Exception as e:
@@ -5786,8 +5741,9 @@ def name_change(request):
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A',application_no__contains='TOR'
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=email
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
@@ -5811,8 +5767,9 @@ def ownership_change(request):
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A',application_no__contains='TOR'
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=email
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
@@ -5836,8 +5793,9 @@ def technology_change(request):
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A',application_no__contains='TOR'
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=email
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
@@ -5861,8 +5819,9 @@ def product_change(request):
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A',application_no__contains='TOR'
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=email
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
@@ -5886,8 +5845,9 @@ def capacity_change(request):
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A',application_no__contains='TOR'
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=email
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
@@ -5911,8 +5871,9 @@ def area_change(request):
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A',application_no__contains='TOR'
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=email
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
@@ -5936,8 +5897,9 @@ def location_change(request):
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A',application_no__contains='TOR'
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=email
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
@@ -6186,7 +6148,7 @@ def get_other_modification_details(request):
 def draft_application_list(request):
     assigned_user_id = request.session.get('login_id', None)
     applicant_id = request.session.get('email', None)
-    application_details = t_ec_industries_t1_general.objects.filter(application_status='P',service_type='Main Activity',action_date__isnull=True)
+    application_details = t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id,application_status='P',service_type='Main Activity',action_date__isnull=True)
     service_details = t_service_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
@@ -6195,8 +6157,9 @@ def draft_application_list(request):
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A',application_no__contains='TOR'
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=applicant_id
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
@@ -6210,234 +6173,150 @@ def draft_application_list(request):
     return response
 
 def view_draft_application_details(request):
-    application_no = request.GET.get('application_no')
+    application_no = request.GET.get('application_no') or request.session.get('application_no')
     request.session['application_no'] = application_no
-    service_id = request.GET.get('service_id')
-    application_source = request.GET.get('application_source')
-    status = None
+    service_id = request.GET.get('service_id') or request.session.get('service_id')
+    request.session['service_id'] = service_id
+    application_source = request.GET.get('application_source') or request.session.get('application_source')
+    # Fetch common data
+    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Main Activity')
+    ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary')
+    partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
+    project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
+    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
+    forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
+    products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
+    hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
+    ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
+    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+
+    context = {
+        'thromde': thromde,
+        'application_details': application_details,
+        'partner_details': partner_details,
+        'machine_equipment': machine_equipment,
+        'raw_materials': raw_materials,
+        'final_product': project_product,
+        'ancillary_road': ancillary_road,
+        'power_line': power_line,
+        'application_no': application_no,
+        'dzongkhag': dzongkhag,
+        'gewog': gewog,
+        'village': village,
+        'forest_produce': forest_produce,
+        'app_hist_count': app_hist_count,
+        'cl_application_count': cl_application_count,
+        'products_by_products': products_by_products,
+        'hazardous_chemicals': hazardous_chemicals,
+        'ec_details': ec_details,
+        'ancillary_details': ancillary_details,
+        'service_id': service_id,
+        'application_source':application_source
+    }
+
+    if service_id is None or service_id == '':
+        print("Invalid service ID")
+    elif service_id == '1':
+        if application_source == 'IBLS':
+            return render(request, 'draft/ea_application_details.html', context)
+        else:
+            return render(request, 'draft/iee_application_details.html', context)
+    elif service_id == '2':
+        return render(request, 'draft/energy_application_details.html', context)
+    elif service_id == '3':
+        return render(request, 'draft/road_application_details.html', context)
+    elif service_id == '4':
+        return render(request, 'draft/transmission_application_details.html', context)
+    elif service_id == '5':
+        return render(request, 'draft/tourism_application_details.html', context)
+    elif service_id == '6':
+        return render(request, 'draft/ground_water_application_details.html', context)
+    elif service_id == '7':
+        return render(request, 'draft/forest_application_details.html', context)
+    elif service_id == '8':
+        return render(request, 'draft/quarry_application_details.html', context)
+    elif service_id == '9':
+        return render(request, 'draft/general_application_details.html', context)
+    
+def draft_application(request):
+    application_no = request.session.get('application_no')
+    request.session['application_no'] = application_no
+    service_id = request.session.get('service_id')
+    application_source = request.GET.get('application_source') or request.session.get('application_source')
+   
+    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Main Activity')
+    ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Ancillary')
+    partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
+    project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
+    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
+    forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
+    products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
+    hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
+    ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
+    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+
+    context = {
+        'thromde': thromde,
+        'application_details': application_details,
+        'partner_details': partner_details,
+        'machine_equipment': machine_equipment,
+        'raw_materials': raw_materials,
+        'final_product': project_product,
+        'ancillary_road': ancillary_road,
+        'power_line': power_line,
+        'application_no': application_no,
+        'dzongkhag': dzongkhag,
+        'gewog': gewog,
+        'village': village,
+        'forest_produce': forest_produce,
+        'app_hist_count': app_hist_count,
+        'cl_application_count': cl_application_count,
+        'products_by_products': products_by_products,
+        'hazardous_chemicals': hazardous_chemicals,
+        'ec_details': ec_details,
+        'ancillary_details': ancillary_details,
+        'service_id': service_id,
+    }
 
     if service_id == '1':
         if application_source == 'IBLS':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
-            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
-            partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
-            machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
-            project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
-            raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
-            ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
-            power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
-            forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
-            products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
-            hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
-            dzongkhag = t_dzongkhag_master.objects.all()
-            gewog = t_gewog_master.objects.all()
-            village = t_village_master.objects.all()
-            thromde = t_thromde_master.objects.all()
-            ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
-            app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
-            cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-            return render(request, 'draft/ea_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials, 'status':status,
-                                                        'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                        'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details,'ancillary_details':ancillary_details,'service_id':service_id})
+            return render(request, 'draft/draft_ea_application_details.html', context)
         else:
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
-            partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
-            machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
-            project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
-            raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
-            ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
-            power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
-            forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
-            products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
-            hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
-            dzongkhag = t_dzongkhag_master.objects.all()
-            gewog = t_gewog_master.objects.all()
-            village = t_village_master.objects.all()
-            ec_details = t_ec_industries_t11_ec_details.objects.all()
-            thromde = t_thromde_master.objects.all()
-            app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
-            cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-            return render(request, 'draft/iee_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                        'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                        'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+            return render(request, 'draft/draft_iee_application_details.html', context)
     elif service_id == '2':
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        thromde = t_thromde_master.objects.all()
-        ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
-        app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
-        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/energy_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
-                                                     'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog,
-                                                     'village':village,'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+        return render(request, 'draft/draft_energy_application_details.html', context)
     elif service_id == '3':
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        thromde = t_thromde_master.objects.all()
-        ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
-        app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
-        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/road_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+        return render(request, 'draft/draft_road_application_details.html', context)
     elif service_id == '4':
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        thromde = t_thromde_master.objects.all()
-        ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
-        app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
-        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/transmission_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+        return render(request, 'draft/draft_transmission_application_details.html', context)
     elif service_id == '5':
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        thromde = t_thromde_master.objects.all()
-        ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
-        app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
-        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/tourism_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+        return render(request, 'draft/draft_tourism_application_details.html', context)
     elif service_id == '6':
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        thromde = t_thromde_master.objects.all()
-        ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
-        app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
-        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/ground_water_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+        return render(request, 'draft/draft_ground_water_application_details.html', context)
     elif service_id == '7':
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        thromde = t_thromde_master.objects.all()
-        ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
-        app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
-        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/forest_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+        return render(request, 'draft/draft_forest_application_details.html', context)
     elif service_id == '8':
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        thromde = t_thromde_master.objects.all()
-        ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
-        app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
-        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/quarry_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
+        return render(request, 'draft/draft_quarry_application_details.html', context)
     elif service_id == '9':
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        ancillary_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Ancillary')
-        partner_details = t_ec_industries_t2_partner_details.objects.filter(application_no=application_no)
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no)
-        project_product = t_ec_industries_t4_project_product.objects.filter(application_no=application_no)
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no)
-        ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no)
-        power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(application_no=application_no)
-        forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
-        products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
-        hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        thromde = t_thromde_master.objects.all()
-        ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
-        app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
-        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'draft/general_application_details.html',{'thromde':thromde,'application_details':application_details,'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,'status':status,
-                                                     'final_product':project_product,'ancillary_road':ancillary_road, 'power_line':power_line, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
-                                                     'forest_produce':forest_produce,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'products_by_products': products_by_products,'hazardous_chemicals':hazardous_chemicals,'ec_details':ec_details, 'ancillary_details':ancillary_details,'service_id':service_id})
-    
+        return render(request, 'draft/draft_general_application_details.html', context)
+
+     
 def update_draft_application(request):
     application_no = request.POST.get(application_no)
     service_id = request.POST.get('service_id')
@@ -6461,6 +6340,7 @@ def update_draft_application(request):
     industrial_area_acre = request.POST.get('industrial_area_acre')
     state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
     private_area_acre = request.POST.get('private_area_acre')
+    others_area=request.POST.get('others_area')
     others_area_acre = request.POST.get('others_area_acre')
     total_area_acre = request.POST.get('total_area_acre')
     green_area_acre = request.POST.get('green_area_acre')
@@ -6494,6 +6374,7 @@ def update_draft_application(request):
             industrial_area_acre=industrial_area_acre,
             state_reserve_forest_acre=state_reserve_forest_acre,
             private_area_acre=private_area_acre,
+            others_area=others_area,
             others_area_acre=others_area_acre,
             total_area_acre=total_area_acre,
             green_area_acre=green_area_acre,
@@ -6510,6 +6391,9 @@ def submit_renew_application(request):
         auth = None
         total_amount = 0
         amount = 0
+        cid_no = None
+        mob_no = None
+        app_name = None
         ec_reference_no = request.POST.get('ec_reference_no')
         application_no = request.POST.get('application_no')
         initiatives_undertaken = request.POST.get('initiatives_undertaken')
@@ -6522,10 +6406,13 @@ def submit_renew_application(request):
         renew_details.update(application_status='P',action_date=date.today(),submission_date=date.today())
         renew_details_one.update(application_status='P',action_date=date.today())
 
-        main_application_details = t_payment_details.objects.filter(ec_no=ec_reference_no,account_head_code='131370003')
+        main_application_details = t_payment_details.objects.filter(ref_no=application_no)
 
         for application_details in application_details:
             auth = application_details.ca_authority
+            cid_no = application_details.cid
+            mob_no = application_details.contact_no
+            app_name = application_details.applicant_name
             t_ec_renewal_t1.objects.create(application_no=application_no,ec_reference_no=ec_reference_no,proponent_name=application_details.applicant_name,address=application_details.address,initiatives_undertaken=initiatives_undertaken,remarks=remarks,submission_date=date.today(),application_status='P')
             t_workflow_dtls.objects.create(application_no=application_no, 
                                             service_id='10',
@@ -6544,15 +6431,72 @@ def submit_renew_application(request):
         for fees_details in fees_details:
             total_amount = (fees_details.rate * amount)/100 + fees_details.application_fee
 
-        payment_details = payment_details_master.objects.filter(payment_type='RENEW')
-        for pay_details in payment_details:      
-            t_payment_details.objects.create(application_no=application_no,
-                application_type= 'Renewal',
-                application_date=date.today(), 
-                proponent_name=request.session['name'],
-                amount=total_amount,
-                account_head_code=pay_details.account_head_code)
-        send_payment_mail(request.session['name'],request.session['email'], total_amount)
+            token = get_birms_token()
+            print("Token:", token)
+
+            url = "https://staging-datahub-apim.tech.gov.bt/birms_paymentserviceapi/1.0.0/paymentdetails/create"
+            today_date_str = date.today().isoformat()
+
+            payload = {
+                "platform": "Environment Clearance Services System",
+                "refNo": application_no,
+                "taxPayerNo": "11303003082",
+                "taxPayerDocumentNo": "11303003082",
+                "paymentRequestDate": today_date_str,
+                "agencyCode": "DTH1552",
+                "payerEmail": request.session['email'],
+                "mobileNo": mob_no,
+                "totalPayableAmount": total_amount,
+                "paymentDueDate": None,
+                "taxPayerName": app_name,
+                "code": "moenr",
+                "paymentLists": [
+                    {
+                        "serviceCode": "100124",
+                        "description": "ec_renewal",
+                        "payableAmount": total_amount
+                    }
+                ]
+            }
+
+            headers = {'Authorization': "Bearer {}".format(token)}
+            
+            try:
+                response = requests.post(url, headers=headers, json=payload, verify=False)
+                print(payload)
+                print("Response Status Code:", response.status_code)
+                print("Response Content:", response.text)
+
+                # Check if the response content is empty
+                if response.status_code == 200:
+                    try:
+                        data = response.json()  # Parse response JSON
+                        paymentAdviceNo = data['content']['paymentAdviceNo']
+                        insert_app_payment_details(request, application_no, "ec_renewal", total_amount, "ec_renewal", paymentAdviceNo)
+                        print("Payment request successful")
+                        print("Response JSON:", data)
+                        t_payment_details.objects.create(
+                            ref_no=application_no,
+                            payment_request_date=date.today(),
+                            tax_payer_name=request.session['name'],
+                            agency_code="DTH1552",
+                            tax_payer_document_no=cid_no,
+                            mobile_no=mob_no,
+                            payer_email=request.session['email'],
+                            description="RENEW",
+                            total_payable_amount=total_amount,
+                            service_type="RENEW",
+                            payment_advice_no=paymentAdviceNo
+                        )
+                    except ValueError as e:
+                        print("Failed to parse JSON response:", e)
+                
+                else:
+                    print("Payment request failed with status code:", response.status_code)
+                    print("Response text:", response.text)
+            except requests.exceptions.RequestException as e:
+                print("HTTP Request failed:", e)
+            send_payment_mail(request.session['name'],request.session['email'], total_amount)
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -6585,8 +6529,9 @@ def report_list(request):
             tor_application_no=OuterRef('application_no')
         ).values('tor_application_no')
 
-        tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A', application_no__contains='TOR'
+        tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=login_id
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
@@ -6884,8 +6829,9 @@ def ec_print_list(request):
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A',application_no__contains='TOR'
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=applicant_id
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
@@ -7113,13 +7059,13 @@ def get_auth_token():
     """
     get an auth token
     """
-    credentials = {'client_id': 'Nx0tb25S3l87K6SmxnoTS_3FRjca',
-                   'client_secret': 'UiHRV8fI6iMX4iQwIfVSiEG7AeUa',
+    credentials = {'client_id': 'oKvI_XucoWSSNGmfpvRIIlwE4yAa',
+                   'client_secret': 'Ux3nnEgJWYhn4BiBBNlTE9LANFYa',
                    'grant_type': 'client_credentials'}
 
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
-    res = requests.post('https://stg-sso.dit.gov.bt/oauth2/token', params=credentials,
+    res = requests.post('https://sso.tech.gov.bt/oauth2/token', params=credentials,
                         headers=headers,verify=False)
 
     json = res.json()
@@ -7151,9 +7097,25 @@ def get_auth_token():
 #         print("An error occurred:", e)
 
 
+def get_birms_token():
+    """
+        get an auth token
+    """
+    credentials = {'client_id': 'leLvCEGgYCWh3ciAiFpFlgc_fBIa',
+                   'client_secret': '4JSIIRqqwszKEZae6qU2at59Tpwa',
+                   'grant_type': 'client_credentials'}
 
-def make_payment_request(request,application_no,total_amount,description, email, service_code,service_type):
-    token = get_auth_token()#
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+
+    res = requests.post('https://stg-sso.tech.gov.bt/oauth2/token', params=credentials,
+                        headers=headers,verify=False)
+
+    json = res.json()
+    return json["access_token"]
+
+def make_payment_request(request, application_no, total_amount, description, email, service_code, service_type):
+    token = get_birms_token()
+    
     cid_no = None
     mob_no = None
     app_name = None
@@ -7162,19 +7124,15 @@ def make_payment_request(request,application_no,total_amount,description, email,
         cid_no = app_det.cid
         mob_no = app_det.contact_no
         app_name = app_det.applicant_name
-    # Endpoint URL
-    url = "https://staging-datahub-apim.dit.gov.bt/birms_paymentserviceapi/1.0.0/paymentdetails/create"
 
-    today_date = date.today()
+    url = "https://staging-datahub-apim.tech.gov.bt/birms_paymentserviceapi/1.0.0/paymentdetails/create"
+    today_date_str = date.today().isoformat()
 
-    # Convert date object to string
-    today_date_str = today_date.isoformat()
-    # Payload data
     payload = {
-        "platform": "BLIMS",
+        "platform": "Environment Clearance Services System",
         "refNo": application_no,
-        "taxPayerNo": cid_no,
-        "taxPayerDocumentNo": cid_no,#id card
+        "taxPayerNo": "11303003082",
+        "taxPayerDocumentNo": "11303003082",
         "paymentRequestDate": today_date_str,
         "agencyCode": "DTH1552",
         "payerEmail": email,
@@ -7182,7 +7140,7 @@ def make_payment_request(request,application_no,total_amount,description, email,
         "totalPayableAmount": total_amount,
         "paymentDueDate": None,
         "taxPayerName": app_name,
-        "code":"moenr",
+        "code": "moenr",
         "paymentLists": [
             {
                 "serviceCode": service_code,
@@ -7192,21 +7150,29 @@ def make_payment_request(request,application_no,total_amount,description, email,
         ]
     }
 
-    # Convert payload to JSON string
     headers = {'Authorization': "Bearer {}".format(token)}
-    response = requests.post(url, headers=headers,json=payload, verify=False)
-    print(response.text)
-    # Check response status
-    if response.status_code == 200:
-        data = response.json()  # Parse response JSON
-        paymentAdviceNo = data['content']['paymentAdviceNo']
-        insert_app_payment_details(request,application_no,description,total_amount,service_type,paymentAdviceNo)
-        print("Payment request successful")
-        print("Response:", response.json())
-    else:
-        print("Payment request failed")
-        print("Response:", response.text)
+    
+    try:
+        response = requests.post(url, headers=headers, json=payload, verify=False)
+        print(payload)
+        print("Response Status Code:", response.status_code)
+        print("Response Content:", response.text)
 
+        # Check if the response content is empty
+        if response.status_code == 200:
+            try:
+                data = response.json()  # Parse response JSON
+                paymentAdviceNo = data['content']['paymentAdviceNo']
+                insert_app_payment_details(request, application_no, description, total_amount, service_type, paymentAdviceNo)
+                print("Payment request successful")
+                print("Response JSON:", data)
+            except ValueError as e:
+                print("Failed to parse JSON response:", e)
+        else:
+            print("Payment request failed with status code:", response.status_code)
+            print("Response text:", response.text)
+    except requests.exceptions.RequestException as e:
+        print("HTTP Request failed:", e)
 
 @csrf_exempt
 def ecss_payment_update(request):
@@ -7302,13 +7268,13 @@ def ecss_payment_reversal(request):
             
             # Attempt to parse the JSON from cleaned_body
             data = json.loads(cleaned_body)
-            ref_no = data['refNo']
-            payment_details = t_payment_details.objects.filter(ref_no=ref_no)
+            receiptNo = data['receiptNo']
+            payment_details = t_payment_details.objects.filter(receipt_no=receiptNo)
+            cancelledDate=data['cancelledDate']
+            original_cancelledDate = datetime.strptime(cancelledDate, "%a %b %d %H:%M:%S BTT %Y")
+            formatted_cancelledDate = original_cancelledDate.strftime("%Y-%m-%d %H:%M:%S")
             payment_details.update(
-                instrument_no=data['instrumentNo'],
-                instrument_date=data['instrumentDate'],
-                issuing_bank=data['issuingBank'],
-                cancelled_date=data['cancelledDate'],
+                cancelled_date=formatted_cancelledDate,
                 cancelled_reason=data['cancelledReason'],
                 remarks=data['remarks']
             )
@@ -7571,7 +7537,7 @@ def proof_request_proponent(request):
                 'name': "Dzongkhag",
                 'restrictions': [
                     {
-                        "schema_name": "https://dev-schema.ngotag.com/schemas/8e87108e-d446-4681-b4a5-7b0952951ea4"
+                        "schema_name": "https://dev-schema.ngotag.com/schemas/e3b606d0-e477-4fc2-b5ab-0adc4bd75c54"
                     }
                 ]
             },
@@ -7579,7 +7545,7 @@ def proof_request_proponent(request):
                 'name': "Gewog",
                 'restrictions': [
                     {
-                        "schema_name": "https://dev-schema.ngotag.com/schemas/8e87108e-d446-4681-b4a5-7b0952951ea4"
+                        "schema_name": "https://dev-schema.ngotag.com/schemas/e3b606d0-e477-4fc2-b5ab-0adc4bd75c54"
                     }
                 ]
             },
@@ -7587,7 +7553,7 @@ def proof_request_proponent(request):
                 'name': "Village",
                 'restrictions': [
                     {
-                        "schema_name": "https://dev-schema.ngotag.com/schemas/8e87108e-d446-4681-b4a5-7b0952951ea4"
+                        "schema_name": "https://dev-schema.ngotag.com/schemas/e3b606d0-e477-4fc2-b5ab-0adc4bd75c54"
                     }
                 ]
             }
@@ -7643,7 +7609,7 @@ def fetch_verified_user_data(request):
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ecsstestwebhookten",
+        "webhookId": "ecsstagingwebhookIdthree",
         "threadId": thread_id
     }
 
@@ -7810,6 +7776,10 @@ def ndi_dash(request):
                 request.session['name'] = check_user.proponent_name
                 request.session['address'] = check_user.address
                 request.session['contact_number'] = check_user.contact_number
+                if check_user.proponent_type == 4:
+                    request.session['cid'] = check_user.cid
+                else:
+                    request.session['cid'] = None
                 return JsonResponse({'redirect': 'dashboard'})
         else:
             _message = 'ID Not Found'
@@ -7850,7 +7820,7 @@ def ndi_dash_eid(request):
                 request.session['contact_number'] = check_user.contact_number
                 return JsonResponse({'redirect': 'dashboard'})
         else:
-            _message = 'ID number is missing/ User Not Registered.'
+            _message = 'ID Not Found'
             print(_message)
             context = {'message': _message}
             return JsonResponse({'redirect': 'index', 'message': _message})
@@ -7870,77 +7840,101 @@ def update_password_ndi(request):
 
 @csrf_exempt
 def issuance_call(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
-
     try:
+        # Extract parameters from the request
         id_number = request.POST.get('id_number')
+        print(id_number)
         holder_did = request.POST.get('holder_did')
         relationshipDid = request.POST.get('relationshipDid')
-        print(f"Relation DID: {relationshipDid}")
-        
-        ndi_token = get_access_token_ndi()  # Replace with your method to get NDI access token
-        
-        # Fetch application details with necessary filtering in one query
+
+        if not id_number or not holder_did or not relationshipDid:
+            return JsonResponse({'error': 'Missing required parameters: id_number, holder_did, or relationshipDid'}, status=400)
+
+        # Log the inputs
+        print(f"id_number: {id_number}, holder_did: {holder_did}, relationshipDid: {relationshipDid}")
+
+        # Get NDI access token
+        ndi_token = get_access_token_ndi()
+        if not ndi_token:
+            return JsonResponse({'error': 'Failed to retrieve NDI access token'}, status=500)
+
+        # Fetch application details in a single query
         application_details = t_ec_industries_t1_general.objects.filter(cid=id_number, application_status='A')
-        
+
         if not application_details.exists():
             return JsonResponse({'error': 'No application details found for the provided ID number'}, status=404)
 
-        # Check if any of the application details have a non-null revocation_id
-        issuance_details = application_details.filter(revocation_id__isnull=False,is_revoked__isnull=True).exists()
+        # Check if revocation is required
+        requires_revocation = application_details.filter(revocation_id__isnull=False, is_revoked__isnull=True).exists()
 
-        if issuance_details:
+        if requires_revocation:
             revocation_response = revoke_vc(request, id_number)
             if revocation_response.status_code != 201:
-                return JsonResponse({'error': 'Failed to revoke existing credential. Issuance aborted.', 'details': revocation_response.json()}, status=revocation_response.status_code)
+                return JsonResponse({
+                    'error': 'Failed to revoke existing credential. Issuance aborted.',
+                    'details': revocation_response.json()
+                }, status=revocation_response.status_code)
 
         credentials_issued = []
 
-        # Loop through the application details and issue credentials
-        for application_detail in application_details:
-            credential_data = {
-                "EC Reference Number": str(application_detail.ec_reference_no),
-                "EC Approve Date": application_detail.ec_approve_date.isoformat(),
-                "EC Expiry Date": application_detail.ec_expiry_date.isoformat(),
-                "EC Status": "A",
-                "Applicant Name": str(application_detail.applicant_name),
-                "Project Name": str(application_detail.project_name),
-                "Address": str(application_detail.address),
-                "Location Name": str(application_detail.location_name),
-                "Total Area Acre": str(application_detail.total_area_acre)
-            }
-            proof_data = {
-                "schemaId": "https://dev-schema.ngotag.com/schemas/086f404c-a0c1-43ca-86ce-7e292c928964",
-                "credentialData": credential_data,
-                "holderDID": holder_did,
-                "forRelationship": relationshipDid
-            }
+        # Prepare headers for issuing credentials
+        issue_url = "https://demo-client.bhutanndi.com/issuer/v1/issue-credential"
+        headers = {
+            'Authorization': f"Bearer {ndi_token}",
+            'Content-Type': 'application/json'
+        }
 
-            issue_url = "https://demo-client.bhutanndi.com/issuer/v1/issue-credential"
-            headers = {
-                'Authorization': f"Bearer {ndi_token}",
-                'Content-Type': 'application/json'
-            }
+        with transaction.atomic():
+            for application_detail in application_details:
+                try:
+                    # Prepare credential data
+                    credential_data = {
+                        "EC Reference Number": application_detail.ec_reference_no,
+                        "EC Approve Date": application_detail.ec_approve_date.isoformat(),
+                        "EC Expiry Date": application_detail.ec_expiry_date.isoformat(),
+                        "EC Status": "A",
+                        "Applicant Name": str(application_detail.applicant_name),
+                        "Project Name": str(application_detail.project_name),
+                        "Address": str(application_detail.address),
+                        "Location Name": str(application_detail.location_name),
+                        "Total Area Acre": str(application_detail.total_area_acre)
+                    }
 
-            # Make API call to issue credential
-            response = requests.post(issue_url, headers=headers, data=json.dumps(proof_data))
-            response_data = response.json()
+                    proof_data = {
+                        "schemaId": "https://dev-schema.ngotag.com/schemas/33f8b16a-303e-4e49-b3b2-2b5256336029",
+                        "credentialData": credential_data,
+                        "holderDID": holder_did,
+                        "forRelationship": relationshipDid
+                    }
 
-            if response.status_code == 201:
-                revocation_id = response_data['data'].get('revocationId')
-                if revocation_id:
-                    application_detail.revocation_id = revocation_id
-                    application_detail.save()
-                credentials_issued.append(f"Credential for EC Reference Number {application_detail.ec_reference_no} issued successfully")
-            else:
-                return JsonResponse({'error': 'Failed to issue credential', 'details': response_data}, status=response.status_code)
+                    # Issue credential via API
+                    response = requests.post(issue_url, headers=headers, data=json.dumps(proof_data))
+
+                    if response.status_code == 201:
+                        response_data = response.json()
+                        revocation_id = response_data['data'].get('revocationId')
+
+                        if revocation_id:
+                            application_detail.revocation_id = revocation_id
+                            application_detail.save()
+
+                        credentials_issued.append(
+                            f"Credential for EC Reference Number {application_detail.ec_reference_no} issued successfully"
+                        )
+                    else:
+                        # Rollback transaction on failure
+                        raise Exception(f"Failed to issue credential: {response.json()}")
+
+                except Exception as e:
+                    print(f"Error issuing credential for {application_detail.ec_reference_no}: {e}")
+                    return JsonResponse({'error': str(e)}, status=500)
 
         return JsonResponse({'message': 'Credentials issued successfully', 'details': credentials_issued}, status=201)
 
     except Exception as e:
         print(f"Exception occurred: {e}")
         return JsonResponse({'error': 'An unexpected error occurred.', 'details': str(e)}, status=500)
+
 
 def revoke_vc(request, id_number):
     issuance_detail = t_ec_industries_t1_general.objects.filter(

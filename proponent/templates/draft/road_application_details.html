@@ -3,7 +3,7 @@
     <div class="col-xl-12">
         <div class="card mt-1">
             <div class="card-body">
-                <h4 class="header-title mb-3"> New Application</h4>
+                <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Road Projects -2022</h4>
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
@@ -25,7 +25,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Applicant</label>
+                                                <label class="form-label fw-bold">Name of the Applicant</label>
                                                 <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -57,53 +57,8 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Project</label>
-                                                <select class="form-control" id="project_name" name="project_name">
-                                                    <option value="">--SELECT--</option>
-                                                    {% if application_details.project_name == 'National_Highway_Bypass' %}
-                                                    <option value="National_Highway_Bypass" selected>National Highway Bypass</option>
-                                                    <option value="Dzongkhag_Road">Dzongkhag Road</option>
-                                                    <option value="Thromde_Road">Thromde Road</option>
-                                                    <option value="Farm_Road">Farm Road</option>
-                                                    <option value="Access_Road">Access Road</option>
-                                                    <option value="Others">Others</option>
-                                                    {% elif application_details.project_name == 'Dzongkhag_Road' %}
-                                                    <option value="National_Highway_Bypass">National Highway Bypass</option>
-                                                    <option value="Dzongkhag_Road" selected>Dzongkhag Road</option>
-                                                    <option value="Thromde_Road">Thromde Road</option>
-                                                    <option value="Farm_Road">Farm Road</option>
-                                                    <option value="Access_Road">Access Road</option>
-                                                    <option value="Others">Others</option>
-                                                    {% elif application_details.project_name == 'Thromde_Road' %}
-                                                    <option value="National_Highway_Bypass">National Highway Bypass</option>
-                                                    <option value="Dzongkhag_Road">Dzongkhag Road</option>
-                                                    <option value="Thromde_Road" selected>Thromde Road</option>
-                                                    <option value="Farm_Road">Farm Road</option>
-                                                    <option value="Access_Road">Access Road</option>
-                                                    <option value="Others">Others</option>
-                                                    {% elif application_details.project_name == 'Farm_Road' %}
-                                                    <option value="National_Highway_Bypass">National Highway Bypass</option>
-                                                    <option value="Dzongkhag_Road">Dzongkhag Road</option>
-                                                    <option value="Thromde_Road">Thromde Road</option>
-                                                    <option value="Farm_Road" selected>Farm Road</option>
-                                                    <option value="Access_Road">Access Road</option>
-                                                    <option value="Others">Others</option>
-                                                    {% elif application_details.project_name == 'Access_Road' %}
-                                                    <option value="National_Highway_Bypass">National Highway Bypass</option>
-                                                    <option value="Dzongkhag_Road">Dzongkhag Road</option>
-                                                    <option value="Thromde_Road">Thromde Road</option>
-                                                    <option value="Farm_Road">Farm Road</option>
-                                                    <option value="Access_Road" selected>Access Road</option>
-                                                    <option value="Others">Others</option>
-                                                    {% else %}
-                                                    <option value="National_Highway_Bypass">National Highway Bypass</option>
-                                                    <option value="Dzongkhag_Road">Dzongkhag Road</option>
-                                                    <option value="Thromde_Road">Thromde Road</option>
-                                                    <option value="Farm_Road">Farm Road</option>
-                                                    <option value="Access_Road">Access Road</option>
-                                                    <option value="Others" selected>Others</option>
-                                                    {% endif %}
-                                                </select>
+                                                <label class="form-label fw-bold">Name of the Project</label>
+                                                <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}">
                                             </div>
                                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -382,7 +337,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                 <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}">
                                             </div>
                                             <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -1198,7 +1153,7 @@
                                     </div>
                                     {% if application_details.anc_other_required == "Yes" %}
                                         <div class="alert alert-warning border-0 rounded-0 anc_facility_details" role="alert" role="alert">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
+                                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
                                         </div>
                                         <br>
                                         {% if application_details.anc_other_bridge == "Yes"  and application_details.anc_other_crushing_unit == "No" and application_details.anc_other_concrete_building == "No" and application_details.anc_other_asphalt_plant == "No" and application_details.anc_other_surface_collection == "No" and application_details.anc_other_general == "No" %}
@@ -3439,405 +3394,6 @@
 </form>
 
 <script>
-    $(function() {
-        if 
-        (
-            $('#anc_other_bridge').prop('checked') &&
-            $('#anc_other_crushing_unit').prop('checked') &&
-            $('#anc_other_asphalt_plant').prop('checked') &&
-            $('#anc_other_concrete_building').prop('checked') &&
-            $('#anc_other_surface_collection').prop('checked') &&
-            $('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.general_application_bridge').show();
-            $('.crushing_unit_application').show();
-            $('.asphalt_plant_application').show();
-            $('.concrete_building_application').show();
-            $('.forestry_application').show();
-            $('.general_application_others').show();
-        } 
-        else if 
-        (
-            $('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.general_application_bridge').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            $('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.crushing_unit_application').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            $('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.asphalt_plant_application').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            $('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.concrete_building_application').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            $('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.forestry_application').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            $('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.general_application_others').show();
-        }
-        else if 
-        (
-            $('#anc_other_bridge').prop('checked') &&
-            $('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.general_application_bridge').show();
-            $('.crushing_unit_application').show();
-        }
-        else if 
-        (
-            $('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            $('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.general_application_bridge').show();
-            $('.asphalt_plant_application').show();
-        }
-        else if 
-        (
-            $('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            $('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.general_application_bridge').show();
-            $('.concrete_building_application').show();
-        }
-        else if 
-        (
-            $('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            $('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.general_application_bridge').show();
-            $('.forestry_application').show();
-        }
-        else if 
-        (
-            $('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            $('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.general_application_bridge').show();
-            $('.general_application_others').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            $('#anc_other_crushing_unit').prop('checked') &&
-            $('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.crushing_unit_application').show();
-            $('.asphalt_plant_application').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            $('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            $('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.crushing_unit_application').show();
-            $('.concrete_building_application').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            $('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            $('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.crushing_unit_application').show();
-            $('.forestry_application').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            $('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            $('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.crushing_unit_application').show();
-            $('.general_application_others').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            $('#anc_other_asphalt_plant').prop('checked') &&
-            $('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.asphalt_plant_application').show();
-            $('.concrete_building_application').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            $('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            $('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.asphalt_plant_application').show();
-            $('.forestry_application').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            $('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            $('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.asphalt_plant_application').show();
-            $('.general_application_others').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            $('#anc_other_concrete_building').prop('checked') &&
-            $('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.concrete_building_application').show();
-            $('.forestry_application').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            $('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            $('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.concrete_building_application').show();
-            $('.general_application_others').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            $('#anc_other_concrete_building').prop('checked') &&
-            $('#anc_other_surface_collection').prop('checked') &&
-            $('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.concrete_building_application').show();
-            $('.forestry_application').show();
-            $('.general_application_others').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            $('#anc_other_asphalt_plant').prop('checked') &&
-            $('#anc_other_concrete_building').prop('checked') &&
-            $('#anc_other_surface_collection').prop('checked') &&
-            $('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.asphalt_plant_application').show();
-            $('.concrete_building_application').show();
-            $('.forestry_application').show();
-            $('.general_application_others').show();
-        }
-        else if 
-        (
-            !$('#anc_other_bridge').prop('checked') &&
-            $('#anc_other_crushing_unit').prop('checked') &&
-            $('#anc_other_asphalt_plant').prop('checked') &&
-            $('#anc_other_concrete_building').prop('checked') &&
-            $('#anc_other_surface_collection').prop('checked') &&
-            $('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.crushing_unit_application').show();
-            $('.asphalt_plant_application').show();
-            $('.concrete_building_application').show();
-            $('.forestry_application').show();
-            $('.general_application_others').show();
-        }
-        else if 
-        (
-            $('#anc_other_bridge').prop('checked') &&
-            !$('#anc_other_crushing_unit').prop('checked') &&
-            $('#anc_other_asphalt_plant').prop('checked') &&
-            $('#anc_other_concrete_building').prop('checked') &&
-            $('#anc_other_surface_collection').prop('checked') &&
-            $('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.general_application_bridge').show();
-            $('.asphalt_plant_application').show();
-            $('.concrete_building_application').show();
-            $('.forestry_application').show();
-            $('.general_application_others').show();
-        }
-        else if 
-        (
-            $('#anc_other_bridge').prop('checked') &&
-            $('#anc_other_crushing_unit').prop('checked') &&
-            !$('#anc_other_asphalt_plant').prop('checked') &&
-            $('#anc_other_concrete_building').prop('checked') &&
-            $('#anc_other_surface_collection').prop('checked') &&
-            $('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.general_application_bridge').show();
-            $('.crushing_unit_application').show();
-            $('.concrete_building_application').show();
-            $('.forestry_application').show();
-            $('.general_application_others').show();
-        }
-        else if 
-        (
-            $('#anc_other_bridge').prop('checked') &&
-            $('#anc_other_crushing_unit').prop('checked') &&
-            $('#anc_other_asphalt_plant').prop('checked') &&
-            !$('#anc_other_concrete_building').prop('checked') &&
-            $('#anc_other_surface_collection').prop('checked') &&
-            $('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.general_application_bridge').show();
-            $('.crushing_unit_application').show();
-            $('.asphalt_plant_application').show();
-            $('.forestry_application').show();
-            $('.general_application_others').show();
-        }
-        else if 
-        (
-            $('#anc_other_bridge').prop('checked') &&
-            $('#anc_other_crushing_unit').prop('checked') &&
-            $('#anc_other_asphalt_plant').prop('checked') &&
-            $('#anc_other_concrete_building').prop('checked') &&
-            !$('#anc_other_surface_collection').prop('checked') &&
-            $('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.general_application_bridge').show();
-            $('.crushing_unit_application').show();
-            $('.asphalt_plant_application').show();
-            $('.concrete_building_application').show();
-            $('.general_application_others').show();
-        }
-        else if 
-        (
-            $('#anc_other_bridge').prop('checked') &&
-            $('#anc_other_crushing_unit').prop('checked') &&
-            $('#anc_other_asphalt_plant').prop('checked') &&
-            $('#anc_other_concrete_building').prop('checked') &&
-            $('#anc_other_surface_collection').prop('checked') &&
-            !$('#anc_other_general').prop('checked')
-        ) 
-        {
-            $('.general_application_bridge').show();
-            $('.crushing_unit_application').show();
-            $('.asphalt_plant_application').show();
-            $('.concrete_building_application').show();
-            $('.forestry_application').show();
-        }
-    });
-
     function check_road_water_radio(value)
     {
         if(value == 'Yes')
@@ -3918,10 +3474,10 @@
 
     function add_machine_tool_details()
     {
-        application_no = $('#application_no').val();
-        machine_tool = $('#machine_tool').val();
-        machine_tool_qty = $('#machine_tool_qty').val();
-        machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
+        let application_no = $('#application_no').val();
+        let machine_tool = $('#machine_tool').val();
+        let machine_tool_qty = $('#machine_tool_qty').val();
+        let machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
 
         if(machine_tool == "")
         {
@@ -3983,11 +3539,11 @@
 
     function update_machine_equipment_populate(record_id, application_no, machine_name, qty, installed_capacity)
     {
-        record_id = $('#edit_machine_tool_record_id').val();
-        application_no = $('#edit_machine_tool_app_no').val();
-        machine_tool = $('#edit_machine_tool').val();
-        qty = $('#edit_machine_tool_qty').val();
-        machine_tool_installed_capacity = $('#edit_machine_tool_installed_capacity').val();
+        let record_id = $('#edit_machine_tool_record_id').val();
+        let application_no = $('#edit_machine_tool_app_no').val();
+        let machine_tool = $('#edit_machine_tool').val();
+        let qty = $('#edit_machine_tool_qty').val();
+        let machine_tool_installed_capacity = $('#edit_machine_tool_installed_capacity').val();
 
         if(machine_tool == "")
         {
@@ -4045,8 +3601,8 @@
 
     function delete_machine_tool_details()
     {
-        $('#delete_machine_tool_record_id').val();
-        $('#delete_machine_tool_app_no').val();
+        let record_id = $('#delete_machine_tool_record_id').val();
+        let application_no = $('#delete_machine_tool_app_no').val();
 
         $.ajax
             ({
@@ -4073,11 +3629,11 @@
 
     function add_raw_material_details()
     {
-        application_no = $('#application_no').val();
-        raw_material = $('#raw_material').val();
-        raw_material_qty = $('#raw_material_qty').val();
-        raw_material_source = $('#raw_material_source').val();
-        raw_material_storage_method = $('#raw_material_storage_method').val();
+        let application_no = $('#application_no').val();
+        let raw_material = $('#raw_material').val();
+        let raw_material_qty = $('#raw_material_qty').val();
+        let raw_material_source = $('#raw_material_source').val();
+        let raw_material_storage_method = $('#raw_material_storage_method').val();
 
         if(raw_material == "")
         {
@@ -4113,7 +3669,7 @@
             ({
                 type : "POST",
                 url : "{% url 'add_raw_materials' %}",
-                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method},
+                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#raw_material_SuccessMsg').html("Add Successful");
@@ -4147,12 +3703,12 @@
 
     function update_raw_material_details()
     {
-        record_id = $('#edit_raw_material_record_id').val();
-        application_no = $('#edit_raw_material_app_no').val();
-        raw_material = $('#edit_raw_material').val();
-        raw_material_qty = $('#edit_raw_material_qty').val();
-        raw_material_source = $('#edit_raw_material_source').val();
-        raw_material_storage_method = $('#edit_raw_material_storage_method').val();
+        let record_id = $('#edit_raw_material_record_id').val();
+        let application_no = $('#edit_raw_material_app_no').val();
+        let raw_material = $('#edit_raw_material').val();
+        let raw_material_qty = $('#edit_raw_material_qty').val();
+        let raw_material_source = $('#edit_raw_material_source').val();
+        let raw_material_storage_method = $('#edit_raw_material_storage_method').val();
 
         if(raw_material == "")
         {
@@ -4188,10 +3744,10 @@
             ({
                 type : "POST",
                 url : "{% url 'update_raw_materials' %}",
-                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method},
+                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
-                    $('#edit_raw_material_SuccessMsg').html("Add Successful");
+                    $('#edit_raw_material_SuccessMsg').html("Update Successful");
                     $('#edit_raw_material_SuccessMsg').show();
                     setTimeout(function()
                     {
@@ -4208,7 +3764,7 @@
         }
     }
 
-    function populate_delete_machine_equipment(record_id, application_no)
+    function populate_delete_raw_materials(record_id, application_no)
     {
         $('#delete_raw_material_record_id').val(record_id);
         $('#delete_raw_material_app_no').val(application_no);
@@ -4217,17 +3773,17 @@
 
     function delete_raw_material_details()
     {
-        record_id = $('#delete_raw_material_record_id').val();
-        application_no = $('#delete_raw_material_app_no').val();
+        let record_id = $('#delete_raw_material_record_id').val();
+        let application_no = $('#delete_raw_material_app_no').val();
 
         $.ajax
         ({
             type : "POST",
             url : "{% url 'delete_raw_materials' %}",
-            data : {'record_id':record_id, 'application_no':application_no},
+            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
-                $('#delete_raw_material_SuccessMsg').html("Add Successful");
+                $('#delete_raw_material_SuccessMsg').html("Delete Successful");
                 $('#delete_raw_material_SuccessMsg').show();
                 setTimeout(function()
                 {
@@ -4245,10 +3801,10 @@
 
     function add_partner_details()
     {
-        application_no = $('#application_no').val();
-        partner_type = $('#partner_type').val();
-        partner_type_name = $('#partner_type_name').val();
-        partner_type_address = $('#partner_type_address').val();
+        let application_no = $('#application_no').val();
+        let partner_type = $('#partner_type').val();
+        let partner_type_name = $('#partner_type_name').val();
+        let partner_type_address = $('#partner_type_address').val();
 
         if(partner_type == "")
         {
@@ -4307,8 +3863,8 @@
 
     function delete_partner_details()
     {
-        record_id = $('#delete_partner_details_record_id').val();
-        application_no = $('#delete_partner_details_app_no').val();
+        let record_id = $('#delete_partner_details_record_id').val();
+        let application_no = $('#delete_partner_details_app_no').val();
 
         $.ajax
         ({
@@ -4340,8 +3896,11 @@
         let address = $('#address').val();
         let contact_no = $('#contact_no').val();
         let contact_no_length = $('#contact_no').val().length;
-        let email = $('#email').val();
-        let dzongkhag_code = $('#dzo_throm').val();
+        let email = $('#email').val(); 
+        let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
+        let dzongkhag_throm_val = $("input[name=dzongkhag_throm]:checked").val();
+        let thromde_id = $('#thromde_id').val();
+        let dzongkhag_code = $('#dzongkhag').val();
         let gewog_code = $('#gewog').val();
         let village_code = $('#vil_chiwog').val();
         let bl_protected_area_name = $('#bl_protected_area_name').val();
@@ -4383,56 +3942,35 @@
             $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
             $('#project_name').focus();
         }
-        else if(applicant_name == "")
+        else if(dzongkhag_throm == "")
         {
-            $('#applicant_nameErrorMsg').html("Enter Name of The Applicant");
-            $('#applicant_nameErrorMsg').show();
-            $('#applicant_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#applicant_name').focus();
+            $('#dzongkhag_thromErrorMsg').html("Choose One");
+            $('#dzongkhag_thromErrorMsg').show();
+            $('#dzongkhag_thromErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag_throm').focus();
         }
-        else if(address == "")
+        else if(dzongkhag_throm_val == "Thromde" && thromde_id == "")
         {
-            $('#addressErrorMsg').html("Enter Address");
-            $('#addressErrorMsg').show();
-            $('#addressErrorMsg').delay(2000).fadeOut('slow');
-            $('#address').focus();
+            $('#thromde_idErrorMsg').html("Select Dzongkhag");
+            $('#thromde_idErrorMsg').show();
+            $('#thromde_idErrorMsg').delay(2000).fadeOut('slow');
+            $('#thromde_id').focus();
         }
-        else if(contact_no == "")
+        else if(dzongkhag_throm_val == "Dzongkhag" && dzongkhag_code == "")
         {
-            $('#contact_noErrorMsg').html("Enter Contact No");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
+            $('#dzongkhagErrorMsg').html("Select Dzongkhag");
+            $('#dzongkhagErrorMsg').show();
+            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag').focus();
         }
-        else if(contact_no_length < 8)
-        {
-            $('#contact_noErrorMsg').html("Cannot Be Less Than Eight Digits");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
-        }
-        else if(email == "")
-        {
-            $('#emailErrorMsg').html("Enter Email");
-            $('#emailErrorMsg').show();
-            $('#emailErrorMsg').delay(2000).fadeOut('slow');
-            $('#email').focus();
-        }
-        else if(dzongkhag_code == "")
-        {
-            $('#dzo_thromErrorMsg').html("Select Dzongkhag");
-            $('#dzo_thromErrorMsg').show();
-            $('#dzo_thromErrorMsg').delay(2000).fadeOut('slow');
-            $('#dzo_throm').focus();
-        }
-        else if(gewog_code == "")
+        else if(dzongkhag_throm_val == "Dzongkhag" && gewog_code == "")
         {
             $('#gewogErrorMsg').html("Select Gewog");
             $('#gewogErrorMsg').show();
             $('#gewogErrorMsg').delay(2000).fadeOut('slow');
             $('#gewog').focus();
         }
-        else if(village_code == "")
+        else if(dzongkhag_throm_val == "Dzongkhag" && village_code == "")
         {
             $('#vil_chiwogErrorMsg').html("Select Village");
             $('#vil_chiwogErrorMsg').show();
@@ -4669,6 +4207,7 @@
                     {
                         $('#application_form_successMsg').html("Saved Successfully");
                         $('#application_form_successMsg').show();
+                        $('#application_form_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#application_form_successMsg').delay(2000).fadeOut('slow');
@@ -4681,10 +4220,13 @@
                     }
                     else
                     {
-                        $('#application_form_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#application_form_errorMsg').html(`Application Error: ${data.error}`);
                         $('#application_form_errorMsg').show();
-                        setTimeout(function()
-                        {
+                        $('#application_form_errorMsg').focus();
+                        
+                        setTimeout(function() {
                             $('#application_form_errorMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                     }
@@ -4886,6 +4428,7 @@
                     {
                         $('#project_details_successMsg').html("Saved Successfully");
                         $('#project_details_successMsg').show();
+                        $('#project_details_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_successMsg').delay(2000).fadeOut('slow');
@@ -4898,8 +4441,11 @@
                     }
                     else
                     {
-                        $('#project_details_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#project_details_errorMsg').html(`Application Error: ${data.error}`);
                         $('#project_details_errorMsg').show();
+                        $('#project_details_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_errorMsg').delay(2000).fadeOut('slow');
@@ -4967,6 +4513,7 @@
                     {
                         $('#project_details_one_successMsg').html("Saved Successfully");
                         $('#project_details_one_successMsg').show();
+                        $('#project_details_one_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_one_successMsg').delay(2000).fadeOut('slow');
@@ -4979,8 +4526,11 @@
                     }
                     else
                     {
-                        $('#project_details_one_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#project_details_one_errorMsg').html(`Application Error: ${data.error}`);
                         $('#project_details_one_errorMsg').show();
+                        $('#project_details_one_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_one_errorMsg').delay(2000).fadeOut('slow');
@@ -5162,6 +4712,7 @@
                     {
                         $('#project_details_two_successMsg').html("Saved Successfully");
                         $('#project_details_two_successMsg').show();
+                        $('#project_details_two_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_two_successMsg').delay(2000).fadeOut('slow');
@@ -5174,8 +4725,11 @@
                     }
                     else
                     {
-                        $('#project_details_two_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#project_details_two_errorMsg').html(`Application Error: ${data.error}`);
                         $('#project_details_two_errorMsg').show();
+                        $('#project_details_two_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#project_details_two_errorMsg').delay(2000).fadeOut('slow');
@@ -5188,17 +4742,17 @@
 
     function save_anc_road_details()
     {
-        application_no = $('#application_no').val();
-        road_line_chainage_from = $('#road_line_chainage_from').val();
-        road_line_chainage_to = $('#road_line_chainage_to').val();
-        road_land_type = $('#road_land_type').val();
-        road_terrain = $('#road_terrain').val();
-        road_width = $('#road_width').val();
-        road_row = $('#road_row').val();
-        road_area_required = $('#road_area_required').val();
-        dzongkhag = $('#roaddzonkhag').val();
-        gewog = $('#roadgewog').val();
-        village = $('#roadvillage').val();
+        let application_no = $('#application_no').val();
+        let road_line_chainage_from = $('#road_line_chainage_from').val();
+        let road_line_chainage_to = $('#road_line_chainage_to').val();
+        let road_land_type = $('#road_land_type').val();
+        let road_terrain = $('#road_terrain').val();
+        let road_width = $('#road_width').val();
+        let road_row = $('#road_row').val();
+        let road_area_required = $('#road_area_required').val();
+        let dzongkhag = $('#roaddzonkhag').val();
+        let gewog = $('#roadgewog').val();
+        let village = $('#roadvillage').val();
 
         if(road_line_chainage_from == "")
         {
@@ -5269,9 +4823,9 @@
                 data : {'application_no':application_no,'road_line_chainage_from':road_line_chainage_from,'road_line_chainage_to':road_line_chainage_to,'road_land_type':road_land_type,'road_terrain':road_terrain,'road_width':road_width,'road_row':road_row,'road_area_required':road_area_required,'dzongkhag':dzongkhag,'gewog':gewog,'village':village, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
-                    $('#anc_road_successMsg').html("Approach Road Details Added Successfully");
-                    $('#anc_road_successMsg').show();
-                    $('#anc_road_successMsg').delay(2000).fadeOut('slow');
+                    $('#road_successMsg').html("Approach Road Details Added Successfully");
+                    $('#road_successMsg').show();
+                    $('#road_successMsg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#anc_approach_road_modal').modal('hide');
                     }, 2000);
@@ -5323,9 +4877,9 @@
             data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
-                $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
-                $('#delete_power_line_successMsg').show();
-                $('#delete_power_line_successMsg').delay(2000).fadeOut('slow');
+                $('#delete_road_successMsg').html("Approach Road Details Deleted Successfully");
+                $('#delete_road_successMsg').show();
+                $('#delete_road_successMsg').delay(2000).fadeOut('slow');
                 setTimeout(function() {
                     $('#delete_anc_approach_road_modal').modal('hide');
                 }, 2000);
@@ -5338,18 +4892,18 @@
 
     function update_anc_road_details()
     {
-        record_id = $('#edit_anc_record_id').val();
-        application_no = $('#edit_anc_road_application_no').val();
-        line_chainage_from = $('#edit_road_line_chainage_from').val();
-        line_chainage_to = $('#edit_road_line_chainage_to').val();
-        land_type = $('#edit_road_land_type').val();
-        terrain = $('#edit_road_terrain').val();
-        road_width = $('#edit_road_width').val();
-        row = $('#edit_road_row').val();
-        area_required = $('#edit_road_area_required').val();
-        dzongkhag = $('#edit_roaddzongkhag').val(dzo);
-        gewog = $('#edit_roadgewog').val(gewog);
-        village = $('#edit_roadvillage').val(village);
+        let record_id = $('#edit_anc_record_id').val();
+        let application_no = $('#edit_anc_road_application_no').val();
+        let line_chainage_from = $('#edit_road_line_chainage_from').val();
+        let line_chainage_to = $('#edit_road_line_chainage_to').val();
+        let land_type = $('#edit_road_land_type').val();
+        let terrain = $('#edit_road_terrain').val();
+        let road_width = $('#edit_road_width').val();
+        let row = $('#edit_road_row').val();
+        let area_required = $('#edit_road_area_required').val();
+        let dzongkhag = $('#edit_roaddzongkhag').val();
+        let gewog = $('#edit_roadgewog').val();
+        let village = $('#edit_roadvillage').val();
 
         if(line_chainage_from == "")
         {
@@ -5458,6 +5012,13 @@
             $('#anc_other_requiredErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_other_required').focus();   
         }
+        else if(anc_other_required_value == "Yes" && !$('#anc_other_bridge').is(":checked") && !$('#anc_other_crushing_unit').is(":checked") && !$('#anc_other_concrete_building').is(":checked") && !$('#anc_other_asphalt_plant').is(":checked") && !$('#anc_other_surface_collection').is(":checked") && !$('#anc_other_general').is(":checked"))
+        {
+            $('#anc_others_errorMsg').html("Please select one ancillary.");
+            $('#anc_others_errorMsg').show();
+            $('#anc_others_errorMsg').delay(2000).fadeOut('slow');
+            $('.anc_others').focus();
+        }
         else
         {
             $.ajax
@@ -5483,7 +5044,9 @@
                     }
                     else
                     {
-                        $('#anc_others_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#anc_others_errorMsg').html(`Application Error: ${data.error}`);
                         $('#anc_others_errorMsg').show();
                         setTimeout(function()
                         {
@@ -5497,27 +5060,27 @@
 
     function save_solid_waste_details()
     {
-        en_impact_allocated_budget = $('#en_impact_allocated_budget').val();
-        en_impact_hazardous_waste_list = $('#en_impact_hazardous_waste_list').val();
-        en_impact_hazardous_waste_source = $('#en_impact_hazardous_waste_source').val();
-        en_impact_hazardous_waste_qty_annum = $('#en_impact_hazardous_waste_qty_annum').val();
-        en_impact_hazardous_waste_mgt_plan = $('#en_impact_hazardous_waste_mgt_plan').val();
-        en_impact_non_hazardous_waste_list = $('#en_impact_non_hazardous_waste_list').val();
-        en_impact_non_hazardous_waste_source = $('#en_impact_non_hazardous_waste_source').val();
-        en_impact_non_hazardous_waste_qty_annum = $('#en_impact_non_hazardous_waste_qty_annum').val();
-        en_impact_non_hazardous_waste_mgt_plan = $('#en_impact_non_hazardous_waste_mgt_plan').val();
-        en_impact_medical_waste_list = $('#en_impact_medical_waste_list').val();
-        en_impact_medical_waste_source = $('#en_impact_medical_waste_source').val();
-        en_impact_medical_waste_qty_annum = $('#en_impact_medical_waste_qty_annum').val();
-        en_impact_medical_waste_mgt_plan = $('#en_impact_medical_waste_mgt_plan').val();
-        en_impact_ewaste_list = $('#en_impact_ewaste_list').val();
-        en_impact_ewaste_source = $('#en_impact_ewaste_source').val();
-        en_impact_ewaste_qty_annum = $('#en_impact_ewaste_qty_annum').val();
-        en_impact_ewaste_mgt_plan = $('#en_impact_ewaste_mgt_plan').val();
-        en_impact_others_waste_list = $('#en_impact_others_waste_list').val();
-        en_impact_others_waste_source = $('#en_impact_others_waste_source').val();
-        en_impact_others_waste_qty_annum = $('#en_impact_others_waste_qty_annum').val();
-        en_impact_others_waste_mgt_plan = $('#en_impact_others_waste_mgt_plan').val();
+        let en_impact_allocated_budget = $('#en_impact_allocated_budget').val();
+        let en_impact_hazardous_waste_list = $('#en_impact_hazardous_waste_list').val();
+        let en_impact_hazardous_waste_source = $('#en_impact_hazardous_waste_source').val();
+        let en_impact_hazardous_waste_qty_annum = $('#en_impact_hazardous_waste_qty_annum').val();
+        let en_impact_hazardous_waste_mgt_plan = $('#en_impact_hazardous_waste_mgt_plan').val();
+        let en_impact_non_hazardous_waste_list = $('#en_impact_non_hazardous_waste_list').val();
+        let en_impact_non_hazardous_waste_source = $('#en_impact_non_hazardous_waste_source').val();
+        let en_impact_non_hazardous_waste_qty_annum = $('#en_impact_non_hazardous_waste_qty_annum').val();
+        let en_impact_non_hazardous_waste_mgt_plan = $('#en_impact_non_hazardous_waste_mgt_plan').val();
+        let en_impact_medical_waste_list = $('#en_impact_medical_waste_list').val();
+        let en_impact_medical_waste_source = $('#en_impact_medical_waste_source').val();
+        let en_impact_medical_waste_qty_annum = $('#en_impact_medical_waste_qty_annum').val();
+        let en_impact_medical_waste_mgt_plan = $('#en_impact_medical_waste_mgt_plan').val();
+        let en_impact_ewaste_list = $('#en_impact_ewaste_list').val();
+        let en_impact_ewaste_source = $('#en_impact_ewaste_source').val();
+        let en_impact_ewaste_qty_annum = $('#en_impact_ewaste_qty_annum').val();
+        let en_impact_ewaste_mgt_plan = $('#en_impact_ewaste_mgt_plan').val();
+        let en_impact_others_waste_list = $('#en_impact_others_waste_list').val();
+        let en_impact_others_waste_source = $('#en_impact_others_waste_source').val();
+        let en_impact_others_waste_qty_annum = $('#en_impact_others_waste_qty_annum').val();
+        let en_impact_others_waste_mgt_plan = $('#en_impact_others_waste_mgt_plan').val();
 
         if(en_impact_allocated_budget == "")
         {
@@ -5679,6 +5242,7 @@
                     {
                         $('#solid_waste_successMsg').html("Saved Successfully");
                         $('#solid_waste_successMsg').show();
+                        $('#solid_waste_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#solid_waste_successMsg').delay(2000).fadeOut('slow');
@@ -5691,8 +5255,11 @@
                     }
                     else
                     {
-                        $('#solid_waste_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#solid_waste_errorMsg').html(`Application Error: ${data.error}`);
                         $('#solid_waste_errorMsg').show();
+                        $('#solid_waste_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#solid_waste_errorMsg').delay(2000).fadeOut('slow');
@@ -5705,15 +5272,15 @@
 
     function save_noise_level_details()
     {
-        en_noise_ind_area_day = $('#en_noise_ind_area_day').val();
-        en_noise_ind_area_night = $('#en_noise_ind_area_night').val();
-        en_noise_ind_area_mgt_plan = $('#en_noise_ind_area_mgt_plan').val();
-        en_noise_mixed_area_day = $('#en_noise_mixed_area_day').val();
-        en_noise_mixed_area_night = $('#en_noise_mixed_area_night').val();
-        en_noise_mixed_area_mgt_plan = $('#en_noise_mixed_area_mgt_plan').val();
-        en_noise_sen_area_day = $('#en_noise_sen_area_day').val();
-        en_noise_sen_area_night = $('#en_noise_sen_area_night').val();
-        en_noise_sen_area_mgt_plan = $('#en_noise_sen_area_mgt_plan').val();
+        let en_noise_ind_area_day = $('#en_noise_ind_area_day').val();
+        let en_noise_ind_area_night = $('#en_noise_ind_area_night').val();
+        let en_noise_ind_area_mgt_plan = $('#en_noise_ind_area_mgt_plan').val();
+        let en_noise_mixed_area_day = $('#en_noise_mixed_area_day').val();
+        let en_noise_mixed_area_night = $('#en_noise_mixed_area_night').val();
+        let en_noise_mixed_area_mgt_plan = $('#en_noise_mixed_area_mgt_plan').val();
+        let en_noise_sen_area_day = $('#en_noise_sen_area_day').val();
+        let en_noise_sen_area_night = $('#en_noise_sen_area_night').val();
+        let en_noise_sen_area_mgt_plan = $('#en_noise_sen_area_mgt_plan').val();
 
         if(en_noise_ind_area_day == "")
         {
@@ -5791,6 +5358,7 @@
                     {
                         $('#noise_level_successMsg').html("Saved Successfully");
                         $('#noise_level_successMsg').show();
+                        $('#noise_level_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#noise_level_successMsg').delay(2000).fadeOut('slow');
@@ -5803,8 +5371,11 @@
                     }
                     else
                     {
-                        $('#noise_level_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#noise_level_errorMsg').html(`Application Error: ${data.error}`);
                         $('#noise_level_errorMsg').show();
+                        $('#noise_level_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#noise_level_errorMsg').delay(2000).fadeOut('slow');
@@ -5817,42 +5388,42 @@
 
     function save_other_impact_details()
     {
-        en_other_impact_odour_source = $('#en_other_impact_odour_source').val();
-        en_other_impact_odour_qty = $('#en_other_impact_odour_qty').val();
-        en_other_impact_odour_mgt_plan = $('#en_other_impact_odour_mgt_plan').val();
-        en_other_impact_fugutive_source = $('#en_other_impact_fugutive_source').val();
-        en_other_impact_fugutive_qty = $('#en_other_impact_fugutive_qty').val();
-        en_other_impact_fugutive_mgt_plan = $('#en_other_impact_fugutive_mgt_plan').val();
-        en_other_impact_slope_source = $('#en_other_impact_slope_source').val();
-        en_other_impact_slope_qty = $('#en_other_impact_slope_qty').val();
-        en_other_impact_slope_mgt_plan = $('#en_other_impact_slope_mgt_plan').val();
-        en_other_impact_aesthetic_source = $('#en_other_impact_aesthetic_source').val();
-        en_other_impact_aesthetic_qty = $('#en_other_impact_aesthetic_qty').val();
-        en_other_impact_aesthetic_mgt_plan = $('#en_other_impact_aesthetic_mgt_plan').val();
-        en_other_impact_mucks_source = $('#en_other_impact_mucks_source').val();
-        en_other_impact_mucks_qty = $('#en_other_impact_mucks_qty').val();
-        en_other_impact_mucks_mgt_plan = $('#en_other_impact_mucks_mgt_plan').val();
-        en_other_impact_sewerage_source = $('#en_other_impact_sewerage_source').val();
-        en_other_impact_sewerage_qty = $('#en_other_impact_sewerage_qty').val();
-        en_other_impact_sewerage_mgt_plan = $('#en_other_impact_sewerage_mgt_plan').val();
-        en_other_impact_erosion_source = $('#en_other_impact_erosion_source').val();
-        en_other_impact_erosion_qty = $('#en_other_impact_erosion_qty').val();
-        en_other_impact_erosion_mgt_plan = $('#en_other_impact_erosion_mgt_plan').val();
-        en_other_impact_storm_water_source = $('#en_other_impact_storm_water_source').val();
-        en_other_impact_storm_water_qty = $('#en_other_impact_storm_water_qty').val();
-        en_other_impact_storm_water_mgt_plan = $('#en_other_impact_storm_water_mgt_plan').val();
-        en_other_impact_habitat_source = $('#en_other_impact_habitat_source').val();
-        en_other_impact_habitat_qty = $('#en_other_impact_habitat_qty').val();
-        en_other_impact_habitat_mgt_plan = $('#en_other_impact_habitat_mgt_plan').val();
-        en_other_impact_socio_source = $('#en_other_impact_socio_source').val();
-        en_other_impact_socio_qty = $('#en_other_impact_socio_qty').val();
-        en_other_impact_socio_mgt_plan = $('#en_other_impact_socio_mgt_plan').val();
-        en_other_impact_water_source_source = $('#en_other_impact_water_source_source').val();
-        en_other_impact_water_source_qty = $('#en_other_impact_water_source_qty').val();
-        en_other_impact_water_source_mgt_plan = $('#en_other_impact_water_source_mgt_plan').val();
-        en_other_impact_other_source = $('#en_other_impact_other_source').val();
-        en_other_impact_other_qty = $('#en_other_impact_other_qty').val();
-        en_other_impact_other_mgt_plan = $('#en_other_impact_other_mgt_plan').val();
+        let en_other_impact_odour_source = $('#en_other_impact_odour_source').val();
+        let en_other_impact_odour_qty = $('#en_other_impact_odour_qty').val();
+        let en_other_impact_odour_mgt_plan = $('#en_other_impact_odour_mgt_plan').val();
+        let en_other_impact_fugutive_source = $('#en_other_impact_fugutive_source').val();
+        let en_other_impact_fugutive_qty = $('#en_other_impact_fugutive_qty').val();
+        let en_other_impact_fugutive_mgt_plan = $('#en_other_impact_fugutive_mgt_plan').val();
+        let en_other_impact_slope_source = $('#en_other_impact_slope_source').val();
+        let en_other_impact_slope_qty = $('#en_other_impact_slope_qty').val();
+        let en_other_impact_slope_mgt_plan = $('#en_other_impact_slope_mgt_plan').val();
+        let en_other_impact_aesthetic_source = $('#en_other_impact_aesthetic_source').val();
+        let en_other_impact_aesthetic_qty = $('#en_other_impact_aesthetic_qty').val();
+        let en_other_impact_aesthetic_mgt_plan = $('#en_other_impact_aesthetic_mgt_plan').val();
+        let en_other_impact_mucks_source = $('#en_other_impact_mucks_source').val();
+        let en_other_impact_mucks_qty = $('#en_other_impact_mucks_qty').val();
+        let en_other_impact_mucks_mgt_plan = $('#en_other_impact_mucks_mgt_plan').val();
+        let en_other_impact_sewerage_source = $('#en_other_impact_sewerage_source').val();
+        let en_other_impact_sewerage_qty = $('#en_other_impact_sewerage_qty').val();
+        let en_other_impact_sewerage_mgt_plan = $('#en_other_impact_sewerage_mgt_plan').val();
+        let en_other_impact_erosion_source = $('#en_other_impact_erosion_source').val();
+        let en_other_impact_erosion_qty = $('#en_other_impact_erosion_qty').val();
+        let en_other_impact_erosion_mgt_plan = $('#en_other_impact_erosion_mgt_plan').val();
+        let en_other_impact_storm_water_source = $('#en_other_impact_storm_water_source').val();
+        let en_other_impact_storm_water_qty = $('#en_other_impact_storm_water_qty').val();
+        let en_other_impact_storm_water_mgt_plan = $('#en_other_impact_storm_water_mgt_plan').val();
+        let en_other_impact_habitat_source = $('#en_other_impact_habitat_source').val();
+        let en_other_impact_habitat_qty = $('#en_other_impact_habitat_qty').val();
+        let en_other_impact_habitat_mgt_plan = $('#en_other_impact_habitat_mgt_plan').val();
+        let en_other_impact_socio_source = $('#en_other_impact_socio_source').val();
+        let en_other_impact_socio_qty = $('#en_other_impact_socio_qty').val();
+        let en_other_impact_socio_mgt_plan = $('#en_other_impact_socio_mgt_plan').val();
+        let en_other_impact_water_source_source = $('#en_other_impact_water_source_source').val();
+        let en_other_impact_water_source_qty = $('#en_other_impact_water_source_qty').val();
+        let en_other_impact_water_source_mgt_plan = $('#en_other_impact_water_source_mgt_plan').val();
+        let en_other_impact_other_source = $('#en_other_impact_other_source').val();
+        let en_other_impact_other_qty = $('#en_other_impact_other_qty').val();
+        let en_other_impact_other_mgt_plan = $('#en_other_impact_other_mgt_plan').val();
 
 
         if(en_other_impact_odour_source == "")
@@ -6120,6 +5691,7 @@
                     {
                         $('#other_impact_successMsg').html("Saved Successfully");
                         $('#other_impact_successMsg').show();
+                        $('#other_impact_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#other_impact_successMsg').delay(2000).fadeOut('slow');
@@ -6132,8 +5704,11 @@
                     }
                     else
                     {
-                        $('#other_impact_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#other_impact_errorMsg').html(`Application Error: ${data.error}`);
                         $('#other_impact_errorMsg').show();
+                        $('#other_impact_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#other_impact_errorMsg').delay(2000).fadeOut('slow');
@@ -6148,6 +5723,7 @@
     {
         $('#road_attachment_successMsg').html("Saved Successfully");
         $('#road_attachment_successMsg').show();
+        $('#road_attachment_successMsg').focus();
         setTimeout(function()
         {
             $('#road_attachment_successMsg').delay(2000).fadeOut('slow');
@@ -6174,6 +5750,7 @@
                 {
                     $('#road_submit_successMsg').html("Application Submitted Successfully");
                     $('#road_submit_successMsg').show();
+                    $('#road_submit_successMsg').focus();
                     setTimeout(function()
                     {
                         $('#road_submit_successMsg').delay(2000).fadeOut('slow');
@@ -6184,8 +5761,11 @@
                 }
                 else
                 {
-                    $('#road_submit_errorMsg').html("Please Check And Submit Again");
+                    var errorMsg = data.error;
+        
+                    $('#road_submit_errorMsg').html(`Application Error: ${data.error}`);
                     $('#road_submit_errorMsg').show();
+                    $('#road_submit_errorMsg').focus();
                     setTimeout(function()
                     {
                         $('#road_submit_errorMsg').delay(2000).fadeOut('slow');
@@ -6195,7 +5775,7 @@
         });
     }
 
-    function check_anc_facility()
+    function check_anc_facility(value)
     {
         if(value == "Yes")
         {
@@ -6355,21 +5935,21 @@
 
     function add_type_of_drain()
     {
-        application_no = $('#application_no').val();
-        drain_type = $(drain_type).val();
-        chainage = $('#chainage').val();
+        let application_no = $('#application_no').val();
+        let drain_type = $('#drain_type').val();
+        let chainage = $('#chainage').val();
         
 
         if(drain_type == "")
         {
-            $('#drain_typeErrorMsg').html("Enter Raw Material");
+            $('#drain_typeErrorMsg').html("Enter Drain Type");
             $('#drain_typeErrorMsg').show();
             $('#drain_typeErrorMsg').delay(2000).fadeOut('slow');
             $('#drain_type').focus();
         }
         else if(chainage == "")
         {
-            $('#chainageErrorMsg').html("Enter Qty");
+            $('#chainageErrorMsg').html("Enter Chainage");
             $('#chainageErrorMsg').show();
             $('#chainageErrorMsg').delay(2000).fadeOut('slow');
             $('#chainage').focus();
@@ -6410,27 +5990,27 @@
         $('#edit_types_of_drains_modal').modal('show');
     }
 
-    function update_raw_material_details()
+    function update_types_of_drains_details()
     {
-        record_id = $('#edit_drain_record_id').val();
-        application_no = $('#edit_drain_app_no').val();
-        drain_type = $(edit_drain_type).val();
-        chainage = $('#edit_chainage').val();
+        let record_id = $('#edit_drain_record_id').val();
+        let application_no = $('#edit_drain_app_no').val();
+        let drain_type = $('#edit_drain_type').val();
+        let chainage = $('#edit_chainage').val();
         
 
         if(drain_type == "")
         {
-            $('#drain_typeErrorMsg').html("Enter Raw Material");
-            $('#drain_typeErrorMsg').show();
-            $('#drain_typeErrorMsg').delay(2000).fadeOut('slow');
-            $('#drain_type').focus();
+            $('#edit_drain_typeErrorMsg').html("Enter Drain Type");
+            $('#edit_drain_typeErrorMsg').show();
+            $('#edit_drain_typeErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_drain_type').focus();
         }
         else if(chainage == "")
         {
-            $('#chainageErrorMsg').html("Enter Qty");
-            $('#chainageErrorMsg').show();
-            $('#chainageErrorMsg').delay(2000).fadeOut('slow');
-            $('#chainage').focus();
+            $('#edit_chainageErrorMsg').html("Enter Chainage");
+            $('#edit_chainageErrorMsg').show();
+            $('#edit_chainageErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_chainage').focus();
         }
         else
         {
@@ -6438,7 +6018,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_types_of_drain' %}",
-                data : {'application_no':application_no,'drain_type':drain_type,'chainage':chainage, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'application_no':application_no,'record_id':record_id, 'drain_type':drain_type,'chainage':chainage, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_types_of_drains_SuccessMsg').html("Update Successful");
@@ -6465,10 +6045,10 @@
         $('#delete_types_of_drains_modal').modal('show');
     }
 
-    function delete_raw_material_details()
+    function delete_drain_details()
     {
-        record_id = $('#delete_raw_material_record_id').val();
-        application_no = $('#delete_raw_material_app_no').val();
+        let record_id = $('#delete_drain_record_id').val();
+        let application_no = $('#delete_drain_application_no').val();
 
         $.ajax
         ({
@@ -6477,7 +6057,7 @@
             data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
-                $('#delete_drain_successMsg').html("Add Successful");
+                $('#delete_drain_successMsg').html("Delete Successful");
                 $('#delete_drain_successMsg').show();
                 setTimeout(function()
                 {
@@ -6487,7 +6067,7 @@
                     $('#delete_types_of_drains_modal').modal('hide');
                 }, 2000);
                 setTimeout(function() {
-                    $(types_of_drains_details).html(responseText);
+                    $('#types_of_drains_details').html(responseText);
                 }, 2000);
             }
         });
@@ -6635,7 +6215,7 @@
     {
         $('#delete_dumpyard_record_id').val(record_id);
         $('#delete_dumpyard_application_no').val(application_no);
-        $('#delete_dumyard_details_modal').modal('hide');
+        $('#delete_dumyard_details_modal').modal('show');
     }
 
     function delete_dumpyard_details()
@@ -6666,30 +6246,6 @@
         });
     }
 
-    function check_anc_other_general()
-    {
-        if($('#anc_other_general').is(":checked") || $('#anc_other_bridge').is(":checked"))
-        {
-            $('.general_application').show();
-            $('.mineral_application').show();
-        }
-        else if($('#anc_other_general').is(":checked") && $('#anc_other_bridge').not(":checked"))
-        {
-            $('.general_application').show();
-            $('.mineral_application').hide();
-        }
-        else if($('#anc_other_general').not(":checked") && $('#anc_other_bridge').is(":checked"))
-        {
-            $('.general_application').hide();
-            $('.mineral_application').show();
-        }
-        else if($('#anc_other_general').not(":checked") && $('#anc_other_bridge').not(":checked"))
-        {
-            $('.general_application').hide();
-            $('.mineral_application').hide();
-        }
-    }
-
     function check_dzong_throm(value)
     {
         if(value == "Dzongkhag")
@@ -6703,7 +6259,6 @@
             $('.dzongkhag').hide();
         }
     }
-
     function check_terms()
     {
         if($("#ec_terms").prop('checked') == true)
@@ -6713,6 +6268,68 @@
         else
         {
             $('#road_submit_btn').hide();
+        }
+    }
+
+    function save_road_attachment()
+    {
+        let file_length = document.getElementById("road_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#road_attachErrorMsg').html("Please Choose A Attachment");
+            $('#road_attachErrorMsg').show();
+            $('#road_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var fileName = document.getElementById('road_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('road_attach').files[0];
+            fd.append('road_attach', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_road_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_road_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#road_attachment_modal').modal('hide');
+                                $('#road_file_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#road_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#road_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#road_attachErrorMsg').show();
+                        $('#road_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
         }
     }
 

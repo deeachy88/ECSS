@@ -49,7 +49,21 @@
                             <label class="form-label">Classification</label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="text" name="classification" class="form-control" id="classification" value="{{bsic_code_details.classification}}">
+                            <select type="text" name="classification" class="form-control" id="classification">
+                                {% if bsic_code_details.classification == "P" %}
+                                    <option value="P" selected>P</option>
+                                    <option value="C">C</option>
+                                    <option value="S">S</option>
+                                {% elif bsic_code_details.classification == "C" %}
+                                    <option value="P">P</option>
+                                    <option value="C" selected>C</option>
+                                    <option value="S">S</option>
+                                {% else %}
+                                    <option value="P">P</option>
+                                    <option value="C">C</option>
+                                    <option value="S" selected>S</option>
+                                {% endif %}
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -61,11 +75,25 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-3"> 
                             <label class="form-label">Colour Code</label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="text" name="colour_code" class="form-control" id="colour_code" value="{{bsic_code_details.colour_code}}">
+                            <select type="text" name="colour_code" class="form-control" id="colour_code">
+                                {% if bsic_code_details.colour_code == "Red" %}
+                                    <option value="Red" selected>Red</option>
+                                    <option value="Blue">Blue</option>
+                                    <option value="Green">Green</option>
+                                {% elif bsic_code_details.colour_code == "Blue" %}
+                                    <option value="Red">Red</option>
+                                    <option value="Blue" selected>Blue</option>
+                                    <option value="Green">Green</option>
+                                {% else %}
+                                    <option value="Red">Red</option>
+                                    <option value="Blue">Blue</option>
+                                    <option value="Green" selected>Green</option>
+                                {% endif %}
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -73,7 +101,14 @@
                             <label class="form-label">Competent Authority</label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="text" name="competent_authority" class="form-control" id="competent_authority" value="{{bsic_code_details.competent_authority}}">
+                            <select type="text" name="competent_authority" class="form-control" id="competent_authority">
+                                <option value="">--SELECT--</option>
+                                {% for competant_authority in competant_authority %}
+                                <option value="{{competant_authority.competent_authority}}"{% if bsic_code_details.competent_authority == competant_authority.competent_authority %}selected{% endif %}>
+                                    {{ competant_authority.competent_authority }}
+                                </option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -89,6 +124,35 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Has TOR</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <div class="mb-3">
+                                {% if bsic_code_details.has_tor == "Yes" %}
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="has_tor" value="Yes" checked>
+                                        <label class="form-check-label">Yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="has_tor" value="No">
+                                        <label class="form-check-label">No</label>
+                                    </div>
+                                {% else %}
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="has_tor" value="Yes">
+                                        <label class="form-check-label">Yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="has_tor" value="No" checked>
+                                        <label class="form-check-label">No</label>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="alert alert-danger" id="has_torErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
                     <input type="hidden" class="form-control" id="bsic_id" value="{{bsic_code_details.bsic_id}}">
                     <div id="edit_broad_activity_codeErrorMsg" class="alert alert-danger" style="display: none;"></div>
                     <div id="edit_activity_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -102,7 +166,7 @@
                     {% endfor %}
                     </form>
                     <div class="alert alert-success" id="edit_successMsg" style="display:none"></div>
-                    <div class="float-end">
+                    <div class="float-end mt-1">
                         <button type="button" class="btn btn-md btn-primary" onclick="update_bsic_code_details()">Update BSIC Code</button>
                         <a href="{% url 'bsic_master' %}" class="btn btn-md btn-danger"> Cancel </a>
                     </div>
@@ -125,6 +189,8 @@
         var colour_code = $('#colour_code').val();
         var competent_authority = $('#competent_authority').val();
         var service_id = $('#service_id').val();
+        var has_tor = $('input[name="has_tor"]:checked').val();
+
 
         if(broad_activity_code == "")
         {
@@ -180,12 +246,18 @@
             $('#edit_service_idErrorMsg').show();
             $('#edit_service_idErrorMsg').delay(2000).fadeOut('slow');
         }
+        else if(has_tor == "")
+        {
+            $('#has_torErrorMsg').html("Select One");
+            $('#has_torErrorMsg').show();
+            $('#has_torErrorMsg').delay(2000).fadeOut('slow');
+        }
         else
         {
             $.ajax({
                 type : "post",
                 url : "{% url 'edit_bsic_code_master' %}",
-                data : {'bsic_id':bsic_id, 'broad_activity_code':broad_activity_code, 'activity_description':activity_description, 'specific_activity_code':specific_activity_code, 'specific_activity_description':specific_activity_description, 'classification':classification, 'category':category, 'colour_code':colour_code, 'competent_authority':competent_authority, 'service_id':service_id, csrfmiddlewaretoken:'{{ csrf_token }}'},
+                data : {'bsic_id':bsic_id, 'broad_activity_code':broad_activity_code, 'activity_description':activity_description, 'specific_activity_code':specific_activity_code, 'specific_activity_description':specific_activity_description, 'classification':classification, 'category':category, 'colour_code':colour_code, 'competent_authority':competent_authority, 'service_id':service_id,'has_tor':has_tor, csrfmiddlewaretoken:'{{ csrf_token }}'},
                 success : function(data)
                 {
                     $('#edit_successMsg').html("BSIC Code Updated Successfully.");

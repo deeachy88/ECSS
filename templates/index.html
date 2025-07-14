@@ -28,8 +28,9 @@
         <link href="{% static 'assets/vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
         <link href="{% static 'assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
+	let sessionId = null;
         // WebSocket setup
-        let url = `ws://${window.location.host}/ws/socketserver/`;
+        let url = `wss://${window.location.host}/ws/socketserver/`;
         const socket = new WebSocket(url);
 
         socket.onmessage = function(e) {
@@ -50,10 +51,7 @@
             const session_id = data.session_id;
             const proof_type = data.proof_type;
             // Check if session_id matches the stored sessionId
-            if (session_id !== sessionId) {
-                console.log('Session ID does not match. Ignoring message.');
-                return; // Exit the function if session_id does not match
-            }
+            
             if(proof_type == 'present-proof/rejected')
             {
                 if(category=='Login')
@@ -66,13 +64,17 @@
                 }
                 else if(category=='Issuance')
                 {
-                    $('#ndi_div').hide();
+                    $('#issuanceMessageError').html("Proof Not Shared From Wallet");
                     $('#issuanceMessageError').show();
+                    $('#issuanceMessageError').delay(4000).fadeOut('slow');
                 }
-                else if(category=='Issuance')
+                else if(category=='Employee')
                 {
-                    $('#ndi_div').hide();
-                    $('#issuanceMessageError').show();
+                    $("#ndi_div").hide();
+                    $("#loginBox").show();
+                    $('#ndi_login_error').html("Proof Not Shared From Wallet");
+                    $('#ndi_login_error').show();
+                    $('#ndi_login_error').delay(4000).fadeOut('slow');
                 }
                 else
                 {
@@ -90,7 +92,7 @@
             } else if (id_number && category === 'Issuance') {
                 makeIssuanceCall(relationshipDid, thid, id_number, holder_did);
             } else if (full_name && category === 'Registration') {
-                showRegistrationForm();
+                //showRegistrationForm();
                 fillInputFields(id_number, full_name, dzongkhag, gewog, village);
             }
         };
@@ -119,43 +121,67 @@
             console.log("Session value cleared.");
         }
 
-        function showRegistrationForm() {
-    // Show the modal if it's not already visible
-    if (!$("#registrationModalForm").hasClass('show')) {
-        $("#registrationModalForm").modal('show');
-    }
+        
 
-    // Hide the QR code section
-    $('#ndi_div_proponent').hide();
-    
-    // Show the registration form section
-    $('#registration_div').show();
+        function showRegistrationForm()
+        {
+            setTimeout(() => {
+                console.log("Yes");
+            }, 10000); 
+        }
 
-    // Show the modal footer (if hidden)
-    $('.modal-footer').show();
-}
-
-
-        // Function to fill input fields with data received
-        function fillInputFields(id_number, full_name, dzongkhag, gewog, village) {
-	    sessionStorage.setItem('modalShown', 'true');
-            document.getElementById('cid').value = id_number;
-            document.getElementById('proponent_name').value = full_name;
-            document.getElementById('i_dzongkhag').value = dzongkhag;
-            document.getElementById('i_gewog').value = gewog;
-            document.getElementById('i_village').value = village;
+      function fillInputFields(id_number, full_name, dzongkhag, gewog, village) {
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if(isMobile){
+            if (!$("#registrationModalForm").hasClass('show')) {
+                $("#registrationModalForm").modal('show');
+            }
+            $("#proponent_type").val("4");
+            $(".cid_details").show();
+            $('#cid').val(id_number);
+            $('#proponent_name').val(full_name);
+            $('#dzongkhag, #gewog, #village').hide()
+            $('#i_dzongkhag, #i_gewog, #i_village').show().val(function() {
+                return {
+                    'i_dzongkhag': dzongkhag,
+                    'i_gewog': gewog,
+                    'i_village': village
+                }[this.id];
+            });
+        }
+        else
+        {
+            $("#ndi_div_proponent").hide();
+            $("#registration_div").show();
+                
+            $('#cid').val(id_number);
+            $('#proponent_name').val(full_name);
+            $('#i_dzongkhag, #i_gewog, #i_village').show().val(function() {
+                return {
+                    'i_dzongkhag': dzongkhag,
+                    'i_gewog': gewog,
+                    'i_village': village
+                }[this.id];
+            });
+        }
+            $('.modal-footer').show();
         }
 
     // Add event listener to handle window resize events
-    $(window).on('resize', function() {
-        if ($('#ndi_div').is(':visible')) {
-            var proofRequestURL = $('#qrcode canvas').data('proofRequestURL');
-            var deepLinkURL = $('#deepLinkBtn').val();
-            var proofRequestThreadId = $('#qrcode canvas').data('proofRequestThreadId');
-            var value = $('#qrcode canvas').data('value');
+    window.addEventListener('resize', function() {
+    var ndiDiv = document.getElementById('ndi_div');
+    if (ndiDiv && window.getComputedStyle(ndiDiv).display !== 'none') {
+        var qrcodeCanvas = document.querySelector('#qrcode canvas');
+        if (qrcodeCanvas) {
+            var proofRequestURL = qrcodeCanvas.dataset.proofRequestURL;
+            var deepLinkBtn = document.getElementById('deepLinkBtn');
+            var deepLinkURL = deepLinkBtn ? deepLinkBtn.value : '';
+            var proofRequestThreadId = qrcodeCanvas.dataset.proofRequestThreadId;
+            var value = qrcodeCanvas.dataset.value;
             updateDisplay(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
         }
-    });
+    }
+});
     </script>
 
 </head>
@@ -277,7 +303,7 @@
 
         #deepLinkBtn {
             width: 100%;
-            padding: 10px;
+            padding: 4px;
         }
 
         #deepLinkBtn img {
@@ -340,16 +366,52 @@
             text-decoration: none;
             color: #007bff;
         }
+
+        #ndiLoginId {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px 16px; /* Adds space inside */
+    font-size: 16px; /* Consistent font size */
+    max-width: 250px; /* Prevents it from becoming too wide */
+    width: 100%; /* Adjusts to parent width */
+    white-space: nowrap; /* Prevents text wrapping */
+}
+
+#ndiLoginId img {
+    width: 24px; /* Icon size */
+    height: auto;
+    margin-right: 8px; /* Space between icon and text */
+    flex-shrink: 0; /* Prevents icon shrinking */
+}
+
+@media (max-width: 768px) {
+    #ndiLoginId {
+        font-size: 14px; /* Smaller font for mobile */
+        padding: 8px 14px; /* Adjust padding */
+    }
+
+    #ndiLoginId img {
+        width: 20px; /* Smaller icon */
+    }
+}
+.navbar-dark .navbar-nav .nav-link.active {
+        color: #ffffff !important;
+        font-weight: bold;
+        border: 2px solid white;
+        border-radius: 5px;
+        padding: 6px 12px; /* ensure space inside the border */
+    }
+
+/* Optional: Add a bottom border for the active tab */
 </style>
 
 <body style="background-color:white;">
-	<div id="progressloader" class="spinner-border text-primary" role="status" style="display: none; width: 4rem; height: 4rem; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border-width: 0.5rem;">
-    <span class="visually-hidden">Loading...</span>
-</div>
     <div class="container">
         <div class="row">
-            <div class="col-md-11 mt-0">
-                <img class="mx-auto d-block" src="{% static 'assets/images/nec_header.png' %}" style="background:center;max-width:100%">
+            <div class="col-12 p-0">  <!-- Full width column with no padding -->
+                <img class="w-100 h-auto" src="{% static 'assets/images/nec_header.png' %}" alt="NEC Header">
             </div>
         </div>
         {% include 'header.html' %}
@@ -375,44 +437,109 @@
                         </div> <!-- end card -->
                     </div> <!-- end col -->
                     <div class="col-xl-4 col-lg-5">
-                        <!-- Acts and Rules Section -->
+                        <div class="card text-center mb-4 custom-shadow">
+                            <div class="card-body">
+                                <h4 class="header-title mb-1 acts"><i class="uil uil-users-alt"></i> Login</h4>
+                                <hr class="acts" style="display: none;">
+                                <div class="inbox-widget">
+                                   <p class="mb-0 text-muted">If you are registed user, please <a href="{% url 'user_login' %}" data-bs-toggle="modal" data-bs-target="#loginModalForm">Login</a> here </p> 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card text-center mb-4 custom-shadow">
+                            <div class="card-body">
+                                <h4 class="header-title mb-1 acts">
+                                    <i class="uil uil-users-alt"></i> Applicant Registration
+                                </h4>
+                                <hr class="acts" style="display: none;">
+                                <div class="inbox-widget">
+                                    <p class="mb-0 text-muted">
+                                        If you are not a registered user, please 
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#registrationModalForm">Register</a> 
+                                        here before applying for environment clearance.
+                                    </p>
+                                </div>
+                        
+                                <!-- Hidden Registration Form Inside the Same Card -->
+                                
+                            </div>
+                        </div>
+                        <div class="card text-center mb-4 custom-shadow">
+                            <div class="card-body">
+                                <h4 class="header-title mb-1 acts"><i class="uil uil-users-alt"></i> Receive Your Credentails </h4>
+                                <hr class="acts" style="display: none;">
+                                <div class="inbox-widget">
+                                   <p class="mb-0 text-muted">If you are registed user, please <a href="#" id="ndiCredentialId" onclick="authenticate_ndi('Issuance')">
+                                        Receive  Your Credentials
+                                    </a> here </p> 
+                                </div>
+                            </div>
+                        </div>
                         {% if pub_file_attachment_count > 0 %}
-                            <div class="card text-center mb-4 custom-shadow">
+                            <div class="card text-center mb-4 custom-shadow" id="attachments-card-{{ forloop.counter }}">
                                 <div class="card-body">
-                                    <h4 class="header-title mb-3">Acts and Rules</h4>
-                                    <hr>
+                                    <h4 class="header-title mb-3 acts" style="display: none;"> Acts and Rules</h4>
+                                    <hr class="acts" style="display: none;">
                                     <div class="inbox-widget">
-                                        {% for file_attachment in pub_file_attachment %}
-                                            <div class="inbox-item">
-                                                <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                        {# Hidden items for counts >5 #}
+                                        
+                                        {% if pub_file_attachment_count > 0 %}
+                                        <ul class="ps-3">
+                                            <div class="more-attachments" style="display:none;">
+                                                <ul class="ps-3">
+                                                    {% for file_attachment in pub_file_attachment %}
+                                                        <li class="mb-1 inbox-item">
+                                                            <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
                                             </div>
-                                        {% endfor %}
+                                        {% endif %}
                                     </div>
-                                    {% if pub_file_attachment_count > 5 %}
+                                    
+                                    {% if pub_file_attachment_count > 0 %}
                                         <div class="text-center mt-3">
-                                            <a href="javascript:void(0);" class="text-danger"><i class="mdi mdi-spin mdi-loading me-1"></i> Load more </a>
+                                            <a href="javascript:void(0);" class="text-danger load-more-btn" 
+                                            data-target="attachments-card-{{ forloop.counter }}">
+                                                <i class="mdi mdi-chevron-down me-1"></i> 
+                                                Acts and Rules ({{ pub_file_attachment_count }})
+                                            </a>
                                         </div>
                                     {% endif %}
-                                </div> <!-- end card-body -->
-                            </div> <!-- end card -->
-                        {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
 
                         <!-- Notifications Section -->
                         {% if form_file_attachment_count > 0 %}
-                            <div class="card text-center mb-4 custom-shadow">
+                            <div class="card text-center mb-4 custom-shadow" id="form-attachments-card-{{ forloop.counter }}">
                                 <div class="card-body">
-                                    <h4 class="header-title mb-3">Notifications</h4>
-                                    <hr>
+                                    <h4 class="header-title mb-3 notification" style="display: none;"> Notifications</h4>
+                                    <hr class="notification" style="display: none;">
                                     <div class="inbox-widget">
-                                        {% for file_attachment in form_file_attachment %}
-                                            <div class="inbox-item">
-                                                <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                        {# Hidden items for counts >5 #}
+                                        
+                                        {% if form_file_attachment_count > 0 %}
+                                            <div class="form-more-attachments" style="display:none;">
+                                                <ul class="ps-3">
+                                                    {% for file_attachment in form_file_attachment %}
+                                                        <li class="mb-1 inbox-item">
+                                                            <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
                                             </div>
-                                        {% endfor %}
+                                        {% endif %}
+                                        
                                     </div>
-                                    {% if form_file_attachment_count > 5 %}
+                                    
+                                    {% if form_file_attachment_count > 0 %}
                                         <div class="text-center mt-3">
-                                            <a href="javascript:void(0);" class="text-danger"><i class="mdi mdi-spin mdi-loading me-1"></i> Load more </a>
+                                            <a href="javascript:void(0);" class="text-danger form-load-more-btn" 
+                                            data-target="form-attachments-card-{{ forloop.counter }}">
+                                                <i class="mdi mdi-chevron-down me-1"></i> 
+                                                Notifications ({{ form_file_attachment_count }})
+                                            </a>
                                         </div>
                                     {% endif %}
                                 </div> <!-- end card-body -->
@@ -421,25 +548,38 @@
 
                         <!-- Forms and Others Section -->
                         {% if down_file_attachment_count > 0 %}
-                            <div class="card text-center mb-4 custom-shadow">
-                                <div class="card-body">
-                                    <h4 class="header-title mb-3">Forms and Others</h4>
-                                    <hr>
-                                    <div class="inbox-widget">
-                                        {% for file_attachment in down_file_attachment %}
-                                            <div class="inbox-item">
-                                                <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                    {% if down_file_attachment_count > 5 %}
-                                        <div class="text-center mt-3">
-                                            <a href="javascript:void(0);" class="text-danger"><i class="mdi mdi-spin mdi-loading me-1"></i> Load more </a>
+                        <div class="card text-center mb-4 custom-shadow" id="down-attachments-card-{{ forloop.counter }}">
+                            <div class="card-body">
+                                <h4 class="header-title mb-3 forms" style="display: none;"> Forms and Others</h4>
+                                <hr class="forms" style="display: none;">
+                                <div class="inbox-widget">
+                                    {# Hidden items for counts >5 #}
+                                    {% if down_file_attachment_count > 0 %}
+                                        <div class="down-more-attachments" style="display:none;">
+                                            <ul class="ps-3">
+                                                {% for file_attachment in down_file_attachment %}
+                                                    <li class="mb-1 inbox-item">
+                                                        <a href='{{file_attachment.file_path}}' target="_blank">{{file_attachment.attachment}}</a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
                                         </div>
                                     {% endif %}
-                                </div> <!-- end card-body -->
-                            </div> <!-- end card -->
+                                </div>
+                                
+                                {% if down_file_attachment_count > 0 %}
+                                    <div class="text-center mt-3">
+                                        <a href="javascript:void(0);" class="text-danger down-load-more-btn" 
+                                        data-target="down-attachments-card-{{ forloop.counter }}">
+                                            <i class="mdi mdi-chevron-down me-1"></i> 
+                                            Forms and Others ({{ down_file_attachment_count }})
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
                         {% endif %}
+                        
                     </div>
                 </div>
             </div>
@@ -460,6 +600,11 @@
  <div class="modal fade" id="loginModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content modal-custom non-issuance">
+            <div id="progressLoader" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+                <div class="spinner-border spinner-border-custom" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
             <div id="loginBox">
                 <div class="modal-header text-center">
                     <h1 class="modal-title w-100" style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
@@ -506,12 +651,20 @@
                     <div class="splitter">
                         <span style="background-color: rgb(255, 255, 255);">OR</span>
                     </div>
-                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-center">
-                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiLoginId" onclick="authenticate_ndi('Login')">
-                            <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
-                            &nbsp; &nbsp; Login with Bhutan NDI
+                    <div class="mx-6 pt-3 mb-1 d-flex justify-content-center">
+                        <a href="#" 
+                           id="ndiLoginId" 
+                           class="btn d-inline-flex align-items-center justify-content-center text-white py-1 px-3" 
+                           onclick="authenticate_ndi('Login')" 
+                           style="background-color: #124143; border-radius: 8px; max-width: 250px; width: 100%; text-align: center;">
+                            <img src="{% static 'assets/images/NDI_logo.png' %}" 
+                                 alt="NDI Logo" 
+                                 class="img-fluid me-2" 
+                                 style="width: 24px; height: auto; flex-shrink: 0;">
+                            <span class="text-nowrap">Login with Bhutan NDI</span>
                         </a>
                     </div>
+                    
                     <!-- <div class="modal-header mx-5 pt-3 mb-1 justify-content-center">
                         <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiCredentialId" onclick="authenticate_ndi('Issuance')">
                             <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
@@ -607,18 +760,22 @@
                     </div>
                 </div>
             </div>
+            <div class="alert alert-danger" id="issuanceMessageError" role="alert" style="display: none;"></div>
             <div id="ndi_div" style="display: none; text-align: center">
                 <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
                 <div class="splitter"></div>
+                
+                <div id="deepLink" class="col-md-5 text-center" style="display: none;">
+                    <button id="deepLinkBtn" class="button button1 text-white btn-bg cus-button">
+                        <img src="{% static 'assets/images/NDI_logo.png' %}" alt="NDI Logo" class="ndi-logo">Open Bhutan NDI App
+                    </button>
+                </div>
                 <h2 style="font-size: 1.0rem; margin-bottom: .5rem; font-weight: 500; color: black;">Scan with <span style="color:#5AC994 ">Bhutan NDI </span> Wallet</h2>
+                <div class="splitter">
+                    <span style="background-color: rgb(255, 255, 255);">OR</span>
+                </div>
                 <div class="qr-img" style="margin-top: 10px">
-                    <div id="deepLink" class="col-md-5 text-center" style="display: none;">
-                        <button id="deepLinkBtn" class="button button1 text-white btn-bg cus-button">
-                            <img src="{% static 'assets/images/NDI_logo.png' %}" alt="NDI Logo" class="ndi-logo">Open Bhutan NDI App
-                        </button>
-                    </div>
-                    <div class="text-center" id="qrcode"><canvas width="200" height="200" style="display: none;"></canvas>
-                    </div>
+                    <div class="text-center" id="qrcode"><canvas width="200" height="200" style="display: none;"></canvas></div>
                     <img id="logo" src="{% static 'assets/images/NDIlogobg.png' %}" style="display: none;" />
                     <div class="row text-center">
                         <div class="counter" id="clockdiv" style="display: none;">
@@ -628,12 +785,12 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="row justify-content-center">
                     <div class="col-md-9 custom-vertical-align-left">
                         <br>
                         <ul class="list-unstyled" style="text-align: left;">
-                            <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7" style="margin-bottom: 10px;">1. Open Bhutan NDI on your Phone</li>
+                            <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7" style="margin-bottom: 10px;">1. Open Bhutan NDI Wallet on your Phone</li>
                             <li>2. Tab the Scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="QR Code"> and capture code</li>
                         </ul>
                     </div>
@@ -649,53 +806,34 @@
                             <div class="app-link">
                                 <a href="https://play.google.com/store/search?q=bhutan%20ndi&amp;c=apps&amp;hl=en_IN&amp;gl=US" target="_blank" ><img src="{% static 'assets/images/play_store.png' %}" style="height: 35px;"></a>
                                 <a href="https://apps.apple.com/in/app/bhutan-ndi/id1645493166" target="_blank" ><img src="{% static 'assets/images/app_store.png' %}" style="height: 35px;"></a>
-                                <hr>
-                                <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center">Back To Login</a>
+                                
                             </div>
                         </li>
                     </ul>
                 </div>
-            </div>
-            <div id="issuanceMessageDiv"  style="display: none; text-align: center">
-                <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
-                <div class="splitter"></div>
-                <i class="mdi mdi-account-check-outline"></i>
-                <div class="row justify-content-center">
-                    <div class="col-md-9 custom-vertical-align-left">
-                        <br>
-                        <ul class="list-unstyled" style="text-align: left;">
-                            <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7" style="margin-bottom: 10px;">Credential for Environment Clearance sent to your wallet. New credentials will automatically revoke any previously issued credentials.</li>
-                        </ul>
-                    </div>
+                <hr>
+                <div id="back_but" style="display: none;">
+                    <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center">Back To Login</a>
                 </div>
-                <div class="splitter"></div>
-                <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center mb-1">Back To Login</a>
-            </div>
-            <div id="issuanceMessageError"  style="display: none; text-align: center">
-                <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
-                <div class="col-md-9 custom-vertical-align-left">
-                    <br>
-                    <ul class="list-unstyled" style="text-align: left;">
-                        <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7" style="margin-bottom: 10px;">Proof Not Shared From Wallet.</li>
-                    </ul>
+                <div id="cls_but" style="display: none;">
+                    <a href="#" data-bs-dismiss="modal" class="font-small blue-text d-flex justify-content-center mb-1">Close</a>
                 </div>
-                <div class="splitter"></div>
             </div>
             
-            <div id="issuanceMessageDiv"  style="display: none; text-align: center">
+            <div id="issuanceMessageDiv" class="alert alert-success" style="display: none; text-align: center">
                 <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
                 <div class="splitter"></div>
                 <i class="mdi mdi-account-check-outline"></i>
                 <div class="row justify-content-center">
                     <div class="col-md-9 custom-vertical-align-left">
                         <br>
-                        <ul class="list-unstyled" style="text-align: left;">
-                            <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7" style="margin-bottom: 10px;">Credential for Environment Clearance sent to your wallet. New credentials will automatically revoke any previously issued credentials.</li>
-                        </ul>
+                        <div class="alert alert-success" role="alert">
+                            <strong>Success - </strong> Credential for Environment Clearance sent to your wallet. New credentials will automatically revoke any previously issued credentials.
+                        </div>
                     </div>
                 </div>
                 <div class="splitter"></div>
-                <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center mb-1">Back To Login</a>
+                <a href="#" data-bs-dismiss="modal" class="font-small blue-text d-flex justify-content-center mb-1">Close</a>
             </div>
         </div>
     </div>
@@ -751,7 +889,7 @@
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">CID</label>
-                                        <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onchange="getCitizenDetails(this.value)" readonly>
+                                        <input type="text" oninput="if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength); check_cid(this.value);"  class="form-control" id="cid" name="cid" maxlength="11" readonly>
                                         <div id="cidErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                                     </div>
                                 </div>
@@ -844,9 +982,6 @@
                     </div>
                     </div>
                     <div class="modal-body" id="ndi_div_proponent" style="display: none; text-align: center">
-                        <h2 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 500;">
-                            Scan QR code from <span style="color:#5AC994 ">Bhutan NDI </span> app
-                        </h2>
                         <div class="qr-img" style="margin-top: 10px">
                             <div id="deepLinkPro" class="col-md-5 text-center" style="display: none;">
                                 <button id="deepLinkBtnPro" class="button button1 text-white btn-bg cus-button">
@@ -903,6 +1038,9 @@
     </div>
 </div>
 
+
+
+
         <!-- Vendor js -->
         <script src="{% static 'assets/js/vendor.min.js' %}"></script>
         <!-- Daterangepicker js -->
@@ -915,6 +1053,74 @@
         <script src="{% static 'assets/js/jquery-qrcode.min.js' %}"></script>
         <script src="https://cdn.jsdelivr.net/npm/nats@2.1.7/dist/nats-base-client.umd.min.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.load-more-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const cardId = this.getAttribute('data-target');
+                    const card = document.getElementById(cardId);
+                    const moreDiv = card.querySelector('.more-attachments');
+                    const icon = this.querySelector('i');
+                    const title = card.querySelector('.acts');
+
+                    if (moreDiv.style.display === 'none') {
+                        moreDiv.style.display = 'block';
+                        title.style.display = 'block';
+                        icon.className = 'mdi mdi-chevron-up me-1';
+                        this.innerHTML = icon.outerHTML + ' Show less';
+                    } else {
+                        moreDiv.style.display = 'none';
+                        title.style.display = 'none';
+                        icon.className = 'mdi mdi-chevron-down me-1';
+                        this.innerHTML = icon.outerHTML + ' Acts and Rules ({{ pub_file_attachment_count }})';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.form-load-more-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const cardId = this.getAttribute('data-target');
+                    const card = document.getElementById(cardId);
+                    const moreDiv = card.querySelector('.form-more-attachments');
+                    const icon = this.querySelector('i');
+                    const title = card.querySelector('.notification');
+                    
+                    if (moreDiv.style.display === 'none') {
+                        moreDiv.style.display = 'block';
+                        title.style.display = 'block';
+                        icon.className = 'mdi mdi-chevron-up me-1';
+                        this.innerHTML = icon.outerHTML + ' Show less';
+                    } else {
+                        moreDiv.style.display = 'none';
+                        title.style.display = 'none';
+                        icon.className = 'mdi mdi-chevron-down me-1';
+                        this.innerHTML = icon.outerHTML + ' Notifications ({{ form_file_attachment_count }})';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.down-load-more-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const cardId = this.getAttribute('data-target');
+                    const card = document.getElementById(cardId);
+                    const moreDiv = card.querySelector('.down-more-attachments');
+                    const icon = this.querySelector('i');
+                    const title = card.querySelector('.forms');
+                    
+                    if (moreDiv.style.display === 'none') {
+                        moreDiv.style.display = 'block';
+                        title.style.display = 'block';
+                        icon.className = 'mdi mdi-chevron-up me-1';
+                        this.innerHTML = icon.outerHTML + ' Show less';
+                    } else {
+                        moreDiv.style.display = 'none';
+                        title.style.display = 'none';
+                        icon.className = 'mdi mdi-chevron-down me-1';
+                        this.innerHTML = icon.outerHTML + ' Forms and Others ({{ down_file_attachment_count }})';
+                    }
+                });
+            });
+        });
+        
 	    $('.modal').on('hide.bs.modal', function (e) {
             // Check if the event was triggered by clicking outside the modal
             if ($(e.target).hasClass('modal')) {
@@ -980,144 +1186,109 @@
             }
         }
 
-        function register_client()
-        {
-            let proponent_type = $('#proponent_type').val();
-            if(proponent_type ='4')
-            {
-                let cid = $('#cid').val();
-            }
-            let proponent_name = $('#proponent_name').val();
-            let address = $('#proponent_address').val();
-            let contact_person = $('#contact_person').val();
-            let email = $('#email').val();
-            let contact_number = $('#contact_number').val();
-            let contact_number_count = $('#contact_number').val().length;
-            let dzongkhag = $('#dzongkhag').val();
-            let gewog = $('#gewog').val();
-            let village = $('#village').val();
+        function register_client() {
+            const formData = {
+                proponent_type: $('#proponent_type').val(),
+                cid: $('#cid').val(),
+                proponent_name: $('#proponent_name').val(),
+                address: $('#proponent_address').val(),
+                contact_person: $('#contact_person').val(),
+                email: $('#email').val(),
+                contact_number: $('#contact_number').val(),
+                dzongkhag: $('#dzongkhag').val(),
+                gewog: $('#gewog').val(),
+                village: $('#village').val(),
+            };
 
-            if(proponent_type == "")
-            {
-                $('#proponent_typeErrorMsg').html("Select Proponent Type.");
-                $('#proponent_typeErrorMsg').show();
-                $('#proponent_typeErrorMsg').delay(2000).fadeOut('slow');
-                $("#proponent_type").focus();
+            // Helper function to show error messages
+            function showError(element, message) {
+                $(element).html(message).show().delay(2000).fadeOut('slow');
             }
-            else if(proponent_type !='4' && cid == "")
-            {
-                $('#cidErrorMsg').html("Enter CID.");
-                $('#cidErrorMsg').show();
-                $('#cidErrorMsg').delay(2000).fadeOut('slow');
-                $("#cid").focus();
-            }
-            else if(proponent_name == "")
-            {
-                $('#proponent_nameErrorMsg').html("Enter Proponent Name.");
-                $('#proponent_nameErrorMsg').show();
-                $('#proponent_nameErrorMsg').delay(2000).fadeOut('slow');
-                $("#proponent_name").focus();
-            }
-            else if(address == "")
-            {
-                $('#proponent_addressErrorMsg').html("Enter Address.");
-                $('#proponent_addressErrorMsg').show();
-                $('#proponent_addressErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(contact_person == "")
-            {
-                $('#contact_personErrorMsg').html("Enter Contact Person.");
-                $('#contact_personErrorMsg').show();
-                $('#contact_personErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(email == "")
-            {
-                $('#emailErrorMsg').html("Enter Official Email.");
-                $('#emailErrorMsg').show();
-                $('#emailErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(contact_number == "")
-            {
-                $('#contact_numberErrorMsg').html("Enter Contact Number.");
-                $('#contact_numberErrorMsg').show();
-                $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(contact_number_count < 8)
-            {
-                $('#contact_numberErrorMsg').html("Cannot Be Less Than Eight Digits.");
-                $('#contact_numberErrorMsg').show();
-                $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(proponent_type !='4' && dzongkhag == "")
-            {
-                $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
-                $('#dzongkhagErrorMsg').show();
-                $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(proponent_type !='4' && gewog == "")
-            {
-                $('#gewogErrorMsg').html("Select Gewog.");
-                $('#gewogErrorMsg').show();
-                $('#gewogErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(proponent_type !='4' && village == "")
-            {
-                $('#villageErrorMsg').html("Select Village.");
-                $('#villageErrorMsg').show();
-                $('#villageErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else
-            {
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'check_email_id' %}",
-                    data : $('#client_registration_form').serialize(),
-                    success : function(data)
+
+            // Validation checks
+            if (!formData.proponent_type) return showError('#proponent_typeErrorMsg', "Select Proponent Type.");
+            if (formData.proponent_type == '4' && !formData.cid) return showError('#cidErrorMsg', "Enter CID.");
+            if (!formData.proponent_name) return showError('#proponent_nameErrorMsg', "Enter Proponent Name.");
+            if (!formData.address) return showError('#proponent_addressErrorMsg', "Enter Address.");
+            if (!formData.contact_person) return showError('#contact_personErrorMsg', "Enter Contact Person.");
+            if (!formData.email) return showError('#emailErrorMsg', "Enter Official Email.");
+            if (!formData.contact_number) return showError('#mobileErrorMsg', "Enter Contact Number.");
+            if (formData.contact_number.length < 8) return showError('#mobileErrorMsg', "Cannot Be Less Than Eight Digits.");
+            if (formData.proponent_type != '4' && !formData.dzongkhag) return showError('#dzongkhagErrorMsg', "Select Dzongkhag.");
+            if (formData.proponent_type != '4' && !formData.gewog) return showError('#gewogErrorMsg', "Select Gewog.");
+            if (formData.proponent_type != '4' && !formData.village) return showError('#villageErrorMsg', "Select Village.");
+
+            // AJAX request to check email existence
+            $.ajax({
+                type: "POST",
+                url: "{% url 'check_email_id' %}",
+                data: $('#client_registration_form').serialize(),
+                success: function(data) {
+                    if (data.count == "1") {
+                        $('#emailErrorMsg').html("Email Already Exists. Try With Another Email");
+                        $('#email').val("");
+                        $('#emailErrorMsg').show();
+                        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
                     {
-                        if(data.count == "1")
+                        if (formData.proponent_type != '4')
                         {
-                            $('#email').val("");
-                            $('#emailErrorMsg').html("Email Already Exists.Try With Another Email");
-                            $('#emailErrorMsg').show();
-                            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+                            alert();
+                            registerClient(formData);
                         }
                         else
                         {
-                            $.ajax({
-                                type : "POST",
-                                url : "{% url 'client_registration' %}",
-                                data : $('#client_registration_form').serialize(),
-                                success : function(data)
-                                {
-                                    if(data.message == "registration successful")
-                                    {
-                                        $('#client_registration_message_div').show();
-                                        $('#client_registration_message_div').html("Client Registered Successfully");
-                                        setTimeout(function() {
-                                            $('#client_registration_message_div').delay(2000).fadeOut('slow');
-                                        }, 3000);
-                                        setTimeout(function() {
-                                            location.reload();
-                                        }, 3000);
-                                    }
-                                    else
-                                    {
-                                        $('#client_registration_error_message_div').show();
-                                        $('#client_registration_error_message_div').html("Client Registration Failed");
-                                        setTimeout(function() {
-                                            $('#client_registration_error_message_div').delay(2000).fadeOut('slow');
-                                        }, 3000);
-                                        setTimeout(function() {
-                                            location.reload();
-                                        }, 3000);
-                                    }
-                                }
-                            });
+                            checkCidAndRegister(formData);
                         }
                     }
-                });
-            }
+                },
+                error: function() {
+                    showError('#client_registration_error_message_div', "An error occurred during email validation.");
+                }
+            });
         }
+
+        // Function to check CID and register client if valid
+        function checkCidAndRegister(formData) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'check_cid' %}",
+                data: { cid: formData.cid, csrfmiddlewaretoken: '{{ csrf_token }}' },
+                success: function(data) {
+                    if (data.count == "1") {
+                        $('#cidErrorMsg').html("CID Already Exists. Try With Another CID");
+                        $('#cidErrorMsg').show();
+                        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                        $('#client_registration_form')[0].reset();
+                    }
+                    registerClient(formData);
+                },
+                error: function() {
+                    showError('#cidErrorMsg', "An error occurred during CID validation.");
+                }
+            });
+        }
+
+        // Function to register client
+        function registerClient(formData) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'client_registration' %}",
+                data: $('#client_registration_form').serialize(),
+                success: function(data) {
+                    const messageDiv = data.message == "registration successful" ? '#client_registration_message_div' : '#client_registration_error_message_div';
+                    const messageText = data.message == "registration successful" ? "Client Registered Successfully" : "Client Registration Failed";
+                    
+                    $(messageDiv).html(messageText).show().delay(2000).fadeOut('slow');
+                    setTimeout(() => location.reload(), 3000);
+                },
+                error: function() {
+                    showError('#client_registration_error_message_div', "An error occurred during registration.");
+                }
+            });
+        }
+
 
     function update_password()
     {
@@ -1265,6 +1436,29 @@
 		});
     }
 
+    function check_cid(cid)
+    {
+        $.ajax({
+            type: "POST",
+            url: "{% url 'check_cid' %}",
+            data: {'cid':cid, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(data) {
+                if (data.count == "1") {
+                    $('#cidErrorMsg').html("CID Already Exists. Try With Another CID");
+                    $('#cid').val("");
+                    $('#proponent_name').val("");
+                    $('#i_dzongkhag').val("");
+                    $('#i_gewog').val("");
+                    $('#i_village').val("");
+                    $('#cidErrorMsg').show();
+                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                } else {
+                    $('#cidErrorMsg').hide();
+                }
+            }
+        });
+    }
+
     function show_details(value)
     {
         if (value=="4")
@@ -1274,9 +1468,12 @@
             $('#village').hide();
             $('.cid_details').show();
             $('#proponent_name').attr("readonly", "readonly");
-            $('#i_dzongkhag').show();
-            $('#i_gewog').show();
-            $('#i_village').show();
+            //$('#i_dzongkhag').show();
+            $('#i_dzongkhag').attr('type', 'text');
+            $('#i_gewog').attr('type', 'text');
+            $('#i_village').attr('type', 'text');
+            // $('#i_gewog').show();
+            // $('#i_village').show();
         // Clear the values of the fields
             $('#dzongkhag').val('');
             $('#gewog').val('');
@@ -1294,9 +1491,9 @@
             $('#village').show();
             $('#proponent_name').removeAttr("readonly");
             $('.cid_details').hide();
-            $('#i_dzongkhag').hide();
-            $('#i_gewog').hide();
-            $('#i_village').hide();
+            $('#i_dzongkhag').attr('type', 'hidden');
+            $('#i_gewog').attr('type', 'hidden');
+            $('#i_village').attr('type', 'hidden');
         // Clear the values of the fields
 
             $('#dzongkhag').val('');
@@ -1353,18 +1550,26 @@
         });
     }
 
-let sessionId = null; // Global variable to store the session ID
+
 
 function authenticate_ndi(value) {
     // Show progress indicator
-    $('#progressloader').show();
-
     if(value=="Issuance")
     {
-        $('#loginBox').hide();
-            // Show the modal
         $('#loginModalForm').modal('show');
-        $('#progressloader').show();
+        $('#progressLoader').show();
+        $('#loginBox').hide();
+        $('#cls_but').show();
+        
+        
+        setTimeout(() => {
+            $('#progressLoader').hide(); // Hide loader
+        }, 5000); // Adjust timing as needed
+        
+    }
+    else
+    {
+        $('#back_but').show();
     }
     
     $('#progressIndicator').show();
@@ -1400,7 +1605,7 @@ function updateDisplay(proofRequestURL, deepLinkURL, proofRequestThreadId, value
         // Show button on mobile devices
         $("#deepLink").show();
         $("#deepLinkBtn").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
-        $('#qrcode').hide();
+        $('#qrcode').show();
     } else {
         // Show QR code on larger screens
         $("#deepLink").hide();
@@ -1472,7 +1677,7 @@ function updateDisplayEmp(proofRequestURL, deepLinkURL, proofRequestThreadId, va
         // Show button on mobile devices
         $("#deepLink").show();
         $("#deepLinkBtn").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
-        $('#qrcode').hide();
+        $('#qrcode').show();
     } else {
         // Show QR code on larger screens
         // Clear previous QR code
@@ -1536,17 +1741,12 @@ function updateDisplayProponent(proofRequestURL, deepLinkURL, proofRequestThread
 
     if (isMobileDevice()) {
         // Show button on mobile devices
-	if (!$("#registrationModalForm").hasClass('show')) {
-        	$("#registrationModalForm").modal('show');
-   	 }
-
     	// Ensure that the required elements are shown/hidden without refreshing or closing the modal
     	$('#registration_div').hide();
     	$("#ndi_div_proponent").show();
     	$("#deepLinkPro").show();
     	$("#deepLinkBtnPro").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
-    	$('#qrcode').hide();
-	sessionStorage.setItem('modalShown', 'true');
+    	$('#qrcode').show();
     } else {
         // Show QR code on larger screens
         $('#registration_div').hide();
@@ -1585,11 +1785,6 @@ function updateDisplayProponent(proofRequestURL, deepLinkURL, proofRequestThread
     nats_proponent_call(proofRequestThreadId, value);
 }
 
-document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'visible' && sessionStorage.getItem('modalShown') === 'true') {
-        $("#registrationModalForm").modal('show');
-    }
-});
 
 function toggleLoginForm() {
     var proponentLoginForm = document.getElementById('proponentLoginForm');

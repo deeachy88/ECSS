@@ -30,6 +30,7 @@ def ec_report_form(request):
 
     ca_list = t_competant_authority_master.objects.all()
     service_list = t_service_master.objects.filter(service_id__in=[1, 2, 3, 4, 5, 6, 7, 8, 9]).values()
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
     if ca_authority is not None:
         v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
         r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
@@ -38,7 +39,7 @@ def ec_report_form(request):
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
     response = render(request, 'ec_report_form.html',
-                  {'dzongkhag_list': dzongkhag_list,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'ca_list': ca_list, 'service_list': service_list})
+                  {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'ca_list': ca_list, 'service_list': service_list})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -104,11 +105,12 @@ def ec_reject_report_form(request):
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'ec_reject_report_form.html',
-                  {'dzongkhag_list': dzongkhag_list,'ec_renewal_count':ec_renewal_count, 'ca_list': ca_list,'v_application_count':v_application_count,'r_application_count':r_application_count, 'service_list': service_list})
+                  {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,'ec_renewal_count':ec_renewal_count, 'ca_list': ca_list,'v_application_count':v_application_count,'r_application_count':r_application_count, 'service_list': service_list})
 
 def view_ec_reject_list(request):
     from_date = request.GET.get('from_date')
@@ -166,11 +168,12 @@ def ec_pending_report_form(request):
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'ec_pending_report_form.html',
-                  {'dzongkhag_list': dzongkhag_list,'v_application_count':v_application_count,'ec_renewal_count':ec_renewal_count, 'ca_list': ca_list,'r_application_count':r_application_count, 'service_list': service_list})
+                  {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,'v_application_count':v_application_count,'ec_renewal_count':ec_renewal_count, 'ca_list': ca_list,'r_application_count':r_application_count, 'service_list': service_list})
 
 def ec_pending_list(request):
     from_date = request.GET.get('from_date')
@@ -213,11 +216,12 @@ def land_use_report_form(request):
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'land_use_report_form.html',
-                  {'dzongkhag_list': dzongkhag_list,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'ca_list': ca_list, 'service_list': service_list})
+                  {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'ca_list': ca_list, 'service_list': service_list})
 
 def land_use_report(request):
     from_date = request.GET.get('from_date')
@@ -259,11 +263,12 @@ def revenue_report_form(request):
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'revenue_report_form.html',
-                  {'dzongkhag_list': dzongkhag_list,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'ca_list': ca_list, 'service_list': service_list})
+                  {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'ca_list': ca_list, 'service_list': service_list})
 
 def revenue_report(request):
     from_date = request.GET.get('from_date')
@@ -299,6 +304,7 @@ def application_status_list(request):
     cl_application_count = 0  # Provide a default value
     tor_application_count = 0
     applicant_id = request.session.get('email', None)
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
     if login_type == 'C':
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
@@ -307,8 +313,9 @@ def application_status_list(request):
         ).values('tor_application_no')
 
         # Query to count approved applications that are not in t1_general
-        tor_application_count = t_workflow_dtls.objects.filter(
-            application_status='A',application_no__contains='TOR'
+        tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=applicant_id
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
@@ -329,7 +336,7 @@ def application_status_list(request):
         application_list = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority).values()
     
     # Return the render statement with the variables as before
-    response = render(request, 'application_status_list.html', {'ca_list': ca_list, 'ec_renewal_count': ec_renewal_count, 'dzongkhag_list': dzongkhag_list, 'v_application_count': v_application_count, 'r_application_count': r_application_count, 'application_list': application_list, 'app_hist_count': app_hist_count, 'cl_application_count': cl_application_count, 'tor_application_count':tor_application_count})
+    response = render(request, 'application_status_list.html', {'client_application_count':client_application_count,'ca_list': ca_list, 'ec_renewal_count': ec_renewal_count, 'dzongkhag_list': dzongkhag_list, 'v_application_count': v_application_count, 'r_application_count': r_application_count, 'application_list': application_list, 'app_hist_count': app_hist_count, 'cl_application_count': cl_application_count, 'tor_application_count':tor_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'

@@ -25,7 +25,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Applicant</label>
+                                                <label class="form-label fw-bold">Name of the Applicant</label>
                                                 <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -57,7 +57,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Project</label>
+                                                <label class="form-label fw-bold">Name of the Project</label>
                                                 <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}">
                                             </div>
                                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -167,7 +167,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name of Particular Project Site</label>
+                                                <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                                 <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}">
                                             </div>
                                             <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -176,7 +176,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ in acres)</label>
+                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) in acres</label>
                                                 <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{application_details.industrial_area_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="industrial_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -255,7 +255,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Elevation(meters)</label>
+                                                <label class="form-label fw-bold">Elevation (meters)</label>
                                                 <input type="number" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{application_details.terrain_elevation}}">
                                             </div>
                                             <div id="terrain_elevationErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -459,7 +459,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                 <input type="number" name="project_cost" class="form-control" id="project_cost" value="{% if application_details.project_cost %}{{ application_details.project_cost }}{% endif %}">
                                             </div>
                                             <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -491,7 +491,7 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th>Sl.no.</th>
-                                                                    <th>Product (Name)</th>
+                                                                    <th>Name of Products/By-products</th>
                                                                     <th>Installed capacity/quantity per annum</th>
                                                                     <th>Method of storage</th>
                                                                     <th></th>
@@ -613,7 +613,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                 {% if application_details.water_excavated_muck == "Yes" %}
                                                     <div class="mt-2">
                                                         <div class="form-check form-check-inline">
@@ -657,7 +657,7 @@
                                                                         <th>Sl.no.</th>
                                                                         <th>Number of Dumpyards</th>
                                                                         <th>Capacities of the dumpyards (in MT)</th>
-                                                                        <th>Area of the dumpyard</th>
+                                                                        <th>Area of the dumpyard (acres)</th>
                                                                         <th>Locations of the dumpyard</th>
                                                                         <th></th>
                                                                     </tr>
@@ -3295,7 +3295,7 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Area of the dumpyard</label>
+                            <label class="form-label fw-bold">Area of the dumpyard (acres)</label>
                             <input type="text" name="dumpyard_area" class="form-control" id="dumpyard_area">
                         </div>
                         <div class="alert alert-danger" id="dumpyard_areaErrorMsg" style="display:none"></div>
@@ -3356,7 +3356,7 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Area of the dumpyard</label>
+                            <label class="form-label fw-bold">Area of the dumpyard (acres)</label>
                             <input type="text" name="edit_dumpyard_area" class="form-control" id="edit_dumpyard_area">
                         </div>
                         <div class="alert alert-danger" id="edit_dumpyard_areaErrorMsg" style="display:none"></div>

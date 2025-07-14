@@ -4,7 +4,12 @@
             <div class="card mt-1">
                 <div class="d-flex card-header justify-content-between align-items-center">
                     <h4 class="header-title">General Application Details</h4>
-                    <a href="javascript:void(0);" class="btn btn-primary" onclick="printDiv()"> <i class="mdi mdi-download"></i></a>
+                    <a class="btn btn-primary" onclick="printDiv()" href="javascript:void(0);"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-earmark-arrow-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 0h5.5v1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h1V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"></path>
+                        <path d="M9.5 3V0L14 4.5h-3A1.5 1.5 0 0 1 9.5 3z"></path>
+                        <path fill-rule="evenodd" d="M8 6a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 10.293V6.5A.5.5 0 0 1 8 6z"></path>
+                      </svg>
+                    </a>
                 </div>
                 <div class="card-body">
                     <ul class="nav nav-pills bg-nav-pills mb-3" role="tablist">
@@ -280,7 +285,7 @@
                                             <div class="row">
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Elevation(meters)</label>
+                                                        <label class="form-label fw-bold">Elevation (meters)</label>
                                                         <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                     </div>
                                                 </div>
@@ -572,7 +577,7 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                        <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                         <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                                     </div>
                                                     <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -600,7 +605,7 @@
                                                                 <thead>
                                                                     <tr>
                                                                         <th>Sl.no.</th>
-                                                                        <th>Product (Name)</th>
+                                                                        <th>Name of Products/By-products</th>
                                                                         <th>Installed capacity/quantity per annum</th>
                                                                         <th>Method of storage</th>
                                                                     </tr>
@@ -664,7 +669,7 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                        <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                         {% if application_details.water_excavated_muck == 'Yes' %}
                                                             <div class="mt-2">
                                                                 <div class="form-check form-check-inline">
@@ -703,7 +708,7 @@
                                                                             <th>Sl.no.</th>
                                                                             <th>Number of Dumpyards</th>
                                                                             <th>Capacities of the dumpyards (in MT)</th>
-                                                                            <th>Area of the dumpyard</th>
+                                                                            <th>Area of the dumpyard (acres)</th>
                                                                             <th>Locations of the dumpyard</th>
                                                                         </tr>
                                                                     </thead>
@@ -1956,7 +1961,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -2065,7 +2070,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -2357,7 +2362,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                                     <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                                                 </div>
                                                                 <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -2385,7 +2390,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -2449,7 +2454,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                                    <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                                     {% if application_details.water_excavated_muck == 'Yes' %}
                                                                         <div class="mt-2">
                                                                             <div class="form-check form-check-inline">
@@ -2488,7 +2493,7 @@
                                                                                         <th>Sl.no.</th>
                                                                                         <th>Number of Dumpyards</th>
                                                                                         <th>Capacities of the dumpyards (in MT)</th>
-                                                                                        <th>Area of the dumpyard</th>
+                                                                                        <th>Area of the dumpyard (acres)</th>
                                                                                         <th>Locations of the dumpyard</th>
                                                                                     </tr>
                                                                                 </thead>
@@ -3345,7 +3350,7 @@
                                                                                 <thead>
                                                                                     <tr>
                                                                                         <th>Sl.no.</th>
-                                                                                        <th>Product (Name)</th>
+                                                                                        <th>Name of Products/By-products</th>
                                                                                         <th>Installed capacity/quantity per annum</th>
                                                                                         <th>Method of storage</th>
                                                                                     </tr>
@@ -3455,7 +3460,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -3748,7 +3753,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                                     <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                                                 </div>
                                                                 <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -3776,7 +3781,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -3840,7 +3845,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                                    <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                                     {% if application_details.water_excavated_muck == 'Yes' %}
                                                                         <div class="mt-2">
                                                                             <div class="form-check form-check-inline">
@@ -3879,7 +3884,7 @@
                                                                                         <th>Sl.no.</th>
                                                                                         <th>Number of Dumpyards</th>
                                                                                         <th>Capacities of the dumpyards (in MT)</th>
-                                                                                        <th>Area of the dumpyard</th>
+                                                                                        <th>Area of the dumpyard (acres)</th>
                                                                                         <th>Locations of the dumpyard</th>
                                                                                     </tr>
                                                                                 </thead>
@@ -5084,7 +5089,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -5193,7 +5198,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -5485,7 +5490,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                                     <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                                                 </div>
                                                                 <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -5513,7 +5518,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -6316,7 +6321,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -6425,7 +6430,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ ancillary_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -6717,7 +6722,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                                     <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{ancillary_details.project_cost}}" disabled>
                                                                 </div>
                                                                 <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -6744,7 +6749,7 @@
                                                                         <thead>
                                                                             <tr>
                                                                                 <th>Sl.no.</th>
-                                                                                <th>Product (Name)</th>
+                                                                                <th>Name of Products/By-products</th>
                                                                                 <th>Installed capacity/quantity per annum</th>
                                                                                 <th>Method of storage</th>
                                                                             </tr>
@@ -6807,7 +6812,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                                    <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                                     {% if ancillary_details.water_excavated_muck == 'Yes' %}
                                                                         <div class="mt-2">
                                                                             <div class="form-check form-check-inline">
@@ -6846,7 +6851,7 @@
                                                                                         <th>Sl.no.</th>
                                                                                         <th>Number of Dumpyards</th>
                                                                                         <th>Capacities of the dumpyards (in MT)</th>
-                                                                                        <th>Area of the dumpyard</th>
+                                                                                        <th>Area of the dumpyard (acres)</th>
                                                                                         <th>Locations of the dumpyard</th>
                                                                                     </tr>
                                                                                 </thead>
@@ -7646,7 +7651,7 @@
                                             <div class="row">
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Elevation(meters)</label>
+                                                        <label class="form-label fw-bold">Elevation (meters)</label>
                                                         <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                     </div>
                                                 </div>
@@ -7938,7 +7943,7 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                        <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                         <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                                     </div>
                                                     <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -7966,7 +7971,7 @@
                                                                 <thead>
                                                                     <tr>
                                                                         <th>Sl.no.</th>
-                                                                        <th>Product (Name)</th>
+                                                                        <th>Name of Products/By-products</th>
                                                                         <th>Installed capacity/quantity per annum</th>
                                                                         <th>Method of storage</th>
                                                                     </tr>
@@ -8030,7 +8035,7 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                        <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                         {% if application_details.water_excavated_muck == 'Yes' %}
                                                             <div class="mt-2">
                                                                 <div class="form-check form-check-inline">
@@ -8069,7 +8074,7 @@
                                                                             <th>Sl.no.</th>
                                                                             <th>Number of Dumpyards</th>
                                                                             <th>Capacities of the dumpyards (in MT)</th>
-                                                                            <th>Area of the dumpyard</th>
+                                                                            <th>Area of the dumpyard (acres)</th>
                                                                             <th>Locations of the dumpyard</th>
                                                                         </tr>
                                                                     </thead>
@@ -9284,7 +9289,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -9393,7 +9398,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -9685,7 +9690,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                                     <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                                                 </div>
                                                                 <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -9713,7 +9718,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -9777,7 +9782,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                                    <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                                     {% if application_details.water_excavated_muck == 'Yes' %}
                                                                         <div class="mt-2">
                                                                             <div class="form-check form-check-inline">
@@ -9816,7 +9821,7 @@
                                                                                         <th>Sl.no.</th>
                                                                                         <th>Number of Dumpyards</th>
                                                                                         <th>Capacities of the dumpyards (in MT)</th>
-                                                                                        <th>Area of the dumpyard</th>
+                                                                                        <th>Area of the dumpyard (acres)</th>
                                                                                         <th>Locations of the dumpyard</th>
                                                                                     </tr>
                                                                                 </thead>
@@ -10673,7 +10678,7 @@
                                                                                 <thead>
                                                                                     <tr>
                                                                                         <th>Sl.no.</th>
-                                                                                        <th>Product (Name)</th>
+                                                                                        <th>Name of Products/By-products</th>
                                                                                         <th>Installed capacity/quantity per annum</th>
                                                                                         <th>Method of storage</th>
                                                                                     </tr>
@@ -10783,7 +10788,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -11076,7 +11081,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                                     <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                                                 </div>
                                                                 <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -11104,7 +11109,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -11168,7 +11173,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                                    <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                                     {% if application_details.water_excavated_muck == 'Yes' %}
                                                                         <div class="mt-2">
                                                                             <div class="form-check form-check-inline">
@@ -11207,7 +11212,7 @@
                                                                                         <th>Sl.no.</th>
                                                                                         <th>Number of Dumpyards</th>
                                                                                         <th>Capacities of the dumpyards (in MT)</th>
-                                                                                        <th>Area of the dumpyard</th>
+                                                                                        <th>Area of the dumpyard (acres)</th>
                                                                                         <th>Locations of the dumpyard</th>
                                                                                     </tr>
                                                                                 </thead>
@@ -12411,7 +12416,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -12520,7 +12525,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ application_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -12812,7 +12817,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                                     <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
                                                                 </div>
                                                                 <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -12840,7 +12845,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -13642,7 +13647,7 @@
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Sl.no.</th>
-                                                                                    <th>Product (Name)</th>
+                                                                                    <th>Name of Products/By-products</th>
                                                                                     <th>Installed capacity/quantity per annum</th>
                                                                                     <th>Method of storage</th>
                                                                                 </tr>
@@ -13751,7 +13756,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Elevation(meters)</label>
+                                                                    <label class="form-label fw-bold">Elevation (meters)</label>
                                                                     <input type="number" min="1" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{ ancillary_details.terrain_elevation }}" disabled>
                                                                 </div>
                                                             </div>
@@ -14043,7 +14048,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Project Cost(Nu)</label>
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
                                                                     <input type="text" name="project_cost" class="form-control" id="project_cost" value="{{ancillary_details.project_cost}}" disabled>
                                                                 </div>
                                                                 <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -14070,7 +14075,7 @@
                                                                         <thead>
                                                                             <tr>
                                                                                 <th>Sl.no.</th>
-                                                                                <th>Product (Name)</th>
+                                                                                <th>Name of Products/By-products</th>
                                                                                 <th>Installed capacity/quantity per annum</th>
                                                                                 <th>Method of storage</th>
                                                                             </tr>
@@ -14133,7 +14138,7 @@
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold">Will the activity required Excavated muck disposal dumpyard</label>
+                                                                    <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                                     {% if ancillary_details.water_excavated_muck == 'Yes' %}
                                                                         <div class="mt-2">
                                                                             <div class="form-check form-check-inline">
@@ -14172,7 +14177,7 @@
                                                                                         <th>Sl.no.</th>
                                                                                         <th>Number of Dumpyards</th>
                                                                                         <th>Capacities of the dumpyards (in MT)</th>
-                                                                                        <th>Area of the dumpyard</th>
+                                                                                        <th>Area of the dumpyard (acres)</th>
                                                                                         <th>Locations of the dumpyard</th>
                                                                                     </tr>
                                                                                 </thead>
