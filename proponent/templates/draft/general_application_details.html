@@ -20,7 +20,7 @@
                                     <input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="DR" name="identifier" style="display:none;">
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
+                                        Applicant Details
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -71,7 +71,7 @@
                                     </div>
                                     <br>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                                        Project Location and Area
                                     </div>
                                     <br>
                                     <div class="row">
@@ -223,10 +223,23 @@
                                             <div id="total_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="application_form_successMsg" style="display:none">
+                                    <!-- Success Alert -->
+                                    <div class="alert alert-success border-0 rounded-0" 
+                                        role="alert" 
+                                        id="application_form_successMsg" 
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="application_form_errorMsg" style="display:none">
+
+                                    <!-- Error Alert -->
+                                    <div class="alert alert-danger border-0 rounded-0" 
+                                        role="alert" 
+                                        id="application_form_errorMsg" 
+                                        style="display:none"
+                                        aria-live="assertive"
+                                        aria-atomic="true">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-4">
@@ -398,10 +411,10 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="terrain_baseline_application_successMsg" style="display:none">
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="terrain_baseline_application_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="terrain_baseline_application_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="terrain_baseline_application_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-4">
@@ -523,11 +536,22 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="project_details_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    <!-- Success Alert -->
+                                    <div class="alert alert-success border-0 rounded-0" 
+                                        role="alert" 
+                                        id="project_details_successMsg" 
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="project_details_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+
+                                    <!-- Error Alert -->
+                                    <div class="alert alert-danger border-0 rounded-0" 
+                                        role="alert" 
+                                        id="project_details_errorMsg" 
+                                        style="display:none"
+                                        aria-live="assertive"
+                                        aria-atomic="true">
                                     </div>
                                     <div class="row mt-4">
                                         <div class="text-sm-end">
@@ -556,69 +580,93 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Mention the source of energy to operate the proposed activity</label>
-                                                <select class="form-control" id="energy_source" name="energy_source">
-                                                    <option value="">--SELECT--</option>
-                                                    {% if application_details.energy_source == "Electric" %}
-                                                    <option value="Electric" selected>Electric</option>
-                                                    <option value="Coal">Coal</option>
-                                                    <option value="High speed diesel">High speed diesel</option>
-                                                    <option value="Wood-Fired">Wood-Fired</option>
-                                                    <option value="Biomass">Biomass</option>
-                                                    {% elif application_details.energy_source == "Electric" %}
-                                                    <option value="Electric">Electric</option>
-                                                    <option value="Coal">Coal</option>
-                                                    <option value="High speed diesel">High speed diesel</option>
-                                                    <option value="Wood-Fired">Wood-Fired</option>
-                                                    <option value="Biomass">Biomass</option>
-                                                    {% elif application_details.energy_source == "Electric" %}
-                                                    <option value="Electric">Electric</option>
-                                                    <option value="Coal">Coal</option>
-                                                    <option value="High speed diesel">High speed diesel</option>
-                                                    <option value="Wood-Fired">Wood-Fired</option>
-                                                    <option value="Biomass">Biomass</option>
-                                                    {% elif application_details.energy_source == "Coal" %}
-                                                    <option value="Electric">Electric</option>
-                                                    <option value="Coal" selected>Coal</option>
-                                                    <option value="High speed diesel">High speed diesel</option>
-                                                    <option value="Wood-Fired">Wood-Fired</option>
-                                                    <option value="Biomass">Biomass</option>
-                                                    {% elif application_details.energy_source == "High-speed-diesel" %}
-                                                    <option value="Electric">Electric</option>
-                                                    <option value="Coal">Coal</option>
-                                                    <option value="High-speed-diesel" selected>High speed diesel</option>
-                                                    <option value="Wood-Fired">Wood-Fired</option>
-                                                    <option value="Biomass">Biomass</option>
-                                                    {% elif application_details.energy_source == "Wood-Fired" %}
-                                                    <option value="Electric">Electric</option>
-                                                    <option value="Coal">Coal</option>
-                                                    <option value="High-speed-diesel">High speed diesel</option>
-                                                    <option value="Wood-Fired" selected>Wood-Fired</option>
-                                                    <option value="Biomass">Biomass</option>
+                                                {% if application_details.energy_source %}
+                                                    <select class="form-control" id="energy_source" name="energy_source">
+                                                        <option value="">--SELECT--</option>
+                                                        {% if application_details.energy_source == "Electric" %}
+                                                        <option value="Electric" selected>Electric</option>
+                                                        <option value="Coal">Coal</option>
+                                                        <option value="High speed diesel">High speed diesel</option>
+                                                        <option value="Wood-Fired">Wood-Fired</option>
+                                                        <option value="Biomass">Biomass</option>
+                                                        {% elif application_details.energy_source == "Electric" %}
+                                                        <option value="Electric">Electric</option>
+                                                        <option value="Coal">Coal</option>
+                                                        <option value="High speed diesel">High speed diesel</option>
+                                                        <option value="Wood-Fired">Wood-Fired</option>
+                                                        <option value="Biomass">Biomass</option>
+                                                        {% elif application_details.energy_source == "Electric" %}
+                                                        <option value="Electric">Electric</option>
+                                                        <option value="Coal">Coal</option>
+                                                        <option value="High speed diesel">High speed diesel</option>
+                                                        <option value="Wood-Fired">Wood-Fired</option>
+                                                        <option value="Biomass">Biomass</option>
+                                                        {% elif application_details.energy_source == "Coal" %}
+                                                        <option value="Electric">Electric</option>
+                                                        <option value="Coal" selected>Coal</option>
+                                                        <option value="High speed diesel">High speed diesel</option>
+                                                        <option value="Wood-Fired">Wood-Fired</option>
+                                                        <option value="Biomass">Biomass</option>
+                                                        {% elif application_details.energy_source == "High-speed-diesel" %}
+                                                        <option value="Electric">Electric</option>
+                                                        <option value="Coal">Coal</option>
+                                                        <option value="High-speed-diesel" selected>High speed diesel</option>
+                                                        <option value="Wood-Fired">Wood-Fired</option>
+                                                        <option value="Biomass">Biomass</option>
+                                                        {% elif application_details.energy_source == "Wood-Fired" %}
+                                                        <option value="Electric">Electric</option>
+                                                        <option value="Coal">Coal</option>
+                                                        <option value="High-speed-diesel">High speed diesel</option>
+                                                        <option value="Wood-Fired" selected>Wood-Fired</option>
+                                                        <option value="Biomass">Biomass</option>
+                                                        {% else %}
+                                                        <option value="Electric">Electric</option>
+                                                        <option value="Coal">Coal</option>
+                                                        <option value="High-speed-diesel">High speed diesel</option>
+                                                        <option value="Wood-Fired">Wood-Fired</option>
+                                                        <option value="Biomass" selected>Biomass</option>
+                                                        {% endif %}
+                                                    </select>
                                                     {% else %}
-                                                    <option value="Electric">Electric</option>
-                                                    <option value="Coal">Coal</option>
-                                                    <option value="High-speed-diesel">High speed diesel</option>
-                                                    <option value="Wood-Fired">Wood-Fired</option>
-                                                    <option value="Biomass" selected>Biomass</option>
+                                                        <select class="form-control" id="energy_source" name="energy_source">
+                                                            <option value="">--SELECT--</option>
+                                                            <option value="Electric">Electric</option>
+                                                            <option value="Coal">Coal</option>
+                                                            <option value="High speed diesel">High speed diesel</option>
+                                                            <option value="Wood-Fired">Wood-Fired</option>
+                                                            <option value="Biomass">Biomass</option>
+                                                        </select>
                                                     {% endif %}
-                                                </select>
                                             </div>
                                             <div id="energy_sourceErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
-                                                {% if application_details.water_excavated_muck == "Yes" %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="water_excavated_muck" class="form-check-input" value="Yes" onclick="check_excavated_muck(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
+                                                {% if application_details.water_excavated_muck %}
+                                                    {% if application_details.water_excavated_muck == "Yes" %}
+                                                        <div class="mt-2">
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="water_excavated_muck" class="form-check-input" value="Yes" onclick="check_excavated_muck(this.value)" checked>
+                                                                <label class="form-check-label" for="customRadio3">Yes</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)">
+                                                                <label class="form-check-label" for="customRadio4">No</label>
+                                                            </div>
                                                         </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)">
-                                                            <label class="form-check-label" for="customRadio4">No</label>
+                                                    {% else %}
+                                                        <div class="mt-2">
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="water_excavated_muck" class="form-check-input" value="Yes" onclick="check_excavated_muck(this.value)">
+                                                                <label class="form-check-label" for="customRadio3">Yes</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)" checked>
+                                                                <label class="form-check-label" for="customRadio4">No</label>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    {% endif %}
                                                 {% else %}
                                                     <div class="mt-2">
                                                         <div class="form-check form-check-inline">
@@ -626,11 +674,12 @@
                                                             <label class="form-check-label" for="customRadio3">Yes</label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)" checked>
+                                                            <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)">
                                                             <label class="form-check-label" for="customRadio4">No</label>
                                                         </div>
                                                     </div>
                                                 {% endif %}
+                                                
                                             </div>
                                             <div id="water_excavated_muckErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -703,17 +752,30 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Will the activity require water consumption?</label>
-                                                {% if application_details.water_required == "Yes" %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" id="customRadio3" name="water_required" class="form-check-input" value="Yes" onclick="check_general_water(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
+                                                {% if application_details.water_required %}
+                                                    {% if application_details.water_required == "Yes" %}
+                                                        <div class="mt-2">
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" id="customRadio3" name="water_required" class="form-check-input" value="Yes" onclick="check_general_water(this.value)" checked>
+                                                                <label class="form-check-label" for="customRadio3">Yes</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_general_water(this.value)">
+                                                                <label class="form-check-label" for="customRadio4">No</label>
+                                                            </div>
                                                         </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_general_water(this.value)">
-                                                            <label class="form-check-label" for="customRadio4">No</label>
+                                                    {% else %}
+                                                        <div class="mt-2">
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" id="customRadio3" name="water_required" class="form-check-input" value="Yes" onclick="check_general_water(this.value)">
+                                                                <label class="form-check-label" for="customRadio3">Yes</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_general_water(this.value)" checked>
+                                                                <label class="form-check-label" for="customRadio4">No</label>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    {% endif %}
                                                 {% else %}
                                                     <div class="mt-2">
                                                         <div class="form-check form-check-inline">
@@ -721,7 +783,7 @@
                                                             <label class="form-check-label" for="customRadio3">Yes</label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_general_water(this.value)" checked>
+                                                            <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_general_water(this.value)">
                                                             <label class="form-check-label" for="customRadio4">No</label>
                                                         </div>
                                                     </div>
@@ -826,7 +888,7 @@
                                         </div>
                                         <br>
                                         <div class="alert alert-warning border-0 rounded-0 general_water_details" role="alert" style="display: none;">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Provide the list of raw materials, source, transportation and storage methods in table below
+                                            Provide the list of raw materials, source, transportation and storage methods in table below
                                         </div>
                                         <br>
                                         <div class="col-md-12">
@@ -976,7 +1038,7 @@
                                         </div>
                                         <br>
                                         <div class="alert alert-warning border-0 rounded-0 general_water_details" role="alert" style="display: none;">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Provide the list of raw materials, source, transportation and storage methods in table below
+                                            Provide the list of raw materials, source, transportation and storage methods in table below
                                         </div>
                                         <br>
                                         <div class="col-md-12 general_water_details" style="display: none;">
@@ -1526,7 +1588,7 @@
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="others_application_no">
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
+                                        Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                     </div>
                                     <br>
                                     <div class="form-check">
@@ -1592,7 +1654,7 @@
                                         </div>
                                     </div>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
+                                        Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                     </div>
                                     <br>
                                     <div class="col-lg-12">
@@ -3325,9 +3387,29 @@
                 // Hide all error messages first
                 $('.alert-danger').hide();
 
+                function showErrorAndFocus(errorElementId, errorMessage, fieldId) {
+                    const $errorElement = $(`#${errorElementId}`);
+                    const $field = $(`#${fieldId}`);
+                    
+                    // Show the error message and focus on the field
+                    $errorElement.text(errorMessage).show();
+                    $field.focus();
+                    
+                    // Hide the error message after 2 seconds
+                    setTimeout(() => {
+                        $errorElement.fadeOut('slow');
+                    }, 2000);
+                    
+                    return false;
+                }
+
                 // Define all field validations in an array
+                const elevationValue = $('#terrain_elevation').val();
+                if (elevationValue === "" || elevationValue === null || elevationValue === "None") {
+                    showErrorAndFocus('terrain_elevationErrorMsg', 'Enter Elevation (meters)', 'terrain_elevation');
+                    return false;
+                }
                 const validations = [
-                    { id: 'terrain_elevation', errorId: 'terrain_elevationErrorMsg', errorMsg: 'Enter Elevation (meters)' },
                     { id: 'terrain_slope', errorId: 'terrain_slopeErrorMsg', errorMsg: 'Select Slope/Gradient' },
                     { id: 'bl_protected_area_name', errorId: 'bl_protected_area_nameErrorMsg', errorMsg: 'Enter Protected Area Name' },
                     { id: 'bl_protected_area_distance', errorId: 'bl_protected_area_distanceErrorMsg', errorMsg: 'Enter Protected Area Distance' },
@@ -3371,429 +3453,620 @@
                     }
                 }
 
-                // If all validations pass, submit the form
+                // In your AJAX success/error handlers:
                 $.ajax({
                     type: "POST",
                     url: "{% url 'save_terrain_baseline_details' %}",
                     data: $('#terrain_baseline_form').serialize(),
                     success: function(data) {
                         if (data.message === 'success') {
-                            showSuccessMessage('terrain_baseline_application_successMsg', 'Added Successfully', function() {
-                                $("#ProjectDetailsBtn").removeAttr("disabled");
-                                $("#collapseProjectDetails").addClass("show");
-                                $("#collapseTwo").removeClass("show");
-                            });
+                            showSuccessMessage(
+                                'terrain_baseline_application_successMsg', 
+                                'Added Successfully', 
+                                function() {
+                                    $("#ProjectDetailsBtn").removeAttr("disabled");
+                                    $("#collapseProjectDetails").addClass("show");
+                                    $("#collapseTwo").removeClass("show");
+                                },
+                                'terrain_elevation' // Focus on first field after success
+                            );
                         } else {
-                            showErrorMessage('terrain_baseline_application_errorMsg', `Application Error: ${data.error}`);
+                            showErrorMessage(
+                                'terrain_baseline_application_errorMsg', 
+                                `Application Error: ${data.error}`,
+                                'terrain_elevation' // Focus on first field on error
+                            );
                         }
                     },
                     error: function(xhr, status, error) {
-                        showErrorMessage('terrain_baseline_application_errorMsg', `Request Error: ${error}`);
+                        showErrorMessage(
+                            'terrain_baseline_application_errorMsg', 
+                            `Request Error: ${error}`,
+                            'terrain_elevation' // Focus on first field on error
+                        );
                     }
                 });
             }
 
-            // Helper function to show success message
-            function showSuccessMessage(elementId, message, callback) {
-                $(`#${elementId}`).html(message).show();
+            // Modified helper functions to ensure proper focusing:
+            function showSuccessMessage(elementId, message, callback, fieldIdToFocus = null) {
+                const $messageElement = $(`#${elementId}`);
+                $messageElement.html('<i class="uil-folder-heart me-1 h4 align-middle"></i>' + message).show();
+                
+                // Scroll to message and focus on field
+                $('html, body').animate({
+                    scrollTop: $messageElement.offset().top - 100
+                }, 200);
+                
+                if (fieldIdToFocus) {
+                    setTimeout(() => {
+                        $(`#${fieldIdToFocus}`).focus();
+                    }, 100);
+                }
+                
                 setTimeout(() => {
-                    $(`#${elementId}`).fadeOut('slow');
+                    $messageElement.fadeOut('slow');
                     if (typeof callback === 'function') callback();
                 }, 2000);
             }
 
-            // Helper function to show error message
-            function showErrorMessage(elementId, message) {
-                $(`#${elementId}`).html(message).show();
-                setTimeout(() => $(`#${elementId}`).fadeOut('slow'), 2000);
+            function showErrorMessage(elementId, message, fieldIdToFocus = null) {
+                const $messageElement = $(`#${elementId}`);
+                $messageElement.html('<i class="uil-folder-heart me-1 h4 align-middle"></i>' + message).show();
+                
+                // Scroll to message and focus on field
+                $('html, body').animate({
+                    scrollTop: $messageElement.offset().top - 100
+                }, 200);
+                
+                if (fieldIdToFocus) {
+                    setTimeout(() => {
+                        $(`#${fieldIdToFocus}`).focus();
+                    }, 100);
+                }
+                
+                setTimeout(() => {
+                    $messageElement.fadeOut('slow');
+                }, 2000);
             }
         
-            function save_general_project_details() {
-                // Define all field validations
-                const validations = [
-                    { 
-                        id: 'project_objective', 
-                        errorId: 'project_objectiveErrorMsg', 
-                        errorMsg: 'Enter Project Objective' 
-                    },
-                    { 
-                        id: 'no_of_workers', 
-                        errorId: 'no_of_workersErrorMsg', 
-                        errorMsg: 'Enter No of Workers' 
-                    },
-                    { 
-                        id: 'project_output', 
-                        errorId: 'project_outputErrorMsg', 
-                        errorMsg: 'Enter Project Output' 
-                    },
-                    { 
-                        id: 'project_cost', 
-                        errorId: 'project_costErrorMsg', 
-                        errorMsg: 'Enter Project Cost' 
-                    },
-                    { 
-                        id: 'project_duration', 
-                        errorId: 'project_durationErrorMsg', 
-                        errorMsg: 'Enter Project Duration' 
+        function save_general_project_details()
+        {
+            let project_objective = $('#project_objective').val();
+            let no_of_workers = $('#no_of_workers').val();
+            let project_output = $('#project_output').val();
+            let project_cost = $('#project_cost').val();
+            let project_duration = $('#project_duration').val();
+            
+
+            if(project_objective == "")
+            {
+                $('#project_objectiveErrorMsg').html("Enter Project Objective");
+                $('#project_objectiveErrorMsg').show();
+                $('#project_objectiveErrorMsg').delay(2000).fadeOut('slow');
+                $('#project_objective').focus();
+            }
+            else if(no_of_workers == "")
+            {
+                $('#no_of_workersErrorMsg').html("Enter No of Workers");
+                $('#no_of_workersErrorMsg').show();
+                $('#no_of_workersErrorMsg').delay(2000).fadeOut('slow');
+                $('#no_of_workers').focus();
+            }
+            else if(project_output == "")
+            {
+                $('#project_outputErrorMsg').html("Enter Project Output");
+                $('#project_outputErrorMsg').show();
+                $('#project_outputErrorMsg').delay(2000).fadeOut('slow');
+                $('#project_output').focus();
+            }
+            else if(project_cost == "")
+            {
+                $('#project_costErrorMsg').html("Enter Project Cost");
+                $('#project_costErrorMsg').show();
+                $('#project_costErrorMsg').delay(2000).fadeOut('slow');
+                $('#project_cost').focus();
+            }
+            else if(project_duration == "")
+            {
+                $('#project_durationErrorMsg').html("Enter Project Duration");
+                $('#project_durationErrorMsg').show();
+                $('#project_durationErrorMsg').delay(2000).fadeOut('slow');
+                $('#project_duration').focus();
+            }
+            else
+            {
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'save_project_details' %}",
+                    data : $('#project_details_form').serialize(),
+                    success : function(data)
+                    {
+                        if (data.message == 'success') {
+                            // Success case with full accessibility
+                            $('#project_details_successMsg')
+                                .text("Saved Successfully")
+                                .removeAttr('tabindex')  // Remove focus blocker
+                                .attr({
+                                    'aria-live': 'polite',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();  // Set focus for accessibility
+
+                            setTimeout(() => {
+                                $('#project_details_successMsg').fadeOut('slow');
+                                $("#collapseFourBtn").removeAttr("disabled");
+                                $("#collapseFour").addClass("show");
+                                $("#collapseProjectDetails").removeClass("show");
+                            }, 2000);
+                        } else {
+                            // Error case with full accessibility
+                            $('#project_details_errorMsg')
+                                .text("Error: " + (data.error || "Please check your input"))
+                                .removeAttr('tabindex')  // Remove focus blocker
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
+
+                            setTimeout(() => {
+                                $('#project_details_errorMsg').fadeOut('slow');
+                            }, 5000);
+                        }
                     }
-                ];
-
-                // Hide all error messages first
-                $('.alert-danger').hide();
-
-                // Validate each field
-                for (const validation of validations) {
-                    const value = $(`#${validation.id}`).val();
-                    if (!value) {
-                        showErrorAndFocus(validation.errorId, validation.errorMsg, validation.id);
-                        return false;
-                    }
-                }
-
-                // Submit form if validation passes
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'save_project_details' %}",
-                    data: $('#project_details_form').serialize(),
-                    success: handleProjectDetailsResponse,
-                    error: handleProjectDetailsError
                 });
             }
+        }
+        
+            function save_general_water_requirement()
+    {
+        let energy_source = $('#energy_source').val();
+        let water_excavated_muck = $("input[name=water_excavated_muck]:checked").length;
+        let water_required = $("input[name=water_required]:checked").length;
+        let water_required_value = $("input[name=water_required]:checked").val();
+        let water_provided_by = $("input[name=water_provided_by]:checked").length;
+        let water_raw_material_source = $('#water_raw_material_source').val();
+        let water_raw_material_qty_day = $('#water_raw_material_qty_day').val();
+        let water_raw_material_recycle_day = $('#water_raw_material_recycle_day').val();
+        let water_cleaning_source = $('#water_cleaning_source').val();
+        let water_cleaning_qty_day = $('#water_cleaning_qty_day').val();
+        let water_cleaning_recycle_day = $('#water_cleaning_recycle_day').val();
+        let water_process_source = $('#water_process_source').val();
+        let water_process_qty_day = $('#water_process_qty_day').val();
+        let water_process_recycle_day = $('#water_process_recycle_day').val();
+        let water_domestic_source = $('#water_domestic_source').val();
+        let water_domestic_qty_day = $('#water_domestic_qty_day').val();
+        let water_domestic_recycle_day = $('#water_domestic_recycle_day').val();
+        let water_dust_compression_source = $('#water_dust_compression_source').val();
+        let water_dust_compression_qty_day = $('#water_dust_compression_qty_day').val();
+        let water_dust_compression_recycle_day = $('#water_dust_compression_recycle_day').val();
+        let water_others_name = $('#water_others_name').val();
+        let water_others_source = $('#water_others_source').val();
+        let water_others_qty_day = $('#water_others_qty_day').val();
+        let water_downstream_users = $('#water_downstream_users').val();
+        let water_flow_rate_lean = $('#water_flow_rate_lean').val();
+        let water_source_distance = $('#water_source_distance').val();
 
-            // Response handler
-            function handleProjectDetailsResponse(data) {
-                if (data.message === 'success') {
-                    showSuccessMessage('project_details_successMsg', 'Saved Successfully', () => {
-                        $("#collapseFourBtn").removeAttr("disabled");
-                        $("#collapseFour").addClass("show");
-                        $("#collapseProjectDetails").removeClass("show");
-                    });
+        if(water_excavated_muck < 1)
+        {
+            $('#water_excavated_muckErrorMsg').html("Please Select One.");
+            $('#water_excavated_muckErrorMsg').show();
+            $('#water_excavated_muckErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_excavated_muck').focus();
+        }
+        else if(water_required < 1)
+        {
+            $('#water_requiredErrorMsg').html("Please Select One.");
+            $('#water_requiredErrorMsg').show();
+            $('#water_requiredErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_required').focus();
+        }
+        else if(water_required_value == 'Yes' && water_raw_material_source == "")
+        {
+            $('#water_raw_material_sourceErrorMsg').html("Please Select One.");
+            $('#water_raw_material_sourceErrorMsg').show();
+            $('#water_raw_material_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_raw_material_source').focus();
+        }
+        else if(water_required_value == 'Yes' && water_raw_material_qty_day == "")
+        {
+            $('#water_raw_material_qty_dayErrorMsg').html("Please Select One.");
+            $('#water_raw_material_qty_dayErrorMsg').show();
+            $('#water_raw_material_qty_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_raw_material_qty_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_raw_material_recycle_day == "")
+        {
+            $('#water_raw_material_recycle_dayErrorMsg').html("Please Select One.");
+            $('#water_raw_material_recycle_dayErrorMsg').show();
+            $('#water_raw_material_recycle_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_raw_material_recycle_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_cleaning_source == "")
+        {
+            $('#water_cleaning_sourceErrorMsg').html("Please Select One.");
+            $('#water_cleaning_sourceErrorMsg').show();
+            $('#water_cleaning_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_cleaning_source').focus();
+        }
+        else if(water_required_value == 'Yes' && water_cleaning_qty_day == "")
+        {
+            $('#water_cleaning_qty_dayErrorMsg').html("Please Select One.");
+            $('#water_cleaning_qty_dayErrorMsg').show();
+            $('#water_cleaning_qty_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_cleaning_qty_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_cleaning_recycle_day == "")
+        {
+            $('#water_cleaning_recycle_dayErrorMsg').html("Please Select One.");
+            $('#water_cleaning_recycle_dayErrorMsg').show();
+            $('#water_cleaning_recycle_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_cleaning_recycle_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_process_source == "")
+        {
+            $('#water_process_sourceErrorMsg').html("Please Select One.");
+            $('#water_process_sourceErrorMsg').show();
+            $('#water_process_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_process_source').focus();
+        }
+        else if(water_required_value == 'Yes' && water_process_qty_day == "")
+        {
+            $('#water_process_qty_dayErrorMsg').html("Please Select One.");
+            $('#water_process_qty_dayErrorMsg').show();
+            $('#water_process_qty_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_process_qty_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_process_recycle_day == "")
+        {
+            $('#water_process_recycle_dayErrorMsg').html("Please Select One.");
+            $('#water_process_recycle_dayErrorMsg').show();
+            $('#water_process_recycle_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_process_recycle_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_domestic_source == "")
+        {
+            $('#water_domestic_sourceErrorMsg').html("Please Select One.");
+            $('#water_domestic_sourceErrorMsg').show();
+            $('#water_domestic_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_domestic_source').focus();
+        }
+        else if(water_required_value == 'Yes' && water_domestic_qty_day == "")
+        {
+            $('#water_domestic_qty_dayErrorMsg').html("Please Select One.");
+            $('#water_domestic_qty_dayErrorMsg').show();
+            $('#water_domestic_qty_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_domestic_qty_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_dust_compression_source == "")
+        {
+            $('#water_dust_compression_sourceErrorMsg').html("Please Select One.");
+            $('#water_dust_compression_sourceErrorMsg').show();
+            $('#water_dust_compression_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_dust_compression_source').focus();
+        }
+        else if(water_required_value == 'Yes' && water_dust_compression_qty_day == "")
+        {
+            $('#water_dust_compression_qty_dayErrorMsg').html("Please Select One.");
+            $('#water_dust_compression_qty_dayErrorMsg').show();
+            $('#water_dust_compression_qty_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_dust_compression_qty_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_dust_compression_recycle_day == "")
+        {
+            $('#water_dust_compression_recycle_dayErrorMsg').html("Please Select One.");
+            $('#water_dust_compression_recycle_dayErrorMsg').show();
+            $('#water_dust_compression_recycle_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_dust_compression_recycle_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_others_name == "")
+        {
+            $('#water_others_nameErrorMsg').html("Please Select One.");
+            $('#water_others_nameErrorMsg').show();
+            $('#water_others_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_others_name').focus();
+        }
+        else if(water_required_value == 'Yes' && water_others_source == "")
+        {
+            $('#water_others_sourceErrorMsg').html("Please Select One.");
+            $('#water_others_sourceErrorMsg').show();
+            $('#water_others_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_others_source').focus();
+        }
+        else if(water_required_value == 'Yes' && water_others_qty_day == "")
+        {
+            $('#water_others_qty_dayErrorMsg').html("Please Select One.");
+            $('#water_others_qty_dayErrorMsg').show();
+            $('#water_others_qty_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_others_qty_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_downstream_users == "")
+        {
+            $('#water_downstream_usersErrorMsg').html("Please Select One.");
+            $('#water_downstream_usersErrorMsg').show();
+            $('#water_downstream_usersErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_downstream_users').focus();
+        }
+        else if(water_required_value == 'Yes' && water_flow_rate_lean == "")
+        {
+            $('#water_flow_rate_leanErrorMsg').html("Please Select One.");
+            $('#water_flow_rate_leanErrorMsg').show();
+            $('#water_flow_rate_leanErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_flow_rate_lean').focus();
+        }
+        else if(water_required_value == 'Yes' && water_source_distance == "")
+        {
+            $('#water_source_distanceErrorMsg').html("Please Select One.");
+            $('#water_source_distanceErrorMsg').show();
+            $('#water_source_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_source_distance').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_general_water_requirement' %}",
+                data : $('#water_requirement_form').serialize(),
+                success : function(data)
+                {
+                    if(data.message == 'success') {
+                    $('#water_requirement_application_successMsg')
+                    .html("Saved Successfully")
+                    .attr('aria-live', 'polite')
+                    .attr('aria-atomic', 'true')
+                    .show()
+                    .focus();
+                    
+                    setTimeout(function() {
+                        $('#water_requirement_application_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    
+                    setTimeout(function() {
+                        $("#headingFiveBtn").removeAttr("disabled");
+                        $("#collapseFive").addClass("show");
+                        $("#collapseFour").removeClass("show");
+                    }, 2000);
                 } else {
-                    showErrorMessage('project_details_errorMsg', 
-                        data.error || 'Please Check And Submit Again');
+                    $('#water_requirement_application_errorMsg')
+                    .html("Please Check And Submit Again")
+                    .attr('aria-live', 'assertive')
+                    .attr('aria-atomic', 'true')
+                    .show()
+                    .focus();
+                    
+                    setTimeout(function() {
+                        $('#water_requirement_application_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
                 }
-            }
-
-            // Error handler
-            function handleProjectDetailsError(xhr, status, error) {
-                showErrorMessage('project_details_errorMsg', `Request Error: ${error}`);
-            }
+                }
+            });
+        }
+    }
         
-            function save_general_water_requirement() {
-                // Hide all error messages first
-                $('.alert-danger').hide();
+            function save_anc_approach_road_details()
+    {
 
-                // Get the water required value
-                const water_required_value = $("input[name=water_required]:checked").val();
-                const isWaterRequired = water_required_value === 'Yes';
+        anc_road_required = $("input[name=anc_road_required]:checked").length;
+        anc_road_required_value = $("input[name=anc_road_required]:checked").val();
+        anc_road_length = $('#anc_road_length').val();
+        anc_road_start_point = $('#anc_road_start_point').val();
+        anc_road_end_point  = $('#anc_road_end_point').val();
+        anc_road_blast_required= $("input[name=anc_road_blast_required]:checked").length;
+        anc_road_blast_required_value = $("input[name=anc_road_blast_required]:checked").val();
+        anc_road_blast_type = $('#anc_road_blast_type').val();
+        anc_road_blast_qty = $('#anc_road_blast_qty').val();
+        anc_road_blast_location = $('#anc_road_blast_location').val();
+        anc_road_blast_frequency_time = $('#anc_road_blast_frequency_time').val();
 
-                // Define validation groups
-                const basicValidations = [
-                    { 
-                        condition: $("input[name=water_excavated_muck]:checked").length < 1,
-                        errorId: 'water_excavated_muckErrorMsg',
-                        focusId: 'water_excavated_muck',
-                        message: 'Please Select One.'
-                    },
-                    { 
-                        condition: $("input[name=water_required]:checked").length < 1,
-                        errorId: 'water_requiredErrorMsg',
-                        focusId: 'water_required',
-                        message: 'Please Select One.'
-                    }
-                ];
+        if(anc_road_required < 1)
+        {
+            $('#anc_road_requiredErrorMsg').html("Please Select One.");
+            $('#anc_road_requiredErrorMsg').show();
+            $('#anc_road_requiredErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_required').focus();
+        }
+        else if(anc_road_required_value == 'Yes' && anc_road_length == "")
+        {
+            $('#anc_road_lengthErrorMsg').html("Enter Length of road in km.");
+            $('#anc_road_lengthErrorMsg').show();
+            $('#anc_road_lengthErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_length').focus();
+        }
+        else if(anc_road_required_value == 'Yes' && anc_road_start_point == "")
+        {
+            $('#anc_road_start_pointErrorMsg').html("Enter Starting Point.");
+            $('#anc_road_start_pointErrorMsg').show();
+            $('#anc_road_start_pointErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_start_point').focus();
+        }
+        else if(anc_road_required_value == 'Yes' && anc_road_end_point == "")
+        {
+            $('#anc_road_end_pointErrorMsg').html("Enter Termination Point.");
+            $('#anc_road_end_pointErrorMsg').show();
+            $('#anc_road_end_pointErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_end_point').focus();
+        }
+        else if(anc_road_blast_required < 1)
+        {
+            $('#anc_road_blast_requiredErrorMsg').html("Enter Termination Point.");
+            $('#anc_road_blast_requiredErrorMsg').show();
+            $('#anc_road_blast_requiredErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_blast_required').focus();
+        }
+        else if(anc_road_blast_required_value == 'Yes' && anc_road_blast_type == "")
+        {
+            $('#anc_road_blast_typeErrorMsg').html("Mention type of blasting.");
+            $('#anc_road_blast_typeErrorMsg').show();
+            $('#anc_road_blast_typeErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_blast_type').focus();
+        }
+        else if(anc_road_blast_required_value == 'Yes' && anc_road_blast_qty == "")
+        {
+            $('#anc_road_blast_qtyErrorMsg').html("Enter Type and quantity of explosive to be used.");
+            $('#anc_road_blast_qtyErrorMsg').show();
+            $('#anc_road_blast_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_blast_qty').focus();
+        }
+        else if(anc_road_blast_required_value == 'Yes' && anc_road_blast_location == "")
+        {
+            $('#anc_road_blast_locationErrorMsg').html("Mention location (s) where blasting is required.");
+            $('#anc_road_blast_locationErrorMsg').show();
+            $('#anc_road_blast_locationErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_blast_location').focus();
+        }
+        else if(anc_road_blast_required_value == 'Yes' && anc_road_blast_frequency_time == "")
+        {
+            $('#anc_road_blast_frequency_timeErrorMsg').html("Enter Frequency and timing of blasting per day.");
+            $('#anc_road_blast_frequency_timeErrorMsg').show();
+            $('#anc_road_blast_frequency_timeErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_road_blast_frequency_time').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_anc_approach_road_details' %}",
+                data : $('#ancillary_approach_road_form').serialize(),
+                success : function(data)
+                {
+                    if (data.message == 'success') {
+                        $('#anc_approach_road_successMsg')
+                            .html("Saved Successfully")
+                            .attr('aria-live', 'polite')  // For screen readers
+                            .attr('aria-atomic', 'true')  // Ensures entire message is read
+                            .show()
+                            .focus();  // Set focus here
 
-                const waterRequiredValidations = [
-                    { field: 'water_raw_material_source', condition: $('#water_raw_material_source').val() === "" },
-                    { field: 'water_raw_material_qty_day', condition: $('#water_raw_material_qty_day').val() === "" },
-                    { field: 'water_raw_material_recycle_day', condition: $('#water_raw_material_recycle_day').val() === "" },
-                    { field: 'water_cleaning_source', condition: $('#water_cleaning_source').val() === "" },
-                    { field: 'water_cleaning_qty_day', condition: $('#water_cleaning_qty_day').val() === "" },
-                    { field: 'water_cleaning_recycle_day', condition: $('#water_cleaning_recycle_day').val() === "" },
-                    { field: 'water_process_source', condition: $('#water_process_source').val() === "" },
-                    { field: 'water_process_qty_day', condition: $('#water_process_qty_day').val() === "" },
-                    { field: 'water_process_recycle_day', condition: $('#water_process_recycle_day').val() === "" },
-                    { field: 'water_domestic_source', condition: $('#water_domestic_source').val() === "" },
-                    { field: 'water_domestic_qty_day', condition: $('#water_domestic_qty_day').val() === "" },
-                    { field: 'water_dust_compression_source', condition: $('#water_dust_compression_source').val() === "" },
-                    { field: 'water_dust_compression_qty_day', condition: $('#water_dust_compression_qty_day').val() === "" },
-                    { field: 'water_dust_compression_recycle_day', condition: $('#water_dust_compression_recycle_day').val() === "" },
-                    { field: 'water_others_name', condition: $('#water_others_name').val() === "" },
-                    { field: 'water_others_source', condition: $('#water_others_source').val() === "" },
-                    { field: 'water_others_qty_day', condition: $('#water_others_qty_day').val() === "" },
-                    { field: 'water_downstream_users', condition: $('#water_downstream_users').val() === "" },
-                    { field: 'water_flow_rate_lean', condition: $('#water_flow_rate_lean').val() === "" },
-                    { field: 'water_source_distance', condition: $('#water_source_distance').val() === "" }
-                ];
+                        setTimeout(function() {
+                            $('#anc_approach_road_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
 
-                // Check basic validations
-                for (const validation of basicValidations) {
-                    if (validation.condition) {
-                        showErrorAndFocus(validation.errorId, validation.message, validation.focusId);
-                        return false;
+                        setTimeout(function() {
+                            $("#headingSixBtn").removeAttr("disabled");
+                            $("#collapseSix").addClass("show");
+                            $("#collapseFive").removeClass("show");
+                        }, 2000);
+                    } else {
+                        $('#anc_approach_road_errorMsg')
+                            .html("Please Check And Submit Again")
+                            .attr('aria-live', 'assertive')  // More urgent for errors
+                            .attr('aria-atomic', 'true')
+                            .show()
+                            .focus();  // Set focus here
+
+                        setTimeout(function() {
+                            $('#anc_approach_road_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
                     }
                 }
-
-                // Check water required validations if applicable
-                if (isWaterRequired) {
-                    for (const validation of waterRequiredValidations) {
-                        if (validation.condition) {
-                            showErrorAndFocus(
-                                `${validation.field}ErrorMsg`,
-                                'Please Select One.',
-                                validation.field
-                            );
-                            return false;
-                        }
-                    }
-                }
-
-                // If all validations pass, submit the form
-                submitWaterRequirementForm();
-            }
-
-            function submitWaterRequirementForm() {
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'save_general_water_requirement' %}",
-                    data: $('#water_requirement_form').serialize(),
-                    success: function(data) {
-                        if (data.message === 'success') {
-                            showSuccessMessage(
-                                'water_requirement_application_successMsg',
-                                'Saved Successfully',
-                                function() {
-                                    $("#headingFiveBtn").removeAttr("disabled");
-                                    $("#collapseFive").addClass("show");
-                                    $("#collapseFour").removeClass("show");
-                                }
-                            );
-                        } else {
-                            showErrorMessage(
-                                'water_requirement_application_errorMsg',
-                                data.error || 'Application Error'
-                            );
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        showErrorMessage(
-                            'water_requirement_application_errorMsg',
-                            `Request Error: ${error}`
-                        );
-                    }
-                });
-            }
+            });
+        }
+    }
         
-            function save_anc_approach_road_details() {
-                // Hide all error messages first
-                $('.alert-danger').hide();
+    function save_anc_power_line_form()
+    {
+        anc_power_line_required = $("input[name=anc_power_line_required]:checked").length;
+        anc_power_line_required_value = $("input[name=anc_power_line_required]:checked").val();
+        anc_power_line_voltage = $('#anc_power_line_voltage').val();
+        anc_power_line_length = $('#anc_power_line_length').val();
+        anc_power_line_start_point = $('#anc_power_line_start_point').val();
+        anc_power_line_end_point = $('#anc_power_line_end_point').val();
+        anc_power_line_storing_method = $('#anc_power_line_storing_method').val();
 
-                // Get radio button values
-                const anc_road_required_value = $("input[name=anc_road_required]:checked").val();
-                const anc_road_blast_required_value = $("input[name=anc_road_blast_required]:checked").val();
-                const isRoadRequired = anc_road_required_value === 'Yes';
-                const isBlastRequired = anc_road_blast_required_value === 'Yes';
+        if(anc_power_line_required < 1)
+        {
+            $('#anc_power_line_requiredErrorMsg').html("Please Select One.");
+            $('#anc_power_line_requiredErrorMsg').show();
+            $('#anc_power_line_requiredErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_power_line_required').focus();
+        }
+        else if(anc_power_line_required_value == 'Yes' && anc_power_line_voltage == "")
+        {
+            $('#anc_power_line_voltageErrorMsg').html("Enter Voltage level in kV.");
+            $('#anc_power_line_voltageErrorMsg').show();
+            $('#anc_power_line_voltageErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_power_line_voltage').focus();
+        }
+        else if(anc_power_line_required_value == 'Yes' && anc_power_line_length == "")
+        {
+            $('#anc_power_line_lengthErrorMsg').html("Enter Length of transmission /distribution line in km.");
+            $('#anc_power_line_lengthErrorMsg').show();
+            $('#anc_power_line_lengthErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_power_line_length').focus();
+        }
+        else if(anc_power_line_required_value == 'Yes' && anc_power_line_start_point == "")
+        {
+            $('#anc_power_line_start_pointErrorMsg').html("Enter Starting Point.");
+            $('#anc_power_line_start_pointErrorMsg').show();
+            $('#anc_power_line_start_pointErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_power_line_start_point').focus();
+        }
+        else if(anc_power_line_required_value == 'Yes' && anc_power_line_end_point == "")
+        {
+            $('#anc_power_line_end_pointErrorMsg').html("Enter Termination Point.");
+            $('#anc_power_line_end_pointErrorMsg').show();
+            $('#anc_power_line_end_pointErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_power_line_end_point').focus();
+        }
+        else if(anc_power_line_required_value == 'Yes' && anc_power_line_storing_method == "")
+        {
+            $('#anc_power_line_storing_methodErrorMsg').html("Enter Methods of storing materials.");
+            $('#anc_power_line_storing_methodErrorMsg').show();
+            $('#anc_power_line_storing_methodErrorMsg').delay(2000).fadeOut('slow');
+            $('#anc_power_line_storing_method').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_anc_power_line_form' %}",
+                data : $('#ancillary_power_line_form').serialize(),
+                success : function(data)
+                {
+                    if (data.message == 'success') {
+                            // Success case
+                        $('#anc_power_line_successMsg')
+                            .html('Saved Successfully')
+                            .attr('aria-live', 'polite')   // For polite screen reader announcements
+                            .attr('aria-atomic', 'true')  // Ensures entire message is read
+                            .removeAttr('tabindex')        // Remove tabindex="-1" (blocks focus)
+                            .show()
+                            .focus();  // Force focus for keyboard/screen reader users
 
-                // Define validation groups
-                const validations = [
-                    // Basic validations (always required)
-                    {
-                        condition: $("input[name=anc_road_required]:checked").length < 1,
-                        errorId: 'anc_road_requiredErrorMsg',
-                        focusId: 'anc_road_required',
-                        message: 'Please Select One.'
-                    },
-                    {
-                        condition: $("input[name=anc_road_blast_required]:checked").length < 1,
-                        errorId: 'anc_road_blast_requiredErrorMsg',
-                        focusId: 'anc_road_blast_required',
-                        message: 'Please Select One.'
-                    },
+                        setTimeout(() => {
+                            $('#anc_power_line_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
 
-                    // Road-related validations (only if road is required)
-                    {
-                        condition: isRoadRequired && $('#anc_road_length').val() === "",
-                        errorId: 'anc_road_lengthErrorMsg',
-                        focusId: 'anc_road_length',
-                        message: 'Enter Length of road in km.'
-                    },
-                    {
-                        condition: isRoadRequired && $('#anc_road_start_point').val() === "",
-                        errorId: 'anc_road_start_pointErrorMsg',
-                        focusId: 'anc_road_start_point',
-                        message: 'Enter Starting Point.'
-                    },
-                    {
-                        condition: isRoadRequired && $('#anc_road_end_point').val() === "",
-                        errorId: 'anc_road_end_pointErrorMsg',
-                        focusId: 'anc_road_end_point',
-                        message: 'Enter Termination Point.'
-                    },
+                        setTimeout(() => {
+                            $("#headingSevenBtn").removeAttr("disabled");
+                            $("#collapseSeven").addClass("show");
+                            $("#collapseSix").removeClass("show");
+                        }, 2000);
+                    } else {
+                        // Error case
+                        $('#anc_power_line_errorMsg')
+                            .html('Please Check And Submit Again')
+                            .attr('aria-live', 'assertive')  // More urgent for errors
+                            .attr('aria-atomic', 'true')
+                            .removeAttr('tabindex')          // Remove tabindex="-1"
+                            .show()
+                            .focus();  // Force focus
 
-                    // Blasting-related validations (only if blasting is required)
-                    {
-                        condition: isBlastRequired && $('#anc_road_blast_type').val() === "",
-                        errorId: 'anc_road_blast_typeErrorMsg',
-                        focusId: 'anc_road_blast_type',
-                        message: 'Mention type of blasting.'
-                    },
-                    {
-                        condition: isBlastRequired && $('#anc_road_blast_qty').val() === "",
-                        errorId: 'anc_road_blast_qtyErrorMsg',
-                        focusId: 'anc_road_blast_qty',
-                        message: 'Enter Type and quantity of explosive to be used.'
-                    },
-                    {
-                        condition: isBlastRequired && $('#anc_road_blast_location').val() === "",
-                        errorId: 'anc_road_blast_locationErrorMsg',
-                        focusId: 'anc_road_blast_location',
-                        message: 'Mention location(s) where blasting is required.'
-                    },
-                    {
-                        condition: isBlastRequired && $('#anc_road_blast_frequency_time').val() === "",
-                        errorId: 'anc_road_blast_frequency_timeErrorMsg',
-                        focusId: 'anc_road_blast_frequency_time',
-                        message: 'Enter Frequency and timing of blasting per day.'
-                    }
-                ];
-
-                // Check all validations
-                for (const validation of validations) {
-                    if (validation.condition) {
-                        showErrorAndFocus(validation.errorId, validation.message, validation.focusId);
-                        return false;
-                    }
-                }
-
-                // If all validations pass, submit the form
-                submitApproachRoadForm();
-            }
-
-            function submitApproachRoadForm() {
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'save_anc_approach_road_details' %}",
-                    data: $('#ancillary_approach_road_form').serialize(),
-                    success: function(data) {
-                        if (data.message === 'success') {
-                            showSuccessMessage(
-                                'anc_approach_road_successMsg',
-                                'Saved Successfully',
-                                function() {
-                                    $("#headingSixBtn").removeAttr("disabled");
-                                    $("#collapseSix").addClass("show");
-                                    $("#collapseFive").removeClass("show");
-                                }
-                            );
-                        } else {
-                            showErrorMessage(
-                                'anc_approach_road_errorMsg',
-                                data.error || 'Application Error'
-                            );
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        showErrorMessage(
-                            'anc_approach_road_errorMsg',
-                            `Request Error: ${error}`
-                        );
-                    }
-                });
-            }
-        
-            function save_anc_power_line_form() {
-                // Hide all error messages first
-                $('.alert-danger').hide();
-
-                // Get radio button value and check if power line is required
-                const powerLineRequired = $("input[name=anc_power_line_required]:checked").val() === 'Yes';
-                const powerLineChecked = $("input[name=anc_power_line_required]:checked").length > 0;
-
-                // Define validation rules
-                const validations = [
-                    // Basic validation (always required)
-                    {
-                        condition: !powerLineChecked,
-                        errorId: 'anc_power_line_requiredErrorMsg',
-                        focusId: 'anc_power_line_required',
-                        message: 'Please Select One.'
-                    },
-                    // Conditional validations (only if power line is required)
-                    {
-                        condition: powerLineRequired && $('#anc_power_line_voltage').val() === "",
-                        errorId: 'anc_power_line_voltageErrorMsg',
-                        focusId: 'anc_power_line_voltage',
-                        message: 'Enter Voltage level in kV.'
-                    },
-                    {
-                        condition: powerLineRequired && $('#anc_power_line_length').val() === "",
-                        errorId: 'anc_power_line_lengthErrorMsg',
-                        focusId: 'anc_power_line_length',
-                        message: 'Enter Length of transmission/distribution line in km.'
-                    },
-                    {
-                        condition: powerLineRequired && $('#anc_power_line_start_point').val() === "",
-                        errorId: 'anc_power_line_start_pointErrorMsg',
-                        focusId: 'anc_power_line_start_point',
-                        message: 'Enter Starting Point.'
-                    },
-                    {
-                        condition: powerLineRequired && $('#anc_power_line_end_point').val() === "",
-                        errorId: 'anc_power_line_end_pointErrorMsg',
-                        focusId: 'anc_power_line_end_point',
-                        message: 'Enter Termination Point.'
-                    },
-                    {
-                        condition: powerLineRequired && $('#anc_power_line_storing_method').val() === "",
-                        errorId: 'anc_power_line_storing_methodErrorMsg',
-                        focusId: 'anc_power_line_storing_method',
-                        message: 'Enter Methods of storing materials.'
-                    }
-                ];
-
-                // Execute validations
-                for (const validation of validations) {
-                    if (validation.condition) {
-                        showErrorAndFocus(validation.errorId, validation.message, validation.focusId);
-                        return false;
+                        setTimeout(() => {
+                            $('#anc_power_line_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
                     }
                 }
-
-                // If all validations pass, submit the form
-                submitPowerLineForm();
-            }
-
-            function submitPowerLineForm() {
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'save_anc_power_line_form' %}",
-                    data: $('#ancillary_power_line_form').serialize(),
-                    success: function(data) {
-                        if (data.message === 'success') {
-                            showSuccessMessage(
-                                'anc_power_line_successMsg',
-                                'Saved Successfully',
-                                function() {
-                                    $("#headingSevenBtn").removeAttr("disabled");
-                                    $("#collapseSeven").addClass("show");
-                                    $("#collapseSix").removeClass("show");
-                                }
-                            );
-                        } else {
-                            showErrorMessage(
-                                'anc_power_line_errorMsg',
-                                data.error || 'Application Error'
-                            );
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        showErrorMessage(
-                            'anc_power_line_errorMsg',
-                            `Request Error: ${error}`
-                        );
-                    }
-                });
-            }
+            });
+        }
+    }
         
             function save_anc_other_details()
             {
@@ -3804,27 +4077,40 @@
                     data : $('#anc_others_form').serialize(),
                     success : function(data)
                     {
-                        if(data.message == 'success')
-                        {
-                            $('#anc_others_successMsg').html("Saved Successfully");
-                            $('#anc_others_successMsg').show();
-                            setTimeout(function()
-                            {
+                        if (data.message == 'success') {
+                            // Success case - with focus management
+                            $('#anc_others_successMsg')
+                                .html('Saved Successfully')
+                                .removeAttr('tabindex')  // Remove blocking attribute
+                                .attr({
+                                    'aria-live': 'polite',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();  // Set focus immediately after showing
+
+                            setTimeout(() => {
                                 $('#anc_others_successMsg').delay(2000).fadeOut('slow');
                             }, 2000);
-                            setTimeout(function() {
+
+                            setTimeout(() => {
                                 $("#headingEightBtn").removeAttr("disabled");
                                 $("#collapseEight").addClass("show");
                                 $("#collapseSeven").removeClass("show");
                             }, 2000);
-                        }
-                        else
-                        {
-                            var errorMsg = data.error;
-                            $('#anc_others_errorMsg').html(`Application Error: ${data.error}`);
-                            $('#anc_others_errorMsg').show();
-                            setTimeout(function()
-                            {
+                        } else {
+                            // Error case - with dynamic error message and focus
+                            $('#anc_others_errorMsg')
+                                .html(`Application Error: ${data.error}`)
+                                .removeAttr('tabindex')  // Remove blocking attribute
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();  // Set focus immediately after showing
+
+                            setTimeout(() => {
                                 $('#anc_others_errorMsg').delay(2000).fadeOut('slow');
                             }, 2000);
                         }
@@ -3832,413 +4118,806 @@
                 });
             }
         
-            function save_solid_waste_details() {
-                // Hide all error messages first
-                $('.alert-danger').hide();
+    function save_solid_waste_details()
+    {
+        let en_impact_allocated_budget = $('#en_impact_allocated_budget').val();
+        let en_impact_hazardous_waste_list = $('#en_impact_hazardous_waste_list').val();
+        let en_impact_hazardous_waste_source = $('#en_impact_hazardous_waste_source').val();
+        let en_impact_hazardous_waste_qty_annum = $('#en_impact_hazardous_waste_qty_annum').val();
+        let en_impact_hazardous_waste_mgt_plan = $('#en_impact_hazardous_waste_mgt_plan').val();
+        let en_impact_non_hazardous_waste_list = $('#en_impact_non_hazardous_waste_list').val();
+        let en_impact_non_hazardous_waste_source = $('#en_impact_non_hazardous_waste_source').val();
+        let en_impact_non_hazardous_waste_qty_annum = $('#en_impact_non_hazardous_waste_qty_annum').val();
+        let en_impact_non_hazardous_waste_mgt_plan = $('#en_impact_non_hazardous_waste_mgt_plan').val();
+        let en_impact_medical_waste_list = $('#en_impact_medical_waste_list').val();
+        let en_impact_medical_waste_source = $('#en_impact_medical_waste_source').val();
+        let en_impact_medical_waste_qty_annum = $('#en_impact_medical_waste_qty_annum').val();
+        let en_impact_medical_waste_mgt_plan = $('#en_impact_medical_waste_mgt_plan').val();
+        let en_impact_ewaste_list = $('#en_impact_ewaste_list').val();
+        let en_impact_ewaste_source = $('#en_impact_ewaste_source').val();
+        let en_impact_ewaste_qty_annum = $('#en_impact_ewaste_qty_annum').val();
+        let en_impact_ewaste_mgt_plan = $('#en_impact_ewaste_mgt_plan').val();
+        let en_impact_others_waste_list = $('#en_impact_others_waste_list').val();
+        let en_impact_others_waste_source = $('#en_impact_others_waste_source').val();
+        let en_impact_others_waste_qty_annum = $('#en_impact_others_waste_qty_annum').val();
+        let en_impact_others_waste_mgt_plan = $('#en_impact_others_waste_mgt_plan').val();
 
-                // Define all waste types and their fields
-                const wasteTypes = [
-                    { 
-                        name: 'hazardous',
-                        fields: ['list', 'source', 'qty_annum', 'mgt_plan'],
-                        errorMessages: {
-                            list: "List the hazardous waste types",
-                            source: "Specify hazardous waste sources",
-                            qty_annum: "Enter hazardous waste quantity per annum",
-                            mgt_plan: "Provide hazardous waste management plan"
-                        }
-                    },
-                    { 
-                        name: 'non_hazardous',
-                        fields: ['list', 'source', 'qty_annum', 'mgt_plan'],
-                        errorMessages: {
-                            list: "List the non-hazardous waste types",
-                            source: "Specify non-hazardous waste sources",
-                            qty_annum: "Enter non-hazardous waste quantity per annum",
-                            mgt_plan: "Provide non-hazardous waste management plan"
-                        }
-                    },
-                    { 
-                        name: 'medical',
-                        fields: ['list', 'source', 'qty_annum', 'mgt_plan'],
-                        errorMessages: {
-                            list: "List the medical waste types",
-                            source: "Specify medical waste sources",
-                            qty_annum: "Enter medical waste quantity per annum",
-                            mgt_plan: "Provide medical waste management plan"
-                        }
-                    },
-                    { 
-                        name: 'ewaste',
-                        fields: ['list', 'source', 'qty_annum', 'mgt_plan'],
-                        errorMessages: {
-                            list: "List the e-waste types",
-                            source: "Specify e-waste sources",
-                            qty_annum: "Enter e-waste quantity per annum",
-                            mgt_plan: "Provide e-waste management plan"
-                        }
-                    },
-                    { 
-                        name: 'others',
-                        fields: ['list', 'source', 'qty_annum', 'mgt_plan'],
-                        errorMessages: {
-                            list: "List other waste types",
-                            source: "Specify other waste sources",
-                            qty_annum: "Enter other waste quantity per annum",
-                            mgt_plan: "Provide other waste management plan"
-                        }
+        if(en_impact_allocated_budget == "")
+        {
+            $('#en_impact_allocated_budgetErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_allocated_budgetErrorMsg').show();
+            $('#en_impact_allocated_budgetErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_allocated_budget').focus();
+        }
+        else if(en_impact_hazardous_waste_list == "")
+        {
+            $('#en_impact_hazardous_waste_listErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_hazardous_waste_listErrorMsg').show();
+            $('#en_impact_hazardous_waste_listErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_hazardous_waste_list').focus();
+        }
+        else if(en_impact_hazardous_waste_source == "")
+        {
+            $('#en_impact_hazardous_waste_sourceErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_hazardous_waste_sourceErrorMsg').show();
+            $('#en_impact_hazardous_waste_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_hazardous_waste_source').focus();
+        }
+        else if(en_impact_hazardous_waste_qty_annum == "")
+        {
+            $('#en_impact_hazardous_waste_qty_annumErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_hazardous_waste_qty_annumErrorMsg').show();
+            $('#en_impact_hazardous_waste_qty_annumErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_hazardous_waste_qty_annum').focus();
+        }
+        else if(en_impact_hazardous_waste_mgt_plan == "")
+        {
+            $('#en_impact_hazardous_waste_mgt_planErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_hazardous_waste_mgt_planErrorMsg').show();
+            $('#en_impact_hazardous_waste_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_hazardous_waste_mgt_plan').focus();
+        }
+        else if(en_impact_non_hazardous_waste_list == "")
+        {
+            $('#en_impact_non_hazardous_waste_listErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_non_hazardous_waste_listErrorMsg').show();
+            $('#en_impact_non_hazardous_waste_listErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_non_hazardous_waste_list').focus();
+        }
+        else if(en_impact_non_hazardous_waste_source == "")
+        {
+            $('#en_impact_non_hazardous_waste_sourceErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_non_hazardous_waste_sourceErrorMsg').show();
+            $('#en_impact_non_hazardous_waste_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_non_hazardous_waste_source').focus();
+        }
+        else if(en_impact_non_hazardous_waste_qty_annum == "")
+        {
+            $('#en_impact_non_hazardous_waste_qty_annumErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_non_hazardous_waste_qty_annumErrorMsg').show();
+            $('#en_impact_non_hazardous_waste_qty_annumErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_non_hazardous_waste_qty_annum').focus();
+        }
+        else if(en_impact_non_hazardous_waste_mgt_plan == "")
+        {
+            $('#en_impact_non_hazardous_waste_mgt_planErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_non_hazardous_waste_mgt_planErrorMsg').show();
+            $('#en_impact_non_hazardous_waste_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_non_hazardous_waste_mgt_plan').focus();
+        }
+        else if(en_impact_medical_waste_list == "")
+        {
+            $('#en_impact_medical_waste_listErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_medical_waste_listErrorMsg').show();
+            $('#en_impact_medical_waste_listErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_medical_waste_list').focus();
+        }
+        else if(en_impact_medical_waste_source == "")
+        {
+            $('#en_impact_medical_waste_sourceErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_medical_waste_sourceErrorMsg').show();
+            $('#en_impact_medical_waste_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_medical_waste_source').focus();
+        }
+        else if(en_impact_medical_waste_qty_annum == "")
+        {
+            $('#en_impact_medical_waste_qty_annumErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_medical_waste_qty_annumErrorMsg').show();
+            $('#en_impact_medical_waste_qty_annumErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_medical_waste_qty_annum').focus();
+        }
+        else if(en_impact_medical_waste_mgt_plan == "")
+        {
+            $('#en_impact_medical_waste_mgt_planErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_medical_waste_mgt_planErrorMsg').show();
+            $('#en_impact_medical_waste_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_medical_waste_mgt_plan').focus();
+        }
+        else if(en_impact_ewaste_list == "")
+        {
+            $('#en_impact_ewaste_listErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_ewaste_listErrorMsg').show();
+            $('#en_impact_ewaste_listErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_ewaste_list').focus();
+        }
+        else if(en_impact_ewaste_source == "")
+        {
+            $('#en_impact_ewaste_sourceErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_ewaste_sourceErrorMsg').show();
+            $('#en_impact_ewaste_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_ewaste_source').focus();
+        }
+        else if(en_impact_ewaste_qty_annum == "")
+        {
+            $('#en_impact_ewaste_qty_annumErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_ewaste_qty_annumErrorMsg').show();
+            $('#en_impact_ewaste_qty_annumErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_ewaste_qty_annum').focus();
+        }
+        else if(en_impact_ewaste_mgt_plan == "")
+        {
+            $('#en_impact_ewaste_mgt_planErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_ewaste_mgt_planErrorMsg').show();
+            $('#en_impact_ewaste_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_ewaste_mgt_plan').focus();
+        }
+        else if(en_impact_others_waste_list == "")
+        {
+            $('#en_impact_others_waste_listErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_others_waste_listErrorMsg').show();
+            $('#en_impact_others_waste_listErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_others_waste_list').focus();
+        }
+        else if(en_impact_others_waste_source == "")
+        {
+            $('#en_impact_others_waste_sourceErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_others_waste_sourceErrorMsg').show();
+            $('#en_impact_others_waste_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_others_waste_source').focus();
+        }
+        else if(en_impact_others_waste_qty_annum == "")
+        {
+            $('#en_impact_others_waste_qty_annumErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_others_waste_qty_annumErrorMsg').show();
+            $('#en_impact_others_waste_qty_annumErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_others_waste_qty_annum').focus();
+        }
+        else if(en_impact_others_waste_mgt_plan == "")
+        {
+            $('#en_impact_others_waste_mgt_planErrorMsg').html("Provide an allocated budget for the management plan proposed.");
+            $('#en_impact_others_waste_mgt_planErrorMsg').show();
+            $('#en_impact_others_waste_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+            $('#en_impact_others_waste_mgt_plan').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_solid_waste_details' %}",
+                data : $('#solid_waste_form').serialize(),
+                success : function(data)
+                {
+                    if (data.message == 'success') {
+                        // Success case with focus and accessibility
+                        $('#solid_waste_successMsg')
+                            .html('Saved Successfully')
+                            .removeAttr('tabindex')  // Remove focus blocker
+                            .attr({
+                                'aria-live': 'polite',
+                                'aria-atomic': 'true'
+                            })
+                            .show()
+                            .focus();  // Immediately focus after showing
+
+                        setTimeout(() => {
+                            $('#solid_waste_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+
+                        setTimeout(() => {
+                            $("#headingTwelveBtn").removeAttr("disabled");
+                            $("#collapseTwelve").addClass("show");
+                            $("#collapseEight").removeClass("show");
+                        }, 2000);
+                    } else {
+                        // Error case with focus management
+                        $('#solid_waste_errorMsg')
+                            .html('Please Check And Submit Again')
+                            .removeAttr('tabindex')  // Remove focus blocker
+                            .attr({
+                                'aria-live': 'assertive',  // More urgent for errors
+                                'aria-atomic': 'true'
+                            })
+                            .show()
+                            .focus();  // Immediately focus after showing
+
+                        setTimeout(() => {
+                            $('#solid_waste_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
                     }
-                ];
-
-                // Check budget field first
-                if ($('#en_impact_allocated_budget').val() === "") {
-                    showErrorAndFocus(
-                        'en_impact_allocated_budgetErrorMsg',
-                        'Provide an allocated budget for the management plan proposed',
-                        'en_impact_allocated_budget'
-                    );
-                    return false;
                 }
-
-                // Validate all waste type fields
-                for (const wasteType of wasteTypes) {
-                    for (const field of wasteType.fields) {
-                        const fieldId = `en_impact_${wasteType.name}_waste_${field}`;
-                        if ($(`#${fieldId}`).val() === "") {
-                            showErrorAndFocus(
-                                `${fieldId}ErrorMsg`,
-                                wasteType.errorMessages[field],
-                                fieldId
-                            );
-                            return false;
-                        }
-                    }
-                }
-
-                // If all validations pass, submit the form
-                submitSolidWasteForm();
-            }
-
-            function submitSolidWasteForm() {
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'save_solid_waste_details' %}",
-                    data: $('#solid_waste_form').serialize(),
-                    success: function(data) {
-                        if (data.message === 'success') {
-                            showSuccessMessage(
-                                'solid_waste_successMsg',
-                                'Saved Successfully',
-                                function() {
-                                    $("#headingTwelveBtn").removeAttr("disabled");
-                                    $("#collapseTwelve").addClass("show");
-                                    $("#collapseEight").removeClass("show");
-                                }
-                            );
-                        } else {
-                            showErrorMessage(
-                                'solid_waste_errorMsg',
-                                data.error || 'Application Error'
-                            );
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        showErrorMessage(
-                            'solid_waste_errorMsg',
-                            `Request Error: ${error}`
-                        );
-                    }
-                });
-            }
+            });
+        }
+    }
         
-            function save_noise_level_details() {
-                // Hide all error messages first
-                $('.alert-danger').hide();
+            function save_noise_level_details()
+            {
+                let en_noise_ind_area_day = $('#en_noise_ind_area_day').val();
+                let en_noise_ind_area_night = $('#en_noise_ind_area_night').val();
+                let en_noise_ind_area_mgt_plan = $('#en_noise_ind_area_mgt_plan').val();
+                let en_noise_mixed_area_day = $('#en_noise_mixed_area_day').val();
+                let en_noise_mixed_area_night = $('#en_noise_mixed_area_night').val();
+                let en_noise_mixed_area_mgt_plan = $('#en_noise_mixed_area_mgt_plan').val();
+                let en_noise_sen_area_day = $('#en_noise_sen_area_day').val();
+                let en_noise_sen_area_night = $('#en_noise_sen_area_night').val();
+                let en_noise_sen_area_mgt_plan = $('#en_noise_sen_area_mgt_plan').val();
 
-                // Define all noise area types and their fields
-                const noiseAreas = [
-                    {
-                        type: 'ind_area',
-                        fields: [
-                            { name: 'day', message: 'Enter industrial area daytime noise level' },
-                            { name: 'night', message: 'Enter industrial area nighttime noise level' },
-                            { name: 'mgt_plan', message: 'Provide industrial area noise management plan' }
-                        ]
-                    },
-                    {
-                        type: 'mixed_area',
-                        fields: [
-                            { name: 'day', message: 'Enter mixed area daytime noise level' },
-                            { name: 'night', message: 'Enter mixed area nighttime noise level' },
-                            { name: 'mgt_plan', message: 'Provide mixed area noise management plan' }
-                        ]
-                    },
-                    {
-                        type: 'sen_area',
-                        fields: [
-                            { name: 'day', message: 'Enter sensitive area daytime noise level' },
-                            { name: 'night', message: 'Enter sensitive area nighttime noise level' },
-                            { name: 'mgt_plan', message: 'Provide sensitive area noise management plan' }
-                        ]
-                    }
-                ];
-
-                // Validate all noise area fields
-                for (const area of noiseAreas) {
-                    for (const field of area.fields) {
-                        const fieldId = `en_noise_${area.type}_${field.name}`;
-                        if ($(`#${fieldId}`).val() === "") {
-                            showErrorAndFocus(
-                                `${fieldId}ErrorMsg`,
-                                field.message,
-                                fieldId
-                            );
-                            return false;
-                        }
-                    }
+                if(en_noise_ind_area_day == "")
+                {
+                    $('#en_noise_ind_area_dayErrorMsg').html("Enter Name of Project");
+                    $('#en_noise_ind_area_dayErrorMsg').show();
+                    $('#en_noise_ind_area_dayErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_noise_ind_area_day').focus();
                 }
+                else if(en_noise_ind_area_night == "")
+                {
+                    $('#en_noise_ind_area_nightErrorMsg').html("Enter Business Type");
+                    $('#en_noise_ind_area_nightErrorMsg').show();
+                    $('#en_noise_ind_area_nightErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_noise_ind_area_night').focus();
+                }
+                else if(en_noise_ind_area_mgt_plan == "")
+                {
+                    $('#en_noise_ind_area_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_noise_ind_area_mgt_planErrorMsg').show();
+                    $('#en_noise_ind_area_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_noise_ind_area_mgt_plan').focus();
+                }
+                else if(en_noise_mixed_area_day == "")
+                {
+                    $('#en_noise_mixed_area_dayErrorMsg').html("Enter CID");
+                    $('#en_noise_mixed_area_dayErrorMsg').show();
+                    $('#en_noise_mixed_area_dayErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_noise_mixed_area_day').focus();
+                }
+                else if(en_noise_mixed_area_night == "")
+                {
+                    $('#en_noise_mixed_area_nightErrorMsg').html("Enter CID");
+                    $('#en_noise_mixed_area_nightErrorMsg').show();
+                    $('#en_noise_mixed_area_nightErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_noise_mixed_area_night').focus();
+                }
+                else if(en_noise_mixed_area_mgt_plan == "")
+                {
+                    $('#en_noise_mixed_area_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_noise_mixed_area_mgt_planErrorMsg').show();
+                    $('#en_noise_mixed_area_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_noise_mixed_area_mgt_plan').focus();
+                }
+                else if(en_noise_sen_area_day == "")
+                {
+                    $('#en_noise_sen_area_dayErrorMsg').html("Enter CID");
+                    $('#en_noise_sen_area_dayErrorMsg').show();
+                    $('#en_noise_sen_area_dayErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_noise_sen_area_day').focus();
+                }
+                else if(en_noise_sen_area_night == "")
+                {
+                    $('#en_noise_sen_area_nightErrorMsg').html("Enter CID");
+                    $('#en_noise_sen_area_nightErrorMsg').show();
+                    $('#en_noise_sen_area_nightErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_noise_sen_area_night').focus();
+                }
+                else if(en_noise_sen_area_mgt_plan == "")
+                {
+                    $('#en_noise_sen_area_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_noise_sen_area_mgt_planErrorMsg').show();
+                    $('#en_noise_sen_area_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_noise_sen_area_mgt_plan').focus();
+                }
+                else
+                {
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'save_noise_level_details' %}",
+                        data : $('#noise_level_form').serialize(),
+                        success : function(data)
+                        {
+                            if (data.message == 'success') {
+                                // Success case with focus and accessibility
+                                $('#noise_level_successMsg')
+                                    .html('<i class="uil-check-circle me-1 h4 align-middle"></i> Saved Successfully')
+                                    .removeAttr('tabindex')  // Remove focus blocker
+                                    .attr({
+                                        'aria-live': 'polite',
+                                        'aria-atomic': 'true',
+                                        'role': 'alert'
+                                    })
+                                    .show()
+                                    .focus();  // Focus immediately after showing
 
-                // If all validations pass, submit the form
-                submitNoiseLevelForm();
-            }
+                                setTimeout(() => {
+                                    $('#noise_level_successMsg').delay(2000).fadeOut('slow');
+                                }, 2000);
 
-            function submitNoiseLevelForm() {
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'save_noise_level_details' %}",
-                    data: $('#noise_level_form').serialize(),
-                    success: function(data) {
-                        if (data.message === 'success') {
-                            showSuccessMessage(
-                                'noise_level_successMsg',
-                                'Saved Successfully',
-                                function() {
+                                setTimeout(() => {
                                     $("#otherImpactsBtn").removeAttr("disabled");
                                     $("#collapseOtherImpacts").addClass("show");
                                     $("#collapseTwelve").removeClass("show");
-                                }
-                            );
-                        } else {
-                            showErrorMessage(
-                                'noise_level_errorMsg',
-                                data.error || 'Application Error'
-                            );
+                                }, 2000);
+                            } else {
+                                // Error case with focus management
+                                $('#noise_level_errorMsg')
+                                    .html('<i class="uil-exclamation-octagon me-1 h4 align-middle"></i> Please Check And Submit Again')
+                                    .removeAttr('tabindex')  // Remove focus blocker
+                                    .attr({
+                                        'aria-live': 'assertive',
+                                        'aria-atomic': 'true',
+                                        'role': 'alert'
+                                    })
+                                    .show()
+                                    .focus();  // Focus immediately after showing
+
+                                setTimeout(() => {
+                                    $('#noise_level_errorMsg').delay(2000).fadeOut('slow');
+                                }, 2000);
+                            }
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        showErrorMessage(
-                            'noise_level_errorMsg',
-                            `Request Error: ${error}`
-                        );
-                    }
-                });
+                    });
+                }
             }
         
-            function save_other_impact_details() {
-                // Hide all error messages first
-                $('.alert-danger').hide();
+            function save_other_impact_details()
+            {
+                let en_other_impact_odour_source = $('#en_other_impact_odour_source').val();
+                let en_other_impact_odour_qty = $('#en_other_impact_odour_qty').val();
+                let en_other_impact_odour_mgt_plan = $('#en_other_impact_odour_mgt_plan').val();
+                let en_other_impact_fugutive_source = $('#en_other_impact_fugutive_source').val();
+                let en_other_impact_fugutive_qty = $('#en_other_impact_fugutive_qty').val();
+                let en_other_impact_fugutive_mgt_plan = $('#en_other_impact_fugutive_mgt_plan').val();
+                let en_other_impact_slope_source = $('#en_other_impact_slope_source').val();
+                let en_other_impact_slope_qty = $('#en_other_impact_slope_qty').val();
+                let en_other_impact_slope_mgt_plan = $('#en_other_impact_slope_mgt_plan').val();
+                let en_other_impact_aesthetic_source = $('#en_other_impact_aesthetic_source').val();
+                let en_other_impact_aesthetic_qty = $('#en_other_impact_aesthetic_qty').val();
+                let en_other_impact_aesthetic_mgt_plan = $('#en_other_impact_aesthetic_mgt_plan').val();
+                let en_other_impact_mucks_source = $('#en_other_impact_mucks_source').val();
+                let en_other_impact_mucks_qty = $('#en_other_impact_mucks_qty').val();
+                let en_other_impact_mucks_mgt_plan = $('#en_other_impact_mucks_mgt_plan').val();
+                let en_other_impact_sewerage_source = $('#en_other_impact_sewerage_source').val();
+                let en_other_impact_sewerage_qty = $('#en_other_impact_sewerage_qty').val();
+                let en_other_impact_sewerage_mgt_plan = $('#en_other_impact_sewerage_mgt_plan').val();
+                let en_other_impact_erosion_source = $('#en_other_impact_erosion_source').val();
+                let en_other_impact_erosion_qty = $('#en_other_impact_erosion_qty').val();
+                let en_other_impact_erosion_mgt_plan = $('#en_other_impact_erosion_mgt_plan').val();
+                let en_other_impact_storm_water_source = $('#en_other_impact_storm_water_source').val();
+                let en_other_impact_storm_water_qty = $('#en_other_impact_storm_water_qty').val();
+                let en_other_impact_storm_water_mgt_plan = $('#en_other_impact_storm_water_mgt_plan').val();
+                let en_other_impact_habitat_source = $('#en_other_impact_habitat_source').val();
+                let en_other_impact_habitat_qty = $('#en_other_impact_habitat_qty').val();
+                let en_other_impact_habitat_mgt_plan = $('#en_other_impact_habitat_mgt_plan').val();
+                let en_other_impact_socio_source = $('#en_other_impact_socio_source').val();
+                let en_other_impact_socio_qty = $('#en_other_impact_socio_qty').val();
+                let en_other_impact_socio_mgt_plan = $('#en_other_impact_socio_mgt_plan').val();
+                let en_other_impact_water_source_source = $('#en_other_impact_water_source_source').val();
+                let en_other_impact_water_source_qty = $('#en_other_impact_water_source_qty').val();
+                let en_other_impact_water_source_mgt_plan = $('#en_other_impact_water_source_mgt_plan').val();
+                let en_other_impact_other_source = $('#en_other_impact_other_source').val();
+                let en_other_impact_other_qty = $('#en_other_impact_other_qty').val();
+                let en_other_impact_other_mgt_plan = $('#en_other_impact_other_mgt_plan').val();
 
-                // Define all impact types and their fields
-                const impactTypes = [
-                    { name: 'odour', label: 'Odour' },
-                    { name: 'fugutive', label: 'Fugitive' },
-                    { name: 'slope', label: 'Slope' },
-                    { name: 'aesthetic', label: 'Aesthetic' },
-                    { name: 'mucks', label: 'Mucks' },
-                    { name: 'sewerage', label: 'Sewerage' },
-                    { name: 'erosion', label: 'Erosion' },
-                    { name: 'storm_water', label: 'Storm Water' },
-                    { name: 'habitat', label: 'Habitat' },
-                    { name: 'socio', label: 'Socio' },
-                    { name: 'water_source', label: 'Water Source' },
-                    { name: 'other', label: 'Other' }
-                ];
-
-                // Field types for each impact
-                const fieldTypes = [
-                    { suffix: 'source', message: 'Enter source of {label} impact' },
-                    { suffix: 'qty', message: 'Enter quantity of {label} impact' },
-                    { suffix: 'mgt_plan', message: 'Provide management plan for {label} impact' }
-                ];
-
-                // Validate all impact fields
-                for (const impact of impactTypes) {
-                    for (const field of fieldTypes) {
-                        const fieldId = `en_other_impact_${impact.name}_${field.suffix}`;
-                        if ($(`#${fieldId}`).val() === "") {
-                            const message = field.message.replace('{label}', impact.label);
-                            showErrorAndFocus(
-                                `${fieldId}ErrorMsg`,
-                                message,
-                                fieldId
-                            );
-                            return false;
-                        }
-                    }
+                if(en_other_impact_odour_source == "")
+                {
+                    $('#en_other_impact_odour_sourceErrorMsg').html("Enter Name of Project");
+                    $('#en_other_impact_odour_sourceErrorMsg').show();
+                    $('#en_other_impact_odour_sourceErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_odour_source').focus();
                 }
+                else if(en_other_impact_odour_qty == "")
+                {
+                    $('#en_other_impact_odour_qtyErrorMsg').html("Enter Business Type");
+                    $('#en_other_impact_odour_qtyErrorMsg').show();
+                    $('#en_other_impact_odour_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_odour_qty').focus();
+                }
+                else if(en_other_impact_odour_mgt_plan == "")
+                {
+                    $('#en_other_impact_odour_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_other_impact_odour_mgt_planErrorMsg').show();
+                    $('#en_other_impact_odour_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_odour_mgt_plan').focus();
+                }
+                else if(en_other_impact_fugutive_source == "")
+                {
+                    $('#en_other_impact_fugutive_sourceErrorMsg').html("Enter CID");
+                    $('#en_other_impact_fugutive_sourceErrorMsg').show();
+                    $('#en_other_impact_fugutive_sourceErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_fugutive_source').focus();
+                }
+                else if(en_other_impact_fugutive_qty == "")
+                {
+                    $('#en_other_impact_fugutive_qtyErrorMsg').html("Enter CID");
+                    $('#en_other_impact_fugutive_qtyErrorMsg').show();
+                    $('#en_other_impact_fugutive_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_fugutive_qty').focus();
+                }
+                else if(en_other_impact_fugutive_mgt_plan == "")
+                {
+                    $('#en_other_impact_fugutive_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_other_impact_fugutive_mgt_planErrorMsg').show();
+                    $('#en_other_impact_fugutive_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_fugutive_mgt_plan').focus();
+                }
+                else if(en_other_impact_slope_source == "")
+                {
+                    $('#en_other_impact_slope_sourceErrorMsg').html("Enter CID");
+                    $('#en_other_impact_slope_sourceErrorMsg').show();
+                    $('#en_other_impact_slope_sourceErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_slope_source').focus();
+                }
+                else if(en_other_impact_slope_qty == "")
+                {
+                    $('#en_other_impact_slope_qtyErrorMsg').html("Enter CID");
+                    $('#en_other_impact_slope_qtyErrorMsg').show();
+                    $('#en_other_impact_slope_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_slope_qty').focus();
+                }
+                else if(en_other_impact_slope_mgt_plan == "")
+                {
+                    $('#en_other_impact_slope_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_other_impact_slope_mgt_planErrorMsg').show();
+                    $('#en_other_impact_slope_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_slope_mgt_plan').focus();
+                }
+                else if(en_other_impact_aesthetic_source == "")
+                {
+                    $('#en_other_impact_aesthetic_sourceErrorMsg').html("Enter CID");
+                    $('#en_other_impact_aesthetic_sourceErrorMsg').show();
+                    $('#en_other_impact_aesthetic_sourceErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_aesthetic_source').focus();
+                }
+                else if(en_other_impact_aesthetic_qty == "")
+                {
+                    $('#en_other_impact_aesthetic_qtyErrorMsg').html("Enter CID");
+                    $('#en_other_impact_aesthetic_qtyErrorMsg').show();
+                    $('#en_other_impact_aesthetic_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_aesthetic_qty').focus();
+                }
+                else if(en_other_impact_aesthetic_mgt_plan == "")
+                {
+                    $('#en_other_impact_aesthetic_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_other_impact_aesthetic_mgt_planErrorMsg').show();
+                    $('#en_other_impact_aesthetic_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_aesthetic_mgt_plan').focus();
+                }
+                else if(en_other_impact_mucks_source == "")
+                {
+                    $('#en_other_impact_mucks_sourceErrorMsg').html("Enter CID");
+                    $('#en_other_impact_mucks_sourceErrorMsg').show();
+                    $('#en_other_impact_mucks_sourceErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_mucks_source').focus();
+                }
+                else if(en_other_impact_mucks_qty == "")
+                {
+                    $('#en_other_impact_mucks_qtyErrorMsg').html("Enter CID");
+                    $('#en_other_impact_mucks_qtyErrorMsg').show();
+                    $('#en_other_impact_mucks_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_mucks_qty').focus();
+                }
+                else if(en_other_impact_mucks_mgt_plan == "")
+                {
+                    $('#en_other_impact_mucks_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_other_impact_mucks_mgt_planErrorMsg').show();
+                    $('#en_other_impact_mucks_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_mucks_mgt_plan').focus();
+                }
+                else if(en_other_impact_sewerage_source == "")
+                {
+                    $('#en_other_impact_sewerage_sourceErrorMsg').html("Enter CID");
+                    $('#en_other_impact_sewerage_sourceErrorMsg').show();
+                    $('#en_other_impact_sewerage_sourceErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_sewerage_source').focus();
+                }
+                else if(en_other_impact_sewerage_qty == "")
+                {
+                    $('#en_other_impact_sewerage_qtyErrorMsg').html("Enter CID");
+                    $('#en_other_impact_sewerage_qtyErrorMsg').show();
+                    $('#en_other_impact_sewerage_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_sewerage_qty').focus();
+                }
+                else if(en_other_impact_sewerage_mgt_plan == "")
+                {
+                    $('#en_other_impact_sewerage_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_other_impact_sewerage_mgt_planErrorMsg').show();
+                    $('#en_other_impact_sewerage_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_sewerage_mgt_plan').focus();
+                }
+                else if(en_other_impact_erosion_source == "")
+                {
+                    $('#en_other_impact_erosion_sourceErrorMsg').html("Enter CID");
+                    $('#en_other_impact_erosion_sourceErrorMsg').show();
+                    $('#en_other_impact_erosion_sourceErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_erosion_source').focus();
+                }
+                else if(en_other_impact_erosion_qty == "")
+                {
+                    $('#en_other_impact_erosion_qtyErrorMsg').html("Enter CID");
+                    $('#en_other_impact_erosion_qty').show();
+                    $('#en_other_impact_erosion_qty').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_erosion_qty').focus();
+                }
+                else if(en_other_impact_erosion_mgt_plan == "")
+                {
+                    $('#en_other_impact_erosion_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_other_impact_erosion_mgt_planErrorMsg').show();
+                    $('#en_other_impact_erosion_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_erosion_mgt_plan').focus();
+                }
+                else if(en_other_impact_storm_water_source == "")
+                {
+                    $('#en_other_impact_storm_water_sourceErrorMsg').html("Enter CID");
+                    $('#en_other_impact_storm_water_sourceErrorMsg').show();
+                    $('#en_other_impact_storm_water_sourceErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_storm_water_source').focus();
+                }
+                else if(en_other_impact_storm_water_qty == "")
+                {
+                    $('#en_other_impact_storm_water_qtyErrorMsg').html("Enter CID");
+                    $('#en_other_impact_storm_water_qtyErrorMsg').show();
+                    $('#en_other_impact_storm_water_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_storm_water_qty').focus();
+                }
+                else if(en_other_impact_storm_water_mgt_plan == "")
+                {
+                    $('#en_other_impact_storm_water_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_other_impact_storm_water_mgt_planErrorMsg').show();
+                    $('#en_other_impact_storm_water_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_storm_water_mgt_plan').focus();
+                }
+                else if(en_other_impact_habitat_source == "")
+                {
+                    $('#en_other_impact_habitat_sourceErrorMsg').html("Enter CID");
+                    $('#en_other_impact_habitat_sourceErrorMsg').show();
+                    $('#en_other_impact_habitat_sourceErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_habitat_source').focus();
+                }
+                else if(en_other_impact_habitat_qty == "")
+                {
+                    $('#en_other_impact_habitat_qtyErrorMsg').html("Enter CID");
+                    $('#en_other_impact_habitat_qtyErrorMsg').show();
+                    $('#en_other_impact_habitat_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_habitat_qty').focus();
+                }
+                else if(en_other_impact_habitat_mgt_plan == "")
+                {
+                    $('#en_other_impact_habitat_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_other_impact_habitat_mgt_planErrorMsg').show();
+                    $('#en_other_impact_habitat_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_habitat_mgt_plan').focus();
+                }
+                else if(en_other_impact_socio_source == "")
+                {
+                    $('#en_other_impact_socio_sourceErrorMsg').html("Enter CID");
+                    $('#en_other_impact_socio_sourceErrorMsg').show();
+                    $('#en_other_impact_socio_sourceErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_socio_source').focus();
+                }
+                else if(en_other_impact_socio_qty == "")
+                {
+                    $('#en_other_impact_socio_qtyErrorMsg').html("Enter CID");
+                    $('#en_other_impact_socio_qtyErrorMsg').show();
+                    $('#en_other_impact_socio_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_socio_qty').focus();
+                }
+                else if(en_other_impact_socio_mgt_plan == "")
+                {
+                    $('#en_other_impact_socio_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_other_impact_socio_mgt_planErrorMsg').show();
+                    $('#en_other_impact_socio_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_socio_mgt_plan').focus();
+                }
+                else if(en_other_impact_water_source_source == "")
+                {
+                    $('#en_other_impact_water_source_sourceErrorMsg').html("Enter CID");
+                    $('#en_other_impact_water_source_sourceErrorMsg').show();
+                    $('#en_other_impact_water_source_sourceErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_water_source_source').focus();
+                }
+                else if(en_other_impact_water_source_qty == "")
+                {
+                    $('#en_other_impact_water_source_qtyErrorMsg').html("Enter CID");
+                    $('#en_other_impact_water_source_qtyErrorMsg').show();
+                    $('#en_other_impact_water_source_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_water_source_qty').focus();
+                }
+                else if(en_other_impact_water_source_mgt_plan == "")
+                {
+                    $('#en_other_impact_water_source_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_other_impact_water_source_mgt_planErrorMsg').show();
+                    $('#en_other_impact_water_source_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_water_source_mgt_plan').focus();
+                }
+                else if(en_other_impact_other_source == "")
+                {
+                    $('#en_other_impact_other_sourceErrorMsg').html("Enter CID");
+                    $('#en_other_impact_other_sourceErrorMsg').show();
+                    $('#en_other_impact_other_sourceErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_other_source').focus();
+                }
+                else if(en_other_impact_other_qty == "")
+                {
+                    $('#en_other_impact_other_qtyErrorMsg').html("Enter CID");
+                    $('#en_other_impact_other_qtyErrorMsg').show();
+                    $('#en_other_impact_other_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_other_qty').focus();
+                }
+                else if(en_other_impact_other_mgt_plan == "")
+                {
+                    $('#en_other_impact_other_mgt_planErrorMsg').html("Enter CID");
+                    $('#en_other_impact_other_mgt_planErrorMsg').show();
+                    $('#en_other_impact_other_mgt_planErrorMsg').delay(2000).fadeOut('slow');
+                    $('#en_other_impact_other_mgt_plan').focus();
+                }
+                else
+                {
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'save_other_impact_details' %}",
+                        data : $('#other_impact_form').serialize(),
+                        success : function(data)
+                        {
+                            if (data.message == 'success') {
+                                // Success case with focus and accessibility
+                                $('#other_impact_successMsg')
+                                    .html('Saved Successfully')
+                                    .removeAttr('tabindex')  // Remove focus blocker
+                                    .attr({
+                                        'aria-live': 'polite',
+                                        'aria-atomic': 'true'
+                                    })
+                                    .show()
+                                    .focus();  // Set focus immediately after showing
 
-                // If all validations pass, submit the form
-                submitOtherImpactForm();
-            }
+                                setTimeout(() => {
+                                    $('#other_impact_successMsg').delay(2000).fadeOut('slow');
+                                }, 2000);
 
-            function submitOtherImpactForm() {
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'save_other_impact_details' %}",
-                    data: $('#other_impact_form').serialize(),
-                    success: function(data) {
-                        if (data.message === 'success') {
-                            showSuccessMessage(
-                                'other_impact_successMsg',
-                                'Saved Successfully',
-                                function() {
+                                setTimeout(() => {
                                     $("#headingAttachmentBtn").removeAttr("disabled");
                                     $("#collapseAttachment").addClass("show");
                                     $("#collapseOtherImpacts").removeClass("show");
-                                }
-                            );
-                        } else {
-                            showErrorMessage(
-                                'other_impact_errorMsg',
-                                data.error || 'Application Error'
-                            );
+                                }, 2000);
+                            } else {
+                                // Error case with focus management
+                                $('#other_impact_errorMsg')
+                                    .html('Please Check And Submit Again')
+                                    .removeAttr('tabindex')  // Remove focus blocker
+                                    .attr({
+                                        'aria-live': 'assertive',
+                                        'aria-atomic': 'true'
+                                    })
+                                    .show()
+                                    .focus();  // Set focus immediately after showing
+
+                                setTimeout(() => {
+                                    $('#other_impact_errorMsg').delay(2000).fadeOut('slow');
+                                }, 2000);
+                            }
+                        }
+                    });
+                }
+            }
+        
+            function save_general_attachment_details() {
+                // Set success message and attributes
+                $('#general_attachment_successMsg')
+                    .text("Saved Successfully")  // Using text() instead of html()
+                    .removeAttr('tabindex')      // Remove focus blocker
+                    .attr({
+                        'aria-live': 'polite',
+                        'aria-atomic': 'true'
+                    })
+                    .show()
+                    .focus();  // Set focus for accessibility
+
+                // Fade out after 2 seconds
+                setTimeout(() => {
+                    $('#general_attachment_successMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+
+                // Panel navigation after 2 seconds
+                setTimeout(() => {
+                    $("#headingDisclaimerBtn").removeAttr("disabled");
+                    $("#collapseDisclaimer").addClass("show");
+                    $("#collapseAttachment").removeClass("show");
+                }, 2000);
+            }
+        
+            function submit_general_application() {
+                // Show loading indicator
+                $("#pageloader").show();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'submit_general_application' %}",
+                    data: $('#general_submit_form').serialize(),
+                    success: function(data) {
+                        $("#pageloader").hide();
+                        
+                        if (data.message == 'success') {
+                            // Success case
+                            $('#general_submit_successMsg')
+                                .text("Application Submitted Successfully")
+                                .removeAttr('tabindex')
+                                .attr({
+                                    'aria-live': 'polite',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
+
+                            setTimeout(() => {
+                                $('#general_submit_successMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+
+                            setTimeout(() => location.reload(), 2000);
+                        }
+                        else if (data.message == 'not submitted') {
+                            // Ancillary not submitted case
+                            $('#general_submit_errorMsg')
+                                .text("Please Submit Your Ancillary First And Try Again")
+                                .removeAttr('tabindex')
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
+
+                            setTimeout(() => {
+                                $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+                        }
+                        else {
+                            // Other error cases
+                            $('#general_submit_errorMsg')
+                                .text(`Application Error: ${data.error}`)
+                                .removeAttr('tabindex')
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
+
+                            setTimeout(() => {
+                                $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
                         }
                     },
                     error: function(xhr, status, error) {
-                        showErrorMessage(
-                            'other_impact_errorMsg',
-                            `Request Error: ${error}`
-                        );
-                    }
-                });
-            }
-        
-            function save_general_attachment_details()
-            {
-                $('#general_attachment_successMsg').html("Saved Successfully");
-                $('#general_attachment_successMsg').show();
-                setTimeout(function()
-                {
-                    $('#general_attachment_successMsg').delay(2000).fadeOut('slow');
-                }, 2000);
-                setTimeout(function() {
-                    $("#headingDisclaimerBtn").removeAttr("disabled");
-                    $("#collapseDisclaimer").addClass("show");
-                    $("#collapseAttachment").removeClass("show");
-                }, 2000);
-            }
-        
-            function submit_general_application()
-            {
-                $("#pageloader").show();
-                $.ajax
-                ({
-                    type : "POST",
-                    url : "{% url 'submit_general_application' %}",
-                    data : $('#general_submit_form').serialize(),
-                    success : function(data)
-                    {
+                        // AJAX error handling
                         $("#pageloader").hide();
-                        if(data.message == 'success')
-                        {
-                            $('#general_submit_successMsg').html("Application Submitted Successfully");
-                            $('#general_submit_successMsg').show();
-                            setTimeout(function()
-                            {
-                                $('#general_submit_successMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
-                            setTimeout(function() {
-                                location.reload()
-                            }, 2000);
-                        }
-                        else if(data.message == 'not submitted')
-                        {
-                            $('#iee_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
-                            $('#iee_submit_errorMsg').show();
-                            setTimeout(function()
-                            {
-                                $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
-                        }
-                        else
-                        {
-                            var errorMsg = data.error;
-        
-                            $('#application_form_errorMsg').html(`Application Error: ${data.error}`);
-                            $('#application_form_errorMsg').show();
-                            $('#application_form_errorMsg').focus();
-                            
-                            setTimeout(function() {
-                                $('#application_form_errorMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
-                        }
+                        $('#general_submit_errorMsg')
+                            .text(`Request failed: ${error}`)
+                            .removeAttr('tabindex')
+                            .attr({
+                                'aria-live': 'assertive',
+                                'aria-atomic': 'true'
+                            })
+                            .show()
+                            .focus();
+
+                        setTimeout(() => {
+                            $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
                     }
                 });
             }
         
-            function save_general_attachment_details()
-            {
-                $('#general_attachment_successMsg').html("Saved Successfully");
-                $('#general_attachment_successMsg').show();
-                setTimeout(function()
-                {
-                    $('#general_attachment_successMsg').delay(2000).fadeOut('slow');
-                }, 2000);
-                setTimeout(function() {
-                    $("#headingDisclaimerBtn").removeAttr("disabled");
-                    $("#collapseDisclaimer").addClass("show");
-                    $("#collapseAttachment").removeClass("show");
-                }, 2000);
-            }
-        
-            function submit_general_application()
-            {
-                $("#pageloader").show();
-                $.ajax
-                ({
-                    type : "POST",
-                    url : "{% url 'submit_general_application' %}",
-                    data : $('#general_submit_form').serialize(),
-                    success : function(data)
-                    {
-                        $("#pageloader").hide();
-                        if(data.message == 'success')
-                        {
-                            $('#general_submit_successMsg').html("Application Submitted Successfully");
-                            $('#general_submit_successMsg').show();
-                            setTimeout(function()
-                            {
-                                $('#general_submit_successMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
-                            setTimeout(function() {
-                                location.reload()
-                            }, 2000);
-                        }
-                        else if(data.message == 'not submitted')
-                        {
-                            $('#iee_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
-                            $('#iee_submit_errorMsg').show();
-                            setTimeout(function()
-                            {
-                                $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
-                        }
-                        else
-                        {
-                            var errorMsg = data.error;
-        
-                            $('#application_form_errorMsg').html(`Application Error: ${data.error}`);
-                            $('#application_form_errorMsg').show();
-                            $('#application_form_errorMsg').focus();
-                            
-                            setTimeout(function() {
-                                $('#application_form_errorMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
-                        }
-                    }
-                });
-            }
-        
+            
         
             function add_machine_tool_details()
             {
@@ -5474,17 +6153,36 @@
                     data: $('#general_application_form').serialize(),
                     success: function(data) {
                         if (data.message == 'success') {
-                            $('#application_form_successMsg').html("Saved Successfully").show().focus();
-                            setTimeout(function() {
+                            // Success case with accessibility
+                            $('#application_form_successMsg')
+                                .html('<i class="uil-folder-heart me-1 h4 align-middle"></i> Saved Successfully')
+                                .removeAttr('tabindex')  // Remove focus blocker
+                                .attr({
+                                    'aria-live': 'polite',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();  // Set focus for accessibility
+
+                            setTimeout(() => {
                                 $('#application_form_successMsg').fadeOut('slow');
                                 $("#headingTwoBtn").removeAttr("disabled");
                                 $("#collapseTwo").addClass("show");
                                 $("#collapseOne").removeClass("show");
                             }, 2000);
-                        }
-                        else {
-                            $('#application_form_errorMsg').html(`Application Error: ${data.error}`).show().focus();
-                            setTimeout(function() {
+                        } else {
+                            // Error case with accessibility
+                            $('#application_form_errorMsg')
+                                .html(`<i class="uil-folder-heart me-1 h4 align-middle"></i> Application Error: ${data.error}`)
+                                .removeAttr('tabindex')  // Remove focus blocker
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
+
+                            setTimeout(() => {
                                 $('#application_form_errorMsg').fadeOut('slow');
                             }, 2000);
                         }
