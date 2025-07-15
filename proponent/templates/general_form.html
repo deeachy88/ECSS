@@ -732,7 +732,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="approach_roadErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="anc_road_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                     <div class="row" id="approach_road_details" style="display: none;">
@@ -790,7 +790,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="blasting_radioErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="anc_road_blast_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                     <div class="row blasting_details" style="display: none;">
@@ -3277,7 +3277,7 @@
         }
         else if(anc_road_blast_required < 1)
         {
-            $('#anc_road_blast_requiredErrorMsg').html("Enter Termination Point.");
+            $('#anc_road_blast_requiredErrorMsg').html("Choose One.");
             $('#anc_road_blast_requiredErrorMsg').show();
             $('#anc_road_blast_requiredErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_blast_required').focus();
