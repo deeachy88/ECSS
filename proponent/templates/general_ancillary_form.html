@@ -3957,7 +3957,55 @@
                                 $('#general_submit_successMsg').delay(2000).fadeOut('slow');
                             }, 2000);
 
-                            setTimeout(() => location.reload(), 2000);
+                            if(data.draft_count > 0)
+                            {
+                                if(data.type == 'IEE')
+                                {
+                                    window.location.href = '/draft_iee_application';
+                                }
+                                else if(data.type == 'IEA')
+                                {
+                                    window.location.href = '/draft_ea_application';
+                                }
+                                else if(data.type == 'ENE')
+                                {
+                                    window.location.href = '/draft_energy_application';
+                                }
+                                else if(data.type == 'ROA')
+                                {
+                                    window.location.href = '/draft_road_application';
+                                }
+                                else if(data.type == 'TRA')
+                                {
+                                    window.location.href = '/draft_transmission_application';
+                                }
+                                else if(data.type == 'TOU')
+                                {
+                                    window.location.href = '/draft_tourism_application';
+                                }
+                                else if(data.type == 'GWA')
+                                {
+                                    window.location.href = '/draft_ground_water_application';
+                                }
+                                else if(data.type == 'FOR')
+                                {
+                                    window.location.href = '/draft_forestry_application';
+                                }
+                                else if(data.type == 'QUA')
+                                {
+                                    window.location.href = '/draft_quarry_application';
+                                }
+                                else if(data.type == 'GEN')
+                                {
+                                    window.location.href = '/draft_general_application';
+                                }
+                            }
+                            else
+                            {
+                                setTimeout(function() {
+                                    location.reload()
+                                }, 2000);
+                            }
                         }
                         else if (data.message == 'not submitted') {
                             // Ancillary not submitted case
