@@ -1861,7 +1861,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="raw_material_storage_method" id="raw_material_storage_method">
-                        <option selected>Choose One</option>
+                        <option value="">Choose One</option>
                         <option value="Fully_Enclosed">Fully Enclosed</option>
                         <option value="Partially_Enclosed">Partially Enclosed</option>
                         <option value="Open">Open</option>
@@ -1927,7 +1927,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="edit_raw_material_storage_method" id="edit_raw_material_storage_method">
-                        <option selected>Choose One</option>
+                        <option "">Choose One</option>
                         <option value="Fully_Enclosed">Fully Enclosed</option>
                         <option value="Partially_Enclosed">Partially Enclosed</option>
                         <option value="Open">Open</option>
@@ -2339,7 +2339,7 @@
                             <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
                         </select>
                     </div>
-                    <div class="alert alert-danger" id="road_ErrorMsg" style="display:none"></div>
+                    <div class="alert alert-danger" id="road_terrainErrorMsg" style="display:none"></div>
                 </div>
             </div>
             <div class="row">
@@ -2439,7 +2439,7 @@
                             <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
                         </select>
                     </div>
-                    <div class="alert alert-danger" id="edit_road_ErrorMsg" style="display:none"></div>
+                    <div class="alert alert-danger" id="edit_road_terrainErrorMsg" style="display:none"></div>
                 </div>
             </div>
             <div class="row">
@@ -3170,21 +3170,21 @@
         }
         else if(water_required_value == 'Yes' && water_downstream_users == "")
         {
-            $('#water_downstream_usersErrorMsg').html("Please Select One.");
+            $('#water_downstream_usersErrorMsg').html("Enter Information.");
             $('#water_downstream_usersErrorMsg').show();
             $('#water_downstream_usersErrorMsg').delay(2000).fadeOut('slow');
             $('#water_downstream_users').focus();
         }
         else if(water_required_value == 'Yes' && water_flow_rate_lean == "")
         {
-            $('#water_flow_rate_leanErrorMsg').html("Please Select One.");
+            $('#water_flow_rate_leanErrorMsg').html("Enter Flow Rate.");
             $('#water_flow_rate_leanErrorMsg').show();
             $('#water_flow_rate_leanErrorMsg').delay(2000).fadeOut('slow');
             $('#water_flow_rate_lean').focus();
         }
         else if(water_required_value == 'Yes' && water_source_distance == "")
         {
-            $('#water_source_distanceErrorMsg').html("Please Select One.");
+            $('#water_source_distanceErrorMsg').html("Enter Distance.");
             $('#water_source_distanceErrorMsg').show();
             $('#water_source_distanceErrorMsg').delay(2000).fadeOut('slow');
             $('#water_source_distance').focus();
@@ -5070,7 +5070,7 @@
                     $('#road_land_typeErrorMsg').show();
                     $('#road_land_typeErrorMsg').delay(2000).fadeOut('slow');
                 }
-                else if(terrain == "")
+                else if(road_terrain == "")
                 {
                     $('#road_terrainErrorMsg').html("Select One ");
                     $('#road_terrainErrorMsg').show();
@@ -5278,10 +5278,10 @@
         
                 if(produce_name == "")
                 {
-                    $('#produce_nameErrorMsg').html("Enter Name of Produce");
-                    $('#produce_nameErrorMsg').show();
-                    $('#produce_nameErrorMsg').delay(2000).fadeOut('slow');
-                    $('#produce_name').focus();
+                    $('#product_nameErrorMsg').html("Enter Name of Produce");
+                    $('#product_nameErrorMsg').show();
+                    $('#product_nameErrorMsg').delay(2000).fadeOut('slow');
+                    $('#product_name').focus();
                 }
                 else if(quantity_annum == "")
                 {
