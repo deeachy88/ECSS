@@ -3232,20 +3232,20 @@
         }
     }
         
-            function save_anc_approach_road_details()
+    function save_anc_approach_road_details()
     {
 
-        anc_road_required = $("input[name=anc_road_required]:checked").length;
-        anc_road_required_value = $("input[name=anc_road_required]:checked").val();
-        anc_road_length = $('#anc_road_length').val();
-        anc_road_start_point = $('#anc_road_start_point').val();
-        anc_road_end_point  = $('#anc_road_end_point').val();
-        anc_road_blast_required= $("input[name=anc_road_blast_required]:checked").length;
-        anc_road_blast_required_value = $("input[name=anc_road_blast_required]:checked").val();
-        anc_road_blast_type = $('#anc_road_blast_type').val();
-        anc_road_blast_qty = $('#anc_road_blast_qty').val();
-        anc_road_blast_location = $('#anc_road_blast_location').val();
-        anc_road_blast_frequency_time = $('#anc_road_blast_frequency_time').val();
+        let anc_road_required = $("input[name=anc_road_required]:checked").length;
+        let anc_road_required_value = $("input[name=anc_road_required]:checked").val();
+        let anc_road_length = $('#anc_road_length').val();
+        let anc_road_start_point = $('#anc_road_start_point').val();
+        let anc_road_end_point  = $('#anc_road_end_point').val();
+        let anc_road_blast_required= $("input[name=anc_road_blast_required]:checked").length;
+        let anc_road_blast_required_value = $("input[name=anc_road_blast_required]:checked").val();
+        let anc_road_blast_type = $('#anc_road_blast_type').val();
+        let anc_road_blast_qty = $('#anc_road_blast_qty').val();
+        let anc_road_blast_location = $('#anc_road_blast_location').val();
+        let anc_road_blast_frequency_time = $('#anc_road_blast_frequency_time').val();
 
         if(anc_road_required < 1)
         {
@@ -3355,13 +3355,13 @@
         
     function save_anc_power_line_form()
     {
-        anc_power_line_required = $("input[name=anc_power_line_required]:checked").length;
-        anc_power_line_required_value = $("input[name=anc_power_line_required]:checked").val();
-        anc_power_line_voltage = $('#anc_power_line_voltage').val();
-        anc_power_line_length = $('#anc_power_line_length').val();
-        anc_power_line_start_point = $('#anc_power_line_start_point').val();
-        anc_power_line_end_point = $('#anc_power_line_end_point').val();
-        anc_power_line_storing_method = $('#anc_power_line_storing_method').val();
+        let anc_power_line_required = $("input[name=anc_power_line_required]:checked").length;
+        let anc_power_line_required_value = $("input[name=anc_power_line_required]:checked").val();
+        let anc_power_line_voltage = $('#anc_power_line_voltage').val();
+        let anc_power_line_length = $('#anc_power_line_length').val();
+        let anc_power_line_start_point = $('#anc_power_line_start_point').val();
+        let anc_power_line_end_point = $('#anc_power_line_end_point').val();
+        let anc_power_line_storing_method = $('#anc_power_line_storing_method').val();
 
         if(anc_power_line_required < 1)
         {
