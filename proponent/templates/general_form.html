@@ -2999,7 +2999,7 @@
             }
         }
         
-            function save_general_water_requirement()
+    function save_general_water_requirement()
     {
         let energy_source = $('#energy_source').val();
         let water_excavated_muck = $("input[name=water_excavated_muck]:checked").length;
@@ -3028,7 +3028,14 @@
         let water_flow_rate_lean = $('#water_flow_rate_lean').val();
         let water_source_distance = $('#water_source_distance').val();
 
-        if(water_excavated_muck < 1)
+        if(energy_source == "")
+        {
+            $('#energy_sourceErrorMsg').html("Enter Source.");
+            $('#energy_sourceErrorMsg').show();
+            $('#energy_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#energy_source').focus();
+        }
+        else if(water_excavated_muck < 1)
         {
             $('#water_excavated_muckErrorMsg').html("Please Select One.");
             $('#water_excavated_muckErrorMsg').show();
