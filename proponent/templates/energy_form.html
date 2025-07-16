@@ -556,7 +556,7 @@
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Mention the source of energy to operate the proposed activity</label>
                                                 <select class="form-control" id="energy_source" name="energy_source">
-                                                    <option>--SELECT--</option>
+                                                    <option value="">--SELECT--</option>
                                                     <option value="Electric">Electric</option>  
                                                     <option value="Coal">Coal</option>
                                                     <option value="High_Speed_Dielsel">High Speed Dielsel</option>
@@ -2304,6 +2304,32 @@
                 get_total_area_acre();
             }
         }
+    }
+
+    function getGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#gewog').html(data);
+            }
+        });
+    }
+
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#vil_chiwog').html(data);
+            }
+        });
     }
 
     function check_industry_radio(value)

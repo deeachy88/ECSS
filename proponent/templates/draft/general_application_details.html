@@ -3793,21 +3793,21 @@
         }
         else if(water_required_value == 'Yes' && water_downstream_users == "")
         {
-            $('#water_downstream_usersErrorMsg').html("Please Select One.");
+            $('#water_downstream_usersErrorMsg').html("Enter Information.");
             $('#water_downstream_usersErrorMsg').show();
             $('#water_downstream_usersErrorMsg').delay(2000).fadeOut('slow');
             $('#water_downstream_users').focus();
         }
         else if(water_required_value == 'Yes' && water_flow_rate_lean == "")
         {
-            $('#water_flow_rate_leanErrorMsg').html("Please Select One.");
+            $('#water_flow_rate_leanErrorMsg').html("Enter Flow Rate.");
             $('#water_flow_rate_leanErrorMsg').show();
             $('#water_flow_rate_leanErrorMsg').delay(2000).fadeOut('slow');
             $('#water_flow_rate_lean').focus();
         }
         else if(water_required_value == 'Yes' && water_source_distance == "")
         {
-            $('#water_source_distanceErrorMsg').html("Please Select One.");
+            $('#water_source_distanceErrorMsg').html("Enter Distance.");
             $('#water_source_distanceErrorMsg').show();
             $('#water_source_distanceErrorMsg').delay(2000).fadeOut('slow');
             $('#water_source_distance').focus();
@@ -3900,7 +3900,7 @@
         }
         else if(anc_road_blast_required < 1)
         {
-            $('#anc_road_blast_requiredErrorMsg').html("Enter Termination Point.");
+            $('#anc_road_blast_requiredErrorMsg').html("Choose One.");
             $('#anc_road_blast_requiredErrorMsg').show();
             $('#anc_road_blast_requiredErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_blast_required').focus();
@@ -5693,7 +5693,7 @@
                     $('#road_land_typeErrorMsg').show();
                     $('#road_land_typeErrorMsg').delay(2000).fadeOut('slow');
                 }
-                else if(terrain == "")
+                else if(road_terrain == "")
                 {
                     $('#road_terrainErrorMsg').html("Select One ");
                     $('#road_terrainErrorMsg').show();
@@ -5901,10 +5901,10 @@
         
                 if(produce_name == "")
                 {
-                    $('#produce_nameErrorMsg').html("Enter Name of Produce");
-                    $('#produce_nameErrorMsg').show();
-                    $('#produce_nameErrorMsg').delay(2000).fadeOut('slow');
-                    $('#produce_name').focus();
+                    $('#product_nameErrorMsg').html("Enter Name of Produce");
+                    $('#product_nameErrorMsg').show();
+                    $('#product_nameErrorMsg').delay(2000).fadeOut('slow');
+                    $('#product_name').focus();
                 }
                 else if(quantity_annum == "")
                 {

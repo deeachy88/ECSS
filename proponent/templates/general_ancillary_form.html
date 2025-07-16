@@ -261,7 +261,7 @@
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Slope/Gradient</label>
                                                 <select class="form-select" name="terrain_slope" id="terrain_slope">
-                                                    <option selected>Choose One</option>
+                                                    <option value="">Choose One</option>
                                                     <option value="Flat_Land">Flat land (below 20 degrees)</option>
                                                     <option value="Gentle_Slope">Gentle slope (21-45 degrees)</option>
                                                     <option value="Steep_Slope">Steep slope (46 – 60 degrees)</option>
@@ -1417,7 +1417,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="storage_method" id="storage_method">
-                        <option selected>Choose One</option>
+                        <option value="">Choose One</option>
                         <option value="fully_enclosed">Fully Enclosed</option>
                         <option value="partially_enclosed">Partially Enclosed</option>
                         <option value="open">Open</option>
@@ -1476,7 +1476,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of storage</label>
                     <select class="form-select" name="edit_final_product_storage_method" id="edit_final_product_storage_method">
-                        <option selected>Choose One</option>
+                        <option value="">Choose One</option>
                         <option value="fully_enclosed">Fully Enclosed</option>
                         <option value="partially_enclosed">Partially Enclosed</option>
                         <option value="open">Open</option>
@@ -1572,7 +1572,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="raw_material_storage_method" id="raw_material_storage_method">
-                        <option selected>Choose One</option>
+                        <option value="">Choose One</option>
                         <option value="Fully_Enclosed">Fully Enclosed</option>
                         <option value="Partially_Enclosed">Partially Enclosed</option>
                         <option value="Open">Open</option>
@@ -1638,7 +1638,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="edit_raw_material_storage_method" id="edit_raw_material_storage_method">
-                        <option selected>Choose One</option>
+                        <option value="">Choose One</option>
                         <option value="Fully_Enclosed">Fully Enclosed</option>
                         <option value="Partially_Enclosed">Partially Enclosed</option>
                         <option value="Open">Open</option>
@@ -2881,21 +2881,21 @@
         }
         else if(water_required_value == 'Yes' && water_downstream_users == "")
         {
-            $('#water_downstream_usersErrorMsg').html("Please Select One.");
+            $('#water_downstream_usersErrorMsg').html("Enter Information.");
             $('#water_downstream_usersErrorMsg').show();
             $('#water_downstream_usersErrorMsg').delay(2000).fadeOut('slow');
             $('#water_downstream_users').focus();
         }
         else if(water_required_value == 'Yes' && water_flow_rate_lean == "")
         {
-            $('#water_flow_rate_leanErrorMsg').html("Please Select One.");
+            $('#water_flow_rate_leanErrorMsg').html("Enter Flow Rate.");
             $('#water_flow_rate_leanErrorMsg').show();
             $('#water_flow_rate_leanErrorMsg').delay(2000).fadeOut('slow');
             $('#water_flow_rate_lean').focus();
         }
         else if(water_required_value == 'Yes' && water_source_distance == "")
         {
-            $('#water_source_distanceErrorMsg').html("Please Select One.");
+            $('#water_source_distanceErrorMsg').html("Enter Distance.");
             $('#water_source_distanceErrorMsg').show();
             $('#water_source_distanceErrorMsg').delay(2000).fadeOut('slow');
             $('#water_source_distance').focus();
@@ -2988,7 +2988,7 @@
         }
         else if(anc_road_blast_required < 1)
         {
-            $('#anc_road_blast_requiredErrorMsg').html("Enter Termination Point.");
+            $('#anc_road_blast_requiredErrorMsg').html("Choose One.");
             $('#anc_road_blast_requiredErrorMsg').show();
             $('#anc_road_blast_requiredErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_blast_required').focus();
@@ -3957,55 +3957,7 @@
                                 $('#general_submit_successMsg').delay(2000).fadeOut('slow');
                             }, 2000);
 
-                            if(data.draft_count > 0)
-                            {
-                                if(data.type == 'IEE')
-                                {
-                                    window.location.href = '/draft_iee_application';
-                                }
-                                else if(data.type == 'IEA')
-                                {
-                                    window.location.href = '/draft_ea_application';
-                                }
-                                else if(data.type == 'ENE')
-                                {
-                                    window.location.href = '/draft_energy_application';
-                                }
-                                else if(data.type == 'ROA')
-                                {
-                                    window.location.href = '/draft_road_application';
-                                }
-                                else if(data.type == 'TRA')
-                                {
-                                    window.location.href = '/draft_transmission_application';
-                                }
-                                else if(data.type == 'TOU')
-                                {
-                                    window.location.href = '/draft_tourism_application';
-                                }
-                                else if(data.type == 'GWA')
-                                {
-                                    window.location.href = '/draft_ground_water_application';
-                                }
-                                else if(data.type == 'FOR')
-                                {
-                                    window.location.href = '/draft_forestry_application';
-                                }
-                                else if(data.type == 'QUA')
-                                {
-                                    window.location.href = '/draft_quarry_application';
-                                }
-                                else if(data.type == 'GEN')
-                                {
-                                    window.location.href = '/draft_general_application';
-                                }
-                            }
-                            else
-                            {
-                                setTimeout(function() {
-                                    location.reload()
-                                }, 2000);
-                            }
+                            setTimeout(() => location.reload(), 2000);
                         }
                         else if (data.message == 'not submitted') {
                             // Ancillary not submitted case
@@ -4829,7 +4781,7 @@
                     $('#road_land_typeErrorMsg').show();
                     $('#road_land_typeErrorMsg').delay(2000).fadeOut('slow');
                 }
-                else if(terrain == "")
+                else if(road_terrain == "")
                 {
                     $('#road_terrainErrorMsg').html("Select One ");
                     $('#road_terrainErrorMsg').show();
@@ -5037,10 +4989,10 @@
         
                 if(produce_name == "")
                 {
-                    $('#produce_nameErrorMsg').html("Enter Name of Produce");
-                    $('#produce_nameErrorMsg').show();
-                    $('#produce_nameErrorMsg').delay(2000).fadeOut('slow');
-                    $('#produce_name').focus();
+                    $('#product_nameErrorMsg').html("Enter Name of Produce");
+                    $('#product_nameErrorMsg').show();
+                    $('#product_nameErrorMsg').delay(2000).fadeOut('slow');
+                    $('#product_name').focus();
                 }
                 else if(quantity_annum == "")
                 {
