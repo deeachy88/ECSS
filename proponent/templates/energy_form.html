@@ -4445,7 +4445,9 @@
         let industrial_area_acre = $('#industrial_area_acre').val();
         let state_reserve_forest_acre = $('#state_reserve_forest_acre').val();
         let private_area_acre = $('#private_area_acre').val();
+        let others_area = $('#others_area').val();
         let others_area_acre = $('#others_area_acre').val();
+        
 
         if(project_name == "")
         {
@@ -4552,9 +4554,9 @@
             $('#private_area_acreErrorMsg').delay(2000).fadeOut('slow');
             $('#private_area_acre').focus();
         }
-        else if(others_area_acre == "")
+        else if ((others_area !== "NA" && others_area !== "") && others_area_acre === "")
         {
-            $('#others_area_acreErrorMsg').html("Enter Others");
+            $('#others_area_acreErrorMsg').html("Enter Others Area");
             $('#others_area_acreErrorMsg').show();
             $('#others_area_acreErrorMsg').delay(2000).fadeOut('slow');
             $('#others_area_acre').focus();
