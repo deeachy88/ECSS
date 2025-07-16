@@ -4441,6 +4441,7 @@
         let dzongkhag_code = $('#dzongkhag').val();
         let gewog_code = $('#gewog').val();
         let village_code = $('#vil_chiwog').val();
+        let project_site = $('#project_site').val();
         let industrial_area_acre = $('#industrial_area_acre').val();
         let state_reserve_forest_acre = $('#state_reserve_forest_acre').val();
         let private_area_acre = $('#private_area_acre').val();
@@ -4523,6 +4524,13 @@
             $('#vil_chiwogErrorMsg').delay(2000).fadeOut('slow');
             $('#vil_chiwog').focus();
         }
+        else if(project_site == "")
+        {
+            $('#project_siteErrorMsg').html("Enter Project Site");
+            $('#project_siteErrorMsg').show();
+            $('#project_siteErrorMsg').delay(2000).fadeOut('slow');
+            $('#project_site').focus();
+        }
         else if(industrial_area_acre == "")
         {
             $('#industrial_area_acreErrorMsg').html("Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)");
@@ -4556,7 +4564,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_energy_application' %}",
+                url : "{% url 'save_general_info' %}",
                 data : $('#energy_application_form').serialize(),
                 success : function(data)
                 {
