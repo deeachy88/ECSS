@@ -224,11 +224,11 @@
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Slope/Gradient</label>
                                                 <select class="form-select" name="terrain_slope" id="terrain_slope">
-                                                    <option selected>Choose One</option>
-                                                    <option value="flat_land">Flat land (below 20 degrees)</option>
-                                                    <option value="gentle_slope">Gentle slope (21-45 degrees)</option>
-                                                    <option value="steep_slope">Steep slope (46 – 60 degrees)</option>
-                                                    <option value="very_steep_slope">Very steep slope (above 60 degrees)</option>
+                                                    <option value="">Choose One</option>
+                                                    <option value="Flat_Land">Flat land (below 20 degrees)</option>
+                                                    <option value="Gentle_Slope">Gentle slope (21-45 degrees)</option>
+                                                    <option value="Steep_Slope">Steep slope (46 – 60 degrees)</option>
+                                                    <option value="Very_Steep_Slope">Very steep slope (above 60 degrees)</option>
                                                 </select>
                                             </div>
                                             <div id="terrain_slopeErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -1442,7 +1442,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of storage</label>
                     <select class="form-select" name="storage_method" id="storage_method">
-                        <option selected>Choose One</option>
+                        <option value="">Choose One</option>
                         <option value="fully_enclosed">Fully Enclosed</option>
                         <option value="partially_enclosed">Partially Enclosed</option>
                         <option value="open">Open</option>
@@ -1501,7 +1501,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of storage</label>
                     <select class="form-select" name="edit_forestry_produce_storage_method" id="edit_forestry_produce_storage_method">
-                        <option selected>Choose One</option>
+                        <option value="">Choose One</option>
                         <option value="fully_enclosed">Fully Enclosed</option>
                         <option value="partially_enclosed">Partially Enclosed</option>
                         <option value="open">Open</option>
@@ -2111,7 +2111,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Method of Storage</label>
                         <select class="form-select" name="raw_material_storage_method" id="raw_material_storage_method">
-                            <option selected>Choose One</option>
+                            <option value="">Choose One</option>
                             <option value="fully_enclosed">Fully Enclosed</option>
                             <option value="partially_enclosed">Partially Enclosed</option>
                             <option value="open">Open</option>
@@ -2177,7 +2177,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Method of Storage</label>
                         <select class="form-select" name="edit_raw_material_storage_method" id="edit_raw_material_storage_method">
-                            <option selected>Choose One</option>
+                            <option value="">Choose One</option>
                             <option value="fully_enclosed">Fully Enclosed</option>
                             <option value="partially_enclosed">Partially Enclosed</option>
                             <option value="open">Open</option>
@@ -3460,293 +3460,151 @@
         }
     }
 
-    function save_terrain_baseline_details()
-    {
-        
-        let bl_protected_area_name = $('#bl_protected_area_name').val();
-        let bl_protected_area_distance = $('#bl_protected_area_distance').val();
-        let bl_migratory_route_name = $('#bl_migratory_route_name').val();
-        let bl_migratory_route_distance = $('#bl_migratory_route_distance').val();
-        let bl_wetland_name = $('#bl_wetland_name').val();
-        let bl_wetland_distance = $('#bl_wetland_distance').val();
-        let bl_water_bodies_name = $('#bl_water_bodies_name').val();
-        let bl_water_bodies_distance = $('#bl_water_bodies_distance').val();
-        let bl_fmu_name = $('#bl_fmu_name').val();
-        let bl_fmu_distance = $('#bl_fmu_distance').val();
-        let bl_agricultural_name = $('#bl_agricultural_name').val();
-        let bl_agricultural_distance = $('#bl_agricultural_distance').val();
-        let bl_settlement_name = $('#bl_settlement_name').val();
-        let bl_settlement_distance = $('#bl_settlement_distance').val();
-        let bl_road_name = $('#bl_road_name').val();
-        let bl_road_distance = $('#bl_road_distance').val();
-        let bl_public_infra_name = $('#bl_public_infra_name').val();
-        let bl_public_infra_distance = $('#bl_public_infra_distance').val();
-        let bl_school_name = $('#bl_school_name').val();
-        let bl_school_distance = $('#bl_school_distance').val();
-        let bl_heritage_name = $('#bl_heritage_name').val();
-        let bl_heritage_distance = $('#bl_heritage_distance').val();
-        let bl_tourist_facility_name = $('#bl_tourist_facility_name').val();
-        let bl_tourist_facility_distance = $('#bl_tourist_facility_distance').val();
-        let bl_impt_installation_name = $('#bl_impt_installation_name').val();
-        let bl_impt_installation_distance = $('#bl_impt_installation_distance').val();
-        let bl_industries_name = $('#bl_industries_name').val();
-        let bl_industries_distance = $('#bl_industries_distance').val();
-        let bl_others = $('#bl_others').val();
-        let bl_others_name = $('#bl_others_name').val();
-        let bl_others_distance = $('#bl_others_distance').val();
+    function save_terrain_baseline_details() {
+        // Hide all error messages first
+        $('.alert-danger').hide();
 
-        if(bl_protected_area_name == "")
-        {
-            $('#bl_protected_area_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_protected_area_nameErrorMsg').show();
-            $('#bl_protected_area_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_protected_area_name').focus();
+        function showErrorAndFocus(errorElementId, errorMessage, fieldId) {
+            const $errorElement = $(`#${errorElementId}`);
+            const $field = $(`#${fieldId}`);
+            
+            // Show the error message and focus on the field
+            $errorElement.text(errorMessage).show();
+            $field.focus();
+            
+            // Hide the error message after 2 seconds
+            setTimeout(() => {
+                $errorElement.fadeOut('slow');
+            }, 2000);
+            
+            return false;
         }
-        else if(bl_protected_area_distance == "")
-        {
-            $('#bl_protected_area_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_protected_area_distanceErrorMsg').show();
-            $('#bl_protected_area_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_protected_area_distance').focus();
+
+        // Define all field validations in an array
+        const elevationValue = $('#terrain_elevation').val();
+        if (elevationValue === "" || elevationValue === null || elevationValue === "None") {
+            showErrorAndFocus('terrain_elevationErrorMsg', 'Enter Elevation (meters)', 'terrain_elevation');
+            return false;
         }
-        else if(bl_migratory_route_name == "")
-        {
-            $('#bl_migratory_route_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_migratory_route_nameErrorMsg').show();
-            $('#bl_migratory_route_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_migratory_route_name').focus();
+        const validations = [
+            { id: 'terrain_slope', errorId: 'terrain_slopeErrorMsg', errorMsg: 'Select Slope/Gradient' },
+            { id: 'bl_protected_area_name', errorId: 'bl_protected_area_nameErrorMsg', errorMsg: 'Enter Protected Area Name' },
+            { id: 'bl_protected_area_distance', errorId: 'bl_protected_area_distanceErrorMsg', errorMsg: 'Enter Protected Area Distance' },
+            { id: 'bl_migratory_route_name', errorId: 'bl_migratory_route_nameErrorMsg', errorMsg: 'Enter Migratory Route Name' },
+            { id: 'bl_migratory_route_distance', errorId: 'bl_migratory_route_distanceErrorMsg', errorMsg: 'Enter Migratory Route Distance' },
+            { id: 'bl_wetland_name', errorId: 'bl_wetland_nameErrorMsg', errorMsg: 'Enter Wetland Name' },
+            { id: 'bl_wetland_distance', errorId: 'bl_wetland_distanceErrorMsg', errorMsg: 'Enter Wetland Distance' },
+            { id: 'bl_water_bodies_name', errorId: 'bl_water_bodies_nameErrorMsg', errorMsg: 'Enter Water Bodies Name' },
+            { id: 'bl_water_bodies_distance', errorId: 'bl_water_bodies_distanceErrorMsg', errorMsg: 'Enter Water Bodies Distance' },
+            { id: 'bl_fmu_name', errorId: 'bl_fmu_nameErrorMsg', errorMsg: 'Enter FMU Name' },
+            { id: 'bl_fmu_distance', errorId: 'bl_fmu_distanceErrorMsg', errorMsg: 'Enter FMU Distance' },
+            { id: 'bl_agricultural_name', errorId: 'bl_agricultural_nameErrorMsg', errorMsg: 'Enter Agricultural Area Name' },
+            { id: 'bl_agricultural_distance', errorId: 'bl_agricultural_distanceErrorMsg', errorMsg: 'Enter Agricultural Area Distance' },
+            { id: 'bl_settlement_name', errorId: 'bl_settlement_nameErrorMsg', errorMsg: 'Enter Settlement Name' },
+            { id: 'bl_settlement_distance', errorId: 'bl_settlement_distanceErrorMsg', errorMsg: 'Enter Settlement Distance' },
+            { id: 'bl_road_name', errorId: 'bl_road_nameErrorMsg', errorMsg: 'Enter Road Name' },
+            { id: 'bl_road_distance', errorId: 'bl_road_distanceErrorMsg', errorMsg: 'Enter Road Distance' },
+            { id: 'bl_public_infra_name', errorId: 'bl_public_infra_nameErrorMsg', errorMsg: 'Enter Public Infrastructure Name' },
+            { id: 'bl_public_infra_distance', errorId: 'bl_public_infra_distanceErrorMsg', errorMsg: 'Enter Public Infrastructure Distance' },
+            { id: 'bl_school_name', errorId: 'bl_school_nameErrorMsg', errorMsg: 'Enter School Name' },
+            { id: 'bl_school_distance', errorId: 'bl_school_distanceErrorMsg', errorMsg: 'Enter School Distance' },
+            { id: 'bl_heritage_name', errorId: 'bl_heritage_nameErrorMsg', errorMsg: 'Enter Heritage Site Name' },
+            { id: 'bl_heritage_distance', errorId: 'bl_heritage_distanceErrorMsg', errorMsg: 'Enter Heritage Site Distance' },
+            { id: 'bl_tourist_facility_name', errorId: 'bl_tourist_facility_nameErrorMsg', errorMsg: 'Enter Tourist Facility Name' },
+            { id: 'bl_tourist_facility_distance', errorId: 'bl_tourist_facility_distanceErrorMsg', errorMsg: 'Enter Tourist Facility Distance' },
+            { id: 'bl_impt_installation_name', errorId: 'bl_impt_installation_nameErrorMsg', errorMsg: 'Enter Important Installation Name' },
+            { id: 'bl_impt_installation_distance', errorId: 'bl_impt_installation_distanceErrorMsg', errorMsg: 'Enter Important Installation Distance' },
+            { id: 'bl_industries_name', errorId: 'bl_industries_nameErrorMsg', errorMsg: 'Enter Industries Name' },
+            { id: 'bl_industries_distance', errorId: 'bl_industries_distanceErrorMsg', errorMsg: 'Enter Industries Distance' },
+            { id: 'bl_others', errorId: 'bl_othersErrorMsg', errorMsg: 'Enter Other Details' },
+            { id: 'bl_others_name', errorId: 'bl_others_nameErrorMsg', errorMsg: 'Enter Other Name' },
+            { id: 'bl_others_distance', errorId: 'bl_others_distanceErrorMsg', errorMsg: 'Enter Other Distance' }
+        ];
+
+        // Check each validation
+        for (const validation of validations) {
+            const value = $(`#${validation.id}`).val();
+            if (value === "") {
+                showErrorAndFocus(validation.errorId, validation.errorMsg, validation.id);
+                return false;
+            }
         }
-        else if(bl_migratory_route_distance == "")
-        {
-            $('#bl_migratory_route_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_migratory_route_distanceErrorMsg').show();
-            $('#bl_migratory_route_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_migratory_route_distance').focus();
-        }
-        else if(bl_wetland_name == "")
-        {
-            $('#bl_wetland_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_wetland_nameErrorMsg').show();
-            $('#bl_wetland_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_wetland_name').focus();
-        }
-        else if(bl_wetland_distance == "")
-        {
-            $('#bl_wetland_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_wetland_distanceErrorMsg').show();
-            $('#bl_wetland_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_wetland_distance').focus();
-        }
-        else if(bl_water_bodies_name == "")
-        {
-            $('#bl_water_bodies_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_water_bodies_nameErrorMsg').show();
-            $('#bl_water_bodies_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_water_bodies_name').focus();
-        }
-        else if(bl_water_bodies_distance == "")
-        {
-            $('#bl_water_bodies_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_water_bodies_distanceErrorMsg').show();
-            $('#bl_water_bodies_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_water_bodies_distance').focus();
-        }
-        else if(bl_fmu_name == "")
-        {
-            $('#bl_fmu_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_fmu_nameErrorMsg').show();
-            $('#bl_fmu_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_fmu_name').focus();
-        }
-        else if(bl_fmu_distance == "")
-        {
-            $('#bl_fmu_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_fmu_distanceErrorMsg').show();
-            $('#bl_fmu_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_fmu_distance').focus();
-        }
-        else if(bl_agricultural_name == "")
-        {
-            $('#bl_agricultural_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_agricultural_nameErrorMsg').show();
-            $('#bl_agricultural_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_agricultural_name').focus();
-        }
-        else if(bl_agricultural_distance == "")
-        {
-            $('#bl_agricultural_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_agricultural_distanceErrorMsg').show();
-            $('#bl_agricultural_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_agricultural_distance').focus();
-        }
-        else if(bl_settlement_name == "")
-        {
-            $('#bl_settlement_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_settlement_nameErrorMsg').show();
-            $('#bl_settlement_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_settlement_name').focus();
-        }
-        else if(bl_settlement_distance == "")
-        {
-            $('#bl_settlement_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_settlement_distanceErrorMsg').show();
-            $('#bl_settlement_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_settlement_distance').focus();
-        }
-        else if(bl_road_name == "")
-        {
-            $('#bl_road_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_road_nameErrorMsg').show();
-            $('#bl_road_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_road_name').focus();
-        }
-        else if(bl_road_distance == "")
-        {
-            $('#bl_road_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_road_distanceErrorMsg').show();
-            $('#bl_road_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_road_distance').focus();
-        }
-        else if(bl_public_infra_name == "")
-        {
-            $('#bl_public_infra_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_public_infra_nameErrorMsg').show();
-            $('#bl_public_infra_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_public_infra_name').focus();
-        }
-        else if(bl_public_infra_distance == "")
-        {
-            $('#bl_public_infra_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_public_infra_distanceErrorMsg').show();
-            $('#bl_public_infra_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_public_infra_distance').focus();
-        }
-        else if(bl_school_name == "")
-        {
-            $('#bl_school_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_school_nameErrorMsg').show();
-            $('#bl_school_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_school_name').focus();
-        }
-        else if(bl_school_distance == "")
-        {
-            $('#bl_school_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_school_distanceErrorMsg').show();
-            $('#bl_school_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_school_distance').focus();
-        }
-        else if(bl_heritage_name == "")
-        {
-            $('#bl_heritage_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_heritage_nameErrorMsg').show();
-            $('#bl_heritage_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_heritage_name').focus();
-        }
-        else if(bl_heritage_distance == "")
-        {
-            $('#bl_heritage_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_heritage_distanceErrorMsg').show();
-            $('#bl_heritage_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_heritage_distance').focus();
-        }
-        else if(bl_tourist_facility_name == "")
-        {
-            $('#bl_tourist_facility_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_tourist_facility_nameErrorMsg').show();
-            $('#bl_tourist_facility_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_tourist_facility_name').focus();
-        }
-        else if(bl_tourist_facility_distance == "")
-        {
-            $('#bl_tourist_facility_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_tourist_facility_distanceErrorMsg').show();
-            $('#bl_tourist_facility_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_tourist_facility_distance').focus();
-        }
-        else if(bl_impt_installation_name == "")
-        {
-            $('#bl_impt_installation_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_impt_installation_nameErrorMsg').show();
-            $('#bl_impt_installation_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_impt_installation_name').focus();
-        }
-        else if(bl_impt_installation_distance == "")
-        {
-            $('#bl_impt_installation_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_impt_installation_distanceErrorMsg').show();
-            $('#bl_impt_installation_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_impt_installation_distance').focus();
-        }
-        else if(bl_industries_name == "")
-        {
-            $('#bl_industries_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_industries_nameErrorMsg').show();
-            $('#bl_industries_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_industries_name').focus();
-        }
-        else if(bl_industries_distance == "")
-        {
-            $('#bl_industries_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_industries_distanceErrorMsg').show();
-            $('#bl_industries_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_industries_distance').focus();
-        }
-        else if(bl_others == "")
-        {
-            $('#bl_othersErrorMsg').html("Select Slope/Gradient");
-            $('#bl_othersErrorMsg').show();
-            $('#bl_othersErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_others').focus();
-        }
-        else if(bl_others_name == "")
-        {
-            $('#bl_others_nameErrorMsg').html("Select Slope/Gradient");
-            $('#bl_others_nameErrorMsg').show();
-            $('#bl_others_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_others_name').focus();
-        }
-        else if(bl_others_distance == "")
-        {
-            $('#bl_others_distanceErrorMsg').html("Select Slope/Gradient");
-            $('#bl_others_distanceErrorMsg').show();
-            $('#bl_others_distanceErrorMsg').delay(2000).fadeOut('slow');
-            $('#bl_others_distance').focus();
-        }
-        else
-        {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'save_terrain_baseline_details' %}",
-                data : $('#terrain_baseline_form').serialize(),
-                success : function(data)
-                {
-                    if(data.message == 'success')
-                    {
-                        $('#terrain_baseline_application_successMsg').html("Added Successfully");
-                        $('#terrain_baseline_application_successMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#terrain_baseline_application_successMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
+
+        // In your AJAX success/error handlers:
+        $.ajax({
+            type: "POST",
+            url: "{% url 'save_terrain_baseline_details' %}",
+            data: $('#terrain_baseline_form').serialize(),
+            success: function(data) {
+                if (data.message === 'success') {
+                    showSuccessMessage(
+                        'terrain_baseline_application_successMsg', 
+                        'Added Successfully', 
+                        function() {
                             $("#ProjectDetailsBtn").removeAttr("disabled");
                             $("#collapseProjectDetails").addClass("show");
                             $("#collapseTwo").removeClass("show");
-                        }, 2000);
-                    }
-                    else
-                    {
-                        $('#terrain_baseline_application_errorMsg').html("Please Check And Submit Again");
-                        $('#terrain_baseline_application_errorMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#terrain_baseline_application_errorMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                    }
+                        },
+                        'terrain_elevation' // Focus on first field after success
+                    );
+                } else {
+                    showErrorMessage(
+                        'terrain_baseline_application_errorMsg', 
+                        `Application Error: ${data.error}`,
+                        'terrain_elevation' // Focus on first field on error
+                    );
                 }
-            });
+            },
+            error: function(xhr, status, error) {
+                showErrorMessage(
+                    'terrain_baseline_application_errorMsg', 
+                    `Request Error: ${error}`,
+                    'terrain_elevation' // Focus on first field on error
+                );
+            }
+        });
+    }
+
+    // Modified helper functions to ensure proper focusing:
+    function showSuccessMessage(elementId, message, callback, fieldIdToFocus = null) {
+        const $messageElement = $(`#${elementId}`);
+        $messageElement.html('<i class="uil-folder-heart me-1 h4 align-middle"></i>' + message).show();
+        
+        // Scroll to message and focus on field
+        $('html, body').animate({
+            scrollTop: $messageElement.offset().top - 100
+        }, 200);
+        
+        if (fieldIdToFocus) {
+            setTimeout(() => {
+                $(`#${fieldIdToFocus}`).focus();
+            }, 100);
         }
+        
+        setTimeout(() => {
+            $messageElement.fadeOut('slow');
+            if (typeof callback === 'function') callback();
+        }, 2000);
+    }
+
+    function showErrorMessage(elementId, message, fieldIdToFocus = null) {
+        const $messageElement = $(`#${elementId}`);
+        $messageElement.html('<i class="uil-folder-heart me-1 h4 align-middle"></i>' + message).show();
+        
+        // Scroll to message and focus on field
+        $('html, body').animate({
+            scrollTop: $messageElement.offset().top - 100
+        }, 200);
+        
+        if (fieldIdToFocus) {
+            setTimeout(() => {
+                $(`#${fieldIdToFocus}`).focus();
+            }, 100);
+        }
+        
+        setTimeout(() => {
+            $messageElement.fadeOut('slow');
+        }, 2000);
     }
 
     function save_project_details()
@@ -3819,29 +3677,40 @@
                 data : $('#project_details_form').serialize(),
                 success : function(data)
                 {
-                    if(data.message == 'success')
-                    {
-                        $('#project_details_successMsg').html("Saved Successfully");
-                        $('#project_details_successMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#project_details_successMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
-                            $("#collapseFourBtn").removeAttr("disabled");
-                            $("#collapseFour").addClass("show");
-                            $("#collapseForest").removeClass("show");
-                        }, 2000);
-                    }
-                    else
-                    {
-                        $('#project_details_errorMsg').html("Please Check And Submit Again");
-                        $('#project_details_errorMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#project_details_errorMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                    }
+                    if (data.message == 'success') {
+                            // Success case with full accessibility
+                            $('#project_details_successMsg')
+                                .text("Saved Successfully")
+                                .removeAttr('tabindex')  // Remove focus blocker
+                                .attr({
+                                    'aria-live': 'polite',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();  // Set focus for accessibility
+
+                            setTimeout(() => {
+                                $('#project_details_successMsg').fadeOut('slow');
+                                $("#collapseFourBtn").removeAttr("disabled");
+                                $("#collapseFour").addClass("show");
+                                $("#collapseProjectDetails").removeClass("show");
+                            }, 2000);
+                        } else {
+                            // Error case with full accessibility
+                            $('#project_details_errorMsg')
+                                .text("Error: " + (data.error))
+                                .removeAttr('tabindex')  // Remove focus blocker
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
+
+                            setTimeout(() => {
+                                $('#project_details_errorMsg').fadeOut('slow');
+                            }, 5000);
+                        }
                 }
             });
         }
@@ -4032,29 +3901,38 @@
                 data : $('#water_requirement_form').serialize(),
                 success : function(data)
                 {
-                    if(data.message == 'success')
-                    {
-                        $('#water_requirement_application_successMsg').html("Saved Successfully");
-                        $('#water_requirement_application_successMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#water_requirement_application_successMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
-                            $("#headingFiveBtn").removeAttr("disabled");
-                            $("#collapseFive").addClass("show");
-                            $("#collapseFour").removeClass("show");
-                        }, 2000);
-                    }
-                    else
-                    {
-                        $('#water_requirement_application_errorMsg').html("Please Check And Submit Again");
-                        $('#water_requirement_application_errorMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#water_requirement_application_errorMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                    }
+                    if(data.message == 'success') {
+                    $('#water_requirement_application_successMsg')
+                    .html("Saved Successfully")
+                    .attr('aria-live', 'polite')
+                    .attr('aria-atomic', 'true')
+                    .show()
+                    .focus();
+                    
+                    setTimeout(function() {
+                        $('#water_requirement_application_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    
+                    setTimeout(function() {
+                        $("#headingFiveBtn").removeAttr("disabled");
+                        $("#collapseFive").addClass("show");
+                        $("#collapseFour").removeClass("show");
+                    }, 2000);
+                } else {
+                    $('#water_requirement_application_errorMsg')
+                    .text("Error: " + (data.error))
+                    .removeAttr('tabindex')  // Remove focus blocker
+                    .attr({
+                        'aria-live': 'assertive',
+                        'aria-atomic': 'true'
+                    })
+                    .show()
+                    .focus();
+                    
+                    setTimeout(function() {
+                        $('#water_requirement_application_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
                 }
             });
         }
@@ -4166,12 +4044,11 @@
                         }, 2000);
                     } else {
                         $('#anc_approach_road_errorMsg')
-                            .html("Please Check And Submit Again")
-                            .attr('aria-live', 'assertive')  // More urgent for errors
+                        .text("Error: " + (data.error))
+                        .attr('aria-live', 'assertive')  // More urgent for errors
                             .attr('aria-atomic', 'true')
                             .show()
                             .focus();  // Set focus here
-
                         setTimeout(function() {
                             $('#anc_approach_road_errorMsg').delay(2000).fadeOut('slow');
                         }, 2000);
@@ -4264,12 +4141,11 @@
                     } else {
                         // Error case
                         $('#anc_power_line_errorMsg')
-                            .html('Please Check And Submit Again')
-                            .attr('aria-live', 'assertive')  // More urgent for errors
+                        .text("Error: " + (data.error))
+                        .attr('aria-live', 'assertive')  // More urgent for errors
                             .attr('aria-atomic', 'true')
-                            .removeAttr('tabindex')          // Remove tabindex="-1"
                             .show()
-                            .focus();  // Force focus
+                            .focus();  // Set focus here
 
                         setTimeout(() => {
                             $('#anc_power_line_errorMsg').delay(2000).fadeOut('slow');
@@ -4282,58 +4158,52 @@
 
     function save_anc_other_details()
     {
-        let anc_other_required = $("input[name=anc_other_required]:checked").length;
-        let anc_other_required_value = $("input[name=anc_other_required]:checked").val();
-        
-        if(anc_other_required < 1)
-        {
-            $('#anc_other_requiredErrorMsg').html("Please Select One.");
-            $('#anc_other_requiredErrorMsg').show();
-            $('#anc_other_requiredErrorMsg').delay(2000).fadeOut('slow');
-            $('#anc_other_required').focus();   
-        }
-        else if(anc_other_required_value == "Yes" && !$('#anc_other_crushing_unit').is(":checked") && !$('#anc_other_mineral').is(":checked") && !$('#anc_other_general').is(":checked"))
-        {
-            $('#anc_others_errorMsg').html("Please select one ancillary.");
-            $('#anc_others_errorMsg').show();
-            $('#anc_others_errorMsg').delay(2000).fadeOut('slow');
-            $('.anc_others').focus();
-        }
-        else
-        {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'save_anc_other_details' %}",
-                data : $('#anc_others_form').serialize(),
-                success : function(data)
-                {
-                    if(data.message == 'success')
-                    {
-                        $('#anc_others_successMsg').html("Saved Successfully");
-                        $('#anc_others_successMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#anc_others_successMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
-                            $("#headingEightBtn").removeAttr("disabled");
-                            $("#collapseEight").addClass("show");
-                            $("#collapseSeven").removeClass("show");
-                        }, 2000);
-                    }
-                    else
-                    {
-                        $('#anc_others_errorMsg').html("Please Check And Submit Again");
-                        $('#anc_others_errorMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#anc_others_errorMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                    }
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'save_anc_other_details' %}",
+            data : $('#anc_others_form').serialize(),
+            success : function(data)
+            {
+                if (data.message == 'success') {
+                    // Success case - with focus management
+                    $('#anc_others_successMsg')
+                        .html('Saved Successfully')
+                        .removeAttr('tabindex')  // Remove blocking attribute
+                        .attr({
+                            'aria-live': 'polite',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();  // Set focus immediately after showing
+
+                    setTimeout(() => {
+                        $('#anc_others_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+
+                    setTimeout(() => {
+                        $("#headingEightBtn").removeAttr("disabled");
+                        $("#collapseEight").addClass("show");
+                        $("#collapseSeven").removeClass("show");
+                    }, 2000);
+                } else {
+                    // Error case - with dynamic error message and focus
+                    $('#anc_others_errorMsg')
+                        .html(`Application Error: ${data.error}`)
+                        .removeAttr('tabindex')  // Remove blocking attribute
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();  // Set focus immediately after showing
+
+                    setTimeout(() => {
+                        $('#anc_others_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
                 }
-            });
-        }
+            }
+        });
     }
 
     function save_solid_waste_details()
@@ -4539,15 +4409,15 @@
                         }, 2000);
                     } else {
                         // Error case with focus management
-                        $('#solid_waste_errorMsg')
-                            .html('Please Check And Submit Again')
-                            .removeAttr('tabindex')  // Remove focus blocker
-                            .attr({
-                                'aria-live': 'assertive',  // More urgent for errors
-                                'aria-atomic': 'true'
-                            })
-                            .show()
-                            .focus();  // Immediately focus after showing
+                         $('#solid_waste_errorMsg')
+                        .html(`Application Error: ${data.error}`)
+                        .removeAttr('tabindex')  // Remove blocking attribute
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();  // Set focus immediately after showing
 
                         setTimeout(() => {
                             $('#solid_waste_errorMsg').delay(2000).fadeOut('slow');
@@ -4645,7 +4515,7 @@
                     if (data.message == 'success') {
                         // Success case with focus and accessibility
                         $('#noise_level_successMsg')
-                            .html('<i class="uil-check-circle me-1 h4 align-middle"></i> Saved Successfully')
+                            .html('Saved Successfully')
                             .removeAttr('tabindex')  // Remove focus blocker
                             .attr({
                                 'aria-live': 'polite',
@@ -4667,16 +4537,14 @@
                     } else {
                         // Error case with focus management
                         $('#noise_level_errorMsg')
-                            .html('<i class="uil-exclamation-octagon me-1 h4 align-middle"></i> Please Check And Submit Again')
-                            .removeAttr('tabindex')  // Remove focus blocker
-                            .attr({
-                                'aria-live': 'assertive',
-                                'aria-atomic': 'true',
-                                'role': 'alert'
-                            })
-                            .show()
-                            .focus();  // Focus immediately after showing
-
+                        .html(`Application Error: ${data.error}`)
+                        .removeAttr('tabindex')  // Remove blocking attribute
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();  // Set focus immediately after showing
                         setTimeout(() => {
                             $('#noise_level_errorMsg').delay(2000).fadeOut('slow');
                         }, 2000);
@@ -5010,14 +4878,14 @@
                     } else {
                         // Error case with focus management
                         $('#other_impact_errorMsg')
-                            .html('Please Check And Submit Again')
-                            .removeAttr('tabindex')  // Remove focus blocker
-                            .attr({
-                                'aria-live': 'assertive',
-                                'aria-atomic': 'true'
-                            })
-                            .show()
-                            .focus();  // Set focus immediately after showing
+                        .html(`Application Error: ${data.error}`)
+                        .removeAttr('tabindex')  // Remove blocking attribute
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();  // Set focus immediately after showing
 
                         setTimeout(() => {
                             $('#other_impact_errorMsg').delay(2000).fadeOut('slow');
