@@ -403,7 +403,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Number of workers to be employed</label>
+                                                <label class="form-label fw-bold">Number of Workers to be Employed</label>
                                                 <<input type="number" min="1" name="project_no_of_workers" class="form-control" id="project_no_of_workers">
                                             </div>
                                             <div id="no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -687,7 +687,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity require construction of Approach road?</label>
+                                                <label class="form-label fw-bold">Will the activity require construction of Approach Road?</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
                                                         <input type="radio" name="anc_road_required" class="form-check-input" value="Yes" onclick="check_approach_road(this.value)">
@@ -925,7 +925,7 @@
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="others_application_no">
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
                                     </div>
                                     <br>
                                     {% if application_details.anc_other_housing_colony == 'Yes' and application_details.anc_other_power_excavation == 'Yes' and application_details.anc_other_crushing_unit == 'Yes' and application_details.anc_other_general == 'Yes' %}

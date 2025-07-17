@@ -61,14 +61,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of the Project</label>
-                                                <input type="text" name="project_name" class="form-control" id="project_name"> 
+                                                <input type="text" name="project_name" class="form-control" id="project_name">
                                             </div>
                                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
-                                                <textarea class="form-control" id="focal_person" name="focal_person" rows="3"></textarea>
+                                                <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
+                                                <textarea class="form-control" name="focal_person" id="focal_person" rows="3"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -183,7 +183,7 @@
                                                 <label class="form-label fw-bold">Others Specify</label>
                                                 <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()" value="NA">
                                             </div>
-                                            <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="others_area_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
                                             <div class="mb-3">
@@ -391,7 +391,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Number of workers to be employed</label>
+                                                <label class="form-label fw-bold">Number of Workers to be Employed</label>
                                                 <input type="number" name="no_of_workers" class="form-control" id="no_of_workers">
                                             </div>
                                             <div id="no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -686,7 +686,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity require construction of Approach road?</label>
+                                                <label class="form-label fw-bold">Will the activity require construction of Approach Road?</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
                                                         <input type="radio" name="anc_road_required" class="form-check-input" value="Yes" onclick="check_approach_road(this.value)">
@@ -948,7 +948,7 @@
                                         </div>
                                     </div>
                                     <div class="alert alert-warning border-0 rounded-0 anc_others" role="alert" style="display: none;">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
                                     </div>
                                     <br>
                                     <div class="form-check anc_others" style="display: none;">
@@ -2276,7 +2276,7 @@
         } else {
             acreFieldContainer.style.display = 'none';
             // Clear the acre value when hiding
-            document.getElementById('others_area_acre').value = '';
+            document.getElementById('others_area_acre').value = '0';
             // Trigger the change event to update totals if needed
             if (typeof get_total_area_acre === 'function') {
                 get_total_area_acre();
@@ -2404,20 +2404,24 @@
     // Hide all error messages first
     $('.alert-danger').hide();
 
-    function showErrorAndFocus(errorElementId, errorMessage, fieldId) {
-        const $errorElement = $(`#${errorElementId}`);
-        const $field = $(`#${fieldId}`);
-        
-        // Show the error message and focus on the field
-        $errorElement.text(errorMessage).show();
-        $field.focus();
-        
-        // Hide the error message after 2 seconds
-        setTimeout(() => {
-            $errorElement.fadeOut('slow');
+    // Helper function to show error and focus on field
+    function showErrorAndFocus(errorElement, message, focusElement) {
+        $(errorElement).html(message).show();
+
+        // Use setTimeout to ensure the focus happens after the DOM updates
+        setTimeout(function() {
+            $(focusElement).focus();
+
+            // Scroll to the element if needed
+            $('html, body').animate({
+                scrollTop: $(focusElement).offset().top - 100
+            }, 100);
+        }, 50);
+
+        // Hide the error after 2 seconds
+        setTimeout(function() {
+            $(errorElement).fadeOut('slow');
         }, 2000);
-        
-        return false;
     }
 
     // Define all field validations in an array
@@ -4304,11 +4308,15 @@ function showErrorMessage(elementId, message, fieldIdToFocus = null) {
 
     function save_energy_application()
     {
+        // First hide all error messages
+        $('.alert-danger').hide();
+
+        // Get all field values
         let project_name = $('#project_name').val();
         let applicant_name = $('#applicant_name').val();
         let address = $('#address').val();
         let contact_no = $('#contact_no').val();
-        let contact_no_length = $('#contact_no').val().length;
+        let contact_no_length = contact_no.length;
         let email = $('#email').val();
         let focal_person = $('#focal_person').val();
         let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
@@ -4323,124 +4331,75 @@ function showErrorMessage(elementId, message, fieldIdToFocus = null) {
         let private_area_acre = $('#private_area_acre').val();
         let others_area = $('#others_area').val();
         let others_area_acre = $('#others_area_acre').val();
-        
 
-        if(project_name == "")
-        {
-            $('#project_nameErrorMsg').html("Enter Name of Project");
-            $('#project_nameErrorMsg').show();
-            $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#project_name').focus();
+        // Validation checks
+        if (project_name === "") {
+            showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');
+            return false;
         }
-        else if(applicant_name == "")
-        {
-            $('#applicant_nameErrorMsg').html("Enter Name of The Applicant");
-            $('#applicant_nameErrorMsg').show();
-            $('#applicant_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#applicant_name').focus();
+        else if (applicant_name === "") {
+            showErrorAndFocus('#applicant_nameErrorMsg', 'Enter Name of The Applicant', '#applicant_name');
+            return false;
         }
-        else if(address == "")
-        {
-            $('#addressErrorMsg').html("Enter Address");
-            $('#addressErrorMsg').show();
-            $('#addressErrorMsg').delay(2000).fadeOut('slow');
-            $('#address').focus();
+        else if (address === "") {
+            showErrorAndFocus('#addressErrorMsg', 'Enter Address', '#address');
+            return false;
         }
-        else if(contact_no == "")
-        {
-            $('#contact_noErrorMsg').html("Enter Contact No");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
+        else if (contact_no === "") {
+            showErrorAndFocus('#contact_noErrorMsg', 'Enter Contact No', '#contact_no');
+            return false;
         }
-        else if(contact_no_length < 8)
-        {
-            $('#contact_noErrorMsg').html("Cannot Be Less Than Eight Digits");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
+        else if (contact_no_length < 8) {
+            showErrorAndFocus('#contact_noErrorMsg', 'Cannot Be Less Than Eight Digits', '#contact_no');
+            return false;
         }
-        else if(email == "")
-        {
-            $('#emailErrorMsg').html("Enter Email");
-            $('#emailErrorMsg').show();
-            $('#emailErrorMsg').delay(2000).fadeOut('slow');
-            $('#email').focus();
+        else if (email === "") {
+            showErrorAndFocus('#emailErrorMsg', 'Enter Email', '#email');
+            return false;
         }
-        else if(dzongkhag_throm == "")
-        {
-            $('#dzongkhag_thromErrorMsg').html("Choose One");
-            $('#dzongkhag_thromErrorMsg').show();
-            $('#dzongkhag_thromErrorMsg').delay(2000).fadeOut('slow');
-            $('#dzongkhag_throm').focus();
+
+        else if (dzongkhag_throm === 0) {
+            showErrorAndFocus('#dzongkhag_thromErrorMsg', 'Choose One', "input[name=dzongkhag_throm]:first");
+            return false;
         }
-        else if(dzongkhag_throm_val == "Thromde" && thromde_id == "")
-        {
-            $('#thromde_idErrorMsg').html("Select Dzongkhag");
-            $('#thromde_idErrorMsg').show();
-            $('#thromde_idErrorMsg').delay(2000).fadeOut('slow');
-            $('#thromde_id').focus();
+        else if (dzongkhag_throm_val === "Thromde" && thromde_id === "") {
+            showErrorAndFocus('#thromde_idErrorMsg', 'Select Thromde', '#thromde_id');
+            return false;
         }
-        else if(dzongkhag_throm_val == "Dzongkhag" && dzongkhag_code == "")
-        {
-            $('#dzongkhagErrorMsg').html("Select Dzongkhag");
-            $('#dzongkhagErrorMsg').show();
-            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-            $('#dzongkhag').focus();
+        else if (dzongkhag_throm_val === "Dzongkhag" && dzongkhag_code === "") {
+            showErrorAndFocus('#dzongkhagErrorMsg', 'Select Dzongkhag', '#dzongkhag');
+            return false;
         }
-        else if(dzongkhag_throm_val == "Dzongkhag" && gewog_code == "")
-        {
-            $('#gewogErrorMsg').html("Select Gewog");
-            $('#gewogErrorMsg').show();
-            $('#gewogErrorMsg').delay(2000).fadeOut('slow');
-            $('#gewog').focus();
+        else if (dzongkhag_throm_val === "Dzongkhag" && gewog_code === "") {
+            showErrorAndFocus('#gewogErrorMsg', 'Select Gewog', '#gewog');
+            return false;
         }
-        else if(dzongkhag_throm_val == "Dzongkhag" && village_code == "")
-        {
-            $('#vil_chiwogErrorMsg').html("Select Village");
-            $('#vil_chiwogErrorMsg').show();
-            $('#vil_chiwogErrorMsg').delay(2000).fadeOut('slow');
-            $('#vil_chiwog').focus();
+        else if (dzongkhag_throm_val === "Dzongkhag" && village_code === "") {
+            showErrorAndFocus('#vil_chiwogErrorMsg', 'Select Village', '#vil_chiwog');
+            return false;
         }
-        else if(project_site == "")
-        {
-            $('#project_siteErrorMsg').html("Enter Project Site");
-            $('#project_siteErrorMsg').show();
-            $('#project_siteErrorMsg').delay(2000).fadeOut('slow');
-            $('#project_site').focus();
+        else if (project_site === "") {
+            showErrorAndFocus('#project_siteErrorMsg', 'Enter Project Site', '#project_site');
+            return false;
         }
-        else if(industrial_area_acre == "")
-        {
-            $('#industrial_area_acreErrorMsg').html("Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)");
-            $('#industrial_area_acreErrorMsg').show();
-            $('#industrial_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#industrial_area_acre').focus();
+        else if (industrial_area_acre === "") {
+            showErrorAndFocus('#industrial_area_acreErrorMsg', 'Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)', '#industrial_area_acre');
+            return false;
         }
-        else if(state_reserve_forest_acre == "")
-        {
-            $('#state_reserve_forest_acreErrorMsg').html("Enter State Reserve Forest Area");
-            $('#state_reserve_forest_acreErrorMsg').show();
-            $('#state_reserve_forest_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#state_reserve_forest_acre').focus();
+        else if (state_reserve_forest_acre === "") {
+            showErrorAndFocus('#state_reserve_forest_acreErrorMsg', 'Enter State Reserve Forest Area', '#state_reserve_forest_acre');
+            return false;
         }
-        else if(private_area_acre == "")
-        {
-            $('#private_area_acreErrorMsg').html("Enter Private Area");
-            $('#private_area_acreErrorMsg').show();
-            $('#private_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#private_area_acre').focus();
+        else if (private_area_acre === "") {
+            showErrorAndFocus('#private_area_acreErrorMsg', 'Enter Private Area', '#private_area_acre');
+            return false;
         }
-        else if ((others_area !== "NA" && others_area !== "") && others_area_acre === "")
-        {
-            $('#others_area_acreErrorMsg').html("Enter Others Area");
-            $('#others_area_acreErrorMsg').show();
-            $('#others_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#others_area_acre').focus();
+        else if ((others_area !== "NA" && others_area !== "") && others_area_acre === "") {
+            showErrorAndFocus('#others_area_acreErrorMsg', 'Enter Others Area', '#others_area_acre');
+            return false;
         }
-        else
-        {
-            $.ajax
-            ({
+        else {
+            $.ajax({
                 type : "POST",
                 url : "{% url 'save_general_info' %}",
                 data : $('#energy_application_form').serialize(),
@@ -4483,6 +4442,25 @@ function showErrorMessage(elementId, message, fieldIdToFocus = null) {
                 }
             });
         }
+    }
+    // Helper function to show error and focus on field
+    function showErrorAndFocus(errorElement, message, focusElement) {
+        $(errorElement).html(message).show();
+
+        // Use setTimeout to ensure the focus happens after the DOM updates
+        setTimeout(function() {
+            $(focusElement).focus();
+
+            // Scroll to the element if needed
+            $('html, body').animate({
+                scrollTop: $(focusElement).offset().top - 100
+            }, 100);
+        }, 50);
+
+        // Hide the error after 2 seconds
+        setTimeout(function() {
+            $(errorElement).fadeOut('slow');
+        }, 2000);
     }
 
     function check_excavated_muck(value)

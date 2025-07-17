@@ -67,7 +67,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
+                                                <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
                                                 <textarea class="form-control" name="focal_person" id="focal_person" rows="3"></textarea>
                                             </div>
                                         </div>
@@ -185,7 +185,7 @@
                                                 <label class="form-label fw-bold">Others Specify</label>
                                                 <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()" value="NA">
                                             </div>
-                                            <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="others_area_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
                                             <div class="mb-3">
@@ -273,7 +273,7 @@
                                     </div>
                                     <div class="alert alert-secondary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Baseline/Existing Information <br>
-                                        Presence of any of the following within and 50 meters buffer of the project area. If yes, tick, mention name and distance from the project boundary, wherever applicable
+                                        Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable
                                     </div>
                                     <table class="table table-hover table-bordered table-centered mb-0">
                                         <thead>
@@ -414,14 +414,14 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Project objective</label>
+                                                <label class="form-label fw-bold">Project Objective</label>
                                                 <input type="text" name="project_objective" class="form-control" id="project_objective">
                                             </div>
                                             <div id="project_objectiveErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Number of workers to be employed</label>
+                                                <label class="form-label fw-bold">Number of Workers to be Employed</label>
                                                 <input type="number" name="no_of_workers" class="form-control" id="no_of_workers">
                                             </div>
                                             <div id="no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -720,7 +720,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity require construction of Approach road?</label>
+                                                <label class="form-label fw-bold">Will the activity require construction of Approach Road?</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
                                                         <input type="radio" name="anc_road_required" class="form-check-input" value="Yes" onclick="check_approach_road(this.value)">
@@ -955,7 +955,7 @@
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="others_application_no">
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
+                                        Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
                                     </div>
                                     <br>
                                     <div class="form-check">
@@ -1695,7 +1695,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Installed capacity/quantity per annum</label>
+                    <label class="form-label fw-bold">Installed Capacity/Quantity Per Annum</label>
                     <input type="number" name="quantity_annum" class="form-control" id="quantity_annum">
                 </div>
                 <div class="alert alert-danger" id="quantity_annumErrorMsg" style="display:none"></div>
@@ -2676,7 +2676,7 @@
                 } else {
                     acreFieldContainer.style.display = 'none';
                     // Clear the acre value when hiding
-                    document.getElementById('others_area_acre').value = '';
+                    document.getElementById('others_area_acre').value = '0';
                     // Trigger the change event to update totals if needed
                     if (typeof get_total_area_acre === 'function') {
                         get_total_area_acre();

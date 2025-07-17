@@ -185,7 +185,7 @@
                                                 <label class="form-label fw-bold">Others Specify</label>
                                                 <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()"  value="NA">
                                             </div>
-                                            <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="others_area_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
                                             <div class="mb-3">
@@ -915,7 +915,7 @@
                                         </div>
                                     </div>
                                     <div class="alert alert-warning border-0 rounded-0 other_ancillary_facilities" role="alert" style="display: none;">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
                                     </div>
                                     <br>
                                     <div class="form-check other_ancillary_facilities" style="display: none;">
@@ -4548,8 +4548,81 @@
                 let total_build_up_area = $('#total_build_up_area').val();
 
                 // Validation checks (same as before)
+                // Validation checks
                 if (project_name === "") {
                     showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');
+                    return false;
+                }
+                else if (applicant_name === "") {
+                    showErrorAndFocus('#applicant_nameErrorMsg', 'Enter Name of The Applicant', '#applicant_name');
+                    return false;
+                }
+                else if (address === "") {
+                    showErrorAndFocus('#addressErrorMsg', 'Enter Address', '#address');
+                    return false;
+                }
+                else if (contact_no === "") {
+                    showErrorAndFocus('#contact_noErrorMsg', 'Enter Contact No', '#contact_no');
+                    return false;
+                }
+                else if (contact_no_length < 8) {
+                    showErrorAndFocus('#contact_noErrorMsg', 'Cannot Be Less Than Eight Digits', '#contact_no');
+                    return false;
+                }
+                else if (email === "") {
+                    showErrorAndFocus('#emailErrorMsg', 'Enter Email', '#email');
+                    return false;
+                }
+                else if (industry_type === "") {
+                    showErrorAndFocus('#industry_typeErrorMsg', 'Enter Industry Type', '#industry_type');
+                    return false;
+                }
+                else if (establishment_type === "") {
+                    showErrorAndFocus('#establishment_typeErrorMsg', 'Enter Establishment Type', '#establishment_type');
+                    return false;
+                }
+                else if (industry_classification === "") {
+                    showErrorAndFocus('#industry_classificationErrorMsg', 'Enter Classification of Industry', '#industry_classification');
+                    return false;
+                }
+                else if (dzongkhag_throm === 0) {
+                    showErrorAndFocus('#dzongkhag_thromErrorMsg', 'Choose One', "input[name=dzongkhag_throm]:first");
+                    return false;
+                }
+                else if (dzongkhag_throm_val === "Thromde" && thromde_id === "") {
+                    showErrorAndFocus('#thromde_idErrorMsg', 'Select Thromde', '#thromde_id');
+                    return false;
+                }
+                else if (dzongkhag_throm_val === "Dzongkhag" && dzongkhag_code === "") {
+                    showErrorAndFocus('#dzongkhagErrorMsg', 'Select Dzongkhag', '#dzongkhag');
+                    return false;
+                }
+                else if (dzongkhag_throm_val === "Dzongkhag" && gewog_code === "") {
+                    showErrorAndFocus('#gewogErrorMsg', 'Select Gewog', '#gewog');
+                    return false;
+                }
+                else if (dzongkhag_throm_val === "Dzongkhag" && village_code === "") {
+                    showErrorAndFocus('#vil_chiwogErrorMsg', 'Select Village', '#vil_chiwog');
+                    return false;
+                }
+                else if (project_site === "") {
+                    showErrorAndFocus('#project_siteErrorMsg', 'Enter Project Site', '#project_site');
+                    return false;
+                }
+                else if (industrial_area_acre === "") {
+                    showErrorAndFocus('#industrial_area_acreErrorMsg', 'Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)', '#industrial_area_acre');
+                    return false;
+                }
+                else if (state_reserve_forest_acre === "") {
+                    showErrorAndFocus('#state_reserve_forest_acreErrorMsg', 'Enter State Reserve Forest Area', '#state_reserve_forest_acre');
+                    return false;
+                }
+                else if (private_area_acre === "") {
+                    showErrorAndFocus('#private_area_acreErrorMsg', 'Enter Private Area', '#private_area_acre');
+                    return false;
+                }
+                else if ((others_area !== "NA" && others_area !== "") && others_area_acre === "") {
+                    showErrorAndFocus('#others_area_acreErrorMsg', 'Enter Others Area', '#others_area_acre');
                     return false;
                 }
                 // ... same validation logic ...
