@@ -3540,6 +3540,7 @@ def insert_app_payment_details(request, application_no, description, total_amoun
 def save_road_application(request):
     data = dict()
     try:
+        # Extract all POST data
         application_no = request.POST.get('application_no')
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
@@ -3550,6 +3551,7 @@ def save_road_application(request):
         email = request.POST.get('email')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         focal_person = request.POST.get('focal_person')
+        
         if dzongkhag_throm == 'Thromde':
             dzongkhag_code = None
             gewog_code = None
@@ -3561,6 +3563,7 @@ def save_road_application(request):
             village_code = request.POST.get('vil_chiwog')
             thromde_id = None
         
+        # Boundary limits data
         bl_protected_area_name = request.POST.get('bl_protected_area_name')
         bl_protected_area_distance = request.POST.get('bl_protected_area_distance')
         bl_migratory_route_name = request.POST.get('bl_migratory_route_name')
@@ -3592,19 +3595,76 @@ def save_road_application(request):
         bl_others = request.POST.get('bl_others')
         bl_others_name = request.POST.get('bl_others_name')
         bl_others_distance = request.POST.get('bl_others_distance')
+        
         identifier = request.POST.get('identifier')
         ec_reference_no = request.POST.get('ec_reference_no')
         service_type = request.POST.get('service_type')
         tor_application_no = request.POST.get('tor_application_no')
+        application_type = "New"
 
+        # Common fields for both insert and update
+        common_fields = {
+            'project_name': project_name,
+            'project_category': project_category,
+            'applicant_name': applicant_name,
+            'address': address,
+            'cid': cid,
+            'contact_no': contact_no,
+            'email': email,
+            'focal_person': focal_person,
+            'dzongkhag_throm': dzongkhag_throm,
+            'thromde_id': thromde_id,
+            'dzongkhag_code': dzongkhag_code,
+            'gewog_code': gewog_code,
+            'village_code': village_code,
+            'bl_protected_area_name': bl_protected_area_name,
+            'bl_protected_area_distance': bl_protected_area_distance,
+            'bl_migratory_route_name': bl_migratory_route_name,
+            'bl_migratory_route_distance': bl_migratory_route_distance,
+            'bl_wetland_name': bl_wetland_name,
+            'bl_wetland_distance': bl_wetland_distance,
+            'bl_water_bodies_name': bl_water_bodies_name,
+            'bl_water_bodies_distance': bl_water_bodies_distance,
+            'bl_fmu_name': bl_fmu_name,
+            'bl_fmu_distance': bl_fmu_distance,
+            'bl_agricultural_name': bl_agricultural_name,
+            'bl_agricultural_distance': bl_agricultural_distance,
+            'bl_settlement_name': bl_settlement_name,
+            'bl_settlement_distance': bl_settlement_distance,
+            'bl_road_name': bl_road_name,
+            'bl_road_distance': bl_road_distance,
+            'bl_public_infra_name': bl_public_infra_name,
+            'bl_public_infra_distance': bl_public_infra_distance,
+            'bl_school_name': bl_school_name,
+            'bl_school_distance': bl_school_distance,
+            'bl_heritage_name': bl_heritage_name,
+            'bl_heritage_distance': bl_heritage_distance,
+            'bl_tourist_facility_name': bl_tourist_facility_name,
+            'bl_tourist_facility_distance': bl_tourist_facility_distance,
+            'bl_impt_installation_name': bl_impt_installation_name,
+            'bl_impt_installation_distance': bl_impt_installation_distance,
+            'bl_industries_name': bl_industries_name,
+            'bl_industries_distance': bl_industries_distance,
+            'bl_others': bl_others,
+            'bl_others_name': bl_others_name,
+            'bl_others_distance': bl_others_distance,
+            'application_status': 'P',
+            'service_id': request.session.get('service_id'),
+            'broad_activity_code': request.session.get('broad_activity_code'),
+            'specific_activity_code': request.session.get('specific_activity_code'),
+            'category': request.session.get('category'),
+            'application_source': 'ECSS'
+        }
+
+        # Determine competent authority
         ca_auth = None
-        if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
+        if identifier not in ['DR', 'NC', 'OC'] or tor_application_no is None:
             auth_filter = t_competant_authority_master.objects.filter(
                 competent_authority=request.session['ca_auth'],
                 dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
             )
             ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-        elif identifier == 'NC' or identifier == 'OC':
+        elif identifier in ['NC', 'OC']:
             auth_filter = t_ec_industries_t1_general.objects.filter(
                 application_no=application_no
             )
@@ -3615,264 +3675,96 @@ def save_road_application(request):
             )
             ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
 
-        if(identifier == 'NC'):
+        # Handle different identifier cases
+        if identifier == 'NC':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(project_name=project_name, service_type=identifier)
-        elif(identifier == 'OC'):
+        elif identifier == 'OC':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(applicant_name=applicant_name, service_type=identifier)
-        elif(identifier == 'DR'): # This is For Draft Applications
+        elif identifier == 'DR':  # For Draft Applications
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             if application_details.exists():
-                application_details.update(
-                    application_type='New',
-                    project_name=project_name,
-                    project_category=project_category,
-                    applicant_name=applicant_name,
-                    address=address,
-                    cid=cid,
-                    contact_no=contact_no,
-                    email=email,
-                    focal_person=focal_person,
-                    dzongkhag_throm=dzongkhag_throm,
-                    thromde_id=thromde_id,
-                    dzongkhag_code=dzongkhag_code,
-                    gewog_code=gewog_code,
-                    village_code=village_code,
-                    bl_protected_area_name=bl_protected_area_name,
-                    bl_protected_area_distance=bl_protected_area_distance,
-                    bl_migratory_route_name=bl_migratory_route_name,
-                    bl_migratory_route_distance=bl_migratory_route_distance,
-                    bl_wetland_name=bl_wetland_name,
-                    bl_wetland_distance=bl_wetland_distance,
-                    bl_water_bodies_name=bl_water_bodies_name,
-                    bl_water_bodies_distance=bl_water_bodies_distance,
-                    bl_fmu_name=bl_fmu_name,
-                    bl_fmu_distance=bl_fmu_distance,
-                    bl_agricultural_name=bl_agricultural_name,
-                    bl_agricultural_distance=bl_agricultural_distance,
-                    bl_settlement_name=bl_settlement_name,
-                    bl_settlement_distance=bl_settlement_distance,
-                    bl_road_name=bl_road_name,
-                    bl_road_distance=bl_road_distance,
-                    bl_public_infra_name=bl_public_infra_name,
-                    bl_public_infra_distance=bl_public_infra_distance,
-                    bl_school_name=bl_school_name,
-                    bl_school_distance=bl_school_distance,
-                    bl_heritage_name=bl_heritage_name,
-                    bl_heritage_distance=bl_heritage_distance,
-                    bl_tourist_facility_name=bl_tourist_facility_name,
-                    bl_tourist_facility_distance=bl_tourist_facility_distance,
-                    bl_impt_installation_name=bl_impt_installation_name,
-                    bl_impt_installation_distance=bl_impt_installation_distance,
-                    bl_industries_name=bl_industries_name,
-                    bl_industries_distance=bl_industries_distance,
-                    bl_others=bl_others,
-                    bl_others_name=bl_others_name,
-                    bl_others_distance=bl_others_distance,
-                    )
+                application_details.update(**common_fields)
             else:
                 t_ec_industries_t1_general.objects.create(
                     application_no=application_no,
                     application_date=date.today(),
-                    application_type='New',
+                    application_type=application_type,
                     service_type=service_type,
                     ca_authority=ca_auth,
                     applicant_id=request.session['email'],
-                    colour_code=request.session['colour_code'],
-                    project_name=project_name,
-                    project_category=project_category,
-                    applicant_name=applicant_name,
-                    address=address,
-                    cid=cid,
-                    contact_no=contact_no,
-                    email=email,
-                    focal_person=focal_person,
-                    dzongkhag_throm=dzongkhag_throm,
-                    thromde_id=thromde_id,
-                    dzongkhag_code=dzongkhag_code,
-                    gewog_code=gewog_code,
-                    village_code=village_code,
-                    bl_protected_area_name=bl_protected_area_name,
-                    bl_protected_area_distance=bl_protected_area_distance,
-                    bl_migratory_route_name=bl_migratory_route_name,
-                    bl_migratory_route_distance=bl_migratory_route_distance,
-                    bl_wetland_name=bl_wetland_name,
-                    bl_wetland_distance=bl_wetland_distance,
-                    bl_water_bodies_name=bl_water_bodies_name,
-                    bl_water_bodies_distance=bl_water_bodies_distance,
-                    bl_fmu_name=bl_fmu_name,
-                    bl_fmu_distance=bl_fmu_distance,
-                    bl_agricultural_name=bl_agricultural_name,
-                    bl_agricultural_distance=bl_agricultural_distance,
-                    bl_settlement_name=bl_settlement_name,
-                    bl_settlement_distance=bl_settlement_distance,
-                    bl_road_name=bl_road_name,
-                    bl_road_distance=bl_road_distance,
-                    bl_public_infra_name=bl_public_infra_name,
-                    bl_public_infra_distance=bl_public_infra_distance,
-                    bl_school_name=bl_school_name,
-                    bl_school_distance=bl_school_distance,
-                    bl_heritage_name=bl_heritage_name,
-                    bl_heritage_distance=bl_heritage_distance,
-                    bl_tourist_facility_name=bl_tourist_facility_name,
-                    bl_tourist_facility_distance=bl_tourist_facility_distance,
-                    bl_impt_installation_name=bl_impt_installation_name,
-                    bl_impt_installation_distance=bl_impt_installation_distance,
-                    bl_industries_name=bl_industries_name,
-                    bl_industries_distance=bl_industries_distance,
-                    bl_others=bl_others,
-                    bl_others_name=bl_others_name,
-                    bl_others_distance=bl_others_distance,
-                    application_status='P',
-                    service_id=request.session['service_id'],
-                    broad_activity_code=request.session['broad_activity_code'] ,
-                    specific_activity_code=request.session['specific_activity_code'],
-                    category=request.session['category']
-                    )
-        elif identifier== 'TC' or identifier== 'PC' or identifier == 'LC' or identifier == 'CC':
+                    colour_code=request.session.get('colour_code'),
+                    **common_fields
+                )
+        elif identifier in ['TC', 'PC', 'LC', 'CC']:
             application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
             for app_det in application_details:
                 t_ec_industries_t1_general.objects.create(
                     application_no=application_no,
                     application_date=date.today(),
-                    application_type='New',
+                    application_type=application_type,
                     service_type=service_type,
                     ca_authority=app_det.ca_authority,
                     applicant_id=request.session['email'],
                     colour_code=app_det.colour_code,
-                    project_name=project_name,
-                    project_category=project_category,
-                    applicant_name=applicant_name,
-                    address=address,
-                    cid=cid,
-                    contact_no=contact_no,
-                    email=email,
-                    focal_person=focal_person,
-                    dzongkhag_throm=dzongkhag_throm,
-                    thromde_id=thromde_id,
-                    dzongkhag_code=dzongkhag_code,
-                    gewog_code=gewog_code,
-                    village_code=village_code,
-                    bl_protected_area_name=bl_protected_area_name,
-                    bl_protected_area_distance=bl_protected_area_distance,
-                    bl_migratory_route_name=bl_migratory_route_name,
-                    bl_migratory_route_distance=bl_migratory_route_distance,
-                    bl_wetland_name=bl_wetland_name,
-                    bl_wetland_distance=bl_wetland_distance,
-                    bl_water_bodies_name=bl_water_bodies_name,
-                    bl_water_bodies_distance=bl_water_bodies_distance,
-                    bl_fmu_name=bl_fmu_name,
-                    bl_fmu_distance=bl_fmu_distance,
-                    bl_agricultural_name=bl_agricultural_name,
-                    bl_agricultural_distance=bl_agricultural_distance,
-                    bl_settlement_name=bl_settlement_name,
-                    bl_settlement_distance=bl_settlement_distance,
-                    bl_road_name=bl_road_name,
-                    bl_road_distance=bl_road_distance,
-                    bl_public_infra_name=bl_public_infra_name,
-                    bl_public_infra_distance=bl_public_infra_distance,
-                    bl_school_name=bl_school_name,
-                    bl_school_distance=bl_school_distance,
-                    bl_heritage_name=bl_heritage_name,
-                    bl_heritage_distance=bl_heritage_distance,
-                    bl_tourist_facility_name=bl_tourist_facility_name,
-                    bl_tourist_facility_distance=bl_tourist_facility_distance,
-                    bl_impt_installation_name=bl_impt_installation_name,
-                    bl_impt_installation_distance=bl_impt_installation_distance,
-                    bl_industries_name=bl_industries_name,
-                    bl_industries_distance=bl_industries_distance,
-                    bl_others=bl_others,
-                    bl_others_name=bl_others_name,
-                    bl_others_distance=bl_others_distance,
-                    application_status='P',
-                    service_id=app_det.service_id
+                    **common_fields
                 )
-        else:
-            t_ec_industries_t1_general.objects.create(
-                application_no=application_no,
-                application_date=date.today(),
-                application_type='New',
-                service_type=service_type,
-                ca_authority=ca_auth,
-                applicant_id=request.session['email'],
-                colour_code=request.session['colour_code'],
-                project_name=project_name,
-                project_category=project_category,
-                applicant_name=applicant_name,
-                address=address,
-                cid=cid,
-                contact_no=contact_no,
-                email=email,
-                focal_person=focal_person,
-                dzongkhag_throm=dzongkhag_throm,
-                thromde_id=thromde_id,
-                dzongkhag_code=dzongkhag_code,
-                gewog_code=gewog_code,
-                village_code=village_code,
-                bl_protected_area_name=bl_protected_area_name,
-                bl_protected_area_distance=bl_protected_area_distance,
-                bl_migratory_route_name=bl_migratory_route_name,
-                bl_migratory_route_distance=bl_migratory_route_distance,
-                bl_wetland_name=bl_wetland_name,
-                bl_wetland_distance=bl_wetland_distance,
-                bl_water_bodies_name=bl_water_bodies_name,
-                bl_water_bodies_distance=bl_water_bodies_distance,
-                bl_fmu_name=bl_fmu_name,
-                bl_fmu_distance=bl_fmu_distance,
-                bl_agricultural_name=bl_agricultural_name,
-                bl_agricultural_distance=bl_agricultural_distance,
-                bl_settlement_name=bl_settlement_name,
-                bl_settlement_distance=bl_settlement_distance,
-                bl_road_name=bl_road_name,
-                bl_road_distance=bl_road_distance,
-                bl_public_infra_name=bl_public_infra_name,
-                bl_public_infra_distance=bl_public_infra_distance,
-                bl_school_name=bl_school_name,
-                bl_school_distance=bl_school_distance,
-                bl_heritage_name=bl_heritage_name,
-                bl_heritage_distance=bl_heritage_distance,
-                bl_tourist_facility_name=bl_tourist_facility_name,
-                bl_tourist_facility_distance=bl_tourist_facility_distance,
-                bl_impt_installation_name=bl_impt_installation_name,
-                bl_impt_installation_distance=bl_impt_installation_distance,
-                bl_industries_name=bl_industries_name,
-                bl_industries_distance=bl_industries_distance,
-                bl_others=bl_others,
-                bl_others_name=bl_others_name,
-                bl_others_distance=bl_others_distance,
-                application_status='P',
-                service_id=request.session['service_id'],
-                broad_activity_code=request.session['broad_activity_code'] ,
-                specific_activity_code=request.session['specific_activity_code'],
-                category=request.session['category']
+        else:  # Main Activity case
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            if application_details.exists() and identifier != 'DR' and application_type == "New":
+                # Update existing record
+                application_details.update(
+                    application_date=date.today(),
+                    application_type=application_type,
+                    service_type=service_type,
+                    ca_authority=ca_auth,
+                    applicant_id=request.session['email'],
+                    colour_code=request.session.get('colour_code'),
+                    **common_fields
                 )
-        
+            else:
+                # Insert new record
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=date.today(),
+                    application_type=application_type,
+                    service_type=service_type,
+                    ca_authority=ca_auth,
+                    applicant_id=request.session['email'],
+                    colour_code=request.session.get('colour_code'),
+                    **common_fields
+                )
+
+        # Create application history
         t_application_history.objects.create(
-                                                application_no=application_no,
-                                                application_date=date.today(),
-                                                applicant_id=request.session['email'],
-                                                ca_authority=ca_auth,
-                                                service_id=request.session['service_id'], 
-                                                application_status='P', 
-                                                action_date=None, 
-                                                actor_id=request.session['login_id'],
-                                                actor_name=request.session['name'], 
-                                                remarks=None, 
-                                                status=None 
-                                            )
-        
-        if identifier == 'NC' or identifier == 'OC':
+            application_no=application_no,
+            application_date=date.today(),
+            applicant_id=request.session['email'],
+            ca_authority=ca_auth,
+            service_id=request.session.get('service_id'),
+            application_status='P',
+            action_date=None,
+            actor_id=request.session['login_id'],
+            actor_name=request.session['name'],
+            remarks=None,
+            status=None
+        )
+
+        # Handle workflow details
+        if identifier in ['NC', 'OC']:
             work_details = t_workflow_dtls.objects.filter(application_no=application_no)
-            work_details.update(application_status='P',
+            work_details.update(
+                application_status='P',
                 actor_id=request.session['login_id'],
                 actor_name=request.session['name'],
                 assigned_role_id='2',
-                assigned_role_name='Verifier')
+                assigned_role_name='Verifier'
+            )
         else:
             t_workflow_dtls.objects.create(
                 application_no=application_no,
-                service_id=request.session['service_id'],
+                service_id=request.session.get('service_id'),
                 application_status='P',
                 actor_id=request.session['login_id'],
                 actor_name=request.session['name'],
@@ -3882,6 +3774,7 @@ def save_road_application(request):
                 application_source='ECSS',
                 service_type=service_type
             )
+
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
@@ -3893,11 +3786,13 @@ def save_road_application(request):
 def save_general_application(request):
     data = {}
     try:
+        # Extract all POST data
         identifier = request.POST.get('identifier')
         application_no = request.POST.get('application_no')
         tor_application_no = request.POST.get('tor_application_no')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         service_type = request.POST.get('service_type')
+        application_type = "New"
 
         # Initialize location variables
         dzongkhag_code, gewog_code, village_code, thromde_id = None, None, None, None
@@ -3908,35 +3803,8 @@ def save_general_application(request):
             gewog_code = request.POST.get('gewog')
             village_code = request.POST.get('vil_chiwog')
 
-        # Initialize application attributes
-        application_type = "New"
-        colour_code = request.session.get('colour_code')
-        service_id = request.session.get('service_id')
-        ca_auth = None
-
-        # Determine competent authority
-        if identifier not in ['DR', 'NC', 'OC'] and tor_application_no is None:
-            auth_filter = t_competant_authority_master.objects.filter(
-                competent_authority=request.session.get('ca_auth'),
-                dzongkhag_code_id=dzongkhag_code if request.session.get('ca_auth') in ['DEC', 'THROMDE'] else None
-            )
-            if auth_filter.exists():
-                ca_auth = auth_filter.first().competent_authority_id
-        elif identifier in ['NC', 'OC']:
-            auth_filter = t_ec_industries_t1_general.objects.filter(
-                application_no=application_no
-            )
-            if auth_filter.exists():
-                ca_auth = auth_filter.first().ca_authority
-        elif tor_application_no:
-            auth_filter = t_ec_industries_t1_general.objects.filter(
-                application_no=tor_application_no
-            )
-            if auth_filter.exists():
-                ca_auth = auth_filter.first().ca_authority
-
-        # Prepare application details
-        application_details = {
+        # Common fields for both insert and update
+        common_fields = {
             'application_date': timezone.now().date(),
             'application_type': application_type,
             'project_name': request.POST.get('project_name'),
@@ -3960,10 +3828,9 @@ def save_general_application(request):
             'others_area_acre': request.POST.get('others_area_acre'),
             'total_area_acre': request.POST.get('total_area_acre'),
             'service_type': service_type,
-            'ca_authority': ca_auth,
             'applicant_id': request.session.get('email'),
-            'colour_code': colour_code,
-            'service_id': service_id,
+            'colour_code': request.session.get('colour_code'),
+            'service_id': request.session.get('service_id'),
             'broad_activity_code': request.session.get('broad_activity_code'),
             'specific_activity_code': request.session.get('specific_activity_code'),
             'category': request.session.get('category'),
@@ -3972,98 +3839,108 @@ def save_general_application(request):
             'tor_application_no': tor_application_no
         }
 
+        # Determine competent authority
+        ca_auth = None
+        if identifier not in ['DR', 'NC', 'OC'] and tor_application_no is None:
+            auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session.get('ca_auth'),
+                dzongkhag_code_id=dzongkhag_code if request.session.get('ca_auth') in ['DEC', 'THROMDE'] else None
+            )
+            if auth_filter.exists():
+                ca_auth = auth_filter.first().competent_authority_id
+        elif identifier in ['NC', 'OC']:
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=application_no
+            )
+            if auth_filter.exists():
+                ca_auth = auth_filter.first().ca_authority
+        elif tor_application_no:
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=tor_application_no
+            )
+            if auth_filter.exists():
+                ca_auth = auth_filter.first().ca_authority
+
+        common_fields['ca_authority'] = ca_auth
+
         with transaction.atomic():
-            application_exists = t_ec_industries_t1_general.objects.filter(
-                application_no=application_no).exists()
-            
-            if application_exists:
-                application_instance = t_ec_industries_t1_general.objects.get(
-                    application_no=application_no)
-                
-                if identifier == 'NC':
-                    application_instance.project_name = request.POST.get('project_name')
-                    application_instance.service_type = identifier
-                elif identifier == 'OC':
-                    application_instance.applicant_name = request.POST.get('applicant_name')
-                    application_instance.service_type = identifier
-                elif identifier == 'DR':
+            # Handle different identifier cases
+            if identifier == 'NC':
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                if application_details.exists():
+                    application_details.update(project_name=common_fields['project_name'], service_type=identifier)
+                else:
+                    raise ValueError(f"Application {application_no} does not exist for NC operation")
+            elif identifier == 'OC':
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                if application_details.exists():
+                    application_details.update(applicant_name=common_fields['applicant_name'], service_type=identifier)
+                else:
+                    raise ValueError(f"Application {application_no} does not exist for OC operation")
+            elif identifier == 'DR':
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                if application_details.exists():
                     # For DR, protect specific fields from being updated
                     protected_fields = {
-                        'service_type',
-                        'ca_authority',
-                        'applicant_id',
-                        'colour_code',
-                        'service_id',
-                        'broad_activity_code',
-                        'specific_activity_code',
-                        'category',
-                        'application_source',
-                        'application_status'
+                        'service_type', 'ca_authority', 'applicant_id', 'colour_code',
+                        'service_id', 'broad_activity_code', 'specific_activity_code',
+                        'category', 'application_source', 'application_status'
                     }
-                    # Get current values of protected fields
-                    current_values = {field: getattr(application_instance, field) for field in protected_fields}
-                    # Update all fields except protected ones
-                    for field, value in application_details.items():
-                        if field not in protected_fields:
-                            setattr(application_instance, field, value)
-                    # Restore protected fields to their original values
-                    for field, value in current_values.items():
-                        setattr(application_instance, field, value)
-                elif identifier in ['TC', 'PC', 'LC', 'CC']:
-                    app_det = t_ec_industries_t1_general.objects.get(
-                        application_no=application_no)
+                    # Update only non-protected fields
+                    update_fields = {k: v for k, v in common_fields.items() if k not in protected_fields}
+                    application_details.update(**update_fields)
+                else:
+                    t_ec_industries_t1_general.objects.create(
+                        application_no=application_no,
+                        **common_fields
+                    )
+            elif identifier in ['TC', 'PC', 'LC', 'CC']:
+                application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+                for app_det in application_details:
                     t_ec_industries_t1_general.objects.create(
                         application_no=application_no,
                         ec_reference_no=app_det.ec_reference_no,
-                        **application_details
+                        **common_fields
                     )
+            else:  # Main Activity case
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                if application_details.exists() and identifier != 'DR' and application_type == "New":
+                    # Update existing record
+                    application_details.update(**common_fields)
                 else:
-                    # For all other identifiers, update all fields normally
-                    for field, value in application_details.items():
-                        setattr(application_instance, field, value)
-                
-                if identifier not in ['TC', 'PC', 'LC', 'CC']:
-                    application_instance.save()
-            else:
-                if identifier in ['NC', 'OC', 'DR']:
-                    raise ValueError(f"Application {application_no} does not exist for {identifier} operation")
-                t_ec_industries_t1_general.objects.create(
-                    application_no=application_no,
-                    **application_details
-                )
+                    # Insert new record
+                    t_ec_industries_t1_general.objects.create(
+                        application_no=application_no,
+                        **common_fields
+                    )
 
             # Workflow handling
-            workflow_exists = t_workflow_dtls.objects.filter(
-                application_no=application_no).exists()
-            
             workflow_update_data = {
+                'application_no': application_no,
                 'application_status': 'P',
                 'actor_id': request.session.get('login_id'),
                 'actor_name': request.session.get('name'),
                 'assigned_role_id': '2',
                 'assigned_role_name': 'Verifier',
-                'service_id': service_id,
+                'service_id': request.session.get('service_id'),
                 'ca_authority': ca_auth,
                 'application_source': 'ECSS',
                 'service_type': service_type
             }
 
+            workflow_exists = t_workflow_dtls.objects.filter(application_no=application_no).exists()
             if workflow_exists:
-                t_workflow_dtls.objects.filter(
-                    application_no=application_no
-                ).update(**workflow_update_data)
+                t_workflow_dtls.objects.filter(application_no=application_no).update(**workflow_update_data)
             else:
-                t_workflow_dtls.objects.create(
-                    application_no=application_no,
-                    **workflow_update_data
-                )
+                t_workflow_dtls.objects.create(**workflow_update_data)
 
+            # Create application history
             t_application_history.objects.create(
                 application_no=application_no,
                 application_date=timezone.now().date(),
                 applicant_id=request.session.get('email'),
                 ca_authority=ca_auth,
-                service_id=service_id,
+                service_id=request.session.get('service_id'),
                 application_status='P',
                 actor_id=request.session.get('login_id'),
                 actor_name=request.session.get('name')
@@ -4595,6 +4472,7 @@ def save_alternative_analysis(request):
 def save_quarry_application(request):
     data = {}
     try:
+        # Extract all POST data
         application_no = request.POST.get('application_no')
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
@@ -4605,7 +4483,7 @@ def save_quarry_application(request):
         email = request.POST.get('email')
         focal_person = request.POST.get('focal_person')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
-        focal_person = request.POST.get('focal_person')
+        
         if dzongkhag_throm == 'Thromde':
             dzongkhag_code = None
             gewog_code = None
@@ -4616,6 +4494,8 @@ def save_quarry_application(request):
             gewog_code = request.POST.get('gewog')
             village_code = request.POST.get('vil_chiwog')
             thromde_id = None
+            
+        # Quarry specific fields
         industrial_area_acre = request.POST.get('industrial_area_acre')
         state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
         private_area_acre = request.POST.get('private_area_acre')
@@ -4626,19 +4506,55 @@ def save_quarry_application(request):
         green_belt_area = request.POST.get('green_belt_area')
         terrain_elevation = request.POST.get('terrain_elevation')
         terrain_slope = request.POST.get('terrain_slope')
+        
         identifier = request.POST.get('identifier')
         ec_reference_no = request.POST.get('ec_reference_no')
         tor_application_no = request.POST.get('tor_application_no')
         service_type = request.POST.get('service_type')
+        application_type = "New"
 
+        # Common fields for both insert and update
+        common_fields = {
+            'project_name': project_name,
+            'project_category': project_category,
+            'applicant_name': applicant_name,
+            'address': address,
+            'cid': cid,
+            'contact_no': contact_no,
+            'email': email,
+            'focal_person': focal_person,
+            'dzongkhag_throm': dzongkhag_throm,
+            'thromde_id': thromde_id,
+            'dzongkhag_code': dzongkhag_code,
+            'gewog_code': gewog_code,
+            'village_code': village_code,
+            'industrial_area_acre': industrial_area_acre,
+            'state_reserve_forest_acre': state_reserve_forest_acre,
+            'private_area_acre': private_area_acre,
+            'others_area': others_area,
+            'others_area_acre': others_area_acre,
+            'total_area_acre': total_area_acre,
+            'actual_mineable_area': actual_mineable_area,
+            'green_area_acre': green_belt_area,
+            'terrain_elevation': terrain_elevation,
+            'terrain_slope': terrain_slope,
+            'application_status': 'P',
+            'service_id': request.session.get('service_id'),
+            'broad_activity_code': request.session.get('broad_activity_code'),
+            'specific_activity_code': request.session.get('specific_activity_code'),
+            'category': request.session.get('category'),
+            'application_source': 'ECSS'
+        }
+
+        # Determine competent authority
         ca_auth = None
-        if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
+        if identifier not in ['DR', 'NC', 'OC'] or tor_application_no is None:
             auth_filter = t_competant_authority_master.objects.filter(
                 competent_authority=request.session['ca_auth'],
                 dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
             )
             ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-        elif identifier == 'NC' or identifier == 'OC':
+        elif identifier in ['NC', 'OC']:
             auth_filter = t_ec_industries_t1_general.objects.filter(
                 application_no=application_no
             )
@@ -4649,131 +4565,72 @@ def save_quarry_application(request):
             )
             ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
 
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        # Handle different identifier cases
         if identifier == 'NC':
-            application_details.update(project_name=project_name,service_type=identifier)
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            application_details.update(project_name=project_name, service_type=identifier)
         elif identifier == 'OC':
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             application_details.update(applicant_name=applicant_name, service_type=identifier)
-        elif identifier == 'DR':
+        elif identifier == 'DR':  # For Draft Applications
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             if not application_details.exists():
                 t_ec_industries_t1_general.objects.create(
                     application_no=application_no,
                     application_date=timezone.now().date(),
-                    application_type='New',
+                    application_type=application_type,
                     service_type=service_type,
                     ca_authority=ca_auth,
                     applicant_id=request.session['email'],
-                    colour_code=request.session['colour_code'],
-                    project_name=project_name,
-                    project_category=project_category,
-                    applicant_name=applicant_name,
-                    address=address,
-                    cid=cid,
-                    dzongkhag_throm=dzongkhag_throm,
-                    thromde_id=thromde_id,
-                    contact_no=contact_no,
-                    email=email,
-                    focal_person=focal_person,
-                    dzongkhag_code=dzongkhag_code,
-                    gewog_code=gewog_code,
-                    village_code=village_code,
-                    industrial_area_acre=industrial_area_acre,
-                    state_reserve_forest_acre=state_reserve_forest_acre,
-                    private_area_acre=private_area_acre,
-                    others_area=others_area,
-                    others_area_acre=others_area_acre,
-                    total_area_acre=total_area_acre,
-                    actual_mineable_area=actual_mineable_area,
-                    green_area_acre=green_belt_area,
-                    terrain_elevation=terrain_elevation,
-                    terrain_slope=terrain_slope,
-                    application_status='P',
-                    service_id=request.session['service_id'],
-                    broad_activity_code=request.session['broad_activity_code'],
-                    specific_activity_code=request.session['specific_activity_code'],
-                    category=request.session['category']
+                    colour_code=request.session.get('colour_code'),
+                    **common_fields
                 )
         elif identifier in ['TC', 'PC', 'LC', 'CC']:
-            for app_det in application_details.filter(ec_reference_no=ec_reference_no):
+            application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+            for app_det in application_details:
                 t_ec_industries_t1_general.objects.create(
                     application_no=application_no,
                     application_date=timezone.now().date(),
-                    application_type='New',
+                    application_type=application_type,
                     service_type=service_type,
                     ca_authority=app_det.ca_authority,
                     applicant_id=request.session['email'],
                     colour_code=app_det.colour_code,
-                    project_name=project_name,
-                    project_category=project_category,
-                    applicant_name=applicant_name,
-                    address=address,
-                    cid=cid,
-                    dzongkhag_throm=dzongkhag_throm,
-                    thromde_id=thromde_id,
-                    contact_no=contact_no,
-                    email=email,
-                    focal_person=focal_person,
-                    dzongkhag_code=dzongkhag_code,
-                    gewog_code=gewog_code,
-                    village_code=village_code,
-                    industrial_area_acre=industrial_area_acre,
-                    state_reserve_forest_acre=state_reserve_forest_acre,
-                    private_area_acre=private_area_acre,
-                    others_area=others_area,
-                    others_area_acre=others_area_acre,
-                    total_area_acre=total_area_acre,
-                    actual_mineable_area=actual_mineable_area,
-                    green_area_acre=green_belt_area,
-                    terrain_elevation=terrain_elevation,
-                    terrain_slope=terrain_slope,
-                    application_status='P',
-                    service_id=app_det.service_id
+                    **common_fields
                 )
-        else:
-            t_ec_industries_t1_general.objects.create(
-                application_no=application_no,
-                application_date=timezone.now().date(),
-                application_type='New',
-                service_type=service_type,
-                ca_authority=ca_auth,
-                applicant_id=request.session['email'],
-                colour_code=request.session['colour_code'],
-                project_name=project_name,
-                project_category=project_category,
-                applicant_name=applicant_name,
-                address=address,
-                cid=cid,
-                dzongkhag_throm=dzongkhag_throm,
-                thromde_id=thromde_id,
-                contact_no=contact_no,
-                email=email,
-                focal_person=focal_person,
-                dzongkhag_code=dzongkhag_code,
-                gewog_code=gewog_code,
-                village_code=village_code,
-                industrial_area_acre=industrial_area_acre,
-                state_reserve_forest_acre=state_reserve_forest_acre,
-                private_area_acre=private_area_acre,
-                others_area=others_area,
-                others_area_acre=others_area_acre,
-                total_area_acre=total_area_acre,
-                actual_mineable_area=actual_mineable_area,
-                green_area_acre=green_belt_area,
-                terrain_elevation=terrain_elevation,
-                terrain_slope=terrain_slope,
-                application_status='P',
-                service_id=request.session['service_id'],
-                broad_activity_code=request.session['broad_activity_code'],
-                specific_activity_code=request.session['specific_activity_code'],
-                category=request.session['category']
-            )
+        else:  # Main Activity case
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            if application_details.exists() and identifier != 'DR' and application_type == "New":
+                # Update existing record
+                application_details.update(
+                    application_date=timezone.now().date(),
+                    application_type=application_type,
+                    service_type=service_type,
+                    ca_authority=ca_auth,
+                    applicant_id=request.session['email'],
+                    colour_code=request.session.get('colour_code'),
+                    **common_fields
+                )
+            else:
+                # Insert new record
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    application_date=timezone.now().date(),
+                    application_type=application_type,
+                    service_type=service_type,
+                    ca_authority=ca_auth,
+                    applicant_id=request.session['email'],
+                    colour_code=request.session.get('colour_code'),
+                    **common_fields
+                )
 
+        # Create application history
         t_application_history.objects.create(
             application_no=application_no,
             application_date=timezone.now().date(),
             applicant_id=request.session['email'],
             ca_authority=ca_auth,
-            service_id=request.session['service_id'],
+            service_id=request.session.get('service_id'),
             application_status='P',
             action_date=None,
             actor_id=request.session['login_id'],
@@ -4782,17 +4639,20 @@ def save_quarry_application(request):
             status=None
         )
 
-        if identifier == 'NC' or identifier == 'OC':
+        # Handle workflow details
+        if identifier in ['NC', 'OC']:
             work_details = t_workflow_dtls.objects.filter(application_no=application_no)
-            work_details.update(application_status='P',
+            work_details.update(
+                application_status='P',
                 actor_id=request.session['login_id'],
                 actor_name=request.session['name'],
                 assigned_role_id='2',
-                assigned_role_name='Verifier')
+                assigned_role_name='Verifier'
+            )
         else:
             t_workflow_dtls.objects.create(
                 application_no=application_no,
-                service_id=request.session['service_id'],
+                service_id=request.session.get('service_id'),
                 application_status='P',
                 actor_id=request.session['login_id'],
                 actor_name=request.session['name'],
