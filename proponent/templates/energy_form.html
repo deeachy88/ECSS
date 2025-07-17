@@ -468,7 +468,7 @@
                                                         <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)">
+                                                        <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)" checked>
                                                         <label class="form-check-label" for="customRadio4">No</label>
                                                     </div>
                                                 </div>
@@ -553,7 +553,7 @@
                                                         <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_industry_radio(this.value)">
+                                                        <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_industry_radio(this.value)" checked>
                                                         <label class="form-check-label" for="customRadio4">No</label>
                                                     </div>
                                                 </div>
@@ -693,7 +693,7 @@
                                                         <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_road_required" class="form-check-input" value="No" onclick="check_approach_road(this.value)">
+                                                        <input type="radio" name="anc_road_required" class="form-check-input" value="No" onclick="check_approach_road(this.value)" checked>
                                                         <label class="form-check-label" for="customRadio4">No</label>
                                                     </div>
                                                 </div>
@@ -751,7 +751,7 @@
                                                         <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_road_blast_required" class="form-check-input" value="No" onclick="check_blasting_radio(this.value)">
+                                                        <input type="radio" name="anc_road_blast_required" class="form-check-input" value="No" onclick="check_blasting_radio(this.value)" checked>
                                                         <label class="form-check-label" for="customRadio4">No</label>
                                                     </div>
                                                 </div>
@@ -819,13 +819,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="ancillary_power_line_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="power_line_application_no">RSEB-CaMS-Access
-                                    
-                                    Sign in to start your session
-                                    
-                                    admin
-                                    •••••••••••••••
-                                    
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="power_line_application_no">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -836,7 +830,7 @@
                                                         <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_power_line_required" class="form-check-input" value="No" onclick="check_power_line(this.value)">
+                                                        <input type="radio" name="anc_power_line_required" class="form-check-input" value="No" onclick="check_power_line(this.value)" checked>
                                                         <label class="form-check-label" for="customRadio4">No</label>
                                                     </div>
                                                 </div>
@@ -939,7 +933,7 @@
                                                         <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_ancillary_others(this.value)">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_ancillary_others(this.value)" checked>
                                                         <label class="form-check-label" for="customRadio4">No</label>
                                                     </div>
                                                 </div>
