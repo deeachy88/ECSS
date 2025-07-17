@@ -241,28 +241,6 @@
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Elevation (meters)</label>
-                                                <input type="number" name="terrain_elevation" class="form-control" id="terrain_elevation">
-                                            </div>
-                                            <div id="terrain_elevationErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Slope/Gradient</label>
-                                                <select class="form-select" name="terrain_slope" id="terrain_slope">
-                                                    <option value="">Choose One</option>
-                                                    <option value="Flat_Land">Flat land (below 20 degrees)</option>
-                                                    <option value="Gentle_Slope">Gentle slope (21-45 degrees)</option>
-                                                    <option value="Steep_Slope">Steep slope (46 – 60 degrees)</option>
-                                                    <option value="Very_Steep_Slope">Very steep slope (above 60 degrees)</option>
-                                                </select>
-                                            </div>
-                                            <div id="terrain_slopeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
                                     <div class="alert alert-secondary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Baseline/Existing Information <br>
                                         Presence of any of the following within and 50 meters buffer of the project area. If yes, tick, mention name and distance from the project boundary, wherever applicable
@@ -2443,13 +2421,7 @@
     }
 
     // Define all field validations in an array
-    const elevationValue = $('#terrain_elevation').val();
-    if (elevationValue === "" || elevationValue === null || elevationValue === "None") {
-        showErrorAndFocus('terrain_elevationErrorMsg', 'Enter Elevation (meters)', 'terrain_elevation');
-        return false;
-    }
     const validations = [
-        { id: 'terrain_slope', errorId: 'terrain_slopeErrorMsg', errorMsg: 'Select Slope/Gradient' },
         { id: 'bl_protected_area_name', errorId: 'bl_protected_area_nameErrorMsg', errorMsg: 'Enter Protected Area Name' },
         { id: 'bl_protected_area_distance', errorId: 'bl_protected_area_distanceErrorMsg', errorMsg: 'Enter Protected Area Distance' },
         { id: 'bl_migratory_route_name', errorId: 'bl_migratory_route_nameErrorMsg', errorMsg: 'Enter Migratory Route Name' },

@@ -1989,7 +1989,7 @@
 </div>
 </form>
 
-<script>
+    <script>
     function toggleAcreField() {
         const othersArea = document.getElementById('others_area');
         const acreFieldContainer = document.getElementById('acreFieldContainer');
@@ -2145,13 +2145,7 @@
     }
 
     // Define all field validations in an array
-    const elevationValue = $('#terrain_elevation').val();
-    if (elevationValue === "" || elevationValue === null || elevationValue === "None") {
-        showErrorAndFocus('terrain_elevationErrorMsg', 'Enter Elevation (meters)', 'terrain_elevation');
-        return false;
-    }
     const validations = [
-        { id: 'terrain_slope', errorId: 'terrain_slopeErrorMsg', errorMsg: 'Select Slope/Gradient' },
         { id: 'bl_protected_area_name', errorId: 'bl_protected_area_nameErrorMsg', errorMsg: 'Enter Protected Area Name' },
         { id: 'bl_protected_area_distance', errorId: 'bl_protected_area_distanceErrorMsg', errorMsg: 'Enter Protected Area Distance' },
         { id: 'bl_migratory_route_name', errorId: 'bl_migratory_route_nameErrorMsg', errorMsg: 'Enter Migratory Route Name' },
