@@ -1310,16 +1310,21 @@
                                                 </div>
                                                 <h5 class="card-title mb-0">Attachments</h5>
                                                 <div id="cardCollpase7" class="collapse pt-3 show">
-                                                    <div id="iee_file_attachment">
+                                                    <div id="energy_attachment">
                                                         {% include 'file_attachment_page.html' %}
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="energy_attachment_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    <div class="alert alert-success border-0 rounded-0"
+                                        role="alert"
+                                        id="energy_attachment_successMsg"
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
                                     </div>
+
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
                                             <a href="#" class="btn btn-success" onclick="save_energy_attachment_details()">
@@ -1364,12 +1369,7 @@
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
 
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="energy_submit_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="energy_submit_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
+
                                     <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
                                     <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
                                     <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
@@ -1383,12 +1383,34 @@
                                             <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
                                         </div>
                                     </div>
+
+                                    <div class="alert alert-success border-0 rounded-0"
+                                        role="alert"
+                                        id="energy_submit_successMsg"
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
+                                    </div>
+
+                                    <!-- Error Alert -->
+                                    <div class="alert alert-danger border-0 rounded-0"
+                                        role="alert"
+                                        id="energy_submit_errorMsg"
+                                        style="display:none"
+                                        aria-live="assertive"
+                                        aria-atomic="true">
+                                    </div>
+                                    <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                        Loading...
+                                    </button>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
-                                            <a href="#" class="btn btn-success" id="energy_submit_btn" onclick="submit_energy_application()" style="display: none;">
-                                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                            <a href="#" id="energy_submit_btn" class="btn btn-success" onclick="submit_energy_application()" style="display:none;">
+                                                <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
                                         </div>
                                     </div>
+
                                 </form>
                             </div>
                         </div>
@@ -3825,20 +3847,31 @@ function showErrorMessage(elementId, message, fieldIdToFocus = null) {
         }
     }
 
-    function save_energy_attachment_details()
-    {
-        $('#energy_attachment_successMsg').html("Saved Successfully");
-        $('#energy_attachment_successMsg').show();
-        setTimeout(function()
-        {
+    function save_energy_attachment_details() {
+        // Set success message and attributes
+        $('#energy_attachment_successMsg')
+            .text("Saved Successfully")  // Using text() instead of html()
+            .removeAttr('tabindex')      // Remove focus blocker
+            .attr({
+                'aria-live': 'polite',
+                'aria-atomic': 'true'
+            })
+            .show()
+            .focus();  // Set focus for accessibility
+
+        // Fade out after 2 seconds
+        setTimeout(() => {
             $('#energy_attachment_successMsg').delay(2000).fadeOut('slow');
         }, 2000);
-        setTimeout(function() {
+
+        // Panel navigation after 2 seconds
+        setTimeout(() => {
             $("#headingDisclaimerBtn").removeAttr("disabled");
             $("#collapseDisclaimer").addClass("show");
             $("#collapseAttachment").removeClass("show");
         }, 2000);
     }
+
 
     function submit_energy_application()
     {
