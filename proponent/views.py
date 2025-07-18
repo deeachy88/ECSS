@@ -2249,6 +2249,32 @@ def save_general_attachment_details(request):
 
     return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
 
+def save_energy_attachment(request):
+    data = dict()
+    energy_attach = request.FILES['energy_attach']
+    file_name = energy_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ENE/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, energy_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/ENE" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_energy_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('application_no')
+
+    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='ENE')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='ENE')
+
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
+
+
 def save_road_attachment(request):
     data = dict()
     road_attach = request.FILES['road_attach']
@@ -5165,7 +5191,7 @@ def save_energy_application(request):
 def submit_energy_application(request):
     data = dict()
     try:
-        application_no = request.POST.get('ea_disclaimer_application_no')
+        application_no = request.POST.get('general_disclaimer_application_no')
         identifier = request.POST.get('disc_identifier')
         service_id = None
         main_amount = 0 

@@ -384,7 +384,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Project objective</label>
+                                                <label class="form-label fw-bold">Project Objective</label>
                                                 <input type="text" name="project_objective" class="form-control" id="project_objective">
                                             </div>
                                             <div id="project_objectiveErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -1306,7 +1306,7 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <div class="card-widgets">
-                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#general_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#energy_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                                 </div>
                                                 <h5 class="card-title mb-0">Attachments</h5>
                                                 <div id="cardCollpase7" class="collapse pt-3 show">
@@ -2248,7 +2248,7 @@
 
 <form method="post" id="general_attachment_form" enctype="multipart/form-data">
 {% csrf_token %}
-<div class="modal fade" id="general_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+<div class="modal fade" id="energy_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <!--Content-->
@@ -2265,14 +2265,14 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Attachment</label>
-                    <input type="file" name="general_attach" class="form-control" id="general_attach" accept=".png,.jpg,.jpeg,.pdf,.doc,.kmz">
+                    <input type="file" name="energy_attach" class="form-control" id="energy_attach" accept=".png,.jpg,.jpeg,.pdf,.doc,.kmz">
                 </div>
-                <div class="alert alert-danger" id="general_attachErrorMsg" style="display:none"></div>
+                <div class="alert alert-danger" id="energy_attachErrorMsg" style="display:none"></div>
             </div>
         </div>
       </div>
       <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="save_general_attachment()">Add</button>
+        <button type="button" class="btn btn-sm btn-primary" onclick="save_energy_attachment()">Add</button>
         <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
@@ -3872,49 +3872,153 @@ function showErrorMessage(elementId, message, fieldIdToFocus = null) {
         }, 2000);
     }
 
-
-    function submit_energy_application()
+    function save_energy_attachment()
     {
-        $.ajax
-        ({
-            type : "POST",
-            url : "{% url 'submit_general_application' %}",
-            data : $('#energy_submit_form').serialize(),
-            success : function(data)
-            {
-                if(data.message == 'success')
+        let file_length = document.getElementById("energy_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#energy_attachErrorMsg').html("Please Choose A Attachment");
+            $('#energy_attachErrorMsg').show();
+            $('#energy_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var fileName = document.getElementById('energy_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('energy_attach').files[0];
+            fd.append('energy_attach', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
                 {
-                    $('#energy_submit_successMsg').html("Application Submitted Successfully");
-                    $('#energy_submit_successMsg').show();
-                    setTimeout(function()
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_energy_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
                     {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_energy_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#energy_attachment_modal').modal('hide');
+                                $('#energy_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#energy_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#energy_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#energy_attachErrorMsg').show();
+                        $('#energy_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+        }
+    }
+
+    function submit_energy_application() {
+        // Show loading indicator
+        $("#pageloader").show();
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'submit_general_application' %}",
+            data: $('#energy_submit_form').serialize(),
+            success: function(data) {
+                $("#pageloader").hide();
+
+                if (data.message == 'success') {
+                    // Success case
+                    $('#energy_submit_successMsg')
+                        .text("Application Submitted Successfully")
+                        .removeAttr('tabindex')
+                        .attr({
+                            'aria-live': 'polite',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
+
+                    setTimeout(() => {
                         $('#energy_submit_successMsg').delay(2000).fadeOut('slow');
                     }, 2000);
-                    setTimeout(function() {
-                        location.reload()
-                    }, 2000);
+
+                    setTimeout(() => location.reload(), 2000);
                 }
-                else if(data.message == 'not submitted')
-                {
-                    $('#iee_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
-                    $('#iee_submit_errorMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                }
-                else
-                {
-                    $('#energy_submit_errorMsg').html("Please Check And Submit Again");
-                    $('#energy_submit_errorMsg').show();
-                    setTimeout(function()
-                    {
+                else if (data.message == 'not submitted') {
+                    // Ancillary not submitted case
+                    $('#energy_submit_errorMsg')
+                        .text("Please Submit Your Ancillary First And Try Again")
+                        .removeAttr('tabindex')
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
+
+                    setTimeout(() => {
                         $('#energy_submit_errorMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                 }
+                else {
+                    // Other error cases
+                    $('#energy_submit_errorMsg')
+                        .text(`Application Error: ${data.error}`)
+                        .removeAttr('tabindex')
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
+
+                    setTimeout(() => {
+                        $('#energy_submit_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
+            },
+            error: function(xhr, status, error) {
+                // AJAX error handling
+                $("#pageloader").hide();
+                $('#energy_submit_errorMsg')
+                    .text(`Request failed: ${error}`)
+                    .removeAttr('tabindex')
+                    .attr({
+                        'aria-live': 'assertive',
+                        'aria-atomic': 'true'
+                    })
+                    .show()
+                    .focus();
+
+                setTimeout(() => {
+                    $('#energy_submit_errorMsg').delay(2000).fadeOut('slow');
+                }, 2000);
             }
         });
     }
+
+
+
+
 
     function add_machine_tool_details()
     {
