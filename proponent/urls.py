@@ -149,6 +149,8 @@ urlpatterns = [
     #Energy Application Details
     path('save_energy_application', views.save_energy_application, name='save_energy_application'),
     path('submit_energy_application', views.submit_energy_application, name='submit_energy_application'),
+    path('save_energy_attachment', views.save_energy_attachment, name='save_energy_attachment'),
+    path('save_energy_attachment_details', views.save_energy_attachment_details, name='save_energy_attachment_details'),
 
     #Tourism Application Details
     path('save_tourism_application', views.save_tourism_application, name='save_tourism_application'),
