@@ -124,6 +124,7 @@ class t_ec_industries_t1_general(models.Model):
     technology_total_capacity = models.CharField(max_length=250,default=None, blank=True, null=True)
     energy_source = models.CharField(max_length=250,default=None, blank=True, null=True)
     energy_source_justification = models.TextField(max_length=250, default=None, blank=True, null=True)
+    water_resources_info = models.TextField(max_length=250, default=None, blank=True, null=True)
     water_required = models.CharField(max_length=250,default=None, blank=True, null=True)
     water_raw_material_source = models.CharField(max_length=250,default=None, blank=True, null=True)
     water_raw_material_qty_day = models.IntegerField(default=None, blank=True, null=True)
@@ -145,8 +146,8 @@ class t_ec_industries_t1_general(models.Model):
     water_others_qty_day = models.IntegerField(default=None, blank=True, null=True)
     water_others_recycle_day = models.IntegerField(default=None, blank=True, null=True)
     water_provide_by_iestate = models.CharField(max_length=250,default=None, blank=True, null=True)
-    total_water_consumption = models.IntegerField(default=None, blank=True, null=True)
-    total_water_recycled = models.IntegerField(default=None, blank=True, null=True)
+    total_water_consumption = models.DecimalField(max_digits=10,decimal_places=2,default=None,blank=True,null=True)
+    total_water_recycled = models.DecimalField(max_digits=10,decimal_places=2,default=None,blank=True,null=True)
     water_excavated_muck = models.CharField(max_length=10,default=None, blank=True, null=True)
     water_downstream_users = models.TextField(max_length=250, default=None, blank=True, null=True)
     water_flow_rate_lean = models.CharField(max_length=250,default=None, blank=True, null=True)
@@ -623,6 +624,7 @@ class t_ec_industries_t1_general_audit(models.Model):
     technology_total_capacity = models.CharField(max_length=250,default=None, blank=True, null=True)
     energy_source = models.CharField(max_length=250,default=None, blank=True, null=True)
     energy_source_justification = models.TextField(max_length=250, default=None, blank=True, null=True)
+    water_resources_info = models.TextField(max_length=250, default=None, blank=True, null=True)
     water_required = models.CharField(max_length=250,default=None, blank=True, null=True)
     water_raw_material_source = models.CharField(max_length=250,default=None, blank=True, null=True)
     water_raw_material_qty_day = models.IntegerField(default=None, blank=True, null=True)
@@ -644,8 +646,8 @@ class t_ec_industries_t1_general_audit(models.Model):
     water_others_qty_day = models.IntegerField(default=None, blank=True, null=True)
     water_others_recycle_day = models.IntegerField(default=None, blank=True, null=True)
     water_provide_by_iestate = models.CharField(max_length=250,default=None, blank=True, null=True)
-    total_water_consumption = models.IntegerField(default=None, blank=True, null=True)
-    total_water_recycled = models.IntegerField(default=None, blank=True, null=True)
+    total_water_consumption = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True)
+    total_water_recycled = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True)
     water_excavated_muck = models.CharField(max_length=10,default=None, blank=True, null=True)
     water_downstream_users = models.TextField(max_length=250, default=None, blank=True, null=True)
     water_flow_rate_lean = models.CharField(max_length=250,default=None, blank=True, null=True)
@@ -1012,7 +1014,7 @@ class t_ec_industries_t3_machine_equipment(models.Model):
     record_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100,default=None, blank=True, null=True)
     machine_name = models.CharField(max_length=250,default=None, blank=True, null=True)
-    qty = models.IntegerField(default=None, blank=True, null=True)
+    qty = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True)
     installed_capacity = models.CharField(max_length=100,default=None, blank=True, null=True)
 
 
@@ -1029,7 +1031,7 @@ class t_ec_industries_t5_raw_materials(models.Model):
     record_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     raw_material = models.CharField(max_length=250,default=None, blank=True, null=True)
-    qty = models.IntegerField(default=None, blank=True, null=True)
+    qty = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True)
     source = models.CharField(max_length=250,default=None, blank=True, null=True)
     storage_method = models.CharField(max_length=100,default=None, blank=True, null=True)
 
@@ -1063,7 +1065,7 @@ class t_ec_industries_t8_forest_produce(models.Model):
     record_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     produce_name = models.CharField(max_length=250,default=None, blank=True, null=True)
-    qty = models.IntegerField(default=None, blank=True, null=True)
+    qty = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True)
     storage_method = models.CharField(max_length=100,default=None, blank=True, null=True)
 
 class t_ec_industries_t9_products_by_products(models.Model):
@@ -1071,14 +1073,14 @@ class t_ec_industries_t9_products_by_products(models.Model):
     application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     product_type = models.CharField(max_length=100,default=None, blank=True, null=True)
     product_name = models.CharField(max_length=250,default=None, blank=True, null=True)
-    qty = models.IntegerField(default=None, blank=True, null=True)
+    qty = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True)
     storage_method = models.CharField(max_length=100,default=None, blank=True, null=True)
 
 class t_ec_industries_t10_hazardous_chemicals(models.Model):
     record_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     chemical_name = models.CharField(max_length=250,default=None, blank=True, null=True)
-    qty = models.IntegerField(default=None, blank=True, null=True)
+    qty = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True)
     storage_method = models.CharField(max_length=100,default=None, blank=True, null=True)
 
 class t_ec_industries_t11_ec_details(models.Model):

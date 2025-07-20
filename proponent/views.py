@@ -2829,6 +2829,7 @@ def save_project_details(request):
         blast_type = request.POST.get('blast_type')
         blast_qty = request.POST.get('blast_qty')
         blast_frequency_time = request.POST.get('blast_frequency_time')
+        print(application_no)
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         application_details.update(project_objective=project_objective,
@@ -2924,73 +2925,91 @@ def ec_renewal_details(request):
         ec_details = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)    
         return render(request, 'renewal_details.html',{'application_details':application_details,'application_no':application_no, 'ec_details':ec_details,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
-    
+
 
 def save_general_water_requirement(request):
     data = dict()
     try:
         application_no = request.POST.get('general_water_application_no')
-        energy_source = request.POST.get('energy_source')
         water_excavated_muck = request.POST.get('water_excavated_muck')
         water_required = request.POST.get('water_required')
-        water_provided_by = request.POST.get('water_provided_by')
-        water_raw_material_source = request.POST.get('water_raw_material_source')
-        water_raw_material_qty_day = request.POST.get('#water_raw_material_qty_day')
-        water_raw_material_recycle_day = request.POST.get('#water_raw_material_recycle_day')
-        water_cleaning_source = request.POST.get('#water_cleaning_source')
-        water_cleaning_qty_day = request.POST.get('#water_cleaning_qty_day')
-        water_cleaning_recycle_day = request.POST.get('#water_cleaning_recycle_day')
-        water_process_source = request.POST.get('#water_process_source')
-        water_process_qty_day = request.POST.get('#water_process_qty_day')
-        water_process_recycle_day = request.POST.get('#water_process_recycle_day')
-        water_domestic_source = request.POST.get('#water_domestic_source')
-        water_domestic_qty_day = request.POST.get('#water_domestic_qty_day')
-        water_domestic_recycle_day = request.POST.get('#water_domestic_recycle_day')
-        water_dust_compression_source = request.POST.get('#water_dust_compression_source')
-        water_dust_compression_qty_day = request.POST.get('#water_dust_compression_qty_day')
-        water_dust_compression_recycle_day = request.POST.get('#water_dust_compression_recycle_day')
-        water_others_name = request.POST.get('#water_others_name')
-        water_others_source = request.POST.get('#water_others_source')
-        water_others_qty_day = request.POST.get('#water_others_qty_day')
-        water_downstream_users = request.POST.get('#water_downstream_users')
-        water_flow_rate_lean = request.POST.get('#water_flow_rate_lean')
-        water_source_distance = request.POST.get('#water_source_distance')
+        water_resources_info = request.POST.get('water_resources_info')
 
+        # Water sources data
+        water_raw_material_source = request.POST.get('water_raw_material_source')
+        water_raw_material_qty_day = request.POST.get('water_raw_material_qty_day', '0')
+        water_raw_material_recycle_day = request.POST.get('water_raw_material_recycle_day', '0')
+
+        water_cleaning_source = request.POST.get('water_cleaning_source')
+        water_cleaning_qty_day = request.POST.get('water_cleaning_qty_day', '0')
+        water_cleaning_recycle_day = request.POST.get('water_cleaning_recycle_day', '0')
+
+        water_process_source = request.POST.get('water_process_source')
+        water_process_qty_day = request.POST.get('water_process_qty_day', '0')
+        water_process_recycle_day = request.POST.get('water_process_recycle_day', '0')
+
+        water_domestic_source = request.POST.get('water_domestic_source')
+        water_domestic_qty_day = request.POST.get('water_domestic_qty_day', '0')
+        water_domestic_recycle_day = request.POST.get('water_domestic_recycle_day', '0')
+
+        water_dust_compression_source = request.POST.get('water_dust_compression_source')
+        water_dust_compression_qty_day = request.POST.get('water_dust_compression_qty_day', '0')
+        water_dust_compression_recycle_day = request.POST.get('water_dust_compression_recycle_day', '0')
+
+        water_others_name = request.POST.get('water_others_name')
+        water_others_source = request.POST.get('water_others_source')
+        water_others_qty_day = request.POST.get('water_others_qty_day', '0')
+
+        water_downstream_users = request.POST.get('water_downstream_users')
+        water_flow_rate_lean = request.POST.get('water_flow_rate_lean')
+        water_source_distance = request.POST.get('water_source_distance')
+
+        # Update water details
         water_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
 
-        water_details.update(energy_source=energy_source,
-                             water_excavated_muck=water_excavated_muck,
-                             water_required=water_required,
-                             water_provide_by_iestate=water_provided_by,
-                             water_raw_material_source=water_raw_material_source,
-                             water_raw_material_qty_day=water_raw_material_qty_day,
-                             water_raw_material_recycle_day=water_raw_material_recycle_day,
-                             water_cleaning_source=water_cleaning_source,
-                             water_cleaning_qty_day=water_cleaning_qty_day,
-                             water_cleaning_recycle_day=water_cleaning_recycle_day,
-                             water_process_source=water_process_source,
-                             water_process_qty_day=water_process_qty_day,
-                             water_process_recycle_day=water_process_recycle_day,
-                             water_domestic_source=water_domestic_source,
-                             water_domestic_qty_day=water_domestic_qty_day,
-                             water_domestic_recycle_day=water_domestic_recycle_day,
-                             water_dust_compression_source=water_dust_compression_source,
-                             water_dust_compression_qty_day=water_dust_compression_qty_day,
-                             water_dust_compression_recycle_day=water_dust_compression_recycle_day,
-                             water_others_name=water_others_name,
-                             water_others_source=water_others_source,
-                             water_others_qty_day=water_others_qty_day,
-                             water_downstream_users=water_downstream_users,
-                             water_flow_rate_lean=water_flow_rate_lean,
-                             water_source_distance=water_source_distance
-                             )
+        if not water_details.exists():
+            raise ValueError(f"Application {application_no} not found")
+
+        update_data = {
+            'water_excavated_muck': water_excavated_muck,
+            'water_required': water_required,
+            'water_resources_info': water_resources_info,
+            'water_raw_material_source': water_raw_material_source,
+            'water_raw_material_qty_day': water_raw_material_qty_day,
+            'water_raw_material_recycle_day': water_raw_material_recycle_day,
+            'water_cleaning_source': water_cleaning_source,
+            'water_cleaning_qty_day': water_cleaning_qty_day,
+            'water_cleaning_recycle_day': water_cleaning_recycle_day,
+            'water_process_source': water_process_source,
+            'water_process_qty_day': water_process_qty_day,
+            'water_process_recycle_day': water_process_recycle_day,
+            'water_domestic_source': water_domestic_source,
+            'water_domestic_qty_day': water_domestic_qty_day,
+            'water_domestic_recycle_day': water_domestic_recycle_day,
+            'water_dust_compression_source': water_dust_compression_source,
+            'water_dust_compression_qty_day': water_dust_compression_qty_day,
+            'water_dust_compression_recycle_day': water_dust_compression_recycle_day,
+            'water_others_name': water_others_name,
+            'water_others_source': water_others_source,
+            'water_others_qty_day': water_others_qty_day,
+            'water_downstream_users': water_downstream_users,
+            'water_flow_rate_lean': water_flow_rate_lean,
+            'water_source_distance': water_source_distance,
+            'total_water_consumption': request.POST.get('total_water_consumption', '0'),
+            'total_water_recycled': request.POST.get('total_water_recycled', '0')
+        }
+
+        water_details.update(**update_data)
+
         data['message'] = "success"
-        return JsonResponse(data)
     except Exception as e:
         print('An error occurred:', e)
-        error_msg = str(e)
-        data['error'] = str(error_msg.split("\n")[0])
+        import traceback
+        traceback.print_exc()  # This will print full traceback to console
+        data['error'] = str(e)
+
     return JsonResponse(data)
+
     
 def submit_transmission_application(request):
     data = dict()
@@ -4233,158 +4252,199 @@ def submit_forest_application(request):
 def save_ground_water_application(request):
     data = {}
     try:
+        # Extract all POST data
+        identifier = request.POST.get('identifier')
         application_no = request.POST.get('application_no')
         project_name = request.POST.get('project_name')
         project_category = request.POST.get('project_category')
         applicant_name = request.POST.get('applicant_name')
-        application_type = request.POST.get('application_type')
+        #application_type = 'New' if identifier == 'DR' else request.POST.get('application_type')
+        application_type = "New"
         address = request.POST.get('address')
-        cid = request.session['cid']
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         focal_person = request.POST.get('focal_person')
-        if dzongkhag_throm == 'Thromde':
-            dzongkhag_code = None
-            gewog_code = None
-            village_code = None
-            thromde_id = request.POST.get('thromde_id')
-        else:
-            dzongkhag_code = request.POST.get('dzongkhag')
-            gewog_code = request.POST.get('gewog')
-            village_code = request.POST.get('vil_chiwog')
-            thromde_id = None
+        tor_application_no = request.POST.get('tor_application_no')
+        ec_reference_no = request.POST.get('ec_reference_no')
+        service_type = request.POST.get('service_type')
+
+        # Groundwater specific fields
+        max_evacuation_depth = request.POST.get('max_evacuation_depth')
+        land_form = request.POST.get('land_form')
+        terrain_elevation = request.POST.get('terrain_elevation')
+        terrain_slope = request.POST.get('terrain_slope')
+
+        # Area related fields
         industrial_area_acre = request.POST.get('industrial_area_acre')
         state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
         private_area_acre = request.POST.get('private_area_acre')
         others_area = request.POST.get('others_area')
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
-        max_evacuation_depth = request.POST.get('max_evacuation_depth')
-        land_form = request.POST.get('land_form')
-        terrain_elevation = request.POST.get('terrain_elevation')
-        terrain_slope = request.POST.get('terrain_slope')
-        identifier = request.POST.get('identifier')
-        ec_reference_no = request.POST.get('ec_reference_no')
-        tor_application_no = request.POST.get('tor_application_no')
-        service_type = request.POST.get('service_type')
 
-        ca_auth = None
-
-        if identifier != 'DR' or identifier != 'NC' or identifier != 'OC' and tor_application_no == None:
-            auth_filter = t_competant_authority_master.objects.filter(
-                competent_authority=request.session['ca_auth'],
-                dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
-            )
-            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-        elif identifier == 'NC' or identifier == 'OC':
-            auth_filter = t_ec_industries_t1_general.objects.filter(
-                application_no=application_no
-            )
-            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+        # Initialize location variables
+        dzongkhag_code, gewog_code, village_code, thromde_id = None, None, None, None
+        if dzongkhag_throm == 'Thromde':
+            thromde_id = request.POST.get('thromde_id')
         else:
-            auth_filter = t_ec_industries_t1_general.objects.filter(
-                application_no=tor_application_no
-            )
-            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+            dzongkhag_code = request.POST.get('dzongkhag')
+            gewog_code = request.POST.get('gewog')
+            village_code = request.POST.get('vil_chiwog')
 
-        application_data = {
+        # Common fields for both insert and update
+        common_fields = {
+            'application_date': timezone.now().date(),
+            'application_type': application_type,
             'project_name': project_name,
             'project_category': project_category,
             'applicant_name': applicant_name,
-            'application_type': 'New' if identifier == 'DR' else application_type,
             'address': address,
-            'cid': cid,
+            'cid': request.session.get('cid'),
             'contact_no': contact_no,
             'email': email,
             'focal_person': focal_person,
+            'dzongkhag_throm': dzongkhag_throm,
             'dzongkhag_code': dzongkhag_code,
             'gewog_code': gewog_code,
             'village_code': village_code,
+            'thromde_id': thromde_id,
             'industrial_area_acre': industrial_area_acre,
             'state_reserve_forest_acre': state_reserve_forest_acre,
             'private_area_acre': private_area_acre,
-            'others_area':others_area,
+            'others_area': others_area,
             'others_area_acre': others_area_acre,
             'total_area_acre': total_area_acre,
+            # Groundwater specific fields
             'max_evacuation_depth': max_evacuation_depth,
             'land_form': land_form,
             'terrain_elevation': terrain_elevation,
             'terrain_slope': terrain_slope,
-            'dzongkhag_throm':dzongkhag_throm,
-            'thromde_id':thromde_id
+            # System fields
+            'service_type': service_type,
+            'applicant_id': request.session.get('email'),
+            'colour_code': request.session.get('colour_code'),
+            'service_id': request.session.get('service_id'),
+            'broad_activity_code': request.session.get('broad_activity_code'),
+            'specific_activity_code': request.session.get('specific_activity_code'),
+            'category': request.session.get('category'),
+            'application_source': 'ECSS',
+            'application_status': 'P',
+            'tor_application_no': tor_application_no,
+            'ec_reference_no': ec_reference_no
         }
 
-        if identifier == 'NC':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(project_name=project_name, service_type=identifier)
-        elif identifier == 'OC':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            application_details.update(applicant_name=applicant_name, service_type=identifier)
-        else:
-            application_data.update({
-                'application_no': application_no,
-                'application_date': timezone.now().date(),
-                'service_type': service_type,
-                'ca_authority': ca_auth,
-                'applicant_id': request.session['email'],
-                'colour_code': request.session['colour_code'],
-                'application_status': 'P',
-                'service_id': request.session['service_id'],
-                'broad_activity_code': request.session['broad_activity_code'],
-                'specific_activity_code': request.session['specific_activity_code'],
-                'category': request.session['category'],
-            })
+        # Determine competent authority
+        ca_auth = None
+        if identifier not in ['DR', 'NC', 'OC'] and tor_application_no is None:
+            auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session.get('ca_auth'),
+                dzongkhag_code_id=dzongkhag_code if request.session.get('ca_auth') in ['DEC', 'THROMDE'] else None
+            )
+            if auth_filter.exists():
+                ca_auth = auth_filter.first().competent_authority_id
+        elif identifier in ['NC', 'OC']:
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=application_no
+            )
+            if auth_filter.exists():
+                ca_auth = auth_filter.first().ca_authority
+        elif tor_application_no:
+            auth_filter = t_ec_industries_t1_general.objects.filter(
+                application_no=tor_application_no
+            )
+            if auth_filter.exists():
+                ca_auth = auth_filter.first().ca_authority
 
-            if identifier == 'DR':
-                t_ec_industries_t1_general.objects.update_or_create(application_no=application_no, defaults=application_data)
+        common_fields['ca_authority'] = ca_auth
+
+        with transaction.atomic():
+            # Handle different identifier cases
+            if identifier == 'NC':
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                if application_details.exists():
+                    application_details.update(project_name=project_name, service_type=identifier)
+                else:
+                    raise ValueError(f"Application {application_no} does not exist for NC operation")
+            elif identifier == 'OC':
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                if application_details.exists():
+                    application_details.update(applicant_name=applicant_name, service_type=identifier)
+                else:
+                    raise ValueError(f"Application {application_no} does not exist for OC operation")
+            elif identifier == 'DR':
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                if application_details.exists():
+                    # For DR, protect specific fields from being updated
+                    protected_fields = {
+                        'service_type', 'ca_authority', 'applicant_id', 'colour_code',
+                        'service_id', 'broad_activity_code', 'specific_activity_code',
+                        'category', 'application_source', 'application_status'
+                    }
+                    # Update only non-protected fields
+                    update_fields = {k: v for k, v in common_fields.items() if k not in protected_fields}
+                    application_details.update(**update_fields)
+                else:
+                    t_ec_industries_t1_general.objects.create(
+                        application_no=application_no,
+                        **common_fields
+                    )
             elif identifier in ['TC', 'PC', 'LC', 'CC']:
                 application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
-                for app_detail in application_details:
-                    t_ec_industries_t1_general.objects.create(**application_data, service_id=app_detail.service_id)
+                for app_det in application_details:
+                    t_ec_industries_t1_general.objects.create(
+                        application_no=application_no,
+                        ec_reference_no=app_det.ec_reference_no,
+                        **common_fields
+                    )
+            else:  # Main Activity case
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                if application_details.exists() and identifier != 'DR' and application_type == "New":
+                    # Update existing record
+                    application_details.update(**common_fields)
+                else:
+                    # Insert new record
+                    t_ec_industries_t1_general.objects.create(
+                        application_no=application_no,
+                        **common_fields
+                    )
+
+            # Workflow handling
+            workflow_update_data = {
+                'application_no': application_no,
+                'application_status': 'P',
+                'actor_id': request.session.get('login_id'),
+                'actor_name': request.session.get('name'),
+                'assigned_role_id': '2',
+                'assigned_role_name': 'Verifier',
+                'service_id': request.session.get('service_id'),
+                'ca_authority': ca_auth,
+                'application_source': 'ECSS',
+                'service_type': service_type
+            }
+
+            workflow_exists = t_workflow_dtls.objects.filter(application_no=application_no).exists()
+            if workflow_exists:
+                t_workflow_dtls.objects.filter(application_no=application_no).update(**workflow_update_data)
             else:
-                t_ec_industries_t1_general.objects.create(**application_data)
+                t_workflow_dtls.objects.create(**workflow_update_data)
 
-        t_application_history.objects.create(
-            application_no=application_no,
-            application_date=timezone.now().date(),
-            applicant_id=request.session['email'],
-            ca_authority=ca_auth,
-            service_id=request.session['service_id'],
-            application_status='P',
-            action_date=None,
-            actor_id=request.session['login_id'],
-            actor_name=request.session['name'],
-            remarks=None,
-            status=None
-        )
-
-        if identifier == 'NC' or identifier == 'OC':
-            work_details = t_workflow_dtls.objects.filter(application_no=application_no)
-            work_details.update(application_status='P',
-                actor_id=request.session['login_id'],
-                actor_name=request.session['name'],
-                assigned_role_id='2',
-                assigned_role_name='Verifier')
-        else:
-            t_workflow_dtls.objects.create(
+            # Create application history
+            t_application_history.objects.create(
                 application_no=application_no,
-                service_id=request.session['service_id'],
-                application_status='P',
-                actor_id=request.session['login_id'],
-                actor_name=request.session['name'],
-                assigned_role_id='2',
-                assigned_role_name='Verifier',
+                application_date=timezone.now().date(),
+                applicant_id=request.session.get('email'),
                 ca_authority=ca_auth,
-                application_source='ECSS',
-                service_type=service_type
+                service_id=request.session.get('service_id'),
+                application_status='P',
+                actor_id=request.session.get('login_id'),
+                actor_name=request.session.get('name')
             )
 
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        error_msg = str(e)
-        data['error'] = str(error_msg.split("\n")[0])
+        data['error'] = str(e).split("\n")[0]
     return JsonResponse(data)
 
 
