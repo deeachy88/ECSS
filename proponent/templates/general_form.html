@@ -5637,25 +5637,24 @@
                 }
             }
         
-            function check_anc_other_general()
-            {
-                if($('#anc_other_general').is(":checked") || $('#anc_other_mineral').is(":checked"))
-                {
+            function check_anc_other_general() {
+                if($('#anc_other_general').is(":checked") && $('#anc_other_mineral').is(":checked")) {
+                    // Both checked - show both
                     $('.general_application').show();
                     $('.mineral_application').show();
                 }
-                else if($('#anc_other_general').is(":checked") && $('#anc_other_mineral').not(":checked"))
-                {
+                else if($('#anc_other_general').is(":checked")) {
+                    // Only general checked
                     $('.general_application').show();
                     $('.mineral_application').hide();
                 }
-                else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').is(":checked"))
-                {
+                else if($('#anc_other_mineral').is(":checked")) {
+                    // Only mineral checked
                     $('.general_application').hide();
                     $('.mineral_application').show();
                 }
-                else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').not(":checked"))
-                {
+                else {
+                    // Neither checked - hide both
                     $('.general_application').hide();
                     $('.mineral_application').hide();
                 }
