@@ -510,7 +510,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="water_requirement_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="water_requirement_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_water_application_no">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -954,23 +954,41 @@
                                 <form method="post" id="anc_others_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="others_application_no">
-                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_ancillary_others(this.value)">
+                                                        <label class="form-check-label" for="customRadio3">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_ancillary_others(this.value)" checked>
+                                                        <label class="form-check-label" for="customRadio4">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="anc_other_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-warning border-0 rounded-0 anc_others" role="alert" style="display: none;">
                                         Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
                                     </div>
                                     <br>
-                                    <div class="form-check">
+                                    <div class="form-check anc_others" style="display: none;">
                                         <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" value="Yes" class="form-check-input" onclick="check_anc_other_crushing_unit()">
                                         <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
                                     </div>
-                                    <div class="form-check">
+                                    <div class="form-check anc_others" style="display: none;">
                                         <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" value="Yes" class="form-check-input" onclick="check_anc_other_surface_collection()">
                                         <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
                                     </div>
-                                    <div class="form-check">
+                                    <div class="form-check anc_others" style="display: none;">
                                         <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                         <label class="form-check-label">Mineral stockyards outside the project area</label>
                                     </div>
-                                    <div class="form-check">
+                                    <div class="form-check anc_others" style="display: none;">
                                         <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()">
                                         <label class="form-check-label">Others</label>
                                     </div>
@@ -5936,5 +5954,19 @@
                     $('#gen_submit_btn').hide();
                 }
             }
+
+            function check_ancillary_others(value)
+            {
+                if(value == 'Yes')
+                {
+                    $('.anc_others').show();
+                }
+                else
+                {
+                    $('.anc_others').hide();
+
+                }
+            }
+
         </script>
 {% endblock %}

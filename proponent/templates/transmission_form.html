@@ -718,7 +718,7 @@
                                                         <td>6</td>
                                                         <td>Others, specify </td>
                                                         <td><input type="text" name="water_others_name" class="form-control col-lg-6" id="water_others_name" value="N/A"></td>
-                                                        <td><input type="text" name="water_others_source" class="form-control col-lg-6" id="water_others_source" value="0"></td>
+                                                        <td><input type="text" name="water_others_source" class="form-control col-lg-6" id="water_others_source" value="N/A"></td>
                                                         <td><input type="text" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day" value="0"></td>
                                                     </tr>
                                                     <tr>
@@ -902,11 +902,11 @@
                                                 <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_other_ancillary_facilities(this.value)">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_ancillary_others(this.value)">
                                                         <label class="form-check-label">Yes</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_other_ancillary_facilities(this.value)" checked>
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_ancillary_others(this.value)" checked>
                                                         <label class="form-check-label">No</label>
                                                     </div>
                                                 </div>
@@ -1286,12 +1286,16 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="alert alert-success border-0 rounded-0" role="alert" id="general_attachment_successMsg" style="display:none">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                </div>
+                                <div class="alert alert-success border-0 rounded-0"
+                                        role="alert"
+                                        id="transmission_attachment_successMsg"
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
+                                    </div>
                                 <div class="row mt-4">
                                     <div class="text-sm-end">
-                                        <a href="#" class="btn btn-success" onclick="save_general_attachment_details()">
+                                        <a href="#" class="btn btn-success" onclick="save_transmission_attachment_details()">
                                             <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
                                     </div>
                                 </div>
@@ -1338,12 +1342,6 @@
                                     <div class="alert alert-danger border-0 rounded-0" role="alert" id="iee_submit_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="transmission_submit_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="transmission_submit_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
                                     <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
                                     <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
                                     <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
@@ -1356,6 +1354,22 @@
                                             <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
                                             <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
                                         </div>
+                                    </div>
+                                    <div class="alert alert-success border-0 rounded-0"
+                                        role="alert"
+                                        id="transmission_submit_successMsg"
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
+                                    </div>
+
+                                    <!-- Error Alert -->
+                                    <div class="alert alert-danger border-0 rounded-0"
+                                        role="alert"
+                                        id="transmission_submit_errorMsg"
+                                        style="display:none"
+                                        aria-live="assertive"
+                                        aria-atomic="true">
                                     </div>
                                     <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
                                         <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
@@ -3093,7 +3107,6 @@
 
                 // Basic validations
                 if (!water_resources_info) {
-
                     $('#water_resources_infoErrorMsg').html("Enter Water Source Information");
                     $('#water_resources_infoErrorMsg').show();
                     $('#water_resources_infoErrorMsg').delay(2000).fadeOut('slow');
@@ -3104,20 +3117,38 @@
                 // Water required specific validations
                 if (isWaterRequired) {
                     const waterFields = [
-                        'water_raw_material_source', 'water_raw_material_qty_day', 'water_raw_material_recycle_day',
-                        'water_cleaning_source', 'water_cleaning_qty_day', 'water_cleaning_recycle_day',
-                        'water_process_source', 'water_process_qty_day', 'water_process_recycle_day',
-                        'water_domestic_source', 'water_domestic_qty_day', 'water_domestic_recycle_day',
-                        'water_dust_compression_source', 'water_dust_compression_qty_day', 'water_dust_compression_recycle_day',
-                        'water_others_name', 'water_others_source', 'water_others_qty_day'
+                        {id: 'water_raw_material_source', name: 'raw material source'},
+                        {id: 'water_cleaning_source', name: 'cleaning source'},
+                        {id: 'water_process_source', name: 'process source'},
+                        {id: 'water_domestic_source', name: 'domestic source'},
+                        {id: 'water_dust_compression_source', name: 'dust compression source'},
+                        {id: 'water_others_name', name: 'others name'}
                     ];
 
                     let isValid = true;
 
                     waterFields.forEach(field => {
+                        const value = $(`#${field.id}`).val();
+                        if (!value || value.trim() === '') {
+                            showErrorAndFocus(`${field.id}ErrorMsg`, `Please enter ${field.name}`, field.id);
+                            isValid = false;
+                        }
+                    });
+
+                    // Validate quantities - should be numbers if provided
+                    const quantityFields = [
+                        'water_raw_material_qty_day', 'water_raw_material_recycle_day',
+                        'water_cleaning_qty_day', 'water_cleaning_recycle_day',
+                        'water_process_qty_day', 'water_process_recycle_day',
+                        'water_domestic_qty_day', 'water_domestic_recycle_day',
+                        'water_dust_compression_qty_day', 'water_dust_compression_recycle_day',
+                        'water_others_qty_day'
+                    ];
+
+                    quantityFields.forEach(field => {
                         const value = $(`#${field}`).val();
-                        if (!value || value === 'N/A' || value === '0') {
-                            showErrorAndFocus(`${field}ErrorMsg`, `Please enter valid ${field.replace(/_/g, ' ')}`, field);
+                        if (value && isNaN(value)) {
+                            showErrorAndFocus(`${field}ErrorMsg`, `Please enter a valid number for ${field.replace(/_/g, ' ')}`, field);
                             isValid = false;
                         }
                     });
@@ -3128,6 +3159,12 @@
                 // If all validations pass, submit the form
                 submitWaterRequirementForm();
                 return true;
+            }
+
+            function showErrorAndFocus(errorElementId, message, focusElementId) {
+                $(`#${errorElementId}`).html(message).show();
+                $(`#${focusElementId}`).focus();
+                // Remove the fadeOut effect so error stays visible
             }
 
             function submitWaterRequirementForm() {
@@ -3272,7 +3309,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/save_anc_power_line_details/",
+                            url: "{% url 'save_anc_power_line_details' %}",
                             data: { 'application_no': application_no, 'line_chainage_from': line_chainage_from, 'line_chainage_to': line_chainage_to, 'land_type': land_type, 'terrain': terrain, 'tower_type': tower_type, 'no_of_tower': no_of_tower, 'row': row, 'area_required': area_required, csrfmiddlewaretoken: csrf_token },
                             success: function (responseText) {
                                 $('#power_line_successMsg').html("Power Line Details Added Successfully");
@@ -3336,7 +3373,7 @@
                     $('#anc_road_blast_required').focus();
                 }
                 else if (anc_road_blast_required_value == 'Yes' && anc_road_blast_type == "") {
-                    $('#anc_road_blast_typeErrorMsg').html("Mention type of blasting.");
+                    $('#anc_road_blast_typeErrorMsg').html("Mention Type of Blasting.");
                     $('#anc_road_blast_typeErrorMsg').show();
                     $('#anc_road_blast_typeErrorMsg').delay(2000).fadeOut('slow');
                     $('#anc_road_blast_type').focus();
@@ -3363,7 +3400,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/save_anc_approach_road_details/",
+                            url: "{% url 'save_anc_approach_road_details' %}",
                             data: $('#ancillary_approach_road_form').serialize(),
                             success: function (data) {
                                 if (service == 'IEE') {
@@ -3421,7 +3458,7 @@
                 $.ajax
                     ({
                         type: "POST",
-                        url: "/save_anc_other_details/",
+                        url: "{% url 'save_anc_other_details' %}",
                         data: $('#anc_others_form').serialize(),
                         success: function (data) {
                             if (data.message == 'success') {
@@ -3538,7 +3575,7 @@
             function submitSolidWasteForm() {
                 $.ajax({
                     type: "POST",
-                    url: "/save_solid_waste_details/",
+                    url: "{% url 'save_solid_waste_details' %}",
                     data: $('#solid_waste_form').serialize(),
                     success: function (data) {
                         if (service == 'IEE') {
@@ -3648,7 +3685,7 @@
             function submitNoiseLevelForm() {
                 $.ajax({
                     type: "POST",
-                    url: "/save_noise_level_details/",
+                    url: "{% url 'save_noise_level_details' %}",
                     data: $('#noise_level_form').serialize(),
                     success: function (data) {
                         if (data.message === 'success') {
@@ -3727,7 +3764,7 @@
             function submitOtherImpactForm() {
                 $.ajax({
                     type: "POST",
-                    url: "/save_other_impact_details/",
+                    url: "{% url 'save_other_impact_details' %}",
                     data: $('#other_impact_form').serialize(),
                     success: function (data) {
                         if (data.message === 'success') {
@@ -3756,58 +3793,88 @@
                 });
             }
 
-            function save_general_attachment_details() {
-                $('#general_attachment_successMsg').html("Saved Successfully");
-                $('#general_attachment_successMsg').show();
-                setTimeout(function () {
-                    $('#general_attachment_successMsg').delay(2000).fadeOut('slow');
-                }, 2000);
-                setTimeout(function () {
-                    $("#headingDisclaimerBtn").removeAttr("disabled");
-                    $("#collapseDisclaimer").addClass("show");
-                    $("#collapseAttachment").removeClass("show");
-                }, 2000);
-            }
+
 
             function submit_general_application() {
+                // Show loading indicator
                 $("#pageloader").show();
-                $.ajax
-                    ({
-                        type: "POST",
-                        url: "/submit_general_application/",
-                        data: $('#general_submit_form').serialize(),
-                        success: function (data) {
-                            $("#pageloader").hide();
-                            if (data.message == 'success') {
-                                $('#general_submit_successMsg').html("Application Submitted Successfully");
-                                $('#general_submit_successMsg').show();
-                                setTimeout(function () {
-                                    $('#general_submit_successMsg').delay(2000).fadeOut('slow');
-                                }, 2000);
-                                setTimeout(function () {
-                                    location.reload()
-                                }, 2000);
-                            }
-                            else if (data.message == 'not submitted') {
-                                $('#iee_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
-                                $('#iee_submit_errorMsg').show();
-                                setTimeout(function () {
-                                    $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
-                                }, 2000);
-                            }
-                            else {
-                                var errorMsg = data.error;
 
-                                $('#application_form_errorMsg').html(`Application Error: ${data.error}`);
-                                $('#application_form_errorMsg').show();
-                                $('#application_form_errorMsg').focus();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'submit_general_application' %}",
+                    data: $('#transmission_submit_form').serialize(),
+                    success: function(data) {
+                        $("#pageloader").hide();
 
-                                setTimeout(function () {
-                                    $('#application_form_errorMsg').delay(2000).fadeOut('slow');
-                                }, 2000);
-                            }
+                        if (data.message == 'success') {
+                            // Success case
+                            $('#transmission_submit_successMsg')
+                                .text("Application Submitted Successfully")
+                                .removeAttr('tabindex')
+                                .attr({
+                                    'aria-live': 'polite',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
+
+                            setTimeout(() => {
+                                $('#transfission_submit_successMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+
+                            setTimeout(() => location.reload(), 2000);
                         }
-                    });
+                        else if (data.message == 'not submitted') {
+                            // Ancillary not submitted case
+                            $('#transmission_submit_errorMsg')
+                                .text("Please Submit Your Ancillary First And Try Again")
+                                .removeAttr('tabindex')
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
+
+                            setTimeout(() => {
+                                $('#transmission_submit_errorMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+                        }
+                        else {
+                            // Other error cases
+                            $('#general_submit_errorMsg')
+                                .text(`Application Error: ${data.error}`)
+                                .removeAttr('tabindex')
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
+
+                            setTimeout(() => {
+                                $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // AJAX error handling
+                        $("#pageloader").hide();
+                        $('#general_submit_errorMsg')
+                            .text(`Request failed: ${error}`)
+                            .removeAttr('tabindex')
+                            .attr({
+                                'aria-live': 'assertive',
+                                'aria-atomic': 'true'
+                            })
+                            .show()
+                            .focus();
+
+                        setTimeout(() => {
+                            $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
+                });
             }
 
 
@@ -3839,7 +3906,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/add_machine_tool_details/",
+                            url: "{% url 'add_machine_tool_details' %}",
                             data: { 'application_no': application_no, 'machine_tool': machine_tool, 'machine_tool_qty': machine_tool_qty, 'machine_tool_installed_capacity': machine_tool_installed_capacity },
                             success: function (responseText) {
                                 $('#machine_tool_SuccessMsg').html("Add Successful");
@@ -3897,7 +3964,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/update_machine_tool_details/",
+                            url: "{% url 'update_machine_tool_details' %}",
                             data: { 'record_id': record_id, 'application_no': application_no, 'machine_tool': machine_tool, 'machine_tool_qty': machine_tool_qty, 'machine_tool_installed_capacity': machine_tool_installed_capacity },
                             success: function (responseText) {
                                 $('#edit_machine_tool_SuccessMsg').html("Add Successful");
@@ -3929,7 +3996,7 @@
                 $.ajax
                     ({
                         type: "POST",
-                        url: "/delete_machine_tool_details/",
+                        url: "{% url 'delete_machine_tool_details' %}",
                         data: { 'record_id': record_id, 'application_no': application_no },
                         success: function (responseText) {
                             $('#delete_machine_tool_SuccessMsg').html("Add Successful");
@@ -4169,7 +4236,8 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/add_product_details/",
+                            url : "{% url 'add_product_details' %}",
+
                             data: { 'application_no': application_no, 'partner_type': partner_type, 'partner_type_name': partner_type_name, 'partner_type_address': partner_type_address },
                             success: function (responseText) {
                                 $('#partner_type_SuccessMsg').html("Add Successful");
@@ -4202,7 +4270,7 @@
                 $.ajax
                     ({
                         type: "POST",
-                        url: "/delete_partner_details/",
+                        url : "{% url 'delete_partner_details' %}",
                         data: { 'record_id': record_id, 'application_no': application_no },
                         success: function (responseText) {
                             $('#delete_raw_material_SuccessMsg').html("Add Successful");
@@ -4218,60 +4286,6 @@
                             }, 2000);
                         }
                     });
-            }
-
-            function save_general_attachment() {
-                let file_length = document.getElementById("general_attach");
-                if (file_length.value.length < 1) {
-                    $('#general_attachErrorMsg').html("Please Choose A Attachment");
-                    $('#general_attachErrorMsg').show();
-                    $('#general_attachErrorMsg').delay(2000).fadeOut('slow');
-                }
-                else {
-                    var fileName = document.getElementById('general_attach').files[0].name;
-                    var fd = new FormData();
-                    var file = document.getElementById('general_attach').files[0];
-                    fd.append('general_attach', file);
-                    token_value = $("input[name=csrfmiddlewaretoken]").val();
-                    $.ajaxSetup
-                        ({
-                            beforeSend: function (xhr, settings) {
-                                xhr.setRequestHeader("X-CSRFToken", token_value);
-                            }
-                        });
-                    $.ajax
-                        ({
-                            type: "POST",
-                            url: "/save_general_attachment/",
-                            data: fd,
-                            dataType: 'json',
-                            contentType: false,
-                            processData: false,
-                            success: function (data) {
-                                if (data.form_is_valid) {
-                                    let file_url = data.file_url;
-                                    let application_no = $('#application_no').val();
-                                    $.ajax
-                                        ({
-                                            type: "POST",
-                                            url: "/save_general_attachment_details/",
-                                            data: { 'application_no': application_no, 'filename': fileName, 'file_url': file_url },
-                                            success: function (responseText) {
-                                                $('#general_attachment_modal').modal('hide');
-                                                $('#general_attachment').html(responseText);
-                                                $('.modal-backdrop').remove();
-                                                $('#general_attachment_form')[0].reset();
-                                            }
-                                        });
-                                }
-                                else {
-                                    $('#general_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                                    $('#general_attachErrorMsg').show();
-                                    $('#general_attachErrorMsg').delay(2000).fadeOut('slow');
-                                }
-                            }
-                        });
-                }
             }
 
             function save_power_line_details() {
@@ -4317,7 +4331,7 @@
             function submitPowerLineDetails(formData) {
                 $.ajax({
                     type: "POST",
-                    url: "/save_anc_power_line_details/",
+                    url : "{% url 'save_anc_power_line_details' %}",
                     data: formData,
                     processData: false,  // Required for FormData
                     contentType: false,  // Required for FormData
@@ -4385,7 +4399,7 @@
                 $.ajax
                     ({
                         type: "POST",
-                        url: "/delete_anc_power_line_details/",
+                        url : "{% url 'delete_anc_power_line_details' %}",
                         data: { 'record_id': record_id, 'application_no': application_no, csrfmiddlewaretoken: '{{ csrf_token }}' },
                         success: function (responseText) {
                             $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
@@ -4437,7 +4451,7 @@
                 // If all validations pass, make the AJAX call
                 $.ajax({
                     type: "POST",
-                    url: "/update_anc_power_line_details/",
+                    url : "{% url 'update_anc_power_line_details' %}",
                     data: {
                         record_id: record_id,
                         application_no: application_no,
@@ -4555,7 +4569,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/save_anc_road_details/",
+                            url : "{% url 'save_anc_road_details' %}",
                             data: { 'application_no': application_no, 'road_line_chainage_from': road_line_chainage_from, 'road_line_chainage_to': road_line_chainage_to, 'road_land_type': road_land_type, 'road_terrain': road_terrain, 'road_width': road_width, 'road_row': road_row, 'road_area_required': road_area_required, csrfmiddlewaretoken: csrf_token },
                             success: function (responseText) {
                                 $('#anc_road_successMsg').html("Approach Road Details Added Successfully");
@@ -4601,7 +4615,7 @@
                 $.ajax
                     ({
                         type: "POST",
-                        url: "/delete_anc_road_details/",
+                        url : "{% url 'delete_anc_road_details' %}",
                         data: { 'record_id': record_id, 'application_no': application_no, csrfmiddlewaretoken: '{{ csrf_token }}' },
                         success: function (responseText) {
                             $('#delete_road_successMsg').html("Approach Road Details Deleted Successfully");
@@ -4667,7 +4681,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/update_anc_road_details/",
+                            url : "{% url 'update_anc_road_details' %}",
                             data: { 'record_id': record_id, 'application_no': application_no, 'line_chainage_from': line_chainage_from, 'line_chainage_to': line_chainage_to, 'land_type': land_type, 'terrain': terrain, 'road_width': road_width, 'row': row, 'area_required': area_required, csrfmiddlewaretoken: '{{ csrf_token }}' },
                             success: function (responseText) {
                                 $('#edit_road_successMsg').html("Approach Road Details Updated Successfully");
@@ -4732,7 +4746,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/add_final_product_details/",
+                            url : "{% url 'add_final_product_details' %}",
                             data: { 'application_no': application_no, 'produce_name': produce_name, 'quantity_annum': quantity_annum, 'storage_method': storage_method, csrfmiddlewaretoken: '{{ csrf_token }}' },
                             success: function (responseText) {
                                 $('#final_products_SuccessMsg').html("Add Successful");
@@ -4790,7 +4804,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/update_final_product_details/",
+                            url : "{% url 'update_final_product_details' %}",
                             data: { 'application_no': application_no, 'record_id': record_id, 'produce_name': produce_name, 'quantity_annum': quantity_annum, 'storage_method': storage_method, csrfmiddlewaretoken: '{{ csrf_token }}' },
                             success: function (responseText) {
                                 $('#edit_final_product_SuccessMsg').html("Update Successful");
@@ -4822,7 +4836,7 @@
                 $.ajax
                     ({
                         type: "POST",
-                        url: "/delete_final_product_details/",
+                        url : "{% url 'delete_final_product_details' %}",
                         data: { 'record_id': record_id, 'application_no': application_no, csrfmiddlewaretoken: '{{ csrf_token }}' },
                         success: function (responseText) {
                             $('#delete_final_product_SuccessMsg').html("Deleted Successfully");
@@ -5191,7 +5205,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/add_dumpyard_details/",
+                            url : "{% url 'add_dumpyard_details' %}",
                             data: { 'application_no': application_no, 'dumpyard_number': dumpyard_number, 'dumpyard_capacity': dumpyard_capacity, 'dumpyard_area': dumpyard_area, 'dumpyard_location': dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}' },
                             success: function (responseText) {
                                 $('#dumpyard_SuccessMsg').html("Add Successful");
@@ -5258,7 +5272,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/update_dumpyard_details/",
+                            url : "{% url 'update_dumpyard_details' %}",
                             data: { 'record_id': record_id, 'application_no': application_no, 'dumpyard_number': dumpyard_number, 'dumpyard_capacity': dumpyard_capacity, 'dumpyard_area': dumpyard_area, 'dumpyard_location': dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}' },
                             success: function (responseText) {
                                 $('#edit_dumpyard_SuccessMsg').html("Update Successful");
@@ -5290,7 +5304,7 @@
                 $.ajax
                     ({
                         type: "POST",
-                        url: "/delete_dumpyard_details/",
+                        url : "{% url 'delete_dumpyard_details' %}",
                         data: { 'record_id': record_id, 'application_no': application_no, csrfmiddlewaretoken: '{{ csrf_token }}' },
                         success: function (responseText) {
                             $('#delete_dumpyard_SuccessMsg').html("Delete Successful");
@@ -5595,7 +5609,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/save_iee_application/",
+                            url : "{% url 'save_iee_application' %}",
                             data: $('#iee_application_form').serialize(),
                             success: function (data) {
                                 if (data.message == 'success') {
@@ -6574,7 +6588,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/save_effluent_details/",
+                            url : "{% url 'save_effluent_details' %}",
                             data: $('#effluent_form').serialize(),
                             success: function (data) {
                                 if (data.message == 'success') {
@@ -6668,7 +6682,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/save_industry_emission_details/",
+                            url : "{% url 'save_industry_emission_details' %}",
                             data: $('#industry_emission_form').serialize(),
                             success: function (data) {
                                 if (data.message == 'success') {
@@ -6775,7 +6789,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/save_project_details/",
+                            url : "{% url 'save_project_details' %}",
                             data: $('#project_details_form').serialize(),
                             success: function (data) {
                                 if (data.message == 'success') {
@@ -6907,7 +6921,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/update_raw_materials/",
+                            url : "{% url 'update_raw_materials' %}",
                             data: { 'record_id': record_id, 'application_no': application_no, 'raw_material': raw_material, 'qty': raw_material_qty, 'source': raw_material_source, 'storage_method': raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}' },
                             success: function (responseText) {
                                 $('#edit_raw_material_SuccessMsg').html("Add Successful");
@@ -6986,7 +7000,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/add_product_details/",
+                            url : "{% url 'add_product_details' %}",
                             data: { 'application_no': application_no, 'partner_type': partner_type, 'partner_type_name': partner_type_name, 'partner_type_address': partner_type_address, csrfmiddlewaretoken: '{{ csrf_token }}' },
                             success: function (responseText) {
                                 $('#partner_type_SuccessMsg').html("Add Successful");
@@ -7019,7 +7033,7 @@
                 $.ajax
                     ({
                         type: "POST",
-                        url: "/delete_partner_details/",
+                        url : "{% url 'delete_partner_details' %}",
                         data: { 'record_id': record_id, 'application_no': application_no, csrfmiddlewaretoken: '{{ csrf_token }}' },
                         success: function (responseText) {
                             $('#delete_raw_material_SuccessMsg').html("Add Successful");
@@ -7038,15 +7052,6 @@
             }
 
 
-            function check_ancillary_others(value) {
-                if (value == 'Yes') {
-                    $('.anc_others').show();
-                }
-                else {
-                    $('.anc_others').hide();
-
-                }
-            }
 
             function save_solid_waste_details() {
                 let en_impact_allocated_budget = $('#en_impact_allocated_budget').val();
@@ -7201,7 +7206,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/save_solid_waste_details/",
+                            url : "{% url 'save_solid_waste_details' %}",
                             data: $('#solid_waste_form').serialize(),
                             success: function (data) {
                                 if (data.message == 'success') {
@@ -7498,7 +7503,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/save_road_application/",
+                            url : "{% url 'save_road_application' %}",
                             data: $('#road_application_form').serialize(),
                             success: function (data) {
                                 if (data.message == 'success') {
@@ -7692,7 +7697,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/road_project_details/",
+                            url : "{% url 'road_project_details' %}",
                             data: $('#project_details_form').serialize(),
                             success: function (data) {
                                 if (data.message == 'success') {
@@ -7766,7 +7771,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/road_project_details_one/",
+                            url : "{% url 'road_project_details' %}",
                             data: $('#project_details_one_form').serialize(),
                             success: function (data) {
                                 if (data.message == 'success') {
@@ -7939,7 +7944,7 @@
                     $.ajax
                         ({
                             type: "POST",
-                            url: "/road_project_details_two/",
+                            url : "{% url 'road_project_details_two' %}",
                             data: $('#project_details_two_form').serialize(),
                             success: function (data) {
                                 if (data.message == 'success') {
@@ -8018,6 +8023,106 @@
                         });
                 }
             }
-            
+
+
+            function save_transmission_attachment_details() {
+                // Set success message and attributes
+                $('#transmission_attachment_successMsg')
+                    .text("Saved Successfully")  // Using text() instead of html()
+                    .removeAttr('tabindex')      // Remove focus blocker
+                    .attr({
+                        'aria-live': 'polite',
+                        'aria-atomic': 'true'
+                    })
+                    .show()
+                    .focus();  // Set focus for accessibility
+
+                // Fade out after 2 seconds
+                setTimeout(() => {
+                    $('#transmission_attachment_successMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+
+                // Panel navigation after 2 seconds
+                setTimeout(() => {
+                    $("#headingDisclaimerBtn").removeAttr("disabled");
+                    $("#collapseDisclaimer").addClass("show");
+                    $("#collapseAttachment").removeClass("show");
+                }, 2000);
+            }
+
+            function save_transmission_attachment()
+            {
+                let file_length = document.getElementById("transmission_attach");
+                if(file_length.value.length < 1)
+                {
+                    $('#transmission_attachErrorMsg').html("Please Choose A Attachment");
+                    $('#transmission_attachErrorMsg').show();
+                    $('#transmission_attachErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    var fileName = document.getElementById('transmission_attach').files[0].name;
+                    var fd = new FormData();
+                    var file = document.getElementById('transmission_attach').files[0];
+                    fd.append('transmission_attach', file);
+                    token_value=$("input[name=csrfmiddlewaretoken]").val();
+                    $.ajaxSetup
+                    ({
+                        beforeSend: function(xhr, settings)
+                        {
+                        xhr.setRequestHeader("X-CSRFToken", token_value);
+                        }
+                    });
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'save_transmission_attachment' %}",
+                        data : fd,
+                        dataType: 'json',
+                        contentType: false,
+                        processData: false,
+                        success : function(data)
+                        {
+                            if (data.form_is_valid)
+                            {
+                                let file_url = data.file_url;
+                                let application_no = $('#application_no').val();
+                                $.ajax
+                                ({
+                                    type : "POST",
+                                    url : "{% url 'save_transmission_attachment_details' %}",
+                                    data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                                    success : function(responseText)
+                                    {
+                                        $('#transmission_attachment_modal').modal('hide');
+                                        $('#transmission_attachment').html(responseText);
+                                        $('.modal-backdrop').remove();
+                                        $('#transmission_attachment_form')[0].reset();
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                $('#transmission_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                                $('#transmission_attachErrorMsg').show();
+                                $('#transmission_attachErrorMsg').delay(2000).fadeOut('slow');
+                            }
+                        }
+                    });
+                }
+            }
+            function check_ancillary_others(value)
+            {
+                if(value == 'Yes')
+                {
+                    $('.other_ancillary_facilities').show();
+                }
+                else
+                {
+                    $('.other_ancillary_facilities').hide();
+
+                }
+            }
+
 </script>
 {% endblock %}
