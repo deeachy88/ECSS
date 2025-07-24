@@ -100,7 +100,7 @@
                                                     <option value="">--SELECT THROMDE--</option>
                                                     {% for thromde in thromde %}
                                                         <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
-                                                    {% endfor %} 
+                                                    {% endfor %}
                                                 </select>
                                             </div>
                                             <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -114,7 +114,7 @@
                                                     <option value="">--SELECT DZONGKHAG--</option>
                                                     {% for dzongkhag in dzongkhag %}
                                                         <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
-                                                    {% endfor %} 
+                                                    {% endfor %}
                                                 </select>
                                             </div>
                                             <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -147,11 +147,9 @@
                                         </div>
                                     </div>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Baseline/Existing information
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Baseline/Existing information: <p> Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable</p>
                                     </div>
-                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable
-                                    </div>
+
                                     <div class="row">
                                         <table class="table table-hover table-bordered table-centered mb-0">
                                             <thead>
@@ -236,13 +234,13 @@
                                                     <td><input type="text" name="bl_tourist_facility_distance" class="form-control col-lg-6" id="bl_tourist_facility_distance" value="0"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>l)</td>
+                                                    <td>m)</td>
                                                     <td>Important installations (early warning systems, weather stations, flood mitigation activities, etc.)</td>
                                                     <td><input type="text" name="bl_impt_installation_name" class="form-control col-lg-6" id="bl_impt_installation_name" value="N/A"></td>
                                                     <td><input type="text" name="bl_impt_installation_distance" class="form-control col-lg-6" id="bl_impt_installation_distance" value="0"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>l)</td>
+                                                    <td>n)</td>
                                                     <td>Industries</td>
                                                     <td><input type="text" name="bl_industries_name" class="form-control col-lg-6" id="bl_industries_name" value="N/A"></td>
                                                     <td><input type="text" name="bl_industries_distance" class="form-control col-lg-6" id="bl_industries_distance" value="0"></td>
@@ -271,7 +269,7 @@
                                     </div>
                                     <div class="row mt-4">
                                         <div class="text-sm-end">
-                                            <a href="#" class="btn btn-success" onclick="save_road_application()">
+                                            <a href="#" class="btn btn-success" onclick="save_road_application_form()">
                                                 <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
                                         </div>
                                     </div>
@@ -295,7 +293,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Project objective</label>
+                                                <label class="form-label fw-bold">Project Objective</label>
                                                 <input type="text" name="project_objective" class="form-control" id="project_objective">
                                             </div>
                                             <div id="project_objectiveErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -424,12 +422,12 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>Pavement Material</td>
+                                                        <td><b>Pavement Material</b></td>
                                                         <td></td>
                                                         <td>
                                                             <div class="row">
                                                                 <div class="col-sm-8">
-                                                                    <input type="text" class="form-control" id="pavement_material" name="pavement_material" value="0">
+                                                                    <input type="hidden" class="form-control" id="pavement_material" name="pavement_material" value="0">
                                                                 </div>
                                                                 <div id="pavement_materialErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                                             </div>
@@ -601,6 +599,11 @@
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="project_details_one_application_no">
                                     <div class="row">
+                                        <br>
+                                        <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>Type of drain: <p>Mention chainage(s) where drain will be constructed along with type of drain:</p>
+                                        </div>
+                                        <br>
                                         <div class="col-lg-12">
                                             <div class="card mt-1">
                                                 <div class="card-body">
@@ -666,7 +669,7 @@
                                                     <td>
                                                         <div class="row">
                                                             <div class="col-sm-8">
-                                                                <input type="text" class="form-control" id="blast_location" name="blasting_location">
+                                                                <input type="text" class="form-control" id="blasting_location" name="blasting_location">
                                                             </div>
                                                             <div id="blasting_locationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                                         </div>
@@ -716,6 +719,11 @@
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="project_details_two_application_no">
                                     <div class="row">
+                                        <br>
+                                        <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide the list for construction materials, source, transportation and storage methods in table below:
+                                        </div>
+                                        <br>
                                         <div class="col-lg-12">
                                             <div class="card">
                                                 <div class="card-body">
@@ -1354,13 +1362,6 @@
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
                                     
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="road_submit_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="road_submit_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    
                                     <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
                                     <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
                                     <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
@@ -1373,6 +1374,21 @@
                                             <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
                                             <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
                                         </div>
+                                    </div>
+                                    <div class="alert alert-success border-0 rounded-0"
+                                        role="alert"
+                                        id="road_submit_successMsg"
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
+                                    </div>
+                                    <!-- Error Alert -->
+                                    <div class="alert alert-danger border-0 rounded-0"
+                                        role="alert"
+                                        id="road_submit_errorMsg"
+                                        style="display:none"
+                                        aria-live="assertive"
+                                        aria-atomic="true">
                                     </div>
                                     <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
                                         <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
@@ -1698,7 +1714,7 @@
       <!--Header-->
       <div class="modal-header text-center">
         <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Add</strong></h5>
+												&nbsp;Add Raw Materials</strong></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
       <!--Body-->
@@ -1706,7 +1722,7 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">List of raw materials </label>
+                    <label class="form-label fw-bold">List of Raw Materials </label>
                     <input type="text" name="raw_material" class="form-control" id="raw_material">
                 </div>
                 <div class="alert alert-danger" id="raw_materialErrorMsg" style="display:none"></div>
@@ -1731,7 +1747,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="raw_material_storage_method" id="raw_material_storage_method">
-                        <option selected>Choose One</option>
+                        <option value="" selected>Choose One</option>
                         <option value="Fully_Enclosed">Fully Enclosed</option>
                         <option value="Partially_Enclosed">Partially Enclosed</option>
                         <option value="Open">Open</option>
@@ -1762,17 +1778,17 @@
       <!--Header-->
       <div class="modal-header text-center">
         <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Update</strong></h5>
+												&nbsp;Update Raw Materials</strong></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
       <!--Body-->
       <div class="modal-body mx-4">
-        <input type="text" name="edit_raw_material_record_id" class="form-control" id="edit_raw_material_record_id">
-        <input type="text" name="edit_raw_material_app_no" class="form-control" id="edit_raw_material_app_no">
+        <input type="hidden" name="edit_raw_material_record_id" class="form-control" id="edit_raw_material_record_id">
+        <input type="hidden" name="edit_raw_material_app_no" class="form-control" id="edit_raw_material_app_no">
         <div class="row">
             <div class="col-lg-6">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">List of raw materials </label>
+                    <label class="form-label fw-bold">List of Raw Materials </label>
                     <input type="text" name="edit_raw_material" class="form-control" id="edit_raw_material">
                 </div>
                 <div class="alert alert-danger" id="edit_raw_materialErrorMsg" style="display:none"></div>
@@ -1797,7 +1813,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="edit_raw_material_storage_method" id="edit_raw_material_storage_method">
-                        <option selected>Choose One</option>
+                        <option value="" selected>Choose One</option>
                         <option value="Fully_Enclosed">Fully Enclosed</option>
                         <option value="Partially_Enclosed">Partially Enclosed</option>
                         <option value="Open">Open</option>
@@ -1942,7 +1958,7 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Right of way (RoW)</label>
-                        <input type="text" name="road_row" class="form-control" id="road_row" onchange="calculate_road_area_required()">
+                        <input type="number" name="road_row" class="form-control" id="road_row" onchange="calculate_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="road_rowErrorMsg" style="display:none"></div>
                 </div>
@@ -2016,14 +2032,14 @@
         <!--Header-->
         <div class="modal-header text-center">
         <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                &nbsp;Edit Approach Road Details</strong></h3>
+                                                &nbspEdit Approach Road Details</strong></h3>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
         </div>
         <!--Body-->
         <div class="modal-body mx-4">
         <div class="row">
-            <input type="hidden" name="edit_anc_record_id" class="form-control" id="edit_anc_road_record_id">
-            <input type="hidden" name="edit_anc_application_no" class="form-control" id="edit_anc_road_application_no">
+            <input type="hidden" name="edit_road_record_id" class="form-control" id="edit_road_record_id">
+            <input type="hidden" name="edit_road_application_no" class="form-control" id="edit_road_application_no">
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Road Chainage From (m)</label>
@@ -2080,7 +2096,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Right of way (RoW)</label>
-                    <input type="text" name="edit_road_row" class="form-control" id="edit_road_row" onblur="calculate_road_area_required()">
+                    <input type="number" name="edit_road_row" class="form-control" id="edit_road_row" onblur="calculate_edit_road_area_required()">
                 </div>
                 <div class="alert alert-danger" id="edit_road_rowErrorMsg" style="display:none"></div>
             </div>
@@ -2189,7 +2205,7 @@
           <!--Header-->
           <div class="modal-header text-center">
             <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;Add</strong></h5>
+                                                    &nbsp;Add Type of Drain</strong></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
           </div>
           <!--Body-->
@@ -2311,7 +2327,7 @@
           <!--Header-->
           <div class="modal-header text-center">
             <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;Add</strong></h5>
+                                                    &nbsp;Add Excavated muck disposal area/Dumpyard</strong></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
           </div>
           <!--Body-->
@@ -2370,7 +2386,7 @@
           <!--Header-->
           <div class="modal-header text-center">
             <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;Edit</strong></h5>
+                                                    &nbsp;Update excavated muck disposal area/Dumpyard</strong></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
           </div>
           <!--Body-->
@@ -2454,509 +2470,14 @@
 </form>
 
 <script>
-    function check_road_water_radio(value)
-    {
-        if(value == 'Yes')
-        {
-            $('.general_water_details').show();
-            $('.general_water_details_no').hide();
-        }
-        else
-        {
-            $('.general_water_details_no').show();
-            $('.general_water_details').hide();
-        }
-    }
-
-    function check_approach_road(value)
-    {
-        if(value == 'Yes')
-        {
-            $('#approach_road_details').show();
-        }
-        else
-        {
-            $('#approach_road_details').hide();
-        }
-    }
-
-    function check_blasting_radio(value)
-    {
-        if(value == 'Yes')
-        {
-            $('.blasting_details').show();
-        }
-        else
-        {
-            $('.blasting_details').hide();
-        }
-    }
-
-    function check_power_line(value)
-    {
-        if(value == 'Yes')
-        {
-            $('.power_line_details').show();
-            $('.power_line_details_table').hide();
-        }
-        else
-        {
-            $('.power_line_details').hide();
-            $('.power_line_details_table').show();
-
-        }
-    }
-
-    function check_wastewater(value)
-    {
-        if(value == 'Yes')
-        {
-            $('.power_line_details').show();
-        }
-        else
-        {
-            $('.power_line_details').hide();
-        }
-    }
-
-    function check_industry_emission(value)
-    {
-        if(value == 'Yes')
-        {
-            $('.power_line_details').show();
-        }
-        else
-        {
-            $('.power_line_details').hide();
-        }
-    }
-
-
-    function add_machine_tool_details()
-    {
-        let application_no = $('#application_no').val();
-        let machine_tool = $('#machine_tool').val();
-        let machine_tool_qty = $('#machine_tool_qty').val();
-        let machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
-
-        if(machine_tool == "")
-        {
-            $('#machine_toolErrorMsg').html("Enter Machine/Tool/Equipment");
-            $('#machine_toolErrorMsg').show();
-            $('#machine_toolErrorMsg').delay(2000).fadeOut('slow');
-            $('#machine_tool').focus();
-        }
-        else if(machine_tool_qty == "")
-        {
-            $('#machine_tool_qtyErrorMsg').html("Enter Qty");
-            $('#machine_tool_qtyErrorMsg').show();
-            $('#machine_tool_qtyErrorMsg').delay(2000).fadeOut('slow');
-            $('#machine_tool_qty').focus();
-        }
-        else if(machine_tool_installed_capacity == "")
-        {
-            $('#machine_tool_installed_capacityErrorMsg').html("Enter Installed Capacity");
-            $('#machine_tool_installed_capacityErrorMsg').show();
-            $('#machine_tool_installed_capacityErrorMsg').delay(2000).fadeOut('slow');
-            $('#machine_tool_installed_capacity').focus();
-        }
-        else
-        {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'add_machine_tool_details' %}",
-                data : {'application_no':application_no,'machine_tool':machine_tool,'machine_tool_qty':machine_tool_qty,'machine_tool_installed_capacity':machine_tool_installed_capacity},
-                success : function(responseText)
-                {
-                    $('#machine_tool_SuccessMsg').html("Add Successful");
-                    $('#machine_tool_SuccessMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#machine_tool_SuccessMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#machine_equipment_tool_modal').modal('hide');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#machine_details_div').html(responseText);
-                    }, 2000);
-                    $('#machine_equipment_tool_form')[0].reset();
-                }
-            });
-        }
-    }
-
-    function machine_equipment_populate(record_id, application_no, machine_name, qty, installed_capacity)
-    {
-        $('#edit_machine_tool_record_id').val(record_id)
-        $('#edit_machine_tool_app_no').val(application_no)
-        $('#edit_machine_tool').val(machine_name);
-        $('#edit_machine_tool_qty').val(qty);
-        $('#edit_machine_tool_installed_capacity').val(installed_capacity);
-        $('#edit_machine_equipment_tool_modal').modal('show');
-    }
-
-    function update_machine_equipment_populate(record_id, application_no, machine_name, qty, installed_capacity)
-    {
-        let record_id = $('#edit_machine_tool_record_id').val();
-        let application_no = $('#edit_machine_tool_app_no').val();
-        let machine_tool = $('#edit_machine_tool').val();
-        let qty = $('#edit_machine_tool_qty').val();
-        let machine_tool_installed_capacity = $('#edit_machine_tool_installed_capacity').val();
-
-        if(machine_tool == "")
-        {
-            $('#edit_machine_toolErrorMsg').html("Enter Machine/Tool/Equipment");
-            $('#edit_machine_toolErrorMsg').show();
-            $('#edit_machine_toolErrorMsg').delay(2000).fadeOut('slow');
-            $('#edit_machine_tool').focus();
-        }
-        else if(machine_tool_qty == "")
-        {
-            $('#edit_machine_tool_qtyErrorMsg').html("Enter Qty");
-            $('#edit_machine_tool_qtyErrorMsg').show();
-            $('#edit_machine_tool_qtyErrorMsg').delay(2000).fadeOut('slow');
-            $('#edit_machine_tool_qty').focus();
-        }
-        else if(machine_tool_installed_capacity == "")
-        {
-            $('#edit_machine_tool_installed_capacityErrorMsg').html("Enter Installed Capacity");
-            $('#edit_machine_tool_installed_capacityErrorMsg').show();
-            $('#edit_machine_tool_installed_capacityErrorMsg').delay(2000).fadeOut('slow');
-            $('#edit_machine_tool_installed_capacity').focus();
-        }
-        else
-        {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'update_machine_tool_details' %}",
-                data : {'record_id':record_id, 'application_no':application_no,'machine_tool':machine_tool,'machine_tool_qty':machine_tool_qty,'machine_tool_installed_capacity':machine_tool_installed_capacity},
-                success : function(responseText)
-                {
-                    $('#edit_machine_tool_SuccessMsg').html("Add Successful");
-                    $('#edit_machine_tool_SuccessMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#edit_machine_tool_SuccessMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#edit_machine_equipment_tool_modal').modal('hide');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#machine_details_div').html(responseText);
-                    }, 2000);
-                }
-            });
-        }
-    }
-
-    function populate_delete_machine_equipment(record_id, application_no)
-    {
-        $('#delete_machine_tool_record_id').val(record_id);
-        $('#delete_machine_tool_app_no').val(application_no);
-        $('#delete_machine_equipment_tool_modal').modal('show');
-    }
-
-    function delete_machine_tool_details()
-    {
-        let record_id = $('#delete_machine_tool_record_id').val();
-        let application_no = $('#delete_machine_tool_app_no').val();
-
-        $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'delete_machine_tool_details' %}",
-                data : {'record_id':record_id, 'application_no':application_no},
-                success : function(responseText)
-                {
-                    $('#delete_machine_tool_SuccessMsg').html("Add Successful");
-                    $('#delete_machine_tool_SuccessMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#delete_machine_tool_SuccessMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#delete_machine_equipment_tool_modal').modal('hide');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#machine_details_div').html(responseText);
-                    }, 2000);
-                }
-            });
-    }
-
-    function add_raw_material_details()
-    {
-        let application_no = $('#application_no').val();
-        let raw_material = $('#raw_material').val();
-        let raw_material_qty = $('#raw_material_qty').val();
-        let raw_material_source = $('#raw_material_source').val();
-        let raw_material_storage_method = $('#raw_material_storage_method').val();
-
-        if(raw_material == "")
-        {
-            $('#raw_materialErrorMsg').html("Enter Raw Material");
-            $('#raw_materialErrorMsg').show();
-            $('#raw_materialErrorMsg').delay(2000).fadeOut('slow');
-            $('#raw_material').focus();
-        }
-        else if(raw_material_qty == "")
-        {
-            $('#raw_material_qtyErrorMsg').html("Enter Qty");
-            $('#raw_material_qtyErrorMsg').show();
-            $('#raw_material_qtyErrorMsg').delay(2000).fadeOut('slow');
-            $('#raw_material_qty').focus();
-        }
-        else if(raw_material_source == "")
-        {
-            $('#raw_material_sourceErrorMsg').html("Enter Source");
-            $('#raw_material_sourceErrorMsg').show();
-            $('#raw_material_sourceErrorMsg').delay(2000).fadeOut('slow');
-            $('#raw_material_source').focus();
-        }
-        else if(raw_material_storage_method == "")
-        {
-            $('#raw_material_storage_methodErrorMsg').html("Select Storage Method");
-            $('#raw_material_storage_methodErrorMsg').show();
-            $('#raw_material_storage_methodErrorMsg').delay(2000).fadeOut('slow');
-            $('#raw_material_storage_method').focus();
-        }
-        else
-        {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'add_raw_materials' %}",
-                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(responseText)
-                {
-                    $('#raw_material_SuccessMsg').html("Add Successful");
-                    $('#raw_material_SuccessMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#raw_material_SuccessMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#raw_materials_modal').modal('hide');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#raw_materials_div').html(responseText);
-                    }, 2000);
-                    $('#raw_materials_form')[0].reset();
-                }
-            });
-        }
-    }
-
-    function raw_materials_details_edit(record_id, application_no, raw_material, qty, source, storage_method)
-    {
-        $('#edit_raw_material_record_id').val(record_id);
-        $('#edit_raw_material_app_no').val(application_no);
-        $('#edit_raw_material').val(raw_material);
-        $('#edit_raw_material_qty').val(qty);
-        $('#edit_raw_material_source').val(source);
-        $('#edit_raw_material_storage_method').val(storage_method);
-        $('#edit_raw_materials_modal').modal('show');
-    }
-
-    function update_raw_material_details()
-    {
-        let record_id = $('#edit_raw_material_record_id').val();
-        let application_no = $('#edit_raw_material_app_no').val();
-        let raw_material = $('#edit_raw_material').val();
-        let raw_material_qty = $('#edit_raw_material_qty').val();
-        let raw_material_source = $('#edit_raw_material_source').val();
-        let raw_material_storage_method = $('#edit_raw_material_storage_method').val();
-
-        if(raw_material == "")
-        {
-            $('#raw_materialErrorMsg').html("Enter Raw Material");
-            $('#raw_materialErrorMsg').show();
-            $('#raw_materialErrorMsg').delay(2000).fadeOut('slow');
-            $('#raw_material').focus();
-        }
-        else if(raw_material_qty == "")
-        {
-            $('#raw_material_qtyErrorMsg').html("Enter Qty");
-            $('#raw_material_qtyErrorMsg').show();
-            $('#raw_material_qtyErrorMsg').delay(2000).fadeOut('slow');
-            $('#raw_material_qty').focus();
-        }
-        else if(raw_material_source == "")
-        {
-            $('#raw_material_sourceErrorMsg').html("Enter Source");
-            $('#raw_material_sourceErrorMsg').show();
-            $('#raw_material_sourceErrorMsg').delay(2000).fadeOut('slow');
-            $('#raw_material_source').focus();
-        }
-        else if(raw_material_storage_method == "")
-        {
-            $('#raw_material_storage_methodErrorMsg').html("Select Storage Method");
-            $('#raw_material_storage_methodErrorMsg').show();
-            $('#raw_material_storage_methodErrorMsg').delay(2000).fadeOut('slow');
-            $('#raw_material_storage_method').focus();
-        }
-        else
-        {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'update_raw_materials' %}",
-                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(responseText)
-                {
-                    $('#edit_raw_material_SuccessMsg').html("Update Successful");
-                    $('#edit_raw_material_SuccessMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#edit_raw_material_SuccessMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#edit_raw_materials_modal').modal('hide');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#raw_materials_div').html(responseText);
-                    }, 2000);
-                }
-            });
-        }
-    }
-
-    function populate_delete_raw_materials(record_id, application_no)
-    {
-        $('#delete_raw_material_record_id').val(record_id);
-        $('#delete_raw_material_app_no').val(application_no);
-        $('#delete_raw_material_modal').modal('show');
-    }
-
-    function delete_raw_material_details()
-    {
-        let record_id = $('#delete_raw_material_record_id').val();
-        let application_no = $('#delete_raw_material_app_no').val();
-
-        $.ajax
-        ({
-            type : "POST",
-            url : "{% url 'delete_raw_materials' %}",
-            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
-            success : function(responseText)
-            {
-                $('#delete_raw_material_SuccessMsg').html("Delete Successful");
-                $('#delete_raw_material_SuccessMsg').show();
-                setTimeout(function()
-                {
-                    $('#delete_raw_material_SuccessMsg').delay(2000).fadeOut('slow');
-                }, 2000);
-                setTimeout(function() {
-                    $('#delete_raw_material_modal').modal('hide');
-                }, 2000);
-                setTimeout(function() {
-                    $('#raw_materials_div').html(responseText);
-                }, 2000);
-            }
-        });
-    }
-
-    function add_partner_details()
-    {
-        let application_no = $('#application_no').val();
-        let partner_type = $('#partner_type').val();
-        let partner_type_name = $('#partner_type_name').val();
-        let partner_type_address = $('#partner_type_address').val();
-
-        if(partner_type == "")
-        {
-            $('#partner_typeErrorMsg').html("Enter Partner Type");
-            $('#partner_typeErrorMsg').show();
-            $('#partner_typeErrorMsg').delay(2000).fadeOut('slow');
-            $('#partner_type').focus();
-        }
-        else if(partner_type_name == "")
-        {
-            $('#partner_type_nameErrorMsg').html("Enter Name");
-            $('#partner_type_nameErrorMsg').show();
-            $('#partner_type_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#partner_type_name').focus();
-        }
-        else if(partner_type_address == "")
-        {
-            $('#partner_type_addressErrorMsg').html("Enter Address");
-            $('#partner_type_addressErrorMsg').show();
-            $('#partner_type_addressErrorMsg').delay(2000).fadeOut('slow');
-            $('#partner_type_address').focus();
-        }
-        else
-        {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'add_product_details' %}",
-                data : {'application_no':application_no,'partner_type':partner_type,'partner_type_name':partner_type_name,'partner_type_address':partner_type_address},
-                success : function(responseText)
-                {
-                    $('#partner_type_SuccessMsg').html("Add Successful");
-                    $('#partner_type_SuccessMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#partner_type_SuccessMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#partner_details_modal').modal('hide');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#partner_details_div').html(responseText);
-                    }, 2000);
-                    $('#partner_details_form')[0].reset();
-                }
-            });
-        }
-    }
-
-    function populate_delete_partner_details(record_id, application_no)
-    {
-        $('#delete_partner_record_id').val(record_id);
-        $('#delete_partner_app_no').val(application_no);
-        $('#delete_partner_details_modal').modal('show');
-    }
-
-    function delete_partner_details()
-    {
-        let record_id = $('#delete_partner_details_record_id').val();
-        let application_no = $('#delete_partner_details_app_no').val();
-
-        $.ajax
-        ({
-            type : "POST",
-            url : "{% url 'delete_partner_details' %}",
-            data : {'record_id':record_id, 'application_no':application_no},
-            success : function(responseText)
-            {
-                $('#delete_raw_material_SuccessMsg').html("Add Successful");
-                $('#delete_raw_material_SuccessMsg').show();
-                setTimeout(function()
-                {
-                    $('#delete_raw_material_SuccessMsg').delay(2000).fadeOut('slow');
-                }, 2000);
-                setTimeout(function() {
-                    $('#delete_raw_material_modal').modal('hide');
-                }, 2000);
-                setTimeout(function() {
-                    $('#raw_materials_div').html(responseText);
-                }, 2000);
-            }
-        });
-    }
-
-    function save_road_application()
+    function save_road_application_form()
     {
         let project_name = $('#project_name').val();
         let applicant_name = $('#applicant_name').val();
         let address = $('#address').val();
         let contact_no = $('#contact_no').val();
         let contact_no_length = $('#contact_no').val().length;
-        let email = $('#email').val(); 
+        let email = $('#email').val();
         let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
         let dzongkhag_throm_val = $("input[name=dzongkhag_throm]:checked").val();
         let thromde_id = $('#thromde_id').val();
@@ -3259,7 +2780,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_road_application' %}",
+                url : "{% url 'save_road_application_form' %}",
                 data : $('#road_application_form').serialize(),
                 success : function(data)
                 {
@@ -3281,11 +2802,11 @@
                     else
                     {
                         var errorMsg = data.error;
-        
+
                         $('#application_form_errorMsg').html(`Application Error: ${data.error}`);
                         $('#application_form_errorMsg').show();
                         $('#application_form_errorMsg').focus();
-                        
+
                         setTimeout(function() {
                             $('#application_form_errorMsg').delay(2000).fadeOut('slow');
                         }, 2000);
@@ -3293,7 +2814,118 @@
                 }
             });
         }
-        
+
+    }
+    // Helper function to show error and focus on field
+    function showErrorAndFocus(errorElement, message, focusElement) {
+        $(errorElement).html(message).show();
+
+        // Use setTimeout to ensure the focus happens after the DOM updates
+        setTimeout(function() {
+            $(focusElement).focus();
+
+            // Scroll to the element if needed
+            $('html, body').animate({
+                scrollTop: $(focusElement).offset().top - 100
+            }, 100);
+        }, 50);
+
+        // Hide the error after 2 seconds
+        setTimeout(function() {
+            $(errorElement).fadeOut('slow');
+        }, 2000);
+    }
+
+    function check_dzong_throm(value)
+    {
+        if(value == "Dzongkhag")
+        {
+            $('.dzongkhag').show();
+            $('.thromde').hide();
+        }
+        else
+        {
+            $('.thromde').show();
+            $('.dzongkhag').hide();
+        }
+    }
+
+    function getGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#gewog').html(data);
+            }
+        });
+    }
+
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#vil_chiwog').html(data);
+            }
+        });
+    }
+
+function getRoadGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#roadgewog').html(data);
+            }
+        });
+    }
+
+    function getRoadVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#roadvillage').html(data);
+            }
+        });
+    }
+
+    function getEditRoadGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#edit_roadgewog').html(data);
+            }
+        });
+    }
+
+    function getEditRoadVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#edit_roadvillage').html(data);
+            }
+        });
     }
 
     function save_project_details()
@@ -3502,7 +3134,7 @@
                     else
                     {
                         var errorMsg = data.error;
-        
+
                         $('#project_details_errorMsg').html(`Application Error: ${data.error}`);
                         $('#project_details_errorMsg').show();
                         $('#project_details_errorMsg').focus();
@@ -3522,8 +3154,8 @@
         let blast_required_value = $("input[name=blast_required]:checked").val();
         let blast_type = $('#blast_type').val();
         let blast_qty = $('#blast_qty').val();
-        let blast_location = $('#blast_location').val();
-        let blast_frequency_time = $('#blast_frequency_time').val();
+        let blasting_location = $('#blasting_location').val();
+        let blast_frequency = $('#blast_frequency').val();
 
         if(blast_required < 1)
         {
@@ -3546,19 +3178,19 @@
             $('#blast_qtyErrorMsg').delay(2000).fadeOut('slow');
             $('#blast_qty').focus();
         }
-        else if(blast_required_value == 'Yes' && blast_location == "")
+        else if(blast_required_value == 'Yes' && blasting_location == "")
         {
-            $('#blast_locationErrorMsg').html("Mention location(s) where the blasting is required.");
-            $('#blast_locationErrorMsg').show();
-            $('#blast_locationErrorMsg').delay(2000).fadeOut('slow');
-            $('#blast_location').focus();
+            $('#blasting_locationErrorMsg').html("Mention location(s) where the blasting is required.");
+            $('#blasting_locationErrorMsg').show();
+            $('#blasting_locationErrorMsg').delay(2000).fadeOut('slow');
+            $('#blasting_location').focus();
         }
-        else if(blast_required_value == 'Yes' && blast_frequency_time == "")
+        else if(blast_required_value == 'Yes' && blast_frequency == "")
         {
-            $('#blast_frequency_timeErrorMsg').html("Mention Frequency and timing of blasting per day.");
-            $('#blast_frequency_timeErrorMsg').show();
-            $('#blast_frequency_timeErrorMsg').delay(2000).fadeOut('slow');
-            $('#blast_frequency_time').focus();
+            $('#blast_frequencyErrorMsg').html("Mention Frequency and timing of blasting per day.");
+            $('#blast_frequencyErrorMsg').show();
+            $('#blast_frequencyErrorMsg').delay(2000).fadeOut('slow');
+            $('#blast_frequency').focus();
         }
         else
         {
@@ -3587,7 +3219,7 @@
                     else
                     {
                         var errorMsg = data.error;
-        
+
                         $('#project_details_one_errorMsg').html(`Application Error: ${data.error}`);
                         $('#project_details_one_errorMsg').show();
                         $('#project_details_one_errorMsg').focus();
@@ -3786,7 +3418,7 @@
                     else
                     {
                         var errorMsg = data.error;
-        
+
                         $('#project_details_two_errorMsg').html(`Application Error: ${data.error}`);
                         $('#project_details_two_errorMsg').show();
                         $('#project_details_two_errorMsg').focus();
@@ -3902,8 +3534,8 @@
 
     function populate_approach_road_details(record_id, application_no, line_chainage_from, line_chainage_to, land_type, terrain, road_width, row, area_required, dzongkhag, gewog, village)
     {
-        $('#edit_anc_road_record_id').val(record_id);
-        $('#edit_anc_road_application_no').val(application_no);
+        $('#edit_road_record_id').val(record_id);
+        $('#edit_road_application_no').val(application_no);
         $('#edit_road_line_chainage_from').val(line_chainage_from);
         $('#edit_road_line_chainage_to').val(line_chainage_to);
         $('#edit_road_land_type').val(land_type);
@@ -3952,8 +3584,8 @@
 
     function update_anc_road_details()
     {
-        let record_id = $('#edit_anc_record_id').val();
-        let application_no = $('#edit_anc_road_application_no').val();
+        let record_id = $('#edit_road_record_id').val();
+        let application_no = $('#edit_road_application_no').val();
         let line_chainage_from = $('#edit_road_line_chainage_from').val();
         let line_chainage_to = $('#edit_road_line_chainage_to').val();
         let land_type = $('#edit_road_land_type').val();
@@ -4031,7 +3663,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_approach_road_details' %}",
-                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required,'dzongkhag':dzongkhag,'gewog':gewog,'village':village, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'road_width':road_width,'row':row,'area_required':area_required,'dzongkhag':dzongkhag,'gewog':gewog,'village':village, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_road_successMsg').html("Approach Road Details Updated Successfully");
@@ -4048,6 +3680,361 @@
         }
     }
 
+    function calculate_road_area_required()
+    {
+        let road_line_chainage_from = $('#road_line_chainage_from').val();
+        let road_line_chainage_to = $('#road_line_chainage_to').val();
+        let road_row = $('#road_row').val();
+        let sum = 0;
+        let product = 0;
+
+        sum += parseFloat(road_line_chainage_from) || 0;
+        sum += parseFloat(road_line_chainage_to) || 0;
+        product = parseFloat(sum) * parseFloat(road_row) || 0;
+
+        $('#road_area_required').val(product);
+    }
+
+    function calculate_edit_road_area_required()
+    {
+        let road_line_chainage_from = $('#edit_road_line_chainage_from').val();
+        let road_line_chainage_to = $('#edit_road_line_chainage_to').val();
+        let road_row = $('#edit_road_row').val();
+        let sum = 0;
+        let product = 0;
+
+        sum += parseFloat(road_line_chainage_from) || 0;
+        sum += parseFloat(road_line_chainage_to) || 0;
+        product = parseFloat(sum) * parseFloat(road_row) || 0;
+
+        $('#edit_road_area_required').val(product);
+    }
+
+
+    function add_type_of_drain()
+    {
+        let application_no = $('#application_no').val();
+        let drain_type = $('#drain_type').val();
+        let chainage = $('#chainage').val();
+
+
+        if(drain_type == "")
+        {
+            $('#drain_typeErrorMsg').html("Enter Drain Type");
+            $('#drain_typeErrorMsg').show();
+            $('#drain_typeErrorMsg').delay(2000).fadeOut('slow');
+            $('#drain_type').focus();
+        }
+        else if(chainage == "")
+        {
+            $('#chainageErrorMsg').html("Enter Chainage");
+            $('#chainageErrorMsg').show();
+            $('#chainageErrorMsg').delay(2000).fadeOut('slow');
+            $('#chainage').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'add_types_of_drain' %}",
+                data : {'application_no':application_no,'drain_type':drain_type,'chainage':chainage, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#types_of_drains_SuccessMsg').html("Add Successful");
+                    $('#types_of_drains_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#types_of_drains_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#types_of_drains_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#types_of_drains_details').html(responseText);
+                    }, 2000);
+                    $('#types_of_drains_form')[0].reset();
+                }
+            });
+        }
+    }
+
+    function drain_type_populate(record_id, application_no, drain_type, chainage)
+    {
+        $('#edit_drain_record_id').val(record_id);
+        $('#edit_drain_app_no').val(application_no);
+        $('#edit_drain_type').val(drain_type);
+        $('#edit_chainage').val(chainage);
+        $('#edit_types_of_drains_modal').modal('show');
+    }
+
+    function update_types_of_drains_details()
+    {
+        let record_id = $('#edit_drain_record_id').val();
+        let application_no = $('#edit_drain_app_no').val();
+        let drain_type = $('#edit_drain_type').val();
+        let chainage = $('#edit_chainage').val();
+
+
+        if(drain_type == "")
+        {
+            $('#edit_drain_typeErrorMsg').html("Enter Drain Type");
+            $('#edit_drain_typeErrorMsg').show();
+            $('#edit_drain_typeErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_drain_type').focus();
+        }
+        else if(chainage == "")
+        {
+            $('#edit_chainageErrorMsg').html("Enter Chainage");
+            $('#edit_chainageErrorMsg').show();
+            $('#edit_chainageErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_chainage').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_types_of_drain' %}",
+                data : {'application_no':application_no,'record_id':record_id, 'drain_type':drain_type,'chainage':chainage, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#edit_types_of_drains_SuccessMsg').html("Update Successful");
+                    $('#edit_types_of_drains_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#edit_types_of_drains_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_types_of_drains_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#types_of_drains_details').html(responseText);
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function populate_delete_drain_type(record_id, application_no)
+    {
+        $('#delete_drain_record_id').val(record_id);
+        $('#delete_drain_application_no').val(application_no);
+        $('#delete_types_of_drains_modal').modal('show');
+    }
+
+    function delete_drain_details()
+    {
+        let record_id = $('#delete_drain_record_id').val();
+        let application_no = $('#delete_drain_application_no').val();
+
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_types_of_drain' %}",
+            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#delete_drain_successMsg').html("Delete Successful");
+                $('#delete_drain_successMsg').show();
+                setTimeout(function()
+                {
+                    $('#delete_drain_successMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#delete_types_of_drains_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#types_of_drains_details').html(responseText);
+                }, 2000);
+            }
+        });
+    }
+
+    function check_blasting_radio(value)
+    {
+        if(value == 'Yes')
+        {
+            $('.blasting_details').show();
+        }
+        else
+        {
+            $('.blasting_details').hide();
+        }
+    }
+
+    function add_raw_material_details()
+    {
+        let application_no = $('#application_no').val();
+        let raw_material = $('#raw_material').val();
+        let raw_material_qty = $('#raw_material_qty').val();
+        let raw_material_source = $('#raw_material_source').val();
+        let raw_material_storage_method = $('#raw_material_storage_method').val();
+
+        if(raw_material == "")
+        {
+            $('#raw_materialErrorMsg').html("Enter Raw Material");
+            $('#raw_materialErrorMsg').show();
+            $('#raw_materialErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material').focus();
+        }
+        else if(raw_material_qty == "")
+        {
+            $('#raw_material_qtyErrorMsg').html("Enter Qty");
+            $('#raw_material_qtyErrorMsg').show();
+            $('#raw_material_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material_qty').focus();
+        }
+        else if(raw_material_source == "")
+        {
+            $('#raw_material_sourceErrorMsg').html("Enter Source");
+            $('#raw_material_sourceErrorMsg').show();
+            $('#raw_material_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material_source').focus();
+        }
+        else if(raw_material_storage_method == "")
+        {
+            $('#raw_material_storage_methodErrorMsg').html("Select Storage Method");
+            $('#raw_material_storage_methodErrorMsg').show();
+            $('#raw_material_storage_methodErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material_storage_method').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'add_raw_materials' %}",
+                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#raw_material_SuccessMsg').html("Add Successful");
+                    $('#raw_material_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#raw_material_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#raw_materials_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#raw_materials_div').html(responseText);
+                    }, 2000);
+                    $('#raw_materials_form')[0].reset();
+                }
+            });
+        }
+    }
+
+    function raw_materials_details_edit(record_id, application_no, raw_material, qty, source, storage_method)
+    {
+        $('#edit_raw_material_record_id').val(record_id);
+        $('#edit_raw_material_app_no').val(application_no);
+        $('#edit_raw_material').val(raw_material);
+        $('#edit_raw_material_qty').val(qty);
+        $('#edit_raw_material_source').val(source);
+        $('#edit_raw_material_storage_method').val(storage_method);
+        $('#edit_raw_materials_modal').modal('show');
+    }
+
+    function update_raw_material_details()
+    {
+        let record_id = $('#edit_raw_material_record_id').val();
+        let application_no = $('#edit_raw_material_app_no').val();
+        let raw_material = $('#edit_raw_material').val();
+        let raw_material_qty = $('#edit_raw_material_qty').val();
+        let raw_material_source = $('#edit_raw_material_source').val();
+        let raw_material_storage_method = $('#edit_raw_material_storage_method').val();
+
+        if(raw_material == "")
+        {
+            $('#raw_materialErrorMsg').html("Enter Raw Material");
+            $('#raw_materialErrorMsg').show();
+            $('#raw_materialErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material').focus();
+        }
+        else if(raw_material_qty == "")
+        {
+            $('#raw_material_qtyErrorMsg').html("Enter Qty");
+            $('#raw_material_qtyErrorMsg').show();
+            $('#raw_material_qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material_qty').focus();
+        }
+        else if(raw_material_source == "")
+        {
+            $('#raw_material_sourceErrorMsg').html("Enter Source");
+            $('#raw_material_sourceErrorMsg').show();
+            $('#raw_material_sourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material_source').focus();
+        }
+        else if(raw_material_storage_method == "")
+        {
+            $('#raw_material_storage_methodErrorMsg').html("Select Storage Method");
+            $('#raw_material_storage_methodErrorMsg').show();
+            $('#raw_material_storage_methodErrorMsg').delay(2000).fadeOut('slow');
+            $('#raw_material_storage_method').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_raw_materials' %}",
+                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#edit_raw_material_SuccessMsg').html("Update Successful");
+                    $('#edit_raw_material_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#edit_raw_material_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_raw_materials_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#raw_materials_div').html(responseText);
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function populate_delete_raw_materials(record_id, application_no)
+    {
+        $('#delete_raw_material_record_id').val(record_id);
+        $('#delete_raw_material_app_no').val(application_no);
+        $('#delete_raw_material_modal').modal('show');
+    }
+
+    function delete_raw_material_details()
+    {
+        let record_id = $('#delete_raw_material_record_id').val();
+        let application_no = $('#delete_raw_material_app_no').val();
+
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_raw_materials' %}",
+            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#delete_raw_material_SuccessMsg').html("Delete Successful");
+                $('#delete_raw_material_SuccessMsg').show();
+                setTimeout(function()
+                {
+                    $('#delete_raw_material_SuccessMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#delete_raw_material_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#raw_materials_div').html(responseText);
+                }, 2000);
+            }
+        });
+    }
+
     function check_excavated_muck(value)
     {
         if(value == "Yes")
@@ -4060,17 +4047,267 @@
         }
     }
 
+    function check_road_water_radio(value)
+    {
+        if(value == 'Yes')
+        {
+            $('.general_water_details').show();
+            $('.general_water_details_no').hide();
+        }
+        else
+        {
+            $('.general_water_details_no').show();
+            $('.general_water_details').hide();
+        }
+    }
+
+    function check_approach_road(value)
+    {
+        if(value == 'Yes')
+        {
+            $('#approach_road_details').show();
+        }
+        else
+        {
+            $('#approach_road_details').hide();
+        }
+    }
+
+    function check_power_line(value)
+    {
+        if(value == 'Yes')
+        {
+            $('.power_line_details').show();
+            $('.power_line_details_table').hide();
+        }
+        else
+        {
+            $('.power_line_details').hide();
+            $('.power_line_details_table').show();
+
+        }
+    }
+
+    function check_wastewater(value)
+    {
+        if(value == 'Yes')
+        {
+            $('.power_line_details').show();
+        }
+        else
+        {
+            $('.power_line_details').hide();
+        }
+    }
+
+    function check_industry_emission(value)
+    {
+        if(value == 'Yes')
+        {
+            $('.power_line_details').show();
+        }
+        else
+        {
+            $('.power_line_details').hide();
+        }
+    }
+
+    function add_dumpyard_details()
+    {
+        let application_no = $('#application_no').val();
+        let dumpyard_number = $('#dumpyard_number').val();
+        let dumpyard_capacity = $('#dumpyard_capacity').val();
+        let dumpyard_area = $('#dumpyard_area').val();
+        let dumpyard_location = $('#dumpyard_location').val();
+
+        if(dumpyard_number == "")
+        {
+            $('#dumpyard_numberErrorMsg').html("Enter Number of Dumpyard");
+            $('#dumpyard_numberErrorMsg').show();
+            $('#dumpyard_numberErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_number').focus();
+        }
+        else if(dumpyard_capacity == "")
+        {
+            $('#dumpyard_capacityErrorMsg').html("Enter Dumpyard Capacity");
+            $('#dumpyard_capacityErrorMsg').show();
+            $('#dumpyard_capacityErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_capacity').focus();
+        }
+        else if(dumpyard_area == "")
+        {
+            $('#dumpyard_areaErrorMsg').html("Enter Dumpyard Area");
+            $('#dumpyard_areaErrorMsg').show();
+            $('#dumpyard_areaErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_area').focus();
+        }
+        else if(dumpyard_location == "")
+        {
+            $('#dumpyard_locationErrorMsg').html("Enter Dumpyard Location");
+            $('#dumpyard_locationErrorMsg').show();
+            $('#dumpyard_locationErrorMsg').delay(2000).fadeOut('slow');
+            $('#dumpyard_location').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'add_dumpyard_details' %}",
+                data : {'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#dumpyard_SuccessMsg').html("Add Successful");
+                    $('#dumpyard_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#dumyard_details_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#dump_yard_details_div').html(responseText);
+                    }, 2000);
+                    $('#dumyard_details_form')[0].reset();
+                }
+            });
+        }
+    }
+
+    function populate_dumpyard_data(record_id, application_no, dumpyard_number, dumpyard_capacity, dumpyard_area, dumpyard_location)
+    {
+        $('#dumpyard_record_id').val(record_id);
+        $('#dumpyard_application_no').val(application_no);
+        $('#edit_dumpyard_number').val(dumpyard_number);
+        $('#edit_dumpyard_capacity').val(dumpyard_capacity);
+        $('#edit_dumpyard_area').val(dumpyard_area);
+        $('#edit_dumpyard_location').val(dumpyard_location);
+
+        $('#edit_dumyard_details_modal').modal('show');
+    }
+
+    function update_dumpyard_details()
+    {
+        let record_id = $('#dumpyard_record_id').val();
+        let application_no = $('#dumpyard_application_no').val();
+        let dumpyard_number = $('#edit_dumpyard_number').val();
+        let dumpyard_capacity = $('#edit_dumpyard_capacity').val();
+        let dumpyard_area = $('#edit_dumpyard_area').val();
+        let dumpyard_location = $('#edit_dumpyard_location').val();
+
+        if(dumpyard_number == "")
+        {
+            $('#edit_dumpyard_numberErrorMsg').html("Enter Dumpyard Number");
+            $('#edit_dumpyard_numberErrorMsg').show();
+            $('#edit_dumpyard_numberErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_number').focus();
+        }
+        else if(dumpyard_capacity == "")
+        {
+            $('#edit_dumpyard_capacityErrorMsg').html("Enter Dumpyard Capacity");
+            $('#edit_dumpyard_capacityErrorMsg').show();
+            $('#edit_dumpyard_capacityErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_capacity').focus();
+        }
+        else if(dumpyard_area == "")
+        {
+            $('#edit_dumpyard_areaErrorMsg').html("Enter Dumpyard Area");
+            $('#edit_dumpyard_areaErrorMsg').show();
+            $('#edit_dumpyard_areaErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_area').focus();
+        }
+        else if(dumpyard_location == "")
+        {
+            $('#edit_dumpyard_locationErrorMsg').html("Enter Dumpyard Location");
+            $('#edit_dumpyard_locationErrorMsg').show();
+            $('#edit_dumpyard_locationErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_dumpyard_location').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_dumpyard_details' %}",
+                data : {'record_id':record_id,'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(responseText)
+                {
+                    $('#edit_dumpyard_SuccessMsg').html("Update Successful");
+                    $('#edit_dumpyard_SuccessMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#edit_dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#edit_dumyard_details_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#dump_yard_details_div').html(responseText);
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    function populate_delete_dumpyard_data(record_id, application_no)
+    {
+        $('#delete_dumpyard_record_id').val(record_id);
+        $('#delete_dumpyard_application_no').val(application_no);
+        $('#delete_dumyard_details_modal').modal('show');
+    }
+
+    function delete_dumpyard_details()
+    {
+        let record_id = $('#delete_dumpyard_record_id').val();
+        let application_no = $('#delete_dumpyard_application_no').val();
+
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'delete_dumpyard_details' %}",
+            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText)
+            {
+                $('#delete_dumpyard_SuccessMsg').html("Delete Successful");
+                $('#delete_dumpyard_SuccessMsg').show();
+                setTimeout(function()
+                {
+                    $('#delete_dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#delete_dumyard_details_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#dump_yard_details_div').html(responseText);
+                }, 2000);
+            }
+        });
+    }
+
+    function check_anc_facility(value)
+    {
+        if(value == "Yes")
+        {
+            $('.anc_facility_details').show();
+        }
+        else
+        {
+            $('.anc_facility_details').hide();
+        }
+    }
+
     function save_anc_other_details()
     {
         let anc_other_required = $("input[name=anc_other_required]:checked").length;
         let anc_other_required_value = $("input[name=anc_other_required]:checked").val();
-        
+
         if(anc_other_required < 1)
         {
             $('#anc_other_requiredErrorMsg').html("Please Select One.");
             $('#anc_other_requiredErrorMsg').show();
             $('#anc_other_requiredErrorMsg').delay(2000).fadeOut('slow');
-            $('#anc_other_required').focus();   
+            $('#anc_other_required').focus();
         }
         else if(anc_other_required_value == "Yes" && !$('#anc_other_bridge').is(":checked") && !$('#anc_other_crushing_unit').is(":checked") && !$('#anc_other_concrete_building').is(":checked") && !$('#anc_other_asphalt_plant').is(":checked") && !$('#anc_other_surface_collection').is(":checked") && !$('#anc_other_general').is(":checked"))
         {
@@ -4105,7 +4342,7 @@
                     else
                     {
                         var errorMsg = data.error;
-        
+
                         $('#anc_others_errorMsg').html(`Application Error: ${data.error}`);
                         $('#anc_others_errorMsg').show();
                         setTimeout(function()
@@ -4316,7 +4553,7 @@
                     else
                     {
                         var errorMsg = data.error;
-        
+
                         $('#solid_waste_errorMsg').html(`Application Error: ${data.error}`);
                         $('#solid_waste_errorMsg').show();
                         $('#solid_waste_errorMsg').focus();
@@ -4432,7 +4669,7 @@
                     else
                     {
                         var errorMsg = data.error;
-        
+
                         $('#noise_level_errorMsg').html(`Application Error: ${data.error}`);
                         $('#noise_level_errorMsg').show();
                         $('#noise_level_errorMsg').focus();
@@ -4765,7 +5002,7 @@
                     else
                     {
                         var errorMsg = data.error;
-        
+
                         $('#other_impact_errorMsg').html(`Application Error: ${data.error}`);
                         $('#other_impact_errorMsg').show();
                         $('#other_impact_errorMsg').focus();
@@ -4822,7 +5059,7 @@
                 else
                 {
                     var errorMsg = data.error;
-        
+
                     $('#road_submit_errorMsg').html(`Application Error: ${data.error}`);
                     $('#road_submit_errorMsg').show();
                     $('#road_submit_errorMsg').focus();
@@ -4835,491 +5072,7 @@
         });
     }
 
-    function check_anc_facility(value)
-    {
-        if(value == "Yes")
-        {
-            $('.anc_facility_details').show();
-        }
-        else
-        {
-            $('.anc_facility_details').hide();
-        }
-    }
-    function getCitizenDetails(cid)
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'check_cid_exists' %}",
-            data :{'cid':cid},
-            success : function(data)
-            {
-                if(data.count > 0)
-                {
-                    $('#cid').val("");
-                    $('#applicant_name').val("");
-                    $('#cidErrorMsg').html("CID Already Exists.Try With Another one");
-                    $('#cidErrorMsg').show();
-                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
-                }
-                else
-                {
-                    const myObj =data.response;
-                    if(myObj.citizendatas.citizendata == undefined)
-                    {
-                        $('#cid').val("");
-                        $('#cidErrorMsg').html("Invalid CID.Try With Another one");
-                        $('#cidErrorMsg').show();
-                        $('#cidErrorMsg').delay(2000).fadeOut('slow');
-                    }
-                    else
-                    {
-                        var CitizenName = myObj.citizendatas.citizendata[0].Name
-                        var dzongkhagName = myObj.citizendatas.citizendata[0].Dzongkhag_Name
-                        var villageName = myObj.citizendatas.citizendata[0].Gewog_Name
-                        var gewogName = myObj.citizendatas.citizendata[0].Village_Name
-                        $('#applicant_name').val(CitizenName);
-                    }
-                }
-            }
-        });
-    }
-
-    function getGewog(dzongkhag_id)
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'load_gewog' %}",
-            data :{'dzongkhag_id':dzongkhag_id},
-            success : function(data)
-            {
-                $('#gewog').html(data);
-            }
-        });
-    }
-
-    function getVillage(gewog_id)
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'load_village' %}",
-            data :{'gewog_id':gewog_id},
-            success : function(data)
-            {
-                $('#vil_chiwog').html(data);
-            }
-        });
-    }
-
-    function getRoadGewog(dzongkhag_id)
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'load_gewog' %}",
-            data :{'dzongkhag_id':dzongkhag_id},
-            success : function(data)
-            {
-                $('#roadgewog').html(data);
-            }
-        });
-    }
-
-    function getRoadVillage(gewog_id)
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'load_village' %}",
-            data :{'gewog_id':gewog_id},
-            success : function(data)
-            {
-                $('#roadvillage').html(data);
-            }
-        });
-    }
-
-    function getEditRoadGewog(dzongkhag_id)
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'load_gewog' %}",
-            data :{'dzongkhag_id':dzongkhag_id},
-            success : function(data)
-            {
-                $('#edit_roadgewog').html(data);
-            }
-        });
-    }
-
-    function getEditRoadVillage(gewog_id)
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'load_village' %}",
-            data :{'gewog_id':gewog_id},
-            success : function(data)
-            {
-                $('#edit_roadvillage').html(data);
-            }
-        });
-    }
-
-    function calculate_road_area_required()
-    {
-        let road_line_chainage_from = $('#road_line_chainage_from').val();
-        let road_line_chainage_to = $('#road_line_chainage_to').val(); 
-        let road_row = $('#road_row').val();
-        let sum = 0;
-        let product = 0;
-
-        sum += parseFloat(road_line_chainage_from) || 0;
-        sum += parseFloat(road_line_chainage_to) || 0;
-        product = parseFloat(sum) * parseFloat(road_row) || 0;
-         
-        $('#road_area_required').val(product);
-    }
-
-    function calculate_edit_road_area_required()
-    {
-        let road_line_chainage_from = $('#edit_road_line_chainage_from').val();
-        let road_line_chainage_to = $('#edit_road_line_chainage_to').val(); 
-        let road_row = $('#edit_road_row').val();
-        let sum = 0;
-        let product = 0;
-
-        sum += parseFloat(road_line_chainage_from) || 0;
-        sum += parseFloat(road_line_chainage_to) || 0;
-        product = parseFloat(sum) * parseFloat(road_row) || 0;
-         
-        $('#edit_road_area_required').val(product);
-    }
-
-    function add_type_of_drain()
-    {
-        let application_no = $('#application_no').val();
-        let drain_type = $('#drain_type').val();
-        let chainage = $('#chainage').val();
-        
-
-        if(drain_type == "")
-        {
-            $('#drain_typeErrorMsg').html("Enter Drain Type");
-            $('#drain_typeErrorMsg').show();
-            $('#drain_typeErrorMsg').delay(2000).fadeOut('slow');
-            $('#drain_type').focus();
-        }
-        else if(chainage == "")
-        {
-            $('#chainageErrorMsg').html("Enter Chainage");
-            $('#chainageErrorMsg').show();
-            $('#chainageErrorMsg').delay(2000).fadeOut('slow');
-            $('#chainage').focus();
-        }
-        else
-        {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'add_types_of_drain' %}",
-                data : {'application_no':application_no,'drain_type':drain_type,'chainage':chainage, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(responseText)
-                {
-                    $('#types_of_drains_SuccessMsg').html("Add Successful");
-                    $('#types_of_drains_SuccessMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#types_of_drains_SuccessMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#types_of_drains_modal').modal('hide');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#types_of_drains_details').html(responseText);
-                    }, 2000);
-                    $('#types_of_drains_form')[0].reset();
-                }
-            });
-        }
-    }
-
-    function drain_type_populate(record_id, application_no, drain_type, chainage)
-    {
-        $('#edit_drain_record_id').val(record_id);
-        $('#edit_drain_app_no').val(application_no);
-        $('#edit_drain_type').val(drain_type);
-        $('#edit_chainage').val(chainage);
-        $('#edit_types_of_drains_modal').modal('show');
-    }
-
-    function update_types_of_drains_details()
-    {
-        let record_id = $('#edit_drain_record_id').val();
-        let application_no = $('#edit_drain_app_no').val();
-        let drain_type = $('#edit_drain_type').val();
-        let chainage = $('#edit_chainage').val();
-        
-
-        if(drain_type == "")
-        {
-            $('#edit_drain_typeErrorMsg').html("Enter Drain Type");
-            $('#edit_drain_typeErrorMsg').show();
-            $('#edit_drain_typeErrorMsg').delay(2000).fadeOut('slow');
-            $('#edit_drain_type').focus();
-        }
-        else if(chainage == "")
-        {
-            $('#edit_chainageErrorMsg').html("Enter Chainage");
-            $('#edit_chainageErrorMsg').show();
-            $('#edit_chainageErrorMsg').delay(2000).fadeOut('slow');
-            $('#edit_chainage').focus();
-        }
-        else
-        {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'update_types_of_drain' %}",
-                data : {'application_no':application_no,'record_id':record_id, 'drain_type':drain_type,'chainage':chainage, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(responseText)
-                {
-                    $('#edit_types_of_drains_SuccessMsg').html("Update Successful");
-                    $('#edit_types_of_drains_SuccessMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#edit_types_of_drains_SuccessMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#edit_types_of_drains_modal').modal('hide');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#types_of_drains_details').html(responseText);
-                    }, 2000);
-                }
-            });
-        }
-    }
-
-    function populate_delete_drain_type(record_id, application_no)
-    {
-        $('#delete_drain_record_id').val(record_id);
-        $('#delete_drain_application_no').val(application_no);
-        $('#delete_types_of_drains_modal').modal('show');
-    }
-
-    function delete_drain_details()
-    {
-        let record_id = $('#delete_drain_record_id').val();
-        let application_no = $('#delete_drain_application_no').val();
-
-        $.ajax
-        ({
-            type : "POST",
-            url : "{% url 'delete_types_of_drain' %}",
-            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
-            success : function(responseText)
-            {
-                $('#delete_drain_successMsg').html("Delete Successful");
-                $('#delete_drain_successMsg').show();
-                setTimeout(function()
-                {
-                    $('#delete_drain_successMsg').delay(2000).fadeOut('slow');
-                }, 2000);
-                setTimeout(function() {
-                    $('#delete_types_of_drains_modal').modal('hide');
-                }, 2000);
-                setTimeout(function() {
-                    $('#types_of_drains_details').html(responseText);
-                }, 2000);
-            }
-        });
-    }
-
-    function add_dumpyard_details()
-    {
-        let application_no = $('#application_no').val();
-        let dumpyard_number = $('#dumpyard_number').val();
-        let dumpyard_capacity = $('#dumpyard_capacity').val();
-        let dumpyard_area = $('#dumpyard_area').val();
-        let dumpyard_location = $('#dumpyard_location').val();
-        
-        if(dumpyard_number == "")
-        {
-            $('#dumpyard_numberErrorMsg').html("Enter Dumpyard Number");
-            $('#dumpyard_numberErrorMsg').show();
-            $('#dumpyard_numberErrorMsg').delay(2000).fadeOut('slow');
-            $('#dumpyard_number').focus();
-        }
-        else if(dumpyard_capacity == "")
-        {
-            $('#dumpyard_capacityErrorMsg').html("Enter Dumpyard Capacity");
-            $('#dumpyard_capacityErrorMsg').show();
-            $('#dumpyard_capacityErrorMsg').delay(2000).fadeOut('slow');
-            $('#dumpyard_capacity').focus();
-        }
-        else if(dumpyard_area == "")
-        {
-            $('#dumpyard_areaErrorMsg').html("Enter Dumpyard Area");
-            $('#dumpyard_areaErrorMsg').show();
-            $('#dumpyard_areaErrorMsg').delay(2000).fadeOut('slow');
-            $('#dumpyard_area').focus();
-        }
-        else if(dumpyard_location == "")
-        {
-            $('#dumpyard_locationErrorMsg').html("Enter Dumpyard Location");
-            $('#dumpyard_locationErrorMsg').show();
-            $('#dumpyard_locationErrorMsg').delay(2000).fadeOut('slow');
-            $('#dumpyard_location').focus();
-        }
-        else
-        {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'add_dumpyard_details' %}",
-                data : {'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(responseText)
-                {
-                    $('#dumpyard_SuccessMsg').html("Add Successful");
-                    $('#dumpyard_SuccessMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#dumyard_details_modal').modal('hide');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#dump_yard_details_div').html(responseText);
-                    }, 2000);
-                    $('#dumyard_details_form')[0].reset();
-                }
-            });
-        }
-    }
-
-    function populate_dumpyard_data(record_id, application_no, dumpyard_number, dumpyard_capacity, dumpyard_area, dumpyard_location)
-    {
-        $('#dumpyard_record_id').val(record_id);
-        $('#dumpyard_application_no').val(application_no);
-        $('#edit_dumpyard_number').val(dumpyard_number);
-        $('#edit_dumpyard_capacity').val(dumpyard_capacity);
-        $('#edit_dumpyard_area').val(dumpyard_area);
-        $('#edit_dumpyard_location').val(dumpyard_location);
-        
-        $('#edit_dumyard_details_modal').modal('show');
-    }
-
-    function update_dumpyard_details()
-    {
-        let record_id = $('#dumpyard_record_id').val();
-        let application_no = $('#dumpyard_application_no').val();
-        let dumpyard_number = $('#edit_dumpyard_number').val();
-        let dumpyard_capacity = $('#edit_dumpyard_capacity').val();
-        let dumpyard_area = $('#edit_dumpyard_area').val();
-        let dumpyard_location = $('#edit_dumpyard_location').val();
-        
-        if(dumpyard_number == "")
-        {
-            $('#edit_dumpyard_numberErrorMsg').html("Enter Dumpyard Number");
-            $('#edit_dumpyard_numberErrorMsg').show();
-            $('#edit_dumpyard_numberErrorMsg').delay(2000).fadeOut('slow');
-            $('#edit_dumpyard_number').focus();
-        }
-        else if(dumpyard_capacity == "")
-        {
-            $('#edit_dumpyard_capacityErrorMsg').html("Enter Dumpyard Capacity");
-            $('#edit_dumpyard_capacityErrorMsg').show();
-            $('#edit_dumpyard_capacityErrorMsg').delay(2000).fadeOut('slow');
-            $('#edit_dumpyard_capacity').focus();
-        }
-        else if(dumpyard_area == "")
-        {
-            $('#edit_dumpyard_areaErrorMsg').html("Enter Dumpyard Area");
-            $('#edit_dumpyard_areaErrorMsg').show();
-            $('#edit_dumpyard_areaErrorMsg').delay(2000).fadeOut('slow');
-            $('#edit_dumpyard_area').focus();
-        }
-        else if(dumpyard_location == "")
-        {
-            $('#edit_dumpyard_locationErrorMsg').html("Enter Dumpyard Location");
-            $('#edit_dumpyard_locationErrorMsg').show();
-            $('#edit_dumpyard_locationErrorMsg').delay(2000).fadeOut('slow');
-            $('#edit_dumpyard_location').focus();
-        }
-        else
-        {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'update_dumpyard_details' %}",
-                data : {'record_id':record_id,'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(responseText)
-                {
-                    $('#edit_dumpyard_SuccessMsg').html("Update Successful");
-                    $('#edit_dumpyard_SuccessMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#edit_dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#edit_dumyard_details_modal').modal('hide');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#dump_yard_details_div').html(responseText);
-                    }, 2000);
-                }
-            });
-        }
-    }
-
-    function populate_delete_dumpyard_data(record_id, application_no)
-    {
-        $('#delete_dumpyard_record_id').val(record_id);
-        $('#delete_dumpyard_application_no').val(application_no);
-        $('#delete_dumyard_details_modal').modal('show');
-    }
-
-    function delete_dumpyard_details()
-    {
-        let record_id = $('#delete_dumpyard_record_id').val();
-        let application_no = $('#delete_dumpyard_application_no').val();
-
-        $.ajax
-        ({
-            type : "POST",
-            url : "{% url 'delete_dumpyard_details' %}",
-            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
-            success : function(responseText)
-            {
-                $('#delete_dumpyard_SuccessMsg').html("Delete Successful");
-                $('#delete_dumpyard_SuccessMsg').show();
-                setTimeout(function()
-                {
-                    $('#delete_dumpyard_SuccessMsg').delay(2000).fadeOut('slow');
-                }, 2000);
-                setTimeout(function() {
-                    $('#delete_dumyard_details_modal').modal('hide');
-                }, 2000);
-                setTimeout(function() {
-                    $('#dump_yard_details_div').html(responseText);
-                }, 2000);
-            }
-        });
-    }
-
-    function check_dzong_throm(value)
-    {
-        if(value == "Dzongkhag")
-        {
-            $('.dzongkhag').show();
-            $('.thromde').hide();
-        }
-        else
-        {
-            $('.thromde').show();
-            $('.dzongkhag').hide();
-        }
-    }
-    function check_terms()
+function check_terms()
     {
         if($("#ec_terms").prop('checked') == true)
         {
@@ -5462,5 +5215,6 @@
             $('.asphalt_plant_application').hide();
         }
     }
+
 </script>
 {% endblock %}
