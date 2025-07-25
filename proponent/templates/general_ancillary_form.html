@@ -183,9 +183,9 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Others Specify</label>
-                                                <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()">
+                                                <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()" value="NA">
                                             </div>
-                                            <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="others_area_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
                                             <div class="mb-3">
@@ -199,7 +199,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Total land area required (acre)</label>
-                                                <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" readonly>
+                                                <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" value="0" readonly>
                                             </div>
                                             <div id="total_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -512,7 +512,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="water_requirement_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="water_requirement_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_water_application_no">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -2387,7 +2387,7 @@
                 } else {
                     acreFieldContainer.style.display = 'none';
                     // Clear the acre value when hiding
-                    document.getElementById('others_area_acre').value = '';
+                    document.getElementById('others_area_acre').value = '0';
                     // Trigger the change event to update totals if needed
                     if (typeof get_total_area_acre === 'function') {
                         get_total_area_acre();
@@ -2922,19 +2922,22 @@
                     }, 2000);
                     
                     setTimeout(function() {
-                        $("#headingFiveBtn").removeAttr("disabled");
-                        $("#collapseFive").addClass("show");
+                        $("#headingEightBtn").removeAttr("disabled");
+                        $("#collapseEight").addClass("show");
                         $("#collapseFour").removeClass("show");
                     }, 2000);
                 } else {
                     $('#water_requirement_application_errorMsg')
-                    .html("Please Check And Submit Again")
-                    .attr('aria-live', 'assertive')
-                    .attr('aria-atomic', 'true')
-                    .show()
-                    .focus();
-                    
-                    setTimeout(function() {
+                        .html(`Application Error: ${data.error}`)
+                        .removeAttr('tabindex')  // Remove blocking attribute
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();  // Set focus immediately after showing
+
+                    setTimeout(() => {
                         $('#water_requirement_application_errorMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                 }
@@ -3931,86 +3934,142 @@
             }
         
             function submit_general_application() {
-                // Show loading indicator
+                // Show loading spinner
                 $("#pageloader").show();
+                
+                // Hide any previous messages
+                $('#general_submit_successMsg').hide();
+                $('#general_submit_errorMsg').hide();
 
                 $.ajax({
                     type: "POST",
                     url: "{% url 'submit_general_application' %}",
                     data: $('#general_submit_form').serialize(),
+                    dataType: 'json',
                     success: function(data) {
                         $("#pageloader").hide();
+                        alert(data.draft_count);
                         
-                        if (data.message == 'success') {
-                            // Success case
-                            $('#general_submit_successMsg')
-                                .text("Application Submitted Successfully")
-                                .removeAttr('tabindex')
-                                .attr({
-                                    'aria-live': 'polite',
-                                    'aria-atomic': 'true'
-                                })
-                                .show()
-                                .focus();
-
-                            setTimeout(() => {
-                                $('#general_submit_successMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
-
-                            setTimeout(() => location.reload(), 2000);
+                        // Debugging - view full response in console
+                        console.log("Server Response:", data);
+                        
+                        // Handle error response
+                        if (data.error) {
+                            $('#general_submit_errorMsg').html(data.error);
+                            $('#general_submit_errorMsg').show();
+                            return;
                         }
-                        else if (data.message == 'not submitted') {
-                            // Ancillary not submitted case
-                            $('#general_submit_errorMsg')
-                                .text("Please Submit Your Ancillary First And Try Again")
-                                .removeAttr('tabindex')
-                                .attr({
-                                    'aria-live': 'assertive',
-                                    'aria-atomic': 'true'
-                                })
-                                .show()
-                                .focus();
-
-                            setTimeout(() => {
-                                $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
+                        
+                        // Handle success response
+                        if (data.message === 'success') {
+                            $('#general_submit_successMsg').html("Application Submitted Successfully");
+                            $('#general_submit_successMsg').show();
+                            
+                            setTimeout(function() {
+                                $('#general_submit_successMsg').fadeOut('slow');
+                            }, 3000);
+                            
+                            // Handle draft count and redirect
+                            if (data.draft_count > 0) {
+                                var redirectUrl = '';
+                                switch(data.type) {
+                                    case 'IEE':
+                                        redirectUrl = '/draft_iee_application';
+                                        break;
+                                    case 'IEA':
+                                        redirectUrl = '/draft_ea_application';
+                                        break;
+                                    case 'ENE':
+                                        redirectUrl = '/draft_energy_application';
+                                        break;
+                                    case 'ROA':
+                                        redirectUrl = '/draft_road_application';
+                                        break;
+                                    case 'TRA':
+                                        redirectUrl = '/draft_transmission_application';
+                                        break;
+                                    case 'TOU':
+                                        redirectUrl = '/draft_tourism_application';
+                                        break;
+                                    case 'GWA':
+                                        redirectUrl = '/draft_ground_water_application';
+                                        break;
+                                    case 'FOR':
+                                        redirectUrl = '/draft_forestry_application';
+                                        break;
+                                    case 'QUA':
+                                        redirectUrl = '/draft_quarry_application';
+                                        break;
+                                    case 'GEN':
+                                        redirectUrl = '/draft_general_application';
+                                        break;
+                                    default:
+                                        console.error("Unknown application type:", data.type);
+                                }
+                                
+                                if (redirectUrl) {
+                                    setTimeout(function() {
+                                        window.location.href = redirectUrl;
+                                    }, 1000);
+                                }
+                            } else {
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        } 
+                        // Handle "not submitted" case
+                        else if (data.message === 'not submitted') {
+                            $('#general_submit_errorMsg').html("Please complete all required ancillary forms before submission.");
+                            $('#general_submit_errorMsg').show();
                         }
+                        // Handle unexpected response
                         else {
-                            // Other error cases
-                            $('#general_submit_errorMsg')
-                                .text(`Application Error: ${data.error}`)
-                                .removeAttr('tabindex')
-                                .attr({
-                                    'aria-live': 'assertive',
-                                    'aria-atomic': 'true'
-                                })
-                                .show()
-                                .focus();
-
-                            setTimeout(() => {
-                                $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
+                            $('#general_submit_errorMsg').html("Unexpected response from server. Please try again.");
+                            $('#general_submit_errorMsg').show();
                         }
                     },
                     error: function(xhr, status, error) {
-                        // AJAX error handling
                         $("#pageloader").hide();
-                        $('#general_submit_errorMsg')
-                            .text(`Request failed: ${error}`)
-                            .removeAttr('tabindex')
-                            .attr({
-                                'aria-live': 'assertive',
-                                'aria-atomic': 'true'
-                            })
-                            .show()
-                            .focus();
-
-                        setTimeout(() => {
-                            $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
+                        
+                        // Try to parse error response if available
+                        var errorMsg = "An error occurred while processing your request.";
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            if (response.error) {
+                                errorMsg = response.error;
+                            }
+                        } catch (e) {
+                            console.error("Error parsing error response:", e);
+                        }
+                        
+                        $('#general_submit_errorMsg').html(errorMsg);
+                        $('#general_submit_errorMsg').show();
+                        
+                        console.error("AJAX Error:", status, error);
                     }
                 });
             }
+
+            // Function to enable/disable submit button based on terms checkbox
+            function check_terms() {
+                var is_checked = $('#ec_terms').is(':checked');
+                if (is_checked) {
+                    $('#gen_submit_btn').show();
+                } else {
+                    $('#gen_submit_btn').hide();
+                }
+            }
+
+            // Initialize the form state on page load
+            $(document).ready(function() {
+                check_terms(); // Set initial state of submit button
+                
+                // Bind the change event to the checkbox
+                $('#ec_terms').change(function() {
+                    check_terms();
+                });
+            });
         
             
         
@@ -5330,25 +5389,24 @@
                 }
             }
         
-            function check_anc_other_general()
-            {
-                if($('#anc_other_general').is(":checked") || $('#anc_other_mineral').is(":checked"))
-                {
+            function check_anc_other_general() {
+                if($('#anc_other_general').is(":checked") && $('#anc_other_mineral').is(":checked")) {
+                    // Both checked - show both
                     $('.general_application').show();
                     $('.mineral_application').show();
                 }
-                else if($('#anc_other_general').is(":checked") && $('#anc_other_mineral').not(":checked"))
-                {
+                else if($('#anc_other_general').is(":checked")) {
+                    // Only general checked
                     $('.general_application').show();
                     $('.mineral_application').hide();
                 }
-                else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').is(":checked"))
-                {
+                else if($('#anc_other_mineral').is(":checked")) {
+                    // Only mineral checked
                     $('.general_application').hide();
                     $('.mineral_application').show();
                 }
-                else if($('#anc_other_general').not(":checked") && $('#anc_other_mineral').not(":checked"))
-                {
+                else {
+                    // Neither checked - hide both
                     $('.general_application').hide();
                     $('.mineral_application').hide();
                 }
@@ -5648,5 +5706,19 @@
                     $('#gen_submit_btn').hide();
                 }
             }
+
+            function check_ancillary_others(value)
+            {
+                if(value == 'Yes')
+                {
+                    $('.anc_others').show();
+                }
+                else
+                {
+                    $('.anc_others').hide();
+
+                }
+            }
+
         </script>
 {% endblock %}
