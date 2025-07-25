@@ -6408,98 +6408,119 @@
 
     function submit_iee_application()
     {
+         // Show loading spinner
         $("#pageloader").show();
-        $.ajax
-        ({
-            type : "POST",
-            url : "{% url 'submit_general_application' %}",
-            data : $('#iee_submit_form').serialize(),
-            success : function(data)
-            {
+        
+        // Hide any previous messages
+        $('#iee_submit_successMsg').hide();
+        $('#iee_submit_errorMsg').hide();
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'submit_general_application' %}",
+            data: $('#iee_submit_form').serialize(),
+            dataType: 'json',
+            success: function(data) {
                 $("#pageloader").hide();
-                if(data.message == 'success')
-                {
+                alert(data.draft_count);
+                
+                // Debugging - view full response in console
+                console.log("Server Response:", data);
+                
+                // Handle error response
+                if (data.error) {
+                    $('#iee_submit_errorMsg').html(data.error);
+                    $('#iee_submit_errorMsg').show();
+                    return;
+                }
+                
+                // Handle success response
+                if (data.message === 'success') {
                     $('#iee_submit_successMsg').html("Application Submitted Successfully");
                     $('#iee_submit_successMsg').show();
-                    $('#iee_submit_successMsg').focus();
-                    setTimeout(function()
-                    {
-                        $('#iee_submit_successMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    if(data.draft_count > 0)
-                    {
-                        if(data.type == 'IEE')
-                        {
-                            window.location.href = '/draft_iee_application';
+                    
+                    setTimeout(function() {
+                        $('#iee_submit_successMsg').fadeOut('slow');
+                    }, 3000);
+                    
+                    // Handle draft count and redirect
+                    if (data.draft_count > 0) {
+                        var redirectUrl = '';
+                        switch(data.type) {
+                            case 'IEE':
+                                redirectUrl = '/draft_iee_application';
+                                break;
+                            case 'IEA':
+                                redirectUrl = '/draft_ea_application';
+                                break;
+                            case 'ENE':
+                                redirectUrl = '/draft_energy_application';
+                                break;
+                            case 'ROA':
+                                redirectUrl = '/draft_road_application';
+                                break;
+                            case 'TRA':
+                                redirectUrl = '/draft_transmission_application';
+                                break;
+                            case 'TOU':
+                                redirectUrl = '/draft_tourism_application';
+                                break;
+                            case 'GWA':
+                                redirectUrl = '/draft_ground_water_application';
+                                break;
+                            case 'FOR':
+                                redirectUrl = '/draft_forestry_application';
+                                break;
+                            case 'QUA':
+                                redirectUrl = '/draft_quarry_application';
+                                break;
+                            case 'GEN':
+                                redirectUrl = '/draft_general_application';
+                                break;
+                            default:
+                                console.error("Unknown application type:", data.type);
                         }
-                        else if(data.type == 'IEA')
-                        {
-                            window.location.href = '/draft_ea_application';
+                        
+                        if (redirectUrl) {
+                            setTimeout(function() {
+                                window.location.href = redirectUrl;
+                            }, 1000);
                         }
-                        else if(data.type == 'ENE')
-                        {
-                            window.location.href = '/draft_energy_application';
-                        }
-                        else if(data.type == 'ROA')
-                        {
-                            window.location.href = '/draft_road_application';
-                        }
-                        else if(data.type == 'TRA')
-                        {
-                            window.location.href = '/draft_transmission_application';
-                        }
-                        else if(data.type == 'TOU')
-                        {
-                            window.location.href = '/draft_tourism_application';
-                        }
-                        else if(data.type == 'GWA')
-                        {
-                            window.location.href = '/draft_ground_water_application';
-                        }
-                        else if(data.type == 'FOR')
-                        {
-                            window.location.href = '/draft_forestry_application';
-                        }
-                        else if(data.type == 'QUA')
-                        {
-                            window.location.href = '/draft_quarry_application';
-                        }
-                        else if(data.type == 'GEN')
-                        {
-                            window.location.href = '/draft_general_application';
-                        }
-                    }
-                    else
-                    {
+                    } else {
                         setTimeout(function() {
-                            location.reload()
+                            location.reload();
                         }, 2000);
                     }
-                }
-                else if(data.message == 'not submitted')
-                {
-                    var errorMsg = data.error;
-        
-                    $('#iee_submit_errorMsg').html(`Application Error: ${data.error}`);
+                } 
+                // Handle "not submitted" case
+                else if (data.message === 'not submitted') {
+                    $('#iee_submit_errorMsg').html("Please complete all required ancillary forms before submission.");
                     $('#iee_submit_errorMsg').show();
-                    $('#iee_submit_errorMsg').focus();
-                    setTimeout(function()
-                    {
-                        $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
                 }
-                else
-                {
-                    var errorMsg = data.error;
-        
-                    $('#iee_submit_errorMsg').html(`Application Error: ${data.error}`);
+                // Handle unexpected response
+                else {
+                    $('#iee_submit_errorMsg').html("Unexpected response from server. Please try again.");
                     $('#iee_submit_errorMsg').show();
-                    $('#iee_submit_errorMsg').focus();
-                    setTimeout(function()
-                    {
-                        $('#iee_submit_errorMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
                 }
+            },
+            error: function(xhr, status, error) {
+                $("#pageloader").hide();
+                
+                // Try to parse error response if available
+                var errorMsg = "An error occurred while processing your request.";
+                try {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.error) {
+                        errorMsg = response.error;
+                    }
+                } catch (e) {
+                    console.error("Error parsing error response:", e);
+                }
+                
+                $('#iee_submit_errorMsg').html(errorMsg);
+                $('#iee_submit_errorMsg').show();
+                
+                console.error("AJAX Error:", status, error);
             }
         });
     }

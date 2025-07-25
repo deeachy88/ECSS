@@ -1,3 +1,7 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
 {% for application_details in application_details %}
 <div class="row">
     <div class="col-xl-12">
@@ -6509,3 +6513,4 @@
                 }
             }
         </script>
+        {%endblock%}

@@ -1964,6 +1964,7 @@
             }
         }
     }
+    
     function add_forestry_produce_details()
     {
         let application_no = $('#application_no').val();
@@ -2169,13 +2170,16 @@
 
     function check_power_line(value)
     {
-        if(value == "Yes")
+        if(value == 'Yes')
         {
             $('.power_line_details').show();
+            $('.power_line_details_table').hide();
         }
         else
         {
             $('.power_line_details').hide();
+            $('.power_line_details_table').show();
+
         }
     }
 
@@ -2245,7 +2249,7 @@
             ({
                 type : "POST",
                 url : "{% url 'save_anc_power_line_details' %}",
-                data : {'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                data : {'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#power_line_successMsg').html("Power Line Details Added Successfully");
@@ -2253,6 +2257,9 @@
                     $('#power_line_successMsg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#anc_power_line_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_power_line_details').html(responseText);
                     }, 2000);
                     setTimeout(function() {
                         $('#anc_power_line_form')[0].reset();
@@ -2280,20 +2287,20 @@
     function populate_delete_power_line(record_id, application_no)
     {
         $('#delete_anc_record_id').val(record_id);
-        $('#delete_anc_record_id').val(application_no);
+        $('#delete_anc_application_no').val(application_no);
         $('#delete_anc_power_line_modal').modal('show');
     }
 
     function delete_power_line_details()
     {
         let record_id =$('#delete_anc_record_id').val();
-        let application_no =$('#delete_anc_record_id').val();
+        let application_no =$('#delete_anc_application_no').val();
 
         $.ajax
         ({
             type : "POST",
             url : "{% url 'delete_anc_power_line_details' %}",
-            data : {'record_id':record_id,'application_no':application_no},
+            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
@@ -2301,6 +2308,9 @@
                 $('#delete_power_line_successMsg').delay(2000).fadeOut('slow');
                 setTimeout(function() {
                     $('#delete_anc_power_line_modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    $('#anc_power_line_details').html(responseText);
                 }, 2000);
             }
         });
@@ -2373,7 +2383,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_anc_power_line_details' %}",
-                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required},
+                data : {'record_id':record_id,'application_no':application_no,'line_chainage_from':line_chainage_from,'line_chainage_to':line_chainage_to,'land_type':land_type,'terrain':terrain,'tower_type':tower_type,'no_of_tower':no_of_tower,'row':row,'area_required':area_required, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_power_line_successMsg').html("Power Line Details Updated Successfully");
@@ -2381,6 +2391,9 @@
                     $('#edit_power_line_successMsg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#edit_anc_power_line_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#anc_power_line_details').html(responseText);
                     }, 2000);
                 }
             });
@@ -2467,7 +2480,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_anc_ground_water_attachment' %}",
+                url : "{% url 'save_ground_water_attachment' %}",
                 data : fd,
                 dataType: 'json',
                 contentType: false,
@@ -2481,7 +2494,7 @@
                         $.ajax
                         ({
                             type : "POST",
-                            url : "{% url 'save_anc_ground_water_attachment_details' %}",
+                            url : "{% url 'save_ground_water_attachment_details' %}",
                             data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
                             success : function(responseText)
                             {
@@ -2602,8 +2615,8 @@
 
     function delete_anc_road_details()
     {
-        let record_id = $('#delete_anc_road_record_id').val();
-        let application_no = $('#delete_anc_road_application_no').val();
+        let record_id =$('#delete_anc_road_record_id').val();
+        let application_no =$('#delete_anc_road_application_no').val();
 
         $.ajax
         ({
@@ -2738,7 +2751,7 @@
             ({
                 type : "POST",
                 url : "{% url 'add_raw_materials' %}",
-                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method},
+                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#raw_material_SuccessMsg').html("Add Successful");
@@ -2813,10 +2826,10 @@
             ({
                 type : "POST",
                 url : "{% url 'update_raw_materials' %}",
-                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method},
+                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
-                    $('#edit_raw_material_SuccessMsg').html("Add Successful");
+                    $('#edit_raw_material_SuccessMsg').html("Update Successful");
                     $('#edit_raw_material_SuccessMsg').show();
                     setTimeout(function()
                     {
@@ -2849,10 +2862,10 @@
         ({
             type : "POST",
             url : "{% url 'delete_raw_materials' %}",
-            data : {'record_id':record_id, 'application_no':application_no},
+            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
-                $('#delete_raw_material_SuccessMsg').html("Add Successful");
+                $('#delete_raw_material_SuccessMsg').html("Delete Successful");
                 $('#delete_raw_material_SuccessMsg').show();
                 setTimeout(function()
                 {
@@ -2868,185 +2881,115 @@
         });
     }
 
-    function save_ground_water_application()
-    {
+    function save_ground_water_application() {
+        // First hide all error messages
+        $('.alert-danger').hide();
+
+        // Get all field values
         let project_name = $('#project_name').val();
-        let application_type = $('#application_type').val();
-        let cid = $('#cid').val();
-        let cid_length = $('#cid').val().length;
         let applicant_name = $('#applicant_name').val();
         let address = $('#address').val();
         let contact_no = $('#contact_no').val();
-        let contact_no_length = $('#contact_no').val().length;
+        let contact_no_length = contact_no.length;
         let email = $('#email').val();
-        let focal_person = $('#focal_person').val();
-        let dzongkhag_code = $('#dzo_throm').val();
+        let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
+        let dzongkhag_throm_val = $("input[name=dzongkhag_throm]:checked").val();
+        let thromde_id = $('#thromde_id').val();
+        let dzongkhag_code = $('#dzongkhag').val();
         let gewog_code = $('#gewog').val();
         let village_code = $('#vil_chiwog').val();
-        let location_name = $('#location_name').val();
+        let project_site = $('#project_site').val();
         let industrial_area_acre = $('#industrial_area_acre').val();
         let state_reserve_forest_acre = $('#state_reserve_forest_acre').val();
         let private_area_acre = $('#private_area_acre').val();
         let others_area = $('#others_area').val();
         let others_area_acre = $('#others_area_acre').val();
+        let total_area_acre = $('#total_area_acre').val();
         let max_evacuation_depth = $('#max_evacuation_depth').val();
         let land_form = $('#land_form').val();
         let terrain_elevation = $('#terrain_elevation').val();
         let terrain_slope = $('#terrain_slope').val();
-
-        if(project_name == "")
-        {
-            $('#project_nameErrorMsg').html("Enter Name of Project");
-            $('#project_nameErrorMsg').show();
-            $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#project_name').focus();
+        //alert(project_name);
+        // Validation checks
+        if (project_name === "") {
+            showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');
+            return false;
         }
-        else if(application_type == "")
-        {
-            $('#application_typeErrorMsg').html("Enter Application Type");
-            $('#application_typeErrorMsg').show();
-            $('#application_typeErrorMsg').delay(2000).fadeOut('slow');
-            $('#application_type').focus();
+        else if (applicant_name === "") {
+            showErrorAndFocus('#applicant_nameErrorMsg', 'Enter Name of The Applicant', '#applicant_name');
+            return false;
         }
-        else if(cid == "")
-        {
-            $('#cidErrorMsg').html("Enter CID");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
+        else if (address === "") {
+            showErrorAndFocus('#addressErrorMsg', 'Enter Address', '#address');
+            return false;
         }
-        else if(cid_length < 11)
-        {
-            $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
+        else if (contact_no === "") {
+            showErrorAndFocus('#contact_noErrorMsg', 'Enter Contact No', '#contact_no');
+            return false;
         }
-        else if(applicant_name == "")
-        {
-            $('#applicant_nameErrorMsg').html("Enter Name of The Applicant");
-            $('#applicant_nameErrorMsg').show();
-            $('#applicant_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#applicant_name').focus();
+        else if (contact_no_length < 8) {
+            showErrorAndFocus('#contact_noErrorMsg', 'Cannot Be Less Than Eight Digits', '#contact_no');
+            return false;
         }
-        else if(address == "")
-        {
-            $('#addressErrorMsg').html("Enter Address");
-            $('#addressErrorMsg').show();
-            $('#addressErrorMsg').delay(2000).fadeOut('slow');
-            $('#address').focus();
+        else if (email === "") {
+            showErrorAndFocus('#emailErrorMsg', 'Enter Email', '#email');
+            return false;
         }
-        else if(contact_no == "")
-        {
-            $('#contact_noErrorMsg').html("Enter Contact No");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
+        else if (dzongkhag_throm === 0) {
+            showErrorAndFocus('#dzongkhag_thromErrorMsg', 'Choose One', "input[name=dzongkhag_throm]:first");
+            return false;
         }
-        else if(contact_no_length < 8)
-        {
-            $('#contact_noErrorMsg').html("Cannot Be Less Than Eight Digits");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
+        else if (dzongkhag_throm_val === "Thromde" && thromde_id === "") {
+            showErrorAndFocus('#thromde_idErrorMsg', 'Select Thromde', '#thromde_id');
+            return false;
         }
-        else if(email == "")
-        {
-            $('#emailErrorMsg').html("Enter Email");
-            $('#emailErrorMsg').show();
-            $('#emailErrorMsg').delay(2000).fadeOut('slow');
-            $('#email').focus();
+        else if (dzongkhag_throm_val === "Dzongkhag" && dzongkhag_code === "") {
+            showErrorAndFocus('#dzongkhagErrorMsg', 'Select Dzongkhag', '#dzongkhag');
+            return false;
         }
-        else if(dzongkhag_code == "")
-        {
-            $('#dzo_thromErrorMsg').html("Select Dzongkhag");
-            $('#dzo_thromErrorMsg').show();
-            $('#dzo_thromErrorMsg').delay(2000).fadeOut('slow');
-            $('#dzo_throm').focus();
+        else if (dzongkhag_throm_val === "Dzongkhag" && gewog_code === "") {
+            showErrorAndFocus('#gewogErrorMsg', 'Select Gewog', '#gewog');
+            return false;
         }
-        else if(gewog_code == "")
-        {
-            $('#gewogErrorMsg').html("Select Gewog");
-            $('#gewogErrorMsg').show();
-            $('#gewogErrorMsg').delay(2000).fadeOut('slow');
-            $('#gewog').focus();
+        else if (dzongkhag_throm_val === "Dzongkhag" && village_code === "") {
+            showErrorAndFocus('#vil_chiwogErrorMsg', 'Select Village', '#vil_chiwog');
+            return false;
         }
-        else if(village_code == "")
-        {
-            $('#vil_chiwogErrorMsg').html("Select Village");
-            $('#vil_chiwogErrorMsg').show();
-            $('#vil_chiwogErrorMsg').delay(2000).fadeOut('slow');
-            $('#vil_chiwog').focus();
+        else if (project_site === "") {
+            showErrorAndFocus('#project_siteErrorMsg', 'Enter Project Site', '#project_site');
+            return false;
         }
-        else if(location_name == "")
-        {
-            $('#location_nameErrorMsg').html("Enter Name of The Particular Project Site");
-            $('#location_nameErrorMsg').show();
-            $('#location_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#location_name').focus();
+        else if (industrial_area_acre === "") {
+            showErrorAndFocus('#industrial_area_acreErrorMsg', 'Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)', '#industrial_area_acre');
+            return false;
         }
-        else if(industrial_area_acre == "")
-        {
-            $('#industrial_area_acreErrorMsg').html("Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)");
-            $('#industrial_area_acreErrorMsg').show();
-            $('#industrial_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#industrial_area_acre').focus();
+        else if (state_reserve_forest_acre === "") {
+            showErrorAndFocus('#state_reserve_forest_acreErrorMsg', 'Enter State Reserve Forest Area', '#state_reserve_forest_acre');
+            return false;
         }
-        else if(industrial_area_acre == "")
-        {
-            $('#industrial_area_acreErrorMsg').html("Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)");
-            $('#industrial_area_acreErrorMsg').show();
-            $('#industrial_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#industrial_area_acre').focus();
+        else if (private_area_acre === "") {
+            showErrorAndFocus('#private_area_acreErrorMsg', 'Enter Private Area', '#private_area_acre');
+            return false;
         }
-        else if(state_reserve_forest_acre == "")
-        {
-            $('#state_reserve_forest_acreErrorMsg').html("Enter State Reserve Forest Area");
-            $('#state_reserve_forest_acreErrorMsg').show();
-            $('#state_reserve_forest_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#state_reserve_forest_acre').focus();
+        else if ((others_area !== "NA" && others_area !== "") && others_area_acre === "") {
+            showErrorAndFocus('#others_area_acreErrorMsg', 'Enter Others Area', '#others_area_acre');
+            return false;
         }
-        else if(private_area_acre == "")
-        {
-            $('#private_area_acreErrorMsg').html("Enter Private Area");
-            $('#private_area_acreErrorMsg').show();
-            $('#private_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#private_area_acre').focus();
+        else if(max_evacuation_depth === ""){
+            showErrorAndFocus('#max_evacuation_depthErrorMsg', 'Enter Maximum depth of excavation', '#max_evacuation_depth');
+            return false;
         }
-        else if(others_area != "NA" || others_area != "" && others_area_acre == "")
-        {
-            $('#others_area_acreErrorMsg').html("Enter Others");
-            $('#others_area_acreErrorMsg').show();
-            $('#others_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#others_area_acre').focus();
+        else if(land_form === ""){
+            showErrorAndFocus('#land_formErrorMsg', 'Select Landform', '#land_form');
+            return false;
         }
-        else if(max_evacuation_depth == "")
-        {
-            $('#max_evacuation_depthErrorMsg').html("Enter Maximum Depth of Evacuation");
-            $('#max_evacuation_depthErrorMsg').show();
-            $('#max_evacuation_depthErrorMsg').delay(2000).fadeOut('slow');
-            $('#max_evacuation_depth').focus();
+        else if(terrain_elevation === ""){
+            showErrorAndFocus('#terrain_elevationErrorMsg', 'Enter Elevation', '#terrain_elevation');
+            return false;
         }
-        else if(land_form == "")
-        {
-            $('#land_formErrorMsg').html("Enter Landform");
-            $('#land_formErrorMsg').show();
-            $('#land_formErrorMsg').delay(2000).fadeOut('slow');
-            $('#land_form').focus(); 
-        }
-        else if(terrain_elevation == "")
-        {
-            $('#terrain_elevationErrorMsg').html("Enter Elevation");
-            $('#terrain_elevationErrorMsg').show();
-            $('#terrain_elevationErrorMsg').delay(2000).fadeOut('slow');
-            $('#terrain_elevation').focus();
-        }
-        else if(terrain_slope == "")
-        {
-            $('#terrain_slopeErrorMsg').html("Enter Slope/Gradient");
-            $('#terrain_slopeErrorMsg').show();
-            $('#terrain_slopeErrorMsg').delay(2000).fadeOut('slow');
-            $('#terrain_slope').focus();
+        else if(terrain_slope == ""){
+            showErrorAndFocus('#terrain_slopeErrorMsg', 'Select Slope', '#terrain_slope');
+            return false;
         }
         else
         {
@@ -3087,6 +3030,25 @@
                 }
             });
         }
+    }
+    // Helper function to show error and focus on field
+    function showErrorAndFocus(errorElement, message, focusElement) {
+        $(errorElement).html(message).show();
+
+        // Use setTimeout to ensure the focus happens after the DOM updates
+        setTimeout(function() {
+            $(focusElement).focus();
+
+            // Scroll to the element if needed
+            $('html, body').animate({
+                scrollTop: $(focusElement).offset().top - 100
+            }, 100);
+        }, 50);
+
+        // Hide the error after 2 seconds
+        setTimeout(function() {
+            $(errorElement).fadeOut('slow');
+        }, 2000);
     }
 
     function save_terrain_baseline_details()
@@ -3396,6 +3358,7 @@
         let borewell_depth_dec = $('#borewell_depth_dec').val();
         let borewell_depth_jan = $('#borewell_depth_jan').val();
         let borewell_depth_feb = $('#borewell_depth_feb').val();
+
         
 
         if(project_objective == "")
@@ -3579,7 +3542,6 @@
                     {
                         $('#ground_water_successMsg').html("Saved Successfully");
                         $('#ground_water_successMsg').show();
-                        $('#ground_water_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#ground_water_successMsg').delay(2000).fadeOut('slow');
@@ -3587,7 +3549,7 @@
                         setTimeout(function() {
                             $("#headingSixBtn").removeAttr("disabled");
                             $("#collapseSix").addClass("show");
-                            $("#collapseForest").removeClass("show");
+                            $("#collapseFour").removeClass("show");
                         }, 2000);
                     }
                     else
@@ -3596,7 +3558,6 @@
         
                         $('#ground_water_errorMsg').html(`Application Error: ${data.error}`);
                         $('#ground_water_errorMsg').show();
-                        $('#ground_water_errorMsg').focus();
                         setTimeout(function()
                         {
                             $('#ground_water_errorMsg').delay(2000).fadeOut('slow');
@@ -3679,8 +3640,8 @@
                             $('#anc_power_line_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                         setTimeout(function() {
-                            $("#headingSevenBtn").removeAttr("disabled");
-                            $("#collapseSeven").addClass("show");
+                            $("#headingAnalysisBtn").removeAttr("disabled");
+                            $("#collapseAnalysis").addClass("show");
                             $("#collapseSix").removeClass("show");
                         }, 2000);
                     }
@@ -3968,6 +3929,7 @@
                     else
                     {
                         var errorMsg = data.error;
+        
                         $('#solid_waste_errorMsg').html(`Application Error: ${data.error}`);
                         $('#solid_waste_errorMsg').show();
                         $('#solid_waste_errorMsg').focus();
@@ -4083,6 +4045,7 @@
                     else
                     {
                         var errorMsg = data.error;
+        
                         $('#noise_level_errorMsg').html(`Application Error: ${data.error}`);
                         $('#noise_level_errorMsg').show();
                         $('#noise_level_errorMsg').focus();
@@ -4414,6 +4377,7 @@
                     else
                     {
                         var errorMsg = data.error;
+        
                         $('#other_impact_errorMsg').html(`Application Error: ${data.error}`);
                         $('#other_impact_errorMsg').show();
                         $('#other_impact_errorMsg').focus();
@@ -4445,96 +4409,120 @@
 
     function submit_ground_water_application()
     {
-        let service_id = $("#service_id").val();
-        $.ajax
-        ({
-            type : "POST",
-            url : "{% url 'submit_general_application' %}",
-            data : $('#ground_water_submit_form').serialize(),
-            success : function(data)
-            {
+        // Show loading indicator
+         // Show loading spinner
+        $("#pageloader").show();
+        
+        // Hide any previous messages
+        $('#ground_water_submit_successMsg').hide();
+        $('#ground_water_submit_errorMsg').hide();
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'submit_general_application' %}",
+            data: $('#iee_submit_form').serialize(),
+            dataType: 'json',
+            success: function(data) {
                 $("#pageloader").hide();
-                if(data.message == 'success')
-                {
+                alert(data.draft_count);
+                
+                // Debugging - view full response in console
+                console.log("Server Response:", data);
+                
+                // Handle error response
+                if (data.error) {
+                    $('#ground_water_submit_errorMsg').html(data.error);
+                    $('#ground_water_submit_errorMsg').show();
+                    return;
+                }
+                
+                // Handle success response
+                if (data.message === 'success') {
                     $('#ground_water_submit_successMsg').html("Application Submitted Successfully");
                     $('#ground_water_submit_successMsg').show();
-                    $('#ground_water_submit_successMsg').focus();
-                    setTimeout(function()
-                    {
-                        $('#ground_water_submit_successMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    if(data.draft_count > 0)
-                    {
-                        if(data.type == 'IEE')
-                        {
-                            window.location.href = '/draft_iee_application';
+                    
+                    setTimeout(function() {
+                        $('#ground_water_submit_successMsg').fadeOut('slow');
+                    }, 3000);
+                    
+                    // Handle draft count and redirect
+                    if (data.draft_count > 0) {
+                        var redirectUrl = '';
+                        switch(data.type) {
+                            case 'IEE':
+                                redirectUrl = '/draft_iee_application';
+                                break;
+                            case 'IEA':
+                                redirectUrl = '/draft_ea_application';
+                                break;
+                            case 'ENE':
+                                redirectUrl = '/draft_energy_application';
+                                break;
+                            case 'ROA':
+                                redirectUrl = '/draft_road_application';
+                                break;
+                            case 'TRA':
+                                redirectUrl = '/draft_transmission_application';
+                                break;
+                            case 'TOU':
+                                redirectUrl = '/draft_tourism_application';
+                                break;
+                            case 'GWA':
+                                redirectUrl = '/draft_ground_water_application';
+                                break;
+                            case 'FOR':
+                                redirectUrl = '/draft_forestry_application';
+                                break;
+                            case 'QUA':
+                                redirectUrl = '/draft_quarry_application';
+                                break;
+                            case 'GEN':
+                                redirectUrl = '/draft_general_application';
+                                break;
+                            default:
+                                console.error("Unknown application type:", data.type);
                         }
-                        else if(data.type == 'IEA')
-                        {
-                            window.location.href = '/draft_ea_application';
+                        
+                        if (redirectUrl) {
+                            setTimeout(function() {
+                                window.location.href = redirectUrl;
+                            }, 1000);
                         }
-                        else if(data.type == 'ENE')
-                        {
-                            window.location.href = '/draft_energy_application';
-                        }
-                        else if(data.type == 'ROA')
-                        {
-                            window.location.href = '/draft_road_application';
-                        }
-                        else if(data.type == 'TRA')
-                        {
-                            window.location.href = '/draft_transmission_application';
-                        }
-                        else if(data.type == 'TOU')
-                        {
-                            window.location.href = '/draft_tourism_application';
-                        }
-                        else if(data.type == 'GWA')
-                        {
-                            window.location.href = '/draft_ground_water_application';
-                        }
-                        else if(data.type == 'FOR')
-                        {
-                            window.location.href = '/draft_forestry_application';
-                        }
-                        else if(data.type == 'QUA')
-                        {
-                            window.location.href = '/draft_quarry_application';
-                        }
-                        else if(data.type == 'GEN')
-                        {
-                            window.location.href = '/draft_general_application';
-                        }
-                    }
-                    else
-                    {
+                    } else {
                         setTimeout(function() {
-                            location.reload()
+                            location.reload();
                         }, 2000);
                     }
-                }
-                else if(data.message == 'not submitted')
-                {
-                    var errorMsg = data.error;
-                    $('#ground_water_submit_errorMsg').html(`Application Error: ${data.error}`);
+                } 
+                // Handle "not submitted" case
+                else if (data.message === 'not submitted') {
+                    $('#ground_water_submit_errorMsg').html("Please complete all required ancillary forms before submission.");
                     $('#ground_water_submit_errorMsg').show();
-                    $('#ground_water_submit_errorMsg').focus();
-                    setTimeout(function()
-                    {
-                        $('#ground_water_submit_errorMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
                 }
-                else
-                {
-                    var errorMsg = data.error;
-                    $('#ground_water_submit_errorMsg').html(`Application Error: ${data.error}`);
+                // Handle unexpected response
+                else {
+                    $('#ground_water_submit_errorMsg').html("Unexpected response from server. Please try again.");
                     $('#ground_water_submit_errorMsg').show();
-                    $('#ground_water_submit_errorMsg').focus();
-                    setTimeout(function()
-                    {
-                        $('#ground_water_submit_errorMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
                 }
+            },
+            error: function(xhr, status, error) {
+                $("#pageloader").hide();
+                
+                // Try to parse error response if available
+                var errorMsg = "An error occurred while processing your request.";
+                try {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.error) {
+                        errorMsg = response.error;
+                    }
+                } catch (e) {
+                    console.error("Error parsing error response:", e);
+                }
+                
+                $('#ground_water_submit_errorMsg').html(errorMsg);
+                $('#ground_water_submit_errorMsg').show();
+                
+                console.error("AJAX Error:", status, error);
             }
         });
     }
@@ -4554,45 +4542,6 @@
         $('#total_area_acre').val(sum);
     }
 
-    function getCitizenDetails(cid)
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'check_cid_exists' %}",
-            data :{'cid':cid},
-            success : function(data)
-            {
-                if(data.count > 0)
-                {
-                    $('#cid').val("");
-                    $('#applicant_name').val("");
-                    $('#cidErrorMsg').html("CID Already Exists.Try With Another one");
-                    $('#cidErrorMsg').show();
-                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
-                }
-                else
-                {
-                    const myObj =data.response;
-                    if(myObj.citizendatas.citizendata == undefined)
-                    {
-                        $('#cid').val("");
-                        $('#cidErrorMsg').html("Invalid CID.Try With Another one");
-                        $('#cidErrorMsg').show();
-                        $('#cidErrorMsg').delay(2000).fadeOut('slow');
-                    }
-                    else
-                    {
-                        var CitizenName = myObj.citizendatas.citizendata[0].Name
-                        var dzongkhagName = myObj.citizendatas.citizendata[0].Dzongkhag_Name
-                        var villageName = myObj.citizendatas.citizendata[0].Gewog_Name
-                        var gewogName = myObj.citizendatas.citizendata[0].Village_Name
-                        $('#applicant_name').val(CitizenName);
-                    }
-                }
-            }
-        });
-    }
-
     function check_dzong_throm(value)
     {
         if(value == "Dzongkhag")
@@ -4604,6 +4553,45 @@
         {
             $('.thromde').show();
             $('.dzongkhag').hide();
+        }
+    }
+
+    function getGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#gewog').html(data);
+            }
+        });
+    }
+
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#vil_chiwog').html(data);
+            }
+        });
+    }
+
+
+    function check_terms()
+    {
+        if($("#ec_terms").prop('checked') == true)
+        {
+            $('#gw_submit_btn').show();
+        }
+        else
+        {
+            $('#gw_submit_btn').hide();
         }
     }
 </script>
