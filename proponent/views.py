@@ -2038,9 +2038,13 @@ def update_approach_road_details(request):
     gewog = request.POST.get('gewog')
     village = request.POST.get('village')
 
+    print(record_id)
+    print(application_no)
+
+
     road_details = t_ec_industries_t6_ancillary_road.objects.filter(record_id=record_id)
-    road_details.update(application_no=application_no,line_chainage_from=line_chainage_from,
-                       line_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
+    road_details.update(application_no=application_no,road_chainage_from=line_chainage_from,
+                       road_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
                        road_width=road_width,row=row,area_required=area_required,dzongkhag=dzongkhag,gewog=gewog,village=village)
     anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by('record_id')
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -2934,6 +2938,7 @@ def save_general_water_requirement(request):
         water_excavated_muck = request.POST.get('water_excavated_muck')
         water_required = request.POST.get('water_required')
         water_resources_info = request.POST.get('water_resources_info')
+        energy_source = request.POST.get('energy_source')
 
         # Water sources data
         water_raw_material_source = request.POST.get('water_raw_material_source')
@@ -3668,7 +3673,7 @@ def insert_app_payment_details(request, application_no, description, total_amoun
     return redirect(identifier)
 
 # Road Application Details
-def save_road_application(request):
+def save_road_application_form(request):
     data = dict()
     try:
         # Extract all POST data
@@ -3917,7 +3922,7 @@ def save_road_application(request):
 def save_general_application(request):
     data = {}
     try:
-        # Extract all POST data
+        # 1. Extract basic POST data and session variables
         identifier = request.POST.get('identifier')
         application_no = request.POST.get('application_no')
         tor_application_no = request.POST.get('tor_application_no')
@@ -3925,8 +3930,8 @@ def save_general_application(request):
         service_type = request.POST.get('service_type')
         application_type = "New"
 
-        # Initialize location variables
-        dzongkhag_code, gewog_code, village_code, thromde_id = None, None, None, None
+        # 2. Handle location data
+        dzongkhag_code = gewog_code = village_code = thromde_id = None
         if dzongkhag_throm == 'Thromde':
             thromde_id = request.POST.get('thromde_id')
         else:
@@ -3995,6 +4000,7 @@ def save_general_application(request):
                     ca_auth = auth_filter.first().ca_authority
             return ca_auth
 
+        # 5. Database operations
         with transaction.atomic():
             # Handle different identifier cases
             if identifier in ['NC', 'OC']:
@@ -4150,18 +4156,44 @@ def save_general_application(request):
 
         data['message'] = "success"
     except Exception as e:
-        print('An error occurred:', e)
-        data['error'] = str(e).split("\n")[0]
+        data['error'] = str(e)
+        logger.error(f"Error saving application {application_no}: {str(e)}")
+
     return JsonResponse(data)
 
 # Forest Application Details
 def save_forest_application(request):
     data = {}
     try:
+        # Extract all POST data
         identifier = request.POST.get('identifier')
-        tor_application_no = request.POST.get('tor_application_no')
+        application_no = request.POST.get('application_no')
+        project_name = request.POST.get('project_name')
+        project_category = request.POST.get('project_category')
+        applicant_name = request.POST.get('applicant_name')
+        # application_type = 'New' if identifier == 'DR' else request.POST.get('application_type')
+        application_type = "New"
+        address = request.POST.get('address')
+        contact_no = request.POST.get('contact_no')
+        email = request.POST.get('email')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
+        focal_person = request.POST.get('focal_person')
+        tor_application_no = request.POST.get('tor_application_no')
+        ec_reference_no = request.POST.get('ec_reference_no')
         service_type = request.POST.get('service_type')
+
+        # Groundwater specific fields
+        max_evacuation_depth = request.POST.get('max_evacuation_depth')
+        terrain_elevation = request.POST.get('terrain_elevation')
+        terrain_slope = request.POST.get('terrain_slope')
+
+        # Area related fields
+        industrial_area_acre = request.POST.get('industrial_area_acre')
+        state_reserve_forest_acre = request.POST.get('state_reserve_forest_acre')
+        private_area_acre = request.POST.get('private_area_acre')
+        others_area = request.POST.get('others_area')
+        others_area_acre = request.POST.get('others_area_acre')
+        total_area_acre = request.POST.get('total_area_acre')
 
         # Initialize location variables
         dzongkhag_code, gewog_code, village_code, thromde_id = None, None, None, None
@@ -4172,157 +4204,158 @@ def save_forest_application(request):
             gewog_code = request.POST.get('gewog')
             village_code = request.POST.get('vil_chiwog')
 
-        # Initialize application attributes
-        application_type = "New"
-        colour_code = request.session.get('colour_code')
-        service_id = request.session.get('service_id')
-        ca_auth = None
+        # Common fields for both insert and update
+        common_fields = {
+            'application_date': timezone.now().date(),
+            'application_type': application_type,
+            'project_name': project_name,
+            'project_category': project_category,
+            'applicant_name': applicant_name,
+            'address': address,
+            'cid': request.session.get('cid'),
+            'contact_no': contact_no,
+            'email': email,
+            'focal_person': focal_person,
+            'dzongkhag_throm': dzongkhag_throm,
+            'dzongkhag_code': dzongkhag_code,
+            'gewog_code': gewog_code,
+            'village_code': village_code,
+            'thromde_id': thromde_id,
+            'industrial_area_acre': industrial_area_acre,
+            'state_reserve_forest_acre': state_reserve_forest_acre,
+            'private_area_acre': private_area_acre,
+            'others_area': others_area,
+            'others_area_acre': others_area_acre,
+            'total_area_acre': total_area_acre,
+            # Groundwater specific fields
+            'max_evacuation_depth': max_evacuation_depth,
+            'terrain_elevation': terrain_elevation,
+            'terrain_slope': terrain_slope,
+            # System fields
+            'service_type': service_type,
+            'applicant_id': request.session.get('email'),
+            'colour_code': request.session.get('colour_code'),
+            'service_id': request.session.get('service_id'),
+            'broad_activity_code': request.session.get('broad_activity_code'),
+            'specific_activity_code': request.session.get('specific_activity_code'),
+            'category': request.session.get('category'),
+            'application_source': 'ECSS',
+            'application_status': 'P',
+            'tor_application_no': tor_application_no,
+            'ec_reference_no': ec_reference_no
+        }
 
         # Determine competent authority
+        ca_auth = None
         if identifier not in ['DR', 'NC', 'OC'] and tor_application_no is None:
-            # For new applications not from TOR
             auth_filter = t_competant_authority_master.objects.filter(
                 competent_authority=request.session.get('ca_auth'),
-                dzongkhag_code_id=request.POST.get('dzo_throm') if request.session.get('ca_auth') in ['DEC', 'THROMDE'] else None
+                dzongkhag_code_id=dzongkhag_code if request.session.get('ca_auth') in ['DEC', 'THROMDE'] else None
             )
             if auth_filter.exists():
                 ca_auth = auth_filter.first().competent_authority_id
         elif identifier in ['NC', 'OC']:
-            # For NC/OC applications
             auth_filter = t_ec_industries_t1_general.objects.filter(
-                application_no=request.POST.get('application_no')
+                application_no=application_no
             )
             if auth_filter.exists():
                 ca_auth = auth_filter.first().ca_authority
         elif tor_application_no:
-            # For applications with TOR reference
             auth_filter = t_ec_industries_t1_general.objects.filter(
                 application_no=tor_application_no
             )
             if auth_filter.exists():
                 ca_auth = auth_filter.first().ca_authority
 
-        # Prepare application details
-        application_details = {
-            'application_no': request.POST.get('application_no'),
-            'application_date': timezone.now().date(),
-            'application_type': application_type,
-            'project_name': request.POST.get('project_name'),
-            'project_category': request.POST.get('project_category'),
-            'applicant_name': request.POST.get('applicant_name'),
-            'address': request.POST.get('address'),
-            'cid': request.session.get('cid'),
-            'contact_no': request.POST.get('contact_no'),
-            'email': request.POST.get('email'),
-            'focal_person': request.POST.get('focal_person'),
-            'location_name': request.POST.get('project_site'),
-            'dzongkhag_throm': dzongkhag_throm,
-            'dzongkhag_code': dzongkhag_code,
-            'gewog_code': gewog_code,
-            'village_code': village_code,
-            'thromde_id': thromde_id,
-            'industrial_area_acre': request.POST.get('industrial_area_acre'),
-            'state_reserve_forest_acre': request.POST.get('state_reserve_forest_acre'),
-            'private_area_acre': request.POST.get('private_area_acre'),
-            'others_area':request.POST.get('others_area'),
-            'others_area_acre': request.POST.get('others_area_acre'),
-            'total_area_acre': request.POST.get('total_area_acre'),
-            'max_evacuation_depth': request.POST.get('max_evacuation_depth'),
-            'terrain_elevation': request.POST.get('terrain_elevation'),
-            'terrain_slope': request.POST.get('terrain_slope'),
-            'service_type': service_type,
-            'ca_authority': ca_auth,
-            'applicant_id': request.session.get('email'),
-            'colour_code': colour_code,
-            'service_id': service_id,
-            'application_source': 'ECSS',
-            'application_status': 'P',
-            'tor_application_no': tor_application_no
-        }
+        common_fields['ca_authority'] = ca_auth
 
-        # Database operations
         with transaction.atomic():
+            # Handle different identifier cases
             if identifier == 'NC':
-                application_instance = t_ec_industries_t1_general.objects.filter(
-                    application_no=request.POST.get('application_no')).first()
-                if application_instance:
-                    application_instance.project_name = request.POST.get('project_name')
-                    application_instance.service_type = identifier
-                    application_instance.save()
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                if application_details.exists():
+                    application_details.update(project_name=project_name, service_type=identifier)
                 else:
-                    raise ValueError("Application does not exist.")
+                    raise ValueError(f"Application {application_no} does not exist for NC operation")
             elif identifier == 'OC':
-                application_instance = t_ec_industries_t1_general.objects.filter(
-                    application_no=request.POST.get('application_no')).first()
-                if application_instance:
-                    application_instance.applicant_name = request.POST.get('applicant_name')
-                    application_instance.service_type = identifier
-                    application_instance.save()
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                if application_details.exists():
+                    application_details.update(applicant_name=applicant_name, service_type=identifier)
                 else:
-                    raise ValueError("Application does not exist.")
+                    raise ValueError(f"Application {application_no} does not exist for OC operation")
             elif identifier == 'DR':
-                application_instance, created = t_ec_industries_t1_general.objects.get_or_create(
-                    application_no=request.POST.get('application_no'))
-                if not created:
-                    for field, value in application_details.items():
-                        setattr(application_instance, field, value)
-                    application_instance.save()
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                if application_details.exists():
+                    # For DR, protect specific fields from being updated
+                    protected_fields = {
+                        'service_type', 'ca_authority', 'applicant_id', 'colour_code',
+                        'service_id', 'broad_activity_code', 'specific_activity_code',
+                        'category', 'application_source', 'application_status'
+                    }
+                    # Update only non-protected fields
+                    update_fields = {k: v for k, v in common_fields.items() if k not in protected_fields}
+                    application_details.update(**update_fields)
                 else:
-                    raise ValueError("Application does not exist.")
-            elif identifier in ['TC', 'PC', 'LC', 'CC']:
-                ec_reference_no = request.POST.get('ec_reference_no')
-                for app_det in t_ec_industries_t1_general.objects.filter(
-                    ec_reference_no=ec_reference_no):
                     t_ec_industries_t1_general.objects.create(
-                        application_no=request.POST.get('application_no'),
-                        ec_reference_no=ec_reference_no,
-                        **application_details
+                        application_no=application_no,
+                        **common_fields
                     )
+            elif identifier in ['TC', 'PC', 'LC', 'CC']:
+                application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+                for app_det in application_details:
+                    t_ec_industries_t1_general.objects.create(
+                        application_no=application_no,
+                        ec_reference_no=app_det.ec_reference_no,
+                        **common_fields
+                    )
+            else:  # Main Activity case
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                if application_details.exists() and identifier != 'DR' and application_type == "New":
+                    # Update existing record
+                    application_details.update(**common_fields)
+                else:
+                    # Insert new record
+                    t_ec_industries_t1_general.objects.create(
+                        application_no=application_no,
+                        **common_fields
+                    )
+
+            # Workflow handling
+            workflow_update_data = {
+                'application_no': application_no,
+                'application_status': 'P',
+                'actor_id': request.session.get('login_id'),
+                'actor_name': request.session.get('name'),
+                'assigned_role_id': '2',
+                'assigned_role_name': 'Verifier',
+                'service_id': request.session.get('service_id'),
+                'ca_authority': ca_auth,
+                'application_source': 'ECSS',
+                'service_type': service_type
+            }
+
+            workflow_exists = t_workflow_dtls.objects.filter(application_no=application_no).exists()
+            if workflow_exists:
+                t_workflow_dtls.objects.filter(application_no=application_no).update(**workflow_update_data)
             else:
-                t_ec_industries_t1_general.objects.create(**application_details)
+                t_workflow_dtls.objects.create(**workflow_update_data)
 
             # Create application history
             t_application_history.objects.create(
-                application_no=request.POST.get('application_no'),
+                application_no=application_no,
                 application_date=timezone.now().date(),
                 applicant_id=request.session.get('email'),
                 ca_authority=ca_auth,
-                service_id=service_id,
+                service_id=request.session.get('service_id'),
                 application_status='P',
                 actor_id=request.session.get('login_id'),
                 actor_name=request.session.get('name')
             )
 
-            # Update workflow details
-            if identifier in ['NC', 'OC']:
-                t_workflow_dtls.objects.filter(
-                    application_no=request.POST.get('application_no')
-                ).update(
-                    application_status='P',
-                    actor_id=request.session.get('login_id'),
-                    actor_name=request.session.get('name'),
-                    assigned_role_id='2',
-                    assigned_role_name='Verifier'
-                )
-            else:
-                t_workflow_dtls.objects.create(
-                    application_no=request.POST.get('application_no'),
-                    service_id=service_id,
-                    application_status='P',
-                    actor_id=request.session.get('login_id'),
-                    actor_name=request.session.get('name'),
-                    assigned_role_id='2',
-                    assigned_role_name='Verifier',
-                    ca_authority=ca_auth,
-                    application_source='ECSS',
-                    service_type=service_type
-                )
-
         data['message'] = "success"
     except Exception as e:
         print('An error occurred:', e)
-        error_msg = str(e)
-        data['error'] = str(error_msg.split("\n")[0])
+        data['error'] = str(e).split("\n")[0]
     return JsonResponse(data)
 
 
@@ -5050,8 +5083,8 @@ def road_project_details_one(request):
         blast_required = request.POST.get('blast_required') 
         blast_type = request.POST.get('blast_type')
         blast_qty = request.POST.get('blast_qty')
-        blast_location = request.POST.get('blast_location')
-        blast_frequency_time = request.POST.get('blast_frequency_time')
+        blast_location = request.POST.get('blasting_location')
+        blast_frequency_time = request.POST.get('blast_frequency')
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         application_details.update(blast_required=blast_required, 

@@ -131,7 +131,7 @@ urlpatterns = [
     path('save_quarry_attachment_details', views.save_quarry_attachment_details, name='save_quarry_attachment_details'),
 
     #Road Application Details
-    path('save_road_application', views.save_road_application, name='save_road_application'),
+    path('save_road_application_form', views.save_road_application_form, name='save_road_application_form'),
     path('save_road_attachment', views.save_road_attachment, name='save_road_attachment'),
     path('save_road_attachment_details', views.save_road_attachment_details, name='save_road_attachment_details'),
     path('road_project_details', views.road_project_details, name='road_project_details'),
