@@ -182,9 +182,9 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Others Specify</label>
-                                                <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()">
+                                                <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()" value="NA">
                                             </div>
-                                            <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="others_area_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
                                             <div class="mb-3">
@@ -198,14 +198,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Total land area required (acre)</label>
-                                                <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" readonly>
+                                                <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" readonly value="0">
                                             </div>
                                             <div id="total_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Actual Mineable area(acre)</label>
-                                                <input type="number" name="actual_mineable_area" class="form-control" id="actual_mineable_area">
+                                                <input type="number" name="actual_mineable_area" class="form-control" id="actual_mineable_area" value="0">
                                             </div>
                                             <div id="actual_mineable_areaErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -214,7 +214,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Green Belt Area(acre)</label>
-                                                <input type="number" name="green_area_acre" class="form-control" id="green_area_acre">
+                                                <input type="number" name="green_area_acre" class="form-control" id="green_area_acre" value="0">
                                             </div>
                                             <div id="green_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -223,7 +223,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Elevation (meters)</label>
-                                                <input type="number" name="terrain_elevation" class="form-control" id="terrain_elevation">
+                                                <input type="number" name="terrain_elevation" class="form-control" id="terrain_elevation" value="0">
                                             </div>
                                             <div id="terrain_elevationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -231,7 +231,7 @@
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Slope/Gradient</label>
                                                 <select class="form-select" name="terrain_slope" id="terrain_slope">
-                                                    <option selected>Choose One</option>
+                                                    <option value="" selected>Choose One</option>
                                                     <option value="Flat land (below 20 degrees)">Flat land (below 20 degrees)</option>
                                                     <option value="Gentle slope (21-45 degrees)">Gentle slope (21-45 degrees)</option>
                                                     <option value="Steep slope (46 – 60 degrees)">Steep slope (46 – 60 degrees)</option>
@@ -259,9 +259,9 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingTwoBtn"
                                 data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" disabled>
-                               Baseline/Existing information
+                                Baseline/Existing information
                             </button>
                         </h2>
                         <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
@@ -356,13 +356,13 @@
                                                 <td><input type="text" name="bl_tourist_facility_distance" class="form-control col-lg-6" id="bl_tourist_facility_distance" value="0"></td>
                                             </tr>
                                             <tr>
-                                                <td>l)</td>
+                                                <td>m)</td>
                                                 <td>Important installations (early warning systems, weather stations, flood mitigation activities, etc.)</td>
                                                 <td><input type="text" name="bl_impt_installation_name" class="form-control col-lg-6" id="bl_impt_installation_name" value="N/A"></td>
                                                 <td><input type="text" name="bl_impt_installation_distance" class="form-control col-lg-6" id="bl_impt_installation_distance" value="0"></td>
                                             </tr>
                                             <tr>
-                                                <td>l)</td>
+                                                <td>n)</td>
                                                 <td>Industries</td>
                                                 <td><input type="text" name="bl_industries_name" class="form-control col-lg-6" id="bl_industries_name" value="N/A"></td>
                                                 <td><input type="text" name="bl_industries_distance" class="form-control col-lg-6" id="bl_industries_distance" value="0"></td>
@@ -382,6 +382,12 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="terrain_baseline_application_successMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="terrain_baseline_application_errorMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
                                     <div class="row mt-4">
                                         <div class="text-sm-end">
                                             <a href="#" class="btn btn-success" onclick="save_terrain_baseline_details()">
@@ -393,14 +399,14 @@
                         </div>
                     </div>
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingForest">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseForest" aria-expanded="false" aria-controls="collapseForest" id="headingForestButton" disabled>
+                        <h2 class="accordion-header" id="headingProjectDetails">
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingProjectDetailsBtn"
+                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" disabled>
                                 Project Details
                             </button>
                         </h2>
-                        <div id="collapseForest" class="accordion-collapse collapse" aria-labelledby="headingForest"
-                            data-bs-parent="#headingForest">
+                        <div id="collapseProjectDetails" class="accordion-collapse collapse" aria-labelledby="headingForest"
+                            data-bs-parent="#headingProjectDetails">
                             <div class="accordion-body">
                                 <form method="post" id="project_details_form">
                                     {% csrf_token %}
@@ -408,7 +414,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Project objective</label>
+                                                <label class="form-label fw-bold">Project Objective</label>
                                                 <input type="text" name="project_objective" class="form-control" id="project_objective">
                                             </div>
                                             <div id="project_objectiveErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -451,8 +457,8 @@
                                                           <tr>
                                                             <th>Production capacity-MT</th>
                                                             <th>Stripping Ratio</th>
-                                                            <th>Bench Height</th>
-                                                            <th>Bench Width</th>
+                                                            <th>Bench Height(M)</th>
+                                                            <th>Bench Width(M)</th>
                                                           </tr>
                                                         </thead>
                                                         <tbody>
@@ -566,141 +572,146 @@
                         <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Excavated muck disposal area/Dumpyard</label>
-                                            <div class="mt-2">
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" name="water_excavated_muck" class="form-check-input" value="Yes" onclick="check_excavated_muck(this.value)">
-                                                    <label class="form-check-label" for="customRadio3">Yes</label>
+                                <form method="post" id="water_requirement_form">
+                                    {% csrf_token %}
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_water_application_no">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Will the activity requires excavated muck disposal area/dumpyard?</label>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="water_excavated_muck" class="form-check-input" value="Yes" onclick="check_excavated_muck(this.value)">
+                                                        <label class="form-check-label" for="customRadio3">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)" checked>
+                                                        <label class="form-check-label" for="customRadio4">No</label>
+                                                    </div>
                                                 </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)" checked>
-                                                    <label class="form-check-label" for="customRadio4">No</label>
+                                            </div>
+                                            <div id="water_excavated_muckErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 dump_yard_details" style="display:none;">
+                                        <div class="card">
+                                            <div class="card-body">
+
+                                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#dumyard_details_modal">
+                                                    <i class="mdi mdi-plus me-2"></i>Add
+                                                </button>
+                                                <div class="collapse pt-3 show">
+                                                    <div id="dump_yard_details_div">
+                                                        {% include 'dump_yard_details.html' %}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="water_excavated_muckErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
-                                </div>
-                                <div class="col-md-12 dump_yard_details" style="display:none;">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="card-widgets mb-3">
-                                                <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#dumyard_details_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Provide information on water resources along the project alignment including name, location and distance from the proposed project</label>
+                                                <textarea class="form-control" rows="3" name="water_resources_info" id="water_resources_info"></textarea>
                                             </div>
-                                            <div class="collapse pt-3 show">
-                                                <div id="dump_yard_details_div">
-                                                    {% include 'dump_yard_details.html' %}
-                                                </div>
-                                            </div>
+                                            <div class="alert alert-danger" id="water_resources_infoErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Provide information on water resources along the project alignment including name, location and distance from the proposed project</label>
-                                            <textarea class="form-control" rows="3" name="water_resources_info" id="water_resources_info"></textarea>
-                                        </div>
-                                        <div class="alert alert-danger" id="water_resources_infoErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Will the activity require water consumption?</label>
-                                            <div class="mt-2">
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" id="customRadio3" name="water_required" class="form-check-input" value="Yes" onclick="check_industry_radio(this.value)">
-                                                    <label class="form-check-label" for="customRadio3">Yes</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_industry_radio(this.value)" checked>
-                                                    <label class="form-check-label" for="customRadio4">No</label>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Will the activity require water consumption?</label>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="customRadio3" name="water_required" class="form-check-input" value="Yes" onclick="check_industry_radio(this.value)">
+                                                        <label class="form-check-label" for="customRadio3">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_industry_radio(this.value)" checked>
+                                                        <label class="form-check-label" for="customRadio4">No</label>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <div id="water_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div id="water_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
-                                </div>
-                                <div class="row general_water_details" style="display: none;">
-                                    <div class="col-lg-12">
-                                        <table class="table table-hover table-bordered table-centered mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Sl.no.</th>
-                                                    <th>Purpose</th>
-                                                    <th>Source</th>
-                                                    <th>Quantity of water consumption in KL per day</th>
-                                                    <th>Quantity of water recycled/reused in KL per day (if applicable)</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>Water as raw material</td>
-                                                    <td><input type="text" name="water_raw_material_source" class="form-control col-lg-6" id="water_raw_material_source" value="N/A"></td>
-                                                    <td><input type="text" name="water_raw_material_qty_day" class="form-control col-lg-6" id="water_raw_material_qty_day" value="0"></td>
-                                                    <td><input type="text" name="water_raw_material_recycle_day" class="form-control col-lg-6" id="water_raw_material_recycle_day" value="0"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2</td>
-                                                    <td>Raw material and finished product cleaning/washing</td>
-                                                    <td><input type="text" name="water_cleaning_source" class="form-control col-lg-6" id="water_cleaning_source"  value="N/A"></td>
-                                                    <td><input type="text" name="water_cleaning_qty_day" class="form-control col-lg-6" id="water_cleaning_qty_day"  value="0"></td>
-                                                    <td><input type="text" name="water_cleaning_recycle_day" class="form-control col-lg-6" id="water_cleaning_recycle_day" value="0"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3</td>
-                                                    <td>Process (cooling/boiler use)</td>
-                                                    <td><input type="text" name="water_process_source" class="form-control col-lg-6" id="water_process_source" value="N/A"></td>
-                                                    <td><input type="text" name="water_process_qty_day" class="form-control col-lg-6" id="water_process_qty_day" value="0"></td>
-                                                    <td><input type="text" name="water_process_recycle_day" class="form-control col-lg-6" id="water_process_recycle_day" value="0"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>4</td>
-                                                    <td>Domestic (Drinking and sanitation)</td>
-                                                    <td><input type="text" name="water_domestic_source" class="form-control col-lg-6" id="water_domestic_source"  value="N/A"></td>
-                                                    <td><input type="text" name="water_domestic_qty_day" class="form-control col-lg-6" id="water_domestic_qty_day"  value="0"></td>
-                                                    <td><input type="text" name="water_domestic_recycle_day" class="form-control col-lg-6" id="water_domestic_recycle_day" value="0"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>5</td>
-                                                    <td>Dust suppression</td>
-                                                    <td><input type="text" name="water_dust_compression_source" class="form-control col-lg-6" id="water_dust_compression_source"  value="N/A"></td>
-                                                    <td><input type="text" name="water_dust_compression_qty_day" class="form-control col-lg-6" id="water_dust_compression_qty_day" value="0"></td>
-                                                    <td><input type="text" name="water_dust_compression_recycle_day" class="form-control col-lg-6" id="water_dust_compression_recycle_day" value="0"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>6</td>
-                                                    <td>Others, specify </td>
-                                                    <td><input type="text" name="water_others_name" class="form-control col-lg-6" id="water_others_name"  value="N/A"></td>
-                                                    <td><input type="text" name="water_others_source" class="form-control col-lg-6" id="water_others_source" value="0"></td>
-                                                    <td><input type="text" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day" value="0"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="3" align="center">Total quantity of water to be consumed</td>
-                                                    <td><input type="text" name="total_water_consumption" id="total_water_consumption" class="form-control col-lg-6" value="0"></td>
-                                                    <td><input type="text" name="total_water_recycled" id="total_water_recycled" class="form-control col-lg-6" value="0"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <div class="row general_water_details" style="display: none;">
+                                        <div class="col-lg-12">
+                                            <table class="table table-hover table-bordered table-centered mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Sl.no.</th>
+                                                        <th>Purpose</th>
+                                                        <th>Source</th>
+                                                        <th>Quantity of water consumption in KL per day</th>
+                                                        <th>Quantity of water recycled/reused in KL per day (if applicable)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Water as raw material</td>
+                                                        <td><input type="text" name="water_raw_material_source" class="form-control col-lg-6" id="water_raw_material_source" value="N/A"></td>
+                                                        <td><input type="text" name="water_raw_material_qty_day" class="form-control col-lg-6" id="water_raw_material_qty_day" value="0"></td>
+                                                        <td><input type="text" name="water_raw_material_recycle_day" class="form-control col-lg-6" id="water_raw_material_recycle_day" value="0"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2</td>
+                                                        <td>Raw material and finished product cleaning/washing</td>
+                                                        <td><input type="text" name="water_cleaning_source" class="form-control col-lg-6" id="water_cleaning_source"  value="N/A"></td>
+                                                        <td><input type="text" name="water_cleaning_qty_day" class="form-control col-lg-6" id="water_cleaning_qty_day"  value="0"></td>
+                                                        <td><input type="text" name="water_cleaning_recycle_day" class="form-control col-lg-6" id="water_cleaning_recycle_day" value="0"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3</td>
+                                                        <td>Process (cooling/boiler use)</td>
+                                                        <td><input type="text" name="water_process_source" class="form-control col-lg-6" id="water_process_source" value="N/A"></td>
+                                                        <td><input type="text" name="water_process_qty_day" class="form-control col-lg-6" id="water_process_qty_day" value="0"></td>
+                                                        <td><input type="text" name="water_process_recycle_day" class="form-control col-lg-6" id="water_process_recycle_day" value="0"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>4</td>
+                                                        <td>Domestic (Drinking and sanitation)</td>
+                                                        <td><input type="text" name="water_domestic_source" class="form-control col-lg-6" id="water_domestic_source"  value="N/A"></td>
+                                                        <td><input type="text" name="water_domestic_qty_day" class="form-control col-lg-6" id="water_domestic_qty_day"  value="0"></td>
+                                                        <td><input type="text" name="water_domestic_recycle_day" class="form-control col-lg-6" id="water_domestic_recycle_day" value="0"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>5</td>
+                                                        <td>Dust suppression</td>
+                                                        <td><input type="text" name="water_dust_compression_source" class="form-control col-lg-6" id="water_dust_compression_source"  value="N/A"></td>
+                                                        <td><input type="text" name="water_dust_compression_qty_day" class="form-control col-lg-6" id="water_dust_compression_qty_day" value="0"></td>
+                                                        <td><input type="text" name="water_dust_compression_recycle_day" class="form-control col-lg-6" id="water_dust_compression_recycle_day" value="0"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>6</td>
+                                                        <td>Others, specify </td>
+                                                        <td><input type="text" name="water_others_name" class="form-control col-lg-6" id="water_others_name"  value="N/A"></td>
+                                                        <td><input type="text" name="water_others_source" class="form-control col-lg-6" id="water_others_source" value="0"></td>
+                                                        <td><input type="text" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day" value="0"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3" align="center">Total quantity of water to be consumed</td>
+                                                        <td><input type="text" name="total_water_consumption" id="total_water_consumption" class="form-control col-lg-6" value="0"></td>
+                                                        <td><input type="text" name="total_water_recycled" id="total_water_recycled" class="form-control col-lg-6" value="0"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="alert alert-success border-0 rounded-0" role="alert" id="water_requirement_application_successMsg" style="display:none">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                </div>
-                                <div class="alert alert-danger border-0 rounded-0" role="alert" id="water_requirement_application_errorMsg" style="display:none">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                </div>
-                                <div class="row mt-4">
-                                    <div class="text-sm-end">
-                                        <a href="#" class="btn btn-success" onclick="save_water_requirement()">
-                                            <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="water_requirement_application_successMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                </div>
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="water_requirement_application_errorMsg" style="display:none">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    </div>
+                                    <div class="row mt-4">
+                                        <div class="text-sm-end">
+                                            <a href="#" class="btn btn-success" onclick="save_water_requirement()">
+                                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -708,7 +719,7 @@
                         <h2 class="accordion-header" id="headingFive">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFiveBtn"
                                 data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" disabled>
-                                Ancillary:Approach Road
+                                Ancillary: Approach Road
                             </button>
                         </h2>
                         <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
@@ -739,7 +750,7 @@
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Length of road in km</label>
-                                                <input type="text" name="anc_road_length" class="form-control" id="anc_road_length">
+                                                <input type="number" name="anc_road_length" class="form-control" id="anc_road_length">
                                             </div>
                                             <div id="anc_road_lengthErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -845,7 +856,7 @@
                         <h2 class="accordion-header" id="headingSix">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSixBtn"
                                 data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" disabled>
-                                Ancillary:Power Lines
+                                Ancillary: Power Lines
                             </button>
                         </h2>
                         <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix"
@@ -948,7 +959,7 @@
                         <h2 class="accordion-header" id="headingSeven">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSevenBtn"
                                 data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
-                                Ancillary:Others
+                                Ancillary: Others
                             </button>
                         </h2>
                         <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven"
@@ -1401,12 +1412,6 @@
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a>
                                     </div>
 
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="quarry_submit_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="quarry_submit_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
                                     <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
                                     <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
                                     <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
@@ -1419,6 +1424,22 @@
                                             <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
                                             <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
                                         </div>
+                                    </div>
+                                    <div class="alert alert-success border-0 rounded-0"
+                                        role="alert"
+                                        id="quarry_submit_successMsg"
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
+                                    </div>
+
+                                    <!-- Error Alert -->
+                                    <div class="alert alert-danger border-0 rounded-0"
+                                        role="alert"
+                                        id="quarry_submit_errorMsg"
+                                        style="display:none"
+                                        aria-live="assertive"
+                                        aria-atomic="true">
                                     </div>
                                     <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
                                         <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
@@ -1440,427 +1461,175 @@
     </div>
 </div>
 
-<form method="post" id="quarry_attachment_form" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="modal fade" id="quarry_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <!--Content-->
-        <div class="modal-content form-elegant">
-          <!--Header-->
-          <div class="modal-header text-center">
-            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;Add Attachment</strong></h3>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-          <!--Body-->
-          <div class="modal-body mx-4">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Attachment</label>
-                        <input type="file" name="quarry_attach" class="form-control" id="quarry_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+    <form method="post" id="quarry_attachment_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal fade" id="quarry_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Add Attachment</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Attachment</label>
+                            <input type="file" name="quarry_attach" class="form-control" id="quarry_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                        </div>
+                        <div class="alert alert-danger" id="quarry_attachErrorMsg" style="display:none"></div>
                     </div>
-                    <div class="alert alert-danger" id="quarry_attachErrorMsg" style="display:none"></div>
                 </div>
+              </div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="save_quarry_attachment()">Add</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
             </div>
-          </div>
-          <div class="modal-footer flex-center justify-content-center">
-            <button type="button" class="btn btn-sm btn-primary" onclick="save_quarry_attachment()">Add</button>
-            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-        <!--/.Content-->
-      </div>
-    </div>
-</form>
-
-<form method="post" id="machine_equipment_tool_form">
-{% csrf_token %}
-<div class="modal fade" id="machine_equipment_tool_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Add</strong></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Machine/Tool/Equipment</label>
-                    <input type="text" name="machine_tool" class="form-control" id="machine_tool">
-                </div>
-                <div class="alert alert-danger" id="machine_toolErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Qty</label>
-                    <input type="text" name="machine_tool_qty" class="form-control" id="machine_tool_qty">
-                </div>
-                <div class="alert alert-danger" id="machine_tool_qtyErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Installed Capacity</label>
-                    <input type="text" name="machine_tool_installed_capacity" class="form-control" id="machine_tool_installed_capacity">
-                </div>
-                <div class="alert alert-danger" id="machine_tool_installed_capacityErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-      </div>
-          <div class="alert alert-success" id="machine_tool_SuccessMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="add_machine_tool_details()">Add</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-    <!--/.Content-->
-  </div>
-</div>
-</form>
-
-<form method="post" id="edit_machine_equipment_tool_form">
-{% csrf_token %}
-<div class="modal fade" id="edit_machine_equipment_tool_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Edit</strong></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <div class="modal-body mx-4">
-        <input type="text" name="edit_machine_tool_record_id" class="form-control" id="edit_machine_tool_record_id">
-        <input type="text" name="edit_machine_tool_app_no" class="form-control" id="edit_machine_tool_app_no">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Machine/Tool/Equipment</label>
-                    <input type="text" name="edit_machine_tool" class="form-control" id="edit_machine_tool">
-                </div>
-                <div class="alert alert-danger" id="edit_machine_toolErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Qty</label>
-                    <input type="text" name="edit_machine_tool_qty" class="form-control" id="edit_machine_tool_qty">
-                </div>
-                <div class="alert alert-danger" id="edit_machine_tool_qtyErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Installed Capacity</label>
-                    <input type="text" name="edit_machine_tool_installed_capacity" class="form-control" id="edit_machine_tool_installed_capacity">
-                </div>
-                <div class="alert alert-danger" id="edit_machine_tool_installed_capacityErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-      </div>
-          <div class="alert alert-success" id="edit_machine_tool_SuccessMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="update_machine_tool_details()">Update</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-</form>
-
-<form method="post" id="delete_machine_equipment_tool_form">
-{% csrf_token %}
-<div class="modal fade" id="delete_machine_equipment_tool_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Delete</strong></h3>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <div class="modal-body mx-4">
-        <input type="text" name="delete_machine_tool_record_id" class="form-control" id="delete_machine_tool_record_id">
-        <input type="text" name="delete_machine_tool_app_no" class="form-control" id="delete_machine_tool_app_no">
-          <div class="row">
-            <div class="col-lg-12">
-                <p>Are You Sure You Want To Delete ? </p>
-            </div>
-        </div>
-      </div>
-          <div class="alert alert-success" id="delete_machine_tool_SuccessMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="delete_machine_tool_details()">Delete</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-</form>
-
-<form method="post" id="delete_raw_material_form">
-{% csrf_token %}
-<div class="modal fade" id="delete_raw_material_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Delete</strong></h3>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <div class="modal-body mx-4">
-        <input type="text" name="delete_raw_material_record_id" class="form-control" id="delete_raw_material_record_id">
-        <input type="text" name="delete_raw_material_app_no" class="form-control" id="delete_raw_material_app_no">
-          <div class="row">
-            <div class="col-lg-12">
-                <p>Are You Sure You Want To Delete ? </p>
-            </div>
-        </div>
-      </div>
-          <div class="alert alert-success" id="delete_raw_material_SuccessMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="delete_raw_material_details()">Delete</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-</form>
-
-
-<form method="post" id="delete_partner_details_form">
-{% csrf_token %}
-<div class="modal fade" id="delete_partner_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Delete</strong></h3>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <div class="modal-body mx-4">
-        <input type="text" name="delete_partner_details_record_id" class="form-control" id="delete_partner_details_record_id">
-        <input type="text" name="delete_partner_details_app_no" class="form-control" id="delete_partner_details_app_no">
-          <div class="row">
-            <div class="col-lg-12">
-                <p>Are You Sure You Want To Delete ? </p>
-            </div>
-        </div>
-      </div>
-          <div class="alert alert-success" id="delete_partner_details_SuccessMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="delete_partner_details()">Delete</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-</form>
-
-<form method="post" id="final_products_form">
-{% csrf_token %}
-<div class="modal fade" id="final_products_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Add</strong></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Product (Name)</label>
-                    <input type="text" name="product_name" class="form-control" id="product_name">
-                </div>
-                <div class="alert alert-danger" id="product_nameErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Name/Location Type</label>
-                    <input type="text" name="name_location" class="form-control" id="name_location">
-                </div>
-                <div class="alert alert-danger" id="name_locationErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Method of Storage</label>
-                    <select class="form-select" name="storage_method" id="storage_method">
-                        <option selected>Choose One</option>
-                        <option value="fully_enclosed">Fully Enclosed</option>
-                        <option value="partially_enclosed">Partially Enclosed</option>
-                        <option value="open">Open</option>
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="storage_methodErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-      </div>
-          <div class="alert alert-success" id="final_products_SuccessMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="add_machine_tool_details()">Add</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-    <!--/.Content-->
-  </div>
-</div>
-</form>
-
-<form method="post" id="raw_materials_form">
-    {% csrf_token %}
-    <div class="modal fade" id="raw_materials_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <!--Content-->
-        <div class="modal-content form-elegant">
-          <!--Header-->
-          <div class="modal-header text-center">
-            <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;Add</strong></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-          <!--Body-->
-          <div class="modal-body mx-4">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">List of raw materials(major) </label>
-                        <input type="text" name="raw_material" class="form-control" id="raw_material">
-                    </div>
-                    <div class="alert alert-danger" id="raw_materialErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Quantity (MT/annum)</label>
-                        <input type="number" name="raw_material_qty" class="form-control" id="raw_material_qty">
-                    </div>
-                    <div class="alert alert-danger" id="raw_material_qtyErrorMsg" style="display:none"></div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Source and method of transportation</label>
-                        <input type="text" name="raw_material_source" class="form-control" id="raw_material_source">
-                    </div>
-                    <div class="alert alert-danger" id="raw_material_sourceErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Method of Storage</label>
-                        <select class="form-select" name="raw_material_storage_method" id="raw_material_storage_method">
-                            <option selected>Choose One</option>
-                            <option value="Fully_Enclosed">Fully Enclosed</option>
-                            <option value="Partially_Enclosed">Partially Enclosed</option>
-                            <option value="Open">Open</option>
-                        </select>
-                    </div>
-                    <div class="alert alert-danger" id="raw_material_storage_methodErrorMsg" style="display:none"></div>
-                </div>
-            </div>
-          </div>
-              <div class="alert alert-success" id="raw_material_SuccessMsg" style="display:none"></div>
-          <div class="modal-footer flex-center justify-content-center">
-            <button type="button" class="btn btn-sm btn-primary" onclick="add_raw_material_details()">Add</button>
-            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+            <!--/.Content-->
           </div>
         </div>
-        <!--/.Content-->
-      </div>
-    </div>
     </form>
-    
-    <form method="post" id="edit_raw_materials_form">
-    {% csrf_token %}
-    <div class="modal fade" id="edit_raw_materials_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <!--Content-->
-        <div class="modal-content form-elegant">
-          <!--Header-->
-          <div class="modal-header text-center">
-            <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;Update</strong></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-          <!--Body-->
-          <div class="modal-body mx-4">
-            <input type="hidden" name="edit_raw_material_record_id" class="form-control" id="edit_raw_material_record_id">
-            <input type="hidden" name="edit_raw_material_app_no" class="form-control" id="edit_raw_material_app_no">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">List of raw materials(Major) </label>
-                        <input type="text" name="edit_raw_material" class="form-control" id="edit_raw_material">
+
+    <form method="post" id="machine_equipment_tool_form">
+        {% csrf_token %}
+        <div class="modal fade" id="machine_equipment_tool_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Add</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Machine/Tool/Equipment</label>
+                            <input type="text" name="machine_tool" class="form-control" id="machine_tool">
+                        </div>
+                        <div class="alert alert-danger" id="machine_toolErrorMsg" style="display:none"></div>
                     </div>
-                    <div class="alert alert-danger" id="edit_raw_materialErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Quantity (MT/annum)</label>
-                        <input type="number" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Qty</label>
+                            <input type="text" name="machine_tool_qty" class="form-control" id="machine_tool_qty">
+                        </div>
+                        <div class="alert alert-danger" id="machine_tool_qtyErrorMsg" style="display:none"></div>
                     </div>
-                    <div class="alert alert-danger" id="edit_raw_material_qtyErrorMsg" style="display:none"></div>
                 </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Installed Capacity</label>
+                            <input type="text" name="machine_tool_installed_capacity" class="form-control" id="machine_tool_installed_capacity">
+                        </div>
+                        <div class="alert alert-danger" id="machine_tool_installed_capacityErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+                  <div class="alert alert-success" id="machine_tool_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="add_machine_tool_details()">Add</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
             </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Source and method of transportation</label>
-                        <input type="text" name="edit_raw_material_source" class="form-control" id="edit_raw_material_source">
-                    </div>
-                    <div class="alert alert-danger" id="edit_raw_material_sourceErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Method of Storage</label>
-                        <select class="form-select" name="edit_raw_material_storage_method" id="edit_raw_material_storage_method">
-                            <option selected>Choose One</option>
-                            <option value="Fully_Enclosed">Fully Enclosed</option>
-                            <option value="Partially_Enclosed">Partially Enclosed</option>
-                            <option value="Open">Open</option>
-                        </select>
-                    </div>
-                    <div class="alert alert-danger" id="edit_raw_material_storage_methodErrorMsg" style="display:none"></div>
-                </div>
-            </div>
-          </div>
-              <div class="alert alert-success" id="edit_raw_material_SuccessMsg" style="display:none"></div>
-          <div class="modal-footer flex-center justify-content-center">
-            <button type="button" class="btn btn-sm btn-primary" onclick="update_raw_material_details()">Update</button>
-            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+            <!--/.Content-->
           </div>
         </div>
-        <!--/.Content-->
-      </div>
-    </div>
+    </form>
+
+    <form method="post" id="edit_machine_equipment_tool_form">
+        {% csrf_token %}
+        <div class="modal fade" id="edit_machine_equipment_tool_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Edit</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <div class="modal-body mx-4">
+                <input type="text" name="edit_machine_tool_record_id" class="form-control" id="edit_machine_tool_record_id">
+                <input type="text" name="edit_machine_tool_app_no" class="form-control" id="edit_machine_tool_app_no">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Machine/Tool/Equipment</label>
+                            <input type="text" name="edit_machine_tool" class="form-control" id="edit_machine_tool">
+                        </div>
+                        <div class="alert alert-danger" id="edit_machine_toolErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Qty</label>
+                            <input type="text" name="edit_machine_tool_qty" class="form-control" id="edit_machine_tool_qty">
+                        </div>
+                        <div class="alert alert-danger" id="edit_machine_tool_qtyErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Installed Capacity</label>
+                            <input type="text" name="edit_machine_tool_installed_capacity" class="form-control" id="edit_machine_tool_installed_capacity">
+                        </div>
+                        <div class="alert alert-danger" id="edit_machine_tool_installed_capacityErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+                  <div class="alert alert-success" id="edit_machine_tool_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="update_machine_tool_details()">Update</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </form>
+
+    <form method="post" id="delete_machine_equipment_tool_form">
+        {% csrf_token %}
+        <div class="modal fade" id="delete_machine_equipment_tool_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Delete Equipment</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <div class="modal-body mx-4">
+                <input type="hidden" name="delete_machine_tool_record_id" class="form-control" id="delete_machine_tool_record_id">
+                <input type="hidden" name="delete_machine_tool_app_no" class="form-control" id="delete_machine_tool_app_no">
+                  <div class="row">
+                    <div class="col-lg-12">
+                        <p>Are You Sure You Want To Delete ? </p>
+                    </div>
+                </div>
+              </div>
+                  <div class="alert alert-success" id="delete_machine_tool_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="delete_machine_tool_details()">Delete</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
     </form>
 
     <form method="post" id="delete_raw_material_form">
@@ -1873,7 +1642,7 @@
               <!--Header-->
               <div class="modal-header text-center">
                 <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                        &nbsp;Delete</strong></h3>
+                                                        &nbsp;Delete Raw Material</strong></h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
               </div>
               <div class="modal-body mx-4">
@@ -1893,212 +1662,563 @@
             </div>
           </div>
         </div>
-        </form>
+    </form>
 
-<form method="post" id="partner_details_form">
-{% csrf_token %}
-<div class="modal fade" id="partner_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Add</strong></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-      </div>
-      <!--Body-->
-      <div class="modal-body mx-4">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Partner Type </label>
-                    <input type="text" name="partner_type" class="form-control" id="partner_type">
-                </div>
-                <div class="alert alert-danger" id="partner_typeErrorMsg" style="display:none"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Name</label>
-                    <input type="text" name="partner_type_name" class="form-control" id="partner_type_name">
-                </div>
-                <div class="alert alert-danger" id="partner_type_nameErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Address</label>
-                    <textarea class="form-control" rows="3" name="partner_type_address" id="partner_type_address"></textarea>
-                </div>
-                <div class="alert alert-danger" id="partner_type_addressErrorMsg" style="display:none"></div>
-            </div>
-        </div>
-      </div>
-          <div class="alert alert-success" id="partner_type_SuccessMsg" style="display:none"></div>
-      <div class="modal-footer flex-center justify-content-center">
-        <button type="button" class="btn btn-sm btn-primary" onclick="add_partner_details()">Add</button>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-    <!--/.Content-->
-  </div>
-</div>
-</form>
 
-<form method="post" id="dumyard_details_form">
-    {% csrf_token %}
-    <div class="modal fade" id="dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <!--Content-->
-        <div class="modal-content form-elegant">
-          <!--Header-->
-          <div class="modal-header text-center">
-            <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;Add</strong></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-          <!--Body-->
-          <div class="modal-body mx-4">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Number of Dumyards</label>
-                        <input type="text" name="dumpyard_number" class="form-control" id="dumpyard_number">
+    <form method="post" id="delete_partner_details_form">
+        {% csrf_token %}
+        <div class="modal fade" id="delete_partner_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Delete</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <div class="modal-body mx-4">
+                <input type="text" name="delete_partner_details_record_id" class="form-control" id="delete_partner_details_record_id">
+                <input type="text" name="delete_partner_details_app_no" class="form-control" id="delete_partner_details_app_no">
+                  <div class="row">
+                    <div class="col-lg-12">
+                        <p>Are You Sure You Want To Delete ? </p>
                     </div>
-                    <div class="alert alert-danger" id="dumpyard_numberErrorMsg" style="display:none"></div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Capacities of the dumpyards (in MT)</label>
-                        <input type="text" name="dumpyard_capacity" class="form-control" id="dumpyard_capacity">
-                    </div>
-                    <div class="alert alert-danger" id="dumpyard_capacityErrorMsg" style="display:none"></div>
-                </div>
+              </div>
+                  <div class="alert alert-success" id="delete_partner_details_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="delete_partner_details()">Delete</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
             </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Area of the dumpyard</label>
-                        <input type="text" name="dumpyard_area" class="form-control" id="dumpyard_area">
-                    </div>
-                    <div class="alert alert-danger" id="dumpyard_areaErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Locations of the dumpyard</label>
-                        <input type="text" name="dumpyard_location" class="form-control" id="dumpyard_location">
-                    </div>
-                    <div class="alert alert-danger" id="dumpyard_locationErrorMsg" style="display:none"></div>
-                </div>
-            </div>
-          </div>
-          <div class="alert alert-success" id="dumpyard_SuccessMsg" style="display:none"></div>
-          <div class="modal-footer flex-center justify-content-center">
-            <button type="button" class="btn btn-sm btn-primary" onclick="add_dumpyard_details()">Add</button>
-            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
-        <!--/.Content-->
-      </div>
-    </div>
+    </form>
+
+    <form method="post" id="final_products_form">
+        {% csrf_token %}
+        <div class="modal fade" id="final_products_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Add</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Product (Name)</label>
+                            <input type="text" name="product_name" class="form-control" id="product_name">
+                        </div>
+                        <div class="alert alert-danger" id="product_nameErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Name/Location Type</label>
+                            <input type="text" name="name_location" class="form-control" id="name_location">
+                        </div>
+                        <div class="alert alert-danger" id="name_locationErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Method of Storage</label>
+                            <select class="form-select" name="storage_method" id="storage_method">
+                                <option selected>Choose One</option>
+                                <option value="fully_enclosed">Fully Enclosed</option>
+                                <option value="partially_enclosed">Partially Enclosed</option>
+                                <option value="open">Open</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="storage_methodErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+                  <div class="alert alert-success" id="final_products_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="add_machine_tool_details()">Add</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+    </form>
+
+    <form method="post" id="raw_materials_form">
+        {% csrf_token %}
+        <div class="modal fade" id="raw_materials_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Add Raw Material</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">List of raw materials(Major) </label>
+                            <input type="text" name="raw_material" class="form-control" id="raw_material">
+                        </div>
+                        <div class="alert alert-danger" id="raw_materialErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Quantity (MT/Annum)</label>
+                            <input type="number" name="raw_material_qty" class="form-control" id="raw_material_qty">
+                        </div>
+                        <div class="alert alert-danger" id="raw_material_qtyErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Source and method of transportation</label>
+                            <input type="text" name="raw_material_source" class="form-control" id="raw_material_source">
+                        </div>
+                        <div class="alert alert-danger" id="raw_material_sourceErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Method of Storage</label>
+                            <select class="form-select" name="raw_material_storage_method" id="raw_material_storage_method">
+                                <option selected>Choose One</option>
+                                <option value="Fully_Enclosed">Fully Enclosed</option>
+                                <option value="Partially_Enclosed">Partially Enclosed</option>
+                                <option value="Open">Open</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="raw_material_storage_methodErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+                  <div class="alert alert-success" id="raw_material_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="add_raw_material_details()">Add</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+    </form>
+    
+    <form method="post" id="edit_raw_materials_form">
+        {% csrf_token %}
+        <div class="modal fade" id="edit_raw_materials_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Update Raw Material</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <input type="hidden" name="edit_raw_material_record_id" class="form-control" id="edit_raw_material_record_id">
+                <input type="hidden" name="edit_raw_material_app_no" class="form-control" id="edit_raw_material_app_no">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">List of raw materials(Major) </label>
+                            <input type="text" name="edit_raw_material" class="form-control" id="edit_raw_material">
+                        </div>
+                        <div class="alert alert-danger" id="edit_raw_materialErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Quantity (MT/Annum)</label>
+                            <input type="number" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
+                        </div>
+                        <div class="alert alert-danger" id="edit_raw_material_qtyErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Source and method of transportation</label>
+                            <input type="text" name="edit_raw_material_source" class="form-control" id="edit_raw_material_source">
+                        </div>
+                        <div class="alert alert-danger" id="edit_raw_material_sourceErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Method of Storage</label>
+                            <select class="form-select" name="edit_raw_material_storage_method" id="edit_raw_material_storage_method">
+                                <option selected>Choose One</option>
+                                <option value="Fully_Enclosed">Fully Enclosed</option>
+                                <option value="Partially_Enclosed">Partially Enclosed</option>
+                                <option value="Open">Open</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="edit_raw_material_storage_methodErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+                  <div class="alert alert-success" id="edit_raw_material_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="update_raw_material_details()">Update</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+    </form>
+
+    <form method="post" id="partner_details_form">
+        {% csrf_token %}
+        <div class="modal fade" id="partner_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Add</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Partner Type </label>
+                            <input type="text" name="partner_type" class="form-control" id="partner_type">
+                        </div>
+                        <div class="alert alert-danger" id="partner_typeErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Name</label>
+                            <input type="text" name="partner_type_name" class="form-control" id="partner_type_name">
+                        </div>
+                        <div class="alert alert-danger" id="partner_type_nameErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                            <label class="form-label fw-bold">Address</label>
+                            <textarea class="form-control" rows="3" name="partner_type_address" id="partner_type_address"></textarea>
+                        </div>
+                        <div class="alert alert-danger" id="partner_type_addressErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+                  <div class="alert alert-success" id="partner_type_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="add_partner_details()">Add</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+    </form>
+
+    <form method="post" id="dumyard_details_form">
+        {% csrf_token %}
+        <div class="modal fade" id="dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Add Dumpyard Information</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Number of dumyards</label>
+                            <input type="text" name="dumpyard_number" class="form-control" id="dumpyard_number">
+                        </div>
+                        <div class="alert alert-danger" id="dumpyard_numberErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Capacities of the dumpyards (in MT)</label>
+                            <input type="text" name="dumpyard_capacity" class="form-control" id="dumpyard_capacity">
+                        </div>
+                        <div class="alert alert-danger" id="dumpyard_capacityErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Area of the dumpyard</label>
+                            <input type="text" name="dumpyard_area" class="form-control" id="dumpyard_area">
+                        </div>
+                        <div class="alert alert-danger" id="dumpyard_areaErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Locations of the dumpyard</label>
+                            <input type="text" name="dumpyard_location" class="form-control" id="dumpyard_location">
+                        </div>
+                        <div class="alert alert-danger" id="dumpyard_locationErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+              <div class="alert alert-success" id="dumpyard_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="add_dumpyard_details()">Add</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
     </form>
     
     <form method="post" id="edit_dumyard_details_form">
-    {% csrf_token %}
-    <div class="modal fade" id="edit_dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <!--Content-->
-        <div class="modal-content form-elegant">
-          <!--Header-->
-          <div class="modal-header text-center">
-            <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;Edit</strong></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-          <!--Body-->
-          <div class="modal-body mx-4">
-            <input type="hidden" id="dumpyard_record_id" name="dumpyard_record_id">
-            <input type="hidden" id="dumpyard_application_no" name="dumpyard_application_no">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Number of Dumyards</label>
-                        <input type="text" name="edit_dumpyard_number" class="form-control" id="edit_dumpyard_number">
+        {% csrf_token %}
+        <div class="modal fade" id="edit_dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Edit Dumpyard Information</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <input type="hidden" id="dumpyard_record_id" name="dumpyard_record_id">
+                <input type="hidden" id="dumpyard_application_no" name="dumpyard_application_no">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Number of dumyards</label>
+                            <input type="text" name="edit_dumpyard_number" class="form-control" id="edit_dumpyard_number">
+                        </div>
+                        <div class="alert alert-danger" id="edit_dumpyard_numberErrorMsg" style="display:none"></div>
                     </div>
-                    <div class="alert alert-danger" id="edit_dumpyard_numberErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Capacities of the dumpyards (in MT)</label>
-                        <input type="text" name="edit_dumpyard_capacity" class="form-control" id="edit_dumpyard_capacity">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Capacities of the dumpyards (in MT)</label>
+                            <input type="text" name="edit_dumpyard_capacity" class="form-control" id="edit_dumpyard_capacity">
+                        </div>
+                        <div class="alert alert-danger" id="edit_dumpyard_capacityErrorMsg" style="display:none"></div>
                     </div>
-                    <div class="alert alert-danger" id="edit_dumpyard_capacityErrorMsg" style="display:none"></div>
                 </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Area of the dumpyard</label>
+                            <input type="text" name="edit_dumpyard_area" class="form-control" id="edit_dumpyard_area">
+                        </div>
+                        <div class="alert alert-danger" id="edit_dumpyard_areaErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Locations of the dumpyard</label>
+                            <input type="text" name="edit_dumpyard_location" class="form-control" id="edit_dumpyard_location">
+                        </div>
+                        <div class="alert alert-danger" id="edit_dumpyard_locationErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+                  <div class="alert alert-success" id="edit_dumpyard_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="update_dumpyard_details()">Update</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
             </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Area of the dumpyard</label>
-                        <input type="text" name="edit_dumpyard_area" class="form-control" id="edit_dumpyard_area">
-                    </div>
-                    <div class="alert alert-danger" id="edit_dumpyard_areaErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Locations of the dumpyard</label>
-                        <input type="text" name="edit_dumpyard_location" class="form-control" id="edit_dumpyard_location">
-                    </div>
-                    <div class="alert alert-danger" id="edit_dumpyard_locationErrorMsg" style="display:none"></div>
-                </div>
-            </div>
-          </div>
-              <div class="alert alert-success" id="edit_dumpyard_SuccessMsg" style="display:none"></div>
-          <div class="modal-footer flex-center justify-content-center">
-            <button type="button" class="btn btn-sm btn-primary" onclick="update_dumpyard_details()">Update</button>
-            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+            <!--/.Content-->
           </div>
         </div>
-        <!--/.Content-->
-      </div>
-    </div>
     </form>
     
     <form method="post" id="delete_dumyard_details_form">
-    {% csrf_token %}
-    <div class="modal fade" id="delete_dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <!--Content-->
-        <div class="modal-content form-elegant">
-          <!--Header-->
-          <div class="modal-header text-center">
-            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                    &nbsp;Delete</strong></h3>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-          </div>
-          <div class="modal-body mx-4">
-            <input type="hidden" name="delete_dumpyard_record_id" class="form-control" id="delete_dumpyard_record_id">
-            <input type="hidden" name="delete_dumpyard_application_no" class="form-control" id="delete_dumpyard_application_no">
-              <div class="row">
-                <div class="col-lg-12">
-                    <p>Are You Sure You Want To Delete ? </p>
+        {% csrf_token %}
+        <div class="modal fade" id="delete_dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Delete</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <div class="modal-body mx-4">
+                <input type="hidden" name="delete_dumpyard_record_id" class="form-control" id="delete_dumpyard_record_id">
+                <input type="hidden" name="delete_dumpyard_application_no" class="form-control" id="delete_dumpyard_application_no">
+                  <div class="row">
+                    <div class="col-lg-12">
+                        <p>Are You Sure You Want To Delete ? </p>
+                    </div>
                 </div>
+              </div>
+                  <div class="alert alert-success" id="delete_dumpyard_SuccessMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="delete_dumpyard_details()">Delete</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
             </div>
           </div>
-              <div class="alert alert-success" id="delete_dumpyard_SuccessMsg" style="display:none"></div>
-          <div class="modal-footer flex-center justify-content-center">
-            <button type="button" class="btn btn-sm btn-primary" onclick="delete_dumpyard_details()">Delete</button>
-            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+    </form>
+    <form method="post" id="edit_anc_approach_road_form">
+        {% csrf_token %}
+        <div class="modal fade" id="edit_anc_approach_road_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Edit Approach Road Details</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <div class="row">
+                    <input type="hidden" name="edit_anc_app_record_id" class="form-control" id="edit_anc_app_record_id">
+                    <input type="hidden" name="edit_anc_application_no" class="form-control" id="edit_anc_road_application_no">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Road Chainage From (m)</label>
+                            <input type="number" name="edit_road_line_chainage_from" class="form-control" id="edit_road_line_chainage_from" onblur="calculate_edit_road_area_required()">
+                        </div>
+                        <div class="alert alert-danger" id="edit_road_line_chainage_fromErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Road Chainage To(m)</label>
+                            <input type="number" name="edit_road_line_chainage_to" class="form-control" id="edit_road_line_chainage_to" onblur="calculate_edit_road_area_required()">
+                        </div>
+                        <div class="alert alert-danger" id="edit_road_line_chainage_toErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Land Type</label>
+                            <select name="edit_road_land_type" class="form-control" id="edit_road_land_type">
+                                <option value="">--SELECT--</option>
+                                <option value="State Reserve Forest">State Reserve Forest</option>
+                                <option value="Private ">Private </option>
+                                <option value="Protected Area">Protected Area</option>
+                                <option value="Biological Corridor">Biological Corridor</option>
+                                <option value="Institutional Area">Institutional Area</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="edit_road_land_typeErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
+                            <select name="edit_road_terrain" class="form-control" id="edit_road_terrain">
+                                <option value="">--SELECT--</option>
+                                <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
+                                <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
+                                <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
+                                <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="edit_road_ErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Road Width (m)</label>
+                            <input type="text" name="edit_road_width" class="form-control" id="edit_road_width">
+                        </div>
+                        <div class="alert alert-danger" id="edit_road_widthErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Right of way (RoW)</label>
+                            <input type="number" name="edit_road_row" class="form-control" id="edit_road_row" onblur="calculate_edit_road_area_required()">
+                        </div>
+                        <div class="alert alert-danger" id="edit_road_rowErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Area Required (length x RoW)</label>
+                            <input type="text" name="edit_road_area_required" class="form-control" id="edit_road_area_required" readonly="readonly">
+                        </div>
+                        <div class="alert alert-danger" id="edit_road_area_requiredErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+              <div class="alert alert-success" id="edit_road_successMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="update_anc_road_details()">Update</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!--/.Content-->
           </div>
         </div>
-      </div>
-    </div>
     </form>
 
+    <form method="post" id="delete_anc_approach_road_form">
+        {% csrf_token %}
+        <div class="modal fade" id="delete_anc_approach_road_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-sm" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Delete Approach Road Details</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                  <input type="hidden" name="delete_anc_road_record_id" class="form-control" id="delete_anc_road_record_id">
+                  <input type="hidden" name="delete_anc_road_application_no" class="form-control" id="delete_anc_road_application_no">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>Are You Sure You Want To Delete ? </p>
+                        </div>
+                    </div>
+              </div>
+                <div class="alert alert-success" id="delete_road_successMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="delete_anc_road_details()">Delete</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+    </form>
     <form method="post" id="anc_power_line_form">
         {% csrf_token %}
         <div class="modal fade" id="anc_power_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -2171,7 +2291,7 @@
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label class="form-label fw-bold">No. of Towers</label>
-                            <input type="text" name="no_of_tower" class="form-control" id="no_of_tower">
+                            <input type="number" name="no_of_tower" class="form-control" id="no_of_tower">
                         </div>
                         <div class="alert alert-danger" id="no_of_towerErrorMsg" style="display:none"></div>
                     </div>
@@ -2180,7 +2300,7 @@
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Right of way (RoW)</label>
-                            <input type="text" name="row" class="form-control" id="row" onblur="calculate_area_required()">
+                            <input type="number" name="row" class="form-control" id="row" onblur="calculate_area_required()">
                         </div>
                         <div class="alert alert-danger" id="rowErrorMsg" style="display:none"></div>
                     </div>
@@ -2202,9 +2322,9 @@
             <!--/.Content-->
           </div>
         </div>
-        </form>
+    </form>
         
-        <form method="post" id="edit_anc_power_line_form">
+    <form method="post" id="edit_anc_power_line_form">
         {% csrf_token %}
         <div class="modal fade" id="edit_anc_power_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
           aria-hidden="true">
@@ -2278,7 +2398,7 @@
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label class="form-label fw-bold">No. of Towers</label>
-                            <input type="text" name="edit_no_of_tower" class="form-control" id="edit_no_of_tower">
+                            <input type="number" name="edit_no_of_tower" class="form-control" id="edit_no_of_tower">
                         </div>
                         <div class="alert alert-danger" id="edit_no_of_towerErrorMsg" style="display:none"></div>
                     </div>
@@ -2287,7 +2407,7 @@
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Right of way (RoW)</label>
-                            <input type="text" name="edit_row" class="form-control" id="edit_row" onblur="calculate_edit_area_required()">
+                            <input type="number" name="edit_row" class="form-control" id="edit_row" onblur="calculate_edit_area_required()">
                         </div>
                         <div class="alert alert-danger" id="edit_rowErrorMsg" style="display:none"></div>
                     </div>
@@ -2309,9 +2429,9 @@
             <!--/.Content-->
           </div>
         </div>
-        </form>
+    </form>
         
-        <form method="post" id="delete_anc_power_line_form">
+    <form method="post" id="delete_anc_power_line_form">
         {% csrf_token %}
         <div class="modal fade" id="delete_anc_power_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
           aria-hidden="true">
@@ -2343,7 +2463,105 @@
             <!--/.Content-->
           </div>
         </div>
-        </form>
+    </form>
+
+    <form method="post" id="anc_approach_road_form">
+    {% csrf_token %}
+        <div class="modal fade" id="anc_approach_road_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+              <!--Header-->
+              <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Add Approach Road Details</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mx-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Road Chainage From (m)</label>
+                            <input type="number" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onchange="calculate_road_area_required()">
+                        </div>
+                        <div class="alert alert-danger" id="road_line_chainage_fromErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Road Chainage To (m)</label>
+                            <input type="number" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onchange="calculate_road_area_required()">
+                        </div>
+                        <div class="alert alert-danger" id="road_line_chainage_toErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Land Type</label>
+                            <select name="road_land_type" class="form-control" id="road_land_type">
+                                <option value="">--SELECT--</option>
+                                <option value="State Reserve Forest">State Reserve Forest</option>
+                                <option value="Private ">Private </option>
+                                <option value="Protected Area">Protected Area</option>
+                                <option value="Biological Corridor">Biological Corridor</option>
+                                <option value="Institutional Area">Institutional Area</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="road_land_typeErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Terrain Characteristic/Slope/Gradient</label>
+                            <select name="road_terrain" class="form-control" id="road_terrain">
+                                <option value="">--SELECT--</option>
+                                <option value="Flat (<20 degrees)">Flat (<20 degrees)</option>
+                                <option value="Gentle (21-45 degrees)">Gentle (21-45 degrees)</option>
+                                <option value="Steep (46-60 degrees)">Steep (46-60 degrees)</option>
+                                <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="road_ErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Road Width (m)</label>
+                            <input type="number" name="road_width" class="form-control" id="road_width">
+                        </div>
+                        <div class="alert alert-danger" id="road_widthErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Right of way (RoW)</label>
+                            <input type="number" name="road_row" class="form-control" id="road_row" onchange="calculate_road_area_required()">
+                        </div>
+                        <div class="alert alert-danger" id="road_rowErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Area Required (length x RoW)</label>
+                            <input type="text" name="road_area_required" class="form-control" id="road_area_required" readonly="readonly">
+                        </div>
+                        <div class="alert alert-danger" id="road_area_requiredErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+              </div>
+              <div class="alert alert-success" id="anc_road_successMsg" style="display:none"></div>
+              <div class="modal-footer flex-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-primary" onclick="save_anc_road_details()">Add</button>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+    </form>
 
 <script>
     function toggleAcreField() {
@@ -2891,6 +3109,7 @@
         }
     }
 
+
     function save_quarry_application()
     {
         let project_name = $('#project_name').val();
@@ -2900,6 +3119,7 @@
         let dzongkhag_code = $('#dzongkhag').val();
         let gewog_code = $('#gewog').val();
         let village_code = $('#vil_chiwog').val();
+        let project_site = $('#project_site').val();
         let industrial_area_acre = $('#industrial_area_acre').val();
         let state_reserve_forest_acre = $('#state_reserve_forest_acre').val();
         let private_area_acre = $('#private_area_acre').val();
@@ -2952,6 +3172,13 @@
             $('#vil_chiwogErrorMsg').show();
             $('#vil_chiwogErrorMsg').delay(2000).fadeOut('slow');
             $('#vil_chiwog').focus();
+        }
+        else if(project_site == "")
+        {
+            $('#project_siteErrorMsg').html("Enter Project Site ");
+            $('#project_siteErrorMsg').show();
+            $('#project_siteErrorMsg').delay(2000).fadeOut('slow');
+            $('#project_site').focus();
         }
         else if(industrial_area_acre == "")
         {
@@ -3059,6 +3286,7 @@
 
     function save_terrain_baseline_details()
     {
+
         let bl_protected_area_name = $('#bl_protected_area_name').val();
         let bl_protected_area_distance = $('#bl_protected_area_distance').val();
         let bl_migratory_route_name = $('#bl_migratory_route_name').val();
@@ -3319,7 +3547,7 @@
                 {
                     if(data.message == 'success')
                     {
-                        $('#terrain_baseline_application_successMsg').html("Added Successfully");
+                        $('#terrain_baseline_application_successMsg').html("Saved Successfully");
                         $('#terrain_baseline_application_successMsg').show();
                         $('#terrain_baseline_application_successMsg').focus();
                         setTimeout(function()
@@ -3327,15 +3555,15 @@
                             $('#terrain_baseline_application_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                         setTimeout(function() {
-                            $("#headingForestButton").removeAttr("disabled");
-                            $("#collapseForest").addClass("show");
+                            $("#headingProjectDetailsBtn").removeAttr("disabled");
+                            $("#collapseProjectDetails").addClass("show");
                             $("#collapseTwo").removeClass("show");
                         }, 2000);
                     }
                     else
                     {
                         var errorMsg = data.error;
-        
+
                         $('#terrain_baseline_application_errorMsg').html(`Application Error: ${data.error}`);
                         $('#terrain_baseline_application_errorMsg').show();
                         $('#terrain_baseline_application_errorMsg').focus();
@@ -3458,33 +3686,40 @@
                 data : $('#project_details_form').serialize(),
                 success : function(data)
                 {
-                    if(data.message == 'success')
-                    {
-                        $('#project_details_successMsg').html("Saved Successfully");
-                        $('#project_details_successMsg').show();
-                        $('#project_details_successMsg').focus();
-                        setTimeout(function()
-                        {
-                            $('#project_details_successMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
-                            $("#collapseFourBtn").removeAttr("disabled");
-                            $("#collapseFour").addClass("show");
-                            $("#collapseForest").removeClass("show");
-                        }, 2000);
-                    }
-                    else
-                    {
-                        var errorMsg = data.error;
-        
-                        $('#project_details_errorMsg').html(`Application Error: ${data.error}`);
-                        $('#project_details_errorMsg').show();
-                        $('#project_details_errorMsg').focus();
-                        setTimeout(function()
-                        {
-                            $('#project_details_errorMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                    }
+                    if (data.message == 'success') {
+                            // Success case with full accessibility
+                            $('#project_details_successMsg')
+                                .text("Saved Successfully")
+                                .removeAttr('tabindex')  // Remove focus blocker
+                                .attr({
+                                    'aria-live': 'polite',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();  // Set focus for accessibility
+
+                            setTimeout(() => {
+                                $('#project_details_successMsg').fadeOut('slow');
+                                $("#collapseFourBtn").removeAttr("disabled");
+                                $("#collapseFour").addClass("show");
+                                $("#collapseProjectDetails").removeClass("show");
+                            }, 2000);
+                        } else {
+                            // Error case with full accessibility
+                            $('#project_details_errorMsg')
+                                .text("Error: " + (data.error))
+                                .removeAttr('tabindex')  // Remove focus blocker
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
+
+                            setTimeout(() => {
+                                $('#project_details_errorMsg').fadeOut('slow');
+                            }, 5000);
+                        }
                 }
             });
         }
@@ -3514,8 +3749,16 @@
         let water_others_name = $('#water_others_name').val();
         let water_others_source = $('#water_others_source').val();
         let water_others_qty_day = $('#water_others_qty_day').val();
+        let water_resources_info = $('#water_resources_info').val();
 
-        if(water_excavated_muck < 1)
+        if(water_resources_info == "")
+        {
+            $('#water_resources_infoErrorMsg').html("Please enter water resources information.");
+            $('#water_resources_infoErrorMsg').show();
+            $('#water_resources_infoErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_resources_info').focus();
+        }
+        else if(water_excavated_muck < 1)
         {
             $('#water_excavated_muckErrorMsg').html("Please Select One.");
             $('#water_excavated_muckErrorMsg').show();
@@ -3675,7 +3918,7 @@
                     else
                     {
                         var errorMsg = data.error;
-        
+
                         $('#water_requirement_application_errorMsg').html(`Application Error: ${data.error}`);
                         $('#water_requirement_application_errorMsg').show();
                         $('#water_requirement_application_errorMsg').focus();
@@ -3697,8 +3940,8 @@
         let anc_road_length = $('#anc_road_length').val();
         let anc_road_start_point = $('#anc_road_start_point').val();
         let anc_road_end_point  = $('#anc_road_end_point').val();
-        let anc_road_blast_required= $("input[name=anc_road_required]:checked").length;
-        let anc_road_blast_required_value = $("input[name=anc_road_required]:checked").val();
+        let anc_road_blast_required= $("input[name=anc_road_blast_required]:checked").length;
+        let anc_road_blast_required_value = $("input[name=anc_road_blast_required]:checked").val();
         let anc_road_blast_type = $('#anc_road_blast_type').val();
         let anc_road_blast_qty = $('#anc_road_blast_qty').val();
         let anc_road_blast_location = $('#anc_road_blast_location').val();
@@ -3718,14 +3961,14 @@
             $('#anc_road_lengthErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_length').focus();
         }
-        else if(water_required_value == 'Yes' && anc_road_start_point == "")
+        else if(anc_road_required_value == 'Yes' && anc_road_start_point == "")
         {
             $('#anc_road_start_pointErrorMsg').html("Enter Starting Point.");
             $('#anc_road_start_pointErrorMsg').show();
             $('#anc_road_start_pointErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_start_point').focus();
         }
-        else if(water_required_value == 'Yes' && anc_road_end_point == "")
+        else if(anc_road_required_value == 'Yes' && anc_road_end_point == "")
         {
             $('#anc_road_end_pointErrorMsg').html("Enter Termination Point.");
             $('#anc_road_end_pointErrorMsg').show();
@@ -3734,7 +3977,7 @@
         }
         else if(anc_road_blast_required < 1)
         {
-            $('#anc_road_blast_requiredErrorMsg').html("Enter Termination Point.");
+            $('#anc_road_blast_requiredErrorMsg').html("Choose One.");
             $('#anc_road_blast_requiredErrorMsg').show();
             $('#anc_road_blast_requiredErrorMsg').delay(2000).fadeOut('slow');
             $('#anc_road_blast_required').focus();
@@ -3776,30 +4019,31 @@
                 data : $('#ancillary_approach_road_form').serialize(),
                 success : function(data)
                 {
-                    if(data.message == 'success')
-                    {
-                        $('#anc_approach_road_successMsg').html("Saved Successfully");
-                        $('#anc_approach_road_successMsg').show();
-                        $('#anc_approach_road_successMsg').focus();
-                        setTimeout(function()
-                        {
+                    if (data.message == 'success') {
+                        $('#anc_approach_road_successMsg')
+                            .html("Saved Successfully")
+                            .attr('aria-live', 'polite')  // For screen readers
+                            .attr('aria-atomic', 'true')  // Ensures entire message is read
+                            .show()
+                            .focus();  // Set focus here
+
+                        setTimeout(function() {
                             $('#anc_approach_road_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
+
                         setTimeout(function() {
                             $("#headingSixBtn").removeAttr("disabled");
                             $("#collapseSix").addClass("show");
                             $("#collapseFive").removeClass("show");
                         }, 2000);
-                    }
-                    else
-                    {
-                        var errorMsg = data.error;
-        
-                        $('#anc_approach_road_errorMsg').html(`Application Error: ${data.error}`);
-                        $('#anc_approach_road_errorMsg').show();
-                        $('#anc_approach_road_errorMsg').focus();
-                        setTimeout(function()
-                        {
+                    } else {
+                        $('#anc_approach_road_errorMsg')
+                        .text("Error: " + (data.error))
+                        .attr('aria-live', 'assertive')  // More urgent for errors
+                            .attr('aria-atomic', 'true')
+                            .show()
+                            .focus();  // Set focus here
+                        setTimeout(function() {
                             $('#anc_approach_road_errorMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                     }
@@ -5017,6 +5261,21 @@
                 }, 2000);
             }
         });
+    }
+
+    function calculate_road_area_required()
+    {
+        let road_line_chainage_from = $('#road_line_chainage_from').val();
+        let road_line_chainage_to = $('#road_line_chainage_to').val();
+        let road_row = $('#road_row').val();
+        let sum = 0;
+        let product = 0;
+
+        sum += parseFloat(road_line_chainage_from) || 0;
+        sum += parseFloat(road_line_chainage_to) || 0;
+        product = parseFloat(sum) * parseFloat(road_row) || 0;
+
+        $('#road_area_required').val(product);
     }
 
     function save_anc_road_details()

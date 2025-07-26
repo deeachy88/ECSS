@@ -497,7 +497,7 @@ class t_ec_industries_t1_general(models.Model):
     alternative_capital_expenditure = models.TextField(default=None, blank=True, null=True)
     alternative_adequate_justification = models.TextField(default=None, blank=True, null=True)
     production_capacity = models.IntegerField(default=None, blank=True, null=True)
-    stripping_ratio = models.IntegerField(default=None, blank=True, null=True)
+    stripping_ratio = models.CharField(max_length=100, default=None, blank=True, null=True)
     bench_height = models.IntegerField(default=None, blank=True, null=True)
     bench_width = models.IntegerField(default=None, blank=True, null=True)
     revocation_id = models.CharField(max_length=100,default=None, blank=True, null=True)
@@ -997,7 +997,7 @@ class t_ec_industries_t1_general_audit(models.Model):
     alternative_capital_expenditure = models.TextField(default=None, blank=True, null=True)
     alternative_adequate_justification = models.TextField(default=None, blank=True, null=True)
     production_capacity = models.IntegerField(default=None, blank=True, null=True)
-    stripping_ratio = models.IntegerField(default=None, blank=True, null=True)
+    stripping_ratio = models.CharField(max_length=100, default=None, blank=True, null=True)
     bench_height = models.IntegerField(default=None, blank=True, null=True)
     bench_width = models.IntegerField(default=None, blank=True, null=True)
 
