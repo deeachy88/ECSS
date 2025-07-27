@@ -542,51 +542,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Mention the source of energy to operate the proposed activity</label>
-                                                {% if application_details.energy_source %}
-                                                    <select class="form-control" id="energy_source" name="energy_source">
-                                                        <option value="">--SELECT--</option>
-                                                        {% if application_details.energy_source == "Electric" %}
-                                                            <option value="Electric" selected>Electric</option>
-                                                            <option value="Coal">Coal</option>
-                                                            <option value="High_speed_diesel">High speed diesel</option>
-                                                            <option value="Wood_Fired">Wood-Fired</option>
-                                                            <option value="Biomass">Biomass</option>
-                                                        {% elif application_details.energy_source == "Coal" %}
-                                                            <option value="Electric">Electric</option>
-                                                            <option value="Coal" selected>Coal</option>
-                                                            <option value="High_speed_diesel">High speed diesel</option>
-                                                            <option value="Wood_Fired">Wood-Fired</option>
-                                                            <option value="Biomass">Biomass</option>
-                                                        {% elif application_details.energy_source == "High_speed_diesel" %}
-                                                            <option value="Electric">Electric</option>
-                                                            <option value="Coal">Coal</option>
-                                                            <option value="High_speed_diesel" selected>High speed diesel</option>
-                                                            <option value="Wood_Fired">Wood-Fired</option>
-                                                            <option value="Biomass">Biomass</option>
-                                                        {% elif application_details.energy_source == "Wood_Fired" %}
-                                                            <option value="Electric">Electric</option>
-                                                            <option value="Coal">Coal</option>
-                                                            <option value="High_speed_diesel">High speed diesel</option>
-                                                            <option value="Wood_Fired" selected>Wood-Fired</option>
-                                                            <option value="Biomass">Biomass</option>
-                                                        {% else %}
-                                                            <option value="Electric">Electric</option>
-                                                            <option value="Coal">Coal</option>
-                                                            <option value="High_speed_diesel">High speed diesel</option>
-                                                            <option value="Wood_Fired">Wood-Fired</option>
-                                                            <option value="Biomass" selected>Biomass</option>
-                                                        {% endif %}
-                                                    </select>
-                                                {% else %}
-                                                    <select class="form-control" id="energy_source" name="energy_source">
-                                                        <option value="">--SELECT--</option>
-                                                        <option value="Electric">Electric</option>
-                                                        <option value="Coal">Coal</option>
-                                                        <option value="High_speed_diesel">High speed diesel</option>
-                                                        <option value="Wood_Fired">Wood-Fired</option>
-                                                        <option value="Biomass">Biomass</option>
-                                                    </select>
-                                                {% endif %}
+                                                <select class="form-control" id="energy_source" name="energy_source">
+                                                    <option value="">--SELECT--</option>
+                                                    <option value="Electric" {% if application_details.energy_source == "Electric" %}selected{% endif %}>Electric</option>
+                                                    <option value="Coal" {% if application_details.energy_source == "Coal" %}selected{% endif %}>Coal</option>
+                                                    <option value="High_speed_diesel" {% if application_details.energy_source == "High_speed_diesel" %}selected{% endif %}>High speed diesel</option>
+                                                    <option value="Wood_Fired" {% if application_details.energy_source == "Wood_Fired" %}selected{% endif %}>Wood-Fired</option>
+                                                    <option value="Biomass" {% if application_details.energy_source == "Biomass" %}selected{% endif %}>Biomass</option>
+                                                </select>
                                             </div>
                                             <div id="energy_sourceErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
