@@ -3939,220 +3939,130 @@ def save_general_application(request):
             gewog_code = request.POST.get('gewog')
             village_code = request.POST.get('vil_chiwog')
 
-        # Common fields for both insert and update
-        def get_common_fields(st):
-            return {
-                'application_date': timezone.now().date(),
-                'application_type': application_type,
-                'project_name': request.POST.get('project_name'),
-                'project_category': request.POST.get('project_category'),
-                'applicant_name': request.POST.get('applicant_name'),
-                'address': request.POST.get('address'),
-                'cid': request.session.get('cid'),
-                'contact_no': request.POST.get('contact_no'),
-                'email': request.POST.get('email'),
-                'focal_person': request.POST.get('focal_person'),
-                'location_name': request.POST.get('project_site'),
-                'dzongkhag_throm': dzongkhag_throm,
-                'dzongkhag_code': dzongkhag_code,
-                'gewog_code': gewog_code,
-                'village_code': village_code,
-                'thromde_id': thromde_id,
-                'industrial_area_acre': request.POST.get('industrial_area_acre'),
-                'state_reserve_forest_acre': request.POST.get('state_reserve_forest_acre'),
-                'private_area_acre': request.POST.get('private_area_acre'),
-                'others_area': request.POST.get('others_area'),
-                'others_area_acre': request.POST.get('others_area_acre'),
-                'total_area_acre': request.POST.get('total_area_acre'),
-                'service_type': st,
-                'applicant_id': request.session.get('email'),
-                'colour_code': request.session.get('colour_code'),
-                'service_id': request.session.get('service_id'),
-                'broad_activity_code': request.session.get('broad_activity_code'),
-                'specific_activity_code': request.session.get('specific_activity_code'),
-                'category': request.session.get('category'),
-                'application_source': 'ECSS',
-                'application_status': 'P',
-                'tor_application_no': tor_application_no
-            }
+        # 3. Prepare all possible fields (common + optional)
+        common_fields = {
+            # Application metadata
+            'application_date': timezone.now().date(),
+            'application_type': application_type,
+            'application_source': 'ECSS',
+            'application_status': 'P',
 
-        # Determine competent authority
-        def get_ca_auth(identifier, app_no, tor_app_no, dzongkhag_code):
-            ca_auth = None
-            if identifier not in ['DR', 'NC', 'OC'] and tor_app_no is None:
-                auth_filter = t_competant_authority_master.objects.filter(
-                    competent_authority=request.session.get('ca_auth'),
-                    dzongkhag_code_id=dzongkhag_code if request.session.get('ca_auth') in ['DEC', 'THROMDE'] else None
-                )
-                if auth_filter.exists():
-                    ca_auth = auth_filter.first().competent_authority_id
-            elif identifier in ['NC', 'OC']:
-                auth_filter = t_ec_industries_t1_general.objects.filter(
-                    application_no=app_no
-                )
-                if auth_filter.exists():
-                    ca_auth = auth_filter.first().ca_authority
-            elif tor_app_no:
-                auth_filter = t_ec_industries_t1_general.objects.filter(
-                    application_no=tor_app_no
-                )
-                if auth_filter.exists():
-                    ca_auth = auth_filter.first().ca_authority
-            return ca_auth
+            # Project details
+            'project_name': request.POST.get('project_name'),
+            'project_category': request.POST.get('project_category'),
+            'location_name': request.POST.get('project_site'),
+
+            # Applicant information
+            'applicant_name': request.POST.get('applicant_name'),
+            'address': request.POST.get('address'),
+            'contact_no': request.POST.get('contact_no'),
+            'email': request.POST.get('email'),
+            'focal_person': request.POST.get('focal_person'),
+            'cid': request.session.get('cid'),
+
+            # Location data
+            'dzongkhag_throm': dzongkhag_throm,
+            'dzongkhag_code': dzongkhag_code,
+            'gewog_code': gewog_code,
+            'village_code': village_code,
+            'thromde_id': thromde_id,
+
+            # Area measurements
+            'industrial_area_acre': request.POST.get('industrial_area_acre'),
+            'state_reserve_forest_acre': request.POST.get('state_reserve_forest_acre'),
+            'private_area_acre': request.POST.get('private_area_acre'),
+            'others_area': request.POST.get('others_area'),
+            'others_area_acre': request.POST.get('others_area_acre'),
+            'total_area_acre': request.POST.get('total_area_acre'),
+
+            # System fields
+            'service_type': service_type,
+            'tor_application_no': tor_application_no,
+            'applicant_id': request.session.get('email'),
+            'colour_code': request.session.get('colour_code'),
+            'service_id': request.session.get('service_id'),
+            'broad_activity_code': request.session.get('broad_activity_code'),
+            'specific_activity_code': request.session.get('specific_activity_code'),
+            'category': request.session.get('category'),
+
+            # New optional fields (safe to add more here)
+            'max_evacuation_depth': request.POST.get('max_evacuation_depth'),
+            'terrain_elevation': request.POST.get('terrain_elevation'),
+            'terrain_slope': request.POST.get('terrain_slope'),
+            'total_buildup_acre': request.POST.get('total_buildup_acre'),
+        }
+
+        # 4. Determine competent authority
+        ca_auth = None
+        if identifier not in ['DR', 'NC', 'OC'] and tor_application_no is None:
+            auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session.get('ca_auth'),
+                dzongkhag_code_id=dzongkhag_code if request.session.get('ca_auth') in ['DEC', 'THROMDE'] else None
+            )
+            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+        elif identifier in ['NC', 'OC']:
+            auth_filter = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+        elif tor_application_no:
+            auth_filter = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+
+        common_fields['ca_authority'] = ca_auth
 
         # 5. Database operations
         with transaction.atomic():
-            # Handle different identifier cases
-            if identifier in ['NC', 'OC']:
-                # For NC/OC, we don't create separate records for Main/Ancillary
-                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-                if application_details.exists():
-                    update_fields = {
-                        'project_name': request.POST.get('project_name'),
-                        'service_type': identifier
-                    } if identifier == 'NC' else {
-                        'applicant_name': request.POST.get('applicant_name'),
-                        'service_type': identifier
-                    }
-                    application_details.update(**update_fields)
-                else:
-                    raise ValueError(f"Application {application_no} does not exist for {identifier} operation")
-            
+            # Handle different application types
+            if identifier == 'NC':
+                t_ec_industries_t1_general.objects.filter(application_no=application_no).update(
+                    project_name=common_fields['project_name'],
+                    service_type=identifier
+                )
+            elif identifier == 'OC':
+                t_ec_industries_t1_general.objects.filter(application_no=application_no).update(
+                    applicant_name=common_fields['applicant_name'],
+                    service_type=identifier
+                )
             elif identifier == 'DR':
-                # For DR, we might need to create both Main and Ancillary if service_type indicates that
-                if service_type in ['Main Activity', 'Ancillary']:
-                    for st in ['Main Activity', 'Ancillary']:
-                        app_fields = get_common_fields(st)
-                        ca_auth = get_ca_auth(identifier, application_no, tor_application_no, dzongkhag_code)
-                        app_fields['ca_authority'] = ca_auth
-                        
-                        existing_app = t_ec_industries_t1_general.objects.filter(
-                            application_no=application_no,
-                            service_type=st
-                        ).first()
-                        
-                        if existing_app:
-                            # For DR, protect specific fields from being updated
-                            protected_fields = {
-                                'service_type', 'ca_authority', 'applicant_id', 'colour_code',
-                                'service_id', 'broad_activity_code', 'specific_activity_code',
-                                'category', 'application_source', 'application_status'
-                            }
-                            update_fields = {k: v for k, v in app_fields.items() if k not in protected_fields}
-                            t_ec_industries_t1_general.objects.filter(
-                                application_no=application_no,
-                                service_type=st
-                            ).update(**update_fields)
-                        else:
-                            t_ec_industries_t1_general.objects.create(
-                                application_no=application_no,
-                                **app_fields
-                            )
-                else:
-                    # Single application case for DR
-                    ca_auth = get_ca_auth(identifier, application_no, tor_application_no, dzongkhag_code)
-                    app_fields = get_common_fields(service_type)
-                    app_fields['ca_authority'] = ca_auth
-                    
-                    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-                    if application_details.exists():
-                        protected_fields = {
-                            'service_type', 'ca_authority', 'applicant_id', 'colour_code',
-                            'service_id', 'broad_activity_code', 'specific_activity_code',
-                            'category', 'application_source', 'application_status'
-                        }
-                        update_fields = {k: v for k, v in app_fields.items() if k not in protected_fields}
-                        application_details.update(**update_fields)
-                    else:
-                        t_ec_industries_t1_general.objects.create(
-                            application_no=application_no,
-                            **app_fields
-                        )
-            
-            elif identifier in ['TC', 'PC', 'LC', 'CC']:
-                # For these cases, copy from reference application
-                application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
-                for app_det in application_details:
-                    for st in ['Main Activity', 'Ancillary'] if service_type in ['Main Activity', 'Ancillary'] else [service_type]:
-                        app_fields = get_common_fields(st)
-                        app_fields['ec_reference_no'] = app_det.ec_reference_no
-                        app_fields['ca_authority'] = get_ca_auth(identifier, application_no, tor_application_no, dzongkhag_code)
-                        t_ec_industries_t1_general.objects.create(
-                            application_no=application_no,
-                            **app_fields
-                        )
-            
-            else:  # Main Activity or Ancillary case (New Application)
-                # Always create both applications when service_type is Main Activity or Ancillary
-                service_types_to_process = ['Main Activity', 'Ancillary'] if service_type in ['Main Activity', 'Ancillary'] else [service_type]
-                
-                for st in service_types_to_process:
-                    app_fields = get_common_fields(st)
-                    ca_auth = get_ca_auth(identifier, application_no, tor_application_no, dzongkhag_code)
-                    app_fields['ca_authority'] = ca_auth
-                    
-                    existing_app = t_ec_industries_t1_general.objects.filter(
-                        application_no=application_no,
-                        service_type=st
-                    ).first()
-                    
-                    if existing_app and identifier != 'DR' and application_type == "New":
-                        t_ec_industries_t1_general.objects.filter(
-                            application_no=application_no,
-                            service_type=st
-                        ).update(**app_fields)
-                    else:
-                        t_ec_industries_t1_general.objects.create(
-                            application_no=application_no,
-                            **app_fields
-                        )
+                protected_fields = {
+                    'service_type', 'ca_authority', 'applicant_id', 'colour_code',
+                    'service_id', 'broad_activity_code', 'specific_activity_code',
+                    'category', 'application_source', 'application_status'
+                }
+                update_fields = {k: v for k, v in common_fields.items() if k not in protected_fields}
+                t_ec_industries_t1_general.objects.filter(application_no=application_no).update(**update_fields)
+            else:  # New application
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    **common_fields
+                )
 
-            # Workflow handling - create/update for all relevant service types
-            def handle_workflow(st):
-                workflow_data = {
-                    'application_no': application_no,
+            # Update workflow
+            t_workflow_dtls.objects.update_or_create(
+                application_no=application_no,
+                defaults={
                     'application_status': 'P',
                     'actor_id': request.session.get('login_id'),
                     'actor_name': request.session.get('name'),
                     'assigned_role_id': '2',
                     'assigned_role_name': 'Verifier',
                     'service_id': request.session.get('service_id'),
-                    'ca_authority': get_ca_auth(identifier, application_no, tor_application_no, dzongkhag_code),
+                    'ca_authority': ca_auth,
                     'application_source': 'ECSS',
-                    'service_type': st
+                    'service_type': service_type
                 }
-                
-                workflow_exists = t_workflow_dtls.objects.filter(
-                    application_no=application_no,
-                    service_type=st
-                ).exists()
-                
-                if workflow_exists:
-                    t_workflow_dtls.objects.filter(
-                        application_no=application_no,
-                        service_type=st
-                    ).update(**workflow_data)
-                else:
-                    t_workflow_dtls.objects.create(**workflow_data)
+            )
 
-            # Create application history
-            def create_history(st):
-                t_application_history.objects.create(
-                    application_no=application_no,
-                    application_date=timezone.now().date(),
-                    applicant_id=request.session.get('email'),
-                    ca_authority=get_ca_auth(identifier, application_no, tor_application_no, dzongkhag_code),
-                    service_id=request.session.get('service_id'),
-                    application_status='P',
-                    actor_id=request.session.get('login_id'),
-                    actor_name=request.session.get('name')
-                )
-
-            # Process workflow and history for all relevant service types
-            service_types_to_process = ['Main Activity', 'Ancillary'] if service_type in ['Main Activity', 'Ancillary'] else [service_type]
-            for st in service_types_to_process:
-                handle_workflow(st)
-                create_history(st)
+            # Create history record
+            t_application_history.objects.create(
+                application_no=application_no,
+                application_date=timezone.now().date(),
+                applicant_id=request.session.get('email'),
+                ca_authority=ca_auth,
+                service_id=request.session.get('service_id'),
+                application_status='P',
+                actor_id=request.session.get('login_id'),
+                actor_name=request.session.get('name')
+            )
 
         data['message'] = "success"
     except Exception as e:
