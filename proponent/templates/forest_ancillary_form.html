@@ -6,7 +6,7 @@
     <div class="col-xl-12">
         <div class="card mt-1">
             <div class="card-body">
-                <h4 class="header-title mb-3"> Forest Form</h4>
+                <h4 class="header-title mb-3"> Initial Environmental Examination (IEE) Form for Forestry Projects - 2022 </h4>
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
@@ -61,12 +61,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of the Project</label>
-                                                <select class="form-control" id="project_name" name="project_name">
-                                                    <option value="">--SELECT--</option>
-                                                    <option value="Sand_dredging">Sand-dredging</option>
-                                                        <option value="Surface_Collection">Surface Collection</option>
-                                                        <option value="RBM_dredging_collection">RBM dredging/collection</option>
-                                                </select>
+                                                <input type="text" class="form-control" id="project_name" name="project_name">
                                             </div>
                                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -170,7 +165,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">State Forest Reserve (acres)</label>
-                                                <input type="number" min="0" name="state_reserve_forest_acre" class="form-control" id="state_reserve_forest_acre" onchange="get_total_area_acre()"  value="0">
+                                                <input type="number" min="0" name="state_reserve_forest_acre" class="form-control" id="state_reserve_forest_acre" onchange="get_total_area_acre()" value="0">
                                             </div>
                                             <div id="state_reserve_forest_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -179,21 +174,21 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Private Area (acres)</label>
-                                                <input type="number" min="0" name="private_area_acre" class="form-control" id="private_area_acre" onchange="get_total_area_acre()"  value="0">
+                                                <input type="number" min="0" name="private_area_acre" class="form-control" id="private_area_acre" onchange="get_total_area_acre()" value="0">
                                             </div>
                                             <div id="private_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Others Specify</label>
-                                                <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()">
+                                                <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()" value="NA">
                                             </div>
-                                            <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="others_area_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Others(acres)</label>
-                                                <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()"  value="0">
+                                                <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()" value="0">
                                             </div>
                                             <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -202,14 +197,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Total land area required (acre)</label>
-                                                <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" readonly>
+                                                <input type="number" name="total_area_acre" class="form-control" id="total_area_acre" readonly value="0">
                                             </div>
                                             <div id="total_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Maximum depth of excavation from the reference point or surface level</label>
-                                                <input type="text" name="max_evacuation_depth" class="form-control" id="max_evacuation_depth">
+                                                <input type="text" name="max_evacuation_depth" class="form-control" id="max_evacuation_depth" value="0">
                                             </div>
                                             <div id="max_evacuation_depthErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -229,11 +224,11 @@
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Slope/Gradient</label>
                                                 <select class="form-select" name="terrain_slope" id="terrain_slope">
-                                                    <option selected>Choose One</option>
-                                                    <option value="flat_land">Flat land (below 20 degrees)</option>
-                                                    <option value="gentle_slope">Gentle slope (21-45 degrees)</option>
-                                                    <option value="steep_slope">Steep slope (46 – 60 degrees)</option>
-                                                    <option value="very_steep_slope">Very steep slope (above 60 degrees)</option>
+                                                    <option value="">Choose One</option>
+                                                    <option value="Flat_Land">Flat land (below 20 degrees)</option>
+                                                    <option value="Gentle_Slope">Gentle slope (21-45 degrees)</option>
+                                                    <option value="Steep_Slope">Steep slope (46 – 60 degrees)</option>
+                                                    <option value="Very_Steep_Slope">Very steep slope (above 60 degrees)</option>
                                                 </select>
                                             </div>
                                             <div id="terrain_slopeErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -257,7 +252,7 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingTwoBtn"
                                 data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" disabled>
                                 Baseline/Existing information
                             </button>
@@ -354,13 +349,13 @@
                                                 <td><input type="text" name="bl_tourist_facility_distance" class="form-control col-lg-6" id="bl_tourist_facility_distance" value="0"></td>
                                             </tr>
                                             <tr>
-                                                <td>l)</td>
+                                                <td>m)</td>
                                                 <td>Important installations (early warning systems, weather stations, flood mitigation activities, etc.)</td>
                                                 <td><input type="text" name="bl_impt_installation_name" class="form-control col-lg-6" id="bl_impt_installation_name" value="N/A"></td>
                                                 <td><input type="text" name="bl_impt_installation_distance" class="form-control col-lg-6" id="bl_impt_installation_distance" value="0"></td>
                                             </tr>
                                             <tr>
-                                                <td>l)</td>
+                                                <td>n)</td>
                                                 <td>Industries</td>
                                                 <td><input type="text" name="bl_industries_name" class="form-control col-lg-6" id="bl_industries_name" value="N/A"></td>
                                                 <td><input type="text" name="bl_industries_distance" class="form-control col-lg-6" id="bl_industries_distance" value="0"></td>
@@ -397,14 +392,14 @@
                         </div>
                     </div>
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingForest">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="ProjectDetailsBtn"
-                                data-bs-target="#collapseForest" aria-expanded="false" aria-controls="collapseForest" disabled>
+                        <h2 class="accordion-header" id="headingProjectDetails">
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingProjectDetailsBtn"
+                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" disabled>
                                 Project Details
                             </button>
                         </h2>
-                        <div id="collapseForest" class="accordion-collapse collapse" aria-labelledby="headingForest"
-                            data-bs-parent="#headingForest">
+                        <div id="collapseProjectDetails" class="accordion-collapse collapse" aria-labelledby="headingForest"
+                            data-bs-parent="#headingProjectDetails">
                             <div class="accordion-body">
                                 <form method="post" id="project_details_form">
                                     {% csrf_token %}
@@ -412,7 +407,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Project objective</label>
+                                                <label class="form-label fw-bold">Project Objective</label>
                                                 <input type="text" name="project_objective" class="form-control" id="project_objective">
                                             </div>
                                             <div id="project_objectiveErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -513,7 +508,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="water_requirement_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="water_requirement_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_water_application_no">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -538,7 +533,7 @@
                                                         <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)">
+                                                        <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)" checked>
                                                         <label class="form-check-label" for="customRadio4">No</label>
                                                     </div>
                                                 </div>
@@ -571,7 +566,7 @@
                                                         <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_general_water(this.value)">
+                                                        <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_general_water(this.value)" checked >
                                                         <label class="form-check-label" for="customRadio4">No</label>
                                                     </div>
                                                 </div>
@@ -672,10 +667,10 @@
                                             <div id="water_source_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="water_requirement_application_successMsg" style="display:none">
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="0" id="water_requirement_application_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="water_requirement_application_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="0" id="water_requirement_application_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-4">
@@ -711,7 +706,7 @@
                                         </div>
                                     </div>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                     </div>
                                     <br>
                                     <div class="col-lg-12">
@@ -833,10 +828,10 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="noise_level_successMsg" style="display:none">
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="0" id="noise_level_successMsg" style="display:none">
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="noise_level_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="0" id="noise_level_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-2">
@@ -952,10 +947,10 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="other_impact_successMsg" style="display:none">
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="0" id="other_impact_successMsg" style="display:none">
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="other_impact_errorMsg" style="display:none">
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="0" id="other_impact_errorMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-2">
@@ -1028,7 +1023,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="forest_attachment_successMsg" style="display:none">
+                                <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="0" id="forest_attachment_successMsg" style="display:none">
                                     <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                 </div>
                                 <div class="row mt-4">
@@ -1053,8 +1048,7 @@
                                 <form method="post" id="forest_submit_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no">
-                                    <input type="text" class="form-control" value="Ancillary" name="anc_identifier" style="display:none;">
-
+                                    
                                     <div class="row industry_application" style="display:none;">
                                         <a href="{% url 'industry_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for Industrial projects </a>
@@ -1069,13 +1063,6 @@
                                         <a href="{% url 'general_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for General projects </a> 
                                     </div>
-
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="forest_submit_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="forest_submit_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
                                     <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
                                     <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
                                     <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
@@ -1088,6 +1075,22 @@
                                             <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
                                             <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
                                         </div>
+                                    </div>
+                                    <div class="alert alert-success border-0 rounded-0"
+                                        role="alert"
+                                        id="forest_submit_successMsg"
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
+                                    </div>
+
+                                    <!-- Error Alert -->
+                                    <div class="alert alert-danger border-0 rounded-0"
+                                        role="alert"
+                                        id="forest_submit_errorMsg"
+                                        style="display:none"
+                                        aria-live="assertive"
+                                        aria-atomic="true">
                                     </div>
                                     <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
                                         <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
@@ -1145,7 +1148,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of storage</label>
                     <select class="form-select" name="storage_method" id="storage_method">
-                        <option selected>Choose One</option>
+                        <option value="">Choose One</option>
                         <option value="fully_enclosed">Fully Enclosed</option>
                         <option value="partially_enclosed">Partially Enclosed</option>
                         <option value="open">Open</option>
@@ -1204,7 +1207,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of storage</label>
                     <select class="form-select" name="edit_forestry_produce_storage_method" id="edit_forestry_produce_storage_method">
-                        <option selected>Choose One</option>
+                        <option value="">Choose One</option>
                         <option value="fully_enclosed">Fully Enclosed</option>
                         <option value="partially_enclosed">Partially Enclosed</option>
                         <option value="open">Open</option>
@@ -1239,8 +1242,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
       <div class="modal-body mx-4">
-        <input type="text" name="delete_forestry_produce_record_id" class="form-control" id="delete_forestry_produce_record_id">
-        <input type="text" name="delete_forestry_produce_app_no" class="form-control" id="delete_forestry_produce_app_no">
+        <input type="hidden" name="delete_forestry_produce_record_id" class="form-control" id="delete_forestry_produce_record_id">
+        <input type="hidden" name="delete_forestry_produce_app_no" class="form-control" id="delete_forestry_produce_app_no">
           <div class="row">
             <div class="col-lg-12">
                 <p>Are You Sure You Want To Delete ? </p>
@@ -1338,14 +1341,14 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Right of way (RoW)</label>
-                        <input type="text" name="row" class="form-control" id="row" onblur="calculate_area_required()">
+                        <input type="number" name="row" class="form-control" id="row" onblur="calculate_area_required()">
                     </div>
                     <div class="alert alert-danger" id="rowErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Area Required (length x RoW)</label>
-                        <input type="text" name="area_required" class="form-control" id="area_required" readonly="readonly">
+                        <input type="number" name="area_required" class="form-control" id="area_required" readonly="readonly">
                     </div>
                     <div class="alert alert-danger" id="area_requiredErrorMsg" style="display:none"></div>
                 </div>
@@ -1445,7 +1448,7 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Right of way (RoW)</label>
-                        <input type="text" name="edit_row" class="form-control" id="edit_row" onblur="calculate_edit_area_required()">
+                        <input type="number" name="edit_row" class="form-control" id="edit_row" onblur="calculate_edit_area_required()">
                     </div>
                     <div class="alert alert-danger" id="edit_rowErrorMsg" style="display:none"></div>
                 </div>
@@ -1610,7 +1613,7 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Right of way (RoW)</label>
-                        <input type="text" name="road_row" class="form-control" id="road_row" onchange="calculate_road_area_required()">
+                        <input type="number" name="road_row" class="form-control" id="road_row" onchange="calculate_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="road_rowErrorMsg" style="display:none"></div>
                 </div>
@@ -1634,7 +1637,7 @@
         <!--/.Content-->
       </div>
     </div>
-    </form>
+</form>
     
     <form method="post" id="edit_anc_approach_road_form">
     {% csrf_token %}
@@ -1710,7 +1713,7 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Right of way (RoW)</label>
-                        <input type="text" name="edit_road_row" class="form-control" id="edit_road_row" onblur="calculate_edit_road_area_required()">
+                        <input type="number" name="edit_road_row" class="form-control" id="edit_road_row" onblur="calculate_edit_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="edit_road_rowErrorMsg" style="display:none"></div>
                 </div>
@@ -1814,7 +1817,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Method of Storage</label>
                         <select class="form-select" name="raw_material_storage_method" id="raw_material_storage_method">
-                            <option selected>Choose One</option>
+                            <option value="">Choose One</option>
                             <option value="fully_enclosed">Fully Enclosed</option>
                             <option value="partially_enclosed">Partially Enclosed</option>
                             <option value="open">Open</option>
@@ -1880,7 +1883,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Method of Storage</label>
                         <select class="form-select" name="edit_raw_material_storage_method" id="edit_raw_material_storage_method">
-                            <option selected>Choose One</option>
+                            <option value="">Choose One</option>
                             <option value="fully_enclosed">Fully Enclosed</option>
                             <option value="partially_enclosed">Partially Enclosed</option>
                             <option value="open">Open</option>
@@ -1989,7 +1992,7 @@
         <!--/.Content-->
       </div>
     </div>
-    </form>
+</form>
     
     <form method="post" id="edit_dumyard_details_form">
     {% csrf_token %}
@@ -2116,30 +2119,30 @@
     }
 
     function getGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
             {
-                $.ajax({
-                    type : "GET",
-                    url : "{% url 'load_gewog' %}",
-                    data :{'dzongkhag_id':dzongkhag_id},
-                    success : function(data)
-                    {
-                        $('#gewog').html(data);
-                    }
-                });
+                $('#gewog').html(data);
             }
-        
-            function getVillage(gewog_id)
+        });
+    }
+
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
             {
-                $.ajax({
-                    type : "GET",
-                    url : "{% url 'load_village' %}",
-                    data :{'gewog_id':gewog_id},
-                    success : function(data)
-                    {
-                        $('#vil_chiwog').html(data);
-                    }
-                });
+                $('#vil_chiwog').html(data);
             }
+        });
+    }
 
     function add_forestry_produce_details()
     {
@@ -2716,134 +2719,59 @@
     
     function submit_forest_application()
     {
-        // Show loading indicator
-         // Show loading spinner
         $("#pageloader").show();
-        
-        // Hide any previous messages
-        $('#forest_submit_successMsg').hide();
-        $('#forest_submit_errorMsg').hide();
-
-        $.ajax({
-            type: "POST",
-            url: "{% url 'submit_general_application' %}",
-            data: $('#iee_submit_form').serialize(),
-            dataType: 'json',
-            success: function(data) {
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'submit_general_application' %}",
+            data : $('#forest_submit_form').serialize(),
+            success : function(data)
+            {
                 $("#pageloader").hide();
-                alert(data.draft_count);
-                
-                // Debugging - view full response in console
-                console.log("Server Response:", data);
-                
-                // Handle error response
-                if (data.error) {
-                    $('#forest_submit_errorMsg').html(data.error);
-                    $('#forest_submit_errorMsg').show();
-                    return;
-                }
-                
-                // Handle success response
-                if (data.message === 'success') {
+                if(data.message == 'success')
+                {
                     $('#forest_submit_successMsg').html("Application Submitted Successfully");
                     $('#forest_submit_successMsg').show();
-                    
+                    setTimeout(function()
+                    {
+                        $('#forest_submit_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
                     setTimeout(function() {
-                        $('#forest_submit_successMsg').fadeOut('slow');
-                    }, 3000);
-                    
-                    // Handle draft count and redirect
-                    if (data.draft_count > 0) {
-                        var redirectUrl = '';
-                        switch(data.type) {
-                            case 'IEE':
-                                redirectUrl = '/draft_iee_application';
-                                break;
-                            case 'IEA':
-                                redirectUrl = '/draft_ea_application';
-                                break;
-                            case 'ENE':
-                                redirectUrl = '/draft_energy_application';
-                                break;
-                            case 'ROA':
-                                redirectUrl = '/draft_road_application';
-                                break;
-                            case 'TRA':
-                                redirectUrl = '/draft_transmission_application';
-                                break;
-                            case 'TOU':
-                                redirectUrl = '/draft_tourism_application';
-                                break;
-                            case 'GWA':
-                                redirectUrl = '/draft_ground_water_application';
-                                break;
-                            case 'FOR':
-                                redirectUrl = '/draft_forestry_application';
-                                break;
-                            case 'QUA':
-                                redirectUrl = '/draft_quarry_application';
-                                break;
-                            case 'GEN':
-                                redirectUrl = '/draft_general_application';
-                                break;
-                            default:
-                                console.error("Unknown application type:", data.type);
-                        }
-                        
-                        if (redirectUrl) {
-                            setTimeout(function() {
-                                window.location.href = redirectUrl;
-                            }, 1000);
-                        }
-                    } else {
-                        setTimeout(function() {
-                            location.reload();
-                        }, 2000);
-                    }
-                } 
-                // Handle "not submitted" case
-                else if (data.message === 'not submitted') {
-                    $('#forest_submit_errorMsg').html("Please complete all required ancillary forms before submission.");
+                        location.reload()
+                    }, 2000);
+                }
+                else if(data.message == 'not submitted')
+                {
+                    $('#forest_submit_errorMsg').html("Please Submit Your Ancillary First And Try Again");
                     $('#forest_submit_errorMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#forest_submit_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
                 }
-                // Handle unexpected response
-                else {
-                    $('#forest_submit_errorMsg').html("Unexpected response from server. Please try again.");
+                else
+                {
+                    $('#forest_submit_errorMsg').html("Please Check And Submit Again");
                     $('#forest_submit_errorMsg').show();
+                    setTimeout(function()
+                    {
+                        $('#forest_submit_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
                 }
-            },
-            error: function(xhr, status, error) {
-                $("#pageloader").hide();
-                
-                // Try to parse error response if available
-                var errorMsg = "An error occurred while processing your request.";
-                try {
-                    var response = JSON.parse(xhr.responseText);
-                    if (response.error) {
-                        errorMsg = response.error;
-                    }
-                } catch (e) {
-                    console.error("Error parsing error response:", e);
-                }
-                
-                $('#forest_submit_errorMsg').html(errorMsg);
-                $('#forest_submit_errorMsg').show();
-                
-                console.error("AJAX Error:", status, error);
             }
         });
     }
 
     function save_anc_road_details()
     {
-        let application_no = $('#application_no').val();
-        let road_line_chainage_from = $('#road_line_chainage_from').val();
-        let road_line_chainage_to = $('#road_line_chainage_to').val();
-        let road_land_type = $('#road_land_type').val();
-        let road_terrain = $('#road_terrain').val();
-        let road_width = $('#road_width').val();
-        let road_row = $('#road_row').val();
-        let road_area_required = $('#road_area_required').val();
+        application_no = $('#application_no').val();
+        road_line_chainage_from = $('#road_line_chainage_from').val();
+        road_line_chainage_to = $('#road_line_chainage_to').val();
+        road_land_type = $('#road_land_type').val();
+        road_terrain = $('#road_terrain').val();
+        road_width = $('#road_width').val();
+        road_row = $('#road_row').val();
+        road_area_required = $('#road_area_required').val();
 
         if(road_line_chainage_from == "")
         {
@@ -2863,7 +2791,7 @@
             $('#road_land_typeErrorMsg').show();
             $('#road_land_typeErrorMsg').delay(2000).fadeOut('slow');
         }
-        else if(road_terrain == "")
+        else if(terrain == "")
         {
             $('#road_terrainErrorMsg').html("Select One ");
             $('#road_terrainErrorMsg').show();
@@ -3036,176 +2964,122 @@
         }
     }
 
-    function save_forest_application()
-    {
+    function save_forest_application() {
+        // First hide all error messages
+        $('.alert-danger').hide();
+
+        // Get all field values
         let project_name = $('#project_name').val();
         let applicant_name = $('#applicant_name').val();
         let address = $('#address').val();
         let contact_no = $('#contact_no').val();
-        let contact_no_length = $('#contact_no').val().length;
+        let contact_no_length = contact_no.length;
         let email = $('#email').val();
         let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
         let dzongkhag_throm_val = $("input[name=dzongkhag_throm]:checked").val();
         let thromde_id = $('#thromde_id').val();
         let dzongkhag_code = $('#dzongkhag').val();
         let gewog_code = $('#gewog').val();
+        let village_code = $('#vil_chiwog').val();
         let project_site = $('#project_site').val();
-        let location_name = $('#location_name').val();
         let industrial_area_acre = $('#industrial_area_acre').val();
         let state_reserve_forest_acre = $('#state_reserve_forest_acre').val();
         let private_area_acre = $('#private_area_acre').val();
         let others_area = $('#others_area').val();
         let others_area_acre = $('#others_area_acre').val();
+        let total_area_acre = $('#total_area_acre').val();
         let max_evacuation_depth = $('#max_evacuation_depth').val();
+        let land_form = $('#land_form').val();
         let terrain_elevation = $('#terrain_elevation').val();
         let terrain_slope = $('#terrain_slope').val();
-
-        if(project_name == "")
-        {
-            $('#project_nameErrorMsg').html("Enter Name of Project");
-            $('#project_nameErrorMsg').show();
-            $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#project_name').focus();
+        //alert(project_name);
+        // Validation checks
+        if (project_name === "") {
+            showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');
+            return false;
         }
-        else if(applicant_name == "")
-        {
-            $('#applicant_nameErrorMsg').html("Enter Name of The Applicant");
-            $('#applicant_nameErrorMsg').show();
-            $('#applicant_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#applicant_name').focus();
+        else if (applicant_name === "") {
+            showErrorAndFocus('#applicant_nameErrorMsg', 'Enter Name of The Applicant', '#applicant_name');
+            return false;
         }
-        else if(address == "")
-        {
-            $('#addressErrorMsg').html("Enter Address");
-            $('#addressErrorMsg').show();
-            $('#addressErrorMsg').delay(2000).fadeOut('slow');
-            $('#address').focus();
+        else if (address === "") {
+            showErrorAndFocus('#addressErrorMsg', 'Enter Address', '#address');
+            return false;
         }
-        else if(contact_no == "")
-        {
-            $('#contact_noErrorMsg').html("Enter Contact No");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
+        else if (contact_no === "") {
+            showErrorAndFocus('#contact_noErrorMsg', 'Enter Contact No', '#contact_no');
+            return false;
         }
-        else if(contact_no_length < 8)
-        {
-            $('#contact_noErrorMsg').html("Cannot Be Less Than Eight Digits");
-            $('#contact_noErrorMsg').show();
-            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
-            $('#contact_no').focus();
+        else if (contact_no_length < 8) {
+            showErrorAndFocus('#contact_noErrorMsg', 'Cannot Be Less Than Eight Digits', '#contact_no');
+            return false;
         }
-        else if(email == "")
-        {
-            $('#emailErrorMsg').html("Enter Email");
-            $('#emailErrorMsg').show();
-            $('#emailErrorMsg').delay(2000).fadeOut('slow');
-            $('#email').focus();
+        else if (email === "") {
+            showErrorAndFocus('#emailErrorMsg', 'Enter Email', '#email');
+            return false;
         }
-        else if(dzongkhag_throm == "")
-        {
-            $('#dzongkhag_thromErrorMsg').html("Choose One");
-            $('#dzongkhag_thromErrorMsg').show();
-            $('#dzongkhag_thromErrorMsg').delay(2000).fadeOut('slow');
-            $('#dzongkhag_throm').focus();
+        else if (dzongkhag_throm === 0) {
+            showErrorAndFocus('#dzongkhag_thromErrorMsg', 'Choose One', "input[name=dzongkhag_throm]:first");
+            return false;
         }
-        else if(dzongkhag_throm_val == "Thromde" && thromde_id == "")
-        {
-            $('#thromde_idErrorMsg').html("Select Dzongkhag");
-            $('#thromde_idErrorMsg').show();
-            $('#thromde_idErrorMsg').delay(2000).fadeOut('slow');
-            $('#thromde_id').focus();
+        else if (dzongkhag_throm_val === "Thromde" && thromde_id === "") {
+            showErrorAndFocus('#thromde_idErrorMsg', 'Select Thromde', '#thromde_id');
+            return false;
         }
-        else if(dzongkhag_throm_val == "Dzongkhag" && dzongkhag_code == "")
-        {
-            $('#dzongkhagErrorMsg').html("Select Dzongkhag");
-            $('#dzongkhagErrorMsg').show();
-            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-            $('#dzongkhag').focus();
+        else if (dzongkhag_throm_val === "Dzongkhag" && dzongkhag_code === "") {
+            showErrorAndFocus('#dzongkhagErrorMsg', 'Select Dzongkhag', '#dzongkhag');
+            return false;
         }
-        else if(dzongkhag_throm_val == "Dzongkhag" && gewog_code == "")
-        {
-            $('#gewogErrorMsg').html("Select Gewog");
-            $('#gewogErrorMsg').show();
-            $('#gewogErrorMsg').delay(2000).fadeOut('slow');
-            $('#gewog').focus();
+        else if (dzongkhag_throm_val === "Dzongkhag" && gewog_code === "") {
+            showErrorAndFocus('#gewogErrorMsg', 'Select Gewog', '#gewog');
+            return false;
         }
-        else if(dzongkhag_throm_val == "Dzongkhag" && village_code == "")
-        {
-            $('#vil_chiwogErrorMsg').html("Select Village");
-            $('#vil_chiwogErrorMsg').show();
-            $('#vil_chiwogErrorMsg').delay(2000).fadeOut('slow');
-            $('#vil_chiwog').focus();
+        else if (dzongkhag_throm_val === "Dzongkhag" && village_code === "") {
+            showErrorAndFocus('#vil_chiwogErrorMsg', 'Select Village', '#vil_chiwog');
+            return false;
         }
-        else if(project_site == "")
-        {
-            $('#project_siteErrorMsg').html("Enter Project Site");
-            $('#project_siteErrorMsg').show();
-            $('#project_siteErrorMsg').delay(2000).fadeOut('slow');
-            $('#project_site').focus();
+        else if (project_site === "") {
+            showErrorAndFocus('#project_siteErrorMsg', 'Enter Project Site', '#project_site');
+            return false;
         }
-        else if(industrial_area_acre == "")
-        {
-            $('#industrial_area_acreErrorMsg').html("Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)");
-            $('#industrial_area_acreErrorMsg').show();
-            $('#industrial_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#industrial_area_acre').focus();
+        else if (industrial_area_acre === "") {
+            showErrorAndFocus('#industrial_area_acreErrorMsg', 'Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)', '#industrial_area_acre');
+            return false;
         }
-        else if(industrial_area_acre == "")
-        {
-            $('#industrial_area_acreErrorMsg').html("Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)");
-            $('#industrial_area_acreErrorMsg').show();
-            $('#industrial_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#industrial_area_acre').focus();
+        else if (state_reserve_forest_acre === "") {
+            showErrorAndFocus('#state_reserve_forest_acreErrorMsg', 'Enter State Reserve Forest Area', '#state_reserve_forest_acre');
+            return false;
         }
-        else if(state_reserve_forest_acre == "")
-        {
-            $('#state_reserve_forest_acreErrorMsg').html("Enter State Reserve Forest Area");
-            $('#state_reserve_forest_acreErrorMsg').show();
-            $('#state_reserve_forest_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#state_reserve_forest_acre').focus();
+        else if (private_area_acre === "") {
+            showErrorAndFocus('#private_area_acreErrorMsg', 'Enter Private Area', '#private_area_acre');
+            return false;
         }
-        else if(private_area_acre == "")
-        {
-            $('#private_area_acreErrorMsg').html("Enter Private Area");
-            $('#private_area_acreErrorMsg').show();
-            $('#private_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#private_area_acre').focus();
+        else if ((others_area !== "NA" && others_area !== "") && others_area_acre === "") {
+            showErrorAndFocus('#others_area_acreErrorMsg', 'Enter Others Area', '#others_area_acre');
+            return false;
         }
-        else if ((others_area !== "NA" && others_area !== "") && others_area_acre === "")
-        {
-            $('#others_area_acreErrorMsg').html("Enter Others Area");
-            $('#others_area_acreErrorMsg').show();
-            $('#others_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#others_area_acre').focus();
+        else if(max_evacuation_depth === ""){
+            showErrorAndFocus('#max_evacuation_depthErrorMsg', 'Enter Maximum depth of excavation', '#max_evacuation_depth');
+            return false;
         }
-        else if(max_evacuation_depth == "")
-        {
-            $('#max_evacuation_depthErrorMsg').html("Enter Maximum Depth of Evacuation");
-            $('#max_evacuation_depthErrorMsg').show();
-            $('#max_evacuation_depthErrorMsg').delay(2000).fadeOut('slow');
-            $('#max_evacuation_depth').focus();
+        else if(land_form === ""){
+            showErrorAndFocus('#land_formErrorMsg', 'Select Landform', '#land_form');
+            return false;
         }
-        else if(terrain_elevation == "")
-        {
-            $('#terrain_elevationErrorMsg').html("Enter Elevation");
-            $('#terrain_elevationErrorMsg').show();
-            $('#terrain_elevationErrorMsg').delay(2000).fadeOut('slow');
-            $('#terrain_elevation').focus();
+        else if(terrain_elevation === ""){
+            showErrorAndFocus('#terrain_elevationErrorMsg', 'Enter Elevation', '#terrain_elevation');
+            return false;
         }
-        else if(terrain_slope == "")
-        {
-            $('#terrain_slopeErrorMsg').html("Enter Slope/Gradient");
-            $('#terrain_slopeErrorMsg').show();
-            $('#terrain_slopeErrorMsg').delay(2000).fadeOut('slow');
-            $('#terrain_slope').focus();
+        else if(terrain_slope == ""){
+            showErrorAndFocus('#terrain_slopeErrorMsg', 'Select Slope', '#terrain_slope');
+            return false;
         }
         else
         {
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_general_info' %}",
+                url : "{% url 'save_forest_application' %}",
                 data : $('#forest_application_form').serialize(),
                 success : function(data)
                 {
@@ -3213,6 +3087,7 @@
                     {
                         $('#application_form_successMsg').html("Saved Successfully");
                         $('#application_form_successMsg').show();
+                        $('#application_form_successMsg').focus();
                         setTimeout(function()
                         {
                             $('#application_form_successMsg').delay(2000).fadeOut('slow');
@@ -3221,15 +3096,17 @@
                             $("#headingTwoBtn").removeAttr("disabled");
                             $("#collapseTwo").addClass("show");
                             $("#collapseOne").removeClass("show");
-                            $('#proposed_location_justification').focus();
                         }, 2000);
                     }
                     else
                     {
-                        $('#application_form_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+
+                        $('#application_form_errorMsg').html(`Application Error: ${data.error}`);
                         $('#application_form_errorMsg').show();
-                        setTimeout(function()
-                        {
+                        $('#application_form_errorMsg').focus();
+
+                        setTimeout(function() {
                             $('#application_form_errorMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                     }
@@ -3237,110 +3114,317 @@
             });
         }
     }
+    // Helper function to show error and focus on field
+    function showErrorAndFocus(errorElement, message, focusElement) {
+        $(errorElement).html(message).show();
 
-    function save_terrain_baseline_details() {
-        // Hide all error messages first
-        $('.alert-danger').hide();
+        // Use setTimeout to ensure the focus happens after the DOM updates
+        setTimeout(function() {
+            $(focusElement).focus();
 
-        function showErrorAndFocus(errorElementId, errorMessage, fieldId) {
-            const $errorElement = $(`#${errorElementId}`);
-            const $field = $(`#${fieldId}`);
-            
-            // Show the error message and focus on the field
-            $errorElement.text(errorMessage).show();
-            $field.focus();
-            
-            // Hide the error message after 2 seconds
-            setTimeout(() => {
-                $errorElement.fadeOut('slow');
-            }, 2000);
-            
-            return false;
+            // Scroll to the element if needed
+            $('html, body').animate({
+                scrollTop: $(focusElement).offset().top - 100
+            }, 100);
+        }, 50);
+
+        // Hide the error after 2 seconds
+        setTimeout(function() {
+            $(errorElement).fadeOut('slow');
+        }, 2000);
+    }
+
+    function save_terrain_baseline_details()
+    {
+
+        let bl_protected_area_name = $('#bl_protected_area_name').val();
+        let bl_protected_area_distance = $('#bl_protected_area_distance').val();
+        let bl_migratory_route_name = $('#bl_migratory_route_name').val();
+        let bl_migratory_route_distance = $('#bl_migratory_route_distance').val();
+        let bl_wetland_name = $('#bl_wetland_name').val();
+        let bl_wetland_distance = $('#bl_wetland_distance').val();
+        let bl_water_bodies_name = $('#bl_water_bodies_name').val();
+        let bl_water_bodies_distance = $('#bl_water_bodies_distance').val();
+        let bl_fmu_name = $('#bl_fmu_name').val();
+        let bl_fmu_distance = $('#bl_fmu_distance').val();
+        let bl_agricultural_name = $('#bl_agricultural_name').val();
+        let bl_agricultural_distance = $('#bl_agricultural_distance').val();
+        let bl_settlement_name = $('#bl_settlement_name').val();
+        let bl_settlement_distance = $('#bl_settlement_distance').val();
+        let bl_road_name = $('#bl_road_name').val();
+        let bl_road_distance = $('#bl_road_distance').val();
+        let bl_public_infra_name = $('#bl_public_infra_name').val();
+        let bl_public_infra_distance = $('#bl_public_infra_distance').val();
+        let bl_school_name = $('#bl_school_name').val();
+        let bl_school_distance = $('#bl_school_distance').val();
+        let bl_heritage_name = $('#bl_heritage_name').val();
+        let bl_heritage_distance = $('#bl_heritage_distance').val();
+        let bl_tourist_facility_name = $('#bl_tourist_facility_name').val();
+        let bl_tourist_facility_distance = $('#bl_tourist_facility_distance').val();
+        let bl_impt_installation_name = $('#bl_impt_installation_name').val();
+        let bl_impt_installation_distance = $('#bl_impt_installation_distance').val();
+        let bl_industries_name = $('#bl_industries_name').val();
+        let bl_industries_distance = $('#bl_industries_distance').val();
+        let bl_others = $('#bl_others').val();
+        let bl_others_name = $('#bl_others_name').val();
+        let bl_others_distance = $('#bl_others_distance').val();
+
+        if(bl_protected_area_name == "")
+        {
+            $('#bl_protected_area_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_protected_area_nameErrorMsg').show();
+            $('#bl_protected_area_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_protected_area_name').focus();
         }
-
-        // Define all field validations in an array
-        const elevationValue = $('#terrain_elevation').val();
-        if (elevationValue === "" || elevationValue === null || elevationValue === "None") {
-            showErrorAndFocus('terrain_elevationErrorMsg', 'Enter Elevation (meters)', 'terrain_elevation');
-            return false;
+        else if(bl_protected_area_distance == "")
+        {
+            $('#bl_protected_area_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_protected_area_distanceErrorMsg').show();
+            $('#bl_protected_area_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_protected_area_distance').focus();
         }
-        const validations = [
-            { id: 'terrain_slope', errorId: 'terrain_slopeErrorMsg', errorMsg: 'Select Slope/Gradient' },
-            { id: 'bl_protected_area_name', errorId: 'bl_protected_area_nameErrorMsg', errorMsg: 'Enter Protected Area Name' },
-            { id: 'bl_protected_area_distance', errorId: 'bl_protected_area_distanceErrorMsg', errorMsg: 'Enter Protected Area Distance' },
-            { id: 'bl_migratory_route_name', errorId: 'bl_migratory_route_nameErrorMsg', errorMsg: 'Enter Migratory Route Name' },
-            { id: 'bl_migratory_route_distance', errorId: 'bl_migratory_route_distanceErrorMsg', errorMsg: 'Enter Migratory Route Distance' },
-            { id: 'bl_wetland_name', errorId: 'bl_wetland_nameErrorMsg', errorMsg: 'Enter Wetland Name' },
-            { id: 'bl_wetland_distance', errorId: 'bl_wetland_distanceErrorMsg', errorMsg: 'Enter Wetland Distance' },
-            { id: 'bl_water_bodies_name', errorId: 'bl_water_bodies_nameErrorMsg', errorMsg: 'Enter Water Bodies Name' },
-            { id: 'bl_water_bodies_distance', errorId: 'bl_water_bodies_distanceErrorMsg', errorMsg: 'Enter Water Bodies Distance' },
-            { id: 'bl_fmu_name', errorId: 'bl_fmu_nameErrorMsg', errorMsg: 'Enter FMU Name' },
-            { id: 'bl_fmu_distance', errorId: 'bl_fmu_distanceErrorMsg', errorMsg: 'Enter FMU Distance' },
-            { id: 'bl_agricultural_name', errorId: 'bl_agricultural_nameErrorMsg', errorMsg: 'Enter Agricultural Area Name' },
-            { id: 'bl_agricultural_distance', errorId: 'bl_agricultural_distanceErrorMsg', errorMsg: 'Enter Agricultural Area Distance' },
-            { id: 'bl_settlement_name', errorId: 'bl_settlement_nameErrorMsg', errorMsg: 'Enter Settlement Name' },
-            { id: 'bl_settlement_distance', errorId: 'bl_settlement_distanceErrorMsg', errorMsg: 'Enter Settlement Distance' },
-            { id: 'bl_road_name', errorId: 'bl_road_nameErrorMsg', errorMsg: 'Enter Road Name' },
-            { id: 'bl_road_distance', errorId: 'bl_road_distanceErrorMsg', errorMsg: 'Enter Road Distance' },
-            { id: 'bl_public_infra_name', errorId: 'bl_public_infra_nameErrorMsg', errorMsg: 'Enter Public Infrastructure Name' },
-            { id: 'bl_public_infra_distance', errorId: 'bl_public_infra_distanceErrorMsg', errorMsg: 'Enter Public Infrastructure Distance' },
-            { id: 'bl_school_name', errorId: 'bl_school_nameErrorMsg', errorMsg: 'Enter School Name' },
-            { id: 'bl_school_distance', errorId: 'bl_school_distanceErrorMsg', errorMsg: 'Enter School Distance' },
-            { id: 'bl_heritage_name', errorId: 'bl_heritage_nameErrorMsg', errorMsg: 'Enter Heritage Site Name' },
-            { id: 'bl_heritage_distance', errorId: 'bl_heritage_distanceErrorMsg', errorMsg: 'Enter Heritage Site Distance' },
-            { id: 'bl_tourist_facility_name', errorId: 'bl_tourist_facility_nameErrorMsg', errorMsg: 'Enter Tourist Facility Name' },
-            { id: 'bl_tourist_facility_distance', errorId: 'bl_tourist_facility_distanceErrorMsg', errorMsg: 'Enter Tourist Facility Distance' },
-            { id: 'bl_impt_installation_name', errorId: 'bl_impt_installation_nameErrorMsg', errorMsg: 'Enter Important Installation Name' },
-            { id: 'bl_impt_installation_distance', errorId: 'bl_impt_installation_distanceErrorMsg', errorMsg: 'Enter Important Installation Distance' },
-            { id: 'bl_industries_name', errorId: 'bl_industries_nameErrorMsg', errorMsg: 'Enter Industries Name' },
-            { id: 'bl_industries_distance', errorId: 'bl_industries_distanceErrorMsg', errorMsg: 'Enter Industries Distance' },
-            { id: 'bl_others', errorId: 'bl_othersErrorMsg', errorMsg: 'Enter Other Details' },
-            { id: 'bl_others_name', errorId: 'bl_others_nameErrorMsg', errorMsg: 'Enter Other Name' },
-            { id: 'bl_others_distance', errorId: 'bl_others_distanceErrorMsg', errorMsg: 'Enter Other Distance' }
-        ];
-
-        // Check each validation
-        for (const validation of validations) {
-            const value = $(`#${validation.id}`).val();
-            if (value === "") {
-                showErrorAndFocus(validation.errorId, validation.errorMsg, validation.id);
-                return false;
-            }
+        else if(bl_migratory_route_name == "")
+        {
+            $('#bl_migratory_route_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_migratory_route_nameErrorMsg').show();
+            $('#bl_migratory_route_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_migratory_route_name').focus();
         }
-
-        // In your AJAX success/error handlers:
-        $.ajax({
-            type: "POST",
-            url: "{% url 'save_terrain_baseline_details' %}",
-            data: $('#terrain_baseline_form').serialize(),
-            success: function(data) {
-                if (data.message === 'success') {
-                    showSuccessMessage(
-                        'terrain_baseline_application_successMsg', 
-                        'Added Successfully', 
-                        function() {
-                            $("#ProjectDetailsBtn").removeAttr("disabled");
+        else if(bl_migratory_route_distance == "")
+        {
+            $('#bl_migratory_route_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_migratory_route_distanceErrorMsg').show();
+            $('#bl_migratory_route_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_migratory_route_distance').focus();
+        }
+        else if(bl_wetland_name == "")
+        {
+            $('#bl_wetland_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_wetland_nameErrorMsg').show();
+            $('#bl_wetland_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_wetland_name').focus();
+        }
+        else if(bl_wetland_distance == "")
+        {
+            $('#bl_wetland_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_wetland_distanceErrorMsg').show();
+            $('#bl_wetland_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_wetland_distance').focus();
+        }
+        else if(bl_water_bodies_name == "")
+        {
+            $('#bl_water_bodies_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_water_bodies_nameErrorMsg').show();
+            $('#bl_water_bodies_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_water_bodies_name').focus();
+        }
+        else if(bl_water_bodies_distance == "")
+        {
+            $('#bl_water_bodies_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_water_bodies_distanceErrorMsg').show();
+            $('#bl_water_bodies_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_water_bodies_distance').focus();
+        }
+        else if(bl_fmu_name == "")
+        {
+            $('#bl_fmu_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_fmu_nameErrorMsg').show();
+            $('#bl_fmu_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_fmu_name').focus();
+        }
+        else if(bl_fmu_distance == "")
+        {
+            $('#bl_fmu_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_fmu_distanceErrorMsg').show();
+            $('#bl_fmu_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_fmu_distance').focus();
+        }
+        else if(bl_agricultural_name == "")
+        {
+            $('#bl_agricultural_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_agricultural_nameErrorMsg').show();
+            $('#bl_agricultural_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_agricultural_name').focus();
+        }
+        else if(bl_agricultural_distance == "")
+        {
+            $('#bl_agricultural_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_agricultural_distanceErrorMsg').show();
+            $('#bl_agricultural_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_agricultural_distance').focus();
+        }
+        else if(bl_settlement_name == "")
+        {
+            $('#bl_settlement_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_settlement_nameErrorMsg').show();
+            $('#bl_settlement_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_settlement_name').focus();
+        }
+        else if(bl_settlement_distance == "")
+        {
+            $('#bl_settlement_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_settlement_distanceErrorMsg').show();
+            $('#bl_settlement_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_settlement_distance').focus();
+        }
+        else if(bl_road_name == "")
+        {
+            $('#bl_road_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_road_nameErrorMsg').show();
+            $('#bl_road_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_road_name').focus();
+        }
+        else if(bl_road_distance == "")
+        {
+            $('#bl_road_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_road_distanceErrorMsg').show();
+            $('#bl_road_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_road_distance').focus();
+        }
+        else if(bl_public_infra_name == "")
+        {
+            $('#bl_public_infra_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_public_infra_nameErrorMsg').show();
+            $('#bl_public_infra_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_public_infra_name').focus();
+        }
+        else if(bl_public_infra_distance == "")
+        {
+            $('#bl_public_infra_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_public_infra_distanceErrorMsg').show();
+            $('#bl_public_infra_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_public_infra_distance').focus();
+        }
+        else if(bl_school_name == "")
+        {
+            $('#bl_school_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_school_nameErrorMsg').show();
+            $('#bl_school_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_school_name').focus();
+        }
+        else if(bl_school_distance == "")
+        {
+            $('#bl_school_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_school_distanceErrorMsg').show();
+            $('#bl_school_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_school_distance').focus();
+        }
+        else if(bl_heritage_name == "")
+        {
+            $('#bl_heritage_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_heritage_nameErrorMsg').show();
+            $('#bl_heritage_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_heritage_name').focus();
+        }
+        else if(bl_heritage_distance == "")
+        {
+            $('#bl_heritage_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_heritage_distanceErrorMsg').show();
+            $('#bl_heritage_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_heritage_distance').focus();
+        }
+        else if(bl_tourist_facility_name == "")
+        {
+            $('#bl_tourist_facility_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_tourist_facility_nameErrorMsg').show();
+            $('#bl_tourist_facility_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_tourist_facility_name').focus();
+        }
+        else if(bl_tourist_facility_distance == "")
+        {
+            $('#bl_tourist_facility_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_tourist_facility_distanceErrorMsg').show();
+            $('#bl_tourist_facility_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_tourist_facility_distance').focus();
+        }
+        else if(bl_impt_installation_name == "")
+        {
+            $('#bl_impt_installation_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_impt_installation_nameErrorMsg').show();
+            $('#bl_impt_installation_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_impt_installation_name').focus();
+        }
+        else if(bl_impt_installation_distance == "")
+        {
+            $('#bl_impt_installation_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_impt_installation_distanceErrorMsg').show();
+            $('#bl_impt_installation_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_impt_installation_distance').focus();
+        }
+        else if(bl_industries_name == "")
+        {
+            $('#bl_industries_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_industries_nameErrorMsg').show();
+            $('#bl_industries_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_industries_name').focus();
+        }
+        else if(bl_industries_distance == "")
+        {
+            $('#bl_industries_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_industries_distanceErrorMsg').show();
+            $('#bl_industries_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_industries_distance').focus();
+        }
+        else if(bl_others == "")
+        {
+            $('#bl_othersErrorMsg').html("Select Slope/Gradient");
+            $('#bl_othersErrorMsg').show();
+            $('#bl_othersErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_others').focus();
+        }
+        else if(bl_others_name == "")
+        {
+            $('#bl_others_nameErrorMsg').html("Select Slope/Gradient");
+            $('#bl_others_nameErrorMsg').show();
+            $('#bl_others_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_others_name').focus();
+        }
+        else if(bl_others_distance == "")
+        {
+            $('#bl_others_distanceErrorMsg').html("Select Slope/Gradient");
+            $('#bl_others_distanceErrorMsg').show();
+            $('#bl_others_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#bl_others_distance').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_terrain_baseline_details' %}",
+                data : $('#terrain_baseline_form').serialize(),
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $('#terrain_baseline_application_successMsg').html("Added Successfully");
+                        $('#terrain_baseline_application_successMsg').show();
+                        $('#terrain_baseline_application_successMsg').focus();
+                        setTimeout(function()
+                        {
+                            $('#terrain_baseline_application_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            $("#headingProjectDetailsBtn").removeAttr("disabled");
                             $("#collapseProjectDetails").addClass("show");
                             $("#collapseTwo").removeClass("show");
-                        },
-                        'terrain_elevation' // Focus on first field after success
-                    );
-                } else {
-                    showErrorMessage(
-                        'terrain_baseline_application_errorMsg', 
-                        `Application Error: ${data.error}`,
-                        'terrain_elevation' // Focus on first field on error
-                    );
+                        }, 2000);
+                    }
+                    else
+                    {
+                        var errorMsg = data.error;
+
+                        $('#terrain_baseline_application_errorMsg').html(`Application Error: ${data.error}`);
+                        $('#terrain_baseline_application_errorMsg').show();
+                        $('#terrain_baseline_application_errorMsg').focus();
+                        setTimeout(function()
+                        {
+                            $('#terrain_baseline_application_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
                 }
-            },
-            error: function(xhr, status, error) {
-                showErrorMessage(
-                    'terrain_baseline_application_errorMsg', 
-                    `Request Error: ${error}`,
-                    'terrain_elevation' // Focus on first field on error
-                );
-            }
-        });
+            });
+        }
     }
 
     // Modified helper functions to ensure proper focusing:
@@ -3692,8 +3776,8 @@
                     }, 2000);
                     
                     setTimeout(function() {
-                        $("#headingFiveBtn").removeAttr("disabled");
-                        $("#collapseFive").addClass("show");
+                        $("#headingEightBtn").removeAttr("disabled");
+                        $("#collapseEight").addClass("show");
                         $("#collapseFour").removeClass("show");
                     }, 2000);
                 } else {

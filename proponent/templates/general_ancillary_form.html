@@ -6,7 +6,7 @@
     <div class="col-xl-12">
         <div class="card mt-1">
             <div class="card-body">
-                <h4 class="header-title mb-3"> Ancillary General Form</h4>
+                <h4 class="header-title mb-3"> Initial Environmental Examination (IEE) Form for General Projects - 2022</h4>
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
@@ -67,7 +67,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
+                                                <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
                                                 <textarea class="form-control" name="focal_person" id="focal_person" rows="3"></textarea>
                                             </div>
                                         </div>
@@ -199,12 +199,12 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Total land area required (acre)</label>
-                                                <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" value="0" readonly>
+                                                <input type="number" name="total_area_acre" class="form-control" id="total_area_acre" value="0" readonly>
                                             </div>
                                             <div id="total_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <!-- Success Alert -->
+                                                                        <!-- Success Alert -->
                                     <div class="alert alert-success border-0 rounded-0" 
                                         role="alert" 
                                         id="application_form_successMsg" 
@@ -273,7 +273,7 @@
                                     </div>
                                     <div class="alert alert-secondary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Baseline/Existing Information <br>
-                                        Presence of any of the following within and 50 meters buffer of the project area. If yes, tick, mention name and distance from the project boundary, wherever applicable
+                                        Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable
                                     </div>
                                     <table class="table table-hover table-bordered table-centered mb-0">
                                         <thead>
@@ -358,13 +358,13 @@
                                                 <td><input type="text" name="bl_tourist_facility_distance" class="form-control col-lg-6" id="bl_tourist_facility_distance" value="0"></td>
                                             </tr>
                                             <tr>
-                                                <td>l)</td>
+                                                <td>m)</td>
                                                 <td>Important installations (early warning systems, weather stations, flood mitigation activities, etc.)</td>
                                                 <td><input type="text" name="bl_impt_installation_name" class="form-control col-lg-6" id="bl_impt_installation_name" value="N/A"></td>
                                                 <td><input type="text" name="bl_impt_installation_distance" class="form-control col-lg-6" id="bl_impt_installation_distance" value="0"></td>
                                             </tr>
                                             <tr>
-                                                <td>l)</td>
+                                                <td>n)</td>
                                                 <td>Industries</td>
                                                 <td><input type="text" name="bl_industries_name" class="form-control col-lg-6" id="bl_industries_name" value="N/A"></td>
                                                 <td><input type="text" name="bl_industries_distance" class="form-control col-lg-6" id="bl_industries_distance" value="0"></td>
@@ -385,10 +385,8 @@
                                         </tbody>
                                     </table>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="terrain_baseline_application_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="terrain_baseline_application_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-4">
                                         <div class="text-sm-end">
@@ -416,14 +414,14 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Project objective</label>
+                                                <label class="form-label fw-bold">Project Objective</label>
                                                 <input type="text" name="project_objective" class="form-control" id="project_objective">
                                             </div>
                                             <div id="project_objectiveErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Number of workers to be employed</label>
+                                                <label class="form-label fw-bold">Number of Workers to be Employed</label>
                                                 <input type="number" name="no_of_workers" class="form-control" id="no_of_workers">
                                             </div>
                                             <div id="no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -690,11 +688,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="water_requirement_application_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="water_requirement_application_successMsg" style="display:none">
+                                        <span class="alert-text"></span>
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="water_requirement_application_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="water_requirement_application_errorMsg" style="display:none">
+                                        <span class="alert-text"></span>
                                     </div>
                                     <div class="row mt-4">
                                         <div class="text-sm-end">
@@ -729,7 +727,7 @@
                                         </div>
                                     </div>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        (CTick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
+                                        Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
                                     </div>
                                     <br>
                                     <div class="col-lg-12">
@@ -782,6 +780,7 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    <!-- Success Alert -->
                                     <div class="alert alert-success border-0 rounded-0" 
                                         role="alert" 
                                         id="solid_waste_successMsg" 
@@ -790,7 +789,7 @@
                                         aria-atomic="true">
                                     </div>
 
-                                    <!-- Error Alert (no tabindex, ARIA attributes added) -->
+                                    <!-- Error Alert -->
                                     <div class="alert alert-danger border-0 rounded-0" 
                                         role="alert" 
                                         id="solid_waste_errorMsg" 
@@ -863,19 +862,13 @@
                                     </div>
                                     <div class="alert alert-success border-0 rounded-0" 
                                         id="noise_level_successMsg" 
-                                        style="display:none"
-                                        role="alert"
-                                        aria-live="polite"
-                                        aria-atomic="true">
+                                        style="display:none">
                                     </div>
 
-                                    <!-- Error Alert with ARIA attributes -->
+                                    <!-- Error Alert -->
                                     <div class="alert alert-danger border-0 rounded-0" 
                                         id="noise_level_errorMsg" 
-                                        style="display:none"
-                                        role="alert"
-                                        aria-live="assertive"
-                                        aria-atomic="true">
+                                        style="display:none">
                                     </div>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
@@ -1104,9 +1097,8 @@
                             <div class="accordion-body">
                                 <form method="post" id="general_submit_form">
                                     {% csrf_token %}
-                                    <input type="text" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no" style="display:none;">
-                                    <input type="text" class="form-control" value="Ancillary" name="anc_identifier" style="display:none;">
-
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no">
+                                    
                                     <div class="row industry_application" style="display:none;">
                                         <a href="{% url 'industry_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for Industrial projects </a>
@@ -1406,7 +1398,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Installed capacity/quantity per annum</label>
+                    <label class="form-label fw-bold">Installed Capacity/Quantity Per Annum</label>
                     <input type="number" name="quantity_annum" class="form-control" id="quantity_annum">
                 </div>
                 <div class="alert alert-danger" id="quantity_annumErrorMsg" style="display:none"></div>
@@ -1638,7 +1630,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="edit_raw_material_storage_method" id="edit_raw_material_storage_method">
-                        <option value="">Choose One</option>
+                        <option "">Choose One</option>
                         <option value="Fully_Enclosed">Fully Enclosed</option>
                         <option value="Partially_Enclosed">Partially Enclosed</option>
                         <option value="Open">Open</option>
@@ -2050,7 +2042,7 @@
                             <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
                         </select>
                     </div>
-                    <div class="alert alert-danger" id="road_ErrorMsg" style="display:none"></div>
+                    <div class="alert alert-danger" id="road_terrainErrorMsg" style="display:none"></div>
                 </div>
             </div>
             <div class="row">
@@ -2150,7 +2142,7 @@
                             <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
                         </select>
                     </div>
-                    <div class="alert alert-danger" id="edit_road_ErrorMsg" style="display:none"></div>
+                    <div class="alert alert-danger" id="edit_road_terrainErrorMsg" style="display:none"></div>
                 </div>
             </div>
             <div class="row">
@@ -2928,16 +2920,13 @@
                     }, 2000);
                 } else {
                     $('#water_requirement_application_errorMsg')
-                        .html(`Application Error: ${data.error}`)
-                        .removeAttr('tabindex')  // Remove blocking attribute
-                        .attr({
-                            'aria-live': 'assertive',
-                            'aria-atomic': 'true'
-                        })
-                        .show()
-                        .focus();  // Set focus immediately after showing
-
-                    setTimeout(() => {
+                    .html("Please Check And Submit Again")
+                    .attr('aria-live', 'assertive')
+                    .attr('aria-atomic', 'true')
+                    .show()
+                    .focus();
+                    
+                    setTimeout(function() {
                         $('#water_requirement_application_errorMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                 }
@@ -3934,142 +3923,86 @@
             }
         
             function submit_general_application() {
-                // Show loading spinner
+                // Show loading indicator
                 $("#pageloader").show();
-                
-                // Hide any previous messages
-                $('#general_submit_successMsg').hide();
-                $('#general_submit_errorMsg').hide();
 
                 $.ajax({
                     type: "POST",
                     url: "{% url 'submit_general_application' %}",
                     data: $('#general_submit_form').serialize(),
-                    dataType: 'json',
                     success: function(data) {
                         $("#pageloader").hide();
-                        alert(data.draft_count);
                         
-                        // Debugging - view full response in console
-                        console.log("Server Response:", data);
-                        
-                        // Handle error response
-                        if (data.error) {
-                            $('#general_submit_errorMsg').html(data.error);
-                            $('#general_submit_errorMsg').show();
-                            return;
+                        if (data.message == 'success') {
+                            // Success case
+                            $('#general_submit_successMsg')
+                                .text("Application Submitted Successfully")
+                                .removeAttr('tabindex')
+                                .attr({
+                                    'aria-live': 'polite',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
+
+                            setTimeout(() => {
+                                $('#general_submit_successMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+
+                            setTimeout(() => location.reload(), 2000);
                         }
-                        
-                        // Handle success response
-                        if (data.message === 'success') {
-                            $('#general_submit_successMsg').html("Application Submitted Successfully");
-                            $('#general_submit_successMsg').show();
-                            
-                            setTimeout(function() {
-                                $('#general_submit_successMsg').fadeOut('slow');
-                            }, 3000);
-                            
-                            // Handle draft count and redirect
-                            if (data.draft_count > 0) {
-                                var redirectUrl = '';
-                                switch(data.type) {
-                                    case 'IEE':
-                                        redirectUrl = '/draft_iee_application';
-                                        break;
-                                    case 'IEA':
-                                        redirectUrl = '/draft_ea_application';
-                                        break;
-                                    case 'ENE':
-                                        redirectUrl = '/draft_energy_application';
-                                        break;
-                                    case 'ROA':
-                                        redirectUrl = '/draft_road_application';
-                                        break;
-                                    case 'TRA':
-                                        redirectUrl = '/draft_transmission_application';
-                                        break;
-                                    case 'TOU':
-                                        redirectUrl = '/draft_tourism_application';
-                                        break;
-                                    case 'GWA':
-                                        redirectUrl = '/draft_ground_water_application';
-                                        break;
-                                    case 'FOR':
-                                        redirectUrl = '/draft_forestry_application';
-                                        break;
-                                    case 'QUA':
-                                        redirectUrl = '/draft_quarry_application';
-                                        break;
-                                    case 'GEN':
-                                        redirectUrl = '/draft_general_application';
-                                        break;
-                                    default:
-                                        console.error("Unknown application type:", data.type);
-                                }
-                                
-                                if (redirectUrl) {
-                                    setTimeout(function() {
-                                        window.location.href = redirectUrl;
-                                    }, 1000);
-                                }
-                            } else {
-                                setTimeout(function() {
-                                    location.reload();
-                                }, 2000);
-                            }
-                        } 
-                        // Handle "not submitted" case
-                        else if (data.message === 'not submitted') {
-                            $('#general_submit_errorMsg').html("Please complete all required ancillary forms before submission.");
-                            $('#general_submit_errorMsg').show();
+                        else if (data.message == 'not submitted') {
+                            // Ancillary not submitted case
+                            $('#general_submit_errorMsg')
+                                .text("Please Submit Your Ancillary First And Try Again")
+                                .removeAttr('tabindex')
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
+
+                            setTimeout(() => {
+                                $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
                         }
-                        // Handle unexpected response
                         else {
-                            $('#general_submit_errorMsg').html("Unexpected response from server. Please try again.");
-                            $('#general_submit_errorMsg').show();
+                            // Other error cases
+                            $('#general_submit_errorMsg')
+                                .text(`Application Error: ${data.error}`)
+                                .removeAttr('tabindex')
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
+
+                            setTimeout(() => {
+                                $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
                         }
                     },
                     error: function(xhr, status, error) {
+                        // AJAX error handling
                         $("#pageloader").hide();
-                        
-                        // Try to parse error response if available
-                        var errorMsg = "An error occurred while processing your request.";
-                        try {
-                            var response = JSON.parse(xhr.responseText);
-                            if (response.error) {
-                                errorMsg = response.error;
-                            }
-                        } catch (e) {
-                            console.error("Error parsing error response:", e);
-                        }
-                        
-                        $('#general_submit_errorMsg').html(errorMsg);
-                        $('#general_submit_errorMsg').show();
-                        
-                        console.error("AJAX Error:", status, error);
+                        $('#general_submit_errorMsg')
+                            .text(`Request failed: ${error}`)
+                            .removeAttr('tabindex')
+                            .attr({
+                                'aria-live': 'assertive',
+                                'aria-atomic': 'true'
+                            })
+                            .show()
+                            .focus();
+
+                        setTimeout(() => {
+                            $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
                     }
                 });
             }
-
-            // Function to enable/disable submit button based on terms checkbox
-            function check_terms() {
-                var is_checked = $('#ec_terms').is(':checked');
-                if (is_checked) {
-                    $('#gen_submit_btn').show();
-                } else {
-                    $('#gen_submit_btn').hide();
-                }
-            }
-
-            // Initialize the form state on page load
-            $(document).ready(function() {
-                check_terms(); // Set initial state of submit button
-                
-                // Bind the change event to the checkbox
-                $('#ec_terms').change(function() {
-                    check_terms();
-                });
-            });
         
             
         
