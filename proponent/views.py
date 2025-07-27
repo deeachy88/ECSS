@@ -2356,7 +2356,7 @@ def save_anc_general_attachment_details(request):
 
 def add_final_product_details(request):
     application_no = request.POST.get('application_no')
-    product_name = request.POST.get('produce_name')
+    product_name = request.POST.get('product_name')
     name_location_type = request.POST.get('name_location')
     if name_location_type:
         quantity_annum = None
@@ -2375,7 +2375,7 @@ def add_final_product_details(request):
 def update_final_product_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
-    product_name = request.POST.get('produce_name')
+    product_name = request.POST.get('product_name')
     name_location_type = request.POST.get('name_location')
     if name_location_type:
         quantity_annum = None
