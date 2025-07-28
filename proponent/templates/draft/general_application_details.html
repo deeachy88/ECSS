@@ -3,7 +3,7 @@
     <div class="col-xl-12">
         <div class="card mt-1">
             <div class="card-body">
-                <h4 class="header-title mb-3"> Initials Environmental Examination (IEE) Form for General Projects -2022</h4>
+                <h4 class="header-title mb-3"> Initial Environmental Examination (IEE) Form for General Projects - 2022</h4>
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
@@ -58,13 +58,13 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of the Project</label>
-                                                <input class="form-control" type="text" id="project_name" name="project_name" value="{{application_details.project_name}}">
+                                                <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}">
                                             </div>
                                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
+                                                <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
                                                 <textarea class="form-control" name="focal_person" id="focal_person" rows="3">{{application_details.focal_person}}</textarea>
                                             </div>
                                         </div>
@@ -171,7 +171,7 @@
                                                 <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}">
                                             </div>
                                             <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div> 
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -223,7 +223,7 @@
                                             <div id="total_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <!-- Success Alert -->
+                                                                        <!-- Success Alert -->
                                     <div class="alert alert-success border-0 rounded-0" 
                                         role="alert" 
                                         id="application_form_successMsg" 
@@ -255,7 +255,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingTwoBtn"
-                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" disabled>
                                 Baseline/Existing information
                             </button>
                         </h2>
@@ -412,10 +412,8 @@
                                         </tbody>
                                     </table>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="terrain_baseline_application_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="terrain_baseline_application_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-4">
                                         <div class="text-sm-end">
@@ -430,7 +428,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingProjectDetails">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn">
+                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn" disabled>
                                 Project Details
                             </button>
                         </h2>
@@ -443,15 +441,15 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Project objective</label>
-                                                <input type="text" name="project_objective" class="form-control" id="project_objective" value="{% if application_details.project_objective %}{{ application_details.project_objective }}{% endif %}">
+                                                <label class="form-label fw-bold">Project Objective</label>
+                                                <input type="text" name="project_objective" class="form-control" id="project_objective" value="{{application_details.project_objective}}">
                                             </div>
                                             <div id="project_objectiveErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Number of Workers to be Employed</label>
-                                                <input type="number" name="no_of_workers" class="form-control" id="no_of_workers" value="{% if application_details.project_no_of_workers %}{{ application_details.project_no_of_workers }}{% endif %}">
+                                                <input type="number" name="no_of_workers" class="form-control" id="no_of_workers" value="{{application_details.no_of_workers}}">
                                             </div>
                                             <div id="no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -460,14 +458,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Output</label>
-                                                <input type="text" name="project_output" class="form-control" id="project_output" value="{% if application_details.project_output %}{{ application_details.project_output }}{% endif %}">
+                                                <input type="text" name="project_output" class="form-control" id="project_output" value="{{application_details.project_output}}">
                                             </div>
                                             <div id="project_outputErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Cost (Nu)</label>
-                                                <input type="number" name="project_cost" class="form-control" id="project_cost" value="{% if application_details.project_cost %}{{ application_details.project_cost }}{% endif %}">
+                                                <input type="number" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}">
                                             </div>
                                             <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -476,7 +474,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Project Duration</label>
-                                                <input type="text" name="project_duration" class="form-control" id="project_duration" value="{% if application_details.project_duration %}{{ application_details.project_duration }}{% endif %}">
+                                                <input type="text" name="project_duration" class="form-control" id="project_duration" value="{{application_details.project_duration}}">
                                             </div>
                                             <div id="project_durationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -494,43 +492,7 @@
                                                 </div>
                                                 <div class="collapse pt-3 show">
                                                     <div id="final_products_div">
-                                                        <table class="table table-hover table-bordered table-centered mb-0">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Sl.no.</th>
-                                                                    <th>Name of Products/By-products</th>
-                                                                    <th>Installed Capacity/Quantity Per Annum</th>
-                                                                    <th>Method of storage</th>
-                                                                    <th></th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                {% for final_product in final_product %}
-                                                                    <tr>
-                                                                        <td>{{ forloop.counter }}</td>
-                                                                        <td>{{final_product.product_name}}</td>
-                                                                        <td>{{final_product.quantity_annum}}</td>
-                                                                        {% if final_product.storage_method == 'fully_enclosed' %}
-                                                                            <td>Fully Enclosed</td>
-                                                                        {% elif final_product.storage_method == 'partially_enclosed' %}
-                                                                            <td>Partially Enclosed</td>
-                                                                        {% else %}
-                                                                            <td>Open</td>
-                                                                        {% endif %}
-                                                                        <td>
-                                                                            <div class="btn-group btn-group-sm">
-                                                                                <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="edit_produce_populate('{{final_product.record_id}}','{{final_product.application_no}}','{{final_product.product_name}}','{{final_product.quantity_annum}}','{{final_product.storage_method}}')"><i class="mdi mdi-square-edit-outline"></i></button>
-                                                                                <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_produce('{{final_product.record_id}}','{{final_product.application_no}}')"><i class="uil-trash"></i></button>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                {% empty %}
-                                                                    <tr>
-                                                                      <td colspan="5" class="text-center">No Data Available</td>
-                                                                    </tr>
-                                                                {% endfor %}
-                                                            </tbody>
-                                                        </table>
+                                                        {% include 'final_products.html' %}
                                                     </div>
                                                 </div>
                                             </div>
@@ -566,7 +528,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn">
+                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn" disabled>
                                 Energy / Water Requirement
                             </button>
                         </h2>
@@ -575,68 +537,19 @@
                             <div class="accordion-body">
                                 <form method="post" id="water_requirement_form">
                                     {% csrf_token %}
-                                    <input type="text" class="form-control" value="{{application_details.application_no}}" name="water_requirement_application_no" id="water_requirement_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_water_application_no">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Mention the source of energy to operate the proposed activity</label>
-                                                {% if application_details.energy_source %}
-                                                    <select class="form-control" id="energy_source" name="energy_source">
-                                                        <option value="">--SELECT--</option>
-                                                        {% if application_details.energy_source == "Electric" %}
-                                                        <option value="Electric" selected>Electric</option>
-                                                        <option value="Coal">Coal</option>
-                                                        <option value="High speed diesel">High speed diesel</option>
-                                                        <option value="Wood-Fired">Wood-Fired</option>
-                                                        <option value="Biomass">Biomass</option>
-                                                        {% elif application_details.energy_source == "Electric" %}
-                                                        <option value="Electric">Electric</option>
-                                                        <option value="Coal">Coal</option>
-                                                        <option value="High speed diesel">High speed diesel</option>
-                                                        <option value="Wood-Fired">Wood-Fired</option>
-                                                        <option value="Biomass">Biomass</option>
-                                                        {% elif application_details.energy_source == "Electric" %}
-                                                        <option value="Electric">Electric</option>
-                                                        <option value="Coal">Coal</option>
-                                                        <option value="High speed diesel">High speed diesel</option>
-                                                        <option value="Wood-Fired">Wood-Fired</option>
-                                                        <option value="Biomass">Biomass</option>
-                                                        {% elif application_details.energy_source == "Coal" %}
-                                                        <option value="Electric">Electric</option>
-                                                        <option value="Coal" selected>Coal</option>
-                                                        <option value="High speed diesel">High speed diesel</option>
-                                                        <option value="Wood-Fired">Wood-Fired</option>
-                                                        <option value="Biomass">Biomass</option>
-                                                        {% elif application_details.energy_source == "High-speed-diesel" %}
-                                                        <option value="Electric">Electric</option>
-                                                        <option value="Coal">Coal</option>
-                                                        <option value="High-speed-diesel" selected>High speed diesel</option>
-                                                        <option value="Wood-Fired">Wood-Fired</option>
-                                                        <option value="Biomass">Biomass</option>
-                                                        {% elif application_details.energy_source == "Wood-Fired" %}
-                                                        <option value="Electric">Electric</option>
-                                                        <option value="Coal">Coal</option>
-                                                        <option value="High-speed-diesel">High speed diesel</option>
-                                                        <option value="Wood-Fired" selected>Wood-Fired</option>
-                                                        <option value="Biomass">Biomass</option>
-                                                        {% else %}
-                                                        <option value="Electric">Electric</option>
-                                                        <option value="Coal">Coal</option>
-                                                        <option value="High-speed-diesel">High speed diesel</option>
-                                                        <option value="Wood-Fired">Wood-Fired</option>
-                                                        <option value="Biomass" selected>Biomass</option>
-                                                        {% endif %}
-                                                    </select>
-                                                    {% else %}
-                                                        <select class="form-control" id="energy_source" name="energy_source">
-                                                            <option value="">--SELECT--</option>
-                                                            <option value="Electric">Electric</option>
-                                                            <option value="Coal">Coal</option>
-                                                            <option value="High speed diesel">High speed diesel</option>
-                                                            <option value="Wood-Fired">Wood-Fired</option>
-                                                            <option value="Biomass">Biomass</option>
-                                                        </select>
-                                                    {% endif %}
+                                                <select class="form-control" id="energy_source" name="energy_source">
+                                                    <option value="">--SELECT--</option>
+                                                    <option value="Electric" {% if application_details.energy_source == "Electric" %}selected{% endif %}>Electric</option>
+                                                    <option value="Coal" {% if application_details.energy_source == "Coal" %}selected{% endif %}>Coal</option>
+                                                    <option value="High_speed_diesel" {% if application_details.energy_source == "High_speed_diesel" %}selected{% endif %}>High speed diesel</option>
+                                                    <option value="Wood_Fired" {% if application_details.energy_source == "Wood_Fired" %}selected{% endif %}>Wood-Fired</option>
+                                                    <option value="Biomass" {% if application_details.energy_source == "Biomass" %}selected{% endif %}>Biomass</option>
+                                                </select>
                                             </div>
                                             <div id="energy_sourceErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1049,19 +962,56 @@
                                                     </div>
                                                     <div class="collapse pt-3 show">
                                                         <div id="raw_materials_div">
-                                                            {% include 'raw_materials.html' %}
+                                                            <table class="table table-hover table-bordered table-centered mb-0">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Sl.no.</th>
+                                                                        <th>List of Raw Materials</th>
+                                                                        <th>Quantity (MT/annum)</th>
+                                                                        <th>Source</th>
+                                                                        <th>Method of Storage</th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {% for raw_materials in raw_materials %}
+                                                                        <tr>
+                                                                            <td>{{ forloop.counter }}</td>
+                                                                            <td>{{raw_materials.raw_material}}</td>
+                                                                            <td>{{raw_materials.qty}}</td>
+                                                                            <td>{{raw_materials.source}}</td>
+                                                                            {% if raw_materials.storage_method == 'Fully_Enclosed' %}
+                                                                                <td>Fully Enclosed</td>
+                                                                            {% elif raw_materials.storage_method == 'Partially_Enclosed' %}
+                                                                                <td>Partially Enclosed</td>
+                                                                            {% else %}
+                                                                                <td>Open</td>
+                                                                            {% endif %}
+                                                                            <td>
+                                                                                <div class="btn-group btn-group-sm">
+                                                                                    <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" onclick="raw_materials_details_edit('{{raw_materials.record_id}}','{{raw_materials.application_no}}','{{raw_materials.raw_material}}','{{raw_materials.qty}}','{{raw_materials.source}}','{{raw_materials.storage_method}}')"><i class="mdi mdi-square-edit-outline"></i></button>
+                                                                                    <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_raw_materials('{{raw_materials.record_id}}','{{raw_materials.application_no}}')"><i class="uil-trash"></i></button>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    {% empty %}
+                                                                        <tr>
+                                                                        <td colspan="6" class="text-center">No Data Available</td>
+                                                                        </tr>
+                                                                    {% endfor %}
+                                                                </tbody>
+                                                            </table>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     {% endif %}
-                                    
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="water_requirement_application_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                        <span class="alert-text"></span>
                                     </div>
                                     <div class="alert alert-danger border-0 rounded-0" role="alert" id="water_requirement_application_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                        <span class="alert-text"></span>
                                     </div>
                                     <div class="row mt-4">
                                         <div class="text-sm-end">
@@ -1076,7 +1026,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFive">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFiveBtn"
-                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" disabled>
                                 Ancillary:Approach Road
                             </button>
                         </h2>
@@ -1340,10 +1290,8 @@
                                         </div>
                                     {% endif %}
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_approach_road_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="alert alert-danger border-0 rounded-0" role="alert" id="anc_approach_road_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
@@ -1358,7 +1306,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSix">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSixBtn"
-                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" disabled>
                                 Ancillary:Power Lines
                             </button>
                         </h2>
@@ -1559,10 +1507,8 @@
                                     {% endif %}
                                     
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_power_line_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="alert alert-danger border-0 rounded-0" role="alert" id="anc_power_line_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
@@ -1577,7 +1523,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSeven">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" id="headingSevenBtn">
+                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" id="headingSevenBtn" disabled>
                                 Ancillary:Others
                             </button>
                         </h2>
@@ -1615,11 +1561,21 @@
                                         <label class="form-check-label">Others</label>
                                     </div>
 
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_others_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    <div class="alert alert-success border-0 rounded-0" 
+                                        role="alert" 
+                                        id="anc_others_successMsg" 
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="anc_others_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+
+                                    <!-- Error Alert -->
+                                    <div class="alert alert-danger border-0 rounded-0" 
+                                        role="alert" 
+                                        id="anc_others_errorMsg" 
+                                        style="display:none"
+                                        aria-live="assertive"
+                                        aria-atomic="true">
                                     </div>
                                     <div class="row mt-4">
                                         <div class="text-sm-end">
@@ -1634,7 +1590,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingEight">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
-                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
                                 Solid Waste
                             </button>
                         </h2>
@@ -1707,11 +1663,21 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="solid_waste_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    <div class="alert alert-success border-0 rounded-0" 
+                                        role="alert" 
+                                        id="solid_waste_successMsg" 
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="solid_waste_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+
+                                    <!-- Error Alert -->
+                                    <div class="alert alert-danger border-0 rounded-0" 
+                                        role="alert" 
+                                        id="solid_waste_errorMsg" 
+                                        style="display:none"
+                                        aria-live="assertive"
+                                        aria-atomic="true">
                                     </div>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
@@ -1726,7 +1692,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwelve">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTwelveBtn"
-                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
+                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" disabled>
                                 Noise Level
                             </button>
                         </h2>
@@ -1776,11 +1742,15 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="noise_level_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    <div class="alert alert-success border-0 rounded-0" 
+                                        id="noise_level_successMsg" 
+                                        style="display:none">
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="noise_level_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+
+                                    <!-- Error Alert -->
+                                    <div class="alert alert-danger border-0 rounded-0" 
+                                        id="noise_level_errorMsg" 
+                                        style="display:none">
                                     </div>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
@@ -1795,7 +1765,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOtherImpacts">
                             <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
+                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
                                 Other Impacts
                             </button>
                         </h2>
@@ -1895,11 +1865,21 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="other_impact_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    <div class="alert alert-success border-0 rounded-0" 
+                                        role="alert" 
+                                        id="other_impact_successMsg" 
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="other_impact_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+
+                                    <!-- Error Alert -->
+                                    <div class="alert alert-danger border-0 rounded-0" 
+                                        role="alert" 
+                                        id="other_impact_errorMsg" 
+                                        style="display:none"
+                                        aria-live="assertive"
+                                        aria-atomic="true">
                                     </div>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
@@ -1914,7 +1894,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingAttachment">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
-                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
+                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
                                 File Attachment
                             </button>
                         </h2>
@@ -1994,8 +1974,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="alert alert-success border-0 rounded-0" role="alert" id="general_attachment_successMsg" style="display:none">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                <div class="alert alert-success border-0 rounded-0" 
+                                    role="alert" 
+                                    id="general_attachment_successMsg" 
+                                    style="display:none"
+                                    aria-live="polite"
+                                    aria-atomic="true">
                                 </div>
                                 <div class="row mt-4">
                                     <div class="text-sm-end">
@@ -2060,17 +2044,21 @@
                                         </div>
                                     </div>
 
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="iee_submit_successMsg" style="display:none">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                    <div class="alert alert-success border-0 rounded-0" 
+                                        role="alert" 
+                                        id="general_submit_successMsg" 
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
                                     </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="iee_submit_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="general_submit_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="general_submit_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+
+                                    <!-- Error Alert -->
+                                    <div class="alert alert-danger border-0 rounded-0" 
+                                        role="alert" 
+                                        id="general_submit_errorMsg" 
+                                        style="display:none"
+                                        aria-live="assertive"
+                                        aria-atomic="true">
                                     </div>
                                     <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
                                         <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
@@ -2318,7 +2306,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Installed capacity/quantity per annum</label>
+                    <label class="form-label fw-bold">Installed Capacity/Quantity Per Annum</label>
                     <input type="number" name="quantity_annum" class="form-control" id="quantity_annum">
                 </div>
                 <div class="alert alert-danger" id="quantity_annumErrorMsg" style="display:none"></div>
@@ -2329,7 +2317,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="storage_method" id="storage_method">
-                        <option selected>Choose One</option>
+                        <option value="">Choose One</option>
                         <option value="fully_enclosed">Fully Enclosed</option>
                         <option value="partially_enclosed">Partially Enclosed</option>
                         <option value="open">Open</option>
@@ -2388,7 +2376,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of storage</label>
                     <select class="form-select" name="edit_final_product_storage_method" id="edit_final_product_storage_method">
-                        <option selected>Choose One</option>
+                        <option value="">Choose One</option>
                         <option value="fully_enclosed">Fully Enclosed</option>
                         <option value="partially_enclosed">Partially Enclosed</option>
                         <option value="open">Open</option>
@@ -2467,7 +2455,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Quantity (MT/annum)</label>
-                    <input type="text" name="raw_material_qty" class="form-control" id="raw_material_qty">
+                    <input type="number" name="raw_material_qty" class="form-control" id="raw_material_qty">
                 </div>
                 <div class="alert alert-danger" id="raw_material_qtyErrorMsg" style="display:none"></div>
             </div>
@@ -2484,10 +2472,10 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="raw_material_storage_method" id="raw_material_storage_method">
-                        <option selected>Choose One</option>
-                        <option value="fully_enclosed">Fully Enclosed</option>
-                        <option value="partially_enclosed">Partially Enclosed</option>
-                        <option value="open">Open</option>
+                        <option value="">Choose One</option>
+                        <option value="Fully_Enclosed">Fully Enclosed</option>
+                        <option value="Partially_Enclosed">Partially Enclosed</option>
+                        <option value="Open">Open</option>
                     </select>
                 </div>
                 <div class="alert alert-danger" id="raw_material_storage_methodErrorMsg" style="display:none"></div>
@@ -2533,7 +2521,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Quantity (MT/annum)</label>
-                    <input type="text" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
+                    <input type="number" name="edit_raw_material_qty" class="form-control" id="edit_raw_material_qty">
                 </div>
                 <div class="alert alert-danger" id="edit_raw_material_qtyErrorMsg" style="display:none"></div>
             </div>
@@ -2550,10 +2538,10 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Method of Storage</label>
                     <select class="form-select" name="edit_raw_material_storage_method" id="edit_raw_material_storage_method">
-                        <option selected>Choose One</option>
-                        <option value="fully_enclosed">Fully Enclosed</option>
-                        <option value="partially_enclosed">Partially Enclosed</option>
-                        <option value="open">Open</option>
+                        <option "">Choose One</option>
+                        <option value="Fully_Enclosed">Fully Enclosed</option>
+                        <option value="Partially_Enclosed">Partially Enclosed</option>
+                        <option value="Open">Open</option>
                     </select>
                 </div>
                 <div class="alert alert-danger" id="edit_raw_material_storage_methodErrorMsg" style="display:none"></div>
@@ -2642,7 +2630,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Attachment</label>
-                    <input type="file" name="general_attach" class="form-control" id="general_attach" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                    <input type="file" name="general_attach" class="form-control" id="general_attach" accept=".png,.jpg,.jpeg,.pdf,.doc,.kmz">
                 </div>
                 <div class="alert alert-danger" id="general_attachErrorMsg" style="display:none"></div>
             </div>
@@ -2677,14 +2665,14 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Transmission line Chainage From</label>
-                    <input type="text" name="line_chainage_from" class="form-control" id="line_chainage_from" onblur="calculate_area_required()">
+                    <input type="number" name="line_chainage_from" class="form-control" id="line_chainage_from" onblur="calculate_area_required()">
                 </div>
                 <div class="alert alert-danger" id="line_chainage_fromErrorMsg" style="display:none"></div>
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Transmission line Chainage To</label>
-                    <input type="text" name="line_chainage_to" class="form-control" id="line_chainage_to" onblur="calculate_area_required()">
+                    <input type="number" name="line_chainage_to" class="form-control" id="line_chainage_to" onblur="calculate_area_required()">
                 </div>
                 <div class="alert alert-danger" id="line_chainage_toErrorMsg" style="display:none"></div>
             </div>
@@ -2784,14 +2772,14 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Transmission line Chainage From</label>
-                    <input type="text" name="edit_line_chainage_from" class="form-control" id="edit_line_chainage_from" onblur="calculate_edit_area_required()">
+                    <input type="number" name="edit_line_chainage_from" class="form-control" id="edit_line_chainage_from" onblur="calculate_edit_area_required()">
                 </div>
                 <div class="alert alert-danger" id="edit_line_chainage_fromErrorMsg" style="display:none"></div>
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Transmission line Chainage To</label>
-                    <input type="text" name="edit_line_chainage_to" class="form-control" id="edit_line_chainage_to" onblur="calculate_edit_area_required()">
+                    <input type="number" name="edit_line_chainage_to" class="form-control" id="edit_line_chainage_to" onblur="calculate_edit_area_required()">
                 </div>
                 <div class="alert alert-danger" id="edit_line_chainage_toErrorMsg" style="display:none"></div>
             </div>
@@ -2923,14 +2911,14 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Chainage From (m)</label>
-                        <input type="text" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onchange="calculate_road_area_required()">
+                        <input type="number" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onchange="calculate_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="road_line_chainage_fromErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Chainage To (m)</label>
-                        <input type="text" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onchange="calculate_road_area_required()">
+                        <input type="number" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onchange="calculate_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="road_line_chainage_toErrorMsg" style="display:none"></div>
                 </div>
@@ -2962,7 +2950,7 @@
                             <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
                         </select>
                     </div>
-                    <div class="alert alert-danger" id="road_ErrorMsg" style="display:none"></div>
+                    <div class="alert alert-danger" id="road_terrainErrorMsg" style="display:none"></div>
                 </div>
             </div>
             <div class="row">
@@ -3018,19 +3006,19 @@
           <!--Body-->
           <div class="modal-body mx-4">
             <div class="row">
-                <input type="hidden" name="edit_anc_record_id" class="form-control" id="edit_anc_road_record_id">
+                <input type="hidden" name="edit_anc_app_record_id" class="form-control" id="edit_anc_app_record_id">
                 <input type="hidden" name="edit_anc_application_no" class="form-control" id="edit_anc_road_application_no">
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Chainage From (m)</label>
-                        <input type="text" name="edit_road_line_chainage_from" class="form-control" id="edit_road_line_chainage_from" onblur="calculate_edit_road_area_required()">
+                        <input type="number" name="edit_road_line_chainage_from" class="form-control" id="edit_road_line_chainage_from" onblur="calculate_edit_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="edit_road_line_chainage_fromErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Chainage To(m)</label>
-                        <input type="text" name="edit_road_line_chainage_to" class="form-control" id="edit_road_line_chainage_to" onblur="calculate_edit_road_area_required()">
+                        <input type="number" name="edit_road_line_chainage_to" class="form-control" id="edit_road_line_chainage_to" onblur="calculate_edit_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="edit_road_line_chainage_toErrorMsg" style="display:none"></div>
                 </div>
@@ -3062,7 +3050,7 @@
                             <option value="Very steep (>60 degrees)">Very steep (>60 degrees)</option>
                         </select>
                     </div>
-                    <div class="alert alert-danger" id="edit_road_ErrorMsg" style="display:none"></div>
+                    <div class="alert alert-danger" id="edit_road_terrainErrorMsg" style="display:none"></div>
                 </div>
             </div>
             <div class="row">
@@ -3171,7 +3159,7 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Area of the dumpyard</label>
+                            <label class="form-label fw-bold">Area of the dumpyard (acres)</label>
                             <input type="text" name="dumpyard_area" class="form-control" id="dumpyard_area">
                         </div>
                         <div class="alert alert-danger" id="dumpyard_areaErrorMsg" style="display:none"></div>
@@ -3232,7 +3220,7 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Area of the dumpyard</label>
+                            <label class="form-label fw-bold">Area of the dumpyard (acres)</label>
                             <input type="text" name="edit_dumpyard_area" class="form-control" id="edit_dumpyard_area">
                         </div>
                         <div class="alert alert-danger" id="edit_dumpyard_areaErrorMsg" style="display:none"></div>
@@ -3290,141 +3278,23 @@
         </form>
         <script>
             $(function() {
-            if 
-            (
-                $('#anc_other_crushing_unit').prop('checked') &&
-                $('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                $('#anc_other_general').prop('checked')
-            ) 
-            {
-                $('.industry_application').show();
-                $('.forestry_application').show();
-                $('.general_application').show();
-                $('.mineral_application').show();
-            } 
-            else if 
-            (
-                $('#anc_other_crushing_unit').prop('checked') &&
-                !$('#anc_other_surface_collection').prop('checked') &&
-                !$('#anc_other_mineral').prop('checked') &&
-                !$('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.industry_application').show();
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                $('#anc_other_surface_collection').prop('checked') &&
-                !$('#anc_other_mineral').prop('checked') &&
-                !$('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.forestry_application').show();
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                !$('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                !$('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.mineral_application').show();
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                !$('#anc_other_surface_collection').prop('checked') &&
-                !$('#anc_other_mineral').prop('checked') &&
-                $('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.general_application').show();    
-            }
-            else if 
-            (
-                $('#anc_other_crushing_unit').prop('checked') &&
-                $('#anc_other_surface_collection').prop('checked') &&
-                !$('#anc_other_mineral').prop('checked') &&
-                !$('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.industry_application').show();
-                $('.forestry_application').show();
-            }
-            else if 
-            (
-                $('#anc_other_crushing_unit').prop('checked') &&
-                $('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                !$('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.industry_application').show();
-                $('.forestry_application').show();
-                $('.mineral_application').show();
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                $('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                !$('#anc_other_general').prop('checked')
-            )  
-            {
+                // Hide all sections first
+                $('.industry_application, .forestry_application, .general_application, .mineral_application').hide();
                 
-                $('.forestry_application').show();
-                $('.mineral_application').show();
-                
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                $('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                $('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.forestry_application').show();
-                $('.general_application').show();
-                $('.mineral_application').show();
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                !$('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                !$('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.mineral_application').show();
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                !$('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                $('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.general_application').show();
-                $('.mineral_application').show();
-            }
-            else if 
-            (
-                !$('#anc_other_crushing_unit').prop('checked') &&
-                !$('#anc_other_surface_collection').prop('checked') &&
-                $('#anc_other_mineral').prop('checked') &&
-                $('#anc_other_general').prop('checked')
-            )  
-            {
-                $('.general_application').show();
-                $('.mineral_application').show();
-            }
-        });
-           function toggleAcreField() {
+                // Get checkbox states
+                const crushingChecked = $('#anc_other_crushing_unit').prop('checked');
+                const surfaceChecked = $('#anc_other_surface_collection').prop('checked');
+                const mineralChecked = $('#anc_other_mineral').prop('checked');
+                const generalChecked = $('#anc_other_general').prop('checked');
+
+                // Show sections based on checkbox combinations
+                if (crushingChecked) $('.industry_application').show();
+                if (surfaceChecked) $('.forestry_application').show();
+                if (mineralChecked) $('.mineral_application').show();
+                if (generalChecked) $('.general_application').show();
+            });
+
+            function toggleAcreField() {
                 const othersArea = document.getElementById('others_area');
                 const acreFieldContainer = document.getElementById('acreFieldContainer');
                 
@@ -6707,4 +6577,5 @@
 
                 }
             }
+
         </script>
