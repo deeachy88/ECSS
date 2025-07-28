@@ -1899,11 +1899,12 @@
                                 <form method="post" id="ea_submit_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" id="general_disclaimer_application_no">
+
                                     <div class="row industry_application" style="display:none;">
-                                        <a href="{% url 'industry_ancillary_form ' %}" class="btn btn-danger">
+                                        <a href="{% url 'industry_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for Industrial projects </a>
                                     </div>
-                                    
+
                                     <div class="row forestry_application mt-1" style="display:none;">
                                         <a href="{% url 'forest_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for Forestry projects </a>
@@ -6514,7 +6515,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_impact_details' %}",
+                url : "{% url 'save_other_impact_details' %}",
                 data : $('#impact_form').serialize(),
                 success : function(data)
                 {
