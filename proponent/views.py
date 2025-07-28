@@ -3127,17 +3127,17 @@ def submit_general_application(request):
         # Handle ancillary submission
         if identifier == 'Ancillary':
             return handle_ancillary_submission(request, data, application_no, ancillary_application, service_value)
-        
-        # Handle main application submission
-        return handle_main_submission(
-            request, 
-            data, 
-            application_no, 
-            main_application, 
-            ancillary_application, 
-            application_source, 
-            service_value
-        )
+        else:
+            # Handle main application submission
+            return handle_main_submission(
+                request, 
+                data, 
+                application_no, 
+                main_application, 
+                ancillary_application, 
+                application_source, 
+                service_value
+            )
         
     except Exception as e:
         logger.error(f"Error processing application: {str(e)}", exc_info=True)
@@ -3152,7 +3152,7 @@ def handle_ancillary_submission(request, data, application_no, ancillary_applica
     ancillary_application.action_date = timezone.now()
     ancillary_application.save()
     
-    t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
+    t_workflow_dtls.objects.filter(application_no=application_no,service_type='Ancillary').update(action_date=timezone.now())
     
     draft_count = t_ec_industries_t1_general.objects.filter(
         application_no=application_no, 
@@ -3194,7 +3194,7 @@ def handle_main_submission(request, data, application_no, main_application, anci
             'assigned_role_id': '1',
             'assigned_role_name': 'Admin'
         })
-    t_workflow_dtls.objects.filter(application_no=application_no).update(**workflow_update)
+    t_workflow_dtls.objects.filter(application_no=application_no,service_type='Main Activity').update(**workflow_update)
     
     # Calculate fees
     total_amount = calculate_fees(service_value, application_no)
@@ -3985,7 +3985,7 @@ def save_general_application(request):
             'specific_activity_code': request.session.get('specific_activity_code'),
             'category': request.session.get('category'),
 
-            # New optional fields (safe to add more here)
+            # New optional fields
             'max_evacuation_depth': request.POST.get('max_evacuation_depth'),
             'terrain_elevation': request.POST.get('terrain_elevation'),
             'terrain_slope': request.POST.get('terrain_slope'),
@@ -4009,36 +4009,53 @@ def save_general_application(request):
 
         common_fields['ca_authority'] = ca_auth
 
-        # 5. Database operations
+        # 5. Database operations with proper service_type handling
         with transaction.atomic():
-            # Handle different application types
-            if identifier == 'NC':
-                t_ec_industries_t1_general.objects.filter(application_no=application_no).update(
-                    project_name=common_fields['project_name'],
-                    service_type=identifier
-                )
-            elif identifier == 'OC':
-                t_ec_industries_t1_general.objects.filter(application_no=application_no).update(
-                    applicant_name=common_fields['applicant_name'],
-                    service_type=identifier
-                )
-            elif identifier == 'DR':
-                protected_fields = {
-                    'service_type', 'ca_authority', 'applicant_id', 'colour_code',
-                    'service_id', 'broad_activity_code', 'specific_activity_code',
-                    'category', 'application_source', 'application_status'
-                }
-                update_fields = {k: v for k, v in common_fields.items() if k not in protected_fields}
-                t_ec_industries_t1_general.objects.filter(application_no=application_no).update(**update_fields)
-            else:  # New application
+            # Check if application exists with same service_type
+            existing_app = t_ec_industries_t1_general.objects.filter(
+                application_no=application_no,
+                service_type=service_type
+            ).first()
+
+            if existing_app:
+                # Update existing application
+                if identifier == 'NC':
+                    update_fields = {
+                        'project_name': common_fields['project_name'],
+                        'service_type': identifier
+                    }
+                elif identifier == 'OC':
+                    update_fields = {
+                        'applicant_name': common_fields['applicant_name'],
+                        'service_type': identifier
+                    }
+                elif identifier == 'DR':
+                    protected_fields = {
+                        'service_type', 'ca_authority', 'applicant_id', 'colour_code',
+                        'service_id', 'broad_activity_code', 'specific_activity_code',
+                        'category', 'application_source', 'application_status'
+                    }
+                    update_fields = {k: v for k, v in common_fields.items() 
+                                   if k not in protected_fields}
+                else:  # General update
+                    update_fields = common_fields
+
+                # Perform the update
+                t_ec_industries_t1_general.objects.filter(
+                    application_no=application_no,
+                    service_type=service_type
+                ).update(**update_fields)
+            else:
+                # Create new application
                 t_ec_industries_t1_general.objects.create(
                     application_no=application_no,
                     **common_fields
                 )
 
-            # Update workflow
+            # Update workflow - now including service_type in the filter
             t_workflow_dtls.objects.update_or_create(
                 application_no=application_no,
+                service_type=service_type,  # Added service_type to ensure unique workflow per service
                 defaults={
                     'application_status': 'P',
                     'actor_id': request.session.get('login_id'),
@@ -4047,27 +4064,29 @@ def save_general_application(request):
                     'assigned_role_name': 'Verifier',
                     'service_id': request.session.get('service_id'),
                     'ca_authority': ca_auth,
-                    'application_source': 'ECSS',
-                    'service_type': service_type
+                    'application_source': 'ECSS'
                 }
             )
 
-            # Create history record
+            # Create history record - now properly tracking by service_type
             t_application_history.objects.create(
                 application_no=application_no,
+                service_type=service_type,  # Added service_type to history
                 application_date=timezone.now().date(),
                 applicant_id=request.session.get('email'),
                 ca_authority=ca_auth,
                 service_id=request.session.get('service_id'),
                 application_status='P',
                 actor_id=request.session.get('login_id'),
-                actor_name=request.session.get('name')
+                actor_name=request.session.get('name'),
+                action_date=timezone.now()
             )
 
         data['message'] = "success"
     except Exception as e:
         data['error'] = str(e)
-        logger.error(f"Error saving application {application_no}: {str(e)}")
+        logger.error(f"Error saving application {application_no} (service: {service_type}): {str(e)}", 
+                   exc_info=True)
 
     return JsonResponse(data)
 

@@ -1067,7 +1067,7 @@
                                 <form method="post" id="ground_water_submit_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no">
-                                    
+                                    <input type="text" class="form-control" value="Ancillary" name="anc_identifier" style="display:none;">
                                     <div class="row industry_application" style="display:none;">
                                         <a href="{% url 'industry_ancillary_form' %}" class="btn btn-danger">
                                             <i class="mdi mdi-truck-fast me-1"></i> IEE form for Industrial projects </a>
