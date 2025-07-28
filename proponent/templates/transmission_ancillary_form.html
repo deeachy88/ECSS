@@ -1154,7 +1154,7 @@
                                     </div>
                                     <div class="alert alert-success border-0 rounded-0"
                                         role="alert"
-                                        id="transmission_submit_successMsg"
+                                        id="general_submit_successMsg"
                                         style="display:none"
                                         aria-live="polite"
                                         aria-atomic="true">
@@ -1163,7 +1163,7 @@
                                     <!-- Error Alert -->
                                     <div class="alert alert-danger border-0 rounded-0"
                                         role="alert"
-                                        id="transmission_submit_errorMsg"
+                                        id="general_submit_errorMsg"
                                         style="display:none"
                                         aria-live="assertive"
                                         aria-atomic="true">
@@ -3593,85 +3593,119 @@
 
 
             function submit_general_application() {
-                // Show loading indicator
-                $("#pageloader").show();
+                // Show loading spinner
+                    $("#pageloader").show();
+                    
+                    // Hide any previous messages
+                    $('#general_submit_successMsg').hide();
+                    $('#general_submit_errorMsg').hide();
 
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'submit_general_application' %}",
-                    data: $('#transmission_submit_form').serialize(),
-                    success: function(data) {
-                        $("#pageloader").hide();
-
-                        if (data.message == 'success') {
-                            // Success case
-                            $('#transmission_submit_successMsg')
-                                .text("Application Submitted Successfully")
-                                .removeAttr('tabindex')
-                                .attr({
-                                    'aria-live': 'polite',
-                                    'aria-atomic': 'true'
-                                })
-                                .show()
-                                .focus();
-
-                            setTimeout(() => {
-                                $('#transfission_submit_successMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
-
-                            setTimeout(() => location.reload(), 2000);
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'submit_general_application' %}",
+                        data: $('#general_submit_form').serialize(),
+                        dataType: 'json',
+                        success: function(data) {
+                            $("#pageloader").hide();
+                            // Debugging - view full response in console
+                            console.log("Server Response:", data);
+                            
+                            // Handle error response
+                            if (data.error) {
+                                $('#general_submit_errorMsg').html(data.error);
+                                $('#general_submit_errorMsg').show();
+                                return;
+                            }
+                            
+                            // Handle success response
+                            if (data.message === 'success') {
+                                $('#general_submit_successMsg').html("Application Submitted Successfully");
+                                $('#general_submit_successMsg').show();
+                                
+                                setTimeout(function() {
+                                    $('#general_submit_successMsg').fadeOut('slow');
+                                }, 3000);
+                                
+                                // Handle draft count and redirect
+                                if (data.draft_count > 0) {
+                                    var redirectUrl = '';
+                                    switch(data.type) {
+                                        case 'IEE':
+                                            redirectUrl = '/draft_iee_application';
+                                            break;
+                                        case 'IEA':
+                                            redirectUrl = '/draft_ea_application';
+                                            break;
+                                        case 'ENE':
+                                            redirectUrl = '/draft_energy_application';
+                                            break;
+                                        case 'ROA':
+                                            redirectUrl = '/draft_road_application';
+                                            break;
+                                        case 'TRA':
+                                            redirectUrl = '/draft_transmission_application';
+                                            break;
+                                        case 'TOU':
+                                            redirectUrl = '/draft_tourism_application';
+                                            break;
+                                        case 'GWA':
+                                            redirectUrl = '/draft_ground_water_application';
+                                            break;
+                                        case 'FOR':
+                                            redirectUrl = '/draft_forestry_application';
+                                            break;
+                                        case 'QUA':
+                                            redirectUrl = '/draft_quarry_application';
+                                            break;
+                                        case 'GEN':
+                                            redirectUrl = '/draft_general_application';
+                                            break;
+                                        default:
+                                            console.error("Unknown application type:", data.type);
+                                    }
+                                    
+                                    if (redirectUrl) {
+                                        setTimeout(function() {
+                                            window.location.href = redirectUrl;
+                                        }, 1000);
+                                    }
+                                } else {
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            } 
+                            // Handle "not submitted" case
+                            else if (data.message === 'not submitted') {
+                                $('#general_submit_errorMsg').html("Please complete all required ancillary forms before submission.");
+                                $('#general_submit_errorMsg').show();
+                            }
+                            // Handle unexpected response
+                            else {
+                                $('#general_submit_errorMsg').html("Unexpected response from server. Please try again.");
+                                $('#general_submit_errorMsg').show();
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            $("#pageloader").hide();
+                            
+                            // Try to parse error response if available
+                            var errorMsg = "An error occurred while processing your request.";
+                            try {
+                                var response = JSON.parse(xhr.responseText);
+                                if (response.error) {
+                                    errorMsg = response.error;
+                                }
+                            } catch (e) {
+                                console.error("Error parsing error response:", e);
+                            }
+                            
+                            $('#general_submit_errorMsg').html(errorMsg);
+                            $('#general_submit_errorMsg').show();
+                            
+                            console.error("AJAX Error:", status, error);
                         }
-                        else if (data.message == 'not submitted') {
-                            // Ancillary not submitted case
-                            $('#transmission_submit_errorMsg')
-                                .text("Please Submit Your Ancillary First And Try Again")
-                                .removeAttr('tabindex')
-                                .attr({
-                                    'aria-live': 'assertive',
-                                    'aria-atomic': 'true'
-                                })
-                                .show()
-                                .focus();
-
-                            setTimeout(() => {
-                                $('#transmission_submit_errorMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
-                        }
-                        else {
-                            // Other error cases
-                            $('#general_submit_errorMsg')
-                                .text(`Application Error: ${data.error}`)
-                                .removeAttr('tabindex')
-                                .attr({
-                                    'aria-live': 'assertive',
-                                    'aria-atomic': 'true'
-                                })
-                                .show()
-                                .focus();
-
-                            setTimeout(() => {
-                                $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        // AJAX error handling
-                        $("#pageloader").hide();
-                        $('#general_submit_errorMsg')
-                            .text(`Request failed: ${error}`)
-                            .removeAttr('tabindex')
-                            .attr({
-                                'aria-live': 'assertive',
-                                'aria-atomic': 'true'
-                            })
-                            .show()
-                            .focus();
-
-                        setTimeout(() => {
-                            $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                    }
-                });
+                    });
             }
 
 
