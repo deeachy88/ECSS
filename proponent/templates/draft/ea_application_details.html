@@ -264,6 +264,14 @@
                                                 </div>
                                                 <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
+                                             {% else %}
+                                            <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Others(acres)</label>
+                                                    <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()">
+                                                </div>
+                                                <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
                                         {% endif %}
                                     </div>
                                     <div class="row">
