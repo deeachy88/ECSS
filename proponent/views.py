@@ -3990,7 +3990,7 @@ def save_general_application(request):
             'max_evacuation_depth': request.POST.get('max_evacuation_depth'),
             'terrain_elevation': request.POST.get('terrain_elevation'),
             'terrain_slope': request.POST.get('terrain_slope'),
-            'total_buildup_acre': request.POST.get('total_buildup_acre'),
+            'total_buildup_acre': request.POST.get('total_build_up_area'),
         }
 
         # 4. Determine competent authority
