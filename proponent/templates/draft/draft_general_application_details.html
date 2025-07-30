@@ -205,23 +205,16 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Others Specify</label>
-                                                <input type="text" name="others_area" class="form-control" id="others_area" oninput="toggleAcreField()" value="{{ application_details.others_area|default:'' }}">
+                                                <input type="text" name="others_area" class="form-control" id="others_area" value="{{ application_details.others_area }}" oninput="toggleAcreField()">
                                             </div>
                                             <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
+
                                         {% if application_details.others_area and application_details.others_area != "NA" %}
-                                            <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
+                                            <div class="col-lg-6" id="acreFieldContainer">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Others(acres)</label>
-                                                    <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()">
-                                                </div>
-                                                <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                            </div>
-                                             {% else %}
-                                            <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Others(acres)</label>
-                                                    <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" onchange="get_total_area_acre()">
+                                                    <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" oninput="get_total_area_acre()" value="{{application_details.others_area_acre}}">
                                                 </div>
                                                 <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
@@ -3310,19 +3303,19 @@
                 const othersArea = document.getElementById('others_area');
                 const acreFieldContainer = document.getElementById('acreFieldContainer');
                 
-                // Show acre field if others_area has any value, hide if empty
-                if (othersArea.value.trim() !== '') {
+                if (othersArea.value && othersArea.value !== 'NA') {
                     acreFieldContainer.style.display = 'block';
                 } else {
                     acreFieldContainer.style.display = 'none';
-                    // Clear the acre value when hiding
-                    document.getElementById('others_area_acre').value = '0';
-                    // Trigger the change event to update totals if needed
-                    if (typeof get_total_area_acre === 'function') {
-                        get_total_area_acre();
-                    }
+                    // Optional: Clear the acre field when hidden
+                    document.getElementById('others_area_acre').value = '';
                 }
             }
+
+            // Initialize on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                toggleAcreField();
+            });
             function check_general_water(value)
             {
                 if(value == 'Yes')
