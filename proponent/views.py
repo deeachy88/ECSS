@@ -3974,7 +3974,6 @@ def save_general_application(request):
             'others_area': request.POST.get('others_area'),
             'others_area_acre': request.POST.get('others_area_acre'),
             'total_area_acre': request.POST.get('total_area_acre'),
-            'total_build_up_area':request.POST.get('total_build_up_area'),
 
             # System fields
             'service_type': service_type,
@@ -4090,6 +4089,7 @@ def save_general_application(request):
                    exc_info=True)
 
     return JsonResponse(data)
+
 
 # Forest Application Details
 def save_forest_application(request):
