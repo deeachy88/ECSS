@@ -2976,6 +2976,7 @@ def save_general_water_requirement(request):
             raise ValueError(f"Application {application_no} not found")
 
         update_data = {
+            'energy_source': energy_source,
             'water_excavated_muck': water_excavated_muck,
             'water_required': water_required,
             'water_resources_info': water_resources_info,
@@ -6271,6 +6272,9 @@ def view_draft_application_details(request):
     forest_produce = t_ec_industries_t8_forest_produce.objects.filter(application_no=application_no)
     products_by_products = t_ec_industries_t9_products_by_products.objects.filter(application_no=application_no)
     hazardous_chemicals = t_ec_industries_t10_hazardous_chemicals.objects.filter(application_no=application_no)
+    drainage_details = t_ec_industries_t12_drainage_details.objects.filter(application_no=application_no)
+    dumpyard_details = t_ec_industries_t13_dumpyard.objects.filter(application_no=application_no)
+    file_attach = t_file_attachment.objects.filter(application_no=application_no)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -6300,7 +6304,10 @@ def view_draft_application_details(request):
         'ec_details': ec_details,
         'ancillary_details': ancillary_details,
         'service_id': service_id,
-        'application_source':application_source
+        'application_source':application_source,
+        'dumpyard_details':dumpyard_details,
+        'drainage_details':drainage_details,
+        'file_attach':file_attach
     }
 
     if service_id is None or service_id == '':
