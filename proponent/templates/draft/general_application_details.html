@@ -78,93 +78,81 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Site</label>
-                                                {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio3">Dzongkhag</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)">
-                                                            <label class="form-check-label" for="customRadio4">Thromde</label>
-                                                        </div>
+                                                <label class="form-label fw-bold">Select One</label>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" {% if application_details.dzongkhag_throm == 'Dzongkhag' %}checked{% endif %}>
+                                                        <label class="form-check-label">Dzongkhag</label>
                                                     </div>
-                                                {% else %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)">
-                                                            <label class="form-check-label" for="customRadio3">Dzongkhag</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio4">Thromde</label>
-                                                        </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" {% if application_details.dzongkhag_throm == 'Thromde' %}checked{% endif %}>
+                                                        <label class="form-check-label">Thromde</label>
                                                     </div>
-                                                {% endif %}
+                                                </div>
                                             </div>
-                                            <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        {% if application_details.dzongkhag_throm == 'Thromde' %} 
-                                            <div class="col-lg-6 thromde_div">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Thromde</label>
-                                                    <select class="form-select">
-                                                        {% for thromde in thromde %}
-                                                            <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
-                                                                {{ thromde.thromde_name }}
-                                                            </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                                <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        <div class="col-lg-6 thromde" style="display: {% if application_details.dzongkhag_throm == 'Thromde' %}block{% else %}none{% endif %};">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Thromde</label>
+                                                <select class="form-select" name="thromde_id" id="thromde_id">
+                                                    <option value="">--SELECT THROMDE--</option>
+                                                    {% for thromde in thromde %}
+                                                        <option value="{{ thromde.thromde_id }}" {% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                                            {{ thromde.thromde_name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
-                                        {% endif %}
+                                            <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
                                     </div>
-                                    {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
-                                        <div class="row">
-                                            <div class="col-lg-6 dzongkhag_div">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Dzongkhag</label>
-                                                    <select class="form-select">
-                                                        {% for dzongkhag in dzongkhag %}
-                                                            <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
-                                                                {{ dzongkhag.dzongkhag_name }}
-                                                            </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
+                                    <div class="row dzongkhag" style="display: {% if application_details.dzongkhag_throm == 'Dzongkhag' %}block{% else %}none{% endif %};">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Dzongkhag</label>
+                                                <select class="form-select" name="dzongkhag" id="dzongkhag" onchange="getGewog(this.value)">
+                                                    <option value="">--SELECT DZONGKHAG--</option>
+                                                    {% for dzongkhag in dzongkhag %}
+                                                        <option value="{{ dzongkhag.dzongkhag_code }}" {% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                            {{ dzongkhag.dzongkhag_name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Gewog</label>
-                                                    <select class="form-select">
+                                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Gewog</label>
+                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                    <option value="">--SELECT GEWOG--</option>
                                                         {% for gewog in gewog %}
-                                                            <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                            <option value="{{ gewog.gewog_code }}" {% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
                                                                 {{ gewog.gewog_name }}
                                                             </option>
                                                         {% endfor %}
-                                                    </select>
-                                                </div>
-                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                </select>
                                             </div>
+                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Village/Chiwog</label>
-                                                    <select class="form-select">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6 dzongkhag" style="display: {% if application_details.dzongkhag_throm == 'Dzongkhag' %}block{% else %}none{% endif %};">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Village/Chiwog</label>
+                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                    <option value="">--SELECT VILLAGE--</option>
                                                         {% for village in village %}
-                                                            <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                            <option value="{{ village.village_code }}" {% if application_details.village_code == village.village_code %}selected{% endif %}>
                                                                 {{ village.village_name }}
                                                             </option>
                                                         {% endfor %}
-                                                    </select>
-                                                </div>
-                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                </select>
                                             </div>
+                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                    {% endif %}
+                                    </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -451,7 +439,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Number of Workers to be Employed</label>
-                                                <input type="number" name="no_of_workers" class="form-control" id="no_of_workers" value="{{application_details.no_of_workers}}">
+                                                <input type="number" name="no_of_workers" class="form-control" id="no_of_workers" value="{{application_details.project_no_of_workers}}">
                                             </div>
                                             <div id="no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -844,7 +832,7 @@
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Distance from source to the project site (meters)</label>
-                                                    <input type="text" name="water_source_distance" class="form-control" id="water_source_distance" value="{{application_details.water_source_distance}}">
+                                                    <input type="number" name="water_source_distance" class="form-control" id="water_source_distance" value="{{application_details.water_source_distance}}">
                                                 </div>
                                                 <div id="water_source_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
@@ -994,7 +982,7 @@
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Distance from source to the project site (meters)</label>
-                                                    <input type="text" name="water_source_distance" class="form-control" id="water_source_distance">
+                                                    <input type="number" name="water_source_distance" class="form-control" id="water_source_distance">
                                                 </div>
                                                 <div id="water_source_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
@@ -1169,7 +1157,7 @@
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        {% for anc_road_details in anc_road_details %}
+                                                                        {% for anc_road_details in ancillary_road %}
                                                                             <tr>
                                                                                 <td>{{ forloop.counter }}</td>
                                                                                 <td>{{anc_road_details.road_chainage_from}}</td>
@@ -1466,7 +1454,7 @@
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        {% for anc_power_line_details in anc_power_line_details %}
+                                                                        {% for anc_power_line_details in power_line %}
                                                                             <tr>
                                                                                 <td>{{ forloop.counter }}</td>
                                                                                 <td>{{anc_power_line_details.line_chainage_from}}</td>
@@ -1502,14 +1490,14 @@
                                             <div class="col-lg-4">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Voltage level in kV</label>
-                                                    <input type="text" name="anc_power_line_voltage" class="form-control" id="anc_power_line_voltage">
+                                                    <input type="number" name="anc_power_line_voltage" class="form-control" id="anc_power_line_voltage">
                                                 </div>
                                                 <div id="anc_power_line_voltageErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                             <div class="col-lg-4">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Length of transmission /distribution line in km</label>
-                                                    <input type="text" name="anc_power_line_length" class="form-control" id="anc_power_line_length">
+                                                    <input type="number" name="anc_power_line_length" class="form-control" id="anc_power_line_length">
                                                 </div>
                                                 <div id="anc_power_line_lengthErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
@@ -2341,7 +2329,7 @@
       <!--Header-->
       <div class="modal-header text-center">
         <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Add</strong></h5>
+												&nbsp;Add Product</strong></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
       <!--Body-->
@@ -2409,9 +2397,9 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Name of Products</label>
-                    <input type="text" name="edit_produce_name" class="form-control" id="edit_produce_name">
+                    <input type="text" name="edit_product_name" class="form-control" id="edit_product_name">
                 </div>
-                <div class="alert alert-danger" id="edit_produce_nameErrorMsg" style="display:none"></div>
+                <div class="alert alert-danger" id="edit_product_nameErrorMsg" style="display:none"></div>
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
@@ -2768,7 +2756,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">No. of Towers</label>
-                    <input type="text" name="no_of_tower" class="form-control" id="no_of_tower">
+                    <input type="number" name="no_of_tower" class="form-control" id="no_of_tower">
                 </div>
                 <div class="alert alert-danger" id="no_of_towerErrorMsg" style="display:none"></div>
             </div>
@@ -2776,8 +2764,8 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Right of way (RoW)</label>
-                    <input type="text" name="row" class="form-control" id="row" onblur="calculate_area_required()">
+                    <label class="form-label fw-bold">Right of way (RoW)(m)</label>
+                    <input type="number" name="row" class="form-control" id="row" onblur="calculate_area_required()">
                 </div>
                 <div class="alert alert-danger" id="rowErrorMsg" style="display:none"></div>
             </div>
@@ -2875,7 +2863,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">No. of Towers</label>
-                    <input type="text" name="edit_no_of_tower" class="form-control" id="edit_no_of_tower">
+                    <input type="number" name="edit_no_of_tower" class="form-control" id="edit_no_of_tower">
                 </div>
                 <div class="alert alert-danger" id="edit_no_of_towerErrorMsg" style="display:none"></div>
             </div>
@@ -2884,7 +2872,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Right of way (RoW)</label>
-                    <input type="text" name="edit_row" class="form-control" id="edit_row" onblur="calculate_edit_area_required()">
+                    <input type="number" name="edit_row" class="form-control" id="edit_row" onblur="calculate_edit_area_required()">
                 </div>
                 <div class="alert alert-danger" id="edit_rowErrorMsg" style="display:none"></div>
             </div>
@@ -3007,14 +2995,14 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Width (m)</label>
-                        <input type="text" name="road_width" class="form-control" id="road_width">
+                        <input type="number" name="road_width" class="form-control" id="road_width">
                     </div>
                     <div class="alert alert-danger" id="road_widthErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Right of way (RoW)</label>
-                        <input type="text" name="road_row" class="form-control" id="road_row" onchange="calculate_road_area_required()">
+                        <label class="form-label fw-bold">Right of way (RoW) (m)</label>
+                        <input type="number" name="road_row" class="form-control" id="road_row" onchange="calculate_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="road_rowErrorMsg" style="display:none"></div>
                 </div>
@@ -3107,14 +3095,14 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Width (m)</label>
-                        <input type="text" name="edit_road_width" class="form-control" id="edit_road_width">
+                        <input type="number" name="edit_road_width" class="form-control" id="edit_road_width">
                     </div>
                     <div class="alert alert-danger" id="edit_road_widthErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Right of way (RoW)</label>
-                        <input type="text" name="edit_road_row" class="form-control" id="edit_road_row" onblur="calculate_edit_road_area_required()">
+                        <label class="form-label fw-bold">Right of way (RoW)(m)</label>
+                        <input type="number" name="edit_road_row" class="form-control" id="edit_road_row" onblur="calculate_edit_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="edit_road_rowErrorMsg" style="display:none"></div>
                 </div>
@@ -3847,13 +3835,7 @@
             $('#water_others_qty_dayErrorMsg').delay(2000).fadeOut('slow');
             $('#water_others_qty_day').focus();
         }
-        else if(water_required_value == 'Yes' && water_downstream_users == "")
-        {
-            $('#water_downstream_usersErrorMsg').html("Enter Information.");
-            $('#water_downstream_usersErrorMsg').show();
-            $('#water_downstream_usersErrorMsg').delay(2000).fadeOut('slow');
-            $('#water_downstream_users').focus();
-        }
+
         else if(water_required_value == 'Yes' && water_flow_rate_lean == "")
         {
             $('#water_flow_rate_leanErrorMsg').html("Enter Flow Rate.");
@@ -5922,20 +5904,8 @@
                 }
             }
         
-            function check_dzong_throm(value)
-            {
-                if(value == "Dzongkhag")
-                {
-                    $('.dzongkhag').show();
-                    $('.thromde').hide();
-                }
-                else
-                {
-                    $('.thromde').show();
-                    $('.dzongkhag').hide();
-                }
-            }
-        
+
+
             function check_excavated_muck(value)
             {
                 if(value == "Yes")
@@ -5951,11 +5921,11 @@
             function add_final_products_details()
             {
                 let application_no = $('#application_no').val();
-                let produce_name = $('#product_name').val();
+                let product_name = $('#product_name').val();
                 let quantity_annum = $('#quantity_annum').val();
                 let storage_method = $('#storage_method').val();
         
-                if(produce_name == "")
+                if(product_name == "")
                 {
                     $('#product_nameErrorMsg').html("Enter Name of Produce");
                     $('#product_nameErrorMsg').show();
@@ -5982,7 +5952,7 @@
                     ({
                         type : "POST",
                         url : "{% url 'add_final_product_details' %}",
-                        data : {'application_no':application_no,'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        data : {'application_no':application_no,'product_name':product_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                         success : function(responseText)
                         {
                             $('#final_products_SuccessMsg').html("Add Successful");
@@ -6003,11 +5973,11 @@
                 }
             }
         
-            function edit_produce_populate(record_id, application_no, produce_name, qty, storage_method)
+            function edit_produce_populate(record_id, application_no, product_name, qty, storage_method)
             {
                 $('#edit_final_products_record_id').val(record_id)
                 $('#edit_final_products_app_no').val(application_no)
-                $('#edit_produce_name').val(produce_name);
+                $('#edit_product_name').val(product_name);
                 $('#edit_quantity_annum').val(qty);
                 $('#edit_final_product_storage_method').val(storage_method);
                 $('#edit_final_products_modal').modal('show');
@@ -6017,16 +5987,16 @@
             {
                 let record_id = $('#edit_final_products_record_id').val();
                 let application_no = $('#edit_final_products_app_no').val();
-                let produce_name = $('#edit_produce_name').val();
+                let product_name = $('#edit_product_name').val();
                 let quantity_annum = $('#edit_quantity_annum').val();
                 let storage_method = $('#edit_final_product_storage_method').val();
         
-                if(produce_name == "")
+                if(product_name == "")
                 {
-                    $('#edit_produce_nameErrorMsg').html("Enter Name of Produce");
-                    $('#edit_produce_nameErrorMsg').show();
-                    $('#edit_produce_nameErrorMsg').delay(2000).fadeOut('slow');
-                    $('#edit_produce_name').focus();
+                    $('#edit_product_nameErrorMsg').html("Enter Name of Produce");
+                    $('#edit_product_nameErrorMsg').show();
+                    $('#edit_product_nameErrorMsg').delay(2000).fadeOut('slow');
+                    $('#edit_product_name').focus();
                 }
                 else if(quantity_annum == "")
                 {
@@ -6048,7 +6018,7 @@
                     ({
                         type : "POST",
                         url : "{% url 'update_final_product_details' %}",
-                        data : {'application_no':application_no,'record_id':record_id, 'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        data : {'application_no':application_no,'record_id':record_id, 'product_name':product_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                         success : function(responseText)
                         {
                             $('#edit_final_product_SuccessMsg').html("Update Successful");
@@ -6375,31 +6345,73 @@
                 });
             }
         
-            function getGewog(dzongkhag_id)
-            {
-                $.ajax({
-                    type : "GET",
-                    url : "{% url 'load_gewog' %}",
-                    data :{'dzongkhag_id':dzongkhag_id},
-                    success : function(data)
-                    {
-                        $('#gewog').html(data);
-                    }
-                });
+            function check_dzong_throm(value) {
+                if(value == "Dzongkhag") {
+                    $('.dzongkhag').show();
+                    $('.thromde').hide();
+                } else {
+                    $('.thromde').show();
+                    $('.dzongkhag').hide();
+                }
             }
-        
-            function getVillage(gewog_id)
-            {
-                $.ajax({
-                    type : "GET",
-                    url : "{% url 'load_village' %}",
-                    data :{'gewog_id':gewog_id},
-                    success : function(data)
-                    {
-                        $('#vil_chiwog').html(data);
-                    }
-                });
+
+            function getGewog(dzongkhag_id) {
+                if(dzongkhag_id) {
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'load_gewog' %}",
+                        data: {'dzongkhag_id': dzongkhag_id},
+                        success: function(data) {
+                            $('#gewog').html(data);
+                            // After loading gewogs, check if we need to select a saved value
+                            {% if application_details.gewog_code %}
+                                setTimeout(function() {
+                                    $('#gewog').val('{{ application_details.gewog_code }}');
+                                    // Trigger village loading if gewog is selected
+                                    if ($('#gewog').val() == '{{ application_details.gewog_code }}') {
+                                        getVillage('{{ application_details.gewog_code }}');
+                                    }
+                                }, 100);
+                            {% endif %}
+                        }
+                    });
+                } else {
+                    $('#gewog').html('<option value="">--SELECT GEWOG--</option>');
+                    $('#vil_chiwog').html('<option value="">--SELECT VILLAGE--</option>');
+                }
             }
+
+            function getVillage(gewog_id) {
+                if(gewog_id) {
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'load_village' %}",
+                        data: {'gewog_id': gewog_id},
+                        success: function(data) {
+                            $('#vil_chiwog').html(data);
+                            // After loading villages, check if we need to select a saved value
+                            {% if application_details.village_code %}
+                                setTimeout(function() {
+                                    $('#vil_chiwog').val('{{ application_details.village_code }}');
+                                }, 100);
+                            {% endif %}
+                        }
+                    });
+                } else {
+                    $('#vil_chiwog').html('<option value="">--SELECT VILLAGE--</option>');
+                }
+            }
+
+            // Initialize the form when page loads
+            $(document).ready(function() {
+                // If dzongkhag is selected and we're in Dzongkhag mode
+                {% if application_details.dzongkhag_throm == 'Dzongkhag' and application_details.dzongkhag_code %}
+                    // Trigger gewog loading
+                    setTimeout(function() {
+                        $('#dzongkhag').trigger('change');
+                    }, 200);
+                {% endif %}
+            });
         
             function calculate_road_area_required()
             {

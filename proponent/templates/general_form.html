@@ -700,7 +700,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Distance from source to the project site (meters)</label>
-                                                <input type="text" name="water_source_distance" class="form-control" id="water_source_distance">
+                                                <input type="number" name="water_source_distance" class="form-control" id="water_source_distance">
                                             </div>
                                             <div id="water_source_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1802,9 +1802,9 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Name of Products</label>
-                    <input type="text" name="edit_produce_name" class="form-control" id="edit_produce_name">
+                    <input type="text" name="edit_product_name" class="form-control" id="edit_product_name">
                 </div>
-                <div class="alert alert-danger" id="edit_produce_nameErrorMsg" style="display:none"></div>
+                <div class="alert alert-danger" id="edit_product_nameErrorMsg" style="display:none"></div>
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
@@ -2161,7 +2161,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">No. of Towers</label>
-                    <input type="text" name="no_of_tower" class="form-control" id="no_of_tower">
+                    <input type="number" name="no_of_tower" class="form-control" id="no_of_tower">
                 </div>
                 <div class="alert alert-danger" id="no_of_towerErrorMsg" style="display:none"></div>
             </div>
@@ -2169,8 +2169,8 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Right of way (RoW)</label>
-                    <input type="text" name="row" class="form-control" id="row" onblur="calculate_area_required()">
+                    <label class="form-label fw-bold">Right of way (RoW) (m)</label>
+                    <input type="number" name="row" class="form-control" id="row" onblur="calculate_area_required()">
                 </div>
                 <div class="alert alert-danger" id="rowErrorMsg" style="display:none"></div>
             </div>
@@ -2268,7 +2268,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">No. of Towers</label>
-                    <input type="text" name="edit_no_of_tower" class="form-control" id="edit_no_of_tower">
+                    <input type="number" name="edit_no_of_tower" class="form-control" id="edit_no_of_tower">
                 </div>
                 <div class="alert alert-danger" id="edit_no_of_towerErrorMsg" style="display:none"></div>
             </div>
@@ -2400,14 +2400,14 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Width (m)</label>
-                        <input type="text" name="road_width" class="form-control" id="road_width">
+                        <input type="number" name="road_width" class="form-control" id="road_width">
                     </div>
                     <div class="alert alert-danger" id="road_widthErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Right of way (RoW)</label>
-                        <input type="text" name="road_row" class="form-control" id="road_row" onchange="calculate_road_area_required()">
+                        <label class="form-label fw-bold">Right of way (RoW)(m)</label>
+                        <input type="number" name="road_row" class="form-control" id="road_row" onchange="calculate_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="road_rowErrorMsg" style="display:none"></div>
                 </div>
@@ -2500,14 +2500,14 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Road Width (m)</label>
-                        <input type="text" name="edit_road_width" class="form-control" id="edit_road_width">
+                        <input type="number" name="edit_road_width" class="form-control" id="edit_road_width">
                     </div>
                     <div class="alert alert-danger" id="edit_road_widthErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Right of way (RoW)</label>
-                        <input type="text" name="edit_road_row" class="form-control" id="edit_road_row" onblur="calculate_edit_road_area_required()">
+                        <label class="form-label fw-bold">Right of way (RoW)(m)</label>
+                        <input type="number" name="edit_road_row" class="form-control" id="edit_road_row" onblur="calculate_edit_road_area_required()">
                     </div>
                     <div class="alert alert-danger" id="edit_road_rowErrorMsg" style="display:none"></div>
                 </div>
@@ -3222,13 +3222,7 @@
             $('#water_others_qty_dayErrorMsg').delay(2000).fadeOut('slow');
             $('#water_others_qty_day').focus();
         }
-        else if(water_required_value == 'Yes' && water_downstream_users == "")
-        {
-            $('#water_downstream_usersErrorMsg').html("Enter Information.");
-            $('#water_downstream_usersErrorMsg').show();
-            $('#water_downstream_usersErrorMsg').delay(2000).fadeOut('slow');
-            $('#water_downstream_users').focus();
-        }
+
         else if(water_required_value == 'Yes' && water_flow_rate_lean == "")
         {
             $('#water_flow_rate_leanErrorMsg').html("Enter Flow Rate.");
@@ -5326,11 +5320,11 @@
             function add_final_products_details()
             {
                 let application_no = $('#application_no').val();
-                let produce_name = $('#product_name').val();
+                let product_name = $('#product_name').val();
                 let quantity_annum = $('#quantity_annum').val();
                 let storage_method = $('#storage_method').val();
         
-                if(produce_name == "")
+                if(product_name == "")
                 {
                     $('#product_nameErrorMsg').html("Enter Name of Produce");
                     $('#product_nameErrorMsg').show();
@@ -5357,7 +5351,7 @@
                     ({
                         type : "POST",
                         url : "{% url 'add_final_product_details' %}",
-                        data : {'application_no':application_no,'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        data : {'application_no':application_no,'product_name':product_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                         success : function(responseText)
                         {
                             $('#final_products_SuccessMsg').html("Add Successful");
@@ -5378,11 +5372,11 @@
                 }
             }
         
-            function edit_produce_populate(record_id, application_no, produce_name, qty, storage_method)
+            function edit_produce_populate(record_id, application_no, product_name, qty, storage_method)
             {
                 $('#edit_final_products_record_id').val(record_id)
                 $('#edit_final_products_app_no').val(application_no)
-                $('#edit_produce_name').val(produce_name);
+                $('#edit_product_name').val(product_name);
                 $('#edit_quantity_annum').val(qty);
                 $('#edit_final_product_storage_method').val(storage_method);
                 $('#edit_final_products_modal').modal('show');
@@ -5392,16 +5386,16 @@
             {
                 let record_id = $('#edit_final_products_record_id').val();
                 let application_no = $('#edit_final_products_app_no').val();
-                let produce_name = $('#edit_produce_name').val();
+                let product_name = $('#edit_product_name').val();
                 let quantity_annum = $('#edit_quantity_annum').val();
                 let storage_method = $('#edit_final_product_storage_method').val();
         
                 if(produce_name == "")
                 {
-                    $('#edit_produce_nameErrorMsg').html("Enter Name of Produce");
-                    $('#edit_produce_nameErrorMsg').show();
-                    $('#edit_produce_nameErrorMsg').delay(2000).fadeOut('slow');
-                    $('#edit_produce_name').focus();
+                    $('#edit_product_nameErrorMsg').html("Enter Name of Produce");
+                    $('#edit_product_nameErrorMsg').show();
+                    $('#edit_product_nameErrorMsg').delay(2000).fadeOut('slow');
+                    $('#edit_product_name').focus();
                 }
                 else if(quantity_annum == "")
                 {
