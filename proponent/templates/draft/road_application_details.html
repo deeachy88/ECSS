@@ -79,25 +79,30 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Select One</label>
+                                                <label class="form-label fw-bold">Site</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" {% if application_details.dzongkhag_throm == 'Dzongkhag' %}checked{% endif %}>
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
+                                                            onclick="check_dzong_throm(this.value)"
+                                                            {% if application_details.dzongkhag_throm == 'Dzongkhag' %}checked{% endif %}>
                                                         <label class="form-check-label">Dzongkhag</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" {% if application_details.dzongkhag_throm == 'Thromde' %}checked{% endif %}>
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
+                                                            onclick="check_dzong_throm(this.value)"
+                                                            {% if application_details.dzongkhag_throm == 'Thromde' %}checked{% endif %}>
                                                         <label class="form-check-label">Thromde</label>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="siteErrorMsg" class="alert alert-danger d-none"></div>
                                         </div>
-                                        <div class="col-lg-6 thromde" style="display: {% if application_details.dzongkhag_throm == 'Thromde' %}block{% else %}none{% endif %};">
+                                        
+                                        <!-- Thromde Section - Always included but conditionally hidden -->
+                                        <div class="col-lg-6 thromde" {% if application_details.dzongkhag_throm != 'Thromde' %}style="display:none;"{% endif %}>
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Thromde</label>{{application_details.thromde_id}}
-                                                <select class="form-select" name="thromde_id" id="thromde_id">
-                                                    <option value="">--SELECT THROMDE--</option>
+                                                <label class="form-label fw-bold">Thromde</label>
+                                                <select class="form-select">
                                                     {% for thromde in thromde %}
                                                         <option value="{{ thromde.thromde_id }}" {% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
                                                             {{ thromde.thromde_name }}
@@ -105,55 +110,57 @@
                                                     {% endfor %}
                                                 </select>
                                             </div>
-                                            <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="thromdeErrorMsg" class="alert alert-danger d-none"></div>
                                         </div>
                                     </div>
-                                    <div class="row dzongkhag" style="display: {% if application_details.dzongkhag_throm == 'Dzongkhag' %}block{% else %}none{% endif %};">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Dzongkhag</label>
-                                                <select class="form-select" name="dzongkhag" id="dzongkhag" onchange="getGewog(this.value)">
-                                                    <option value="">--SELECT DZONGKHAG--</option>
-                                                    {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{ dzongkhag.dzongkhag_code }}" {% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
-                                                            {{ dzongkhag.dzongkhag_name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
+
+                                    <!-- Dzongkhag Section - Always included but conditionally hidden -->
+                                    <div class="dzongkhag" {% if application_details.dzongkhag_throm != 'Dzongkhag' %}style="display:none;"{% endif %}>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag" id="dzongkhag" onchange="getGewog(this.value)">
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}" {% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                                {{ dzongkhag.dzongkhag_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Gewog</label>
-                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                                    <option value="">--SELECT GEWOG--</option>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
                                                         {% for gewog in gewog %}
                                                             <option value="{{ gewog.gewog_code }}" {% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
                                                                 {{ gewog.gewog_name }}
                                                             </option>
                                                         {% endfor %}
-                                                </select>
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger d-none"></div>
                                             </div>
-                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6 dzongkhag" style="display: {% if application_details.dzongkhag_throm == 'Dzongkhag' %}block{% else %}none{% endif %};">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
-                                                    <option value="">--SELECT VILLAGE--</option>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
                                                         {% for village in village %}
                                                             <option value="{{ village.village_code }}" {% if application_details.village_code == village.village_code %}selected{% endif %}>
                                                                 {{ village.village_name }}
                                                             </option>
                                                         {% endfor %}
-                                                </select>
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger d-none"></div>
                                             </div>
-                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
+                                    <br>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Baseline/Existing information: <p> Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable</p>
                                     </div>
@@ -288,7 +295,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingProjectDetails">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn" disabled>
+                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn">
                                 Project Details
                             </button>
                         </h2>
@@ -652,7 +659,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn" disabled>
+                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn">
                                 Project Details 1
                             </button>
                         </h2>
@@ -830,7 +837,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingProjectTwo">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseProjectTwo" aria-expanded="false" aria-controls="collapseProjectTwo" id="ProjectTwoBtn" disabled>
+                                data-bs-target="#collapseProjectTwo" aria-expanded="false" aria-controls="collapseProjectTwo" id="ProjectTwoBtn">
                                 Project Details 2
                             </button>
                         </h2>
@@ -1273,69 +1280,72 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="Yes"
-                                                               onclick="check_anc_facility(this.value)"
-                                                               {% if application_details.anc_other_required == 'Yes' %}checked{% endif %}>
-                                                        <label class="form-check-label">Yes</label>
+                                                {% if application_details.anc_other_required == 'Yes' %}
+                                                    <div class="mt-2">
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)" checked>
+                                                            <label class="form-check-label" for="customRadio3">Yes</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)">
+                                                            <label class="form-check-label" for="customRadio4">No</label>
+                                                        </div>
                                                     </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No"
-                                                               onclick="check_anc_facility(this.value)"
-                                                               {% if application_details.anc_other_required != 'Yes' %}checked{% endif %}>
-                                                        <label class="form-check-label">No</label>
+                                                {% else %}
+                                                    <div class="mt-2">
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)">
+                                                            <label class="form-check-label" for="customRadio3">Yes</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)" checked>
+                                                            <label class="form-check-label" for="customRadio4">No</label>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                {% endif %}
                                             </div>
                                             <div id="anc_other_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-
-                                    <!-- Simplified ancillary details section -->
-                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
-                                        <div class="alert alert-warning border-0 rounded-0 other_ancillary_facilities" role="alert">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form...
-                                        </div>
+                                    <div class="alert alert-warning border-0 rounded-0 anc_facility_details" role="alert" role="alert" style="display: none;">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
                                     </div>
-
-                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
-                                        <div class="form-check other_ancillary_facilities" style="display:block;">
-                                            <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge"
-                                                class="form-check-input" value="Yes" onclick="check_anc_other_general()"
-                                                {% if application_details.anc_other_bridge == 'Yes' %}checked{% endif %}>
-                                            <label class="form-check-label">Bridge</label>
-                                        </div>
-                                        <div class="form-check other_ancillary_facilities" style="display:block;">
-                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"
-                                                class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
-                                                {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
-                                            <label class="form-check-label">Crushing Plant</label>
-                                        </div>
-                                        <div class="form-check other_ancillary_facilities" style="display:block;">
-                                            <input type="checkbox" name="anc_other_concrete_building" id="anc_other_concrete_building"
-                                                class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
-                                                {% if application_details.anc_other_concrete_building == 'Yes' %}checked{% endif %}>
-                                            <label class="form-check-label">Concrete Batching Plant</label>
-                                        </div>
-                                        <div class="form-check other_ancillary_facilities" style="display:block;">
-                                            <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant"
-                                                class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
-                                                {% if application_details.anc_other_asphalt_plant == 'Yes' %}checked{% endif %}>
-                                            <label class="form-check-label">Asphalt Plant</label>
-                                        </div>
-                                        <div class="form-check other_ancillary_facilities" style="display:block;">
-                                            <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection"
-                                                class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
-                                                {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
-                                            <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                        </div>
-                                        <div class="form-check other_ancillary_facilities" style="display:block;">
-                                            <input type="checkbox" name="anc_other_general" id="anc_other_general"
-                                                class="form-check-input" value="Yes" onclick="check_anc_other_general()"
-                                                {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
-                                            <label class="form-check-label">Others</label>
-                                        </div>
+                                    <br>
+                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
+                                        <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" 
+                                            class="form-check-input" value="Yes" onclick="check_anc_other_general()"
+                                            {% if application_details.anc_other_bridge == 'Yes' %}checked{% endif %}>
+                                        <label class="form-check-label">Bridge</label> 
+                                    </div>
+                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
+                                        <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  
+                                            class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
+                                            {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
+                                        <label class="form-check-label">Crushing Plant</label>
+                                    </div>
+                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
+                                        <input type="checkbox" name="anc_other_concrete_building" id="anc_other_concrete_building" 
+                                            class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
+                                            {% if application_details.anc_other_concrete_building == 'Yes' %}checked{% endif %}>
+                                        <label class="form-check-label">Concrete Batching Plant</label>
+                                    </div>
+                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
+                                        <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" 
+                                            class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
+                                            {% if application_details.anc_other_asphalt_plant == 'Yes' %}checked{% endif %}>
+                                        <label class="form-check-label">Asphalt Plant</label>
+                                    </div>
+                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
+                                        <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" 
+                                            class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
+                                            {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
+                                        <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                    </div>
+                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
+                                        <input type="checkbox" name="anc_other_general" id="anc_other_general" 
+                                            class="form-check-input" value="Yes" onclick="check_anc_other_general()"
+                                            {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
+                                        <label class="form-check-label">Others</label>
                                     </div>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="anc_others_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
@@ -1356,7 +1366,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingEight">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
-                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
                                 Solid Waste
                             </button>
                         </h2>
@@ -1458,7 +1468,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwelve">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTwelveBtn"
-                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" disabled>
+                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
                                 Noise Level
                             </button>
                         </h2>
@@ -1531,7 +1541,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOtherImpacts">
                             <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
                                 Other Impacts
                             </button>
                         </h2>
@@ -1660,7 +1670,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingAttachment">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
-                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
+                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
                                 File Attachment
                             </button>
                         </h2>
@@ -1754,7 +1764,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingDisclaimer">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingDisclaimerBtn"
-                                data-bs-target="#collapseDisclaimer" aria-expanded="false" aria-controls="collapseDisclaimer" disabled>
+                                data-bs-target="#collapseDisclaimer" aria-expanded="false" aria-controls="collapseDisclaimer">
                                 Disclaimer
                             </button>
                         </h2>
@@ -3289,72 +3299,44 @@
     }
 
     function check_dzong_throm(value) {
-        if(value == "Dzongkhag") {
+        if (value === "Dzongkhag") {
             $('.dzongkhag').show();
             $('.thromde').hide();
+            // Clear Thromde selection if switching away
+            $('.thromde select').val('');
         } else {
             $('.thromde').show();
             $('.dzongkhag').hide();
+            // Clear Dzongkhag selections if switching away
+            $('#dzongkhag, #gewog, #vil_chiwog').val('');
         }
     }
 
-    function getGewog(dzongkhag_id) {
-        if(dzongkhag_id) {
-            $.ajax({
-                type: "GET",
-                url: "{% url 'load_gewog' %}",
-                data: {'dzongkhag_id': dzongkhag_id},
-                success: function(data) {
-                    $('#gewog').html(data);
-                    // After loading gewogs, check if we need to select a saved value
-                    {% if application_details.gewog_code %}
-                        setTimeout(function() {
-                            $('#gewog').val('{{ application_details.gewog_code }}');
-                            // Trigger village loading if gewog is selected
-                            if ($('#gewog').val() == '{{ application_details.gewog_code }}') {
-                                getVillage('{{ application_details.gewog_code }}');
-                            }
-                        }, 100);
-                    {% endif %}
-                }
-            });
-        } else {
-            $('#gewog').html('<option value="">--SELECT GEWOG--</option>');
-            $('#vil_chiwog').html('<option value="">--SELECT VILLAGE--</option>');
-        }
+    function getGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#gewog').html(data);
+            }
+        });
     }
-
-    function getVillage(gewog_id) {
-        if(gewog_id) {
-            $.ajax({
-                type: "GET",
-                url: "{% url 'load_village' %}",
-                data: {'gewog_id': gewog_id},
-                success: function(data) {
-                    $('#vil_chiwog').html(data);
-                    // After loading villages, check if we need to select a saved value
-                    {% if application_details.village_code %}
-                        setTimeout(function() {
-                            $('#vil_chiwog').val('{{ application_details.village_code }}');
-                        }, 100);
-                    {% endif %}
-                }
-            });
-        } else {
-            $('#vil_chiwog').html('<option value="">--SELECT VILLAGE--</option>');
-        }
+    
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#vil_chiwog').html(data);
+            }
+        });
     }
-
-    // Initialize the form when page loads
-    $(document).ready(function() {
-        // If dzongkhag is selected and we're in Dzongkhag mode
-        {% if application_details.dzongkhag_throm == 'Dzongkhag' and application_details.dzongkhag_code %}
-            // Trigger gewog loading
-            setTimeout(function() {
-                $('#dzongkhag').trigger('change');
-            }, 200);
-        {% endif %}
-    });
 
     function getRoadGewog(dzongkhag_id)
     {

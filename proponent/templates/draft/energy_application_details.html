@@ -78,25 +78,30 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Select One</label>
+                                                <label class="form-label fw-bold">Site</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" {% if application_details.dzongkhag_throm == 'Dzongkhag' %}checked{% endif %}>
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
+                                                            onclick="check_dzong_throm(this.value)"
+                                                            {% if application_details.dzongkhag_throm == 'Dzongkhag' %}checked{% endif %}>
                                                         <label class="form-check-label">Dzongkhag</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" {% if application_details.dzongkhag_throm == 'Thromde' %}checked{% endif %}>
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
+                                                            onclick="check_dzong_throm(this.value)"
+                                                            {% if application_details.dzongkhag_throm == 'Thromde' %}checked{% endif %}>
                                                         <label class="form-check-label">Thromde</label>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="siteErrorMsg" class="alert alert-danger d-none"></div>
                                         </div>
-                                        <div class="col-lg-6 thromde" style="display: {% if application_details.dzongkhag_throm == 'Thromde' %}block{% else %}none{% endif %};">
+                                        
+                                        <!-- Thromde Section - Always included but conditionally hidden -->
+                                        <div class="col-lg-6 thromde" {% if application_details.dzongkhag_throm != 'Thromde' %}style="display:none;"{% endif %}>
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Thromde</label>{{application_details.thromde_id}}
-                                                <select class="form-select" name="thromde_id" id="thromde_id">
-                                                    <option value="">--SELECT THROMDE--</option>
+                                                <label class="form-label fw-bold">Thromde</label>
+                                                <select class="form-select">
                                                     {% for thromde in thromde %}
                                                         <option value="{{ thromde.thromde_id }}" {% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
                                                             {{ thromde.thromde_name }}
@@ -104,53 +109,54 @@
                                                     {% endfor %}
                                                 </select>
                                             </div>
-                                            <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="thromdeErrorMsg" class="alert alert-danger d-none"></div>
                                         </div>
                                     </div>
-                                    <div class="row dzongkhag" style="display: {% if application_details.dzongkhag_throm == 'Dzongkhag' %}block{% else %}none{% endif %};">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Dzongkhag</label>
-                                                <select class="form-select" name="dzongkhag" id="dzongkhag" onchange="getGewog(this.value)">
-                                                    <option value="">--SELECT DZONGKHAG--</option>
-                                                    {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{ dzongkhag.dzongkhag_code }}" {% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
-                                                            {{ dzongkhag.dzongkhag_name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
+
+                                    <!-- Dzongkhag Section - Always included but conditionally hidden -->
+                                    <div class="dzongkhag" {% if application_details.dzongkhag_throm != 'Dzongkhag' %}style="display:none;"{% endif %}>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag" id="dzongkhag" onchange="getGewog(this.value)">
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}" {% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                                {{ dzongkhag.dzongkhag_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Gewog</label>
-                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                                    <option value="">--SELECT GEWOG--</option>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
                                                         {% for gewog in gewog %}
                                                             <option value="{{ gewog.gewog_code }}" {% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
                                                                 {{ gewog.gewog_name }}
                                                             </option>
                                                         {% endfor %}
-                                                </select>
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger d-none"></div>
                                             </div>
-                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6 dzongkhag" style="display: {% if application_details.dzongkhag_throm == 'Dzongkhag' %}block{% else %}none{% endif %};">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
-                                                    <option value="">--SELECT VILLAGE--</option>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
                                                         {% for village in village %}
                                                             <option value="{{ village.village_code }}" {% if application_details.village_code == village.village_code %}selected{% endif %}>
                                                                 {{ village.village_name }}
                                                             </option>
                                                         {% endfor %}
-                                                </select>
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger d-none"></div>
                                             </div>
-                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -239,7 +245,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" disabled>
+                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                 Baseline/Existing information
                             </button>
                         </h2>
@@ -382,7 +388,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingProjectDetails">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn" disabled>
+                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn">
                                 Project Details
                             </button>
                         </h2>
@@ -644,7 +650,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn" disabled>
+                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn">
                                 Energy & Water Requirement
                             </button>
                         </h2>
@@ -920,7 +926,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFive">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFiveBtn"
-                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" disabled>
+                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                                 Ancillary:Approach Road
                             </button>
                         </h2>
@@ -1200,7 +1206,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSix">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingSixBtn"
-                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" disabled>
+                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
                                 Ancillary:Power Lines
                             </button>
                         </h2>
@@ -1451,32 +1457,32 @@
                                     </div>
 
                                     <!-- Simplified ancillary details section -->
-                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                    <div class="row other_ancillary_details">
                                         <div class="alert alert-warning border-0 rounded-0 other_ancillary_facilities" role="alert">
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form...
                                         </div>
                                     </div>
 
-                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                    <div class="row other_ancillary_details">
                                         <div class="form-check other_ancillary_facilities" style="display:block;">
                                             <input type="checkbox" name="anc_other_housing_colony" id="anc_other_housing_colony"
                                                 class="form-check-input" value="Yes" onclick="check_anc_other_general()"
                                                 {% if application_details.anc_other_housing_colony == 'Yes' %}checked{% endif %}>
                                             <label class="form-check-label">Housing Colony</label>
                                         </div>
-                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                        <div class="form-check other_ancillary_facilities">
                                             <input type="checkbox" name="anc_power_excavation" id="anc_power_excavation"
                                                 class="form-check-input" value="Yes" onclick="check_anc_power_excavation()"
                                                 {% if application_details.anc_power_excavation == 'Yes' %}checked{% endif %}>
                                             <label class="form-check-label">Power Excavation Line</label>
                                         </div>
-                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                        <div class="form-check other_ancillary_facilities">
                                             <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"
                                                 class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()"
                                                 {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
                                             <label class="form-check-label">Crushing Unit</label>
                                         </div>
-                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                        <div class="form-check other_ancillary_facilities">
                                             <input type="checkbox" name="anc_other_general" id="anc_other_general"
                                                 class="form-check-input" value="Yes" onclick="check_anc_other_general()"
                                                 {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
@@ -1512,7 +1518,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingEight">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
-                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
                                 Solid Waste
                             </button>
                         </h2>
@@ -1614,7 +1620,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwelve">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTwelveBtn"
-                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" disabled>
+                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
                                 Noise Level
                             </button>
                         </h2>
@@ -1687,7 +1693,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOtherImpacts">
                             <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
                                 Other Impacts
                             </button>
                         </h2>
@@ -1816,7 +1822,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingAttachment">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
-                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
+                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
                                 File Attachment
                             </button>
                         </h2>
@@ -3134,72 +3140,44 @@
     });
 
     function check_dzong_throm(value) {
-        if(value == "Dzongkhag") {
+        if (value === "Dzongkhag") {
             $('.dzongkhag').show();
             $('.thromde').hide();
+            // Clear Thromde selection if switching away
+            $('.thromde select').val('');
         } else {
             $('.thromde').show();
             $('.dzongkhag').hide();
+            // Clear Dzongkhag selections if switching away
+            $('#dzongkhag, #gewog, #vil_chiwog').val('');
         }
     }
 
-    function getGewog(dzongkhag_id) {
-        if(dzongkhag_id) {
-            $.ajax({
-                type: "GET",
-                url: "{% url 'load_gewog' %}",
-                data: {'dzongkhag_id': dzongkhag_id},
-                success: function(data) {
-                    $('#gewog').html(data);
-                    // After loading gewogs, check if we need to select a saved value
-                    {% if application_details.gewog_code %}
-                        setTimeout(function() {
-                            $('#gewog').val('{{ application_details.gewog_code }}');
-                            // Trigger village loading if gewog is selected
-                            if ($('#gewog').val() == '{{ application_details.gewog_code }}') {
-                                getVillage('{{ application_details.gewog_code }}');
-                            }
-                        }, 100);
-                    {% endif %}
-                }
-            });
-        } else {
-            $('#gewog').html('<option value="">--SELECT GEWOG--</option>');
-            $('#vil_chiwog').html('<option value="">--SELECT VILLAGE--</option>');
-        }
+    function getGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#gewog').html(data);
+            }
+        });
     }
 
-    function getVillage(gewog_id) {
-        if(gewog_id) {
-            $.ajax({
-                type: "GET",
-                url: "{% url 'load_village' %}",
-                data: {'gewog_id': gewog_id},
-                success: function(data) {
-                    $('#vil_chiwog').html(data);
-                    // After loading villages, check if we need to select a saved value
-                    {% if application_details.village_code %}
-                        setTimeout(function() {
-                            $('#vil_chiwog').val('{{ application_details.village_code }}');
-                        }, 100);
-                    {% endif %}
-                }
-            });
-        } else {
-            $('#vil_chiwog').html('<option value="">--SELECT VILLAGE--</option>');
-        }
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#vil_chiwog').html(data);
+            }
+        });
     }
-
-    // Initialize the form when page loads
-    $(document).ready(function() {
-        // If dzongkhag is selected and we're in Dzongkhag mode
-        {% if application_details.dzongkhag_throm == 'Dzongkhag' and application_details.dzongkhag_code %}
-            // Trigger gewog loading
-            setTimeout(function() {
-                $('#dzongkhag').trigger('change');
-            }, 200);
-        {% endif %}
-    });
 
     function check_industry_radio(value)
     {
