@@ -84,56 +84,49 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Site</label>
-                                                {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio3">Dzongkhag</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)">
-                                                            <label class="form-check-label" for="customRadio4">Thromde</label>
-                                                        </div>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
+                                                            onclick="check_dzong_throm(this.value)"
+                                                            {% if application_details.dzongkhag_throm == 'Dzongkhag' %}checked{% endif %}>
+                                                        <label class="form-check-label">Dzongkhag</label>
                                                     </div>
-                                                {% else %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)">
-                                                            <label class="form-check-label" for="customRadio3">Dzongkhag</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio4">Thromde</label>
-                                                        </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
+                                                            onclick="check_dzong_throm(this.value)"
+                                                            {% if application_details.dzongkhag_throm == 'Thromde' %}checked{% endif %}>
+                                                        <label class="form-check-label">Thromde</label>
                                                     </div>
-                                                {% endif %}
-                                            </div>
-                                            <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        {% if application_details.dzongkhag_throm == 'Thromde' %} 
-                                            <div class="col-lg-6 thromde_div">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Thromde</label>
-                                                    <select class="form-select">
-                                                        {% for thromde in thromde %}
-                                                            <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
-                                                                {{ thromde.thromde_name }}
-                                                            </option>
-                                                        {% endfor %}
-                                                    </select>
                                                 </div>
-                                                <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                        {% endif %}
+                                            <div id="siteErrorMsg" class="alert alert-danger d-none"></div>
+                                        </div>
+                                        
+                                        <!-- Thromde Section - Always included but conditionally hidden -->
+                                        <div class="col-lg-6 thromde" {% if application_details.dzongkhag_throm != 'Thromde' %}style="display:none;"{% endif %}>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Thromde</label>
+                                                <select class="form-select">
+                                                    {% for thromde in thromde %}
+                                                        <option value="{{ thromde.thromde_id }}" {% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                                            {{ thromde.thromde_name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div id="thromdeErrorMsg" class="alert alert-danger d-none"></div>
+                                        </div>
                                     </div>
-                                    {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+
+                                    <!-- Dzongkhag Section - Always included but conditionally hidden -->
+                                    <div class="dzongkhag" {% if application_details.dzongkhag_throm != 'Dzongkhag' %}style="display:none;"{% endif %}>
                                         <div class="row">
-                                            <div class="col-lg-6 dzongkhag_div">
+                                            <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Dzongkhag</label>
-                                                    <select class="form-select">
+                                                    <select class="form-select" name="dzongkhag" id="dzongkhag" onchange="getGewog(this.value)">
                                                         {% for dzongkhag in dzongkhag %}
-                                                            <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}" {% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
                                                                 {{ dzongkhag.dzongkhag_name }}
                                                             </option>
                                                         {% endfor %}
@@ -143,33 +136,34 @@
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Gewog</label>
-                                                    <select class="form-select">
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
                                                         {% for gewog in gewog %}
-                                                            <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                            <option value="{{ gewog.gewog_code }}" {% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
                                                                 {{ gewog.gewog_name }}
                                                             </option>
                                                         {% endfor %}
                                                     </select>
                                                 </div>
-                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger d-none"></div>
                                             </div>
                                         </div>
+
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Village/Chiwog</label>
-                                                    <select class="form-select">
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
                                                         {% for village in village %}
-                                                            <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                            <option value="{{ village.village_code }}" {% if application_details.village_code == village.village_code %}selected{% endif %}>
                                                                 {{ village.village_name }}
                                                             </option>
                                                         {% endfor %}
                                                     </select>
                                                 </div>
-                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger d-none"></div>
                                             </div>
                                         </div>
-                                    {% endif %}
+                                    </div>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Baseline/Existing information: <p> Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable</p>
                                     </div>
@@ -304,7 +298,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingProjectDetails">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn" disabled>
+                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn">
                                 Project Details
                             </button>
                         </h2>
@@ -668,7 +662,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn" disabled>
+                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn">
                                 Project Details 1
                             </button>
                         </h2>
@@ -846,7 +840,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingProjectTwo">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseProjectTwo" aria-expanded="false" aria-controls="collapseProjectTwo" id="ProjectTwoBtn" disabled>
+                                data-bs-target="#collapseProjectTwo" aria-expanded="false" aria-controls="collapseProjectTwo" id="ProjectTwoBtn">
                                 Project Details 2
                             </button>
                         </h2>
@@ -1375,7 +1369,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingEight">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
-                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
                                 Solid Waste
                             </button>
                         </h2>
@@ -1477,7 +1471,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwelve">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTwelveBtn"
-                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" disabled>
+                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
                                 Noise Level
                             </button>
                         </h2>
@@ -1550,7 +1544,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOtherImpacts">
                             <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
                                 Other Impacts
                             </button>
                         </h2>
@@ -1679,7 +1673,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingAttachment">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
-                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
+                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
                                 File Attachment
                             </button>
                         </h2>
@@ -1773,7 +1767,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingDisclaimer">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingDisclaimerBtn"
-                                data-bs-target="#collapseDisclaimer" aria-expanded="false" aria-controls="collapseDisclaimer" disabled>
+                                data-bs-target="#collapseDisclaimer" aria-expanded="false" aria-controls="collapseDisclaimer">
                                 Disclaimer
                             </button>
                         </h2>
@@ -3307,17 +3301,17 @@
         }, 2000);
     }
 
-    function check_dzong_throm(value)
-    {
-        if(value == "Dzongkhag")
-        {
+    function check_dzong_throm(value) {
+        if (value === "Dzongkhag") {
             $('.dzongkhag').show();
             $('.thromde').hide();
-        }
-        else
-        {
+            // Clear Thromde selection if switching away
+            $('.thromde select').val('');
+        } else {
             $('.thromde').show();
             $('.dzongkhag').hide();
+            // Clear Dzongkhag selections if switching away
+            $('#dzongkhag, #gewog, #vil_chiwog').val('');
         }
     }
 
