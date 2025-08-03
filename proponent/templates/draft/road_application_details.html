@@ -388,7 +388,7 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    {% for anc_road_details in anc_road_details %}
+                                                                    {% for anc_road_details in ancillary_road %}
                                                                         <tr>
                                                                             <td>{{ forloop.counter }}</td>
                                                                             <td>{{anc_road_details.road_chainage_from}}</td>
@@ -687,7 +687,7 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    {% for drainage_type in drainage_type %}
+                                                                    {% for drainage_type in drainage_details %}
                                                                         <tr>
                                                                             <td>{{ forloop.counter }}</td>
                                                                             <td>{{drainage_type.drain_type}}</td>
@@ -717,25 +717,25 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Blasting Required?</label>
-                                                {% if application_details.anc_road_blast_required == "Yes" %}
+                                                {% if application_details.blast_required == "Yes" %}
                                                     <div class="mt-2">
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_road_blast_required" class="form-check-input" value="Yes" onclick="check_blasting_radio(this.value)" checked>
+                                                            <input type="radio" name="blast_required" class="form-check-input" value="Yes" onclick="check_blasting_radio(this.value)" checked>
                                                             <label class="form-check-label" for="customRadio3">Yes</label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_road_blast_required" class="form-check-input" value="No" onclick="check_blasting_radio(this.value)">
+                                                            <input type="radio" name="blast_required" class="form-check-input" value="No" onclick="check_blasting_radio(this.value)">
                                                             <label class="form-check-label" for="customRadio4">No</label>
                                                         </div>
                                                     </div>
                                                 {% else %}
                                                     <div class="mt-2">
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_road_blast_required" class="form-check-input" value="Yes" onclick="check_blasting_radio(this.value)">
+                                                            <input type="radio" name="blast_required" class="form-check-input" value="Yes" onclick="check_blasting_radio(this.value)">
                                                             <label class="form-check-label" for="customRadio3">Yes</label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_road_blast_required" class="form-check-input" value="No" onclick="check_blasting_radio(this.value)" checked>
+                                                            <input type="radio" name="blast_required" class="form-check-input" value="No" onclick="check_blasting_radio(this.value)" checked>
                                                             <label class="form-check-label" for="customRadio4">No</label>
                                                         </div>
                                                     </div>
@@ -744,37 +744,37 @@
                                             <div id="blast_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    {% if application_details.anc_road_blast_required == "Yes" %}
+                                    {% if application_details.blast_required == "Yes" %}
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Mention type of blasting</label>
-                                                    <input type="text" name="anc_road_blast_type" class="form-control" id="anc_road_blast_type" value="{{application_details.anc_road_blast_type}}">
+                                                    <input type="text" name="blast_type" class="form-control" id="blast_type" value="{{application_details.blast_type}}">
                                                 </div>
-                                                <div id="anc_road_blast_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                <div id="blast_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Type and quantity of explosive to be used</label>
-                                                    <input type="text" name="anc_road_blast_qty" class="form-control" id="anc_road_blast_qty" value="{{application_details.anc_road_blast_qty}}">
+                                                    <input type="text" name="blast_qty" class="form-control" id="blast_qty" value="{{application_details.blast_qty}}">
                                                 </div>
-                                                <div id="anc_road_blast_qtyErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                <div id="blast_qtyErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Mention location (s) where blasting is required</label>
-                                                    <input type="text" name="anc_road_blast_location" class="form-control" id="anc_road_blast_location" value="{{application_details.anc_road_blast_location}}">
+                                                    <input type="text" name="blasting_location" class="form-control" id="blasting_location" value="{{application_details.blast_location}}">
                                                 </div>
-                                                <div id="anc_road_blast_locationErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                <div id="blasting_locationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Frequency and timing of blasting per day</label>
-                                                    <input type="text" name="anc_road_blast_frequency_time" class="form-control" id="anc_road_blast_frequency_time" value="{{application_details.anc_road_blast_frequency_time}}">
+                                                    <input type="text" name="blast_frequency" class="form-control" id="blast_frequency" value="{{application_details.blast_frequency_time}}">
                                                 </div>
-                                                <div id="anc_road_blast_frequency_timeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                <div id="blast_frequencyErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                         </div>
                                     {% else %}
@@ -782,32 +782,32 @@
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Mention type of blasting</label>
-                                                    <input type="text" name="anc_road_blast_type" class="form-control" id="anc_road_blast_type">
+                                                    <input type="text" name="blast_type" class="form-control" id="blast_type">
                                                 </div>
-                                                <div id="anc_road_blast_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                <div id="blast_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Type and quantity of explosive to be used</label>
-                                                    <input type="text" name="anc_road_blast_qty" class="form-control" id="anc_road_blast_qty">
+                                                    <input type="text" name="blast_qty" class="form-control" id="blast_qty">
                                                 </div>
-                                                <div id="anc_road_blast_qtyErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                <div id="blast_qtyErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                         </div>
                                         <div class="row blasting_details" style="display: none;">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Mention location (s) where blasting is required</label>
-                                                    <input type="text" name="anc_road_blast_location" class="form-control" id="anc_road_blast_location">
+                                                    <input type="text" name="blasting_location" class="form-control" id="blasting_location">
                                                 </div>
-                                                <div id="anc_road_blast_locationErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                <div id="blasting_locationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Frequency and timing of blasting per day</label>
-                                                    <input type="text" name="anc_road_blast_frequency_time" class="form-control" id="anc_road_blast_frequency_time">
+                                                    <input type="text" name="blast_frequency" class="form-control" id="blast_frequency">
                                                 </div>
-                                                <div id="anc_road_blast_frequency_timeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                <div id="blast_frequencyErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                         </div>
                                     {% endif %}
@@ -839,7 +839,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="project_details_two_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="project_details_two_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_water_application_no">
                                     <div class="row">
                                         <br>
                                         <div class="alert alert-warning border-0 rounded-0" role="alert">
@@ -1069,48 +1069,48 @@
                                                             <td>1</td>
                                                             <td>Water as raw material</td>
                                                             <td><input type="text" name="water_raw_material_source" class="form-control col-lg-6" id="water_raw_material_source" value="{{application_details.water_raw_material_source}}"></td>
-                                                            <td><input type="text" name="water_raw_material_qty_day" class="form-control col-lg-6" id="water_raw_material_qty_day" value="{{application_details.water_raw_material_qty_day}}"></td>
-                                                            <td><input type="text" name="water_raw_material_recycle_day" class="form-control col-lg-6" id="water_raw_material_recycle_day" value="{{application_details.water_raw_material_recycle_day}}"></td>
+                                                            <td><input type="number" name="water_raw_material_qty_day" class="form-control col-lg-6" id="water_raw_material_qty_day" value="{{application_details.water_raw_material_qty_day}}"></td>
+                                                            <td><input type="number" name="water_raw_material_recycle_day" class="form-control col-lg-6" id="water_raw_material_recycle_day" value="{{application_details.water_raw_material_recycle_day}}"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>2</td>
                                                             <td>Raw material and finished product cleaning/washing</td>
                                                             <td><input type="text" name="water_cleaning_source" class="form-control col-lg-6" id="water_cleaning_source"  value="{{application_details.water_cleaning_source}}"></td>
-                                                            <td><input type="text" name="water_cleaning_qty_day" class="form-control col-lg-6" id="water_cleaning_qty_day"  value="{{application_details.water_cleaning_qty_day}}"></td>
-                                                            <td><input type="text" name="water_cleaning_recycle_day" class="form-control col-lg-6" id="water_cleaning_recycle_day" value="{{application_details.water_cleaning_recycle_day}}"></td>
+                                                            <td><input type="number" name="water_cleaning_qty_day" class="form-control col-lg-6" id="water_cleaning_qty_day"  value="{{application_details.water_cleaning_qty_day}}"></td>
+                                                            <td><input type="number" name="water_cleaning_recycle_day" class="form-control col-lg-6" id="water_cleaning_recycle_day" value="{{application_details.water_cleaning_recycle_day}}"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>3</td>
                                                             <td>Process (cooling/boiler use)</td>
                                                             <td><input type="text" name="water_process_source" class="form-control col-lg-6" id="water_process_source" value="{{application_details.water_process_source}}"></td>
-                                                            <td><input type="text" name="water_process_qty_day" class="form-control col-lg-6" id="water_process_qty_day" value="{{application_details.water_process_qty_day}}"></td>
-                                                            <td><input type="text" name="water_process_recycle_day" class="form-control col-lg-6" id="water_process_recycle_day" value="{{application_details.water_process_recycle_day}}"></td>
+                                                            <td><input type="number" name="water_process_qty_day" class="form-control col-lg-6" id="water_process_qty_day" value="{{application_details.water_process_qty_day}}"></td>
+                                                            <td><input type="number" name="water_process_recycle_day" class="form-control col-lg-6" id="water_process_recycle_day" value="{{application_details.water_process_recycle_day}}"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>4</td>
                                                             <td>Domestic (Drinking and sanitation)</td>
                                                             <td><input type="text" name="water_domestic_source" class="form-control col-lg-6" id="water_domestic_source"  value="{{application_details.water_domestic_source}}"></td>
-                                                            <td><input type="text" name="water_domestic_qty_day" class="form-control col-lg-6" id="water_domestic_qty_day"  value="{{application_details.water_domestic_qty_day}}"></td>
-                                                            <td><input type="text" name="water_domestic_recycle_day" class="form-control col-lg-6" id="water_domestic_recycle_day" value="{{application_details.water_domestic_recycle_day}}"></td>
+                                                            <td><input type="number" name="water_domestic_qty_day" class="form-control col-lg-6" id="water_domestic_qty_day"  value="{{application_details.water_domestic_qty_day}}"></td>
+                                                            <td><input type="number" name="water_domestic_recycle_day" class="form-control col-lg-6" id="water_domestic_recycle_day" value="{{application_details.water_domestic_recycle_day}}"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>5</td>
                                                             <td>Dust suppression</td>
                                                             <td><input type="text" name="water_dust_compression_source" class="form-control col-lg-6" id="water_dust_compression_source"  value="{{application_details.water_dust_compression_source}}"></td>
-                                                            <td><input type="text" name="water_dust_compression_qty_day" class="form-control col-lg-6" id="water_dust_compression_qty_day" value="{{application_details.water_dust_compression_qty_day}}"></td>
-                                                            <td><input type="text" name="water_dust_compression_recycle_day" class="form-control col-lg-6" id="water_dust_compression_recycle_day" value="{{application_details.water_dust_compression_recycle_day}}"></td>
+                                                            <td><input type="number" name="water_dust_compression_qty_day" class="form-control col-lg-6" id="water_dust_compression_qty_day" value="{{application_details.water_dust_compression_qty_day}}"></td>
+                                                            <td><input type="number" name="water_dust_compression_recycle_day" class="form-control col-lg-6" id="water_dust_compression_recycle_day" value="{{application_details.water_dust_compression_recycle_day}}"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>6</td>
                                                             <td>Others, specify </td>
                                                             <td><input type="text" name="water_others_name" class="form-control col-lg-6" id="water_others_name" value="{{application_details.water_others_name}}"></td>
-                                                            <td><input type="text" name="water_others_source" class="form-control col-lg-6" id="water_others_source" value="{{application_details.water_others_source}}"></td>
-                                                            <td><input type="text" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day" value="{{application_details.water_others_qty_day}}"></td>
+                                                            <td><input type="number" name="water_others_source" class="form-control col-lg-6" id="water_others_source" value="{{application_details.water_others_source}}"></td>
+                                                            <td><input type="number" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day" value="{{application_details.water_others_qty_day}}"></td>
                                                         </tr>
                                                         <tr>
                                                             <td colspan="3" align="center">Total quantity of water to be consumed</td>
-                                                            <td><input type="text" name="total_water_consumption" id="total_water_consumption" class="form-control col-lg-6" value="{{application_details.total_water_consumption}}"></td>
-                                                            <td><input type="text" name="total_water_recycled" id="total_water_recycled" class="form-control col-lg-6" value="{{application_details.total_water_recycled}}"></td>
+                                                            <td><input type="number" name="total_water_consumption" id="total_water_consumption" class="form-control col-lg-6" value="{{application_details.total_water_consumption}}"></td>
+                                                            <td><input type="number" name="total_water_recycled" id="total_water_recycled" class="form-control col-lg-6" value="{{application_details.total_water_recycled}}"></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -1163,48 +1163,48 @@
                                                             <td>1</td>
                                                             <td>Water as raw material</td>
                                                             <td><input type="text" name="water_raw_material_source" class="form-control col-lg-6" id="water_raw_material_source" value="N/A"></td>
-                                                            <td><input type="text" name="water_raw_material_qty_day" class="form-control col-lg-6" id="water_raw_material_qty_day" value="0"></td>
-                                                            <td><input type="text" name="water_raw_material_recycle_day" class="form-control col-lg-6" id="water_raw_material_recycle_day" value="0"></td>
+                                                            <td><input type="number" name="water_raw_material_qty_day" class="form-control col-lg-6" id="water_raw_material_qty_day" value="0"></td>
+                                                            <td><input type="number" name="water_raw_material_recycle_day" class="form-control col-lg-6" id="water_raw_material_recycle_day" value="0"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>2</td>
                                                             <td>Raw material and finished product cleaning/washing</td>
                                                             <td><input type="text" name="water_cleaning_source" class="form-control col-lg-6" id="water_cleaning_source"  value="N/A"></td>
-                                                            <td><input type="text" name="water_cleaning_qty_day" class="form-control col-lg-6" id="water_cleaning_qty_day"  value="0"></td>
-                                                            <td><input type="text" name="water_cleaning_recycle_day" class="form-control col-lg-6" id="water_cleaning_recycle_day" value="0"></td>
+                                                            <td><input type="number" name="water_cleaning_qty_day" class="form-control col-lg-6" id="water_cleaning_qty_day"  value="0"></td>
+                                                            <td><input type="number" name="water_cleaning_recycle_day" class="form-control col-lg-6" id="water_cleaning_recycle_day" value="0"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>3</td>
                                                             <td>Process (cooling/boiler use)</td>
                                                             <td><input type="text" name="water_process_source" class="form-control col-lg-6" id="water_process_source" value="N/A"></td>
-                                                            <td><input type="text" name="water_process_qty_day" class="form-control col-lg-6" id="water_process_qty_day" value="0"></td>
-                                                            <td><input type="text" name="water_process_recycle_day" class="form-control col-lg-6" id="water_process_recycle_day" value="0"></td>
+                                                            <td><input type="number" name="water_process_qty_day" class="form-control col-lg-6" id="water_process_qty_day" value="0"></td>
+                                                            <td><input type="number" name="water_process_recycle_day" class="form-control col-lg-6" id="water_process_recycle_day" value="0"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>4</td>
                                                             <td>Domestic (Drinking and sanitation)</td>
                                                             <td><input type="text" name="water_domestic_source" class="form-control col-lg-6" id="water_domestic_source"  value="N/A"></td>
-                                                            <td><input type="text" name="water_domestic_qty_day" class="form-control col-lg-6" id="water_domestic_qty_day"  value="0"></td>
-                                                            <td><input type="text" name="water_domestic_recycle_day" class="form-control col-lg-6" id="water_domestic_recycle_day" value="0"></td>
+                                                            <td><input type="number" name="water_domestic_qty_day" class="form-control col-lg-6" id="water_domestic_qty_day"  value="0"></td>
+                                                            <td><input type="number" name="water_domestic_recycle_day" class="form-control col-lg-6" id="water_domestic_recycle_day" value="0"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>5</td>
                                                             <td>Dust suppression</td>
                                                             <td><input type="text" name="water_dust_compression_source" class="form-control col-lg-6" id="water_dust_compression_source"  value="N/A"></td>
-                                                            <td><input type="text" name="water_dust_compression_qty_day" class="form-control col-lg-6" id="water_dust_compression_qty_day" value="0"></td>
-                                                            <td><input type="text" name="water_dust_compression_recycle_day" class="form-control col-lg-6" id="water_dust_compression_recycle_day" value="0"></td>
+                                                            <td><input type="number" name="water_dust_compression_qty_day" class="form-control col-lg-6" id="water_dust_compression_qty_day" value="0"></td>
+                                                            <td><input type="number" name="water_dust_compression_recycle_day" class="form-control col-lg-6" id="water_dust_compression_recycle_day" value="0"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>6</td>
                                                             <td>Others, specify </td>
                                                             <td><input type="text" name="water_others_name" class="form-control col-lg-6" id="water_others_name"  value="N/A"></td>
-                                                            <td><input type="text" name="water_others_source" class="form-control col-lg-6" id="water_others_source" value="0"></td>
-                                                            <td><input type="text" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day" value="0"></td>
+                                                            <td><input type="number" name="water_others_source" class="form-control col-lg-6" id="water_others_source" value="0"></td>
+                                                            <td><input type="number" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day" value="0"></td>
                                                         </tr>
                                                         <tr>
                                                             <td colspan="3" align="center">Total quantity of water to be consumed</td>
-                                                            <td><input type="text" name="total_water_consumption" id="total_water_consumption" class="form-control col-lg-6" value="0"></td>
-                                                            <td><input type="text" name="total_water_recycled" id="total_water_recycled" class="form-control col-lg-6" value="0"></td>
+                                                            <td><input type="number" name="total_water_consumption" id="total_water_consumption" class="form-control col-lg-6" value="0"></td>
+                                                            <td><input type="number" name="total_water_recycled" id="total_water_recycled" class="form-control col-lg-6" value="0"></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -1273,72 +1273,69 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
-                                                {% if application_details.anc_other_required == 'Yes' %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)">
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="Yes"
+                                                               onclick="check_anc_facility(this.value)"
+                                                               {% if application_details.anc_other_required == 'Yes' %}checked{% endif %}>
+                                                        <label class="form-check-label">Yes</label>
                                                     </div>
-                                                {% else %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)">
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No"
+                                                               onclick="check_anc_facility(this.value)"
+                                                               {% if application_details.anc_other_required != 'Yes' %}checked{% endif %}>
+                                                        <label class="form-check-label">No</label>
                                                     </div>
-                                                {% endif %}
+                                                </div>
                                             </div>
                                             <div id="anc_other_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-warning border-0 rounded-0 anc_facility_details" role="alert" role="alert" style="display: none;">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
+
+                                    <!-- Simplified ancillary details section -->
+                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                        <div class="alert alert-warning border-0 rounded-0 other_ancillary_facilities" role="alert">
+                                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form...
+                                        </div>
                                     </div>
-                                    <br>
-                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
-                                        <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_general()"
-                                            {% if application_details.anc_other_bridge == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Bridge</label> 
-                                    </div>
-                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
-                                        <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
-                                            {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Crushing Plant</label>
-                                    </div>
-                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
-                                        <input type="checkbox" name="anc_other_concrete_building" id="anc_other_concrete_building" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
-                                            {% if application_details.anc_other_concrete_building == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Concrete Batching Plant</label>
-                                    </div>
-                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
-                                        <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
-                                            {% if application_details.anc_other_asphalt_plant == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Asphalt Plant</label>
-                                    </div>
-                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
-                                        <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
-                                            {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                    </div>
-                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
-                                        <input type="checkbox" name="anc_other_general" id="anc_other_general" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_general()"
-                                            {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Others</label>
+
+                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_general()"
+                                                {% if application_details.anc_other_bridge == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Bridge</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
+                                                {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Crushing Plant</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_concrete_building" id="anc_other_concrete_building"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
+                                                {% if application_details.anc_other_concrete_building == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Concrete Batching Plant</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
+                                                {% if application_details.anc_other_asphalt_plant == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Asphalt Plant</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
+                                                {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_general()"
+                                                {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Others</label>
+                                        </div>
                                     </div>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="anc_others_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
@@ -3721,7 +3718,6 @@
         let water_excavated_muck = $("input[name=water_excavated_muck]:checked").length;
         let water_required = $("input[name=water_required]:checked").length;
         let water_required_value = $('#water_required').val();
-        let water_provide_by_iestate = $('#water_provided_by').val();
         let water_raw_material_source = $('#water_raw_material_source').val();
         let water_raw_material_qty_day = $('#water_raw_material_qty_day').val();
         let water_raw_material_recycle_day = $('#water_raw_material_recycle_day').val();
@@ -3879,7 +3875,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'road_project_details_two' %}",
+                url : "{% url 'save_general_water_requirement' %}",
                 data : $('#project_details_two_form').serialize(),
                 success : function(data)
                 {
@@ -4766,18 +4762,6 @@
                 }, 2000);
             }
         });
-    }
-
-    function check_anc_facility(value)
-    {
-        if(value == "Yes")
-        {
-            $('.anc_facility_details').show();
-        }
-        else
-        {
-            $('.anc_facility_details').hide();
-        }
     }
 
     function save_anc_other_details()
@@ -5696,6 +5680,24 @@ function check_terms()
             $('.crushing_unit_application').hide();
             $('.concrete_building_application').hide();
             $('.asphalt_plant_application').hide();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize on page load
+        initializeAncillaryFacilities();
+    });
+
+    function check_anc_facility(value) {
+        var ancillaryDetails = document.querySelectorAll('.other_ancillary_details');
+        if (value === 'Yes') {
+            ancillaryDetails.forEach(function(element) {
+                element.style.display = 'block';
+            });
+        } else {
+            ancillaryDetails.forEach(function(element) {
+                element.style.display = 'none';
+            });
         }
     }
 

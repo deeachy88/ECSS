@@ -717,7 +717,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="project_details_two_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="project_details_two_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_water_application_no">
                                     <div class="row">
                                         <br>
                                         <div class="alert alert-warning border-0 rounded-0" role="alert">
@@ -807,48 +807,48 @@
                                                         <td>1</td>
                                                         <td>Water as raw material</td>
                                                         <td><input type="text" name="water_raw_material_source" class="form-control col-lg-6" id="water_raw_material_source" value="N/A"></td>
-                                                        <td><input type="text" name="water_raw_material_qty_day" class="form-control col-lg-6" id="water_raw_material_qty_day" value="0"></td>
-                                                        <td><input type="text" name="water_raw_material_recycle_day" class="form-control col-lg-6" id="water_raw_material_recycle_day" value="0"></td>
+                                                        <td><input type="number" name="water_raw_material_qty_day" class="form-control col-lg-6" id="water_raw_material_qty_day" value="0"></td>
+                                                        <td><input type="number" name="water_raw_material_recycle_day" class="form-control col-lg-6" id="water_raw_material_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>2</td>
                                                         <td>Raw material and finished product cleaning/washing</td>
                                                         <td><input type="text" name="water_cleaning_source" class="form-control col-lg-6" id="water_cleaning_source" value="N/A"></td>
-                                                        <td><input type="text" name="water_cleaning_qty_day" class="form-control col-lg-6" id="water_cleaning_qty_day" value="0"></td>
-                                                        <td><input type="text" name="water_cleaning_recycle_day" class="form-control col-lg-6" id="water_cleaning_recycle_day" value="0"></td>
+                                                        <td><input type="number" name="water_cleaning_qty_day" class="form-control col-lg-6" id="water_cleaning_qty_day" value="0"></td>
+                                                        <td><input type="number" name="water_cleaning_recycle_day" class="form-control col-lg-6" id="water_cleaning_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>3</td>
                                                         <td>Process (cooling/boiler use)</td>
                                                         <td><input type="text" name="water_process_source" class="form-control col-lg-6" id="water_process_source" value="N/A"></td>
-                                                        <td><input type="text" name="water_process_qty_day" class="form-control col-lg-6" id="water_process_qty_day" value="0"></td>
-                                                        <td><input type="text" name="water_process_recycle_day" class="form-control col-lg-6" id="water_process_recycle_day" value="0"></td>
+                                                        <td><input type="number" name="water_process_qty_day" class="form-control col-lg-6" id="water_process_qty_day" value="0"></td>
+                                                        <td><input type="number" name="water_process_recycle_day" class="form-control col-lg-6" id="water_process_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>4</td>
                                                         <td>Domestic (Drinking and sanitation)</td>
                                                         <td><input type="text" name="water_domestic_source" class="form-control col-lg-6" id="water_domestic_source" value="N/A"></td>
-                                                        <td><input type="text" name="water_domestic_qty_day" class="form-control col-lg-6" id="water_domestic_qty_day" value="0"></td>
-                                                        <td><input type="text" name="water_domestic_recycle_day" class="form-control col-lg-6" id="water_domestic_recycle_day" value="0"></td>
+                                                        <td><input type="number" name="water_domestic_qty_day" class="form-control col-lg-6" id="water_domestic_qty_day" value="0"></td>
+                                                        <td><input type="number" name="water_domestic_recycle_day" class="form-control col-lg-6" id="water_domestic_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>5</td>
                                                         <td>Dust suppression</td>
                                                         <td><input type="text" name="water_dust_compression_source" class="form-control col-lg-6" id="water_dust_compression_source" value="N/A"></td>
-                                                        <td><input type="text" name="water_dust_compression_qty_day" class="form-control col-lg-6" id="water_dust_compression_qty_day" value="0"></td>
-                                                        <td><input type="text" name="water_dust_compression_recycle_day" class="form-control col-lg-6" id="water_dust_compression_recycle_day" value="0"></td>
+                                                        <td><input type="number" name="water_dust_compression_qty_day" class="form-control col-lg-6" id="water_dust_compression_qty_day" value="0"></td>
+                                                        <td><input type="number" name="water_dust_compression_recycle_day" class="form-control col-lg-6" id="water_dust_compression_recycle_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>6</td>
                                                         <td>Others, specify </td>
                                                         <td><input type="text" name="water_others_name" class="form-control col-lg-6" id="water_others_name" value="N/A"></td>
-                                                        <td><input type="text" name="water_others_source" class="form-control col-lg-6" id="water_others_source" value="0"></td>
-                                                        <td><input type="text" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day" value="0"></td>
+                                                        <td><input type="number" name="water_others_source" class="form-control col-lg-6" id="water_others_source" value="0"></td>
+                                                        <td><input type="number" name="water_others_qty_day" class="form-control col-lg-6" id="water_others_qty_day" value="0"></td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3" align="center">Total quantity of water to be consumed</td>
-                                                        <td><input type="text" name="total_water_consumption" id="total_water_consumption" class="form-control col-lg-6" value="0"></td>
-                                                        <td><input type="text" name="total_water_recycled" id="total_water_recycled" class="form-control col-lg-6" value="0"></td>
+                                                        <td><input type="number" name="total_water_consumption" id="total_water_consumption" class="form-control col-lg-6" value="0"></td>
+                                                        <td><input type="number" name="total_water_recycled" id="total_water_recycled" class="form-control col-lg-6" value="0"></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -3238,7 +3238,6 @@ function getRoadGewog(dzongkhag_id)
         let water_excavated_muck = $("input[name=water_excavated_muck]:checked").length;
         let water_required = $("input[name=water_required]:checked").length;
         let water_required_value = $('#water_required').val();
-        let water_provide_by_iestate = $('#water_provided_by').val();
         let water_raw_material_source = $('#water_raw_material_source').val();
         let water_raw_material_qty_day = $('#water_raw_material_qty_day').val();
         let water_raw_material_recycle_day = $('#water_raw_material_recycle_day').val();
@@ -3396,7 +3395,7 @@ function getRoadGewog(dzongkhag_id)
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'road_project_details_two' %}",
+                url : "{% url 'save_general_water_requirement' %}",
                 data : $('#project_details_two_form').serialize(),
                 success : function(data)
                 {

@@ -868,7 +868,7 @@
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        {% for anc_power_line_details in anc_power_line_details %}
+                                                                        {% for anc_power_line_details in power_line %}
                                                                             <tr>
                                                                                 <td>{{ forloop.counter }}</td>
                                                                                 <td>{{anc_power_line_details.line_chainage_from}}</td>
@@ -2816,18 +2816,6 @@
         let sum_line_chainage = line_chainage_from + line_chainage_to ;
         let total = row * sum_line_chainage;
         $('#edit_area_required').val(total);
-    }
-
-    function check_anc_facility()
-    {
-        if(value == "Yes")
-        {
-            $('.anc_facility_details').show();
-        }
-        else
-        {
-            $('.anc_facility_details').hide();
-        }
     }
 
     function save_ground_water_attachment()
@@ -4960,4 +4948,6 @@
             $('#gw_submit_btn').hide();
         }
     }
+
+
 </script>

@@ -189,20 +189,21 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Others Specify</label>
-                                                <input type="text" name="others_area" class="form-control" id="others_area" value="{{ application_details.others_area }}" oninput="toggleAcreField()">
+                                                <input type="text" name="others_area" class="form-control" id="others_area"
+                                                       value="{{ application_details.others_area }}" oninput="toggleAcreField()">
+                                            </div>
+                                            <div id="others_area_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+
+                                        <div class="col-lg-6" id="acreFieldContainer" style="display: none;">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Others(acres)</label>
+                                                <input type="number" min="0" name="others_area_acre" class="form-control"
+                                                       id="others_area_acre" oninput="get_total_area_acre()"
+                                                       value="{{ application_details.others_area_acre|default_if_none:'' }}">
                                             </div>
                                             <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-
-                                        {% if application_details.others_area and application_details.others_area != "NA" %}
-                                            <div class="col-lg-6" id="acreFieldContainer">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Others(acres)</label>
-                                                    <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" oninput="get_total_area_acre()" value="{{application_details.others_area_acre}}">
-                                                </div>
-                                                <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                            </div>
-                                        {% endif %}
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -689,7 +690,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity requires excavated muck disposal area/dumpyard?</label>
+                                                <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
                                                 {% if application_details.water_excavated_muck %}
                                                     {% if application_details.water_excavated_muck == "Yes" %}
                                                         <div class="mt-2">
@@ -726,10 +727,12 @@
                                                         </div>
                                                     </div>
                                                 {% endif %}
+
                                             </div>
                                             <div id="water_excavated_muckErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
+                                    <br>
                                     {% if application_details.water_excavated_muck == "Yes" %}
                                         <div class="col-md-12">
                                             <div class="card">
@@ -911,35 +914,6 @@
                                                 </table>
                                             </div>
                                         </div>
-                                        <br>
-                                        <div class="alert alert-primary border-0 rounded-0" role="alert" style="display: none;">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide the following information on water source
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Information on downstream users, if any</label>
-                                                    <input type="text" name="water_downstream_users" class="form-control" id="water_downstream_users" value="{{application_details.water_downstream_users}}">
-                                                </div>
-                                                <div id="water_downstream_usersErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Flow rate (liters/second) during lean season</label>
-                                                    <input type="text" name="water_flow_rate_lean" class="form-control" id="water_flow_rate_lean" value="{{application_details.water_flow_rate_lean}}">
-                                                </div>
-                                                <div id="water_flow_rate_leanErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Distance from source to the project site (meters)</label>
-                                                    <input type="text" name="water_source_distance" class="form-control" id="water_source_distance" value="{{application_details.water_source_distance}}">
-                                                </div>
-                                                <div id="water_source_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                            </div>
-                                        </div>
                                     {% else %}
                                         <div class="row general_water_details" style="display: none;">
                                             <div class="col-lg-12">
@@ -1005,36 +979,37 @@
                                                 </table>
                                             </div>
                                         </div>
-                                        <br>
-                                        <div class="alert alert-primary border-0 rounded-0 general_water_details" role="alert" style="display: none;">
-                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide the following information on water source
-                                        </div>
-                                        <div class="row general_water_details" style="display: none;">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Information on downstream users, if any</label>
-                                                    <input type="text" name="water_downstream_users" class="form-control" id="water_downstream_users">
-                                                </div>
-                                                <div id="water_downstream_usersErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Flow rate (liters/second) during lean season</label>
-                                                    <input type="text" name="water_flow_rate_lean" class="form-control" id="water_flow_rate_lean">
-                                                </div>
-                                                <div id="water_flow_rate_leanErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                            </div>
-                                        </div>
-                                        <div class="row general_water_details" style="display: none;">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Distance from source to the project site (meters)</label>
-                                                    <input type="text" name="water_source_distance" class="form-control" id="water_source_distance">
-                                                </div>
-                                                <div id="water_source_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                            </div>
-                                        </div>
                                     {% endif %}
+
+                                    <br>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide the following information on water source
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Information on downstream users, if any</label>
+                                                <input type="text" name="water_downstream_users" class="form-control" id="water_downstream_users" value="{{application_details.water_downstream_users}}">
+                                            </div>
+                                            <div id="water_downstream_usersErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Flow rate (liters/second) during lean season</label>
+                                                <input type="text" name="water_flow_rate_lean" class="form-control" id="water_flow_rate_lean" value="{{application_details.water_flow_rate_lean}}">
+                                            </div>
+                                            <div id="water_flow_rate_leanErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Distance from source to the project site (meters)</label>
+                                                <input type="text" name="water_source_distance" class="form-control" id="water_source_distance" value="{{application_details.water_source_distance}}">
+                                            </div>
+                                            <div id="water_source_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="water_requirement_application_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
@@ -1147,7 +1122,7 @@
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        {% for anc_road_details in anc_road_details %}
+                                                                        {% for anc_road_details in ancillary_road %}
                                                                             <tr>
                                                                                 <td>{{ forloop.counter }}</td>
                                                                                 <td>{{anc_road_details.road_chainage_from}}</td>
@@ -1380,14 +1355,14 @@
                                             <div class="col-lg-4">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Voltage level in kV</label>
-                                                    <input type="text" name="anc_power_line_voltage" class="form-control" id="anc_power_line_voltage" value="{{application_details.anc_power_line_voltage}}">
+                                                    <input type="nomber" name="anc_power_line_voltage" class="form-control" id="anc_power_line_voltage" value="{{application_details.anc_power_line_voltage}}">
                                                 </div>
                                                 <div id="anc_power_line_voltageErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                             <div class="col-lg-4">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Length of transmission /distribution line in km</label>
-                                                    <input type="text" name="anc_power_line_length" class="form-control" id="anc_power_line_length" value="{{application_details.anc_power_line_length}}">
+                                                    <input type="number" name="anc_power_line_length" class="form-control" id="anc_power_line_length" value="{{application_details.anc_power_line_length}}">
                                                 </div>
                                                 <div id="anc_power_line_lengthErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
@@ -1444,7 +1419,7 @@
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        {% for anc_power_line_details in anc_power_line_details %}
+                                                                        {% for anc_power_line_details in power_line %}
                                                                             <tr>
                                                                                 <td>{{ forloop.counter }}</td>
                                                                                 <td>{{anc_power_line_details.line_chainage_from}}</td>
@@ -1480,14 +1455,14 @@
                                             <div class="col-lg-4">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Voltage level in kV</label>
-                                                    <input type="text" name="anc_power_line_voltage" class="form-control" id="anc_power_line_voltage">
+                                                    <input type="number" name="anc_power_line_voltage" class="form-control" id="anc_power_line_voltage">
                                                 </div>
                                                 <div id="anc_power_line_voltageErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                             <div class="col-lg-4">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Length of transmission /distribution line in km</label>
-                                                    <input type="text" name="anc_power_line_length" class="form-control" id="anc_power_line_length">
+                                                    <input type="number" name="anc_power_line_length" class="form-control" id="anc_power_line_length">
                                                 </div>
                                                 <div id="anc_power_line_lengthErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
@@ -1565,60 +1540,57 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
-                                                {% if application_details.anc_other_required == 'Yes' %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)">
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="Yes"
+                                                               onclick="check_anc_facility(this.value)"
+                                                               {% if application_details.anc_other_required == 'Yes' %}checked{% endif %}>
+                                                        <label class="form-check-label">Yes</label>
                                                     </div>
-                                                {% else %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)">
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No"
+                                                               onclick="check_anc_facility(this.value)"
+                                                               {% if application_details.anc_other_required != 'Yes' %}checked{% endif %}>
+                                                        <label class="form-check-label">No</label>
                                                     </div>
-                                                {% endif %}
+                                                </div>
                                             </div>
                                             <div id="anc_other_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-warning border-0 rounded-0 other_ancillary_facilities" role="alert" style="display:none;">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
+
+                                    <!-- Simplified ancillary details section -->
+                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                        <div class="alert alert-warning border-0 rounded-0 other_ancillary_facilities" role="alert">
+                                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form...
+                                        </div>
                                     </div>
-                                    <br>
-                                    <div class="form-check other_ancillary_facilities" style="display:none;">
-                                        <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()"
-                                            {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                    </div>
-                                    <div class="form-check other_ancillary_facilities" style="display:none;">
-                                        <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
-                                            {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                    </div>
-                                    <div class="form-check other_ancillary_facilities" style="display:none;">
-                                        <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_mineral()"
-                                            {% if application_details.anc_other_mineral == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Mineral stockyards outside the quarry lease area</label>
-                                    </div>
-                                    <div class="form-check other_ancillary_facilities" style="display:none;">
-                                        <input type="checkbox" name="anc_other_general" id="anc_other_general" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_general()"
-                                            {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Others</label>
+
+                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()"
+                                                {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:none;">
+                                            <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
+                                                {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:none;">
+                                            <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_mineral()"
+                                                {% if application_details.anc_other_mineral == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Mineral stockyards outside the quarry lease area</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:none;">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_general()"
+                                                {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Others</label>
+                                        </div>
                                     </div>
                                     <div class="alert alert-success border-0 rounded-0" 
                                         role="alert" 
@@ -3253,24 +3225,33 @@
         if (generalChecked) $('.general_application').show();
     });
 
+
     function toggleAcreField() {
         const othersArea = document.getElementById('others_area');
         const acreFieldContainer = document.getElementById('acreFieldContainer');
-        
-        if (othersArea.value && othersArea.value !== 'NA') {
+
+        if (othersArea.value && othersArea.value.trim() !== '' && othersArea.value !== 'NA') {
             acreFieldContainer.style.display = 'block';
         } else {
             acreFieldContainer.style.display = 'none';
-            // Optional: Clear the acre field when hidden
+            // Clear the acre field when hidden
             document.getElementById('others_area_acre').value = '';
         }
     }
-
-    // Initialize on page load
+    // Run on page load to set initial state
     document.addEventListener('DOMContentLoaded', function() {
         toggleAcreField();
     });
-    
+
+    function check_general_water(value) {
+        if (value == 'Yes') {
+            $('.general_water_details').show();
+        }
+        else {
+            $('.general_water_details').hide();
+        }
+    }
+
     function check_industry_radio(value)
     {
         if(value == 'Yes')
@@ -3790,18 +3771,30 @@
     {
         if(value == "Yes")
         {
-            $('.dump_yard_details').show();
+            $('#dump_yard_details').show();
         }
         else
         {
-            $('.dump_yard_details').hide();
+            $('#dump_yard_details').hide();
         }
     }
 
 
     function save_quarry_application()
     {
+        // First hide all error messages
+        $('.alert-danger').hide();
+
+        // Get all field values
         let project_name = $('#project_name').val();
+        let applicant_name = $('#applicant_name').val();
+        let address = $('#address').val();
+        let contact_no = $('#contact_no').val();
+        let contact_no_length = contact_no.length;
+        let email = $('#email').val();
+        let industry_type = $('#industry_type').val();
+        let establishment_type = $('#establishment_type').val();
+        let industry_classification = $('#industry_classification').val();
         let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
         let dzongkhag_throm_val = $("input[name=dzongkhag_throm]:checked").val();
         let thromde_id = $('#thromde_id').val();
@@ -3814,164 +3807,177 @@
         let private_area_acre = $('#private_area_acre').val();
         let others_area = $('#others_area').val();
         let others_area_acre = $('#others_area_acre').val();
+        let total_area_acre = $('#total_area_acre').val();
         let actual_mineable_area = $('#actual_mineable_area').val();
         let green_area_acre = $('#green_area_acre').val();
         let max_evacuation_depth = $('#max_evacuation_depth').val();
         let terrain_elevation = $('#terrain_elevation').val();
         let terrain_slope = $('#terrain_slope').val();
 
-        if(project_name == "")
-        {
-            $('#project_nameErrorMsg').html("Enter Name of Project");
-            $('#project_nameErrorMsg').show();
-            $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
-            $('#project_name').focus();
+
+        // Validation checks
+        if (project_name === "") {
+            showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');
+            return false;
         }
-        else if(dzongkhag_throm == "")
-        {
-            $('#dzongkhag_thromErrorMsg').html("Choose One");
-            $('#dzongkhag_thromErrorMsg').show();
-            $('#dzongkhag_thromErrorMsg').delay(2000).fadeOut('slow');
-            $('#dzongkhag_throm').focus();
+        else if (applicant_name === "") {
+            showErrorAndFocus('#applicant_nameErrorMsg', 'Enter Name of The Applicant', '#applicant_name');
+            return false;
         }
-        else if(dzongkhag_throm_val == "Thromde" && thromde_id == "")
-        {
-            $('#thromde_idErrorMsg').html("Select Dzongkhag");
-            $('#thromde_idErrorMsg').show();
-            $('#thromde_idErrorMsg').delay(2000).fadeOut('slow');
-            $('#thromde_id').focus();
+        else if (address === "") {
+            showErrorAndFocus('#addressErrorMsg', 'Enter Address', '#address');
+            return false;
         }
-        else if(dzongkhag_throm_val == "Dzongkhag" && dzongkhag_code == "")
-        {
-            $('#dzongkhagErrorMsg').html("Select Dzongkhag");
-            $('#dzongkhagErrorMsg').show();
-            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-            $('#dzongkhag').focus();
+        else if (contact_no === "") {
+            showErrorAndFocus('#contact_noErrorMsg', 'Enter Contact No', '#contact_no');
+            return false;
         }
-        else if(dzongkhag_throm_val == "Dzongkhag" && gewog_code == "")
-        {
-            $('#gewogErrorMsg').html("Select Gewog");
-            $('#gewogErrorMsg').show();
-            $('#gewogErrorMsg').delay(2000).fadeOut('slow');
-            $('#gewog').focus();
+        else if (contact_no_length < 8) {
+            showErrorAndFocus('#contact_noErrorMsg', 'Cannot Be Less Than Eight Digits', '#contact_no');
+            return false;
         }
-        else if(dzongkhag_throm_val == "Dzongkhag" && village_code == "")
-        {
-            $('#vil_chiwogErrorMsg').html("Select Village");
-            $('#vil_chiwogErrorMsg').show();
-            $('#vil_chiwogErrorMsg').delay(2000).fadeOut('slow');
-            $('#vil_chiwog').focus();
+        else if (email === "") {
+            showErrorAndFocus('#emailErrorMsg', 'Enter Email', '#email');
+            return false;
         }
-        else if(project_site == "")
-        {
-            $('#project_siteErrorMsg').html("Enter Project Site ");
-            $('#project_siteErrorMsg').show();
-            $('#project_siteErrorMsg').delay(2000).fadeOut('slow');
-            $('#project_site').focus();
+        else if (industry_type === "") {
+            showErrorAndFocus('#industry_typeErrorMsg', 'Enter Industry Type', '#industry_type');
+            return false;
         }
-        else if(industrial_area_acre == "")
-        {
-            $('#industrial_area_acreErrorMsg').html("Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)");
-            $('#industrial_area_acreErrorMsg').show();
-            $('#industrial_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#industrial_area_acre').focus();
+        else if (establishment_type === "") {
+            showErrorAndFocus('#establishment_typeErrorMsg', 'Enter Establishment Type', '#establishment_type');
+            return false;
         }
-        else if(industrial_area_acre == "")
-        {
-            $('#industrial_area_acreErrorMsg').html("Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)");
-            $('#industrial_area_acreErrorMsg').show();
-            $('#industrial_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#industrial_area_acre').focus();
+        else if (industry_classification === "") {
+            showErrorAndFocus('#industry_classificationErrorMsg', 'Enter Classification of Industry', '#industry_classification');
+            return false;
         }
-        else if(state_reserve_forest_acre == "")
-        {
-            $('#state_reserve_forest_acreErrorMsg').html("Enter State Reserve Forest Area");
-            $('#state_reserve_forest_acreErrorMsg').show();
-            $('#state_reserve_forest_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#state_reserve_forest_acre').focus();
+        else if (dzongkhag_throm === 0) {
+            showErrorAndFocus('#dzongkhag_thromErrorMsg', 'Choose One', "input[name=dzongkhag_throm]:first");
+            return false;
         }
-        else if(private_area_acre == "")
-        {
-            $('#private_area_acreErrorMsg').html("Enter Private Area");
-            $('#private_area_acreErrorMsg').show();
-            $('#private_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#private_area_acre').focus();
+        else if (dzongkhag_throm_val === "Thromde" && thromde_id === "") {
+            showErrorAndFocus('#thromde_idErrorMsg', 'Select Thromde', '#thromde_id');
+            return false;
         }
-        else if(others_area != "NA" || others_area != "" && others_area_acre == "")
-        {
-            $('#others_area_acreErrorMsg').html("Enter Others Area");
-            $('#others_area_acreErrorMsg').show();
-            $('#others_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#others_area_acre').focus();
+        else if (dzongkhag_throm_val === "Dzongkhag" && dzongkhag_code === "") {
+            showErrorAndFocus('#dzongkhagErrorMsg', 'Select Dzongkhag', '#dzongkhag');
+            return false;
+        }
+        else if (dzongkhag_throm_val === "Dzongkhag" && gewog_code === "") {
+            showErrorAndFocus('#gewogErrorMsg', 'Select Gewog', '#gewog');
+            return false;
+        }
+        else if (dzongkhag_throm_val === "Dzongkhag" && village_code === "") {
+            showErrorAndFocus('#vil_chiwogErrorMsg', 'Select Village', '#vil_chiwog');
+            return false;
+        }
+        else if (project_site === "") {
+            showErrorAndFocus('#project_siteErrorMsg', 'Enter Project Site', '#project_site');
+            return false;
+        }
+        else if (industrial_area_acre === "") {
+            showErrorAndFocus('#industrial_area_acreErrorMsg', 'Enter Industrial Area/Estate/Park/Special Economic Zone (SEZ)', '#industrial_area_acre');
+            return false;
+        }
+        else if (state_reserve_forest_acre === "") {
+            showErrorAndFocus('#state_reserve_forest_acreErrorMsg', 'Enter State Reserve Forest Area', '#state_reserve_forest_acre');
+            return false;
+        }
+        else if (private_area_acre === "") {
+            showErrorAndFocus('#private_area_acreErrorMsg', 'Enter Private Area', '#private_area_acre');
+            return false;
+        }
+        else if ((others_area !== "NA" && others_area !== "") && others_area_acre === "") {
+            showErrorAndFocus('#others_area_acreErrorMsg', 'Enter Others Area', '#others_area_acre');
+            return false;
         }
         else if(actual_mineable_area == "")
         {
-            $('#actual_mineable_areaErrorMsg').html("Enter Actual Mineable Area");
-            $('#actual_mineable_areaErrorMsg').show();
-            $('#actual_mineable_areaErrorMsg').delay(2000).fadeOut('slow');
-            $('#actual_mineable_area').focus();
+            showErrorAndFocus('#actual_mineable_areaErrorMsg', 'Enter Actual Mineable Area', '#actual_mineable_area');
+            return false;
         }
         else if(green_area_acre == "")
         {
-            $('#green_area_acreErrorMsg').html("Enter Green Belt Area");
-            $('#green_area_acreErrorMsg').show();
-            $('#green_area_acreErrorMsg').delay(2000).fadeOut('slow');
-            $('#green_area_acre').focus();
+            showErrorAndFocus('#green_area_acreErrorMsg', 'Enter Green Belt Area', '#green_area_acre');
+            return false;
         }
         else if(terrain_elevation == "")
         {
-            $('#terrain_elevationErrorMsg').html("Enter Elevation");
-            $('#terrain_elevationErrorMsg').show();
-            $('#terrain_elevationErrorMsg').delay(2000).fadeOut('slow');
-            $('#terrain_elevation').focus();
+            showErrorAndFocus('#terrain_elevationErrorMsg', 'Enter Elevation', '#terrain_elevation');
+            return false;
         }
         else if(terrain_slope == "")
         {
-            $('#terrain_slopeErrorMsg').html("Enter Slope/Gradient");
-            $('#terrain_slopeErrorMsg').show();
-            $('#terrain_slopeErrorMsg').delay(2000).fadeOut('slow');
-            $('#terrain_slope').focus();
+            showErrorAndFocus('#terrain_slopeErrorMsg', 'Enter Slope/Gradient', '#terrain_slope');
+            return false;
         }
-        else
-        {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'save_quarry_application' %}",
-                data : $('#quarry_application_form').serialize(),
-                success : function(data)
-                {
-                    if(data.message == 'success')
-                    {
-                        $('#application_form_successMsg').html("Saved Successfully");
-                        $('#application_form_successMsg').show();
-                        $('#application_form_successMsg').focus();
-                        setTimeout(function()
-                        {
-                            $('#application_form_successMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
+        else {
+            // Submit the form via AJAX
+            $.ajax({
+                type: "POST",
+                url: "{% url 'save_general_info' %}",
+                data: $('#quarry_application_form').serialize(),
+                success: function(data) {
+                    if (data.message == 'success') {
+                        // Success case with accessibility
+                        $('#application_form_successMsg')
+                            .html('<i class="uil-folder-heart me-1 h4 align-middle"></i> Saved Successfully')
+                            .removeAttr('tabindex')  // Remove focus blocker
+                            .attr({
+                                'aria-live': 'polite',
+                                'aria-atomic': 'true'
+                            })
+                            .show()
+                            .focus();  // Set focus for accessibility
+
+                        setTimeout(() => {
+                            $('#application_form_successMsg').fadeOut('slow');
                             $("#headingTwoBtn").removeAttr("disabled");
                             $("#collapseTwo").addClass("show");
                             $("#collapseOne").removeClass("show");
                         }, 2000);
-                    }
-                    else
-                    {
-                        var errorMsg = data.error;
-        
-                        $('#application_form_errorMsg').html(`Application Error: ${data.error}`);
-                        $('#application_form_errorMsg').show();
-                        $('#application_form_errorMsg').focus();
-                        
-                        setTimeout(function() {
-                            $('#application_form_errorMsg').delay(2000).fadeOut('slow');
+                    } else {
+                        // Error case with accessibility
+                        $('#application_form_errorMsg')
+                            .html(`<i class="uil-folder-heart me-1 h4 align-middle"></i> Application Error: ${data.error}`)
+                            .removeAttr('tabindex')  // Remove focus blocker
+                            .attr({
+                                'aria-live': 'assertive',
+                                'aria-atomic': 'true'
+                            })
+                            .show()
+                            .focus();
+
+                        setTimeout(() => {
+                            $('#application_form_errorMsg').fadeOut('slow');
                         }, 2000);
                     }
                 }
             });
         }
     }
+
+    // Helper function to show error and focus on field
+    function showErrorAndFocus(errorElement, message, focusElement) {
+        $(errorElement).html(message).show();
+
+        // Use setTimeout to ensure the focus happens after the DOM updates
+        setTimeout(function() {
+            $(focusElement).focus();
+
+            // Scroll to the element if needed
+            $('html, body').animate({
+                scrollTop: $(focusElement).offset().top - 100
+            }, 100);
+        }, 50);
+
+        // Hide the error after 2 seconds
+        setTimeout(function() {
+            $(errorElement).fadeOut('slow');
+        }, 2000);
+    }
+
 
     function save_terrain_baseline_details()
     {
@@ -4276,8 +4282,8 @@
         let stripping_ratio = $('#stripping_ratio').val();
         let bench_height= $('#bench_height').val();
         let bench_width= $('#bench_width').val();
-        let blast_required = $("input[name=blast_required]:checked").length;
-        let blast_required_value = $("input[name=blast_required]:checked").val();
+        let blast_required = $("input[name=anc_road_blast_required]:checked").length;
+        let blast_required_value = $("input[name=anc_road_blast_required]:checked").val();
         let blast_type = $('#blast_type').val();
         let blast_qty = $('#blast_qty').val();
         let blast_frequency_time = $('#blast_frequency_time').val();
@@ -4439,6 +4445,9 @@
         let water_others_source = $('#water_others_source').val();
         let water_others_qty_day = $('#water_others_qty_day').val();
         let water_resources_info = $('#water_resources_info').val();
+        let water_downstream_users = $('#water_downstream_users').val();;
+        let water_flow_rate_lean = $('#water_flow_rate_lean').val();;;
+        let water_source_distance = $('#water_source_distance').val();;
 
         if(water_resources_info == "")
         {
@@ -4579,6 +4588,27 @@
             $('#water_others_qty_dayErrorMsg').show();
             $('#water_others_qty_dayErrorMsg').delay(2000).fadeOut('slow');
             $('#water_others_qty_day').focus();
+        }
+        else if(water_required_value == 'Yes' && water_others_qty_day == "")
+        {
+            $('#water_others_qty_dayErrorMsg').html("Please Select One.");
+            $('#water_others_qty_dayErrorMsg').show();
+            $('#water_others_qty_dayErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_others_qty_day').focus();
+        }
+        else if(water_flow_rate_lean == "")
+        {
+            $('#water_flow_rate_leanErrorMsg').html("Please Enter Flow Rate");
+            $('#water_flow_rate_leanErrorMsg').show();
+            $('#water_flow_rate_leanErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_flow_rate_lean').focus();
+        }
+        else if(water_source_distance == "")
+        {
+            $('#water_source_distanceErrorMsg').html("Please Enter Distance From Project Site");
+            $('#water_source_distanceErrorMsg').show();
+            $('#water_source_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_source_distance').focus();
         }
         else
         {
@@ -6519,4 +6549,24 @@
             });
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize on page load
+        initializeAncillaryFacilities();
+    });
+
+    function check_anc_facility(value) {
+        var ancillaryDetails = document.querySelectorAll('.other_ancillary_details');
+        if (value === 'Yes') {
+            ancillaryDetails.forEach(function(element) {
+                element.style.display = 'block';
+            });
+        } else {
+            ancillaryDetails.forEach(function(element) {
+                element.style.display = 'none';
+            });
+        }
+    }
+
+
 </script>

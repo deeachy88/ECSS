@@ -846,9 +846,8 @@ def save_terrain_baseline_details(request):
     data = dict()
     try:
         application_no = request.POST.get('terrain_baseline_application_no')
-        proposed_location_justification = request.POST.get('proposed_location_justification')
-        terrain_elevation = request.POST.get('terrain_elevation')
-        terrain_slope = request.POST.get('terrain_slope')
+
+        # Get all the common fields that will always be updated
         bl_protected_area_name = request.POST.get('bl_protected_area_name')
         bl_protected_area_distance = request.POST.get('bl_protected_area_distance')
         bl_migratory_route_name = request.POST.get('bl_migratory_route_name')
@@ -882,49 +881,66 @@ def save_terrain_baseline_details(request):
         bl_others_distance = request.POST.get('bl_others_distance')
         technology_used = request.POST.get('technology_used')
         technology_total_capacity = request.POST.get('technology_total_capacity')
-        energy_source = request.POST.get('energy_source')
-        energy_source_justification = request.POST.get('energy_source_justification')
 
+        # Create base update dictionary with fields that are always included
+        update_fields = {
+            'bl_protected_area_name': bl_protected_area_name,
+            'bl_protected_area_distance': bl_protected_area_distance,
+            'bl_migratory_route_name': bl_migratory_route_name,
+            'bl_migratory_route_distance': bl_migratory_route_distance,
+            'bl_wetland_name': bl_wetland_name,
+            'bl_wetland_distance': bl_wetland_distance,
+            'bl_water_bodies_name': bl_water_bodies_name,
+            'bl_water_bodies_distance': bl_water_bodies_distance,
+            'bl_fmu_name': bl_fmu_name,
+            'bl_fmu_distance': bl_fmu_distance,
+            'bl_agricultural_name': bl_agricultural_name,
+            'bl_agricultural_distance': bl_agricultural_distance,
+            'bl_settlement_name': bl_settlement_name,
+            'bl_settlement_distance': bl_settlement_distance,
+            'bl_road_name': bl_road_name,
+            'bl_road_distance': bl_road_distance,
+            'bl_public_infra_name': bl_public_infra_name,
+            'bl_public_infra_distance': bl_public_infra_distance,
+            'bl_school_name': bl_school_name,
+            'bl_school_distance': bl_school_distance,
+            'bl_heritage_name': bl_heritage_name,
+            'bl_heritage_distance': bl_heritage_distance,
+            'bl_tourist_facility_name': bl_tourist_facility_name,
+            'bl_tourist_facility_distance': bl_tourist_facility_distance,
+            'bl_impt_installation_name': bl_impt_installation_name,
+            'bl_impt_installation_distance': bl_impt_installation_distance,
+            'bl_industries_name': bl_industries_name,
+            'bl_industries_distance': bl_industries_distance,
+            'bl_others': bl_others,
+            'bl_others_name': bl_others_name,
+            'bl_others_distance': bl_others_distance,
+            'technology_used': technology_used,
+            'technology_total_capacity': technology_total_capacity,
+        }
+
+        # Conditionally add energy source fields if energy_source is not empty
+        energy_source = request.POST.get('energy_source')
+        if energy_source:  # This will check for None or empty string
+            update_fields.update({
+                'energy_source': energy_source,
+                'energy_source_justification': request.POST.get('energy_source_justification')
+            })
+
+        # Check if terrain_elevation is not null/empty
+        terrain_elevation = request.POST.get('terrain_elevation')
+        if terrain_elevation:
+            # Add the conditional fields
+            update_fields.update({
+                'proposed_location_justification': request.POST.get('proposed_location_justification'),
+                'terrain_elevation': terrain_elevation,
+                'terrain_slope': request.POST.get('terrain_slope')
+            })
+
+        # Perform the update
         baseline_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        baseline_details.update(proposed_location_justification=proposed_location_justification,
-                                terrain_elevation=terrain_elevation,
-                                terrain_slope=terrain_slope,
-                                bl_protected_area_name=bl_protected_area_name,
-                                bl_protected_area_distance=bl_protected_area_distance,
-                                bl_migratory_route_name=bl_migratory_route_name,
-                                bl_migratory_route_distance=bl_migratory_route_distance,
-                                bl_wetland_name=bl_wetland_name,
-                                bl_wetland_distance=bl_wetland_distance,
-                                bl_water_bodies_name=bl_water_bodies_name,
-                                bl_water_bodies_distance=bl_water_bodies_distance,
-                                bl_fmu_name=bl_fmu_name,
-                                bl_fmu_distance=bl_fmu_distance,
-                                bl_agricultural_name=bl_agricultural_name,
-                                bl_agricultural_distance=bl_agricultural_distance,
-                                bl_settlement_name=bl_settlement_name,
-                                bl_settlement_distance=bl_settlement_distance,
-                                bl_road_name=bl_road_name,
-                                bl_road_distance=bl_road_distance,
-                                bl_public_infra_name=bl_public_infra_name,
-                                bl_public_infra_distance=bl_public_infra_distance,
-                                bl_school_name=bl_school_name,
-                                bl_school_distance=bl_school_distance,
-                                bl_heritage_name=bl_heritage_name,
-                                bl_heritage_distance=bl_heritage_distance,
-                                bl_tourist_facility_name=bl_tourist_facility_name,
-                                bl_tourist_facility_distance=bl_tourist_facility_distance,
-                                bl_impt_installation_name=bl_impt_installation_name,
-                                bl_impt_installation_distance=bl_impt_installation_distance,
-                                bl_industries_name=bl_industries_name,
-                                bl_industries_distance=bl_industries_distance,
-                                bl_others=bl_others,
-                                bl_others_name=bl_others_name,
-                                bl_others_distance=bl_others_distance,
-                                technology_used=technology_used,
-                                technology_total_capacity=technology_total_capacity,
-                                energy_source=energy_source,
-                                energy_source_justification=energy_source_justification
-                                )
+        baseline_details.update(**update_fields)
+
         data['message'] = "success"
         return JsonResponse(data)
     except Exception as e:
@@ -1481,7 +1497,7 @@ def save_industry_emission_details(request):
         en_pol_control_device_volume = request.POST.get('en_pol_control_device_volume')
         en_pol_control_device_temp = request.POST.get('en_pol_control_device_temp')
         en_air_pollution_control_device_capacity = request.POST.get('en_air_pollution_control_device_capacity')
-        en_air_pollution_control_pcd_dimension = request.POST.get('en_air_pollution_control_pcd_dimention')
+        en_air_pollution_control_pcd_dimension = request.POST.get('en_air_pollution_control_pcd_dimension')
 
 
         industry_emission_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -2833,7 +2849,9 @@ def save_project_details(request):
         blast_type = request.POST.get('blast_type')
         blast_qty = request.POST.get('blast_qty')
         blast_frequency_time = request.POST.get('blast_frequency_time')
-        print(application_no)
+        power_generation = request.POST.get('power_generation')
+        water_excavated_muck = request.POST.get('water_excavated_muck')
+
 
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         application_details.update(project_objective=project_objective,
@@ -2856,6 +2874,7 @@ def save_project_details(request):
                                     location_transmission=location_transmission,
                                     project_no_of_workers=no_of_workers,
                                     project_output=project_output,
+                                    power_generation=power_generation,
                                     month_season_name=month_season_name,
                                     machineries_type_number=machineries_type_number,
                                     abstraction_type=abstraction_type,
@@ -2870,7 +2889,8 @@ def save_project_details(request):
                                     blast_required=blast_required, 
                                     blast_type=blast_type,
                                     blast_qty=blast_qty,
-                                    blast_frequency_time=blast_frequency_time
+                                    blast_frequency_time=blast_frequency_time,
+                                    water_excavated_muck=water_excavated_muck
                                     )
         data['message'] = "success"
     except Exception as e:
@@ -2976,8 +2996,7 @@ def save_general_water_requirement(request):
             raise ValueError(f"Application {application_no} not found")
 
         update_data = {
-            'energy_source': energy_source,
-            'water_excavated_muck': water_excavated_muck,
+
             'water_required': water_required,
             'water_resources_info': water_resources_info,
             'water_raw_material_source': water_raw_material_source,
@@ -3004,6 +3023,14 @@ def save_general_water_requirement(request):
             'total_water_consumption': request.POST.get('total_water_consumption', '0'),
             'total_water_recycled': request.POST.get('total_water_recycled', '0')
         }
+
+        # Only add water_excavated_muck if it's not None or empty
+        if water_excavated_muck is not None and water_excavated_muck.strip() != '':
+            update_data['water_excavated_muck'] = water_excavated_muck
+
+        # Only add water_excavated_muck if it's not None or empty
+        if water_excavated_muck is not None and water_excavated_muck.strip() != '':
+            update_data['energy_source'] = energy_source
 
         water_details.update(**update_data)
 
@@ -3990,7 +4017,9 @@ def save_general_application(request):
             'max_evacuation_depth': request.POST.get('max_evacuation_depth'),
             'terrain_elevation': request.POST.get('terrain_elevation'),
             'terrain_slope': request.POST.get('terrain_slope'),
-            'total_buildup_acre': request.POST.get('total_build_up_area'),
+            'total_buildup_acre': request.POST.get('total_buildup_acre'),
+            'actual_mineable_area': request.POST.get('actual_mineable_area'),
+            'green_area_acre': request.POST.get('green_area_acre'),
         }
 
         # 4. Determine competent authority
@@ -4710,7 +4739,7 @@ def save_quarry_application(request):
         others_area_acre = request.POST.get('others_area_acre')
         total_area_acre = request.POST.get('total_area_acre')
         actual_mineable_area = request.POST.get('actual_mineable_area')
-        green_belt_area = request.POST.get('green_belt_area')
+        green_belt_area = request.POST.get('green_area_acre')
         terrain_elevation = request.POST.get('terrain_elevation')
         terrain_slope = request.POST.get('terrain_slope')
         
@@ -4951,7 +4980,7 @@ def submit_quarry_application(request):
 def road_project_details(request):
     data = dict()
     try:
-        application_no = request.POST.get('project_details_one_application_no')
+        application_no = request.POST.get('project_details_application_no')
         project_objective = request.POST.get('project_objective')
         proposed_route_reason = request.POST.get('proposed_route_reason')
         project_cost = request.POST.get('project_cost')
@@ -5010,7 +5039,7 @@ def road_project_details(request):
 def road_project_details_one(request):
     data = dict()
     try:
-        application_no = request.POST.get('project_details_application_no')
+        application_no = request.POST.get('project_details_one_application_no')
         blast_required = request.POST.get('blast_required') 
         blast_type = request.POST.get('blast_type')
         blast_qty = request.POST.get('blast_qty')
