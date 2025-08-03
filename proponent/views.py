@@ -801,8 +801,9 @@ def save_iee_application(request):
                 }
                 t_ec_industries_t1_general.objects.create(**common_data, **new_data)
                 # Break out of the loop since the processing is done
-            
-            t_application_history.objects.create(
+
+            if not t_application_history.objects.filter(application_no=application_no).exists():
+                t_application_history.objects.create(
                 application_no=application_no,
                 application_date=timezone.now().date(),
                 applicant_id=request.session['email'],
@@ -3901,7 +3902,8 @@ def save_road_application_form(request):
                 )
 
         # Create application history
-        t_application_history.objects.create(
+        if not t_application_history.objects.filter(application_no=application_no).exists():
+            t_application_history.objects.create(
             application_no=application_no,
             application_date=date.today(),
             applicant_id=request.session['email'],
@@ -4099,7 +4101,8 @@ def save_general_application(request):
             )
 
             # Create history record - now properly tracking by service_type
-            t_application_history.objects.create(
+            if not t_application_history.objects.filter(application_no=application_no).exists():
+                t_application_history.objects.create(
                 application_no=application_no,
                 service_type=service_type,  # Added service_type to history
                 application_date=timezone.now().date(),
@@ -4301,7 +4304,8 @@ def save_forest_application(request):
                 t_workflow_dtls.objects.create(**workflow_update_data)
 
             # Create application history
-            t_application_history.objects.create(
+            if not t_application_history.objects.filter(application_no=application_no).exists():
+                t_application_history.objects.create(
                 application_no=application_no,
                 application_date=timezone.now().date(),
                 applicant_id=request.session.get('email'),
@@ -4580,7 +4584,8 @@ def save_ground_water_application(request):
                 t_workflow_dtls.objects.create(**workflow_update_data)
 
             # Create application history
-            t_application_history.objects.create(
+            if not t_application_history.objects.filter(application_no=application_no).exists():
+                t_application_history.objects.create(
                 application_no=application_no,
                 application_date=timezone.now().date(),
                 applicant_id=request.session.get('email'),
@@ -4861,7 +4866,8 @@ def save_quarry_application(request):
                 )
 
         # Create application history
-        t_application_history.objects.create(
+        if not t_application_history.objects.filter(application_no=application_no).exists():
+            t_application_history.objects.create(
             application_no=application_no,
             application_date=timezone.now().date(),
             applicant_id=request.session['email'],
@@ -5357,20 +5363,22 @@ def save_energy_application(request):
                 category=request.session['category']
                 )
             
-        t_application_history.objects.create(
-                                                application_no=application_no,
-                                                application_date=date.today(),
-                                                applicant_id=request.session['email'],
-                                                ca_authority=ca_auth,
-                                                service_id=request.session['service_id'], 
-                                                application_status='P', 
-                                                action_date=None, 
-                                                actor_id=request.session['login_id'],
-                                                actor_name=request.session['name'], 
-                                                remarks=None, 
-                                                status=None 
-                                            )
-        
+        if not t_application_history.objects.filter(application_no=application_no).exists():
+            t_application_history.objects.create(
+                application_no=application_no,
+                application_date=date.today(),
+                applicant_id=request.session['email'],
+                ca_authority=ca_auth,
+                service_id=request.session['service_id'],
+                application_status='P',
+                action_date=None,
+                actor_id=request.session['login_id'],
+                actor_name=request.session['name'],
+                remarks=None,
+                status=None
+            )
+
+
         if identifier == 'NC' or identifier == 'OC':
             work_details = t_workflow_dtls.objects.filter(application_no=application_no)
             work_details.update(application_status='P',
