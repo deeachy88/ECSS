@@ -681,7 +681,7 @@
                                             </div>
                                         </div>
                                         <br>
-                                        <div class="alert alert-primary border-0 rounded-0" role="alert" style="display: none;">
+                                        <div class="alert alert-primary border-0 rounded-0" role="alert">
                                             <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide the following information on water source
                                         </div>
                                         <div class="row">
@@ -5761,6 +5761,18 @@
                 }
                 else {
                     $('.forestry_application').hide();
+                }
+            }
+
+            function check_anc_other_ground_water()
+            {
+                if($('#anc_other_ground_water').is(":checked"))
+                {
+                    $('.ground_water_application').show();
+                }
+                else
+                {
+                    $('.ground_water_application').hide();
                 }
             }
 

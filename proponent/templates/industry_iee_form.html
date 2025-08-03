@@ -22,6 +22,7 @@
                                     {% csrf_token %}
                                     <input type="text" class="form-control" value="{{application_no}}" name="application_no" id="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="Main Activity" name="service_type" style="display:none;">
+                                    <input type="text" class="form-control" value="value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -113,40 +114,52 @@
                                             <div id="industry_classificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
+                                    <br>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                                        Project Location and Area
                                     </div>
+                                    <br>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Select One</label>
                                                 <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)">
-                                                        <label class="form-check-label" for="customRadio3">Dzongkhag</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)">
-                                                        <label class="form-check-label" for="customRadio4">Thromde</label>
-                                                    </div>
+                                                {% if request.session.ca_auth == "THROMDE" %}
+                                                <!-- Show only Thromde radio button -->
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
+                                                        onclick="check_dzong_throm(this.value)" checked>
+                                                    <label class="form-check-label">Thromde</label>
                                                 </div>
+                                                {% else %}
+                                                <!-- Show only Dzongkhag radio button -->
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
+                                                        onclick="check_dzong_throm(this.value)" checked>
+                                                    <label class="form-check-label">Dzongkhag</label>
+                                                </div>
+                                                {% endif %}
+                                            </div>
                                             </div>
                                             <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6 thromde" style="display:none;">
+                                        {% if request.session.ca_auth == "THROMDE" %}
+                                        <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Thromde</label>
                                                 <select class="form-select" name="thromde_id"  id="thromde_id">
                                                     <option value="">--SELECT THROMDE--</option>
                                                     {% for thromde in thromde %}
                                                         <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
-                                                    {% endfor %}
+                                                    {% endfor %} 
                                                 </select>
                                             </div>
                                             <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
+                                        {% endif %}
                                     </div>
-                                    <div class="row dzongkhag" style="display:none;">
+                                    {% if request.session.ca_auth != "THROMDE" %}
+                                    <div class="row dzongkhag">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Dzongkhag</label>
@@ -154,7 +167,7 @@
                                                     <option value="">--SELECT DZONGKHAG--</option>
                                                     {% for dzongkhag in dzongkhag %}
                                                         <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
-                                                    {% endfor %}
+                                                    {% endfor %} 
                                                 </select>
                                             </div>
                                             <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -173,7 +186,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-lg-6 dzongkhag" style="display:none;">
+                                        <div class="col-lg-6 dzongkhag">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Village/Chiwog</label>
                                                 <select class="form-select" name="vil_chiwog" id="vil_chiwog">
@@ -186,6 +199,7 @@
                                             <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
+                                    {% endif %}
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">

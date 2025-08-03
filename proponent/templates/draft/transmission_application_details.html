@@ -258,7 +258,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" id="collapseTwoBtn" disabled>
+                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" id="collapseTwoBtn">
                                 Baseline/Existing information
                             </button>
                         </h2>
@@ -397,7 +397,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingProjectDetails">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn" disabled>
+                                data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn">
                                 Project Details
                             </button>
                         </h2>
@@ -647,7 +647,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingSix">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" id="collapseSixBtn" disabled>
+                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" id="collapseSixBtn">
                                 Transmission Lines
                             </button>
                         </h2>
@@ -732,7 +732,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn" disabled>
+                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" id="collapseFourBtn">
                                 Energy & Water Requirement
                             </button>
                         </h2>
@@ -1054,7 +1054,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFive">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFiveBtn"
-                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" disabled>
+                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                                 Ancillary:Approach Road
                             </button>
                         </h2>
@@ -1379,25 +1379,25 @@
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
                                     </div>
                                     <br>
-                                    <div class="form-check other_ancillary_facilities" style="display: none;">
+                                    <div class="form-check other_ancillary_facilities">
                                         <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" 
                                             class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()"
                                             {% if application_details.anc_other_ropeway == 'Yes' %}checked{% endif %}>
                                         <label class="form-check-label">Ropeway/Cable lines</label>
                                     </div>
-                                    <div class="form-check other_ancillary_facilities" style="display: none;">
+                                    <div class="form-check other_ancillary_facilities">
                                         <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" 
                                             class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()"
                                             {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
                                         <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
                                     </div>
-                                    <div class="form-check other_ancillary_facilities" style="display: none;">
+                                    <div class="form-check other_ancillary_facilities">
                                         <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" 
                                             class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
                                             {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
                                         <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
                                     </div>
-                                    <div class="form-check other_ancillary_facilities" style="display: none;">
+                                    <div class="form-check other_ancillary_facilities">
                                         <input type="checkbox" name="anc_other_general" id="anc_other_general" 
                                             class="form-check-input" value="Yes" onclick="check_anc_other_general()"
                                             {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
@@ -1422,7 +1422,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingEight">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
-                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" disabled>
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
                                 Solid Waste
                             </button>
                         </h2>
@@ -1524,7 +1524,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwelve">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTwelveBtn"
-                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" disabled>
+                                data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
                                 Noise Level
                             </button>
                         </h2>
@@ -1597,7 +1597,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOtherImpacts">
                             <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
-                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts" disabled>
+                                data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
                                 Other Impacts
                             </button>
                         </h2>
@@ -1821,7 +1821,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingDisclaimer">
                             <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingDisclaimerBtn"
-                                data-bs-target="#collapseDisclaimer" aria-expanded="false" aria-controls="collapseDisclaimer" disabled>
+                                data-bs-target="#collapseDisclaimer" aria-expanded="false" aria-controls="collapseDisclaimer">
                                 Disclaimer
                             </button>
                         </h2>
@@ -5501,6 +5501,15 @@
                 }
                 else {
                     $('.forestry_application').hide();
+                }
+            }
+
+            function check_anc_other_ropeway() {
+                if ($('#anc_other_ropeway').is(":checked")) {
+                    $('.ropeway_application').show();
+                }
+                else {
+                    $('.ropeway_application').hide();
                 }
             }
 

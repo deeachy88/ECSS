@@ -1819,29 +1819,1107 @@
                         </div> <!-- end preview-->
                         <div class="tab-pane" id="bordered-tabs-code" role="tabpanel">
                             <ul class="nav nav-tabs nav-bordered mb-3" role="tablist">
-                                <div class="form-check">
-                                    <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" {% if application_details.anc_road_blast_required == 'Yes' %}checked{% endif %} disabled>
-                                    <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %} disabled>
-                                    <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" class="form-check-input" {% if application_details.anc_other_ground_water == 'Yes' %}checked{% endif %} disabled>
-                                    <label class="form-check-label">Ground water abstraction</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" {% if application_details.anc_other_mineral == 'Yes' %}checked{% endif %} disabled>
-                                    <label class="form-check-label">Mineral stockyards outside the project area</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" {% if application_details.anc_other_general == 'Yes' %}checked{% endif %} disabled>
-                                    <label class="form-check-label">Others</label>
-                                </div>
+                                {% if application_details.anc_other_mineral == 'Yes'%}
+                                    <li class="nav-item" role="presentation">
+                                        <a href="#anc-min" data-bs-toggle="tab" aria-expanded="false" class="nav-link" aria-selected="false" tabindex="-1" role="tab">
+                                            <i class="mdi mdi-home-variant d-md-none d-block"></i>
+                                            <span class="d-none d-md-block">Ancillary General</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if application_details.anc_other_general == 'Yes' %}
+                                    <li class="nav-item" role="presentation">
+                                        <a href="#anc-gen" data-bs-toggle="tab" aria-expanded="false" class="nav-link" aria-selected="false" tabindex="-1" role="tab">
+                                            <i class="mdi mdi-home-variant d-md-none d-block"></i>
+                                            <span class="d-none d-md-block">Ancillary General</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if application_details.anc_other_surface_collection == 'Yes' %}
+                                    <li class="nav-item" role="presentation">
+                                        <a href="#anc-for" data-bs-toggle="tab" aria-expanded="false" class="nav-link" aria-selected="false" tabindex="-1" role="tab">
+                                            <i class="mdi mdi-settings-outline d-md-none d-block"></i>
+                                            <span class="d-none d-md-block">Ancillary Forest</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if application_details.anc_other_crushing_unit == 'Yes' %}
+                                    <li class="nav-item" role="presentation">
+                                        <a href="#anc-ind" data-bs-toggle="tab" aria-expanded="false" class="nav-link" aria-selected="false" tabindex="-1" role="tab">
+                                            <i class="mdi mdi-settings-outline d-md-none d-block"></i>
+                                            <span class="d-none d-md-block">Ancillary Industries</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if application_details.anc_other_ground_water == 'Yes' %}
+                                    <li class="nav-item" role="presentation">
+                                        <a href="#anc-ind" data-bs-toggle="tab" aria-expanded="false" class="nav-link" aria-selected="false" tabindex="-1" role="tab">
+                                            <i class="mdi mdi-settings-outline d-md-none d-block"></i>
+                                            <span class="d-none d-md-block">Ancillary Industries</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
                             </ul>
 
-                            <div class="tab-content"> 
+                            <div class="tab-content">
+                                {% if application_details.anc_other_ground_water == 'Yes' %}
+                                    {% for ancillary_details in ancillary_details %}
+                                        <div class="accordion" id="accordionExample">
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingOne">
+                                                    <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                                                        aria-expanded="true" aria-controls="collapseOne">
+                                                        General Information
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                                                    data-bs-parent="#accordionExample">
+                                                    <div class="accordion-body">
+                                                        <input type="text" class="form-control" value="{{status}}" id="status" name="status" style="display:none;">
+                                                        <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+                                                            <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                                                Applicant Details
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Name of the Applicant</label>
+                                                                        <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{application_details.applicant_name}}" disabled> 
+                                                                    </div>
+                                                                    <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Address</label>
+                                                                        <input type="text" name="address" class="form-control" id="address" value="{{application_details.address}}" disabled>
+                                                                    </div>
+                                                                    <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Contact No</label>
+                                                                        <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{application_details.contact_no}}" disabled>
+                                                                    </div>
+                                                                    <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Email</label>
+                                                                        <input type="email" name="email" class="form-control" id="email" value="{{application_details.email}}" disabled>
+                                                                    </div>
+                                                                    <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Name of the Project</label>
+                                                                        <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}" disabled>
+                                                                    </div>
+                                                                    <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
+                                                                        <textarea class="form-control" name="focal_person" id="focal_person" rows="3" disabled>{{application_details.focal_person}}</textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <br>
+                                                            <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                                                <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                                                            </div>
+                                                            <br>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Site</label>
+                                                                        {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                                                            <div class="mt-2">
+                                                                                <div class="form-check form-check-inline">
+                                                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" checked>
+                                                                                    <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                                                                </div>
+                                                                                <div class="form-check form-check-inline">
+                                                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" disabled>
+                                                                                    <label class="form-check-label" for="customRadio4">Thromde</label>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% else %}
+                                                                            <div class="mt-2">
+                                                                                <div class="form-check form-check-inline">
+                                                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" disabled>
+                                                                                    <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                                                                </div>
+                                                                                <div class="form-check form-check-inline">
+                                                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" checked>
+                                                                                    <label class="form-check-label" for="customRadio4">Thromde</label>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                    <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                                {% if application_details.dzongkhag_throm == 'Thromde' %}
+                                                                    <div class="col-lg-6 thromde_div">
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label fw-bold">Thromde</label>
+                                                                            <select class="form-select" disabled>
+                                                                                {% for thromde in thromde %}
+                                                                                    <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                                                                        {{ thromde.thromde_name }}
+                                                                                    </option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                        <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="row">
+                                                                {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                                                    <div class="col-lg-6 dzongkhag_div">
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label fw-bold">Dzongkhag</label>
+                                                                            <select class="form-select" disabled>
+                                                                                {% for dzongkhag in dzongkhag %}
+                                                                                    <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                                                        {{ dzongkhag.dzongkhag_name }}
+                                                                                    </option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-6">
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label fw-bold">Gewog</label>
+                                                                            <select class="form-select" disabled>
+                                                                                {% for gewog in gewog %}
+                                                                                    <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                                                        {{ gewog.gewog_name }}
+                                                                                    </option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                        <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-lg-6">
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label fw-bold">Village/Chiwog</label>
+                                                                            <select class="form-select" disabled>
+                                                                                {% for village in village %}
+                                                                                    <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                                                        {{ village.village_name }}
+                                                                                    </option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                        <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                    </div>
+                                                                </div>
+                                                            {% endif %}
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Name of the Particular Project Site</label>
+                                                                        <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}" disabled>
+                                                                    </div>
+                                                                    <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) in acres</label>
+                                                                        <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{application_details.industrial_area_acre}}" disabled>
+                                                                    </div>
+                                                                    <div id="industrial_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">State Forest Reserve (acres)</label>
+                                                                        <input type="number" min="0" name="state_reserve_forest_acre" class="form-control" id="state_reserve_forest_acre" value="{{application_details.state_reserve_forest_acre}}" disabled>
+                                                                    </div>
+                                                                    <div id="state_reserve_forest_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Private Area (acres)</label>
+                                                                        <input type="number" min="0" name="private_area_acre" class="form-control" id="private_area_acre" value="{{application_details.private_area_acre}}" disabled>
+                                                                    </div>
+                                                                    <div id="private_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Others Specify</label>
+                                                                        <input type="text" name="others_area" class="form-control" id="others_area" value="{{ application_details.others_area }}" disabled>
+                                                                    </div>
+                                                                    <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+
+                                                                {% if application_details.others_area and application_details.others_area != "NA" %}
+                                                                    <div class="col-lg-6" id="acreFieldContainer">
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label fw-bold">Others(acres)</label>
+                                                                            <input type="number" min="0" name="others_area_acre" class="form-control" id="others_area_acre" oninput="get_total_area_acre()" value="{{application_details.others_area_acre}}"  disabled>
+                                                                        </div>
+                                                                        <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Total land area required (acre)</label>
+                                                                        <input type="text" name="total_area_acre" class="form-control" id="total_area_acre" value="{{application_details.total_area_acre}}"  disabled>
+                                                                    </div>
+                                                                    <div id="total_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Maximum depth of excavation from the reference point or surface level</label>
+                                                                        <input type="text" name="max_evacuation_depth" class="form-control" id="max_evacuation_depth" value="{{application_details.max_evacuation_depth}}"  disabled>
+                                                                    </div>
+                                                                    <div id="max_evacuation_depthErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                                                <i class="uil-folder-heart me-1 h4 align-middle"></i> Terrain characteristic at the project site
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Landform</label>
+                                                                        {% if application_details.land_form %}
+                                                                            <select class="form-select" name="land_form" id="land_form" disabled>
+                                                                                <option value="">Choose One</option>
+                                                                                {% if application_details.land_form == Flood_Plain %}
+                                                                                    <option value="Flood_Plain" selected>Flood Plain</option>
+                                                                                    <option value="Alluvial_Deposit">Alluvial Deposit</option>
+                                                                                    <option value="Colluvial_Deposit">Colluvial Deposit</option>
+                                                                                    <option value="Others">Others</option>
+                                                                                {% elif application_details.land_form == Alluvial_Deposit %}
+                                                                                    <option value="Flood_Plain">Flood Plain</option>
+                                                                                    <option value="Alluvial_Deposit" selected>Alluvial Deposit</option>
+                                                                                    <option value="Colluvial_Deposit">Colluvial Deposit</option>
+                                                                                    <option value="Others">Others</option>
+                                                                                {% elif application_details.land_form == Colluvial_Deposit %}
+                                                                                    <option value="Flood_Plain">Flood Plain</option>
+                                                                                    <option value="Alluvial_Deposit">Alluvial Deposit</option>
+                                                                                    <option value="Colluvial_Deposit" selected>Colluvial Deposit</option>
+                                                                                    <option value="Others">Others</option>
+                                                                                {% else %}
+                                                                                    <option value="Flood_Plain">Flood Plain</option>
+                                                                                    <option value="Alluvial_Deposit">Alluvial Deposit</option>
+                                                                                    <option value="Colluvial_Deposit">Colluvial Deposit</option>
+                                                                                    <option value="Others" selected>Others</option>
+                                                                                {% endif %}
+                                                                            </select>
+                                                                        {% else %}
+                                                                            <select class="form-select" name="land_form" id="land_form" disabled>
+                                                                                <option value="">Choose One</option>
+                                                                                <option value="Flood_Plain">Flood Plain</option>
+                                                                                <option value="Alluvial_Deposit">Alluvial Deposit</option>
+                                                                                <option value="Colluvial_Deposit">Colluvial Deposit</option>
+                                                                                <option value="Others">Others</option>
+                                                                            </select>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                    <div id="land_formErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Elevation (meters)</label>
+                                                                        <input type="number" name="terrain_elevation" class="form-control" id="terrain_elevation" value="{{application_details.terrain_elevation}}" disabled>
+                                                                    </div>
+                                                                    <div id="terrain_elevationErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Slope/Gradient</label>
+                                                                        <select class="form-select" name="terrain_slope" id="terrain_slope">
+                                                                            {% if application_details.terrain_slope %}
+                                                                                <option value="">Choose One</option>
+                                                                                <option value="Flat_Land" {% if application_details.terrain_slope == "Flat_Land" %}selected{% endif %}>Flat land (below 20 degrees)</option>
+                                                                                <option value="Gentle_Slope" {% if application_details.terrain_slope == "Gentle_Slope" %}selected{% endif %}>Gentle slope (21-45 degrees)</option>
+                                                                                <option value="Steep_Slope" {% if application_details.terrain_slope == "Steep_Slope" %}selected{% endif %}>Steep slope (46 – 60 degrees)</option>
+                                                                                <option value="Very_Steep_Slope" {% if application_details.terrain_slope == "Very_Steep_Slope" %}selected{% endif %}>Very steep slope (above 60 degrees)</option>
+                                                                            {% endif %}
+                                                                        </select>
+                                                                    </div>
+                                                                    <div id="terrain_slopeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingTwo">
+                                                    <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingTwoBtn"
+                                                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                        Baseline/Existing information
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                                                    data-bs-parent="#accordionExample">
+                                                    <div class="accordion-body">
+                                                        <div class="alert alert-secondary border-0 rounded-0" role="alert">
+                                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>Baseline/Existing Information <br>
+                                                            Presence of any of the following within and 50 meters buffer of the project area. If yes, tick, mention name and distance from the project boundary, wherever applicable
+                                                        </div>
+                                                        <table class="table table-hover table-bordered table-centered mb-0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Sl.no.</th>
+                                                                    <th>Land use/existing infrastructure</th>
+                                                                    <th>Name/Location Name</th>
+                                                                    <th>Distance from the proposed project site (meters)</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>a)</td>
+                                                                    <td>Protected Areas and zonation (multiple use/buffer/core)</td>
+                                                                    
+                                                                    <td><input type="text" name="bl_protected_area_name" class="form-control col-lg-6" id="bl_protected_area_name" value="{{ application_details.bl_protected_area_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_protected_area_distance" class="form-control col-lg-6" id="bl_protected_area_distance" value="{{ application_details.bl_protected_area_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>b)</td>
+                                                                    <td>Migratory route/habitat/key biodiversity areas</td>
+                                                                    <td><input type="text" name="bl_migratory_route_name" class="form-control col-lg-6" id="bl_migratory_route_name" value="{{ application_details.bl_migratory_route_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_migratory_route_distance" class="form-control col-lg-6" id="bl_migratory_route_distance" value="{{ application_details.bl_migratory_route_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>c)</td>
+                                                                    <td>Wetland/catchment area</td>
+                                                                    <td><input type="text" name="bl_wetland_name" class="form-control col-lg-6" id="bl_wetland_name" value="{{ application_details.bl_wetland_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_wetland_distance" class="form-control col-lg-6" id="bl_wetland_distance" value="{{ application_details.bl_wetland_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>d)</td>
+                                                                    <td>Water bodies/resources/source (rivers, streams, springs, lakes, etc.)</td>
+                                                                    <td><input type="text" name="bl_water_bodies_name" class="form-control col-lg-6" id="bl_water_bodies_name" value="{{ application_details.bl_water_bodies_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_water_bodies_distance" class="form-control col-lg-6" id="bl_water_bodies_distance" value="{{ application_details.bl_water_bodies_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>e)</td>
+                                                                    <td>FMUs/Community forests/private forests</td>
+                                                                    <td><input type="text" name="bl_fmu_name" class="form-control col-lg-6" id="bl_fmu_name" value="{{ application_details.bl_fmu_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_fmu_distance" class="form-control col-lg-6" id="bl_fmu_distance" value="{{ application_details.bl_fmu_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>f)</td>
+                                                                    <td>Agricultural lands/private lands</td>
+                                                                    <td><input type="text" name="bl_agricultural_name" class="form-control col-lg-6" id="bl_agricultural_name" value="{{ application_details.bl_agricultural_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_agricultural_distance" class="form-control col-lg-6" id="bl_agricultural_distance" value="{{ application_details.bl_agricultural_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>g)</td>
+                                                                    <td>Settlements</td>
+                                                                    <td><input type="text" name="bl_settlement_name" class="form-control col-lg-6" id="bl_settlement_name" value="{{ application_details.bl_settlement_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_settlement_distance" class="form-control col-lg-6" id="bl_settlement_distance" value="{{ application_details.bl_settlement_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>h)</td>
+                                                                    <td>Roads</td>
+                                                                    <td><input type="text" name="bl_road_name" class="form-control col-lg-6" id="bl_road_name" value="{{ application_details.bl_road_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_road_distance" class="form-control col-lg-6" id="bl_road_distance" value="{{ application_details.bl_road_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>i)</td>
+                                                                    <td>Public infrastructures (irrigation canals/drinking water supply/Powerlines/Telecommunication towers, etc)</td>
+                                                                    <td><input type="text" name="bl_public_infra_name" class="form-control col-lg-6" id="bl_public_infra_name" value="{{ application_details.bl_public_infra_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_public_infra_distance" class="form-control col-lg-6" id="bl_public_infra_distance" value="{{ application_details.bl_public_infra_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>j)</td>
+                                                                    <td>Schools/Institutions/Hospitals/BHUs</td>
+                                                                    <td><input type="text" name="bl_school_name" class="form-control col-lg-6" id="bl_school_name" value="{{ application_details.bl_school_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_school_distance" class="form-control col-lg-6" id="bl_school_distance" value="{{ application_details.bl_school_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>k)</td>
+                                                                    <td>Heritage/religious/archaeological /cultural sites</td>
+                                                                    <td><input type="text" name="bl_heritage_name" class="form-control col-lg-6" id="bl_heritage_name" value="{{ application_details.bl_heritage_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_heritage_distance" class="form-control col-lg-6" id="bl_heritage_distance" value="{{ application_details.bl_heritage_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>l)</td>
+                                                                    <td>Tourist facilities/tourism sites/ Nature recreation sites</td>
+                                                                    <td><input type="text" name="bl_tourist_facility_name" class="form-control col-lg-6" id="bl_tourist_facility_name" value="{{ application_details.bl_tourist_facility_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_tourist_facility_distance" class="form-control col-lg-6" id="bl_tourist_facility_distance" value="{{ application_details.bl_tourist_facility_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>l)</td>
+                                                                    <td>Important installations (early warning systems, weather stations, flood mitigation activities, etc.)</td>
+                                                                    <td><input type="text" name="bl_impt_installation_name" class="form-control col-lg-6" id="bl_impt_installation_name" value="{{ application_details.bl_impt_installation_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_impt_installation_distance" class="form-control col-lg-6" id="bl_impt_installation_distance" value="{{ application_details.bl_impt_installation_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>l)</td>
+                                                                    <td>Industries</td>
+                                                                    <td><input type="text" name="bl_industries_name" class="form-control col-lg-6" id="bl_industries_name" value="{{ application_details.bl_industries_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_industries_distance" class="form-control col-lg-6" id="bl_industries_distance" value="{{ application_details.bl_industries_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>o)</td>
+                                                                    <td>
+                                                                        <div class="row">
+                                                                            <label for="bl_others" class="col-sm-4 col-form-label">Others Specify</label>
+                                                                            <div class="col-sm-8">
+                                                                                <input type="text" class="form-control" id="bl_others" name="bl_others" value="{{ application_details.bl_others|default:'NA' }}" disabled>
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td><input type="text" name="bl_others_name" class="form-control col-lg-6" id="bl_others_name" value="{{ application_details.bl_others_name|default:'NA' }}" disabled></td>
+                                                                    <td><input type="text" name="bl_others_distance" class="form-control col-lg-6" id="bl_others_distance" value="{{ application_details.bl_others_distance|default:'0' }}" disabled></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingProjectDetails">
+                                                    <button class="accordion-button d-block" type="button" data-bs-toggle="collapse"
+                                                        data-bs-target="#collapseProjectDetails" aria-expanded="false" aria-controls="collapseProjectDetails" id="ProjectDetailsBtn" disabled>
+                                                        Project Details
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseProjectDetails" class="accordion-collapse collapse" aria-labelledby="headingProjectDetails"
+                                                    data-bs-parent="#headingProjectDetails">
+                                                    <div class="accordion-body">
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold">Project Objective</label>
+                                                                    <input type="text" name="project_objective" class="form-control" id="project_objective" value="{{application_details.project_objective}}" disabled>
+                                                                </div>
+                                                                <div id="project_objectiveErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold">Project Beneficiaries</label>
+                                                                    <input type="text" name="project_beneficiaries" class="form-control" id="project_beneficiaries" value="{{application_details.project_beneficiaries}}" disabled>
+                                                                </div>
+                                                                <div id="project_beneficiariesErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold">Project Cost (Nu)</label>
+                                                                    <input type="number" name="project_cost" class="form-control" id="project_cost" value="{{application_details.project_cost}}" disabled>
+                                                                </div>
+                                                                <div id="project_costErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold">Project Duration</label>
+                                                                    <input type="text" name="project_duration" class="form-control" id="project_duration" value="{{application_details.project_duration}}" disabled>
+                                                                </div>
+                                                                <div id="project_durationErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold">Abstraction Type</label>
+                                                                    {% if application_details.abstraction_type ==  "Community" %}
+                                                                        <div class="mt-2">
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input type="radio" name="abstraction_type" class="form-check-input" value="Community" checked>
+                                                                                <label class="form-check-label">Community</label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input type="radio" name="abstraction_type" class="form-check-input" value="Individual">
+                                                                                <label class="form-check-label">Individual</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% else %}
+                                                                        <div class="mt-2">
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input type="radio" name="abstraction_type" class="form-check-input" value="Community">
+                                                                                <label class="form-check-label">Community</label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input type="radio" name="abstraction_type" class="form-check-input" value="Individual" checked>
+                                                                                <label class="form-check-label">Individual</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div id="abstraction_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                            </div>
+                                                        </div>
+                                                        <br>
+                                                        <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide Project Details in the table below (if applicable)
+                                                        </div>
+                                                        <br>
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <table class="table table-hover table-bordered table-centered mb-0">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>Total requirement –cubic meter/day</td>
+                                                                            <td><input type="text" name="total_requirement" class="form-control col-lg-6" id="total_requirement" value="{{application_details.total_requirement|default:0}}"></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Installed capacity of the bore-well</td>
+                                                                            <td><input type="text" name="borewell_installed_capacity" class="form-control col-lg-6" id="borewell_installed_capacity" value="{{application_details.borewell_installed_capacity|default:0}}"></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Geo-coordinates of the proposed site</td>
+                                                                            <td><input type="text" name="geo_coordinates" class="form-control col-lg-6" id="geo_coordinates" value="{{application_details.geo_coordinates|default:0}}"></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Width and depth of the bore-well –meters</td>
+                                                                            <td><input type="text" name="borewell_width_depth" class="form-control col-lg-6" id="borewell_width_depth" value="{{application_details.borewell_width_depth|default:0}}"></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td rowspan="3">Depth of the borewell</td>
+                                                                            <td>
+                                                                                <div class="row">
+                                                                                    <label for="bl_others" class="col-sm-4 col-form-label">December</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="borewell_depth_dec" name="borewell_depth_dec" value="{{application_details.borewell_depth_dec|default:0}}">
+                                                                                    </div>
+                                                                                    <div id="borewell_depth_decErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div class="row">
+                                                                                    <label for="bl_others" class="col-sm-4 col-form-label">January</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="borewell_depth_jan" name="borewell_depth_jan" value="{{application_details.borewell_depth_jan|default:0}}">
+                                                                                    </div>
+                                                                                    <div id="borewell_depth_janErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div class="row">
+                                                                                    <label for="bl_others" class="col-sm-4 col-form-label">February</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="borewell_depth_feb" name="borewell_depth_feb" value="{{application_details.borewell_depth_feb|default:0}}">
+                                                                                    </div>
+                                                                                    <div id="borewell_depth_febErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingFour">
+                                                    <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingFourBtn"
+                                                        data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                                        Energy / Ground Water Parameters
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
+                                                    data-bs-parent="#accordionExample">
+                                                    <div class="accordion-body">
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold">Mention the source of energy to operate the proposed activity</label>
+                                                                    <select class="form-control" id="energy_source" name="energy_source">
+                                                                        <option value="">--SELECT--</option>
+                                                                        <option value="Electric" {% if application_details.energy_source == "Electric" %}selected{% endif %}>Electric</option>
+                                                                        <option value="Coal" {% if application_details.energy_source == "Coal" %}selected{% endif %}>Coal</option>
+                                                                        <option value="High_speed_diesel" {% if application_details.energy_source == "High_speed_diesel" %}selected{% endif %}>High speed diesel</option>
+                                                                        <option value="Wood_Fired" {% if application_details.energy_source == "Wood_Fired" %}selected{% endif %}>Wood-Fired</option>
+                                                                        <option value="Biomass" {% if application_details.energy_source == "Biomass" %}selected{% endif %}>Biomass</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div id="energy_sourceErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                            </div>
+                                                        </div>
+                                                        <br>
+                                                        <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide the list of raw materials, source, transportation and storage methods in table below
+                                                        </div>
+                                                        <br>
+                                                        <div class="col-md-12">
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div class="collapse pt-3 show">
+                                                                        <div id="raw_materials_div">
+                                                                            <table class="table table-hover table-bordered table-centered mb-0">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th>Sl.no.</th>
+                                                                                        <th>List of raw materials</th>
+                                                                                        <th>Quantity (MT/annum)</th>
+                                                                                        <th>Source</th>
+                                                                                        <th>Method of storage</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    {% for raw_materials in raw_materials %}
+                                                                                        <tr>
+                                                                                            <td>{{ forloop.counter }}</td>
+                                                                                            <td>{{raw_materials.raw_material}}</td>
+                                                                                            <td>{{raw_materials.qty}}</td>
+                                                                                            <td>{{raw_materials.source}}</td>
+                                                                                            {% if raw_materials.storage_method == 'fully_enclosed' %}
+                                                                                                <td>Fully Enclosed</td>
+                                                                                            {% elif raw_materials.storage_method == 'partially_enclosed' %}
+                                                                                                <td>Partially Enclosed</td>
+                                                                                            {% else %}
+                                                                                                <td>Open</td>
+                                                                                            {% endif %}
+                                                                                        </tr>
+                                                                                    {% empty %}
+                                                                                        <tr>
+                                                                                            <td colspan="6" class="text-center">No Data Available</td>
+                                                                                        </tr>
+                                                                                    {% endfor %}
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <br>
+                                                        <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>Parameters of Ground Water in line with BDWQS 2016
+                                                        </div>
+                                                        <br>
+                                                        <table class="table table-hover table-bordered table-centered mb-0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Parameter</th>
+                                                                    <th>Unit</th>
+                                                                    <th>Test Result</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>pH</td>
+                                                                    <td>pH Scale</td>
+                                                                    <td><input type="text" name="water_source_ph" class="form-control col-lg-6" id="water_source_ph" value="{{ application_details.water_source_ph | default:"N/A" }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Turbidity</td>
+                                                                    <td>NTU</td>
+                                                                    <td><input type="text" name="water_source_turbidity" class="form-control col-lg-6" id="water_source_turbidity" value="{{ application_details.water_source_turbidity | default:"N/A" }}"disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Conductivity</td>
+                                                                    <td>µS/cm</td>
+                                                                    <td><input type="text" name="water_source_conductivity" class="form-control col-lg-6" id="water_source_conductivity" value="{{ application_details.water_source_conductivity | default:"N/A" }}" disabled></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>E.Coli</td>
+                                                                    <td>CFU/100ml sample</td>
+                                                                    <td><input type="text" name="water_source_ecoli" class="form-control col-lg-6" id="water_source_ecoli" value="{{ application_details.water_source_ecoli | default:"N/A" }}" disabled></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingAnalysis">
+                                                    <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse"
+                                                        data-bs-target="#collapseAnalysis" aria-expanded="false" aria-controls="collapseAnalysis" id="headingAnalysisBtn">
+                                                        Analysis of Alternatives
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseAnalysis" class="accordion-collapse collapse" aria-labelledby="headingAnalysis"
+                                                    data-bs-parent="#accordionExample">
+                                                    <div class="accordion-body">
+                                                        <div class="alert alert-primary border-0 rounded-0" role="alert">
+                                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide description and analysis of alternatives sites other than the proposed one.
+                                                        </div>
+                                                        <br>
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold">Surface water: The details on alternative sources should include name of the water sources, location, GPS coordinates, distance from the proposed users, and flow rate for both peak and lean season (m3/hr), water quality test as required under the Bhutan Drinking Water Quality Standard 2016, water quantity, existing users, if any.</label>
+                                                                    <textarea class="form-control" name="alternative_surface_water" id="alternative_surface_water" rows="3" disabled>{{application_details.alternative_surface_water}}</textarea>
+                                                                </div>
+                                                                <div id="alternative_surface_waterErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold">Provide detailed analysis on Capital expenditure and operational expenditure between the alternative water source and the proposed groundwater abstraction.</label>
+                                                                    <textarea class="form-control" name="alternative_capital_expenditure" id="alternative_capital_expenditure" rows="3" disabled>{{application_details.alternative_capital_expenditure}}</textarea>
+                                                                </div>
+                                                                <div id="alternative_capital_expenditureErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold">In continuation to above, kindly provide adequate justification for no longer considering the alternative sites other than the proposed one.</label>
+                                                                    <textarea class="form-control" name="alternative_adequate_justification" id="alternative_adequate_justification" rows="3" disabled>{{application_details.alternative_adequate_justification}}</textarea>
+                                                                </div>
+                                                                <div id="alternative_adequate_justificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingEight">
+                                                    <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingEightBtn"
+                                                        data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                                                        Solid Waste
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight"
+                                                    data-bs-parent="#accordionExample">
+                                                    <div class="accordion-body">
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold">Provide an allocated budget for the management plan proposed</label>
+                                                                    <input type="number" name="en_impact_allocated_budget" class="form-control" id="en_impact_allocated_budget" value="{{application_details.en_impact_allocated_budget}}" disabled>
+                                                                </div>
+                                                                <div id="en_impact_allocated_budgetErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                                            Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction) (Checkbox menu to select the required ancillary facilities) The relevant IEE forms should pop up when the applicant ticks the ancillary facility required
+                                                        </div>
+                                                        <br>
+                                                        <div class="col-lg-12">
+                                                            <table class="table table-hover table-bordered table-centered mb-0">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Solid waste generation and by-products (Tick as appropriate)</th>
+                                                                        <th>List of wastes/by-products</th>
+                                                                        <th>Source</th>
+                                                                        <th>Quantity per annum</th>
+                                                                        <th>Management Plan</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>Hazardous Waste</td>
+                                                                        <td><input type="text" name="en_impact_hazardous_waste_list" id="en_impact_hazardous_waste_list" class="form-control col-lg-6" value="{% if application_details.en_impact_hazardous_waste_list %}{{ application_details.en_impact_hazardous_waste_list }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_hazardous_waste_source" id="en_impact_hazardous_waste_source" class="form-control col-lg-6" value="{% if application_details.en_impact_hazardous_waste_source %}{{ application_details.en_impact_hazardous_waste_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_hazardous_waste_qty_annum" id="en_impact_hazardous_waste_qty_annum" class="form-control col-lg-6" value="{% if application_details.en_impact_hazardous_waste_qty_annum %}{{ application_details.en_impact_hazardous_waste_qty_annum }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_hazardous_waste_mgt_plan" id="en_impact_hazardous_waste_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_impact_hazardous_waste_mgt_plan %}{{ application_details.en_impact_hazardous_waste_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Non-Hazardous Waste</td>
+                                                                        <td><input type="text" name="en_impact_non_hazardous_waste_list" id="en_impact_non_hazardous_waste_list" class="form-control col-lg-6" value="{% if application_details.en_impact_non_hazardous_waste_list %}{{ application_details.en_impact_non_hazardous_waste_list }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_non_hazardous_waste_source" id="en_impact_non_hazardous_waste_source" class="form-control col-lg-6" value="{% if application_details.en_impact_non_hazardous_waste_source %}{{ application_details.en_impact_non_hazardous_waste_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_non_hazardous_waste_qty_annum" id="en_impact_non_hazardous_waste_qty_annum" class="form-control col-lg-6" value="{% if application_details.en_impact_non_hazardous_waste_qty_annum %}{{ application_details.en_impact_non_hazardous_waste_qty_annum }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_non_hazardous_waste_mgt_plan" id="en_impact_non_hazardous_waste_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_impact_non_hazardous_waste_mgt_plan %}{{ application_details.en_impact_non_hazardous_waste_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Medical</td>
+                                                                        <td><input type="text" name="en_impact_medical_waste_list" id="en_impact_medical_waste_list" class="form-control col-lg-6" value="{% if application_details.en_impact_medical_waste_list %}{{ application_details.en_impact_medical_waste_list }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_medical_waste_source" id="en_impact_medical_waste_source" class="form-control col-lg-6" value="{% if application_details.en_impact_medical_waste_source %}{{ application_details.en_impact_medical_waste_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_medical_waste_qty_annum" id="en_impact_medical_waste_qty_annum" class="form-control col-lg-6" value="{% if application_details.en_impact_medical_waste_qty_annum %}{{ application_details.en_impact_medical_waste_qty_annum }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_medical_waste_mgt_plan" id="en_impact_medical_waste_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_impact_medical_waste_mgt_plan %}{{ application_details.en_impact_medical_waste_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>E-waste</td>
+                                                                        <td><input type="text" name="en_impact_ewaste_list" id="en_impact_ewaste_list" class="form-control col-lg-6" value="{% if application_details.en_impact_ewaste_list %}{{ application_details.en_impact_ewaste_list }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_ewaste_source" id="en_impact_ewaste_source" class="form-control col-lg-6" value="{% if application_details.en_impact_ewaste_source %}{{ application_details.en_impact_ewaste_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_ewaste_qty_annum" id="en_impact_ewaste_qty_annum" class="form-control col-lg-6" value="{% if application_details.en_impact_ewaste_qty_annum %}{{ application_details.en_impact_ewaste_qty_annum }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_ewaste_mgt_plan" id="en_impact_ewaste_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_impact_ewaste_mgt_plan %}{{ application_details.en_impact_hazardous_waste_list }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Others</td>
+                                                                        <td><input type="text" name="en_impact_others_waste_list" id="en_impact_others_waste_list" class="form-control col-lg-6" value="{% if application_details.en_impact_others_waste_list %}{{ application_details.en_impact_others_waste_list }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_others_waste_source" id="en_impact_others_waste_source" class="form-control col-lg-6" value="{% if application_details.en_impact_others_waste_source %}{{ application_details.en_impact_others_waste_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_others_waste_qty_annum" id="en_impact_others_waste_qty_annum" class="form-control col-lg-6" value="{% if application_details.en_impact_others_waste_qty_annum %}{{ application_details.en_impact_others_waste_qty_annum }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_impact_others_waste_mgt_plan" id="en_impact_others_waste_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_impact_others_waste_mgt_plan %}{{ application_details.en_impact_others_waste_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingTwelve">
+                                                    <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingTwelveBtn"
+                                                        data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
+                                                        Noise Level
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseTwelve" class="accordion-collapse collapse" aria-labelledby="headingTwelve"
+                                                    data-bs-parent="#accordionExample">
+                                                    <div class="accordion-body">
+                                                        <div class="alert alert-primary border-0 rounded-0" role="alert">
+                                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide maximum noise level at the project boundary during operation along with its management plan
+                                                        </div>
+                                                        <br>
+                                                        <div class="col-lg-12">
+                                                            <table class="table table-hover table-bordered table-centered mb-0">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Parameter</th>
+                                                                        <th>Unit</th>
+                                                                        <th>Day (06:00 - 22:00)</th>
+                                                                        <th>Night (22:00 - 06:00)</th>
+                                                                        <th>Management Plan</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>Industrial Area</td>
+                                                                        <td>dB(A)</td>
+                                                                        <td><input type="text" name="en_noise_ind_area_day" id="en_noise_ind_area_day" class="form-control col-lg-6" value="{% if application_details.en_noise_ind_area_day %}{{ application_details.en_noise_ind_area_day }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_noise_ind_area_night" id="en_noise_ind_area_night" class="form-control col-lg-6" value="{% if application_details.en_noise_ind_area_night %}{{ application_details.en_noise_ind_area_night }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_noise_ind_area_mgt_plan" id="en_noise_ind_area_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_noise_ind_area_mgt_plan %}{{ application_details.en_noise_ind_area_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Mixed Area</td>
+                                                                        <td>dB(A)</td>
+                                                                        <td><input type="text" name="en_noise_mixed_area_day" id="en_noise_mixed_area_day" class="form-control col-lg-6" value="{% if application_details.en_noise_mixed_area_day %}{{ application_details.en_noise_mixed_area_day }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_noise_mixed_area_night" id="en_noise_mixed_area_night" class="form-control col-lg-6" value="{% if application_details.en_noise_mixed_area_night %}{{ application_details.en_noise_mixed_area_night }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_noise_mixed_area_mgt_plan" id="en_noise_mixed_area_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_noise_mixed_area_mgt_plan %}{{ application_details.en_noise_mixed_area_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Sensitive Area</td>
+                                                                        <td>dB(A)</td>
+                                                                        <td><input type="text" name="en_noise_sen_area_day" id="en_noise_sen_area_day" class="form-control col-lg-6" value="{% if application_details.en_noise_sen_area_day %}{{ application_details.en_noise_sen_area_day }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_noise_sen_area_night" id="en_noise_sen_area_night" class="form-control col-lg-6" value="{% if application_details.en_noise_sen_area_night %}{{ application_details.en_noise_sen_area_night }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_noise_sen_area_mgt_plan" id="en_noise_sen_area_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_noise_sen_area_mgt_plan %}{{ application_details.en_noise_sen_area_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingOtherImpacts">
+                                                    <button class="accordion-button d-block mb-1" type="button" data-bs-toggle="collapse" id="otherImpactsBtn"
+                                                        data-bs-target="#collapseOtherImpacts" aria-expanded="false" aria-controls="collapseOtherImpacts">
+                                                        Other Impacts
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseOtherImpacts" class="accordion-collapse collapse" aria-labelledby="headingOtherImpacts"
+                                                    data-bs-parent="#accordionExample">
+                                                    <div class="accordion-body">
+                                                        <div class="alert alert-secondary border-0 rounded-0" role="alert">
+                                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>Other impacts during construction and operation of Plant and from ancillary activities such as road and power line along with its management plan.
+                                                        </div>
+                                                        <br>
+                                                        <div class="col-lg-12">
+                                                            <table class="table table-hover table-bordered table-centered mb-0">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Other Issues</th>
+                                                                        <th>Sources</th>
+                                                                        <th>Quantity if applicable</th>
+                                                                        <th>Management Plan</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>Odour</td>
+                                                                        <td><input type="text" name="en_other_impact_odour_source" id="en_other_impact_odour_source" class="form-control col-lg-6" value="{% if application_details.en_other_impact_odour_source %}{{ application_details.en_other_impact_odour_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_odour_qty" id="en_other_impact_odour_qty" class="form-control col-lg-6" value="{% if application_details.en_other_impact_odour_qty %}{{ application_details.en_other_impact_odour_qty }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_odour_mgt_plan" id="en_other_impact_odour_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_other_impact_odour_mgt_plan %}{{ application_details.en_other_impact_odour_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Fugitive emission</td>
+                                                                        <td><input type="text" name="en_other_impact_fugutive_source" id="en_other_impact_fugutive_source" class="form-control col-lg-6" value="{% if application_details.en_other_impact_fugutive_source %}{{ application_details.en_other_impact_fugutive_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_fugutive_qty" id="en_other_impact_fugutive_qty" class="form-control col-lg-6" value="{% if application_details.en_noise_sen_area_mgt_plan %}{{ application_details.en_noise_sen_area_mgt_plan }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_fugutive_mgt_plan" id="en_other_impact_fugutive_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_other_impact_fugutive_mgt_plan %}{{ application_details.en_other_impact_fugutive_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Slope instability</td>
+                                                                        <td><input type="text" name="en_other_impact_slope_source" id="en_other_impact_slope_source" class="form-control col-lg-6" value="{% if application_details.en_other_impact_slope_source %}{{ application_details.en_other_impact_slope_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_slope_qty" id="en_other_impact_slope_qty" class="form-control col-lg-6" value="{% if application_details.en_other_impact_slope_qty %}{{ application_details.en_other_impact_slope_qty }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_slope_mgt_plan" id="en_other_impact_slope_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_other_impact_slope_mgt_plan %}{{ application_details.en_other_impact_slope_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Aesthetic</td>
+                                                                        <td><input type="text" name="en_other_impact_aesthetic_source" id="en_other_impact_aesthetic_source" class="form-control col-lg-6" value="{% if application_details.en_other_impact_aesthetic_source %}{{ application_details.en_other_impact_aesthetic_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_aesthetic_qty" id="en_other_impact_aesthetic_qty" class="form-control col-lg-6" value="{% if application_details.en_other_impact_aesthetic_qty %}{{ application_details.en_other_impact_aesthetic_qty }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_aesthetic_mgt_plan" id="en_other_impact_aesthetic_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_other_impact_aesthetic_mgt_plan %}{{ application_details.en_other_impact_aesthetic_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Excavated mucks</td>
+                                                                        <td><input type="text" name="en_other_impact_mucks_source" id="en_other_impact_mucks_source" class="form-control col-lg-6" value="{% if application_details.en_other_impact_mucks_source %}{{ application_details.en_other_impact_mucks_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_mucks_qty" id="en_other_impact_mucks_qty" class="form-control col-lg-6" value="{% if application_details.en_other_impact_mucks_qty %}{{ application_details.en_other_impact_mucks_qty }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_mucks_mgt_plan" id="en_other_impact_mucks_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_other_impact_mucks_mgt_plan %}{{ application_details.en_other_impact_mucks_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Sewerage generation</td>
+                                                                        <td><input type="text" name="en_other_impact_sewerage_source" id="en_other_impact_sewerage_source" class="form-control col-lg-6" value="{% if application_details.en_other_impact_sewerage_source %}{{ application_details.en_other_impact_sewerage_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_sewerage_qty" id="en_other_impact_sewerage_qty" class="form-control col-lg-6" value="{% if application_details.en_other_impact_sewerage_qty %}{{ application_details.en_other_impact_sewerage_qty }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_sewerage_mgt_plan" id="en_other_impact_sewerage_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_other_impact_sewerage_mgt_plan %}{{ application_details.en_other_impact_sewerage_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Surface Run-off/Erosion</td>
+                                                                        <td><input type="text" name="en_other_impact_erosion_source" id="en_other_impact_erosion_source" class="form-control col-lg-6" value="{% if application_details.en_other_impact_erosion_source %}{{ application_details.en_other_impact_erosion_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_erosion_qty" id="en_other_impact_erosion_qty" class="form-control col-lg-6" value="{% if application_details.en_other_impact_erosion_qty %}{{ application_details.en_other_impact_erosion_qty }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_erosion_mgt_plan" id="en_other_impact_erosion_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_other_impact_erosion_mgt_plan %}{{ application_details.en_other_impact_erosion_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Storm water</td>
+                                                                        <td><input type="text" name="en_other_impact_storm_water_source" id="en_other_impact_storm_water_source" class="form-control col-lg-6" value="{% if application_details.en_other_impact_storm_water_source %}{{ application_details.en_other_impact_storm_water_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_storm_water_qty" id="en_other_impact_storm_water_qty" class="form-control col-lg-6" value="{% if application_details.en_other_impact_storm_water_qty %}{{ application_details.en_other_impact_storm_water_qty }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_storm_water_mgt_plan" id="en_other_impact_storm_water_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_other_impact_storm_water_mgt_plan %}{{ application_details.en_other_impact_storm_water_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Loss of habitat</td>
+                                                                        <td><input type="text" name="en_other_impact_habitat_source" id="en_other_impact_habitat_source" class="form-control col-lg-6" value="{% if application_details.en_other_impact_habitat_source %}{{ application_details.en_other_impact_habitat_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_habitat_qty" id="en_other_impact_habitat_qty" class="form-control col-lg-6" value="{% if application_details.en_other_impact_habitat_qty %}{{ application_details.en_other_impact_habitat_qty }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_habitat_mgt_plan" id="en_other_impact_habitat_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_other_impact_habitat_mgt_plan %}{{ application_details.en_other_impact_habitat_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Socio-economic issues</td>
+                                                                        <td><input type="text" name="en_other_impact_socio_source" id="en_other_impact_socio_source" class="form-control col-lg-6" value="{% if application_details.en_other_impact_socio_source %}{{ application_details.en_other_impact_socio_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_socio_qty" id="en_other_impact_socio_qty" class="form-control col-lg-6" value="{% if application_details.en_other_impact_socio_qty %}{{ application_details.en_other_impact_socio_qty }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_socio_mgt_plan" id="en_other_impact_socio_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_other_impact_socio_mgt_plan %}{{ application_details.en_other_impact_socio_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Impact on water resources</td>
+                                                                        <td><input type="text" name="en_other_impact_water_source_source" id="en_other_impact_water_source_source" class="form-control col-lg-6" value="{% if application_details.en_other_impact_water_source_source %}{{ application_details.en_other_impact_water_source_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_water_source_qty" id="en_other_impact_water_source_qty" class="form-control col-lg-6" value="{% if application_details.en_other_impact_water_source_qty %}{{ application_details.en_other_impact_water_source_qty }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_water_source_mgt_plan" id="en_other_impact_water_source_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_other_impact_water_source_mgt_plan %}{{ application_details.en_other_impact_water_source_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Other environmental impacts</td>
+                                                                        <td><input type="text" name="en_other_impact_other_source" id="en_other_impact_other_source" class="form-control col-lg-6" value="{% if application_details.en_other_impact_other_source %}{{ application_details.en_other_impact_other_source }}{% else %}N/A{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_other_qty" id="en_other_impact_other_qty" class="form-control col-lg-6" value="{% if application_details.en_other_impact_other_qty %}{{ application_details.en_other_impact_other_qty }}{% else %}0{% endif %}" disabled></td>
+                                                                        <td><input type="text" name="en_other_impact_other_mgt_plan" id="en_other_impact_other_mgt_plan" class="form-control col-lg-6" value="{% if application_details.en_other_impact_other_mgt_plan %}{{ application_details.en_other_impact_other_mgt_plan }}{% else %}N/A{% endif %}" disabled></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingAttachment">
+                                                    <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
+                                                        data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
+                                                        File Attachment
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseAttachment" class="accordion-collapse collapse" aria-labelledby="headingAttachment"
+                                                    data-bs-parent="#accordionExample">
+                                                    <div class="accordion-body">
+                                                        <div class="alert alert-danger border-0 rounded-0" role="alert">
+                                                            <i class="uil-folder-heart me-1 h4 align-middle"></i>Note: If the activity is proposed in the industrial area/estate/park/SEZ, the list of documents from 1 to 3 are not required.
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <table class="table table-hover table-bordered table-centered mb-0">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>1</td>
+                                                                            <td>Written consent from individual/juristic person directly impacted by the proposed project and ancillary activities authenticated by the concerned local authority</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>2</td>
+                                                                            <td>Records of public consultation signed by member (s) of the concerned local authority present during the consultation. If there are no individuals/public within the vicinity of the project, submit endorsement/approval of the concerned local authority.</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>3</td>
+                                                                            <td>KMZ file indicating the proposed site and its boundary, access road alignment, electricity tapping point and alignment (if applicable), water source, and nearby sensitive receptors as identified in the baseline information</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>4</td>
+                                                                            <td>Layout plan of the proposed project, if applicable</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>5</td>
+                                                                            <td>Extraction plan and production schedule</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>6</td>
+                                                                            <td>Water abstraction permit from concerned local authority (Dzongkhag/Gewog Administration) for any water abstraction activity</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title mb-0">Attachments</h5>
+                                                                    <div id="cardCollpase7" class="collapse pt-3 show">
+                                                                        <div id="general_attachment">
+                                                                            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th scope="col">#</th>
+                                                                                        <th scope="col">File</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                {% for file_attach in file_attach %}
+                                                                                    <tr>
+                                                                                        <td>{{ forloop.counter }}</td>
+                                                                                        <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                                                                                    </tr>
+                                                                                    {% empty %}
+                                                                                    <tr>
+                                                                                        <td colspan="3" class="text-center">No Data</td>
+                                                                                    </tr>
+                                                                                {% endfor %}
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingDisclaimer">
+                                                    <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingDisclaimerBtn"
+                                                        data-bs-target="#collapseDisclaimer" aria-expanded="false" aria-controls="collapseDisclaimer">
+                                                        Disclaimer
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseDisclaimer" class="accordion-collapse collapse" aria-labelledby="headingDisclaimer"
+                                                    data-bs-parent="#accordionExample">
+                                                    <div class="accordion-body">
+                                                        <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
+                                                        <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
+                                                        <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
+                                                        <p class="text-wrap">3.	Application Outcome: Submission of this application does not guarantee acceptance or approval. The final decision rests with the appropriate authorities, and we reserve the right to reject any application without providing any reason.</p>
+                                                        <p class="text-wrap">4.	Disclaimer of Liability: To the extent permitted by law, we disclaim all liability for any loss, damage, or injury arising out of or related to your use of this online application form or reliance on any information provided herein. We shall not be responsible for any technical errors, interruptions, or inaccuracies that may occur during the application process.</p>
+                                                        <p class="text-wrap">5.	Modification or Termination: We reserve the right to modify, suspend, or terminate this online application form at any time without prior notice. We may also update or change the terms and conditions of this disclaimer without notice.</p>
+                                                        <p class="text-wrap">Please review this disclaimer carefully before submitting your application. If you do not agree with any part of this disclaimer, please refrain from using this online application form.</p>
+                                                        <div class="mt-3">
+                                                            <div class="form-check">
+                                                                <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" checked>
+                                                                <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>   
+                                    {% endfor %}
+                                {% endif %}
+                                
                                 {% if application_details.anc_other_general == 'Yes' %}
                 {% for ancillary_details in ancillary_details %}
                 <div class="accordion" id="accordionExample">
