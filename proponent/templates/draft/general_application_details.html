@@ -191,7 +191,7 @@
                                                 <label class="form-label fw-bold">Others Specify</label>
                                                 <input type="text" name="others_area" class="form-control" id="others_area" value="{{ application_details.others_area }}" oninput="toggleAcreField()">
                                             </div>
-                                            <div id="others_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="others_area_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
 
                                         {% if application_details.others_area and application_details.others_area != "NA" %}
@@ -1571,32 +1571,58 @@
                                 <form method="post" id="anc_others_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="others_application_no">
-                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
-                                    </div>
-                                    <br>
-                                    <div class="form-check">
-                                        <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()" 
-                                            {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="Yes"
+                                                               onclick="check_anc_facility(this.value)"
+                                                               {% if application_details.anc_other_required == 'Yes' %}checked{% endif %}>
+                                                        <label class="form-check-label">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No"
+                                                               onclick="check_anc_facility(this.value)"
+                                                               {% if application_details.anc_other_required != 'Yes' %}checked{% endif %}>
+                                                        <label class="form-check-label">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="anc_other_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
                                     </div>
 
-                                    <div class="form-check">
-                                        <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()" 
-                                            {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                    <!-- Simplified ancillary details section -->
+                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                        <div class="alert alert-warning border-0 rounded-0 other_ancillary_facilities" role="alert">
+                                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form...
+                                        </div>
                                     </div>
 
-                                    <div class="form-check">
-                                        <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()" 
-                                            {% if application_details.anc_other_mineral == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Mineral stockyards outside the project area</label>
-                                    </div>
+                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()"
+                                                {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                        </div>
 
-                                    <div class="form-check">
-                                        <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()" 
-                                            {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Others</label>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
+                                                {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" class="form-check-input" value="Yes" onclick="check_anc_other_general()"
+                                                {% if application_details.anc_other_mineral == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general" class="form-check-input" value="Yes" onclick="check_anc_other_general()"
+                                                {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Others</label>
+                                        </div>
                                     </div>
 
                                     <div class="alert alert-success border-0 rounded-0" 
@@ -3220,9 +3246,9 @@
             <!--/.Content-->
           </div>
         </div>
-        </form>
+    </form>
         
-        <form method="post" id="edit_dumyard_details_form">
+    <form method="post" id="edit_dumyard_details_form">
         {% csrf_token %}
         <div class="modal fade" id="edit_dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
           aria-hidden="true">
@@ -3506,7 +3532,7 @@
                         if (data.message === 'success') {
                             showSuccessMessage(
                                 'terrain_baseline_application_successMsg', 
-                                'Added Successfully', 
+                                'Saved Successfully',
                                 function() {
                                     $("#ProjectDetailsBtn").removeAttr("disabled");
                                     $("#collapseProjectDetails").addClass("show");
@@ -5917,7 +5943,9 @@
                     $('#dump_yard_details').hide();
                 }
             }
-        
+
+
+
             function add_final_products_details()
             {
                 let application_no = $('#application_no').val();
@@ -6628,17 +6656,21 @@
                 }
             }
 
-            function check_ancillary_others(value)
-            {
-                if(value == 'Yes')
-                {
-                    $('.anc_others').show();
-                }
-                else
-                {
-                    $('.anc_others').hide();
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize on page load
+                initializeAncillaryFacilities();
+            });
 
+            function check_anc_facility(value) {
+                var ancillaryDetails = document.querySelectorAll('.other_ancillary_details');
+                if (value === 'Yes') {
+                    ancillaryDetails.forEach(function(element) {
+                        element.style.display = 'block';
+                    });
+                } else {
+                    ancillaryDetails.forEach(function(element) {
+                        element.style.display = 'none';
+                    });
                 }
             }
-
         </script>

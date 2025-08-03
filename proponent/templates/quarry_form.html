@@ -699,6 +699,35 @@
                                             </table>
                                         </div>
                                     </div>
+                                    <br>
+                                    <div class="alert alert-secondary border-0 rounded-0" role="alert">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide the following information on water source:
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Information on downstream users, if any</label>
+                                                <input type="text" name="water_downstream_users" class="form-control" id="water_downstream_users">
+                                            </div>
+                                            <div id="water_downstream_usersErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Flow rate (liters/second) during lean season</label>
+                                                <input type="text" name="water_flow_rate_lean" class="form-control" id="water_flow_rate_lean">
+                                            </div>
+                                            <div id="water_flow_rate_leanErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Distance from source to the project site (meters)</label>
+                                                <input type="text" name="water_source_distance" class="form-control" id="water_source_distance">
+                                            </div>
+                                            <div id="water_source_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="water_requirement_application_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
                                     </div>
@@ -3130,6 +3159,8 @@
         let max_evacuation_depth = $('#max_evacuation_depth').val();
         let terrain_elevation = $('#terrain_elevation').val();
         let terrain_slope = $('#terrain_slope').val();
+        alert(terrain_elevation);
+        alert(terrain_slope);
 
         if(project_name == "")
         {
@@ -3208,13 +3239,14 @@
             $('#private_area_acreErrorMsg').delay(2000).fadeOut('slow');
             $('#private_area_acre').focus();
         }
-        else if(others_area != "NA" || others_area != "" && others_area_acre == "")
+        else if ((others_area !== "NA" && others_area !== "") && others_area_acre === "")
         {
             $('#others_area_acreErrorMsg').html("Enter Others Area");
             $('#others_area_acreErrorMsg').show();
             $('#others_area_acreErrorMsg').delay(2000).fadeOut('slow');
             $('#others_area_acre').focus();
         }
+
         else if(actual_mineable_area == "")
         {
             $('#actual_mineable_areaErrorMsg').html("Enter Actual Mineable Area");
@@ -3750,6 +3782,9 @@
         let water_others_source = $('#water_others_source').val();
         let water_others_qty_day = $('#water_others_qty_day').val();
         let water_resources_info = $('#water_resources_info').val();
+        let water_downstream_users = $('#water_downstream_users').val();;
+        let water_flow_rate_lean = $('#water_flow_rate_lean').val();;;
+        let water_source_distance = $('#water_source_distance').val();;
 
         if(water_resources_info == "")
         {
@@ -3890,6 +3925,20 @@
             $('#water_others_qty_dayErrorMsg').show();
             $('#water_others_qty_dayErrorMsg').delay(2000).fadeOut('slow');
             $('#water_others_qty_day').focus();
+        }
+        else if(water_flow_rate_lean == "")
+        {
+            $('#water_flow_rate_leanErrorMsg').html("Please Enter Flow Rate");
+            $('#water_flow_rate_leanErrorMsg').show();
+            $('#water_flow_rate_leanErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_flow_rate_lean').focus();
+        }
+        else if(water_source_distance == "")
+        {
+            $('#water_source_distanceErrorMsg').html("Please Enter Distance From Project Site");
+            $('#water_source_distanceErrorMsg').show();
+            $('#water_source_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_source_distance').focus();
         }
         else
         {

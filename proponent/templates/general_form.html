@@ -2578,7 +2578,7 @@
               <!--Header-->
               <div class="modal-header text-center">
                 <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                                        &nbsp;Add</strong></h5>
+                                                        &nbsp;Add Dumpyard</strong></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
               </div>
               <!--Body-->
@@ -2603,7 +2603,7 @@
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Area of the dumpyard (acres)</label>
-                            <input type="text" name="dumpyard_area" class="form-control" id="dumpyard_area">
+                            <input type="number" name="dumpyard_area" class="form-control" id="dumpyard_area">
                         </div>
                         <div class="alert alert-danger" id="dumpyard_areaErrorMsg" style="display:none"></div>
                     </div>
@@ -2664,7 +2664,7 @@
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Area of the dumpyard (acres)</label>
-                            <input type="text" name="edit_dumpyard_area" class="form-control" id="edit_dumpyard_area">
+                            <input type="number" name="edit_dumpyard_area" class="form-control" id="edit_dumpyard_area">
                         </div>
                         <div class="alert alert-danger" id="edit_dumpyard_areaErrorMsg" style="display:none"></div>
                     </div>
@@ -2893,7 +2893,7 @@
                         if (data.message === 'success') {
                             showSuccessMessage(
                                 'terrain_baseline_application_successMsg', 
-                                'Added Successfully', 
+                                'Saved Successfully',
                                 function() {
                                     $("#ProjectDetailsBtn").removeAttr("disabled");
                                     $("#collapseProjectDetails").addClass("show");

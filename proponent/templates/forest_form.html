@@ -3779,7 +3779,7 @@
         let project_cost = $('#project_cost').val();
         let project_duration = $('#project_duration').val();
         let month_season_name = $('#month_season_name').val();
-        let no_of_workers = $('#project_beneficiaries').val();
+        let no_of_workers = $('#no_of_workers').val();
         let machineries_type_number = $('#machineries_type_number').val();
         
 
@@ -4056,6 +4056,20 @@
             $('#total_water_recycledErrorMsg').show();
             $('#total_water_recycledErrorMsg').delay(2000).fadeOut('slow');
             $('#total_water_recycled').focus();
+        }
+        else if(water_required_value == 'Yes' && water_flow_rate_lean == "")
+        {
+            $('#water_flow_rate_leanErrorMsg').html("Please Enter Flow rate (liters/second) during lean season.");
+            $('#water_flow_rate_leanErrorMsg').show();
+            $('#water_flow_rate_leanErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_flow_rate_lean').focus();
+        }
+        else if(water_required_value == 'Yes' && water_source_distance == "")
+        {
+            $('#water_source_distanceErrorMsg').html("Please Enter Distance from source to the project site (meters)");
+            $('#water_source_distanceErrorMsg').show();
+            $('#water_source_distanceErrorMsg').delay(2000).fadeOut('slow');
+            $('#water_source_distance').focus();
         }
         else
         {

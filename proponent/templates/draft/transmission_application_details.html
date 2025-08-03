@@ -677,7 +677,7 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                {% for anc_power_line_details in anc_power_line_details %}
+                                                                {% for anc_power_line_details in power_line %}
                                                                     <tr>
                                                                         <td>{{ forloop.counter }}</td>
                                                                         <td>{{anc_power_line_details.line_chainage_from}}</td>
@@ -739,18 +739,31 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Excavated muck disposal area/dumpyard</label>
-                                                {% if application_details.water_excavated_muck == "Yes" %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="water_excavated_muck" class="form-check-input" value="Yes" onclick="check_excavated_muck(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
+                                                <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
+                                                {% if application_details.water_excavated_muck %}
+                                                    {% if application_details.water_excavated_muck == "Yes" %}
+                                                        <div class="mt-2">
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="water_excavated_muck" class="form-check-input" value="Yes" onclick="check_excavated_muck(this.value)" checked>
+                                                                <label class="form-check-label" for="customRadio3">Yes</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)">
+                                                                <label class="form-check-label" for="customRadio4">No</label>
+                                                            </div>
                                                         </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)">
-                                                            <label class="form-check-label" for="customRadio4">No</label>
+                                                    {% else %}
+                                                        <div class="mt-2">
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="water_excavated_muck" class="form-check-input" value="Yes" onclick="check_excavated_muck(this.value)">
+                                                                <label class="form-check-label" for="customRadio3">Yes</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)" checked>
+                                                                <label class="form-check-label" for="customRadio4">No</label>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    {% endif %}
                                                 {% else %}
                                                     <div class="mt-2">
                                                         <div class="form-check form-check-inline">
@@ -758,15 +771,17 @@
                                                             <label class="form-check-label" for="customRadio3">Yes</label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
-                                                            <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)" checked>
+                                                            <input type="radio" name="water_excavated_muck" class="form-check-input" value="No" onclick="check_excavated_muck(this.value)">
                                                             <label class="form-check-label" for="customRadio4">No</label>
                                                         </div>
                                                     </div>
                                                 {% endif %}
+
                                             </div>
                                             <div id="water_excavated_muckErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
+                                    <br>
                                     {% if application_details.water_excavated_muck == "Yes" %}
                                         <div class="col-md-12">
                                             <div class="card">
@@ -1327,60 +1342,57 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
-                                                {% if application_details.anc_other_required == 'Yes' %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)">
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="Yes"
+                                                               onclick="check_anc_facility(this.value)"
+                                                               {% if application_details.anc_other_required == 'Yes' %}checked{% endif %}>
+                                                        <label class="form-check-label">Yes</label>
                                                     </div>
-                                                {% else %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)">
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No"
+                                                               onclick="check_anc_facility(this.value)"
+                                                               {% if application_details.anc_other_required != 'Yes' %}checked{% endif %}>
+                                                        <label class="form-check-label">No</label>
                                                     </div>
-                                                {% endif %}
+                                                </div>
                                             </div>
-                                            <div id="other_ancillary_facilitiesErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="anc_other_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-warning border-0 rounded-0 other_ancillary_facilities" role="alert" style="display: none;">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
+
+                                    <!-- Simplified ancillary details section -->
+                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                        <div class="alert alert-warning border-0 rounded-0 other_ancillary_facilities" role="alert">
+                                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form...
+                                        </div>
                                     </div>
-                                    <br>
-                                    <div class="form-check other_ancillary_facilities" style="display: none;">
-                                        <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()"
-                                            {% if application_details.anc_other_ropeway == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Ropeway/Cable lines</label>
-                                    </div>
-                                    <div class="form-check other_ancillary_facilities" style="display: none;">
-                                        <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()"
-                                            {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                    </div>
-                                    <div class="form-check other_ancillary_facilities" style="display: none;">
-                                        <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
-                                            {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                    </div>
-                                    <div class="form-check other_ancillary_facilities" style="display: none;">
-                                        <input type="checkbox" name="anc_other_general" id="anc_other_general" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_general()"
-                                            {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Others</label>
+
+                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()"
+                                                {% if application_details.anc_other_ropeway == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Ropeway/Cable lines</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()"
+                                                {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
+                                                {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_general()"
+                                                {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Others</label>
+                                        </div>
                                     </div>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_others_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>
@@ -2472,14 +2484,14 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Transmission line Chainage From</label>
-                    <input type="text" name="line_chainage_from" class="form-control" id="line_chainage_from" onblur="calculate_area_required()">
+                    <input type="number" name="line_chainage_from" class="form-control" id="line_chainage_from" onblur="calculate_area_required()">
                 </div>
                 <div class="alert alert-danger" id="line_chainage_fromErrorMsg" style="display:none"></div>
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Transmission line Chainage To</label>
-                    <input type="text" name="line_chainage_to" class="form-control" id="line_chainage_to" onblur="calculate_area_required()">
+                    <input type="number" name="line_chainage_to" class="form-control" id="line_chainage_to" onblur="calculate_area_required()">
                 </div>
                 <div class="alert alert-danger" id="line_chainage_toErrorMsg" style="display:none"></div>
             </div>
@@ -2547,7 +2559,7 @@
             </div>
         </div>
       </div>
-      <div class="alert alert-success" id="power_line_successMsg" style="display:none"></div>
+      <div class="alert alert-success" id="add_power_line_successMsg" style="display:none"></div>
       <div class="modal-footer flex-center justify-content-center">
         <button type="button" class="btn btn-sm btn-primary" onclick="save_power_line_details()">Add</button>
         <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
@@ -2579,14 +2591,14 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Transmission line Chainage From</label>
-                    <input type="text" name="edit_line_chainage_from" class="form-control" id="edit_line_chainage_from" onblur="calculate_edit_area_required()">
+                    <input type="number" name="edit_line_chainage_from" class="form-control" id="edit_line_chainage_from" onblur="calculate_edit_area_required()">
                 </div>
                 <div class="alert alert-danger" id="edit_line_chainage_fromErrorMsg" style="display:none"></div>
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Transmission line Chainage To</label>
-                    <input type="text" name="edit_line_chainage_to" class="form-control" id="edit_line_chainage_to" onblur="calculate_edit_area_required()">
+                    <input type="number" name="edit_line_chainage_to" class="form-control" id="edit_line_chainage_to" onblur="calculate_edit_area_required()">
                 </div>
                 <div class="alert alert-danger" id="edit_line_chainage_toErrorMsg" style="display:none"></div>
             </div>
@@ -2718,14 +2730,14 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Road Chainage From (m)</label>
-                    <input type="text" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onblur="calculate_road_area_required()">
+                    <input type="number" name="road_line_chainage_from" class="form-control" id="road_line_chainage_from" onblur="calculate_road_area_required()">
                 </div>
                 <div class="alert alert-danger" id="road_line_chainage_fromErrorMsg" style="display:none"></div>
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Road Chainage To (m)</label>
-                    <input type="text" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onblur="calculate_road_area_required()">
+                    <input type="number" name="road_line_chainage_to" class="form-control" id="road_line_chainage_to" onblur="calculate_road_area_required()">
                 </div>
                 <div class="alert alert-danger" id="road_line_chainage_toErrorMsg" style="display:none"></div>
             </div>
@@ -2786,7 +2798,7 @@
             </div>
         </div>
       </div>
-      <div class="alert alert-success" id="road_successMsg" style="display:none"></div>
+      <div class="alert alert-success" id="anc_road_successMsg" style="display:none"></div>
       <div class="modal-footer flex-center justify-content-center">
         <button type="button" class="btn btn-sm btn-primary" onclick="save_anc_road_details()">Add</button>
         <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
@@ -2818,14 +2830,14 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Road Chainage From (m)</label>
-                    <input type="text" name="edit_road_line_chainage_from" class="form-control" id="edit_road_line_chainage_from" onblur="calculate_road_area_required()">
+                    <input type="number" name="edit_road_line_chainage_from" class="form-control" id="edit_road_line_chainage_from" onblur="calculate_road_area_required()">
                 </div>
                 <div class="alert alert-danger" id="edit_road_line_chainage_fromErrorMsg" style="display:none"></div>
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Road Chainage To(m)</label>
-                    <input type="text" name="edit_road_line_chainage_to" class="form-control" id="edit_road_line_chainage_to" onblur="calculate_road_area_required()">
+                    <input type="number" name="edit_road_line_chainage_to" class="form-control" id="edit_road_line_chainage_to" onblur="calculate_road_area_required()">
                 </div>
                 <div class="alert alert-danger" id="edit_road_line_chainage_toErrorMsg" style="display:none"></div>
             </div>
@@ -2930,6 +2942,157 @@
     <!--/.Content-->
   </div>
 </div>
+</form>
+<form method="post" id="dumyard_details_form">
+    {% csrf_token %}
+    <div class="modal fade" id="dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Add</strong></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Number of Dumyards</label>
+                        <input type="text" name="dumpyard_number" class="form-control" id="dumpyard_number">
+                    </div>
+                    <div class="alert alert-danger" id="dumpyard_numberErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Capacities of the dumpyards (in MT)</label>
+                        <input type="text" name="dumpyard_capacity" class="form-control" id="dumpyard_capacity">
+                    </div>
+                    <div class="alert alert-danger" id="dumpyard_capacityErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Area of the dumpyard (acres)</label>
+                        <input type="text" name="dumpyard_area" class="form-control" id="dumpyard_area">
+                    </div>
+                    <div class="alert alert-danger" id="dumpyard_areaErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Locations of the dumpyard</label>
+                        <input type="text" name="dumpyard_location" class="form-control" id="dumpyard_location">
+                    </div>
+                    <div class="alert alert-danger" id="dumpyard_locationErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+          <div class="alert alert-success" id="dumpyard_SuccessMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="add_dumpyard_details()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+
+<form method="post" id="edit_dumyard_details_form">
+    {% csrf_token %}
+    <div class="modal fade" id="edit_dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Edit</strong></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <input type="hidden" id="dumpyard_record_id" name="dumpyard_record_id">
+            <input type="hidden" id="dumpyard_application_no" name="dumpyard_application_no">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Number of Dumyards</label>
+                        <input type="text" name="edit_dumpyard_number" class="form-control" id="edit_dumpyard_number">
+                    </div>
+                    <div class="alert alert-danger" id="edit_dumpyard_numberErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Capacities of the dumpyards (in MT)</label>
+                        <input type="text" name="edit_dumpyard_capacity" class="form-control" id="edit_dumpyard_capacity">
+                    </div>
+                    <div class="alert alert-danger" id="edit_dumpyard_capacityErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Area of the dumpyard (acres)</label>
+                        <input type="text" name="edit_dumpyard_area" class="form-control" id="edit_dumpyard_area">
+                    </div>
+                    <div class="alert alert-danger" id="edit_dumpyard_areaErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Locations of the dumpyard</label>
+                        <input type="text" name="edit_dumpyard_location" class="form-control" id="edit_dumpyard_location">
+                    </div>
+                    <div class="alert alert-danger" id="edit_dumpyard_locationErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+              <div class="alert alert-success" id="edit_dumpyard_SuccessMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="update_dumpyard_details()">Update</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+
+<form method="post" id="delete_dumyard_details_form">
+    {% csrf_token %}
+    <div class="modal fade" id="delete_dumyard_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Delete</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <div class="modal-body mx-4">
+            <input type="hidden" name="delete_dumpyard_record_id" class="form-control" id="delete_dumpyard_record_id">
+            <input type="hidden" name="delete_dumpyard_application_no" class="form-control" id="delete_dumpyard_application_no">
+              <div class="row">
+                <div class="col-lg-12">
+                    <p>Are You Sure You Want To Delete ? </p>
+                </div>
+            </div>
+          </div>
+              <div class="alert alert-success" id="delete_dumpyard_SuccessMsg" style="display:none"></div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="delete_dumpyard_details()">Delete</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 </form>
 
 <script>
@@ -3271,20 +3434,31 @@
                         data : $('#terrain_baseline_form').serialize(),
                         success : function(data)
                         {
-                            if(data.message == 'success')
-                            {
-                                $('#terrain_baseline_application_successMsg').html("Added Successfully");
-                                $('#terrain_baseline_application_successMsg').show();
-                                $('#terrain_baseline_application_successMsg').focus();
-                                setTimeout(function()
-                                {
-                                    $('#terrain_baseline_application_successMsg').delay(2000).fadeOut('slow');
-                                }, 2000);
+                            if (data.message == 'success') {
+                                // Show success message
+                                $('#terrain_baseline_application_successMsg')
+                                    .html("Saved Successfully")
+                                    .show()
+                                    .focus();
+
+                                // Keep terrain tab clickable
+                                $("#collapseTwoBtn").removeAttr("disabled");
+
+                                // Wait 1.5 seconds before switching tabs (enough to see message)
                                 setTimeout(function() {
-                                    $("#headingProjectDetailsBtn").removeAttr("disabled");
+                                    // Enable and open project tab
+                                    $("#ProjectDetailsBtn").removeAttr("disabled");
                                     $("#collapseProjectDetails").addClass("show");
+
+                                    // Optionally collapse terrain tab
                                     $("#collapseTwo").removeClass("show");
-                                }, 2000);
+
+                                    // Then fade out message after another 0.5 seconds
+                                    setTimeout(function() {
+                                        $('#terrain_baseline_application_successMsg').fadeOut('slow');
+                                    }, 500);
+
+                                }, 1500);
                             }
                             else
                             {
@@ -3412,8 +3586,8 @@
 
                                 setTimeout(() => {
                                     $('#project_details_successMsg').fadeOut('slow');
-                                    $("#collapseFourBtn").removeAttr("disabled");
-                                    $("#collapseFour").addClass("show");
+                                    $("#collapseSixBtn").removeAttr("disabled");
+                                    $("#collapseSix").addClass("show");
                                     $("#collapseProjectDetails").removeClass("show");
                                 }, 2000);
                             } else {
@@ -3588,90 +3762,8 @@
                 }
             }
 
-            // Toggle dump yard details section
-            function check_excavated_muck(value) {
-                if (value === 'Yes') {
-                    $('.dump_yard_details').show();
-                } else {
-                    $('.dump_yard_details').hide();
-                }
-            }
 
-            function save_power_line_details() {
-                application_no = $('#application_no').val();
-                line_chainage_from = $('#line_chainage_from').val();
-                line_chainage_to = $('#line_chainage_to').val();
-                land_type = $('#land_type').val();
-                terrain = $('#terrain').val();
-                tower_type = $('#tower_type').val();
-                no_of_tower = $('#no_of_tower').val();
-                row = $('#row').val();
-                area_required = $('#area_required').val();
-                let csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
 
-                if (line_chainage_from == "") {
-                    $('#line_chainage_fromErrorMsg').html("Enter Transmission line Chainage From");
-                    $('#line_chainage_fromErrorMsg').show();
-                    $('#line_chainage_fromErrorMsg').delay(2000).fadeOut('slow');
-                }
-                else if (line_chainage_to == "") {
-                    $('#line_chainage_toErrorMsg').html("Enter Transmission line Chainage To");
-                    $('#line_chainage_toErrorMsg').show();
-                    $('#line_chainage_toErrorMsg').delay(2000).fadeOut('slow');
-                }
-                else if (land_type == "") {
-                    $('#land_typeErrorMsg').html("Enter Land Type");
-                    $('#land_typeErrorMsg').show();
-                    $('#land_typeErrorMsg').delay(2000).fadeOut('slow');
-                }
-                else if (terrain == "") {
-                    $('#terrainErrorMsg').html("Select One ");
-                    $('#terrainErrorMsg').show();
-                    $('#terrainErrorMsg').delay(2000).fadeOut('slow');
-                }
-                else if (tower_type == "") {
-                    $('#tower_typeErrorMsg').html("Enter Type of Tower");
-                    $('#tower_typeErrorMsg').show();
-                    $('#tower_typeErrorMsg').delay(2000).fadeOut('slow');
-                }
-                else if (no_of_tower == "") {
-                    $('#no_of_towerErrorMsg').html("Enter No. of Towers");
-                    $('#no_of_towerErrorMsg').show();
-                    $('#no_of_towerErrorMsg').delay(2000).fadeOut('slow');
-                }
-                else if (row == "") {
-                    $('#rowErrorMsg').html("Enter Right of way");
-                    $('#rowErrorMsg').show();
-                    $('#rowErrorMsg').delay(2000).fadeOut('slow');
-                }
-                else if (area_required == "") {
-                    $('#area_requiredErrorMsg').html("Enter Area Required");
-                    $('#area_requiredErrorMsg').show();
-                    $('#area_requiredErrorMsg').delay(2000).fadeOut('slow');
-                }
-                else {
-                    $.ajax
-                        ({
-                            type: "POST",
-                            url: "{% url 'save_anc_power_line_details' %}",
-                            data: { 'application_no': application_no, 'line_chainage_from': line_chainage_from, 'line_chainage_to': line_chainage_to, 'land_type': land_type, 'terrain': terrain, 'tower_type': tower_type, 'no_of_tower': no_of_tower, 'row': row, 'area_required': area_required, csrfmiddlewaretoken: csrf_token },
-                            success: function (responseText) {
-                                $('#power_line_successMsg').html("Power Line Details Added Successfully");
-                                $('#power_line_successMsg').show();
-                                $('#power_line_successMsg').delay(2000).fadeOut('slow');
-                                setTimeout(function () {
-                                    $('#anc_power_line_modal').modal('hide');
-                                }, 2000);
-                                setTimeout(function () {
-                                    $('#anc_power_line_details').html(responseText);
-                                }, 2000);
-                                setTimeout(function () {
-                                    $('#anc_power_line_form')[0].reset();
-                                }, 2000);
-                            }
-                        });
-                }
-            }
 
             function save_anc_approach_road_details(service) {
                 let anc_road_required = $("input[name=anc_road_required]:checked").length;
@@ -4633,67 +4725,96 @@
             }
 
             function save_power_line_details() {
-                // Hide all previous messages
-                $('.error-msg').hide();
-                $('#power_line_successMsg').hide();
+                application_no = $('#application_no').val();
+                line_chainage_from = $('#line_chainage_from').val();
+                line_chainage_to = $('#line_chainage_to').val();
+                land_type = $('#land_type').val();
+                terrain = $('#terrain').val();
+                tower_type = $('#tower_type').val();
+                no_of_tower = $('#no_of_tower').val();
+                row = $('#row').val();
+                area_required = $('#area_required').val();
+                let csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
 
-                // Get the form element
-                const form = document.getElementById('anc_power_line_form');
+                // Clear previous error messages
+                $('.alert-danger').hide();
 
-                // Create FormData object from the form
-                const formData = new FormData(form);
-
-                // Add additional fields that might not be in the form
-                formData.append('application_no', $('#application_no').val());
-
-                // Define validation rules in order
-                const validationRules = [
-                    { field: 'line_chainage_from', message: 'Enter Transmission line Chainage From' },
-                    { field: 'line_chainage_to', message: 'Enter Transmission line Chainage To' },
-                    { field: 'land_type', message: 'Enter Land Type' },
-                    { field: 'terrain', message: 'Select One' },
-                    { field: 'tower_type', message: 'Enter Type of Tower' },
-                    { field: 'no_of_tower', message: 'Enter No. of Towers' },
-                    { field: 'row', message: 'Enter Right of way' },
-                    { field: 'area_required', message: 'Enter Area Required' }
-                ];
-
-                // Validate fields in sequence
-                for (const rule of validationRules) {
-                    const value = formData.get(rule.field);
-                    if (!value) {
-                        showFieldError(rule.field, rule.message);
-                        return false;
-                    }
+                if (line_chainage_from == "") {
+                    $('#line_chainage_fromErrorMsg').html("Enter Transmission line Chainage From");
+                    $('#line_chainage_fromErrorMsg').show();
+                    return;
+                }
+                else if (line_chainage_to == "") {
+                    $('#line_chainage_toErrorMsg').html("Enter Transmission line Chainage To");
+                    $('#line_chainage_toErrorMsg').show();
+                    return;
+                }
+                else if (land_type == "") {
+                    $('#land_typeErrorMsg').html("Enter Land Type");
+                    $('#land_typeErrorMsg').show();
+                    return;
+                }
+                else if (terrain == "") {
+                    $('#terrainErrorMsg').html("Select One ");
+                    $('#terrainErrorMsg').show();
+                    return;
+                }
+                else if (tower_type == "") {
+                    $('#tower_typeErrorMsg').html("Enter Type of Tower");
+                    $('#tower_typeErrorMsg').show();
+                    return;
+                }
+                else if (no_of_tower == "") {
+                    $('#no_of_towerErrorMsg').html("Enter No. of Towers");
+                    $('#no_of_towerErrorMsg').show();
+                    return;
+                }
+                else if (row == "") {
+                    $('#rowErrorMsg').html("Enter Right of way");
+                    $('#rowErrorMsg').show();
+                    return;
+                }
+                else if (area_required == "") {
+                    $('#area_requiredErrorMsg').html("Enter Area Required");
+                    $('#area_requiredErrorMsg').show();
+                    return;
                 }
 
-                // If validation passes, submit the form
-                submitPowerLineDetails(formData);
-            }
-
-            // AJAX submission function
-            function submitPowerLineDetails(formData) {
                 $.ajax({
                     type: "POST",
-                    url : "{% url 'save_anc_power_line_details' %}",
-                    data: formData,
-                    processData: false,  // Required for FormData
-                    contentType: false,  // Required for FormData
-                    success: function (responseText) {
-                        $('#power_line_successMsg').html("Added Successfully").show();
-                        // Optionally clear the form or close the modal after success
-                        setTimeout(() => {
-                            $('#anc_power_line_modal').modal('hide');
-                            // You might want to reload data or reset the form here
-                        }, 2000);
-                        setTimeout(() => {
-                            $('#anc_power_line_details').responseText();
-                            // You might want to reload data or reset the form here
-                        }, 3000);
-
+                    url: "{% url 'save_anc_power_line_details' %}",
+                    data: {
+                        'application_no': application_no,
+                        'line_chainage_from': line_chainage_from,
+                        'line_chainage_to': line_chainage_to,
+                        'land_type': land_type,
+                        'terrain': terrain,
+                        'tower_type': tower_type,
+                        'no_of_tower': no_of_tower,
+                        'row': row,
+                        'area_required': area_required,
+                        csrfmiddlewaretoken: csrf_token
                     },
-                    error: function (xhr, status, error) {
-                        $('#power_line_errorMsg').html("Error: " + error).show();
+                    success: function (responseText) {
+                        // Show success message
+                        $('#add_power_line_successMsg').html("Power Line Details Added Successfully");
+                        $('#add_power_line_successMsg').show();
+
+                        // Update the table content immediately
+                        $('#anc_power_line_details').html(responseText);
+
+                        // Reset the form
+                        $('#anc_power_line_form')[0].reset();
+
+                        // Hide the modal after a short delay
+                        setTimeout(function () {
+                            $('#anc_power_line_modal').modal('hide');
+                            $('#add_power_line_successMsg').hide();
+                        }, 1500);
+                    },
+                    error: function(xhr, errmsg, err) {
+                        // Handle errors if any
+                        console.log(xhr.status + ": " + xhr.responseText);
                     }
                 });
             }
@@ -5043,16 +5164,6 @@
             }
 
 
-
-            function check_excavated_muck(value) {
-                if (value == "Yes") {
-                    $('.dump_yard_details').show();
-                }
-                else {
-                    $('.dump_yard_details').hide();
-                }
-            }
-
             function add_final_products_details() {
                 let application_no = $('#application_no').val();
                 let produce_name = $('#product_name').val();
@@ -5216,7 +5327,7 @@
                 let others_area = $('#others_area').val();
                 let others_area_acre = $('#others_area_acre').val();
                 let total_area_acre = $('#total_area_acre').val();
-                let total_build_up_area = $('#total_build_up_area').val();
+                let total_build_up_area = $('#total_buildup_acre').val();
                 // Validation checks
                 if (project_name === "") {
                     showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');
@@ -5699,6 +5810,18 @@
                     });
             }
 
+            function check_excavated_muck(value)
+            {
+                if(value == "Yes")
+                {
+                    $('#dump_yard_details').show();
+                }
+                else
+                {
+                    $('#dump_yard_details').hide();
+                }
+            }
+
             function check_terms() {
                 if ($("#ec_terms").prop('checked') == true) {
                     $('#gen_submit_btn').show();
@@ -5819,15 +5942,6 @@
                     $("#collapseFour").addClass("show");
                     $("#collapseSix").removeClass("show");
                 }, 2000);
-            }
-
-            function check_excavated_muck(value) {
-                if (value == "Yes") {
-                    $('.dump_yard_details').show();
-                }
-                else {
-                    $('.dump_yard_details').hide();
-                }
             }
 
             function check_tansmission_water_radio(value) {
@@ -8201,4 +8315,22 @@
                 }
             }
 
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize on page load
+                initializeAncillaryFacilities();
+            });
+
+            function check_anc_facility(value) {
+                var ancillaryDetails = document.querySelectorAll('.other_ancillary_details');
+                if (value === 'Yes') {
+                    ancillaryDetails.forEach(function(element) {
+                        element.style.display = 'block';
+                    });
+                } else {
+                    ancillaryDetails.forEach(function(element) {
+                        element.style.display = 'none';
+                    });
+                }
+            }
 </script>
