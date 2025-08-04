@@ -466,12 +466,12 @@ def new_application_form(request):
 
 def industry_ancillary_form(request):
     application_no = request.session['application_no']
-    partner_details = t_ec_industries_t2_partner_details.objects.all()
-    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-    final_product = t_ec_industries_t4_project_product.objects.all()
-    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    partner_details = t_ec_industries_t2_partner_details.objects.filter(service_type="Ancillary")
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(service_type="Ancillary")
+    final_product = t_ec_industries_t4_project_product.objects.filter(service_type="Ancillary")
+    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(service_type="Ancillary")
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(service_type="Ancillary")
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(service_type="Ancillary")
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -481,12 +481,12 @@ def industry_ancillary_form(request):
 
 def ground_water_ancillary_form(request):
     application_no = request.session['application_no']
-    partner_details = t_ec_industries_t2_partner_details.objects.all()
-    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-    final_product = t_ec_industries_t4_project_product.objects.all()
-    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    partner_details = t_ec_industries_t2_partner_details.objects.filter(service_type="Ancillary")
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(service_type="Ancillary")
+    final_product = t_ec_industries_t4_project_product.objects.filter(service_type="Ancillary")
+    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(service_type="Ancillary")
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(service_type="Ancillary")
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(service_type="Ancillary")
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -496,12 +496,12 @@ def ground_water_ancillary_form(request):
 
 def forest_ancillary_form(request):
     application_no = request.session['application_no']
-    partner_details = t_ec_industries_t2_partner_details.objects.all()
-    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-    final_product = t_ec_industries_t4_project_product.objects.all()
-    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    partner_details = t_ec_industries_t2_partner_details.objects.filter(service_type="Ancillary")
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(service_type="Ancillary")
+    final_product = t_ec_industries_t4_project_product.objects.filter(service_type="Ancillary")
+    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(service_type="Ancillary")
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(service_type="Ancillary")
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(service_type="Ancillary")
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -511,13 +511,13 @@ def forest_ancillary_form(request):
 
 def general_ancillary_form(request):
     application_no = request.session['application_no']
-    partner_details = t_ec_industries_t2_partner_details.objects.all()
-    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-    final_product = t_ec_industries_t4_project_product.objects.all()
-    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
-    dzongkhag = t_dzongkhag_master.objects.all()
+    partner_details = t_ec_industries_t2_partner_details.objects.filter(service_type="Ancillary")
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(service_type="Ancillary")
+    final_product = t_ec_industries_t4_project_product.objects.filter(service_type="Ancillary")
+    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(service_type="Ancillary")
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(service_type="Ancillary")
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(service_type="Ancillary")
+    dzongkhag = t_dzongkhag_master.objects.filter(service_type="Ancillary")
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     return render(request, 'general_ancillary_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
@@ -526,12 +526,12 @@ def general_ancillary_form(request):
 
 def transmission_ancillary_form(request):
     application_no = request.session['application_no']
-    partner_details = t_ec_industries_t2_partner_details.objects.all()
-    machine_equipment = t_ec_industries_t3_machine_equipment.objects.all()
-    project_product = t_ec_industries_t4_project_product.objects.all()
-    raw_materials = t_ec_industries_t5_raw_materials.objects.all()
-    ancillary_road = t_ec_industries_t6_ancillary_road.objects.all()
-    power_line = t_ec_industries_t7_ancillary_power_line.objects.all()
+    partner_details = t_ec_industries_t2_partner_details.objects.filter(service_type="Ancillary")
+    machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(service_type="Ancillary")
+    project_product = t_ec_industries_t4_project_product.objects.filter(service_type="Ancillary")
+    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(service_type="Ancillary")
+    ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(service_type="Ancillary")
+    power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(service_type="Ancillary")
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()

@@ -1034,7 +1034,6 @@ class t_ec_industries_t5_raw_materials(models.Model):
     qty = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True)
     source = models.CharField(max_length=250,default=None, blank=True, null=True)
     storage_method = models.CharField(max_length=100,default=None, blank=True, null=True)
-
 class t_ec_industries_t6_ancillary_road(models.Model):
     record_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100, default=None, blank=True, null=True)

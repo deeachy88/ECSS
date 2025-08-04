@@ -3140,6 +3140,7 @@
             let machine_tool = $('#machine_tool').val();
             let machine_tool_qty = $('#machine_tool_qty').val();
             let machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
+            let service_type = "Ancillary"
     
             if(machine_tool == "")
             {
@@ -3168,7 +3169,7 @@
                 ({
                     type : "POST",
                     url : "{% url 'add_machine_tool_details' %}",
-                    data : {'application_no':application_no,'machine_tool':machine_tool,'machine_tool_qty':machine_tool_qty,'machine_tool_installed_capacity':machine_tool_installed_capacity, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    data : {'application_no':application_no,'service_type':service_type,'machine_tool':machine_tool,'machine_tool_qty':machine_tool_qty,'machine_tool_installed_capacity':machine_tool_installed_capacity, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(responseText)
                     {
                         $('#machine_tool_SuccessMsg').html("Add Successful");

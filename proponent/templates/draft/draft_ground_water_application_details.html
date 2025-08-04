@@ -85,13 +85,23 @@
                                                 <label class="form-label fw-bold">Site</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
+                                                        <input 
+                                                            type="radio" 
+                                                            name="dzongkhag_throm" 
+                                                            id="dzongkhag-radio" 
+                                                            class="form-check-input" 
+                                                            value="Dzongkhag" 
                                                             onclick="check_dzong_throm(this.value)"
                                                             {% if application_details.dzongkhag_throm == 'Dzongkhag' %}checked{% endif %}>
                                                         <label class="form-check-label">Dzongkhag</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
+                                                        <input 
+                                                            type="radio" 
+                                                            name="dzongkhag_throm" 
+                                                            id="thromde-radio" 
+                                                            class="form-check-input" 
+                                                            value="Thromde" 
                                                             onclick="check_dzong_throm(this.value)"
                                                             {% if application_details.dzongkhag_throm == 'Thromde' %}checked{% endif %}>
                                                         <label class="form-check-label">Thromde</label>
@@ -2333,6 +2343,23 @@
 </form>
 
 <script>
+    $(document).ready(function() {
+            function toggleThromdeVisibility() {
+                if ($("#dzongkhag-radio").is(":checked")) {
+                    $("#thromde-radio, #thromde-radio + label").hide();
+                } else {
+                    $("#thromde-radio, #thromde-radio + label").show();
+                }
+            }
+
+            // Initial check
+            toggleThromdeVisibility();
+
+            // On radio change
+            $("input[name='dzongkhag_throm']").change(function() {
+                toggleThromdeVisibility();
+            });
+        });
     function toggleAcreField() {
         const othersArea = document.getElementById('others_area');
         const acreFieldContainer = document.getElementById('acreFieldContainer');
