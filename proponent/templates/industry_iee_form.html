@@ -7363,8 +7363,8 @@
             sum += parseFloat(state_reserve_forest_acre) || 0;
             sum += parseFloat(private_area_acre) || 0;
             sum += parseFloat(others_area_acre) || 0;
-    
-            $('#total_area_acre').val(sum);
+
+            $('#total_area_acre').val(sum.toFixed(2));
         }
     
         function calculate_road_area_required()

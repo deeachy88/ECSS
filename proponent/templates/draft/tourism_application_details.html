@@ -78,7 +78,6 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Site</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
                                                         <input 
@@ -181,7 +180,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) in acres</label>
+                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) (acres)</label>
                                                 <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{application_details.industrial_area_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="industrial_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -461,7 +460,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Number of workers to be employed</label>
-                                                <input type="number" name="no_of_workers" class="form-control" id="no_of_workers" value="{{application_details.project_no_of_workers}}">
+                                                <input type="number" name="no_of_workers" class="form-control" id="no_of_workers" value="{{application_details.project_no_of_workers}}" oninput="validateIntegerInput(this)">
                                             </div>
                                             <div id="no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -1344,66 +1343,63 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
-                                                {% if application_details.anc_other_required == 'Yes' %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)">
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="Yes"
+                                                               onclick="check_anc_facility(this.value)"
+                                                               {% if application_details.anc_other_required == 'Yes' %}checked{% endif %}>
+                                                        <label class="form-check-label">Yes</label>
                                                     </div>
-                                                {% else %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)">
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No"
+                                                               onclick="check_anc_facility(this.value)"
+                                                               {% if application_details.anc_other_required != 'Yes' %}checked{% endif %}>
+                                                        <label class="form-check-label">No</label>
                                                     </div>
-                                                {% endif %}
+                                                </div>
                                             </div>
                                             <div id="anc_other_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-warning border-0 rounded-0 anc_others" role="alert" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
+
+                                    <!-- Simplified ancillary details section -->
+                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                        <div class="alert alert-warning border-0 rounded-0 other_ancillary_facilities" role="alert">
+                                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form...
+                                        </div>
                                     </div>
-                                    <br>
-                                    <div class="form-check anc_others" style="display:none">
-                                        <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()"
-                                            {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
-                                    </div>
-                                    <div class="form-check anc_others" style="display:none">
-                                        <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
-                                            {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                    </div>
-                                    <div class="form-check anc_others" style="display:none">
-                                        <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()"
-                                            {% if application_details.anc_other_ground_water == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Ground water abstraction</label>
-                                    </div>
-                                    <div class="form-check anc_others" style="display:none">
-                                        <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_mineral()"
-                                            {% if application_details.anc_other_mineral == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Mineral stockyards outside the project area</label>
-                                    </div>
-                                    <div class="form-check anc_others" style="display:none">
-                                        <input type="checkbox" name="anc_other_general" id="anc_other_general" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_general()"
-                                            {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Others</label>
+
+                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()"
+                                                {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
+                                                {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_ground_water" id="anc_other_ground_water"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_ground_water()"
+                                                {% if application_details.anc_other_ground_water == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Ground water abstraction</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_mineral" id="anc_other_mineral"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_mineral()"
+                                                {% if application_details.anc_other_mineral == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Mineral stockyards outside the project area</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_general()"
+                                                {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Others</label>
+                                        </div>
                                     </div>
                                     <div class="alert alert-success border-0 rounded-0" 
                                         role="alert" 
@@ -5833,7 +5829,7 @@
                 sum += parseFloat(private_area_acre) || 0;
                 sum += parseFloat(others_area_acre) || 0;
 
-                $('#total_area_acre').val(sum);
+                $('#total_area_acre').val(sum.toFixed(2));
             }
 
             function getCitizenDetails(cid) {
@@ -7809,6 +7805,22 @@
                     ancillaryDetails.forEach(function(element) {
                         element.style.display = 'none';
                     });
+                }
+            }
+
+            function validateIntegerInput(input) {
+                const cursorPosition = input.selectionStart;
+                const originalValue = input.value;
+
+                // Remove any non-digit characters
+                const newValue = originalValue.replace(/[^0-9]/g, '');
+
+                if (newValue !== originalValue) {
+                    input.value = newValue;
+
+                    // Adjust cursor position if a character was removed
+                    const diff = originalValue.length - newValue.length;
+                    input.setSelectionRange(cursorPosition - diff, cursorPosition - diff);
                 }
             }
             

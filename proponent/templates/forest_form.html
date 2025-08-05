@@ -461,7 +461,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Number of workers to be employed</label>
-                                                <input type="number" name="no_of_workers" class="form-control" id="no_of_workers">
+                                                <input type="number" name="no_of_workers" class="form-control" id="no_of_workers" oninput="validateIntegerInput(this)">
                                             </div>
                                             <div id="no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -540,7 +540,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
+                                                <label class="form-label fw-bold">Will the activity require a disposal site for excavated muck?</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
                                                         <input type="radio" name="water_excavated_muck" class="form-check-input" value="Yes" onclick="check_excavated_muck(this.value)">
@@ -5101,7 +5101,7 @@
         sum += parseFloat(private_area_acre) || 0;
         sum += parseFloat(others_area_acre) || 0;
 
-        $('#total_area_acre').val(sum);
+        $('#total_area_acre').val(sum.toFixed(2));
     }
 
     function check_anc_other_crushing_unit()
@@ -5539,6 +5539,22 @@
         product = parseFloat(sum) * parseFloat(road_row) || 0;
          
         $('#edit_road_area_required').val(product);
+    }
+
+    function validateIntegerInput(input) {
+        const cursorPosition = input.selectionStart;
+        const originalValue = input.value;
+
+        // Remove any non-digit characters
+        const newValue = originalValue.replace(/[^0-9]/g, '');
+
+        if (newValue !== originalValue) {
+            input.value = newValue;
+
+            // Adjust cursor position if a character was removed
+            const diff = originalValue.length - newValue.length;
+            input.setSelectionRange(cursorPosition - diff, cursorPosition - diff);
+        }
     }
 
 </script>

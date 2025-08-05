@@ -78,7 +78,6 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Site</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
                                                         <input 
@@ -181,7 +180,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) in acres</label>
+                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) (acres)</label>
                                                 <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{application_details.industrial_area_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="industrial_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -1358,66 +1357,73 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
-                                                {% if application_details.anc_other_required == 'Yes' %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)">
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="Yes"
+                                                               onclick="check_anc_facility(this.value)"
+                                                               {% if application_details.anc_other_required == 'Yes' %}checked{% endif %}>
+                                                        <label class="form-check-label">Yes</label>
                                                     </div>
-                                                {% else %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)">
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No"
+                                                               onclick="check_anc_facility(this.value)"
+                                                               {% if application_details.anc_other_required != 'Yes' %}checked{% endif %}>
+                                                        <label class="form-check-label">No</label>
                                                     </div>
-                                                {% endif %}
+                                                </div>
                                             </div>
-                                            <div id="other_ancillary_facilitiesErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div id="anc_other_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-warning border-0 rounded-0 other_ancillary_facilities" role="alert" style="display: none;">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
+
+                                    <!-- Simplified ancillary details section -->
+                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                        <div class="alert alert-warning border-0 rounded-0 other_ancillary_facilities" role="alert">
+                                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form...
+                                        </div>
                                     </div>
-                                    <br>
-                                    <div class="form-check other_ancillary_facilities">
-                                        <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()"
-                                            {% if application_details.anc_other_ropeway == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Ropeway/Cable lines</label>
+
+                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_ropeway" id="anc_other_ropeway"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_ropeway()"
+                                                {% if application_details.anc_other_ropeway == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Ropeway/Cable lines</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()"
+                                                {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
+                                                {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_general()"
+                                                {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Others</label>
+                                        </div>
                                     </div>
-                                    <div class="form-check other_ancillary_facilities">
-                                        <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_crushing_unit()"
-                                            {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Crushing unit/ Concrete batching plant/ Asphalt plant/Hot Mix Plant</label>
+                                    <div class="alert alert-success border-0 rounded-0"
+                                        role="alert"
+                                        id="anc_others_successMsg"
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
                                     </div>
-                                    <div class="form-check other_ancillary_facilities">
-                                        <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
-                                            {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                    </div>
-                                    <div class="form-check other_ancillary_facilities">
-                                        <input type="checkbox" name="anc_other_general" id="anc_other_general" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_general()"
-                                            {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Others</label>
-                                    </div>
-                                    <div class="alert alert-success border-0 rounded-0" role="alert" id="anc_others_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                    </div>
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="anc_others_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+
+                                    <!-- Error Alert -->
+                                    <div class="alert alert-danger border-0 rounded-0"
+                                        role="alert"
+                                        id="anc_others_errorMsg"
+                                        style="display:none"
+                                        aria-live="assertive"
+                                        aria-atomic="true">
                                     </div>
                                     <div class="row mt-4">
                                         <div class="text-sm-end">
@@ -5570,7 +5576,7 @@
                 sum += parseFloat(private_area_acre) || 0;
                 sum += parseFloat(others_area_acre) || 0;
 
-                $('#total_area_acre').val(sum);
+                $('#total_area_acre').val(sum.toFixed(2));
             }
 
             function getCitizenDetails(cid) {
@@ -7237,93 +7243,6 @@
                 }
                 else {
                     $('.industry_details').hide();
-                }
-            }
-
-            function save_energy_project_details() {
-                let project_objective = $('#project_objective').val();
-                let no_of_workers = $('#no_of_workers').val();
-                let project_output = $('#project_output').val();
-                let project_cost = $('#project_cost').val();
-                let project_duration = $('#project_duration').val();
-                let proposed_route_reason = $('#proposed_route_reason').val();
-                let power_generation = $('#power_generation').val();
-                let water_excavated_muck = $("input[name=water_excavated_muck]:checked").length
-
-
-                if (project_objective == "") {
-                    $('#project_objectiveErrorMsg').html("Enter Project Objective");
-                    $('#project_objectiveErrorMsg').show();
-                    $('#project_objectiveErrorMsg').delay(2000).fadeOut('slow');
-                    $('#project_objective').focus();
-                }
-                else if (no_of_workers == "") {
-                    $('#no_of_workersErrorMsg').html("Enter No Of Workers");
-                    $('#no_of_workersErrorMsg').show();
-                    $('#no_of_workersErrorMsg').delay(2000).fadeOut('slow');
-                    $('#no_of_workers').focus();
-                }
-                else if (project_output == "") {
-                    $('#project_outputErrorMsg').html("Enter Project Output");
-                    $('#project_outputErrorMsg').show();
-                    $('#project_outputErrorMsg').delay(2000).fadeOut('slow');
-                    $('#project_output').focus();
-                }
-                else if (project_cost == "") {
-                    $('#project_costErrorMsg').html("Enter Project Cost");
-                    $('#project_costErrorMsg').show();
-                    $('#project_costErrorMsg').delay(2000).fadeOut('slow');
-                    $('#project_cost').focus();
-                }
-                else if (project_duration == "") {
-                    $('#project_durationErrorMsg').html("Enter Project Duration");
-                    $('#project_durationErrorMsg').show();
-                    $('#project_durationErrorMsg').delay(2000).fadeOut('slow');
-                    $('#project_duration').focus();
-                }
-                else if (power_generation == "") {
-                    $('#power_generationErrorMsg').html("Enter Reason");
-                    $('#power_generationErrorMsg').show();
-                    $('#power_generationErrorMsg').delay(2000).fadeOut('slow');
-                    $('#power_generation').focus();
-                }
-                else if (water_excavated_muck < 1) {
-                    $('#water_excavated_muckErrorMsg').html("Please Choose One");
-                    $('#water_excavated_muckErrorMsg').show();
-                    $('#water_excavated_muckErrorMsg').delay(2000).fadeOut('slow');
-                    $('#water_excavated_muck').focus();
-                }
-                else {
-                    $.ajax
-                        ({
-                            type: "POST",
-                            url : "{% url 'save_project_details' %}",
-                            data: $('#project_details_form').serialize(),
-                            success: function (data) {
-                                if (data.message == 'success') {
-                                    $('#project_details_successMsg').html("Saved Successfully");
-                                    $('#project_details_successMsg').show();
-                                    $('#project_details_successMsg').focus();
-                                    setTimeout(function () {
-                                        $('#project_details_successMsg').delay(2000).fadeOut('slow');
-                                    }, 2000);
-                                    setTimeout(function () {
-                                        $("#collapseFourBtn").removeAttr("disabled");
-                                        $("#collapseFour").addClass("show");
-                                        $("#collapseProjectDetails").removeClass("show");
-                                    }, 2000);
-                                }
-                                else {
-                                    var errorMsg = data.error;
-                                    $('#project_details_errorMsg').html(`Application Error: ${data.error}`);
-                                    $('#project_details_errorMsg').show();
-                                    $('#project_details_errorMsg').focus();
-                                    setTimeout(function () {
-                                        $('#project_details_errorMsg').delay(2000).fadeOut('slow');
-                                    }, 2000);
-                                }
-                            }
-                        });
                 }
             }
 

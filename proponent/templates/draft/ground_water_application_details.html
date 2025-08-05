@@ -78,7 +78,6 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Site</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
                                                         <input 
@@ -181,7 +180,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) in acres</label>
+                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) (acres)</label>
                                                 <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{application_details.industrial_area_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="industrial_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -4900,7 +4899,7 @@
         sum += parseFloat(private_area_acre) || 0;
         sum += parseFloat(others_area_acre) || 0;
 
-        $('#total_area_acre').val(sum);
+        $('#total_area_acre').val(sum.toFixed(2));
     }
 
     function check_dzong_throm(value) {

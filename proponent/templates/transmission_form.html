@@ -622,7 +622,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Excavated muck disposal area/dumpyard</label>
+                                                <label class="form-label fw-bold">Will the activity require a disposal site for excavated muck?</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
                                                         <input type="radio" name="water_excavated_muck" class="form-check-input" value="Yes" onclick="check_excavated_muck(this.value)">
@@ -5103,7 +5103,7 @@
                 sum += parseFloat(private_area_acre) || 0;
                 sum += parseFloat(others_area_acre) || 0;
 
-                $('#total_area_acre').val(sum);
+                $('#total_area_acre').val(sum.toFixed(2));
             }
 
             function getCitizenDetails(cid) {

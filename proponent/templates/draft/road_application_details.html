@@ -79,7 +79,6 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Site</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
                                                         <input 
@@ -920,7 +919,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Excavated muck disposal area/Dumpyard</label>
+                                                <label class="form-label fw-bold">Will the activity require a disposal site for excavated muck?</label>
                                                 {% if application_details.water_excavated_muck %}
                                                     {% if application_details.water_excavated_muck == "Yes" %}
                                                         <div class="mt-2">
@@ -1290,72 +1289,69 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Will the activity require other ancillary facilities?</label>
-                                                {% if application_details.anc_other_required == 'Yes' %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)">
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                <div class="mt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="Yes"
+                                                               onclick="check_anc_facility(this.value)"
+                                                               {% if application_details.anc_other_required == 'Yes' %}checked{% endif %}>
+                                                        <label class="form-check-label">Yes</label>
                                                     </div>
-                                                {% else %}
-                                                    <div class="mt-2">
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="Yes" onclick="check_anc_facility(this.value)">
-                                                            <label class="form-check-label" for="customRadio3">Yes</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input type="radio" name="anc_other_required" class="form-check-input" value="No" onclick="check_anc_facility(this.value)" checked>
-                                                            <label class="form-check-label" for="customRadio4">No</label>
-                                                        </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="anc_other_required" class="form-check-input" value="No"
+                                                               onclick="check_anc_facility(this.value)"
+                                                               {% if application_details.anc_other_required != 'Yes' %}checked{% endif %}>
+                                                        <label class="form-check-label">No</label>
                                                     </div>
-                                                {% endif %}
+                                                </div>
                                             </div>
                                             <div id="anc_other_requiredErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-warning border-0 rounded-0 anc_facility_details" role="alert" role="alert" style="display: none;">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form for each activity and submit along with this IEE form (does not apply to existing sub-activities not requiring modification/construction)
+
+                                    <!-- Simplified ancillary details section -->
+                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                        <div class="alert alert-warning border-0 rounded-0 other_ancillary_facilities" role="alert">
+                                            <i class="uil-folder-heart me-1 h4 align-middle"></i> Tick the appropriate Ancillary and fill up relevant IEE form...
+                                        </div>
                                     </div>
-                                    <br>
-                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
-                                        <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_general()"
-                                            {% if application_details.anc_other_bridge == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Bridge</label> 
-                                    </div>
-                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
-                                        <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"  
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
-                                            {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Crushing Plant</label>
-                                    </div>
-                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
-                                        <input type="checkbox" name="anc_other_concrete_building" id="anc_other_concrete_building" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
-                                            {% if application_details.anc_other_concrete_building == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Concrete Batching Plant</label>
-                                    </div>
-                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
-                                        <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
-                                            {% if application_details.anc_other_asphalt_plant == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Asphalt Plant</label>
-                                    </div>
-                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
-                                        <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
-                                            {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
-                                    </div>
-                                    <div class="form-check anc_facility_details" role="alert" style="display: none;">
-                                        <input type="checkbox" name="anc_other_general" id="anc_other_general" 
-                                            class="form-check-input" value="Yes" onclick="check_anc_other_general()"
-                                            {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
-                                        <label class="form-check-label">Others</label>
+
+                                    <div class="row other_ancillary_details" style="display: {% if application_details.anc_other_required == 'Yes' %}block{% else %}none{% endif %};">
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_bridge" id="anc_other_bridge"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_general()"
+                                                {% if application_details.anc_other_bridge == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Bridge</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_crushing_unit" id="anc_other_crushing_unit"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
+                                                {% if application_details.anc_other_crushing_unit == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Crushing Plant</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_concrete_building" id="anc_other_concrete_building"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
+                                                {% if application_details.anc_other_concrete_building == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Concrete Batching Plant</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_asphalt_plant" id="anc_other_asphalt_plant"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_industry()"
+                                                {% if application_details.anc_other_asphalt_plant == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Asphalt Plant</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_surface_collection" id="anc_other_surface_collection"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_surface_collection()"
+                                                {% if application_details.anc_other_surface_collection == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Surface collection of sand and boulder/ RBM collection/ dredging activities</label>
+                                        </div>
+                                        <div class="form-check other_ancillary_facilities" style="display:block;">
+                                            <input type="checkbox" name="anc_other_general" id="anc_other_general"
+                                                class="form-check-input" value="Yes" onclick="check_anc_other_general()"
+                                                {% if application_details.anc_other_general == 'Yes' %}checked{% endif %}>
+                                            <label class="form-check-label">Others</label>
+                                        </div>
                                     </div>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="anc_others_successMsg" style="display:none">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>

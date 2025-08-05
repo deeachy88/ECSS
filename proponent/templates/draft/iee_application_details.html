@@ -138,7 +138,6 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Site</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
                                                         <input 
@@ -241,7 +240,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) in acres</label>
+                                                <label class="form-label fw-bold">Industrial Area/Estate/Park/Special Economic Zone (SEZ) (acres)</label>
                                                 <input type="number" min="0" name="industrial_area_acre" class="form-control" id="industrial_area_acre" value="{{application_details.industrial_area_acre}}" onchange="get_total_area_acre()">
                                             </div>
                                             <div id="industrial_area_acreErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -366,7 +365,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Number of Workers To Be Employed</label>
-                                                <input type="number" min="1" name="project_no_of_workers" class="form-control" id="project_no_of_workers" value="{{application_details.project_no_of_workers}}">
+                                                <input type="number" min="1" name="project_no_of_workers" class="form-control" id="project_no_of_workers" value="{{application_details.project_no_of_workers}}" oninput="validateIntegerInput(this)">
                                             </div>
                                             <div id="project_no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -8489,7 +8488,7 @@
             sum += parseFloat(private_area_acre) || 0;
             sum += parseFloat(others_area_acre) || 0;
     
-            $('#total_area_acre').val(sum);
+            $('#total_area_acre').val(sum.toFixed(2));
         }
     
         function calculate_road_area_required()
@@ -8729,6 +8728,22 @@
                 ancillaryDetails.forEach(function(element) {
                     element.style.display = 'none';
                 });
+            }
+        }
+
+        function validateIntegerInput(input) {
+            const cursorPosition = input.selectionStart;
+            const originalValue = input.value;
+
+            // Remove any non-digit characters
+            const newValue = originalValue.replace(/[^0-9]/g, '');
+
+            if (newValue !== originalValue) {
+                input.value = newValue;
+
+                // Adjust cursor position if a character was removed
+                const diff = originalValue.length - newValue.length;
+                input.setSelectionRange(cursorPosition - diff, cursorPosition - diff);
             }
         }
     </script>

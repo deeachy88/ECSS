@@ -434,7 +434,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Number of Workers to be Employed</label>
-                                                <input type="number" name="no_of_workers" class="form-control" id="no_of_workers">
+                                                <input type="number" name="no_of_workers" class="form-control" id="no_of_workers" oninput="validateIntegerInput(this)">
                                             </div>
                                             <div id="no_of_workersErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -576,7 +576,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Will the activity requires excavated muck disposal dumpyard?</label>
+                                                <label class="form-label fw-bold">Will the activity require a disposal site for excavated muck?</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
                                                         <input type="radio" name="water_excavated_muck" class="form-check-input" value="Yes" onclick="check_excavated_muck(this.value)">
@@ -1746,7 +1746,7 @@
       <!--Header-->
       <div class="modal-header text-center">
         <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Add</strong></h5>
+												&nbsp;Add Product/By-Product Details</strong></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
       <!--Body-->
@@ -1803,7 +1803,7 @@
       <!--Header-->
       <div class="modal-header text-center">
         <h5 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-												&nbsp;Edit</strong></h5>
+												&nbsp;Edit Product/By-Product Details</strong></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
       <!--Body-->
@@ -5714,7 +5714,7 @@
                 sum += parseFloat(private_area_acre) || 0;
                 sum += parseFloat(others_area_acre) || 0;
         
-                $('#total_area_acre').val(sum);
+                $('#total_area_acre').val(sum.toFixed(2));
             }
         
             function getCitizenDetails(cid)
@@ -6007,6 +6007,22 @@
                 {
                     $('.anc_others').hide();
 
+                }
+            }
+
+            function validateIntegerInput(input) {
+                const cursorPosition = input.selectionStart;
+                const originalValue = input.value;
+
+                // Remove any non-digit characters
+                const newValue = originalValue.replace(/[^0-9]/g, '');
+
+                if (newValue !== originalValue) {
+                    input.value = newValue;
+
+                    // Adjust cursor position if a character was removed
+                    const diff = originalValue.length - newValue.length;
+                    input.setSelectionRange(cursorPosition - diff, cursorPosition - diff);
                 }
             }
 
