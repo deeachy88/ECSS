@@ -277,6 +277,7 @@
                                 <form method="post" id="terrain_baseline_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="terrain_baseline_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="terrain_baseline_service_type" style="display:none;">
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable
                                     </div>
@@ -418,6 +419,7 @@
                                 <form method="post" id="project_details_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="project_details_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="project_details_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -561,6 +563,7 @@
                                 <form method="post" id="ground_water_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="ground_water_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="ground_water_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -661,6 +664,7 @@
                                 <form method="post" id="alternative_analysis_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="alternative_analysis_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="alternative_analysis_service_type" style="display:none;">
                                     <div class="alert alert-primary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide description and analysis of alternatives sites other than the proposed one.
                                     </div>
@@ -719,6 +723,7 @@
                                 <form method="post" id="solid_waste_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="solid_waste_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="solid_waste_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -811,6 +816,7 @@
                                 <form method="post" id="noise_level_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="noise_level_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="noise_level_service_type" style="display:none;">
                                     <div class="alert alert-primary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide maximum noise level at the project boundary during operation along with its management plan
                                     </div>
@@ -880,6 +886,7 @@
                                 <form method="post" id="other_impact_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="other_impact_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="other_impact_service_type" style="display:none;">
                                     <div class="alert alert-secondary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Other impacts during construction and operation of Plant and from ancillary activities such as road and power line along with its management plan.
                                     </div>
@@ -2502,7 +2509,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_ground_water_attachment' %}",
+                url : "{% url 'save_anc_ground_water_attachment' %}",
                 data : fd,
                 dataType: 'json',
                 contentType: false,
@@ -2516,7 +2523,7 @@
                         $.ajax
                         ({
                             type : "POST",
-                            url : "{% url 'save_ground_water_attachment_details' %}",
+                            url : "{% url 'save_anc_ground_water_attachment_details' %}",
                             data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
                             success : function(responseText)
                             {
@@ -2738,6 +2745,7 @@
         let raw_material_qty = $('#raw_material_qty').val();
         let raw_material_source = $('#raw_material_source').val();
         let raw_material_storage_method = $('#raw_material_storage_method').val();
+        let service_type = $('#ground_water_service_type').val();
 
         if(raw_material == "")
         {
@@ -2773,7 +2781,7 @@
             ({
                 type : "POST",
                 url : "{% url 'add_raw_materials' %}",
-                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#raw_material_SuccessMsg').html("Add Successful");
@@ -2813,6 +2821,7 @@
         let raw_material_qty = $('#edit_raw_material_qty').val();
         let raw_material_source = $('#edit_raw_material_source').val();
         let raw_material_storage_method = $('#edit_raw_material_storage_method').val();
+        let service_type = $('#ground_water_service_type').val();
 
         if(raw_material == "")
         {
@@ -2848,7 +2857,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_raw_materials' %}",
-                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_raw_material_SuccessMsg').html("Update Successful");
@@ -2879,12 +2888,13 @@
     {
         let record_id = $('#delete_raw_material_record_id').val();
         let application_no = $('#delete_raw_material_app_no').val();
+        let service_type = $('#ground_water_service_type').val();
 
         $.ajax
         ({
             type : "POST",
             url : "{% url 'delete_raw_materials' %}",
-            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            data : {'record_id':record_id, 'application_no':application_no,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_raw_material_SuccessMsg').html("Delete Successful");

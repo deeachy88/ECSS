@@ -391,6 +391,7 @@
                                 <form method="post" id="terrain_baseline_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="terrain_baseline_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="terrain_baseline_service_type" style="display:none;">
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable
                                     </div>
@@ -616,6 +617,7 @@
                                 <form method="post" id="water_requirement_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="water_requirement_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="general_water_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -772,6 +774,7 @@
                                 <form method="post" id="solid_waste_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="solid_waste_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="solid_waste_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -864,6 +867,7 @@
                                 <form method="post" id="effluent_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="effluent_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="effluent_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -1204,6 +1208,7 @@
                                 <form method="post" id="industry_emission_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="industry_emission_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="industry_emission_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -1335,6 +1340,7 @@
                                 <form method="post" id="noise_level_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="noise_level_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="noise_level_service_type" style="display:none;">
                                     <div class="alert alert-primary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide maximum noise level at the project boundary during operation along with its management plan
                                     </div>
@@ -1404,6 +1410,7 @@
                                 <form method="post" id="other_impact_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="other_impact_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="other_impact_service_type" style="display:none;">
                                     <div class="alert alert-secondary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Other impacts during construction and operation of Plant and from ancillary activities such as road and power line along with its management plan.
                                     </div>
@@ -2830,10 +2837,11 @@
 
     function add_machine_tool_details()
     {
-        application_no = $('#application_no').val();
-        machine_tool = $('#machine_tool').val();
-        machine_tool_qty = $('#machine_tool_qty').val();
-        machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
+        let application_no = $('#application_no').val();
+        let machine_tool = $('#machine_tool').val();
+        let machine_tool_qty = $('#machine_tool_qty').val();
+        let machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
+        let service_type = $('#service_type').val();
 
         if(machine_tool == "")
         {
@@ -2862,7 +2870,7 @@
             ({
                 type : "POST",
                 url : "{% url 'add_machine_tool_details' %}",
-                data : {'application_no':application_no,'machine_tool':machine_tool,'machine_tool_qty':machine_tool_qty,'machine_tool_installed_capacity':machine_tool_installed_capacity, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'application_no':application_no,'machine_tool':machine_tool,'machine_tool_qty':machine_tool_qty,'machine_tool_installed_capacity':machine_tool_installed_capacity,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#machine_tool_SuccessMsg').html("Add Successful");
@@ -2895,11 +2903,12 @@
 
     function update_machine_tool_details()
     {
-        record_id = $('#edit_machine_tool_record_id').val();
-        application_no = $('#edit_machine_tool_app_no').val();
-        machine_tool = $('#edit_machine_tool').val();
-        machine_tool_qty = $('#edit_machine_tool_qty').val();
-        machine_tool_installed_capacity = $('#edit_machine_tool_installed_capacity').val();
+        let record_id = $('#edit_machine_tool_record_id').val();
+        let application_no = $('#edit_machine_tool_app_no').val();
+        let machine_tool = $('#edit_machine_tool').val();
+        let machine_tool_qty = $('#edit_machine_tool_qty').val();
+        let machine_tool_installed_capacity = $('#edit_machine_tool_installed_capacity').val();
+        let service_type = $('#service_type').val();
 
         if(machine_tool == "")
         {
@@ -2928,7 +2937,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_machine_tool_details' %}",
-                data : {'record_id':record_id, 'application_no':application_no,'machine_tool':machine_tool,'machine_tool_qty':machine_tool_qty,'machine_tool_installed_capacity':machine_tool_installed_capacity, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'record_id':record_id, 'application_no':application_no,'machine_tool':machine_tool,'machine_tool_qty':machine_tool_qty,'machine_tool_installed_capacity':machine_tool_installed_capacity,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_machine_tool_SuccessMsg').html("Update Successful");
@@ -2959,12 +2968,13 @@
     {
         let record_id = $('#delete_machine_tool_record_id').val();
         let application_no = $('#delete_machine_tool_app_no').val();
+        let service_type = $('#service_type').val();
 
         $.ajax
         ({
             type : "POST",
             url : "{% url 'delete_machine_tool_details' %}",
-            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            data : {'record_id':record_id, 'application_no':application_no,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_machine_tool_SuccessMsg').html("Delete Successful");
@@ -2989,6 +2999,7 @@
         let product_name = $('#product_name').val();
         let name_location = $('#name_location').val();
         let storage_method = $('#storage_method').val();
+        let service_type= $('#service_type').val();
 
         if(product_name == "")
         {
@@ -3017,7 +3028,7 @@
             ({
                 type : "POST",
                 url : "{% url 'add_final_product_details' %}",
-                data : {'application_no':application_no,'product_name':product_name,'name_location':name_location,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'application_no':application_no,'product_name':product_name,'name_location':name_location,'storage_method':storage_method,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#final_products_SuccessMsg').html("Add Successful");
@@ -3050,11 +3061,12 @@
 
     function update_final_product_details()
     {
-        record_id = $('#edit_final_products_record_id').val();
-        application_no = $('#edit_final_products_app_no').val();
-        product_name = $('#edit_product_name').val();
-        name_location = $('#edit_name_location').val();
-        storage_method = $('#edit_storage_method').val();;
+        let record_id = $('#edit_final_products_record_id').val();
+        let application_no = $('#edit_final_products_app_no').val();
+        let product_name = $('#edit_product_name').val();
+        let name_location = $('#edit_name_location').val();
+        let storage_method = $('#edit_storage_method').val();
+        let service_type= $('#service_type').val();
 
         if(product_name == "")
         {
@@ -3083,7 +3095,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_final_product_details' %}",
-                data : {'application_no':application_no,'record_id':record_id, 'product_name':product_name,'name_location':name_location,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'application_no':application_no,'record_id':record_id, 'product_name':product_name,'name_location':name_location,'storage_method':storage_method,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_final_products_SuccessMsg').html("Update Successful");
@@ -3114,12 +3126,13 @@
     {
         let record_id =  $('#delete_final_products_record_id').val();
         let application_no = $('#delete_final_products_app_no').val();
+        let service_type= $('#service_type').val();
 
         $.ajax
         ({
             type : "POST",
             url : "{% url 'delete_final_product_details' %}",
-            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            data : {'record_id':record_id, 'application_no':application_no,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_final_products_SuccessMsg').html("Delete Successful");
@@ -3140,11 +3153,12 @@
 
     function add_raw_material_details()
     {
-        application_no = $('#application_no').val();
-        raw_material = $('#raw_material').val();
-        raw_material_qty = $('#raw_material_qty').val();
-        raw_material_source = $('#raw_material_source').val();
-        raw_material_storage_method = $('#raw_material_storage_method').val();
+        let application_no = $('#application_no').val();
+        let raw_material = $('#raw_material').val();
+        let raw_material_qty = $('#raw_material_qty').val();
+        let raw_material_source = $('#raw_material_source').val();
+        let raw_material_storage_method = $('#raw_material_storage_method').val();
+        let service_type = $('#general_water_service_type').val();
 
         if(raw_material == "")
         {
@@ -3180,7 +3194,7 @@
             ({
                 type : "POST",
                 url : "{% url 'add_raw_materials' %}",
-                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#raw_material_SuccessMsg').html("Add Successful");
@@ -3220,6 +3234,7 @@
         let raw_material_qty = $('#edit_raw_material_qty').val();
         let raw_material_source = $('#edit_raw_material_source').val();
         let raw_material_storage_method = $('#edit_raw_material_storage_method').val();
+        let service_type = $('#general_water_service_type').val();
 
         if(raw_material == "")
         {
@@ -3255,7 +3270,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_raw_materials' %}",
-                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_raw_material_SuccessMsg').html("Update Successful");
@@ -3275,8 +3290,6 @@
         }
     }
 
-
-
     function populate_delete_raw_materials(record_id, application_no)
     {
         $('#delete_raw_material_record_id').val(record_id);
@@ -3286,14 +3299,15 @@
 
     function delete_raw_material_details()
     {
-        record_id = $('#delete_raw_material_record_id').val();
-        application_no = $('#delete_raw_material_app_no').val();
+        let record_id = $('#delete_raw_material_record_id').val();
+        let application_no = $('#delete_raw_material_app_no').val();
+        let service_type = $('#general_water_service_type').val();
 
         $.ajax
         ({
             type : "POST",
             url : "{% url 'delete_raw_materials' %}",
-            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            data : {'record_id':record_id, 'application_no':application_no,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_raw_material_SuccessMsg').html("Delete Successful");
@@ -3315,11 +3329,12 @@
 
     function add_partner_details()
     {
-        application_no = $('#application_no').val();
-        partner_type = $('#partner_type').val();
-        partner_cid = $('#partner_cid').val();
-        partner_type_name = $('#partner_type_name').val();
-        partner_type_address = $('#partner_type_address').val();
+        let application_no = $('#application_no').val();
+        let partner_type = $('#partner_type').val();
+        let partner_cid = $('#partner_cid').val();
+        let partner_type_name = $('#partner_type_name').val();
+        let partner_type_address = $('#partner_type_address').val();
+        let service_type = $('#service_type').val();
 
         if(partner_type == "")
         {
@@ -3355,7 +3370,7 @@
             ({
                 type : "POST",
                 url : "{% url 'add_partner_details' %}",
-                data : {'application_no':application_no,'partner_type':partner_type,'partner_cid':partner_cid,'partner_name':partner_type_name,'partner_address':partner_type_address, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'application_no':application_no,'partner_type':partner_type,'partner_cid':partner_cid,'partner_name':partner_type_name,'partner_address':partner_type_address,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#partner_type_SuccessMsg').html("Add Successful");
@@ -3389,12 +3404,13 @@
 
     function update_partner_details()
     {
-        record_id = $('#edit_partner_details_record_id').val();
-        application_no = $('#edit_partner_details_app_no').val();
-        partner_type = $('#edit_partner_type').val();
-        partner_cid = $('#edit_partner_cid').val();
-        partner_type_name = $('#edit_partner_type_name').val();
-        partner_type_address = $('#edit_partner_type_address').val();
+        let record_id = $('#edit_partner_details_record_id').val();
+        let application_no = $('#edit_partner_details_app_no').val();
+        let partner_type = $('#edit_partner_type').val();
+        let partner_cid = $('#edit_partner_cid').val();
+        let partner_type_name = $('#edit_partner_type_name').val();
+        let partner_type_address = $('#edit_partner_type_address').val();
+        let service_type = $('#service_type').val();
 
         if(partner_type == "")
         {
@@ -3430,7 +3446,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_partner_details' %}",
-                data : {'record_id':record_id, 'application_no':application_no,'partner_type':partner_type,'partner_cid':partner_cid,'partner_name':partner_type_name,'partner_address':partner_type_address, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'record_id':record_id, 'application_no':application_no,'partner_type':partner_type,'partner_cid':partner_cid,'partner_name':partner_type_name,'partner_address':partner_type_address,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_partner_type_SuccessMsg').html("Update Successful");
@@ -3459,14 +3475,15 @@
 
     function delete_partner_details()
     {
-        record_id = $('#delete_partner_details_record_id').val();
-        application_no = $('#delete_partner_details_app_no').val();
+        let record_id = $('#delete_partner_details_record_id').val();
+        let application_no = $('#delete_partner_details_app_no').val();
+        let service_type = $('#service_type').val();
 
         $.ajax
         ({
             type : "POST",
             url : "{% url 'delete_partner_details' %}",
-            data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            data : {'record_id':record_id, 'application_no':application_no,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_partner_details_SuccessMsg').html("Delete Successful");
@@ -7195,7 +7212,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_iee_attachment' %}",
+                url : "{% url 'save_anc_iee_attachment' %}",
                 data : fd,
                 dataType: 'json',
                 contentType: false,
@@ -7209,7 +7226,7 @@
                         $.ajax
                         ({
                             type : "POST",
-                            url : "{% url 'save_iee_attachment_details' %}",
+                            url : "{% url 'save_anc_iee_attachment_details' %}",
                             data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
                             success : function(responseText)
                             {
