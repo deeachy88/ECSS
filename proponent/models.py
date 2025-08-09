@@ -1077,7 +1077,7 @@ class t_ec_industries_t1_general_audit(models.Model):
     revocation_id = models.CharField(max_length=100, default=None, blank=True, null=True)
     is_revoked = models.CharField(max_length=100, default=None, blank=True, null=True)
     establishment_type = models.CharField(max_length=100, default=None, blank=True, null=True)
-
+    
     
 class t_ec_industries_t2_partner_details(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -1086,6 +1086,7 @@ class t_ec_industries_t2_partner_details(models.Model):
     partner_cid = models.BigIntegerField(default=None, blank=True, null=True)
     partner_name = models.CharField(max_length=250,default=None, blank=True, null=True)
     partner_address = models.CharField(max_length=250,default=None, blank=True, null=True)
+    service_type = models.CharField(max_length=255, default=None, blank=True, null=True)
 
 class t_ec_industries_t3_machine_equipment(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -1093,7 +1094,7 @@ class t_ec_industries_t3_machine_equipment(models.Model):
     machine_name = models.CharField(max_length=250,default=None, blank=True, null=True)
     qty = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True)
     installed_capacity = models.CharField(max_length=100,default=None, blank=True, null=True)
-
+    service_type = models.CharField(max_length=255, default=None, blank=True, null=True)
 
 class t_ec_industries_t4_project_product(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -1102,7 +1103,7 @@ class t_ec_industries_t4_project_product(models.Model):
     name_location_type = models.CharField(max_length=100, default=None, blank=True, null=True)
     quantity_annum = models.CharField(max_length=100, default=None, blank=True, null=True)
     storage_method = models.CharField(max_length=100,default=None, blank=True, null=True)
-
+    service_type = models.CharField(max_length=255, default=None, blank=True, null=True)
 
 class t_ec_industries_t5_raw_materials(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -1111,6 +1112,8 @@ class t_ec_industries_t5_raw_materials(models.Model):
     qty = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True)
     source = models.CharField(max_length=250,default=None, blank=True, null=True)
     storage_method = models.CharField(max_length=100,default=None, blank=True, null=True)
+    service_type = models.CharField(max_length=255, default=None, blank=True, null=True)
+
 class t_ec_industries_t6_ancillary_road(models.Model):
     record_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
@@ -1124,6 +1127,7 @@ class t_ec_industries_t6_ancillary_road(models.Model):
     dzongkhag = models.CharField(max_length=100,default=None, blank=True, null=True)
     gewog = models.CharField(max_length=100,default=None, blank=True, null=True)
     village = models.CharField(max_length=100,default=None, blank=True, null=True)
+    service_type = models.CharField(max_length=255, default=None, blank=True, null=True)
 
 class t_ec_industries_t7_ancillary_power_line(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -1136,6 +1140,7 @@ class t_ec_industries_t7_ancillary_power_line(models.Model):
     no_of_tower = models.IntegerField(default=None, blank=True, null=True)
     row = models.CharField(max_length=100,default=None, blank=True, null=True)
     area_required = models.IntegerField(default=None, blank=True, null=True)
+    service_type = models.CharField(max_length=255, default=None, blank=True, null=True)
 
 class t_ec_industries_t8_forest_produce(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -1143,6 +1148,7 @@ class t_ec_industries_t8_forest_produce(models.Model):
     produce_name = models.CharField(max_length=250,default=None, blank=True, null=True)
     qty = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True)
     storage_method = models.CharField(max_length=100,default=None, blank=True, null=True)
+    service_type = models.CharField(max_length=255, default=None, blank=True, null=True)
 
 class t_ec_industries_t9_products_by_products(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -1151,6 +1157,7 @@ class t_ec_industries_t9_products_by_products(models.Model):
     product_name = models.CharField(max_length=250,default=None, blank=True, null=True)
     qty = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True)
     storage_method = models.CharField(max_length=100,default=None, blank=True, null=True)
+    service_type = models.CharField(max_length=255, default=None, blank=True, null=True)
 
 class t_ec_industries_t10_hazardous_chemicals(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -1158,6 +1165,7 @@ class t_ec_industries_t10_hazardous_chemicals(models.Model):
     chemical_name = models.CharField(max_length=250,default=None, blank=True, null=True)
     qty = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True)
     storage_method = models.CharField(max_length=100,default=None, blank=True, null=True)
+    service_type = models.CharField(max_length=255, default=None, blank=True, null=True)
 
 class t_ec_industries_t11_ec_details(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -1166,12 +1174,14 @@ class t_ec_industries_t11_ec_details(models.Model):
     ec_heading = models.CharField(max_length=250,default=None, blank=True, null=True)
     ec_terms = models.TextField(default=None, blank=True, null=True)
     ec_reference_no = models.CharField(max_length=250,default=None, blank=True, null=True)
+    service_type = models.CharField(max_length=255, default=None, blank=True, null=True)
 
 class t_ec_industries_t12_drainage_details(models.Model):
     record_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     drain_type = models.CharField(max_length=250,default=None, blank=True, null=True)
     chainage = models.CharField(max_length=250,default=None, blank=True, null=True)
+    service_type = models.CharField(max_length=255, default=None, blank=True, null=True)
 
 class t_ec_industries_t13_dumpyard(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -1180,7 +1190,7 @@ class t_ec_industries_t13_dumpyard(models.Model):
     dumpyard_capacity = models.CharField(max_length=100, default=None, blank=True, null=True)
     dumpyard_area = models.CharField(max_length=100, default=None, blank=True, null=True)
     dumpyard_location = models.CharField(max_length=100,default=None, blank=True, null=True)
-
+    service_type = models.CharField(max_length=255, default=None, blank=True, null=True)
 
 class t_ec_renewal_t1(models.Model):
     record_id = models.AutoField(primary_key=True)
