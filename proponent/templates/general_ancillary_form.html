@@ -21,7 +21,7 @@
                                 <form method="post" id="general_application_form">
                                     {% csrf_token %}
                                     <input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">
-                                    <input type="text" class="form-control" value="Ancillary" name="service_type" style="display:none;">
+                                    <input type="text" class="form-control" value="Ancillary" name="service_type" id="service_type" style="display:none;">
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         Applicant Details
                                     </div>
@@ -143,6 +143,7 @@
                                             <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
+                                    {% endif %}
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">

@@ -517,7 +517,7 @@ def general_ancillary_form(request):
     raw_materials = t_ec_industries_t5_raw_materials.objects.filter(service_type="Ancillary")
     ancillary_road = t_ec_industries_t6_ancillary_road.objects.filter(service_type="Ancillary")
     power_line = t_ec_industries_t7_ancillary_power_line.objects.filter(service_type="Ancillary")
-    dzongkhag = t_dzongkhag_master.objects.filter(service_type="Ancillary")
+    dzongkhag = t_dzongkhag_master.objects.filter()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     return render(request, 'general_ancillary_form.html',{'partner_details':partner_details,'machine_equipment':machine_equipment,'raw_materials':raw_materials,
