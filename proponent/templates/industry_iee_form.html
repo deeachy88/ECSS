@@ -2187,10 +2187,10 @@
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Name/Location Type</label>
-                    <input type="text" name="name_location" class="form-control" id="name_location">
+                    <label class="form-label fw-bold">Installed Capacity</label>
+                    <input type="text" name="quantity_annum" class="form-control" id="quantity_annum">
                 </div>
-                <div class="alert alert-danger" id="name_locationErrorMsg" style="display:none"></div>
+                <div class="alert alert-danger" id="quantity_annumErrorMsg" style="display:none"></div>
             </div>
         </div>
         <div class="row">
@@ -2246,10 +2246,10 @@
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Name/Location Type</label>
-                    <input type="text" name="edit_name_location" class="form-control" id="edit_name_location">
+                    <label class="form-label fw-bold">Installed Capacity</label>
+                    <input type="text" name="edit_quantity_annum" class="form-control" id="edit_quantity_annum">
                 </div>
-                <div class="alert alert-danger" id="edit_name_locationErrorMsg" style="display:none"></div>
+                <div class="alert alert-danger" id="edit_quantity_annumErrorMsg" style="display:none"></div>
             </div>
         </div>
         <div class="row">
@@ -3294,7 +3294,7 @@
         {
             let application_no = $('#application_no').val();
             let product_name = $('#product_name').val();
-            let name_location = $('#name_location').val();
+            let quantity_annum = $('#quantity_annum').val();
             let storage_method = $('#storage_method').val();
     
             if(product_name == "")
@@ -3304,12 +3304,12 @@
                 $('#product_nameErrorMsg').delay(2000).fadeOut('slow');
                 $('#product_name').focus();
             }
-            else if(name_location == "")
+            else if(quantity_annum == "")
             {
-                $('#name_locationErrorMsg').html("Enter Name/Location Type");
-                $('#name_locationErrorMsg').show();
-                $('#name_locationErrorMsg').delay(2000).fadeOut('slow');
-                $('#name_location').focus();
+                $('#quantity_annumErrorMsg').html("Enter Installed Capacity");
+                $('#quantity_annumErrorMsg').show();
+                $('#quantity_annumErrorMsg').delay(2000).fadeOut('slow');
+                $('#quantity_annum').focus();
             }
             else if(storage_method == "")
             {
@@ -3324,7 +3324,7 @@
                 ({
                     type : "POST",
                     url : "{% url 'add_final_product_details' %}",
-                    data : {'application_no':application_no,'product_name':product_name,'name_location':name_location,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    data : {'application_no':application_no,'product_name':product_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(responseText)
                     {
                         $('#final_products_SuccessMsg').html("Add Successful");
@@ -3345,12 +3345,12 @@
             }
         }
     
-        function edit_produce_populate(record_id, application_no, product_name, name_location, storage_method)
+        function edit_produce_populate(record_id, application_no, product_name, quantity_annum, storage_method)
         {
             $('#edit_final_products_record_id').val(record_id)
             $('#edit_final_products_app_no').val(application_no)
             $('#edit_product_name').val(product_name);
-            $('#edit_name_location').val(name_location);
+            $('#edit_quantity_annum').val(quantity_annum);
             $('#edit_storage_method').val(storage_method);
             $('#edit_final_products_modal').modal('show');
         }
@@ -3360,7 +3360,7 @@
             let record_id = $('#edit_final_products_record_id').val();
             let application_no = $('#edit_final_products_app_no').val();
             let product_name = $('#edit_product_name').val();
-            let name_location = $('#edit_name_location').val();
+            let quantity_annum = $('#edit_quantity_annum').val();
             let storage_method = $('#edit_storage_method').val();;
     
             if(product_name == "")
@@ -3370,12 +3370,12 @@
                 $('#edit_product_nameErrorMsg').delay(2000).fadeOut('slow');
                 $('#edit_product_name').focus();
             }
-            else if(name_location == "")
+            else if(quantity_annum == "")
             {
-                $('#edit_name_locationErrorMsg').html("Enter Name/Location Type");
-                $('#edit_name_locationErrorMsg').show();
-                $('#edit_name_locationErrorMsg').delay(2000).fadeOut('slow');
-                $('#edit_name_location').focus();
+                $('#edit_quantity_annumErrorMsg').html("Enter Installed Capacity");
+                $('#edit_quantity_annumErrorMsg').show();
+                $('#edit_quantity_annumErrorMsg').delay(2000).fadeOut('slow');
+                $('#edit_quantity_annum').focus();
             }
             else if(storage_method == "")
             {
@@ -3390,7 +3390,7 @@
                 ({
                     type : "POST",
                     url : "{% url 'update_final_product_details' %}",
-                    data : {'application_no':application_no,'record_id':record_id, 'product_name':product_name,'name_location':name_location,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    data : {'application_no':application_no,'record_id':record_id, 'product_name':product_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(responseText)
                     {
                         $('#edit_final_products_SuccessMsg').html("Update Successful");
