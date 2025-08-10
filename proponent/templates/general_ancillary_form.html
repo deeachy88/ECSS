@@ -82,19 +82,27 @@
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Select One</label>
                                                 <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)">
-                                                        <label class="form-check-label" for="customRadio3">Dzongkhag</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)">
-                                                        <label class="form-check-label" for="customRadio4">Thromde</label>
-                                                    </div>
+                                                {% if request.session.ca_auth == "THROMDE" %}
+                                                <!-- Show only Thromde radio button -->
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
+                                                        onclick="check_dzong_throm(this.value)" checked>
+                                                    <label class="form-check-label">Thromde</label>
                                                 </div>
+                                                {% else %}
+                                                <!-- Show only Dzongkhag radio button -->
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
+                                                        onclick="check_dzong_throm(this.value)" checked>
+                                                    <label class="form-check-label">Dzongkhag</label>
+                                                </div>
+                                                {% endif %}
+                                            </div>
                                             </div>
                                             <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6 thromde" style="display:none;">
+                                        {% if request.session.ca_auth == "THROMDE" %}
+                                        <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Thromde</label>
                                                 <select class="form-select" name="thromde_id"  id="thromde_id">
@@ -106,8 +114,10 @@
                                             </div>
                                             <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
+                                        {% endif %}
                                     </div>
-                                    <div class="row dzongkhag" style="display:none;">
+                                    {% if request.session.ca_auth != "THROMDE" %}
+                                    <div class="row dzongkhag">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Dzongkhag</label>
@@ -131,20 +141,6 @@
                                                 </select>
                                             </div>
                                             <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6 dzongkhag" style="display:none;">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
-                                                    <option value="">--SELECT VILLAGE--</option>
-                                                    {% for village in village %}
-                                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -2926,9 +2922,12 @@
                     }, 2000);
                 } else {
                     $('#water_requirement_application_errorMsg')
-                    .html("Please Check And Submit Again")
-                    .attr('aria-live', 'assertive')
-                    .attr('aria-atomic', 'true')
+                    .text("Error: " + (data.error || "Please check your input"))
+                    .removeAttr('tabindex')  // Remove focus blocker
+                    .attr({
+                        'aria-live': 'assertive',
+                        'aria-atomic': 'true'
+                    })
                     .show()
                     .focus();
                     
@@ -3047,11 +3046,14 @@
                         }, 2000);
                     } else {
                         $('#anc_approach_road_errorMsg')
-                            .html("Please Check And Submit Again")
-                            .attr('aria-live', 'assertive')  // More urgent for errors
-                            .attr('aria-atomic', 'true')
-                            .show()
-                            .focus();  // Set focus here
+                        .text("Error: " + (data.error || "Please check your input"))
+                        .removeAttr('tabindex')  // Remove focus blocker
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
 
                         setTimeout(function() {
                             $('#anc_approach_road_errorMsg').delay(2000).fadeOut('slow');
@@ -3145,12 +3147,14 @@
                     } else {
                         // Error case
                         $('#anc_power_line_errorMsg')
-                            .html('Please Check And Submit Again')
-                            .attr('aria-live', 'assertive')  // More urgent for errors
-                            .attr('aria-atomic', 'true')
-                            .removeAttr('tabindex')          // Remove tabindex="-1"
-                            .show()
-                            .focus();  // Force focus
+                        .text("Error: " + (data.error || "Please check your input"))
+                        .removeAttr('tabindex')  // Remove focus blocker
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
 
                         setTimeout(() => {
                             $('#anc_power_line_errorMsg').delay(2000).fadeOut('slow');
@@ -3413,16 +3417,15 @@
                             $("#collapseEight").removeClass("show");
                         }, 2000);
                     } else {
-                        // Error case with focus management
                         $('#solid_waste_errorMsg')
-                            .html('Please Check And Submit Again')
-                            .removeAttr('tabindex')  // Remove focus blocker
-                            .attr({
-                                'aria-live': 'assertive',  // More urgent for errors
-                                'aria-atomic': 'true'
-                            })
-                            .show()
-                            .focus();  // Immediately focus after showing
+                        .text("Error: " + (data.error || "Please check your input"))
+                        .removeAttr('tabindex')  // Remove focus blocker
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
 
                         setTimeout(() => {
                             $('#solid_waste_errorMsg').delay(2000).fadeOut('slow');
@@ -3540,18 +3543,15 @@
                                     $("#collapseTwelve").removeClass("show");
                                 }, 2000);
                             } else {
-                                // Error case with focus management
                                 $('#noise_level_errorMsg')
-                                    .html('<i class="uil-exclamation-octagon me-1 h4 align-middle"></i> Please Check And Submit Again')
-                                    .removeAttr('tabindex')  // Remove focus blocker
-                                    .attr({
-                                        'aria-live': 'assertive',
-                                        'aria-atomic': 'true',
-                                        'role': 'alert'
-                                    })
-                                    .show()
-                                    .focus();  // Focus immediately after showing
-
+                                .text("Error: " + (data.error || "Please check your input"))
+                                .removeAttr('tabindex')  // Remove focus blocker
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
                                 setTimeout(() => {
                                     $('#noise_level_errorMsg').delay(2000).fadeOut('slow');
                                 }, 2000);
@@ -3885,15 +3885,14 @@
                             } else {
                                 // Error case with focus management
                                 $('#other_impact_errorMsg')
-                                    .html('Please Check And Submit Again')
-                                    .removeAttr('tabindex')  // Remove focus blocker
-                                    .attr({
-                                        'aria-live': 'assertive',
-                                        'aria-atomic': 'true'
-                                    })
-                                    .show()
-                                    .focus();  // Set focus immediately after showing
-
+                                .text("Error: " + (data.error || "Please check your input"))
+                                .removeAttr('tabindex')  // Remove focus blocker
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
                                 setTimeout(() => {
                                     $('#other_impact_errorMsg').delay(2000).fadeOut('slow');
                                 }, 2000);

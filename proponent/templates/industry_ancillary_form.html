@@ -113,27 +113,37 @@
                                             <div id="industry_classificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
+                                    <br>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                                        Project Location and Area
                                     </div>
+                                    <br>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Select One</label>
                                                 <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)">
-                                                        <label class="form-check-label" for="customRadio3">Dzongkhag</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)">
-                                                        <label class="form-check-label" for="customRadio4">Thromde</label>
-                                                    </div>
+                                                {% if request.session.ca_auth == "THROMDE" %}
+                                                <!-- Show only Thromde radio button -->
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
+                                                        onclick="check_dzong_throm(this.value)" checked>
+                                                    <label class="form-check-label">Thromde</label>
                                                 </div>
+                                                {% else %}
+                                                <!-- Show only Dzongkhag radio button -->
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
+                                                        onclick="check_dzong_throm(this.value)" checked>
+                                                    <label class="form-check-label">Dzongkhag</label>
+                                                </div>
+                                                {% endif %}
+                                            </div>
                                             </div>
                                             <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6 thromde" style="display:none;">
+                                        {% if request.session.ca_auth == "THROMDE" %}
+                                        <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Thromde</label>
                                                 <select class="form-select" name="thromde_id"  id="thromde_id">
@@ -145,8 +155,10 @@
                                             </div>
                                             <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
+                                        {% endif %}
                                     </div>
-                                    <div class="row dzongkhag" style="display:none;">
+                                    {% if request.session.ca_auth != "THROMDE" %}
+                                    <div class="row dzongkhag">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Dzongkhag</label>
