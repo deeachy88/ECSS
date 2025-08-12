@@ -83,66 +83,145 @@
                                                 <label class="form-label fw-bold">Select One</label>
                                                 <div class="mt-2">
                                                 {% if request.session.ca_auth == "THROMDE" %}
-                                                <!-- Show only Thromde radio button -->
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
-                                                        onclick="check_dzong_throm(this.value)" checked>
-                                                    <label class="form-check-label">Thromde</label>
-                                                </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" checked>
+                                                        <label class="form-check-label">Thromde</label>
+                                                    </div>
+                                                {% elif request.session.ca_auth =="DEC" %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" checked>
+                                                        <label class="form-check-label">Dzongkhag</label>
+                                                    </div>
                                                 {% else %}
-                                                <!-- Show only Dzongkhag radio button -->
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
-                                                        onclick="check_dzong_throm(this.value)" checked>
-                                                    <label class="form-check-label">Dzongkhag</label>
-                                                </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
+                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                        <label class="form-check-label">Thromde</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
+                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                        <label class="form-check-label">Dzongkhag</label>
+                                                    </div>
                                                 {% endif %}
-                                            </div>
+                                                </div>
                                             </div>
                                             <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        {% if request.session.ca_auth == "THROMDE" %}
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Thromde</label>
-                                                <select class="form-select" name="thromde_id"  id="thromde_id">
-                                                    <option value="">--SELECT THROMDE--</option>
-                                                    {% for thromde in thromde %}
-                                                        <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
-                                                    {% endfor %} 
-                                                </select>
-                                            </div>
-                                            <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        {% endif %}
                                     </div>
-                                    {% if request.session.ca_auth != "THROMDE" %}
-                                    <div class="row dzongkhag">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Dzongkhag</label>
-                                                <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                                    <option value="">--SELECT DZONGKHAG--</option>
-                                                    {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
-                                                    {% endfor %} 
-                                                </select>
+                                    {% if request.session.ca_auth == "THROMDE" %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select" name="thromde_id"  id="thromde_id">
+                                                        <option value="">--SELECT THROMDE--</option>
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Gewog</label>
-                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                                    <option value="">--SELECT GEWOG--</option>
-                                                    {% for gewog in gewog %}
-                                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                    {% endif %}
+                                    {% if request.session.ca_auth == "DEC" %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                                        <option value="">--SELECT DZONGKHAG--</option>
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                        <option value="">--SELECT GEWOG--</option>
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
                                         </div>
-                                    </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                        <option value="">--SELECT VILLAGE--</option>
+                                                        {% for village in village %}
+                                                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row thromde">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select" name="thromde_id"  id="thromde_id">
+                                                        <option value="">--SELECT THROMDE--</option>
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row dzongkhag">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                                        <option value="">--SELECT DZONGKHAG--</option>
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                        <option value="">--SELECT GEWOG--</option>
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row dzongkhag">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                        <option value="">--SELECT VILLAGE--</option>
+                                                        {% for village in village %}
+                                                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">

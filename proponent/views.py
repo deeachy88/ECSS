@@ -566,12 +566,12 @@ def add_machine_tool_details(request):
     machine_tool_installed_capacity = request.POST.get('machine_tool_installed_capacity')
     service_type = request.POST.get('service_type')
 
-    t_ec_industries_t3_machine_equipment.objects.create(application_no=application_no,machine_name=machine_tool,
+    t_ec_industries_t3_machine_equipment.objects.create(application_no=application_no,machine_name=machine_tool,service_type=service_type,
                                                         qty=machine_tool_qty,installed_capacity=machine_tool_installed_capacity)
     if service_type == 'Ancillary':
         machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
     else:
-        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
+        machine_equipment = t_ec_industries_t3_machine_equipment.objects.filter(application_no=application_no).order_by('record_id')
     return render(request, 'details_machine_equipment_tool.html',{'machine_equipment':machine_equipment})
 
 def add_project_product(request):
@@ -923,7 +923,7 @@ def save_terrain_baseline_details(request):
         bl_others_distance = request.POST.get('bl_others_distance')
         technology_used = request.POST.get('technology_used')
         technology_total_capacity = request.POST.get('technology_total_capacity')
-        terrain_baseline_service_type = request.POST.get('technology_total_capacity')
+        terrain_baseline_service_type = request.POST.get('terrain_baseline_service_type')
 
         # Create base update dictionary with fields that are always included
         update_fields = {
@@ -982,7 +982,10 @@ def save_terrain_baseline_details(request):
             })
 
         # Perform the update
-        baseline_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        if terrain_baseline_service_type == "Ancillary":
+            baseline_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type=terrain_baseline_service_type)
+        else:
+            baseline_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         baseline_details.update(**update_fields)
 
         data['message'] = "success"
@@ -1022,8 +1025,12 @@ def save_water_requirement_details(request):
         water_downstream_users = request.POST.get('#water_downstream_users')
         water_flow_rate_lean = request.POST.get('#water_flow_rate_lean')
         water_source_distance = request.POST.get('#water_source_distance')
+        service_type = request.POST.get('#general_water_service_type')
 
-        water_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        if service_type == 'Ancillary':
+            water_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type=service_type)
+        else:
+            water_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         water_details.update(water_required=water_required,
                              water_provide_by_iestate=water_provided_by,
                              water_raw_material_source=water_raw_material_source,
@@ -1140,6 +1147,7 @@ def save_anc_other_details(request):
         anc_other_asphalt_plant = request.POST.get('anc_other_asphalt_plant')
         anc_other_ropeway = request.POST.get('anc_other_ropeway')
         anc_other_required = request.POST.get('anc_other_required')
+        
 
         anc_other_required = anc_other_required if anc_other_required else None
         anc_other_crushing_unit = anc_other_crushing_unit if anc_other_crushing_unit else None
@@ -1204,7 +1212,10 @@ def save_solid_waste_details(request):
         en_air_pollution_control_pcd_dimension = request.POST.get('en_air_pollution_control_pcd_dimension')
         service_type = request.POST.get('solid_waste_service_type')
 
-        anc_other_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type=service_type)
+        if service_type == 'Ancillary':
+            anc_other_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type=service_type)
+        else:
+            anc_other_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         anc_other_details.update(en_impact_allocated_budget=en_impact_allocated_budget,
                                  en_impact_hazardous_waste_list=en_impact_hazardous_waste_list,
                                  en_impact_hazardous_waste_source=en_impact_hazardous_waste_source,
@@ -1380,7 +1391,11 @@ def save_effluent_details(request):
         waste_water_treatment_plant_name_location = request.POST.get('waste_water_treatment_plant_name_location')
         effluent_service_type = request.POST.get('effluent_service_type')
 
-        effluent_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type=effluent_service_type)
+        if effluent_service_type == 'Ancillary':
+            effluent_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type=effluent_service_type)
+        else:
+            effluent_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+
         effluent_details.update(en_waste_water_generate=en_waste_water_generate,
                                 waste_water_nh3n_source=waste_water_nh3n_source,
                                 waste_water_nh3n_discharge=waste_water_nh3n_discharge,
@@ -1546,8 +1561,11 @@ def save_industry_emission_details(request):
         en_air_pollution_control_pcd_dimension = request.POST.get('en_air_pollution_control_pcd_dimension')
         industry_emission_service_type = request.POST.get('industry_emission_service_type')
 
+        if industry_emission_service_type == 'Ancillary':
+            industry_emission_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type=industry_emission_service_type)
+        else:
+            industry_emission_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
 
-        industry_emission_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type=industry_emission_service_type)
         industry_emission_details.update(en_industry_emission_generate=en_industry_emission_generate,
                                          en_spm_emission_expected=en_spm_emission_expected,
                                          en_so2_emission_expected=en_so2_emission_expected,
@@ -1585,8 +1603,12 @@ def save_noise_level_details(request):
         en_noise_sen_area_mgt_plan = request.POST.get('en_noise_sen_area_mgt_plan')
         service_type = request.POST.get('noise_level_service_type')
 
+        if service_type == 'Ancillary':
+            noise_level_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type=service_type)
+        else:
+            noise_level_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
 
-        noise_level_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type=service_type)
+        
         noise_level_details.update(en_noise_ind_area_day=en_noise_ind_area_day,
                                    en_noise_ind_area_night=en_noise_ind_area_night,
                                    en_noise_ind_area_mgt_plan=en_noise_ind_area_mgt_plan,
@@ -1645,8 +1667,12 @@ def save_other_impact_details(request):
         en_other_impact_other_qty = request.POST.get('en_other_impact_other_qty')
         en_other_impact_other_mgt_plan = request.POST.get('en_other_impact_other_mgt_plan')
         service_type = request.POST.get('other_impact_service_type')
+        
+        if service_type == 'Ancillary':
+            other_impact_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type=service_type)
+        else:
+            other_impact_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
 
-        other_impact_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type=service_type)
         other_impact_details.update(en_other_impact_odour_source=en_other_impact_odour_source,
                                     en_other_impact_odour_qty=en_other_impact_odour_qty,
                                     en_other_impact_odour_mgt_plan=en_other_impact_odour_mgt_plan,
@@ -3075,8 +3101,10 @@ def save_general_water_requirement(request):
         service_type = request.POST.get('general_water_service_type')
 
         # Update water details
-        water_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type=service_type)
-
+        if service_type == 'Ancillary':
+            water_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type=service_type)
+        else:
+            water_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         if not water_details.exists():
             raise ValueError(f"Application {application_no} not found")
 
@@ -3313,7 +3341,7 @@ def handle_main_submission(request, data, application_no, main_application, anci
     total_amount = calculate_fees(service_value, application_no)
     
     # Update application history
-    t_application_history.objects.filter(application_no=application_no).update(
+    t_application_history.objects.filter(application_no=application_no,service_type='Main Activity').update(
         remarks='Your Application Submitted',
         action_date=timezone.now()
     )
@@ -4042,6 +4070,7 @@ def save_general_application(request):
         tor_application_no = request.POST.get('tor_application_no')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         service_type = request.POST.get('service_type')
+        print(service_type)
         application_type = "New"
 
         # 2. Handle location data
@@ -4180,7 +4209,8 @@ def save_general_application(request):
                     'assigned_role_name': 'Verifier',
                     'service_id': request.session.get('service_id'),
                     'ca_authority': ca_auth,
-                    'application_source': 'ECSS'
+                    'application_source': 'ECSS',
+                    'service_type':service_type
                 }
             )
 

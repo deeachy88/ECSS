@@ -124,80 +124,145 @@
                                                 <label class="form-label fw-bold">Select One</label>
                                                 <div class="mt-2">
                                                 {% if request.session.ca_auth == "THROMDE" %}
-                                                <!-- Show only Thromde radio button -->
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
-                                                        onclick="check_dzong_throm(this.value)" checked>
-                                                    <label class="form-check-label">Thromde</label>
-                                                </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" checked>
+                                                        <label class="form-check-label">Thromde</label>
+                                                    </div>
+                                                {% elif request.session.ca_auth =="DEC" %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" checked>
+                                                        <label class="form-check-label">Dzongkhag</label>
+                                                    </div>
                                                 {% else %}
-                                                <!-- Show only Dzongkhag radio button -->
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
-                                                        onclick="check_dzong_throm(this.value)" checked>
-                                                    <label class="form-check-label">Dzongkhag</label>
-                                                </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
+                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                        <label class="form-check-label">Thromde</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
+                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                        <label class="form-check-label">Dzongkhag</label>
+                                                    </div>
                                                 {% endif %}
-                                            </div>
+                                                </div>
                                             </div>
                                             <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        {% if request.session.ca_auth == "THROMDE" %}
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Thromde</label>
-                                                <select class="form-select" name="thromde_id"  id="thromde_id">
-                                                    <option value="">--SELECT THROMDE--</option>
-                                                    {% for thromde in thromde %}
-                                                        <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
-                                                    {% endfor %} 
-                                                </select>
-                                            </div>
-                                            <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        {% endif %}
                                     </div>
-                                    {% if request.session.ca_auth != "THROMDE" %}
-                                    <div class="row dzongkhag">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Dzongkhag</label>
-                                                <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                                    <option value="">--SELECT DZONGKHAG--</option>
-                                                    {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
-                                                    {% endfor %} 
-                                                </select>
+                                    {% if request.session.ca_auth == "THROMDE" %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select" name="thromde_id"  id="thromde_id">
+                                                        <option value="">--SELECT THROMDE--</option>
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Gewog</label>
-                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                                    <option value="">--SELECT GEWOG--</option>
-                                                    {% for gewog in gewog %}
-                                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                    {% endif %}
+                                    {% if request.session.ca_auth == "DEC" %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                                        <option value="">--SELECT DZONGKHAG--</option>
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6 dzongkhag" style="display:none;">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
-                                                    <option value="">--SELECT VILLAGE--</option>
-                                                    {% for village in village %}
-                                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                        <option value="">--SELECT GEWOG--</option>
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                    </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                        <option value="">--SELECT VILLAGE--</option>
+                                                        {% for village in village %}
+                                                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row thromde">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select" name="thromde_id"  id="thromde_id">
+                                                        <option value="">--SELECT THROMDE--</option>
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row dzongkhag">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                                        <option value="">--SELECT DZONGKHAG--</option>
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                        <option value="">--SELECT GEWOG--</option>
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row dzongkhag">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                        <option value="">--SELECT VILLAGE--</option>
+                                                        {% for village in village %}
+                                                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -5874,113 +5939,113 @@
     }
 
     function save_industry_emission_details()
-    {
-        let en_industry_emission_generate = $("input[name=en_industry_emission_generate]:checked").length;
-        let en_industry_emission_generate_value = $("input[name=en_industry_emission_generate]:checked").val();
-        let en_spm_emission_expected = $('#en_spm_emission_expected').val();
-        let en_so2_emission_expected = $('#en_so2_emission_expected').val();
-        let en_nox_emission_expected = $('#en_nox_emission_expected').val();
-        let en_co_emission_expected = $('#en_co_emission_expected').val();
-        let en_fluoride_emission_expected = $('#en_fluoride_emission_expected').val();
-        let en_air_pollution_control_device_capacity = $('#en_air_pollution_control_device_capacity').val();
-        let en_air_pollution_control_pcd_dimension = $('#en_air_pollution_control_pcd_dimension').val();
-
-        if(en_industry_emission_generate < 1)
         {
-            $('#en_industry_emission_generateErrorMsg').html("Please Select One.");
-            $('#en_industry_emission_generateErrorMsg').show();
-            $('#en_industry_emission_generateErrorMsg').delay(2000).fadeOut('slow');
-            $('#en_industry_emission_generate').focus();
-        }
-        else if(en_industry_emission_generate_value == 'Yes' && en_so2_emission_expected == "")
-        {
-            $('#en_spm_emission_expectedErrorMsg').html("Enter SPM.");
-            $('#en_spm_emission_expectedErrorMsg').show();
-            $('#en_spm_emission_expectedErrorMsg').delay(2000).fadeOut('slow');
-            $('#en_spm_emission_expected').focus();
-        }
-        else if(en_industry_emission_generate_value == 'Yes' && en_spm_emission_expected == "")
-        {
-            $('#en_spm_emission_expectedErrorMsg').html("Enter SO2.");
-            $('#en_spm_emission_expectedErrorMsg').show();
-            $('#en_spm_emission_expectedErrorMsg').delay(2000).fadeOut('slow');
-            $('#en_spm_emission_expected').focus();
-        }
-        else if(en_industry_emission_generate_value == 'Yes' && en_nox_emission_expected == "")
-        {
-            $('#en_nox_emission_expectedErrorMsg').html("Enter NOx.");
-            $('#en_nox_emission_expectedErrorMsg').show();
-            $('#en_nox_emission_expectedErrorMsg').delay(2000).fadeOut('slow');
-            $('#en_nox_emission_expected').focus();
-        }
-        else if(en_industry_emission_generate_value == 'Yes' && en_co_emission_expected == "")
-        {
-            $('#en_co_emission_expectedErrorMsg').html("Enter CO.");
-            $('#en_co_emission_expectedErrorMsg').show();
-            $('#en_co_emission_expectedErrorMsg').delay(2000).fadeOut('slow');
-            $('#en_co_emission_expected').focus();
-        }
-        else if(en_industry_emission_generate_value == 'Yes' && en_fluoride_emission_expected == "")
-        {
-            $('#en_fluoride_emission_expectedErrorMsg').html("Enter Total Fluoride.");
-            $('#en_fluoride_emission_expectedErrorMsg').show();
-            $('#en_fluoride_emission_expectedErrorMsg').delay(2000).fadeOut('slow');
-            $('#en_fluoride_emission_expected').focus();
-        }
-        else if(en_air_pollution_control_device_capacity == "")
-        {
-            $('#en_air_pollution_control_device_capacityErrorMsg').html("Enter Capacity.");
-            $('#en_air_pollution_control_device_capacityErrorMsg').show();
-            $('#en_air_pollution_control_device_capacityErrorMsg').delay(2000).fadeOut('slow');
-            $('#en_air_pollution_control_device_capacity').focus();
-        }
-        else if(en_air_pollution_control_pcd_dimension == "")
-        {
-            $('#en_air_pollution_control_pcd_dimensionErrorMsg').html("Enter Components and dimensions of the PCD.");
-            $('#en_air_pollution_control_pcd_dimensionErrorMsg').show();
-            $('#en_air_pollution_control_pcd_dimensionErrorMsg').delay(2000).fadeOut('slow');
-            $('#en_air_pollution_control_pcd_dimension').focus();
-        }
-        else
-        {
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'save_industry_emission_details' %}",
-                data : $('#industry_emission_form').serialize(),
-                success : function(data)
-                {
-                    if(data.message == 'success')
+            let en_industry_emission_generate = $("input[name=en_industry_emission_generate]:checked").length;
+            let en_industry_emission_generate_value = $("input[name=en_industry_emission_generate]:checked").val();
+            let en_spm_emission_expected = $('#en_spm_emission_expected').val();
+            let en_so2_emission_expected = $('#en_so2_emission_expected').val();
+            let en_nox_emission_expected = $('#en_nox_emission_expected').val();
+            let en_co_emission_expected = $('#en_co_emission_expected').val();
+            let en_fluoride_emission_expected = $('#en_fluoride_emission_expected').val();
+            let en_air_pollution_control_device_capacity = $('#en_air_pollution_control_device_capacity').val();
+            let en_air_pollution_control_pcd_dimension = $('#en_air_pollution_control_pcd_dimension').val();
+    
+            if(en_industry_emission_generate < 1)
+            {
+                $('#en_industry_emission_generateErrorMsg').html("Please Select One.");
+                $('#en_industry_emission_generateErrorMsg').show();
+                $('#en_industry_emission_generateErrorMsg').delay(2000).fadeOut('slow');
+                $('#en_industry_emission_generate').focus();
+            }
+            else if(en_industry_emission_generate_value == 'Yes' && en_so2_emission_expected == "")
+            {
+                $('#en_spm_emission_expectedErrorMsg').html("Enter SPM.");
+                $('#en_spm_emission_expectedErrorMsg').show();
+                $('#en_spm_emission_expectedErrorMsg').delay(2000).fadeOut('slow');
+                $('#en_spm_emission_expected').focus();
+            }
+            else if(en_industry_emission_generate_value == 'Yes' && en_spm_emission_expected == "")
+            {
+                $('#en_spm_emission_expectedErrorMsg').html("Enter SO2.");
+                $('#en_spm_emission_expectedErrorMsg').show();
+                $('#en_spm_emission_expectedErrorMsg').delay(2000).fadeOut('slow');
+                $('#en_spm_emission_expected').focus();
+            }
+            else if(en_industry_emission_generate_value == 'Yes' && en_nox_emission_expected == "")
+            {
+                $('#en_nox_emission_expectedErrorMsg').html("Enter NOx.");
+                $('#en_nox_emission_expectedErrorMsg').show();
+                $('#en_nox_emission_expectedErrorMsg').delay(2000).fadeOut('slow');
+                $('#en_nox_emission_expected').focus();
+            }
+            else if(en_industry_emission_generate_value == 'Yes' && en_co_emission_expected == "")
+            {
+                $('#en_co_emission_expectedErrorMsg').html("Enter CO.");
+                $('#en_co_emission_expectedErrorMsg').show();
+                $('#en_co_emission_expectedErrorMsg').delay(2000).fadeOut('slow');
+                $('#en_co_emission_expected').focus();
+            }
+            else if(en_industry_emission_generate_value == 'Yes' && en_fluoride_emission_expected == "")
+            {
+                $('#en_fluoride_emission_expectedErrorMsg').html("Enter Total Fluoride.");
+                $('#en_fluoride_emission_expectedErrorMsg').show();
+                $('#en_fluoride_emission_expectedErrorMsg').delay(2000).fadeOut('slow');
+                $('#en_fluoride_emission_expected').focus();
+            }
+            else if(en_industry_emission_generate_value == 'Yes' && en_air_pollution_control_device_capacity == "")
+            {
+                $('#en_air_pollution_control_device_capacityErrorMsg').html("Enter Capacity.");
+                $('#en_air_pollution_control_device_capacityErrorMsg').show();
+                $('#en_air_pollution_control_device_capacityErrorMsg').delay(2000).fadeOut('slow');
+                $('#en_air_pollution_control_device_capacity').focus();
+            }
+            else if(en_industry_emission_generate_value == 'Yes' && en_air_pollution_control_pcd_dimension == "")
+            {
+                $('#en_air_pollution_control_pcd_dimensionErrorMsg').html("Enter Components and dimensions of the PCD.");
+                $('#en_air_pollution_control_pcd_dimensionErrorMsg').show();
+                $('#en_air_pollution_control_pcd_dimensionErrorMsg').delay(2000).fadeOut('slow');
+                $('#en_air_pollution_control_pcd_dimension').focus();
+            }
+            else
+            {
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'save_industry_emission_details' %}",
+                    data : $('#industry_emission_form').serialize(),
+                    success : function(data)
                     {
-                        $('#industry_emission_successMsg').html("Saved Successfully");
-                        $('#industry_emission_successMsg').show();
-                        $('#industry_emission_successMsg').focus();
-                        setTimeout(function()
+                        if(data.message == 'success')
                         {
-                            $('#industry_emission_successMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
-                            $("#headingTwelveBtn").removeAttr("disabled");
-                            $("#collapseTwelve").addClass("show");
-                            $("#collapseEleven").removeClass("show");
-                        }, 2000);
-                    }
-                    else
-                    {
-                        var errorMsg = data.error;
+                            $('#industry_emission_successMsg').html("Saved Successfully");
+                            $('#industry_emission_successMsg').show();
+                            $('#industry_emission_successMsg').focus();
+                            setTimeout(function()
+                            {
+                                $('#industry_emission_successMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+                            setTimeout(function() {
+                                $("#headingTwelveBtn").removeAttr("disabled");
+                                $("#collapseTwelve").addClass("show");
+                                $("#collapseEleven").removeClass("show");
+                            }, 2000);
+                        }
+                        else
+                        {
+                            var errorMsg = data.error;
         
-                        $('#industry_emission_errorMsg').html(`Application Error: ${data.error}`);
-                        $('#industry_emission_errorMsg').show();
-                        $('#industry_emission_errorMsg').focus();
-                        setTimeout(function()
-                        {
-                            $('#industry_emission_errorMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
+                            $('#industry_emission_errorMsg').html(`Application Error: ${data.error}`);
+                            $('#industry_emission_errorMsg').show();
+                            $('#industry_emission_errorMsg').focus();
+                            setTimeout(function()
+                            {
+                                $('#industry_emission_errorMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
-    }
 
     function save_noise_level_details()
     {
