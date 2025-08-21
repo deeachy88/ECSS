@@ -10,7 +10,7 @@ from ecs_admin.models import t_competant_authority_master, t_user_master, t_secu
     t_file_attachment, t_menu_master, t_agency_master, t_proponent_type_master, t_dzongkhag_master, t_village_master,\
     t_gewog_master,t_submenu_master, t_other_details, t_about_us, t_notification_details, t_homepage_master
 from ecs_admin.forms import UserForm, RoleForm
-from proponent.models import t_ec_industries_t1_general, t_payment_details
+from proponent.models import t_ec_industries_t1_general, t_ec_renewal_t1, t_payment_details
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password, check_password
 import string
@@ -173,11 +173,18 @@ def dashboard(request):
         role = request.session['role']
         ca_authority = request.session['ca_authority']
         expiry_date_threshold = datetime.now().date() + timedelta(days=30)
-        ec_renewal_count = t_ec_industries_t1_general.objects.filter(
-            ca_authority=ca_authority,
-            application_status='A',
-            ec_expiry_date__lt=expiry_date_threshold
-        ).count()
+        
+        non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+            applicant_id=email_id,
+            ec_expiry_date__lt=expiry_date_threshold,
+            service_type="Main Activity"
+        ).exclude(
+            ec_reference_no__in=Subquery(
+                t_ec_renewal_t1.objects.values('ec_reference_no')
+            )
+        )
+
+        ec_renewal_count = non_renewed_applications.count()
         
         if role == 'Verifier':
             v_application_count = t_workflow_dtls.objects.filter(
@@ -190,7 +197,8 @@ def dashboard(request):
             r_application_count = t_workflow_dtls.objects.filter(
                 assigned_role_id='3', 
                 assigned_role_name='Reviewer', 
-                ca_authority=ca_authority
+                ca_authority=ca_authority,
+                service_type='Main Activity'
             ).count()
         elif role == 'Admin':
             client_application_count = t_user_master.objects.filter(
@@ -218,6 +226,22 @@ def dashboard(request):
             service_type='Main Activity',
             action_date__isnull=True
         ).count()
+
+        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+        non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+            applicant_id=email_id,
+            ec_expiry_date__lt=expiry_date_threshold,
+            service_type="Main Activity"
+        ).exclude(
+            ec_reference_no__in=Subquery(
+                t_ec_renewal_t1.objects.values('ec_reference_no')
+            )
+        )
+
+        ec_renewal_count = non_renewed_applications.count()
+
+       
         
         t1_general_subquery = t_ec_industries_t1_general.objects.filter(
             tor_application_no=OuterRef('application_no')
@@ -236,6 +260,7 @@ def dashboard(request):
             'payment_count': payment_count,
             'tor_application_count': tor_application_count,
             'draft_count': draft_count,
+            'ec_renewal_count': ec_renewal_count,
             'ibls_appluication_count':ibls_appluication_count
         })
 

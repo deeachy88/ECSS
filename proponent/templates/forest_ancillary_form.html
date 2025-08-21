@@ -2816,7 +2816,7 @@
         $.ajax({
             type: "POST",
             url: "{% url 'submit_general_application' %}",
-            data: $('#general_submit_form').serialize(),
+            data: $('#forest_submit_form').serialize(),
             dataType: 'json',
             success: function(data) {
                 $("#pageloader").hide();

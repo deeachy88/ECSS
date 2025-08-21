@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, timedelta,datetime
 import uuid
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -21,7 +21,6 @@ from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t12
 from ecs_admin.models import t_fees_schedule, t_role_master, t_security_question_master, t_user_master, t_bsic_code, t_competant_authority_master, t_file_attachment, t_dzongkhag_master, t_gewog_master, t_service_master, t_thromde_master, t_village_master
 # Create your views here.
 from django.db.models import Count, Subquery, OuterRef
-from datetime import datetime
 from django.db.models import Max
 from django.utils import timezone
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
@@ -33,7 +32,6 @@ from django.utils.timezone import now
 from django.db.models import OuterRef, Subquery, Q
 from django.db.models.functions import Now
 from django.shortcuts import render
-from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect
 
@@ -546,6 +544,22 @@ def get_application_no(request, service_code, service_id):
     else:
         application_no= t_ec_industries_t1_general.objects.exclude(service_id=service_id, application_no__contains='TOR').filter(application_no__contains=service_code).aggregate(Max('application_no'))
     last_application_no= application_no['application_no__max']
+    print(last_application_no)
+    if not last_application_no:
+        year=timezone.now().year
+        new_application_no = service_code + "-" + str(year) + "-" + "0001"
+    else:
+        substring = str(last_application_no)[9:13]
+        substring = int(substring) + 1
+        app_num = str(substring).zfill(4)
+        print(app_num)
+        year =  timezone.now().year
+        new_application_no =  service_code + "-" + str(year) + "-" + app_num
+    return new_application_no
+
+def get_ren_application_no(request, service_code, service_id):
+    last_application_no = t_ec_renewal_t1.objects.aggregate(max_app=Max('application_no'))['max_app']
+    print(last_application_no)
     if not last_application_no:
         year=timezone.now().year
         new_application_no = service_code + "-" + str(year) + "-" + "0001"
@@ -3013,7 +3027,14 @@ def ec_renewal(request):
     assigned_user_id = request.session.get('login_id', None)
     applicant_id = request.session.get('email', None)
  
-    application_details = t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id,ec_expiry_date__lt=date.today(), service_type="Main Activity")
+    existing_renewals = t_ec_renewal_t1.objects.values_list('ec_reference_no', flat=True)
+
+    # Filter applications that are expired but not yet renewed
+    application_details = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        ec_expiry_date__lt=date.today(),
+        service_type="Main Activity"
+    ).exclude(ec_reference_no__in=existing_renewals)
     renewal_details = t_ec_renewal_t2.objects.filter(application_status=None)
     service_details = t_service_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
@@ -3040,7 +3061,7 @@ def ec_renewal(request):
 def ec_renewal_details(request):
     ec_reference_no = request.GET.get('ec_reference_no')
     service_code = 'REN'
-    application_no = get_application_no(request, service_code, '10')
+    application_no = get_ren_application_no(request, service_code, '10')
     application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no,service_type="Main Activity")
     ec_data = t_ec_industries_t11_ec_details.objects.filter(ec_reference_no=ec_reference_no,ec_type='Terms')
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -4070,7 +4091,7 @@ def save_general_application(request):
         tor_application_no = request.POST.get('tor_application_no')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         service_type = request.POST.get('service_type')
-        print(service_type)
+        print('An error occurred:', service_type)
         application_type = "New"
 
         # 2. Handle location data
@@ -4119,7 +4140,7 @@ def save_general_application(request):
             'total_area_acre': request.POST.get('total_area_acre'),
 
             # System fields
-            'service_type': service_type,
+            'service_type':service_type,
             'tor_application_no': tor_application_no,
             'applicant_id': request.session.get('email'),
             'colour_code': request.session.get('colour_code'),
@@ -4177,7 +4198,7 @@ def save_general_application(request):
                 elif identifier == 'DR':
                     protected_fields = {
                         'service_type', 'ca_authority', 'applicant_id', 'colour_code',
-                        'service_id', 'broad_activity_code', 'specific_activity_code',
+                        'broad_activity_code', 'specific_activity_code',
                         'category', 'application_source', 'application_status'
                     }
                     update_fields = {k: v for k, v in common_fields.items() 
@@ -6383,6 +6404,7 @@ def get_other_modification_details(request):
 def draft_application_list(request):
     assigned_user_id = request.session.get('login_id', None)
     applicant_id = request.session.get('email', None)
+    print(applicant_id)
     application_details = t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id,application_status='P',service_type='Main Activity',action_date__isnull=True)
     service_details = t_service_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
@@ -6631,11 +6653,6 @@ def submit_renew_application(request):
         remarks = request.POST.get('initiatives_undertaken_remarks')
 
         application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
-        renew_details = t_ec_renewal_t1.objects.filter(ec_reference_no=ec_reference_no)
-        renew_details_one = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)
-
-        renew_details.update(application_status='P',action_date=date.today(),submission_date=date.today())
-        renew_details_one.update(application_status='P',action_date=date.today())
 
         main_application_details = t_payment_details.objects.filter(ref_no=application_no)
 
@@ -6644,7 +6661,7 @@ def submit_renew_application(request):
             cid_no = application_details.cid
             mob_no = application_details.contact_no
             app_name = application_details.applicant_name
-            t_ec_renewal_t1.objects.create(application_no=application_no,ec_reference_no=ec_reference_no,proponent_name=application_details.applicant_name,address=application_details.address,initiatives_undertaken=initiatives_undertaken,remarks=remarks,submission_date=date.today(),application_status='P')
+            t_ec_renewal_t1.objects.create(application_no=application_no,ec_reference_no=ec_reference_no,proponent_name=application_details.applicant_name,address=application_details.address,initiatives_undertaken=initiatives_undertaken,remarks=remarks,submission_date=date.today(),action_date=date.today(),application_status='P')
             t_workflow_dtls.objects.create(application_no=application_no, 
                                             service_id='10',
                                             application_status='P',
@@ -6783,9 +6800,19 @@ def report_list(request):
             assigned_role_id='2', assigned_role_name='Verifier', ca_authority=ca_authority
         ).count()
 
-        ec_renewal_count = t_ec_industries_t1_general.objects.filter(
-            ca_authority=ca_authority, application_status='A', ec_expiry_date__lt=expiry_date_threshold
-        ).count()
+        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+        non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+            applicant_id=login_id,
+            ec_expiry_date__lt=expiry_date_threshold,
+            service_type="Main Activity"
+        ).exclude(
+            ec_reference_no__in=Subquery(
+                t_ec_renewal_t1.objects.values('ec_reference_no')
+            )
+        )
+
+        ec_renewal_count = non_renewed_applications.count()
 
         context.update({
             'report_list': report_list,

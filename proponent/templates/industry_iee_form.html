@@ -137,12 +137,12 @@
                                                 {% else %}
                                                     <div class="form-check form-check-inline">
                                                         <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
-                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                            onclick="check_dzong_throm(this.value)">
                                                         <label class="form-check-label">Thromde</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
                                                         <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
-                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                            onclick="check_dzong_throm(this.value)">
                                                         <label class="form-check-label">Dzongkhag</label>
                                                     </div>
                                                 {% endif %}
@@ -209,7 +209,7 @@
                                             </div>
                                         </div>
                                     {% else %}
-                                        <div class="row thromde">
+                                        <div class="row thromde" style="display: none;">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Thromde</label>
@@ -223,7 +223,7 @@
                                                 <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                         </div>
-                                        <div class="row dzongkhag">
+                                        <div class="row dzongkhag" style="display: none;">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Dzongkhag</label>
@@ -249,7 +249,7 @@
                                                 <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
                                         </div>
-                                        <div class="row dzongkhag">
+                                        <div class="row dzongkhag" style="display: none;">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Village/Chiwog</label>
@@ -4042,7 +4042,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_iee_application' %}",
+                url : "{% url 'save_general_info' %}",
                 data : $('#iee_application_form').serialize(),
                 success : function(data)
                 {
