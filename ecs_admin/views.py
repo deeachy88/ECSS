@@ -175,7 +175,7 @@ def dashboard(request):
         expiry_date_threshold = datetime.now().date() + timedelta(days=30)
         
         non_renewed_applications = t_ec_industries_t1_general.objects.filter(
-            applicant_id=email_id,
+            applicant_id=request.session['email'],
             ec_expiry_date__lt=expiry_date_threshold,
             service_type="Main Activity"
         ).exclude(
