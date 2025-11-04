@@ -588,11 +588,15 @@ def add_raw_materials(request):
     qty = request.POST.get('qty')
     source = request.POST.get('source')
     storage_method = request.POST.get('storage_method')
+    service_type = request.POST.get('service_type')
+    
 
     t_ec_industries_t5_raw_materials.objects.create(application_no= application_no,raw_material=raw_material,
-                                                        qty= qty,source=source,storage_method=storage_method)
-    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no).order_by(
-        'record_id')
+                                                        qty= qty,source=source,storage_method=storage_method,service_type=service_type)
+    if service_type == 'Ancillary':
+        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
+    else:
+        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type__isnull=True).order_by('record_id')
     return render(request, 'raw_materials.html', {'raw_materials': raw_materials})
 
 def update_raw_materials(request):
@@ -602,22 +606,28 @@ def update_raw_materials(request):
     qty = request.POST.get('qty')
     source = request.POST.get('source')
     storage_method = request.POST.get('storage_method')
+    service_type = request.POST.get('service_type')
 
     raw_materials = t_ec_industries_t5_raw_materials.objects.filter(record_id=record_id)
     raw_materials.update(raw_material=raw_material,qty=qty,
                          source=source, storage_method= storage_method)
-    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no).order_by(
-        'record_id')
+    if service_type == 'Ancillary':
+        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
+    else:
+        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type__isnull=True).order_by('record_id')
     return render(request, 'raw_materials.html', {'raw_materials': raw_materials})
 
 def delete_raw_materials(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
+    service_type = request.POST.get('service_type')
 
     raw_materials_details = t_ec_industries_t5_raw_materials.objects.filter(record_id=record_id)
     raw_materials_details.delete()
-    raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no).order_by(
-        'record_id')
+    if service_type == 'Ancillary':
+        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
+    else:
+        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type__isnull=True).order_by('record_id')
     return render(request, 'raw_materials.html', {'raw_materials': raw_materials})
 
 def update_machine_tool_details(request):
@@ -1981,14 +1991,19 @@ def save_anc_road_details(request):
     road_width = request.POST.get('road_width')
     row = request.POST.get('road_row')
     area_required = request.POST.get('road_area_required')
-    # dzongkhag = request.POST.get('dzongkhag')
-    # gewog = request.POST.get('gewog')
-    # village = request.POST.get('village')
+    service_type = request.POST.get('service_type')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
 
     t_ec_industries_t6_ancillary_road.objects.create(application_no=application_no,road_chainage_from=line_chainage_from,
                                                     road_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
-                                                    road_width=road_width,row=row,area_required=area_required)
-    anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by('record_id')
+                                                    road_width=road_width,row=row,area_required=area_required,dzongkhag=dzongkhag,
+                                                    gewog=gewog,village=village,service_type=service_type)
+    if service_type == 'Ancillary':
+        anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
+    else:
+        anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no,service_type__isnull=True).order_by('record_id')
     return render(request,'anc_approach_road_details.html', {'anc_road_details':anc_road_details})
 
 def update_anc_road_details(request):
@@ -2001,22 +2016,33 @@ def update_anc_road_details(request):
     road_width = request.POST.get('road_width')
     row = request.POST.get('row')
     area_required = request.POST.get('area_required')
+    service_type = request.POST.get('service_type')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
 
     road_details = t_ec_industries_t6_ancillary_road.objects.filter(record_id=record_id)
     road_details.update(application_no=application_no,road_chainage_from=line_chainage_from,
                        road_chainage_to=line_chainage_to,land_type=land_type,terrain=terrain,
-                       road_width=road_width,row=row,area_required=area_required)
-    anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by('record_id')
+                       road_width=road_width,row=row,area_required=area_required,dzongkhag=dzongkhag,
+                        gewog=gewog,village=village,service_type=service_type)
+    if service_type == 'Ancillary':
+        anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
+    else:
+        anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no,service_type__isnull=True).order_by('record_id')
     return render(request,'anc_approach_road_details.html', {'anc_road_details':anc_road_details})
 
 def delete_anc_road_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
+    service_type = request.POST.get('service_type')
 
     road_details = t_ec_industries_t6_ancillary_road.objects.filter(record_id=record_id)
     road_details.delete()
-    anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no).order_by(
-        'record_id')
+    if service_type == 'Ancillary':
+        anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
+    else:
+        anc_road_details = t_ec_industries_t6_ancillary_road.objects.filter(application_no=application_no,service_type__isnull=True).order_by('record_id')
     return render(request, 'anc_approach_road_details.html', {'anc_road_details': anc_road_details})
 
 def save_approach_road_details(request):
@@ -3239,7 +3265,7 @@ def handle_main_submission(request, data, application_no, main_application, anci
         request,
         application_no,
         total_amount,
-        'NEW GENERAL APPLICATION',
+        'NEW APPLICATION',
         request.session['email'],
         "100123",
         main_application.service_type
