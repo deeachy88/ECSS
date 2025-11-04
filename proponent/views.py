@@ -611,7 +611,6 @@ def add_raw_materials(request):
     source = request.POST.get('source')
     storage_method = request.POST.get('storage_method')
     service_type = request.POST.get('service_type')
-<<<<<<< HEAD
     
 
     t_ec_industries_t5_raw_materials.objects.create(application_no= application_no,raw_material=raw_material,
@@ -620,16 +619,6 @@ def add_raw_materials(request):
         raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
     else:
         raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type__isnull=True).order_by('record_id')
-=======
-
-    t_ec_industries_t5_raw_materials.objects.create(application_no= application_no,raw_material=raw_material,service_type=service_type,
-                                                        qty= qty,source=source,storage_method=storage_method)
-    if service_type == 'Ancillary':
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
-    else:
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
-    
->>>>>>> 77e9e9ca6a9d73b7b82ddf2dde06b2e427ad78d0
     return render(request, 'raw_materials.html', {'raw_materials': raw_materials})
 
 def update_raw_materials(request):
@@ -647,12 +636,7 @@ def update_raw_materials(request):
     if service_type == 'Ancillary':
         raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
     else:
-<<<<<<< HEAD
         raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type__isnull=True).order_by('record_id')
-=======
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
-    
->>>>>>> 77e9e9ca6a9d73b7b82ddf2dde06b2e427ad78d0
     return render(request, 'raw_materials.html', {'raw_materials': raw_materials})
 
 def delete_raw_materials(request):
@@ -665,12 +649,7 @@ def delete_raw_materials(request):
     if service_type == 'Ancillary':
         raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
     else:
-<<<<<<< HEAD
         raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type__isnull=True).order_by('record_id')
-=======
-        raw_materials = t_ec_industries_t5_raw_materials.objects.filter(application_no=application_no,service_type=service_type).order_by('record_id')
-    
->>>>>>> 77e9e9ca6a9d73b7b82ddf2dde06b2e427ad78d0
     return render(request, 'raw_materials.html', {'raw_materials': raw_materials})
 
 def update_machine_tool_details(request):
