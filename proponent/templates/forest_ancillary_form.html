@@ -72,79 +72,156 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <br>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                                        Project Location and Area
                                     </div>
+                                    <br>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Select One</label>
                                                 <div class="mt-2">
+                                                {% if request.session.ca_auth == "THROMDE" %}
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)">
-                                                        <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" checked>
+                                                        <label class="form-check-label">Thromde</label>
+                                                    </div>
+                                                {% elif request.session.ca_auth == "DEC" %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" checked>
+                                                        <label class="form-check-label">Dzongkhag</label>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
+                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                        <label class="form-check-label">Thromde</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)">
-                                                        <label class="form-check-label" for="customRadio4">Thromde</label>
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
+                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                        <label class="form-check-label">Dzongkhag</label>
                                                     </div>
+                                                {% endif %}
                                                 </div>
                                             </div>
                                             <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6 thromde" style="display:none;">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Thromde</label>
-                                                <select class="form-select" name="thromde_id"  id="thromde_id">
-                                                    <option value="">--SELECT THROMDE--</option>
-                                                    {% for thromde in thromde %}
-                                                        <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
-                                                    {% endfor %} 
-                                                </select>
-                                            </div>
-                                            <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
                                     </div>
-                                    <div class="row dzongkhag" style="display:none;">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Dzongkhag</label>
-                                                <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                                    <option value="">--SELECT DZONGKHAG--</option>
-                                                    {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
-                                                    {% endfor %} 
-                                                </select>
+                                    {% if request.session.ca_auth == "THROMDE" %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select" name="thromde_id"  id="thromde_id">
+                                                        <option value="">--SELECT THROMDE--</option>
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Gewog</label>
-                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                                    <option value="">--SELECT GEWOG--</option>
-                                                    {% for gewog in gewog %}
-                                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                    {% endif %}
+                                    {% if request.session.ca_auth == "DEC" %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                                        <option value="">--SELECT DZONGKHAG--</option>
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6 dzongkhag" style="display:none;">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
-                                                    <option value="">--SELECT VILLAGE--</option>
-                                                    {% for village in village %}
-                                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                        <option value="">--SELECT GEWOG--</option>
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                    </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                        <option value="">--SELECT VILLAGE--</option>
+                                                        {% for village in village %}
+                                                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row thromde">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select" name="thromde_id"  id="thromde_id">
+                                                        <option value="">--SELECT THROMDE--</option>
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row dzongkhag">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                                        <option value="">--SELECT DZONGKHAG--</option>
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                        <option value="">--SELECT GEWOG--</option>
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row dzongkhag">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                        <option value="">--SELECT VILLAGE--</option>
+                                                        {% for village in village %}
+                                                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -263,6 +340,7 @@
                                 <form method="post" id="terrain_baseline_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="terrain_baseline_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="terrain_baseline_service_type" style="display:none;">
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable
                                     </div>
@@ -404,6 +482,7 @@
                                 <form method="post" id="project_details_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="project_details_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="project_details_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -509,6 +588,7 @@
                                 <form method="post" id="water_requirement_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="general_water_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="general_water_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -696,6 +776,7 @@
                                 <form method="post" id="solid_waste_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="solid_waste_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="solid_waste_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -788,6 +869,7 @@
                                 <form method="post" id="noise_level_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="noise_level_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="noise_level_service_type" style="display:none;">
                                     <div class="alert alert-primary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide maximum noise level at the project boundary during operation along with its management plan
                                     </div>
@@ -857,6 +939,7 @@
                                 <form method="post" id="other_impact_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="other_impact_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="other_impact_service_type" style="display:none;">
                                     <div class="alert alert-secondary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Other impacts during construction and operation of Plant and from ancillary activities such as road and power line along with its management plan.
                                     </div>
@@ -2275,14 +2358,15 @@
 
     function delete_forestry_produce_details()
     {
-        $('#delete_forestry_produce_record_id').val();
-        $('#delete_forestry_produce_app_no').val();
+        let record_id = $('#delete_forestry_produce_record_id').val();
+        let application_no = $('#delete_forestry_produce_app_no').val();
+        let service_type = $('#service_type').val();
 
         $.ajax
             ({
                 type : "POST",
                 url : "{% url 'delete_forestry_produce_details' %}",
-                data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'record_id':record_id, 'application_no':application_no,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#delete_forestry_produce_SuccessMsg').html("Add Successful");
@@ -2645,6 +2729,7 @@
     function save_forest_attachment()
     {
         let file_length = document.getElementById("forest_attach");
+        let service_type = $('#service_type').val();
         if(file_length.value.length < 1)
         {
             $('#forest_attachErrorMsg').html("Please Choose A Attachment");
@@ -2668,7 +2753,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_forest_attachment' %}",
+                url : "{% url 'save_anc_forest_attachment' %}",
                 data : fd,
                 dataType: 'json',
                 contentType: false,
@@ -2682,8 +2767,8 @@
                         $.ajax
                         ({
                             type : "POST",
-                            url : "{% url 'save_forest_attachment_details' %}",
-                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            url : "{% url 'save_anc_forest_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url,'service_type':service_type},
                             success : function(responseText)
                             {
                                 $('#forest_attachment_modal').modal('hide');
@@ -2731,7 +2816,7 @@
         $.ajax({
             type: "POST",
             url: "{% url 'submit_general_application' %}",
-            data: $('#general_submit_form').serialize(),
+            data: $('#forest_submit_form').serialize(),
             dataType: 'json',
             success: function(data) {
                 $("#pageloader").hide();
@@ -5067,6 +5152,7 @@
         let dumpyard_capacity = $('#dumpyard_capacity').val();
         let dumpyard_area = $('#dumpyard_area').val();
         let dumpyard_location = $('#dumpyard_location').val();
+        let service_type = $('#service_type').val();
         
         if(dumpyard_number == "")
         {
@@ -5102,7 +5188,7 @@
             ({
                 type : "POST",
                 url : "{% url 'add_dumpyard_details' %}",
-                data : {'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#dumpyard_SuccessMsg').html("Add Successful");
@@ -5143,6 +5229,7 @@
         let dumpyard_capacity = $('#edit_dumpyard_capacity').val();
         let dumpyard_area = $('#edit_dumpyard_area').val();
         let dumpyard_location = $('#edit_dumpyard_location').val();
+        let service_type = $('#service_type').val();
         
         if(dumpyard_number == "")
         {
@@ -5178,7 +5265,7 @@
             ({
                 type : "POST",
                 url : "{% url 'update_dumpyard_details' %}",
-                data : {'record_id':record_id,'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'record_id':record_id,'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $('#edit_dumpyard_SuccessMsg').html("Update Successful");
@@ -5209,12 +5296,13 @@
     {
         let record_id = $('#delete_dumpyard_record_id').val();
         let application_no = $('#delete_dumpyard_application_no').val();
+        let service_type = $('#service_type').val();
 
         $.ajax
         ({
             type : "POST",
             url : "{% url 'delete_dumpyard_details' %}",
-            data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            data : {'record_id':record_id,'application_no':application_no,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(responseText)
             {
                 $('#delete_dumpyard_SuccessMsg').html("Delete Successful");

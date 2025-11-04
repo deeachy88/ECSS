@@ -21,7 +21,11 @@
                                 <form method="post" id="iee_application_form">
                                     {% csrf_token %}
                                     <input type="text" class="form-control" value="{{application_no}}" name="application_no" id="application_no" style="display:none;">
+<<<<<<< HEAD
                                     <input type="text" class="form-control" value="Main Activity" name="service_type" id="service_type" style="display:none;">
+=======
+                                    <input type="text" class="form-control" value="Main Activity" id="service_type" name="service_type" style="display:none;">
+>>>>>>> 77e9e9ca6a9d73b7b82ddf2dde06b2e427ad78d0
                                     <input type="text" class="form-control" value="value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -125,80 +129,144 @@
                                                 <label class="form-label fw-bold">Select One</label>
                                                 <div class="mt-2">
                                                 {% if request.session.ca_auth == "THROMDE" %}
-                                                <!-- Show only Thromde radio button -->
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
-                                                        onclick="check_dzong_throm(this.value)" checked>
-                                                    <label class="form-check-label">Thromde</label>
-                                                </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" checked>
+                                                        <label class="form-check-label">Thromde</label>
+                                                    </div>
+                                                {% elif request.session.ca_auth == "DEC" %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" checked>
+                                                        <label class="form-check-label">Dzongkhag</label>
+                                                    </div>
                                                 {% else %}
-                                                <!-- Show only Dzongkhag radio button -->
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
-                                                        onclick="check_dzong_throm(this.value)" checked>
-                                                    <label class="form-check-label">Dzongkhag</label>
-                                                </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
+                                                            onclick="check_dzong_throm(this.value)">
+                                                        <label class="form-check-label">Thromde</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
+                                                            onclick="check_dzong_throm(this.value)">
+                                                        <label class="form-check-label">Dzongkhag</label>
+                                                    </div>
                                                 {% endif %}
-                                            </div>
+                                                </div>
                                             </div>
                                             <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        {% if request.session.ca_auth == "THROMDE" %}
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Thromde</label>
-                                                <select class="form-select" name="thromde_id"  id="thromde_id">
-                                                    <option value="">--SELECT THROMDE--</option>
-                                                    {% for thromde in thromde %}
-                                                        <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
-                                                    {% endfor %} 
-                                                </select>
-                                            </div>
-                                            <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        {% endif %}
                                     </div>
-                                    {% if request.session.ca_auth != "THROMDE" %}
-                                    <div class="row dzongkhag">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Dzongkhag</label>
-                                                <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                                    <option value="">--SELECT DZONGKHAG--</option>
-                                                    {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
-                                                    {% endfor %} 
-                                                </select>
+                                    {% if request.session.ca_auth == "THROMDE" %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select" name="thromde_id"  id="thromde_id">
+                                                        <option value="">--SELECT THROMDE--</option>
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Gewog</label>
-                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                                    <option value="">--SELECT GEWOG--</option>
-                                                    {% for gewog in gewog %}
-                                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                    {% endif %}
+                                    {% if request.session.ca_auth == "DEC" %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                                        <option value="">--SELECT DZONGKHAG--</option>
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6 dzongkhag">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
-                                                    <option value="">--SELECT VILLAGE--</option>
-                                                    {% for village in village %}
-                                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                        <option value="">--SELECT GEWOG--</option>
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                    </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                        <option value="">--SELECT VILLAGE--</option>
+                                                        {% for village in village %}
+                                                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row thromde" style="display: none;">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select" name="thromde_id"  id="thromde_id">
+                                                        <option value="">--SELECT THROMDE--</option>
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row dzongkhag" style="display: none;">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                                        <option value="">--SELECT DZONGKHAG--</option>
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                        <option value="">--SELECT GEWOG--</option>
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row dzongkhag" style="display: none;">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                        <option value="">--SELECT VILLAGE--</option>
+                                                        {% for village in village %}
+                                                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
                                     {% endif %}
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -562,14 +630,14 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Number of furnace/boiler/kiln/calcinator/others to be installed</label>
-                                                <input type="text" name="technology_used" class="form-control" id="technology_used">
+                                                <input type="number" name="technology_used" class="form-control" id="technology_used">
                                             </div>
                                             <div id="technology_usedErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Total capacity</label>
-                                                <input type="text" name="technology_total_capacity" class="form-control" id="technology_total_capacity">
+                                                <input type="number" name="technology_total_capacity" class="form-control" id="technology_total_capacity">
                                             </div>
                                             <div id="technology_total_capacityErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -636,11 +704,11 @@
                                                 <label class="form-label fw-bold">Will the activity require water consumption?</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio3" name="water_required" class="form-check-input" value="Yes" onclick="check_road_water_radio(this.value)">
+                                                        <input type="radio" id="customRadio3" name="water_required" class="form-check-input" value="Yes" onclick="check_general_water(this.value)">
                                                         <label class="form-check-label" for="customRadio3">Yes</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_road_water_radio(this.value)" checked>
+                                                        <input type="radio" id="customRadio4" name="water_required" class="form-check-input" value="No" onclick="check_general_water(this.value)" checked>
                                                         <label class="form-check-label" for="customRadio4">No</label>
                                                     </div>
                                                 </div>
@@ -712,11 +780,10 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <br>
-                                    <div class="alert alert-secondary border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Baseline/Existing Information
+                                    <div class="alert alert-primary border-0 rounded-0 general_water_details" role="alert" style="display: none;">
+                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide the following information on water source
                                     </div>
-                                    <div class="row">
+                                    <div class="row general_water_details" style="display: none;">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Information on downstream users, if any</label>
@@ -732,20 +799,20 @@
                                             <div id="water_flow_rate_leanErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row general_water_details" style="display: none;">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Distance from source to the project site (meters)</label>
-                                                <input type="text" name="water_source_distance" class="form-control" id="water_source_distance">
+                                                <input type="number" name="water_source_distance" class="form-control" id="water_source_distance">
                                             </div>
                                             <div id="water_source_distanceErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                     <div class="alert alert-success border-0 rounded-0" role="alert" id="water_requirement_application_successMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                        <span class="alert-text"></span>
                                     </div>
                                     <div class="alert alert-danger border-0 rounded-0" role="alert" id="water_requirement_application_errorMsg" style="display:none">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                        <span class="alert-text"></span>
                                     </div>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
@@ -1996,7 +2063,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Installed Capacity</label>
-                    <input type="number" name="machine_tool_installed_capacity" class="form-control" id="machine_tool_installed_capacity">
+                    <input type="text" name="machine_tool_installed_capacity" class="form-control" id="machine_tool_installed_capacity">
                 </div>
                 <div class="alert alert-danger" id="machine_tool_installed_capacityErrorMsg" style="display:none"></div>
             </div>
@@ -2049,7 +2116,7 @@
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Installed Capacity</label>
-                    <input type="number" name="edit_machine_tool_installed_capacity" class="form-control" id="edit_machine_tool_installed_capacity">
+                    <input type="text" name="edit_machine_tool_installed_capacity" class="form-control" id="edit_machine_tool_installed_capacity">
                 </div>
                 <div class="alert alert-danger" id="edit_machine_tool_installed_capacityErrorMsg" style="display:none"></div>
             </div>
@@ -2187,10 +2254,10 @@
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Name/Location Type</label>
-                    <input type="text" name="name_location" class="form-control" id="name_location">
+                    <label class="form-label fw-bold">Installed Capacity</label>
+                    <input type="text" name="quantity_annum" class="form-control" id="quantity_annum">
                 </div>
-                <div class="alert alert-danger" id="name_locationErrorMsg" style="display:none"></div>
+                <div class="alert alert-danger" id="quantity_annumErrorMsg" style="display:none"></div>
             </div>
         </div>
         <div class="row">
@@ -2246,10 +2313,10 @@
             </div>
             <div class="col-lg-6">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Name/Location Type</label>
-                    <input type="text" name="edit_name_location" class="form-control" id="edit_name_location">
+                    <label class="form-label fw-bold">Installed Capacity</label>
+                    <input type="text" name="edit_quantity_annum" class="form-control" id="edit_quantity_annum">
                 </div>
-                <div class="alert alert-danger" id="edit_name_locationErrorMsg" style="display:none"></div>
+                <div class="alert alert-danger" id="edit_quantity_annumErrorMsg" style="display:none"></div>
             </div>
         </div>
         <div class="row">
@@ -3140,7 +3207,10 @@
             let machine_tool = $('#machine_tool').val();
             let machine_tool_qty = $('#machine_tool_qty').val();
             let machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
+<<<<<<< HEAD
             let service_type = $('#service_type').val();
+=======
+>>>>>>> 77e9e9ca6a9d73b7b82ddf2dde06b2e427ad78d0
     
             if(machine_tool == "")
             {
@@ -3169,7 +3239,7 @@
                 ({
                     type : "POST",
                     url : "{% url 'add_machine_tool_details' %}",
-                    data : {'application_no':application_no,'service_type':service_type,'machine_tool':machine_tool,'machine_tool_qty':machine_tool_qty,'machine_tool_installed_capacity':machine_tool_installed_capacity, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    data : {'application_no':application_no,'machine_tool':machine_tool,'machine_tool_qty':machine_tool_qty,'machine_tool_installed_capacity':machine_tool_installed_capacity, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(responseText)
                     {
                         $('#machine_tool_SuccessMsg').html("Add Successful");
@@ -3294,7 +3364,7 @@
         {
             let application_no = $('#application_no').val();
             let product_name = $('#product_name').val();
-            let name_location = $('#name_location').val();
+            let quantity_annum = $('#quantity_annum').val();
             let storage_method = $('#storage_method').val();
     
             if(product_name == "")
@@ -3304,12 +3374,12 @@
                 $('#product_nameErrorMsg').delay(2000).fadeOut('slow');
                 $('#product_name').focus();
             }
-            else if(name_location == "")
+            else if(quantity_annum == "")
             {
-                $('#name_locationErrorMsg').html("Enter Name/Location Type");
-                $('#name_locationErrorMsg').show();
-                $('#name_locationErrorMsg').delay(2000).fadeOut('slow');
-                $('#name_location').focus();
+                $('#quantity_annumErrorMsg').html("Enter Installed Capacity");
+                $('#quantity_annumErrorMsg').show();
+                $('#quantity_annumErrorMsg').delay(2000).fadeOut('slow');
+                $('#quantity_annum').focus();
             }
             else if(storage_method == "")
             {
@@ -3324,7 +3394,7 @@
                 ({
                     type : "POST",
                     url : "{% url 'add_final_product_details' %}",
-                    data : {'application_no':application_no,'product_name':product_name,'name_location':name_location,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    data : {'application_no':application_no,'product_name':product_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(responseText)
                     {
                         $('#final_products_SuccessMsg').html("Add Successful");
@@ -3345,12 +3415,12 @@
             }
         }
     
-        function edit_produce_populate(record_id, application_no, product_name, name_location, storage_method)
+        function edit_produce_populate(record_id, application_no, product_name, quantity_annum, storage_method)
         {
             $('#edit_final_products_record_id').val(record_id)
             $('#edit_final_products_app_no').val(application_no)
             $('#edit_product_name').val(product_name);
-            $('#edit_name_location').val(name_location);
+            $('#edit_quantity_annum').val(quantity_annum);
             $('#edit_storage_method').val(storage_method);
             $('#edit_final_products_modal').modal('show');
         }
@@ -3360,7 +3430,7 @@
             let record_id = $('#edit_final_products_record_id').val();
             let application_no = $('#edit_final_products_app_no').val();
             let product_name = $('#edit_product_name').val();
-            let name_location = $('#edit_name_location').val();
+            let quantity_annum = $('#edit_quantity_annum').val();
             let storage_method = $('#edit_storage_method').val();;
     
             if(product_name == "")
@@ -3370,12 +3440,12 @@
                 $('#edit_product_nameErrorMsg').delay(2000).fadeOut('slow');
                 $('#edit_product_name').focus();
             }
-            else if(name_location == "")
+            else if(quantity_annum == "")
             {
-                $('#edit_name_locationErrorMsg').html("Enter Name/Location Type");
-                $('#edit_name_locationErrorMsg').show();
-                $('#edit_name_locationErrorMsg').delay(2000).fadeOut('slow');
-                $('#edit_name_location').focus();
+                $('#edit_quantity_annumErrorMsg').html("Enter Installed Capacity");
+                $('#edit_quantity_annumErrorMsg').show();
+                $('#edit_quantity_annumErrorMsg').delay(2000).fadeOut('slow');
+                $('#edit_quantity_annum').focus();
             }
             else if(storage_method == "")
             {
@@ -3390,7 +3460,7 @@
                 ({
                     type : "POST",
                     url : "{% url 'update_final_product_details' %}",
-                    data : {'application_no':application_no,'record_id':record_id, 'product_name':product_name,'name_location':name_location,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    data : {'application_no':application_no,'record_id':record_id, 'product_name':product_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(responseText)
                     {
                         $('#edit_final_products_SuccessMsg').html("Update Successful");
@@ -3980,7 +4050,7 @@
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'save_iee_application' %}",
+                url : "{% url 'save_general_info' %}",
                 data : $('#iee_application_form').serialize(),
                 success : function(data)
                 {
@@ -4375,11 +4445,10 @@
             let water_others_name = $('#water_others_name').val();
             let water_others_source = $('#water_others_source').val();
             let water_others_qty_day = $('#water_others_qty_day').val();
-            let total_water_consumption = $('#total_water_consumption').val();
-            let total_water_recycled = $('#total_water_recycled').val();
+            let water_downstream_users = $('#water_downstream_users').val();
             let water_flow_rate_lean = $('#water_flow_rate_lean').val();
             let water_source_distance = $('#water_source_distance').val();
-    
+
             if(water_required < 1)
             {
                 $('#water_requiredErrorMsg').html("Please Select One.");
@@ -4506,16 +4575,17 @@
                 $('#water_others_qty_dayErrorMsg').delay(2000).fadeOut('slow');
                 $('#water_others_qty_day').focus();
             }
-            else if(water_flow_rate_lean == "")
+
+            else if(water_required_value == 'Yes' && water_flow_rate_lean == "")
             {
-                $('#water_flow_rate_leanErrorMsg').html("Enter Flow rate.");
+                $('#water_flow_rate_leanErrorMsg').html("Enter Flow Rate.");
                 $('#water_flow_rate_leanErrorMsg').show();
                 $('#water_flow_rate_leanErrorMsg').delay(2000).fadeOut('slow');
                 $('#water_flow_rate_lean').focus();
             }
-            else if(water_source_distance == "")
+            else if(water_required_value == 'Yes' && water_source_distance == "")
             {
-                $('#water_source_distanceErrorMsg').html("Enter Distance from source to the project site.");
+                $('#water_source_distanceErrorMsg').html("Enter Distance.");
                 $('#water_source_distanceErrorMsg').show();
                 $('#water_source_distanceErrorMsg').delay(2000).fadeOut('slow');
                 $('#water_source_distance').focus();
@@ -4529,33 +4599,38 @@
                     data : $('#water_requirement_form').serialize(),
                     success : function(data)
                     {
-                        if(data.message == 'success')
-                        {
-                            $('#water_requirement_application_successMsg').html("Saved Successfully");
-                            $('#water_requirement_application_successMsg').show();
-                            $('#water_requirement_application_successMsg').focus();
-                            setTimeout(function()
-                            {
-                                $('#water_requirement_application_successMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
-                            setTimeout(function() {
-                                $("#headingFiveBtn").removeAttr("disabled");
-                                $("#collapseFive").addClass("show");
-                                $("#collapseFour").removeClass("show");
-                            }, 2000);
-                        }
-                        else
-                        {
-                            var errorMsg = data.error;
-        
-                            $('#water_requirement_application_errorMsg').html(`Application Error: ${data.error}`);
-                            $('#water_requirement_application_errorMsg').show();
-                            $('#water_requirement_application_errorMsg').focus();
-                            setTimeout(function()
-                            {
-                                $('#water_requirement_application_errorMsg').delay(2000).fadeOut('slow');
-                            }, 2000);
-                        }
+                        if(data.message == 'success') {
+                        $('#water_requirement_application_successMsg')
+                        .html("Saved Successfully")
+                        .attr('aria-live', 'polite')
+                        .attr('aria-atomic', 'true')
+                        .show()
+                        .focus();
+                        
+                        setTimeout(function() {
+                            $('#water_requirement_application_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        
+                        setTimeout(function() {
+                            $("#headingFiveBtn").removeAttr("disabled");
+                            $("#collapseFive").addClass("show");
+                            $("#collapseFour").removeClass("show");
+                        }, 2000);
+                    } else {
+                        $('#water_requirement_application_errorMsg')
+                        .html(`Application Error: ${data.error}`)
+                        .removeAttr('tabindex')  // Remove blocking attribute
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();  // Set focus immediately after showing
+                        
+                        setTimeout(function() {
+                            $('#water_requirement_application_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
                     }
                 });
             }
@@ -6208,14 +6283,14 @@
                 $('#en_fluoride_emission_expectedErrorMsg').delay(2000).fadeOut('slow');
                 $('#en_fluoride_emission_expected').focus();
             }
-            else if(en_air_pollution_control_device_capacity == "")
+            else if(en_industry_emission_generate_value == 'Yes' && en_air_pollution_control_device_capacity == "")
             {
                 $('#en_air_pollution_control_device_capacityErrorMsg').html("Enter Capacity.");
                 $('#en_air_pollution_control_device_capacityErrorMsg').show();
                 $('#en_air_pollution_control_device_capacityErrorMsg').delay(2000).fadeOut('slow');
                 $('#en_air_pollution_control_device_capacity').focus();
             }
-            else if(en_air_pollution_control_pcd_dimension == "")
+            else if(en_industry_emission_generate_value == 'Yes' && en_air_pollution_control_pcd_dimension == "")
             {
                 $('#en_air_pollution_control_pcd_dimensionErrorMsg').html("Enter Components and dimensions of the PCD.");
                 $('#en_air_pollution_control_pcd_dimensionErrorMsg').show();
@@ -7285,6 +7360,18 @@
             let sum_line_chainage = line_chainage_from + line_chainage_to ;
             let total = row * sum_line_chainage;
             $('#edit_area_required').val(total);
+        }
+
+        function check_general_water(value)
+        {
+            if(value == 'Yes')
+            {
+                $('.general_water_details').show();
+            }
+            else
+            {
+                $('.general_water_details').hide();
+            }
         }
     
         function check_approach_road(value)

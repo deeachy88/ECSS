@@ -21,7 +21,7 @@
                                 <form method="post" id="general_application_form">
                                     {% csrf_token %}
                                     <input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">
-                                    <input type="text" class="form-control" value="Ancillary" name="service_type" style="display:none;">
+                                    <input type="text" class="form-control" value="Ancillary" name="service_type" id="service_type" style="display:none;">
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         Applicant Details
                                     </div>
@@ -82,71 +82,146 @@
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Select One</label>
                                                 <div class="mt-2">
+                                                {% if request.session.ca_auth == "THROMDE" %}
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)">
-                                                        <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" checked>
+                                                        <label class="form-check-label">Thromde</label>
+                                                    </div>
+                                                {% elif request.session.ca_auth == "DEC" %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" checked>
+                                                        <label class="form-check-label">Dzongkhag</label>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
+                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                        <label class="form-check-label">Thromde</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)">
-                                                        <label class="form-check-label" for="customRadio4">Thromde</label>
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
+                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                        <label class="form-check-label">Dzongkhag</label>
                                                     </div>
+                                                {% endif %}
                                                 </div>
                                             </div>
                                             <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6 thromde" style="display:none;">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Thromde</label>
-                                                <select class="form-select" name="thromde_id"  id="thromde_id">
-                                                    <option value="">--SELECT THROMDE--</option>
-                                                    {% for thromde in thromde %}
-                                                        <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
-                                                    {% endfor %} 
-                                                </select>
-                                            </div>
-                                            <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
                                     </div>
-                                    <div class="row dzongkhag" style="display:none;">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Dzongkhag</label>
-                                                <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                                    <option value="">--SELECT DZONGKHAG--</option>
-                                                    {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
-                                                    {% endfor %} 
-                                                </select>
+                                    {% if request.session.ca_auth == "THROMDE" %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select" name="thromde_id"  id="thromde_id">
+                                                        <option value="">--SELECT THROMDE--</option>
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Gewog</label>
-                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                                    <option value="">--SELECT GEWOG--</option>
-                                                    {% for gewog in gewog %}
-                                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                    {% endif %}
+                                    {% if request.session.ca_auth == "DEC" %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                                        <option value="">--SELECT DZONGKHAG--</option>
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6 dzongkhag" style="display:none;">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
-                                                    <option value="">--SELECT VILLAGE--</option>
-                                                    {% for village in village %}
-                                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                        <option value="">--SELECT GEWOG--</option>
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                    </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                        <option value="">--SELECT VILLAGE--</option>
+                                                        {% for village in village %}
+                                                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row thromde">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select" name="thromde_id"  id="thromde_id">
+                                                        <option value="">--SELECT THROMDE--</option>
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row dzongkhag">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                                        <option value="">--SELECT DZONGKHAG--</option>
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                        <option value="">--SELECT GEWOG--</option>
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row dzongkhag">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                        <option value="">--SELECT VILLAGE--</option>
+                                                        {% for village in village %}
+                                                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -246,6 +321,7 @@
                                 <form method="post" id="terrain_baseline_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="terrain_baseline_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="terrain_baseline_service_type" style="display:none;">
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable
                                     </div>
@@ -411,6 +487,7 @@
                                 <form method="post" id="project_details_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="project_details_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="project_details_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -511,6 +588,7 @@
                                 <form method="post" id="water_requirement_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="general_water_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="general_water_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -717,6 +795,7 @@
                                 <form method="post" id="solid_waste_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="solid_waste_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="solid_waste_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -820,6 +899,7 @@
                                 <form method="post" id="noise_level_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="noise_level_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="noise_level_service_type" style="display:none;">
                                     <div class="alert alert-primary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide maximum noise level at the project boundary during operation along with its management plan
                                     </div>
@@ -893,6 +973,7 @@
                                 <form method="post" id="other_impact_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="other_impact_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="other_impact_service_type" style="display:none;">
                                     <div class="alert alert-secondary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Other impacts during construction and operation of Plant and from ancillary activities such as road and power line along with its management plan.
                                     </div>
@@ -2920,9 +3001,12 @@
                     }, 2000);
                 } else {
                     $('#water_requirement_application_errorMsg')
-                    .html("Please Check And Submit Again")
-                    .attr('aria-live', 'assertive')
-                    .attr('aria-atomic', 'true')
+                    .text("Error: " + (data.error || "Please check your input"))
+                    .removeAttr('tabindex')  // Remove focus blocker
+                    .attr({
+                        'aria-live': 'assertive',
+                        'aria-atomic': 'true'
+                    })
                     .show()
                     .focus();
                     
@@ -3041,11 +3125,14 @@
                         }, 2000);
                     } else {
                         $('#anc_approach_road_errorMsg')
-                            .html("Please Check And Submit Again")
-                            .attr('aria-live', 'assertive')  // More urgent for errors
-                            .attr('aria-atomic', 'true')
-                            .show()
-                            .focus();  // Set focus here
+                        .text("Error: " + (data.error || "Please check your input"))
+                        .removeAttr('tabindex')  // Remove focus blocker
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
 
                         setTimeout(function() {
                             $('#anc_approach_road_errorMsg').delay(2000).fadeOut('slow');
@@ -3139,12 +3226,14 @@
                     } else {
                         // Error case
                         $('#anc_power_line_errorMsg')
-                            .html('Please Check And Submit Again')
-                            .attr('aria-live', 'assertive')  // More urgent for errors
-                            .attr('aria-atomic', 'true')
-                            .removeAttr('tabindex')          // Remove tabindex="-1"
-                            .show()
-                            .focus();  // Force focus
+                        .text("Error: " + (data.error || "Please check your input"))
+                        .removeAttr('tabindex')  // Remove focus blocker
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
 
                         setTimeout(() => {
                             $('#anc_power_line_errorMsg').delay(2000).fadeOut('slow');
@@ -3407,16 +3496,15 @@
                             $("#collapseEight").removeClass("show");
                         }, 2000);
                     } else {
-                        // Error case with focus management
                         $('#solid_waste_errorMsg')
-                            .html('Please Check And Submit Again')
-                            .removeAttr('tabindex')  // Remove focus blocker
-                            .attr({
-                                'aria-live': 'assertive',  // More urgent for errors
-                                'aria-atomic': 'true'
-                            })
-                            .show()
-                            .focus();  // Immediately focus after showing
+                        .text("Error: " + (data.error || "Please check your input"))
+                        .removeAttr('tabindex')  // Remove focus blocker
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
 
                         setTimeout(() => {
                             $('#solid_waste_errorMsg').delay(2000).fadeOut('slow');
@@ -3534,18 +3622,15 @@
                                     $("#collapseTwelve").removeClass("show");
                                 }, 2000);
                             } else {
-                                // Error case with focus management
                                 $('#noise_level_errorMsg')
-                                    .html('<i class="uil-exclamation-octagon me-1 h4 align-middle"></i> Please Check And Submit Again')
-                                    .removeAttr('tabindex')  // Remove focus blocker
-                                    .attr({
-                                        'aria-live': 'assertive',
-                                        'aria-atomic': 'true',
-                                        'role': 'alert'
-                                    })
-                                    .show()
-                                    .focus();  // Focus immediately after showing
-
+                                .text("Error: " + (data.error || "Please check your input"))
+                                .removeAttr('tabindex')  // Remove focus blocker
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
                                 setTimeout(() => {
                                     $('#noise_level_errorMsg').delay(2000).fadeOut('slow');
                                 }, 2000);
@@ -3879,15 +3964,14 @@
                             } else {
                                 // Error case with focus management
                                 $('#other_impact_errorMsg')
-                                    .html('Please Check And Submit Again')
-                                    .removeAttr('tabindex')  // Remove focus blocker
-                                    .attr({
-                                        'aria-live': 'assertive',
-                                        'aria-atomic': 'true'
-                                    })
-                                    .show()
-                                    .focus();  // Set focus immediately after showing
-
+                                .text("Error: " + (data.error || "Please check your input"))
+                                .removeAttr('tabindex')  // Remove focus blocker
+                                .attr({
+                                    'aria-live': 'assertive',
+                                    'aria-atomic': 'true'
+                                })
+                                .show()
+                                .focus();
                                 setTimeout(() => {
                                     $('#other_impact_errorMsg').delay(2000).fadeOut('slow');
                                 }, 2000);
@@ -4202,7 +4286,8 @@
                 let raw_material_qty = $('#raw_material_qty').val();
                 let raw_material_source = $('#raw_material_source').val();
                 let raw_material_storage_method = $('#raw_material_storage_method').val();
-        
+                let service_type = $('#general_water_service_type').val();
+
                 if(raw_material == "")
                 {
                     $('#raw_materialErrorMsg').html("Enter Raw Material");
@@ -4237,7 +4322,7 @@
                     ({
                         type : "POST",
                         url : "{% url 'add_raw_materials' %}",
-                        data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                         success : function(responseText)
                         {
                             $('#raw_material_SuccessMsg').html("Add Successful");
@@ -4277,6 +4362,7 @@
                 let raw_material_qty = $('#edit_raw_material_qty').val();
                 let raw_material_source = $('#edit_raw_material_source').val();
                 let raw_material_storage_method = $('#edit_raw_material_storage_method').val();
+                let service_type = $('#general_water_service_type').val();
         
                 if(raw_material == "")
                 {
@@ -4312,7 +4398,7 @@
                     ({
                         type : "POST",
                         url : "{% url 'update_raw_materials' %}",
-                        data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                         success : function(responseText)
                         {
                             $('#edit_raw_material_SuccessMsg').html("Update Successful");
@@ -4343,12 +4429,13 @@
             {
                 let record_id = $('#delete_raw_material_record_id').val();
                 let application_no = $('#delete_raw_material_app_no').val();
+                let service_type = $('#general_water_service_type').val();
         
                 $.ajax
                 ({
                     type : "POST",
                     url : "{% url 'delete_raw_materials' %}",
-                    data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    data : {'record_id':record_id, 'application_no':application_no,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(responseText)
                     {
                         $('#delete_raw_material_SuccessMsg').html("Delete Successful");
@@ -4483,7 +4570,7 @@
                     $.ajax
                     ({
                         type : "POST",
-                        url : "{% url 'save_general_attachment' %}",
+                        url : "{% url 'save_anc_general_attachment' %}",
                         data : fd,
                         dataType: 'json',
                         contentType: false,
@@ -4497,7 +4584,7 @@
                                 $.ajax
                                 ({
                                     type : "POST",
-                                    url : "{% url 'save_general_attachment_details' %}",
+                                    url : "{% url 'save_anc_general_attachment_details' %}",
                                     data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
                                     success : function(responseText)
                                     {
@@ -5012,6 +5099,7 @@
                 let produce_name = $('#product_name').val();
                 let quantity_annum = $('#quantity_annum').val();
                 let storage_method = $('#storage_method').val();
+                let project_details_service_type = $('#project_details_service_type').val();
         
                 if(produce_name == "")
                 {
@@ -5040,7 +5128,7 @@
                     ({
                         type : "POST",
                         url : "{% url 'add_final_product_details' %}",
-                        data : {'application_no':application_no,'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        data : {'application_no':application_no,'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method,'service_type':project_details_service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                         success : function(responseText)
                         {
                             $('#final_products_SuccessMsg').html("Add Successful");
@@ -5078,6 +5166,7 @@
                 let produce_name = $('#edit_produce_name').val();
                 let quantity_annum = $('#edit_quantity_annum').val();
                 let storage_method = $('#edit_final_product_storage_method').val();
+                let project_details_service_type = $('#project_details_service_type').val();
         
                 if(produce_name == "")
                 {
@@ -5106,7 +5195,7 @@
                     ({
                         type : "POST",
                         url : "{% url 'update_final_product_details' %}",
-                        data : {'application_no':application_no,'record_id':record_id, 'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        data : {'application_no':application_no,'record_id':record_id, 'produce_name':produce_name,'quantity_annum':quantity_annum,'storage_method':storage_method,'service_type':project_details_service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                         success : function(responseText)
                         {
                             $('#edit_final_product_SuccessMsg').html("Update Successful");
@@ -5137,12 +5226,13 @@
             {
                 let record_id = $('#delete_final_product_record_id').val();
                 let application_no = $('#delete_final_product_app_no').val();
+                let project_details_service_type = $('#project_details_service_type').val();
         
                 $.ajax
                     ({
                         type : "POST",
                         url : "{% url 'delete_final_product_details' %}",
-                        data : {'record_id':record_id, 'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        data : {'record_id':record_id, 'application_no':application_no,'service_type':project_details_service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                         success : function(responseText)
                         {
                             $('#delete_final_product_SuccessMsg').html("Deleted Successfully");
@@ -5496,6 +5586,7 @@
                 let dumpyard_capacity = $('#dumpyard_capacity').val();
                 let dumpyard_area = $('#dumpyard_area').val();
                 let dumpyard_location = $('#dumpyard_location').val();
+                let service_type = $('#general_water_service_type').val();
                 
                 if(dumpyard_number == "")
                 {
@@ -5531,7 +5622,7 @@
                     ({
                         type : "POST",
                         url : "{% url 'add_dumpyard_details' %}",
-                        data : {'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        data : {'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                         success : function(responseText)
                         {
                             $('#dumpyard_SuccessMsg').html("Add Successful");
@@ -5551,7 +5642,7 @@
                     });
                 }
             }
-        
+
             function populate_dumpyard_data(record_id, application_no, dumpyard_number, dumpyard_capacity, dumpyard_area, dumpyard_location)
             {
                 $('#dumpyard_record_id').val(record_id);
@@ -5563,7 +5654,7 @@
                 
                 $('#edit_dumyard_details_modal').modal('show');
             }
-        
+
             function update_dumpyard_details()
             {
                 let record_id = $('#dumpyard_record_id').val();
@@ -5572,6 +5663,7 @@
                 let dumpyard_capacity = $('#edit_dumpyard_capacity').val();
                 let dumpyard_area = $('#edit_dumpyard_area').val();
                 let dumpyard_location = $('#edit_dumpyard_location').val();
+                let service_type = $('#general_water_service_type').val();
                 
                 if(dumpyard_number == "")
                 {
@@ -5607,7 +5699,7 @@
                     ({
                         type : "POST",
                         url : "{% url 'update_dumpyard_details' %}",
-                        data : {'record_id':record_id,'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        data : {'record_id':record_id,'application_no':application_no,'dumpyard_number':dumpyard_number,'dumpyard_capacity':dumpyard_capacity,'dumpyard_area':dumpyard_area,'dumpyard_location':dumpyard_location,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                         success : function(responseText)
                         {
                             $('#edit_dumpyard_SuccessMsg').html("Update Successful");
@@ -5626,24 +5718,25 @@
                     });
                 }
             }
-        
+
             function populate_delete_dumpyard_data(record_id, application_no)
             {
                 $('#delete_dumpyard_record_id').val(record_id);
                 $('#delete_dumpyard_application_no').val(application_no);
                 $('#delete_dumyard_details_modal').modal('show');
             }
-        
+
             function delete_dumpyard_details()
             {
                 let record_id = $('#delete_dumpyard_record_id').val();
                 let application_no = $('#delete_dumpyard_application_no').val();
-        
+                let service_type = $('#general_water_service_type').val();
+
                 $.ajax
                 ({
                     type : "POST",
                     url : "{% url 'delete_dumpyard_details' %}",
-                    data : {'record_id':record_id,'application_no':application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    data : {'record_id':record_id,'application_no':application_no,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(responseText)
                     {
                         $('#delete_dumpyard_SuccessMsg').html("Delete Successful");

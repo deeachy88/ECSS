@@ -74,7 +74,7 @@
                                     </div>
                                     <br>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                                        Project Location and Area
                                     </div>
                                     <br>
                                     <div class="row">
@@ -82,71 +82,146 @@
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Select One</label>
                                                 <div class="mt-2">
+                                                {% if request.session.ca_auth == "THROMDE" %}
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)">
-                                                        <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" checked>
+                                                        <label class="form-check-label">Thromde</label>
+                                                    </div>
+                                                {% elif request.session.ca_auth == "DEC" %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" checked>
+                                                        <label class="form-check-label">Dzongkhag</label>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
+                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                        <label class="form-check-label">Thromde</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)">
-                                                        <label class="form-check-label" for="customRadio4">Thromde</label>
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
+                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                        <label class="form-check-label">Dzongkhag</label>
                                                     </div>
+                                                {% endif %}
                                                 </div>
                                             </div>
                                             <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6 thromde" style="display:none;">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Thromde</label>
-                                                <select class="form-select" name="thromde_id"  id="thromde_id">
-                                                    <option value="">--SELECT THROMDE--</option>
-                                                    {% for thromde in thromde %}
-                                                        <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
-                                                    {% endfor %} 
-                                                </select>
-                                            </div>
-                                            <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
                                     </div>
-                                    <div class="row dzongkhag" style="display:none;">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Dzongkhag</label>
-                                                <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                                    <option value="">--SELECT DZONGKHAG--</option>
-                                                    {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
-                                                    {% endfor %} 
-                                                </select>
+                                    {% if request.session.ca_auth == "THROMDE" %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select" name="thromde_id"  id="thromde_id">
+                                                        <option value="">--SELECT THROMDE--</option>
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Gewog</label>
-                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                                    <option value="">--SELECT GEWOG--</option>
-                                                    {% for gewog in gewog %}
-                                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                    {% endif %}
+                                    {% if request.session.ca_auth == "DEC" %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                                        <option value="">--SELECT DZONGKHAG--</option>
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6 dzongkhag" style="display:none;">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
-                                                    <option value="">--SELECT VILLAGE--</option>
-                                                    {% for village in village %}
-                                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                        <option value="">--SELECT GEWOG--</option>
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                    </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                        <option value="">--SELECT VILLAGE--</option>
+                                                        {% for village in village %}
+                                                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row thromde">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select" name="thromde_id"  id="thromde_id">
+                                                        <option value="">--SELECT THROMDE--</option>
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row dzongkhag">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                                        <option value="">--SELECT DZONGKHAG--</option>
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                        <option value="">--SELECT GEWOG--</option>
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row dzongkhag">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                        <option value="">--SELECT VILLAGE--</option>
+                                                        {% for village in village %}
+                                                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -253,6 +328,7 @@
                                 <form method="post" id="terrain_baseline_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="terrain_baseline_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="terrain_baseline_service_type" style="display:none;">
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Presence of any of the following within and 50 meters buffer of the project area. If yes, mention name and distance from the project boundary, wherever applicable
                                     </div>
@@ -394,6 +470,7 @@
                                 <form method="post" id="project_details_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="project_details_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="project_details_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -607,6 +684,7 @@
                                 <form method="post" id="water_requirement_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="general_water_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="general_water_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -760,6 +838,7 @@
                                 <form method="post" id="solid_waste_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="solid_waste_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="solid_waste_service_type" style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -852,6 +931,7 @@
                                 <form method="post" id="noise_level_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="noise_level_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="noise_level_service_type" style="display:none;">
                                     <div class="alert alert-primary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Provide maximum noise level at the project boundary during operation along with its management plan
                                     </div>
@@ -921,6 +1001,7 @@
                                 <form method="post" id="other_impact_form">
                                     {% csrf_token %}
                                     <input type="hidden" class="form-control" value="{{application_no}}" name="other_impact_application_no">
+                                    <input type="text" class="form-control" value="Ancillary" name="other_impact_service_type" style="display:none;">
                                     <div class="alert alert-secondary border-0 rounded-0" role="alert">
                                         <i class="uil-folder-heart me-1 h4 align-middle"></i>Other impacts during construction and operation of Plant and from ancillary activities such as road and power line along with its management plan.
                                     </div>
@@ -3051,16 +3132,17 @@
             }
 
             function save_power_line_details() {
-                application_no = $('#application_no').val();
-                line_chainage_from = $('#line_chainage_from').val();
-                line_chainage_to = $('#line_chainage_to').val();
-                land_type = $('#land_type').val();
-                terrain = $('#terrain').val();
-                tower_type = $('#tower_type').val();
-                no_of_tower = $('#no_of_tower').val();
-                row = $('#row').val();
-                area_required = $('#area_required').val();
+                let application_no = $('#application_no').val();
+                let line_chainage_from = $('#line_chainage_from').val();
+                let line_chainage_to = $('#line_chainage_to').val();
+                let land_type = $('#land_type').val();
+                let terrain = $('#terrain').val();
+                let tower_type = $('#tower_type').val();
+                let no_of_tower = $('#no_of_tower').val();
+                let row = $('#row').val();
+                let area_required = $('#area_required').val();
                 let csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
+                let service_type = $('#service_type').val();
 
                 if (line_chainage_from == "") {
                     $('#line_chainage_fromErrorMsg').html("Enter Transmission line Chainage From");
@@ -3107,7 +3189,7 @@
                         ({
                             type: "POST",
                             url: "{% url 'save_anc_power_line_details' %}",
-                            data: { 'application_no': application_no, 'line_chainage_from': line_chainage_from, 'line_chainage_to': line_chainage_to, 'land_type': land_type, 'terrain': terrain, 'tower_type': tower_type, 'no_of_tower': no_of_tower, 'row': row, 'area_required': area_required, csrfmiddlewaretoken: csrf_token },
+                            data: { 'application_no': application_no, 'line_chainage_from': line_chainage_from, 'line_chainage_to': line_chainage_to, 'land_type': land_type, 'terrain': terrain, 'tower_type': tower_type, 'no_of_tower': no_of_tower, 'row': row, 'area_required': area_required,'service_type':service_type, csrfmiddlewaretoken: csrf_token },
                             success: function (responseText) {
                                 $('#power_line_successMsg').html("Power Line Details Added Successfully");
                                 $('#power_line_successMsg').show();
@@ -3603,7 +3685,7 @@
                     $.ajax({
                         type: "POST",
                         url: "{% url 'submit_general_application' %}",
-                        data: $('#general_submit_form').serialize(),
+                        data: $('#transmission_submit_form').serialize(),
                         dataType: 'json',
                         success: function(data) {
                             $("#pageloader").hide();
@@ -3845,60 +3927,72 @@
                     });
             }
 
-            function add_raw_material_details() {
-                // Hide all error messages first
-                $('.alert-danger').hide();
+            function add_raw_material_details()
+            {
+                let application_no = $('#application_no').val();
+                let raw_material = $('#raw_material').val();
+                let raw_material_qty = $('#raw_material_qty').val();
+                let raw_material_source = $('#raw_material_source').val();
+                let raw_material_storage_method = $('#raw_material_storage_method').val();
+                let service_type = $('#general_water_service_type').val();
 
-                // Get form values
-                const formData = {
-                    application_no: $('#application_no').val(),
-                    raw_material: $('#raw_material').val(),
-                    qty: $('#raw_material_qty').val(),
-                    source: $('#raw_material_source').val(),
-                    storage_method: $('#raw_material_storage_method').val(),
-                    csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val() // Fixed CSRF token retrieval
-                };
-
-                // Validation rules
-                const validations = [
-                    { field: 'raw_material', errorId: 'raw_materialErrorMsg', message: 'Enter Raw Material' },
-                    { field: 'qty', errorId: 'raw_material_qtyErrorMsg', message: 'Enter Qty' },
-                    { field: 'source', errorId: 'raw_material_sourceErrorMsg', message: 'Enter Source' },
-                    { field: 'storage_method', errorId: 'raw_material_storage_methodErrorMsg', message: 'Select Storage Method' }
-                ];
-
-                // Validate fields
-                for (const validation of validations) {
-                    if (!formData[validation.field]) {
-                        $(`#${validation.errorId}`).html(validation.message).show().delay(2000).fadeOut('slow');
-                        $(`#${validation.field}`).focus();
-                        return false;
-                    }
+                if(raw_material == "")
+                {
+                    $('#raw_materialErrorMsg').html("Enter Raw Material");
+                    $('#raw_materialErrorMsg').show();
+                    $('#raw_materialErrorMsg').delay(2000).fadeOut('slow');
+                    $('#raw_material').focus();
                 }
-
-                // AJAX request
-                $.ajax({
-                    type: "POST",
-                    url : "{% url 'add_raw_materials' %}",
-                    data: formData,
-                    success: function (responseText) {
-                        $('#raw_material_SuccessMsg').html("Add Successful").show();
-
-                        // Chain timeouts for better readability
-                        setTimeout(function () {
-                            $('#raw_material_SuccessMsg').delay(2000).fadeOut('slow');
-                            $('#raw_materials_modal').modal('hide');
-                            $('#raw_materials_div').html(responseText);
+                else if(raw_material_qty == "")
+                {
+                    $('#raw_material_qtyErrorMsg').html("Enter Qty");
+                    $('#raw_material_qtyErrorMsg').show();
+                    $('#raw_material_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    $('#raw_material_qty').focus();
+                }
+                else if(raw_material_source == "")
+                {
+                    $('#raw_material_sourceErrorMsg').html("Enter Source");
+                    $('#raw_material_sourceErrorMsg').show();
+                    $('#raw_material_sourceErrorMsg').delay(2000).fadeOut('slow');
+                    $('#raw_material_source').focus();
+                }
+                else if(raw_material_storage_method == "")
+                {
+                    $('#raw_material_storage_methodErrorMsg').html("Select Storage Method");
+                    $('#raw_material_storage_methodErrorMsg').show();
+                    $('#raw_material_storage_methodErrorMsg').delay(2000).fadeOut('slow');
+                    $('#raw_material_storage_method').focus();
+                }
+                else
+                {
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'add_raw_materials' %}",
+                        data : {'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        success : function(responseText)
+                        {
+                            $('#raw_material_SuccessMsg').html("Add Successful");
+                            $('#raw_material_SuccessMsg').show();
+                            setTimeout(function()
+                            {
+                                $('#raw_material_SuccessMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+                            setTimeout(function() {
+                                $('#raw_materials_modal').modal('hide');
+                            }, 2000);
+                            setTimeout(function() {
+                                $('#raw_materials_div').html(responseText);
+                            }, 2000);
                             $('#raw_materials_form')[0].reset();
-                        }, 2000);
-                    },
-                    error: function (xhr, status, error) {
-                        $('#raw_material_SuccessMsg').html("Error: " + error).show().delay(2000).fadeOut('slow');
-                    }
-                });
+                        }
+                    });
+                }
             }
-
-            function raw_materials_details_edit(record_id, application_no, raw_material, qty, source, storage_method) {
+        
+            function raw_materials_details_edit(record_id, application_no, raw_material, qty, source, storage_method)
+            {
                 $('#edit_raw_material_record_id').val(record_id);
                 $('#edit_raw_material_app_no').val(application_no);
                 $('#edit_raw_material').val(raw_material);
@@ -3907,136 +4001,106 @@
                 $('#edit_raw_material_storage_method').val(storage_method);
                 $('#edit_raw_materials_modal').modal('show');
             }
-
-            function update_raw_material_details() {
-                // Hide all error messages first
-                $('.alert-danger').hide();
-                $('.alert-success').hide();
-
-                // Get form values
-                const formData = {
-                    record_id: $('#edit_raw_material_record_id').val(),
-                    application_no: $('#edit_raw_material_app_no').val(),
-                    raw_material: $('#edit_raw_material').val(),
-                    qty: $('#edit_raw_material_qty').val(),
-                    source: $('#edit_raw_material_source').val(),
-                    storage_method: $('#edit_raw_material_storage_method').val(),
-                    csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val()
-                };
-
-                // Validation rules
-                const validations = [
-                    {
-                        field: 'edit_raw_material',
-                        errorId: 'edit_raw_materialErrorMsg',
-                        message: 'Please enter raw material',
-                        test: (val) => val.trim() === ''
-                    },
-                    {
-                        field: 'edit_raw_material_qty',
-                        errorId: 'edit_raw_material_qtyErrorMsg',
-                        message: 'Please enter quantity',
-                        test: (val) => val.trim() === '' || isNaN(parseFloat(val))
-                    },
-                    {
-                        field: 'edit_raw_material_source',
-                        errorId: 'edit_raw_material_sourceErrorMsg',
-                        message: 'Please enter source',
-                        test: (val) => val.trim() === ''
-                    },
-                    {
-                        field: 'edit_raw_material_storage_method',
-                        errorId: 'edit_raw_material_storage_methodErrorMsg',
-                        message: 'Please select storage method',
-                        test: (val) => val === 'Choose One'
-                    }
-                ];
-
-                // Validate fields
-                let isValid = true;
-                for (const validation of validations) {
-                    const fieldValue = $(`#${validation.field}`).val();
-                    if (validation.test(fieldValue)) {
-                        $(`#${validation.errorId}`).text(validation.message).show();
-                        $(`#${validation.field}`).addClass('is-invalid');
-                        if (isValid) {
-                            $(`#${validation.field}`).focus();
-                            isValid = false;
-                        }
-                    } else {
-                        $(`#${validation.errorId}`).hide();
-                        $(`#${validation.field}`).removeClass('is-invalid');
-                    }
+        
+            function update_raw_material_details()
+            {
+                let record_id = $('#edit_raw_material_record_id').val();
+                let application_no = $('#edit_raw_material_app_no').val();
+                let raw_material = $('#edit_raw_material').val();
+                let raw_material_qty = $('#edit_raw_material_qty').val();
+                let raw_material_source = $('#edit_raw_material_source').val();
+                let raw_material_storage_method = $('#edit_raw_material_storage_method').val();
+                let service_type = $('#general_water_service_type').val();
+        
+                if(raw_material == "")
+                {
+                    $('#raw_materialErrorMsg').html("Enter Raw Material");
+                    $('#raw_materialErrorMsg').show();
+                    $('#raw_materialErrorMsg').delay(2000).fadeOut('slow');
+                    $('#raw_material').focus();
                 }
-
-                if (!isValid) {
-                    return false;
+                else if(raw_material_qty == "")
+                {
+                    $('#raw_material_qtyErrorMsg').html("Enter Qty");
+                    $('#raw_material_qtyErrorMsg').show();
+                    $('#raw_material_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    $('#raw_material_qty').focus();
                 }
-
-                // AJAX request
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'update_raw_materials' %}",
-                    data: formData,
-                    beforeSend: function() {
-                        $('#edit_raw_material_SuccessMsg').html('<i class="fa fa-spinner fa-spin"></i> Processing...').show();
-                    },
-                    success: function(response) {
-                        // Since the view returns HTML directly, we'll treat any response as success
-                        $('#edit_raw_material_SuccessMsg').html('<i class="fa fa-check-circle"></i> Raw material updated successfully').show();
-
-                        // Update the table content with the returned HTML
-                        $('#raw_materials_div').html(response);
-
-                        // Close the modal after a short delay
-                        setTimeout(function() {
-                            $('#edit_raw_materials_modal').modal('hide');
-                        }, 1000);
-                    },
-                    error: function(xhr, status, error) {
-                        let errorMsg = 'Request failed';
-                        try {
-                            // Try to get error message from response if available
-                            errorMsg = xhr.responseText || errorMsg;
-                        } catch (e) {
-                            errorMsg = error || errorMsg;
+                else if(raw_material_source == "")
+                {
+                    $('#raw_material_sourceErrorMsg').html("Enter Source");
+                    $('#raw_material_sourceErrorMsg').show();
+                    $('#raw_material_sourceErrorMsg').delay(2000).fadeOut('slow');
+                    $('#raw_material_source').focus();
+                }
+                else if(raw_material_storage_method == "")
+                {
+                    $('#raw_material_storage_methodErrorMsg').html("Select Storage Method");
+                    $('#raw_material_storage_methodErrorMsg').show();
+                    $('#raw_material_storage_methodErrorMsg').delay(2000).fadeOut('slow');
+                    $('#raw_material_storage_method').focus();
+                }
+                else
+                {
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'update_raw_materials' %}",
+                        data : {'record_id':record_id, 'application_no':application_no,'raw_material':raw_material,'qty':raw_material_qty,'source':raw_material_source,'storage_method':raw_material_storage_method,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        success : function(responseText)
+                        {
+                            $('#edit_raw_material_SuccessMsg').html("Update Successful");
+                            $('#edit_raw_material_SuccessMsg').show();
+                            setTimeout(function()
+                            {
+                                $('#edit_raw_material_SuccessMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+                            setTimeout(function() {
+                                $('#edit_raw_materials_modal').modal('hide');
+                            }, 2000);
+                            setTimeout(function() {
+                                $('#raw_materials_div').html(responseText);
+                            }, 2000);
                         }
-                        $('#edit_raw_material_SuccessMsg').html('<i class="fa fa-exclamation-triangle"></i> ' + errorMsg).show();
-                    },
-                    complete: function() {
-                        setTimeout(function() {
-                            $('#edit_raw_material_SuccessMsg').fadeOut('slow');
-                        }, 3000);
-                    }
-                });
+                    });
+                }
             }
-
-            // Clear validation errors when modal is hidden
-            $('#edit_raw_materials_modal').on('hidden.bs.modal', function() {
-                $('.alert-danger').hide();
-                $('.is-invalid').removeClass('is-invalid');
-            });
-
-            // Initialize modal with proper event handlers
-            $(document).ready(function() {
-                // Add input event handlers to clear validation on change
-                $('#edit_raw_material, #edit_raw_material_qty, #edit_raw_material_source').on('input', function() {
-                    $(this).removeClass('is-invalid');
-                    $(`#${this.id}ErrorMsg`).hide();
-                });
-
-                $('#edit_raw_material_storage_method').on('change', function() {
-                    $(this).removeClass('is-invalid');
-                    $(`#${this.id}ErrorMsg`).hide();
-                });
-            });
-
-            function populate_delete_raw_materials(record_id, application_no) {
+        
+            function populate_delete_raw_materials(record_id, application_no)
+            {
                 $('#delete_raw_material_record_id').val(record_id);
                 $('#delete_raw_material_app_no').val(application_no);
                 $('#delete_raw_material_modal').modal('show');
             }
-
+        
+            function delete_raw_material_details()
+            {
+                let record_id = $('#delete_raw_material_record_id').val();
+                let application_no = $('#delete_raw_material_app_no').val();
+                let service_type = $('#general_water_service_type').val();
+        
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'delete_raw_materials' %}",
+                    data : {'record_id':record_id, 'application_no':application_no,'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    success : function(responseText)
+                    {
+                        $('#delete_raw_material_SuccessMsg').html("Delete Successful");
+                        $('#delete_raw_material_SuccessMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#delete_raw_material_SuccessMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            $('#delete_raw_material_modal').modal('hide');
+                        }, 2000);
+                        setTimeout(function() {
+                            $('#raw_materials_div').html(responseText);
+                        }, 2000);
+                    }
+                });
+            }
 
 
             function add_partner_details() {
@@ -4119,88 +4183,88 @@
                     });
             }
 
-            function save_power_line_details() {
-                // Hide all previous messages
-                $('.error-msg').hide();
-                $('#power_line_successMsg').hide();
+            // function save_power_line_details() {
+            //     // Hide all previous messages
+            //     $('.error-msg').hide();
+            //     $('#power_line_successMsg').hide();
 
-                // Get the form element
-                const form = document.getElementById('anc_power_line_form');
+            //     // Get the form element
+            //     const form = document.getElementById('anc_power_line_form');
 
-                // Create FormData object from the form
-                const formData = new FormData(form);
+            //     // Create FormData object from the form
+            //     const formData = new FormData(form);
 
-                // Add additional fields that might not be in the form
-                formData.append('application_no', $('#application_no').val());
+            //     // Add additional fields that might not be in the form
+            //     formData.append('application_no', $('#application_no').val());
 
-                // Define validation rules in order
-                const validationRules = [
-                    { field: 'line_chainage_from', message: 'Enter Transmission line Chainage From' },
-                    { field: 'line_chainage_to', message: 'Enter Transmission line Chainage To' },
-                    { field: 'land_type', message: 'Enter Land Type' },
-                    { field: 'terrain', message: 'Select One' },
-                    { field: 'tower_type', message: 'Enter Type of Tower' },
-                    { field: 'no_of_tower', message: 'Enter No. of Towers' },
-                    { field: 'row', message: 'Enter Right of way' },
-                    { field: 'area_required', message: 'Enter Area Required' }
-                ];
+            //     // Define validation rules in order
+            //     const validationRules = [
+            //         { field: 'line_chainage_from', message: 'Enter Transmission line Chainage From' },
+            //         { field: 'line_chainage_to', message: 'Enter Transmission line Chainage To' },
+            //         { field: 'land_type', message: 'Enter Land Type' },
+            //         { field: 'terrain', message: 'Select One' },
+            //         { field: 'tower_type', message: 'Enter Type of Tower' },
+            //         { field: 'no_of_tower', message: 'Enter No. of Towers' },
+            //         { field: 'row', message: 'Enter Right of way' },
+            //         { field: 'area_required', message: 'Enter Area Required' }
+            //     ];
 
-                // Validate fields in sequence
-                for (const rule of validationRules) {
-                    const value = formData.get(rule.field);
-                    if (!value) {
-                        showFieldError(rule.field, rule.message);
-                        return false;
-                    }
-                }
+            //     // Validate fields in sequence
+            //     for (const rule of validationRules) {
+            //         const value = formData.get(rule.field);
+            //         if (!value) {
+            //             showFieldError(rule.field, rule.message);
+            //             return false;
+            //         }
+            //     }
 
-                // If validation passes, submit the form
-                submitPowerLineDetails(formData);
-            }
+            //     // If validation passes, submit the form
+            //     submitPowerLineDetails(formData);
+            // }
 
-            // AJAX submission function
-            function submitPowerLineDetails(formData) {
-                $.ajax({
-                    type: "POST",
-                    url : "{% url 'save_anc_power_line_details' %}",
-                    data: formData,
-                    processData: false,  // Required for FormData
-                    contentType: false,  // Required for FormData
-                    success: function (responseText) {
-                        $('#power_line_successMsg').html("Added Successfully").show();
-                        // Optionally clear the form or close the modal after success
-                        setTimeout(() => {
-                            $('#anc_power_line_modal').modal('hide');
-                            // You might want to reload data or reset the form here
-                        }, 2000);
-                        setTimeout(() => {
-                            $('#anc_power_line_details').responseText();
-                            // You might want to reload data or reset the form here
-                        }, 3000);
+            // // AJAX submission function
+            // function submitPowerLineDetails(formData) {
+            //     $.ajax({
+            //         type: "POST",
+            //         url : "{% url 'save_anc_power_line_details' %}",
+            //         data: formData,
+            //         processData: false,  // Required for FormData
+            //         contentType: false,  // Required for FormData
+            //         success: function (responseText) {
+            //             $('#power_line_successMsg').html("Added Successfully").show();
+            //             // Optionally clear the form or close the modal after success
+            //             setTimeout(() => {
+            //                 $('#anc_power_line_modal').modal('hide');
+            //                 // You might want to reload data or reset the form here
+            //             }, 2000);
+            //             setTimeout(() => {
+            //                 $('#anc_power_line_details').responseText();
+            //                 // You might want to reload data or reset the form here
+            //             }, 3000);
 
-                    },
-                    error: function (xhr, status, error) {
-                        $('#power_line_errorMsg').html("Error: " + error).show();
-                    }
-                });
-            }
+            //         },
+            //         error: function (xhr, status, error) {
+            //             $('#power_line_errorMsg').html("Error: " + error).show();
+            //         }
+            //     });
+            // }
 
-            // Helper function to show field errors (unchanged)
-            function showFieldError(fieldName, message) {
-                const $errorElement = $(`#${fieldName}ErrorMsg`);
-                const $inputElement = $(`#${fieldName}`);
+            // // Helper function to show field errors (unchanged)
+            // function showFieldError(fieldName, message) {
+            //     const $errorElement = $(`#${fieldName}ErrorMsg`);
+            //     const $inputElement = $(`#${fieldName}`);
 
-                $errorElement.html(message).show();
-                $inputElement.focus();
+            //     $errorElement.html(message).show();
+            //     $inputElement.focus();
 
-                // Scroll to the error field
-                $('html, body').animate({
-                    scrollTop: $inputElement.offset().top - 100
-                }, 200);
+            //     // Scroll to the error field
+            //     $('html, body').animate({
+            //         scrollTop: $inputElement.offset().top - 100
+            //     }, 200);
 
-                // Auto-hide error after delay
-                $errorElement.delay(2000).fadeOut('slow');
-            }
+            //     // Auto-hide error after delay
+            //     $errorElement.delay(2000).fadeOut('slow');
+            // }
 
 
             function populate_power_line_details(record_id, application_no, line_chainage_from, line_chainage_to, land_type, terrain, tower_type, no_of_tower, row, area_required) {
@@ -4226,12 +4290,13 @@
             function delete_power_line_details() {
                 let record_id = $('#delete_anc_record_id').val();
                 let application_no = $('#delete_anc_application_no').val();
+                let service_type = $('#service_type').val();
 
                 $.ajax
                     ({
                         type: "POST",
                         url : "{% url 'delete_anc_power_line_details' %}",
-                        data: { 'record_id': record_id, 'application_no': application_no, csrfmiddlewaretoken: '{{ csrf_token }}' },
+                        data: { 'record_id': record_id, 'application_no': application_no, 'service_type':service_type, csrfmiddlewaretoken: '{{ csrf_token }}' },
                         success: function (responseText) {
                             $('#delete_power_line_successMsg').html("Power Line Details Deleted Successfully");
                             $('#delete_power_line_successMsg').show();
@@ -4258,6 +4323,7 @@
                 const no_of_tower = $('#edit_no_of_tower').val();
                 const row = $('#edit_row').val();
                 const area_required = $('#edit_area_required').val();
+                const service_type = $('#service_type').val();
 
                 // Validation rules (field name : error message)
                 const validationRules = {
@@ -4294,6 +4360,7 @@
                         no_of_tower: no_of_tower,
                         row: row,
                         area_required: area_required,
+                        service_type:service_type,
                         csrfmiddlewaretoken: '{{ csrf_token }}'
                     },
                     success: function (responseText) {

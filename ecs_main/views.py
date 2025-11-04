@@ -21,6 +21,7 @@ def verify_application_list(request):
     # Get session data with defaults
     ca_authority = request.session.get('ca_authority')
     login_id = request.session.get('login_id')
+    print(ca_authority)
     
     # Base query filters
     base_filters = {
