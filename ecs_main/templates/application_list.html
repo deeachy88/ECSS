@@ -1,64 +1,56 @@
 {% extends 'common_dashboard.html' %}
 {% block content %}
 <div id="application_details">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card mt-1">
-                <div class="card-body">
-                    <h5 class="card-title mb-0 text-right">Application List</h5>
-                    <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
-                        <i class="ri-check-line me-2"></i>
-                    </div>
-                    <div id="cardCollpase1" class="collapse pt-3 show">
-                        <table id="basic-datatable" class="table dt-responsive nowrap w-100">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Application No</th>
-                                    <th scope="col">Service Name</th>
-                                    <th scope="col">Application Date</th>
-                                    <th scope="col">Application Source</th> 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for application_details in application_details %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        {% if application_details.service_id == 0 %}
-                                        <td>
-                                            <a href="javascript: void(0);" class="btn btn-outline-primary" onclick="viewApplicationDetails('{{application_details.application_no}}','{{application_details.service_id}}','{{application_details.application_source}}')">{{application_details.application_no}}
-                                            </a>
-                                        </td>
-                                        {% else %}
-                                            {% for payment_details in payment_details %}
-                                                {% if application_details.application_no == payment_details.ref_no %}
-                                                    {% if payment_details.receipt_no %}
-                                                        <td>
-                                                            <a href="javascript: void(0);" class="btn btn-outline-primary" onclick="viewApplicationDetails('{{application_details.application_no}}','{{application_details.service_id}}','{{application_details.application_source}}')">{{application_details.application_no}}
-                                                            </a>
-                                                        </td>
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mt-1">
+                    <div class="card-body">
+                        <h5 class="card-title mb-0 text-right">Application List</h5>
+                        <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
+                            <i class="ri-check-line me-2"></i>
+                        </div>
+                        <div id="cardCollpase1" class="collapse pt-3 show">
+                            <div class="table-responsive">
+                                <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Application No</th>
+                                            <th scope="col">Service Name</th>
+                                            <th scope="col">Application Date</th>
+                                            <th scope="col">Application Source</th> 
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for app in application_data %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>
+                                                    {% if app.is_clickable %}
+                                                        <a href="javascript:void(0);" 
+                                                           class="btn btn-outline-primary btn-sm" 
+                                                           onclick="viewApplicationDetails('{{app.application_no}}','{{app.service_id}}','{{app.application_source}}')">
+                                                           {{app.application_no}}
+                                                        </a>
                                                     {% else %}
-                                                        <td>{{application_details.application_no}}</td>
+                                                        {{app.application_no}}
                                                     {% endif %}
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% endif %}
-                                        {% for service_details in service_details %}
-                                            {% if application_details.service_id == service_details.service_id %}
-                                                <td>{{service_details.service_name}}</td>
-                                            {% endif %}
+                                                </td>
+                                                <td>{{app.service_name}}</td>
+                                                <td>{{app.action_date|date:"d-m-Y"}}</td>
+                                                <td>{{app.application_source}}</td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="5" class="text-center">No Data</td>
+                                            </tr>
                                         {% endfor %}
-                                        <td>{{application_details.action_date|date:"d-m-Y"}}</td>
-                                        <td>{{application_details.application_source}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                        <td colspan="5" class="text-center">No Data</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                     </div>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -66,20 +58,49 @@
 </div>
 
 <script>
-    function viewApplicationDetails(application_no,service_id, application_source)
-    {
+    function viewApplicationDetails(application_no, service_id, application_source) {
+        // Show loading state
+        const originalContent = $('#application_details').html();
+        $('#application_details').html(`
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Loading application details...</p>
+            </div>
+        `);
+
         $.ajax({
-            type : "GET",
-            url : "{% url 'view_application_details' %}",
-            data :{'application_no':application_no, 'service_id':service_id,'application_source':application_source},
-            success : function(data)
-            {
+            type: "GET",
+            url: "{% url 'view_application_details' %}",
+            data: {
+                'application_no': application_no, 
+                'service_id': service_id,
+                'application_source': application_source
+            },
+            success: function(data) {
                 $('#application_details').html(data);
-                $('#application_details').show();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading application details:', error);
+                // Restore original content on error
+                $('#application_details').html(originalContent);
+                // Show error message
+                alert('Error loading application details. Please try again.');
             }
         });
     }
-</script>
-{% endblock %}       
 
-                    
+    // Initialize DataTable
+    $(document).ready(function() {
+        $('#basic-datatable').DataTable({
+            "pageLength": 25,
+            "order": [],
+            "language": {
+                "emptyTable": "No applications available",
+                "search": "Search:"
+            }
+        });
+    });
+</script>
+{% endblock %}

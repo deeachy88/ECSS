@@ -367,13 +367,16 @@
                             window.location.href = '/dashboard';
                         }, 2000);
                     }
-                    else
+                    else 
                     {
                         $("#pageloader").hide();
-                        $('#tor_form_errorMsg').html("Please Check And Submit Again");
+                        var errorMsg = data.error;
+        
+                        $('#tor_form_errorMsg').html(`Application Error: ${data.error}`);
                         $('#tor_form_errorMsg').show();
-                        setTimeout(function()
-                        {
+                        $('#tor_form_errorMsg').focus();
+                        
+                        setTimeout(function() {
                             $('#tor_form_errorMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                     }

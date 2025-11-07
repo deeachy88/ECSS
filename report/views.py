@@ -292,7 +292,6 @@ def revenue_report(request):
 
 #Application Status
 def application_status_list(request):
-
     login_type = request.session.get('login_type', None)
     ca_list = t_competant_authority_master.objects.all()
     dzongkhag_list = t_dzongkhag_master.objects.all()
@@ -300,25 +299,26 @@ def application_status_list(request):
     ec_renewal_count = 0
     v_application_count = 0
     r_application_count = 0
-    app_hist_count = 0  # Provide a default value
-    cl_application_count = 0  # Provide a default value
+    app_hist_count = 0
+    cl_application_count = 0
     tor_application_count = 0
     applicant_id = request.session.get('email', None)
-    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True, login_type='C').count()
+    
     if login_type == 'C':
         app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
         t1_general_subquery = t_ec_industries_t1_general.objects.filter(
-        tor_application_no=OuterRef('application_no')
+            tor_application_no=OuterRef('application_no')
         ).values('tor_application_no')
-
-        # Query to count approved applications that are not in t1_general
+        
         tor_application_count = t_ec_industries_t1_general.objects.filter(
             application_status='A',
-            application_no__contains='TOR',applicant_id=applicant_id
+            application_no__contains='TOR', applicant_id=applicant_id
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
+    
     elif login_type == 'I':
         role = request.session['role']
         ca_authority = request.session.get('ca_authority', None)
@@ -328,17 +328,38 @@ def application_status_list(request):
             expiry_date_threshold = datetime.now().date() + timedelta(days=30)
             ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'], application_status='A', ec_expiry_date__lt=expiry_date_threshold).count()
 
+    # FIX: Use distinct() and order by application date to get unique records
     if login_type == 'C':
-        application_list = t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id).values()
+        application_list = t_ec_industries_t1_general.objects.filter(
+            applicant_id=applicant_id
+        ).order_by('application_no', '-application_date').distinct('application_no')
     elif login_type == 'I' and (role == 'Admin' or role == 'NECS Head'):
-        application_list = t_ec_industries_t1_general.objects.all()
+        application_list = t_ec_industries_t1_general.objects.all().order_by('application_no', '-application_date').distinct('application_no')
     elif login_type == 'I' and (role == 'Verifier' or role == 'Reviewer'):
-        application_list = t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority).values()
+        application_list = t_ec_industries_t1_general.objects.filter(
+            ca_authority=ca_authority
+        ).order_by('application_no', '-application_date').distinct('application_no')
     
-    # Return the render statement with the variables as before
-    response = render(request, 'application_status_list.html', {'client_application_count':client_application_count,'ca_list': ca_list, 'ec_renewal_count': ec_renewal_count, 'dzongkhag_list': dzongkhag_list, 'v_application_count': v_application_count, 'r_application_count': r_application_count, 'application_list': application_list, 'app_hist_count': app_hist_count, 'cl_application_count': cl_application_count, 'tor_application_count':tor_application_count})
+    # If distinct with field doesn't work, use values() with distinct
+    # application_list = t_ec_industries_t1_general.objects.filter(
+    #     applicant_id=applicant_id
+    # ).values('application_no', 'application_date', 'applicant_name', 'project_name', 
+    #          'address', 'ec_reference_no', 'ec_approve_date', 'application_status',
+    #          'service_id', 'application_source').distinct()
 
-    # Set cache-control headers to prevent caching
+    response = render(request, 'application_status_list.html', {
+        'client_application_count': client_application_count,
+        'ca_list': ca_list, 
+        'ec_renewal_count': ec_renewal_count, 
+        'dzongkhag_list': dzongkhag_list, 
+        'v_application_count': v_application_count, 
+        'r_application_count': r_application_count, 
+        'application_list': application_list, 
+        'app_hist_count': app_hist_count, 
+        'cl_application_count': cl_application_count, 
+        'tor_application_count': tor_application_count
+    })
+
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response['Pragma'] = 'no-cache'
     response['Expires'] = '0'

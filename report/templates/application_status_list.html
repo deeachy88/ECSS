@@ -108,30 +108,35 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for application_list in application_list %}
-                                        <tr>
-                                            <td>{{ forloop.counter }}</td>
-                                            <td>{{application_list.application_no}}</td>
-                                            <td>{{application_list.application_date}}</td>
-                                            <td>{{application_list.applicant_name}}</td>
-                                            <td>{{application_list.project_name}}</td>
-                                            <td>{{application_list.address}}</td>
-                                            <td>{{application_list.ec_reference_no}}</td>
-                                            <td>{{application_list.ec_approve_date}}</td>
-                                            {% if application_list.application_status == 'P' %}
-                                                <td>Pending</td>
-                                            {% elif application_list.application_status == 'A' %}
-                                                <td>Approved</td>
-                                            {% else %}
-                                                <td>None</td>
-                                            {% endif %}
-                                            <td><button type="button" class="btn btn-sm btn-outline-primary px-1 py-0" onclick="viewApplicationDetails('{{application_list.application_no}}','{{application_list.service_id}}','{{application_list.application_source}}')"> <i class="uil uil-file-copy-alt font-16"></i> </button></td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                        <td colspan="9" class="text-center">No Data</td>
-                                        </tr>
-                                        {% endfor %}
+                                    {% for application in application_list %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ application.application_no }}</td>
+        <td>{{ application.application_date }}</td>
+        <td>{{ application.applicant_name }}</td>
+        <td>{{ application.project_name }}</td>
+        <td>{{ application.address }}</td>
+        <td>{{ application.ec_reference_no }}</td>
+        <td>{{ application.ec_approve_date }}</td>
+        {% if application.application_status == 'P' %}
+            <td>Pending</td>
+        {% elif application.application_status == 'A' %}
+            <td>Approved</td>
+        {% else %}
+            <td>None</td>
+        {% endif %}
+        <td>
+            <button type="button" class="btn btn-sm btn-outline-primary px-1 py-0" 
+                    onclick="viewApplicationDetails('{{ application.application_no }}','{{ application.service_id }}','{{ application.application_source }}')">
+                <i class="uil uil-file-copy-alt font-16"></i>
+            </button>
+        </td>
+    </tr>
+{% empty %}
+    <tr>
+        <td colspan="9" class="text-center">No Data</td>
+    </tr>
+{% endfor %}
                                 </tbody>
                             </table>
                         </div>

@@ -886,7 +886,8 @@ def save_iee_application(request):
                     assigned_role_id='2',
                     assigned_role_name='Verifier',
                     ca_authority=ca_auth,
-                    application_source='ECSS'
+                    application_source='ECSS',
+                    service_type=request.POST.get('service_type')
                 )
             data['message'] = 'success'
     except Exception as e:
@@ -3570,9 +3571,7 @@ def save_tor_form(request):
         send_tor_payment_mail(request.session['name'], request.session['email'], 500)
         data['message'] = 'success'
     except Exception as e:
-        print('An error occurred:', e)
-        error_msg = str(e)
-        data['error'] = str(error_msg.split("\n")[0])
+        data['error'] = str(e).split("\n")[0]
     return JsonResponse(data)
 
 
@@ -7415,8 +7414,8 @@ def make_payment_request(request, application_no, total_amount, description, ema
     payload = {
         "platform": "Environment Clearance Services System",
         "refNo": application_no,
-        "taxPayerNo": "11303003082",
-        "taxPayerDocumentNo": "11303003082",
+        "taxPayerNo": cid_no,
+        "taxPayerDocumentNo": cid_no,
         "paymentRequestDate": today_date_str,
         "agencyCode": "DTH1552",
         "payerEmail": email,

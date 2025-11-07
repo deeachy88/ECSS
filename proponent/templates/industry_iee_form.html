@@ -21,11 +21,7 @@
                                 <form method="post" id="iee_application_form">
                                     {% csrf_token %}
                                     <input type="text" class="form-control" value="{{application_no}}" name="application_no" id="application_no" style="display:none;">
-<<<<<<< HEAD
                                     <input type="text" class="form-control" value="Main Activity" name="service_type" id="service_type" style="display:none;">
-=======
-                                    <input type="text" class="form-control" value="Main Activity" id="service_type" name="service_type" style="display:none;">
->>>>>>> 77e9e9ca6a9d73b7b82ddf2dde06b2e427ad78d0
                                     <input type="text" class="form-control" value="value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -3207,10 +3203,7 @@
             let machine_tool = $('#machine_tool').val();
             let machine_tool_qty = $('#machine_tool_qty').val();
             let machine_tool_installed_capacity = $('#machine_tool_installed_capacity').val();
-<<<<<<< HEAD
             let service_type = $('#service_type').val();
-=======
->>>>>>> 77e9e9ca6a9d73b7b82ddf2dde06b2e427ad78d0
     
             if(machine_tool == "")
             {

@@ -8109,8 +8109,8 @@
                                     <select class="form-select" name="account_head"  id="account_head">
                                         <option value="">--SELECT--</option>
                                         {% for payment_details in pay_details %}
-                                            <option value="{{ payment_details.account_head_code }}">{{ thromde.account_head_name }}</option>
-                                        {% endfor %} 
+                                            <option value="{{ payment_details.account_head_code }}">{{ payment_details.account_head_name }}</option>
+                                        {% endfor %}  
                                     </select>
                                 </div>
                             </div>
