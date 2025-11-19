@@ -1,0 +1,704 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card mt-1">
+            <div class="card-body">
+                <h4 class="header-title mb-3"> Initial Environmental Examination (IEE) Form for General Projects - 2022</h4>
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                                aria-expanded="true" aria-controls="collapseOne">
+                                General Information
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <form method="post" id="general_application_form">
+                                    {% csrf_token %}
+                                    <input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">
+                                    <input type="text" class="form-control" value="Main Activity" name="service_type" id="service_type" style="display:none;">
+                                    <input type="text" class="form-control" value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        Applicant Details
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Name of the Applicant</label>
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
+                                            </div>
+                                            <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Address</label>
+                                                <input type="text" name="address" class="form-control" id="address" value="{{request.session.address}}" readonly>
+                                            </div>
+                                            <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Contact No</label>
+                                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{request.session.contact_number}}" readonly>
+                                            </div>
+                                            <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Email</label>
+                                                <input type="email" name="email" class="form-control" id="email" value="{{request.session.email}}" readonly>
+                                            </div>
+                                            <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Name of the Project</label>
+                                                <input type="text" name="project_name" class="form-control" id="project_name">
+                                            </div>
+                                            <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
+                                                <textarea class="form-control" name="focal_person" id="focal_person" rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                        Project Location and Area
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Select One</label>
+                                                <div class="mt-2">
+                                                {% if request.session.ca_auth == "THROMDE" %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" checked>
+                                                        <label class="form-check-label">Thromde</label>
+                                                    </div>
+                                                {% elif request.session.ca_auth == "DEC" %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" checked>
+                                                        <label class="form-check-label">Dzongkhag</label>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" 
+                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                        <label class="form-check-label">Thromde</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" 
+                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                        <label class="form-check-label">Dzongkhag</label>
+                                                    </div>
+                                                {% endif %}
+                                                </div>
+                                            </div>
+                                            <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    {% if request.session.ca_auth == "THROMDE" %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select" name="thromde_id"  id="thromde_id">
+                                                        <option value="">--SELECT THROMDE--</option>
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    {% if request.session.ca_auth == "DEC" %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                                        <option value="">--SELECT DZONGKHAG--</option>
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                        <option value="">--SELECT GEWOG--</option>
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                        <option value="">--SELECT VILLAGE--</option>
+                                                        {% for village in village %}
+                                                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row thromde">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Thromde</label>
+                                                    <select class="form-select" name="thromde_id"  id="thromde_id">
+                                                        <option value="">--SELECT THROMDE--</option>
+                                                        {% for thromde in thromde %}
+                                                            <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row dzongkhag">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                                    <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                                        <option value="">--SELECT DZONGKHAG--</option>
+                                                        {% for dzongkhag in dzongkhag %}
+                                                            <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </div>
+                                                <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Gewog</label>
+                                                    <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                        <option value="">--SELECT GEWOG--</option>
+                                                        {% for gewog in gewog %}
+                                                            <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row dzongkhag">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                        <option value="">--SELECT VILLAGE--</option>
+                                                        {% for village in village %}
+                                                        <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Name of the Particular Project Site</label>
+                                                <input type="text" name="project_site" class="form-control" id="project_site">
+                                            </div>
+                                            <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-4">
+                                        <div class="text-sm-end">
+                                            <a href="#" class="btn btn-success" onclick="save_general_info()">
+                                                <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingAttachment">
+                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
+                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
+                                File Attachment
+                            </button>
+                        </h2>
+                        <div id="collapseAttachment" class="accordion-collapse collapse" aria-labelledby="headingAttachment"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <div class="alert alert-danger border-0 rounded-0" role="alert">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Note: If the activity is proposed in the industrial area/estate/park/SEZ, the list of documents from 1 to 3 are not required.
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <table class="table table-hover table-bordered table-centered mb-0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Written consent from individual/juristic person directly impacted by the proposed project and ancillary activities authenticated by the concerned local authority</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Records of public consultation signed by member (s) of the concerned local authority present during the consultation. If there are no individuals/public within the vicinity of the project, submit endorsement/approval of the concerned local authority.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>KMZ file indicating the proposed site and its boundary, access road alignment, electricity tapping point and alignment (if applicable), water source, and nearby sensitive receptors as identified in the baseline information</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>4</td>
+                                                    <td>Layout plan of the proposed project, if applicable</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>5</td>
+                                                    <td>Extraction plan and production schedule</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>6</td>
+                                                    <td>Water abstraction permit from concerned local authority (Dzongkhag/Gewog Administration) for any water abstraction activity</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-widgets">
+                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#general_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            </div>
+                                            <h5 class="card-title mb-0">Attachments</h5>
+                                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                                <div id="general_attachment">
+                                                    {% include 'file_attachment_page.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-success border-0 rounded-0" 
+                                    role="alert" 
+                                    id="general_attachment_successMsg" 
+                                    style="display:none"
+                                    aria-live="polite"
+                                    aria-atomic="true">
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="text-sm-end">
+                                        <a href="#" class="btn btn-success" onclick="save_general_attachment_details()">
+                                            <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingDisclaimer">
+                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingDisclaimerBtn"
+                                data-bs-target="#collapseDisclaimer" aria-expanded="false" aria-controls="collapseDisclaimer" disabled>
+                                Disclaimer
+                            </button>
+                        </h2>
+                        <div id="collapseDisclaimer" class="accordion-collapse collapse" aria-labelledby="headingDisclaimer"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <form method="post" id="general_submit_form">
+                                    {% csrf_token %}
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no">
+                                    
+                                    <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
+                                    <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
+                                    <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
+                                    <p class="text-wrap">3.	Application Outcome: Submission of this application does not guarantee acceptance or approval. The final decision rests with the appropriate authorities, and we reserve the right to reject any application without providing any reason.</p>
+                                    <p class="text-wrap">4.	Disclaimer of Liability: To the extent permitted by law, we disclaim all liability for any loss, damage, or injury arising out of or related to your use of this online application form or reliance on any information provided herein. We shall not be responsible for any technical errors, interruptions, or inaccuracies that may occur during the application process.</p>
+                                    <p class="text-wrap">5.	Modification or Termination: We reserve the right to modify, suspend, or terminate this online application form at any time without prior notice. We may also update or change the terms and conditions of this disclaimer without notice.</p>
+                                    <p class="text-wrap">Please review this disclaimer carefully before submitting your application. If you do not agree with any part of this disclaimer, please refrain from using this online application form.</p>
+                                    <div class="mt-3">
+                                        <div class="form-check">
+                                            <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
+                                            <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="alert alert-success border-0 rounded-0" 
+                                        role="alert" 
+                                        id="general_submit_successMsg" 
+                                        style="display:none"
+                                        aria-live="polite"
+                                        aria-atomic="true">
+                                    </div>
+
+                                    <!-- Error Alert -->
+                                    <div class="alert alert-danger border-0 rounded-0" 
+                                        role="alert" 
+                                        id="general_submit_errorMsg" 
+                                        style="display:none"
+                                        aria-live="assertive"
+                                        aria-atomic="true">
+                                    </div>
+                                    <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                        Loading...
+                                    </button>
+                                    <div class="row mt-2">
+                                        <div class="text-sm-end">
+                                            <a href="#" id="gen_submit_btn" class="btn btn-success" onclick="submit_general_application()" style="display:none;">
+                                                <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- end card-body -->
+        </div> <!-- end card-->
+    </div>
+</div>
+
+<form method="post" id="general_attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="general_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+        <!--Header-->
+        <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Add Attachment</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+        </div>
+        <!--Body-->
+        <div class="modal-body mx-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Attachment</label>
+                        <input type="file" name="general_attach" class="form-control" id="general_attach" accept=".png,.jpg,.jpeg,.pdf,.doc,.kmz">
+                    </div>
+                    <div class="alert alert-danger" id="general_attachErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="save_general_attachment()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+        </div>
+        <!--/.Content-->
+    </div>
+    </div>
+</form>
+
+
+<script>
+    function save_general_info()
+    {
+        let project_name = $('#project_name').val();
+        let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
+        let dzongkhag_throm_val = $("input[name=dzongkhag_throm]:checked").val();
+        let thromde_id = $('#thromde_id').val();
+        let dzongkhag_code = $('#dzongkhag').val();
+        let gewog_code = $('#gewog').val();
+        let village_code = $('#vil_chiwog').val();
+        let project_site = $('#project_site').val();
+
+        if (project_name === "") {
+            showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');
+            return false;
+        }
+        else if (dzongkhag_throm_val === "Thromde" && thromde_id === "") {
+            showErrorAndFocus('#thromde_idErrorMsg', 'Select Thromde', '#thromde_id');
+            return false;
+        }
+        else if (dzongkhag_throm_val === "Dzongkhag" && dzongkhag_code === "") {
+            showErrorAndFocus('#dzongkhagErrorMsg', 'Select Dzongkhag', '#dzongkhag');
+            return false;
+        }
+        else if (dzongkhag_throm_val === "Dzongkhag" && gewog_code === "") {
+            showErrorAndFocus('#gewogErrorMsg', 'Select Gewog', '#gewog');
+            return false;
+        }
+        else if (dzongkhag_throm_val === "Dzongkhag" && village_code === "") {
+            showErrorAndFocus('#vil_chiwogErrorMsg', 'Select Village', '#vil_chiwog');
+            return false;
+        }
+        else if (project_site === "") {
+            showErrorAndFocus('#project_siteErrorMsg', 'Enter Project Site', '#project_site');
+            return false;
+        }
+        else {
+            // Submit the form via AJAX
+            $.ajax({
+                type: "POST",
+                url: "{% url 'save_general_details' %}",
+                data: $('#general_application_form').serialize(),
+                success: function(data) {
+                    if (data.message == 'success') {
+                        // Success case with accessibility
+                        $('#application_form_successMsg')
+                            .html('<i class="uil-folder-heart me-1 h4 align-middle"></i> Saved Successfully')
+                            .removeAttr('tabindex')  // Remove focus blocker
+                            .attr({
+                                'aria-live': 'polite',
+                                'aria-atomic': 'true'
+                            })
+                            .show()
+                            .focus();  // Set focus for accessibility
+
+                        setTimeout(() => {
+                            $('#application_form_successMsg').fadeOut('slow');
+                            $("#headingAttachmentBtn").removeAttr("disabled");
+                            $("#collapseAttachment").addClass("show");
+                            $("#collapseOne").removeClass("show");
+                        }, 2000);
+                    } else {
+                        // Error case with accessibility
+                        $('#application_form_errorMsg')
+                            .html(`<i class="uil-folder-heart me-1 h4 align-middle"></i> Application Error: ${data.error}`)
+                            .removeAttr('tabindex')  // Remove focus blocker
+                            .attr({
+                                'aria-live': 'assertive',
+                                'aria-atomic': 'true'
+                            })
+                            .show()
+                            .focus();
+
+                        setTimeout(() => {
+                            $('#application_form_errorMsg').fadeOut('slow');
+                        }, 2000);
+                    }
+                }
+            });
+        }
+    }
+
+    function showErrorAndFocus(errorElement, message, focusElement) {
+        $(errorElement).html(message).show();
+        
+        // Use setTimeout to ensure the focus happens after the DOM updates
+        setTimeout(function() {
+            $(focusElement).focus();
+            
+            // Scroll to the element if needed
+            $('html, body').animate({
+                scrollTop: $(focusElement).offset().top - 100
+            }, 100);
+        }, 50);
+        
+        // Hide the error after 2 seconds
+        setTimeout(function() {
+            $(errorElement).fadeOut('slow');
+        }, 2000);
+    }
+
+    function save_general_attachment_details() {
+        // Set success message and attributes
+        $('#general_attachment_successMsg')
+            .text("Saved Successfully")  // Using text() instead of html()
+            .removeAttr('tabindex')      // Remove focus blocker
+            .attr({
+                'aria-live': 'polite',
+                'aria-atomic': 'true'
+            })
+            .show()
+            .focus();  // Set focus for accessibility
+
+        // Fade out after 2 seconds
+        setTimeout(() => {
+            $('#general_attachment_successMsg').delay(2000).fadeOut('slow');
+        }, 2000);
+
+        // Panel navigation after 2 seconds
+        setTimeout(() => {
+            $("#headingDisclaimerBtn").removeAttr("disabled");
+            $("#collapseDisclaimer").addClass("show");
+            $("#collapseAttachment").removeClass("show");
+        }, 2000);
+    }
+
+    function save_general_attachment()
+    {
+        let file_length = document.getElementById("general_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#general_attachErrorMsg').html("Please Choose A Attachment");
+            $('#general_attachErrorMsg').show();
+            $('#general_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var fileName = document.getElementById('general_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('general_attach').files[0];
+            fd.append('general_attach', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_general_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_general_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#general_attachment_modal').modal('hide');
+                                $('#general_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#general_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#general_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#general_attachErrorMsg').show();
+                        $('#general_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+        }
+    }
+
+    function submit_general_application()
+    {
+        // Show loading indicator
+        $("#pageloader").show();
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'submit_general_application' %}",
+            data: $('#general_submit_form').serialize(),
+            success: function(data) {
+                $("#pageloader").hide();
+                
+                if (data.message == 'success') {
+                    // Success case
+                    $('#general_submit_successMsg')
+                        .text("Application Submitted Successfully")
+                        .removeAttr('tabindex')
+                        .attr({
+                            'aria-live': 'polite',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
+
+                    setTimeout(() => {
+                        $('#general_submit_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+
+                    setTimeout(() => location.reload(), 2000);
+                }
+                else if (data.message == 'not submitted') {
+                    // Ancillary not submitted case
+                    $('#general_submit_errorMsg')
+                        .text("Please Submit Your Ancillary First And Try Again")
+                        .removeAttr('tabindex')
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
+
+                    setTimeout(() => {
+                        $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
+                else {
+                    // Other error cases
+                    $('#general_submit_errorMsg')
+                        .text(`Application Error: ${data.error}`)
+                        .removeAttr('tabindex')
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
+
+                    setTimeout(() => {
+                        $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
+            },
+            error: function(xhr, status, error) {
+                // AJAX error handling
+                $("#pageloader").hide();
+                $('#general_submit_errorMsg')
+                    .text(`Request failed: ${error}`)
+                    .removeAttr('tabindex')
+                    .attr({
+                        'aria-live': 'assertive',
+                        'aria-atomic': 'true'
+                    })
+                    .show()
+                    .focus();
+
+                setTimeout(() => {
+                    $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+            }
+        });
+    }
+
+    function check_terms()
+    {
+        if($("#ec_terms").prop('checked') == true)
+        {
+            $('#gen_submit_btn').show();
+        }
+        else
+        {
+            $('#gen_submit_btn').hide();
+        }
+    }
+</script>
+{% endblock %}

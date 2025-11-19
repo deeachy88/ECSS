@@ -514,7 +514,7 @@ def delete_fee_schedule_master(request):
     return render(request, 'fees_schedule.html', {'fees_schedule':fees_schedule_list})
 
 def bsic_master(request):
-    bsic_code_list = t_bsic_code.objects.all().order_by('broad_activity_code').distinct()
+    bsic_code_list = t_bsic_code.objects.all().order_by('bsic_id').distinct()
     service_list = t_service_master.objects.all()
     competant_authority = t_competant_authority_master.objects.values('competent_authority').distinct()
     client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
@@ -527,21 +527,13 @@ def bsic_master(request):
     return response
 
 def add_bsic_code_master(request):
-    broad_activity_code = request.GET.get('broad_activity_code')
-    activity_description = request.GET.get('activity_description')
-    specific_activity_code = request.GET.get('specific_activity_code')
-    specific_activity_description = request.GET.get('specific_activity_description')
-    classification = request.GET.get('classification')
-    category = request.GET.get('category')
+    activity = request.GET.get('activity')
     colour_code = request.GET.get('colour_code')
     competent_authority = request.GET.get('competent_authority')
     entry_point = 'ECSS'
     service_id = request.GET.get('service_id')
     has_tor = request.GET.get('has_tor')
-    t_bsic_code.objects.create(broad_activity_code=broad_activity_code, activity_description=activity_description,
-                               specific_activity_code=specific_activity_code,
-                               specific_activity_description=specific_activity_description,
-                               classification=classification, category=category, colour_code=colour_code,
+    t_bsic_code.objects.create(activity=activity, colour_code=colour_code,
                                competent_authority=competent_authority, entry_point=entry_point, service_id=service_id,has_tor=has_tor)
     return redirect(bsic_master)
 
@@ -553,18 +545,13 @@ def get_bsic_code_details(request, bsic_id):
 
 def edit_bsic_code_master(request):
     edit_bsic_id = request.POST.get('bsic_id')
-    edit_broad_activity_code = request.POST.get('broad_activity_code')
-    edit_activity_description = request.POST.get('activity_description')
-    edit_specific_activity_code = request.POST.get('specific_activity_code')
-    edit_specific_activity_description = request.POST.get('specific_activity_description')
-    edit_classification = request.POST.get('classification')
-    edit_category = request.POST.get('category')
+    edit_activity = request.POST.get('activity')
     edit_colour_code = request.POST.get('colour_code')
     edit_competent_authority = request.POST.get('competent_authority')
     edit_service_id = request.POST.get('service_id')
     has_tor = request.POST.get('has_tor')
     bsic_code_details = t_bsic_code.objects.filter(bsic_id=edit_bsic_id)
-    bsic_code_details.update(broad_activity_code=edit_broad_activity_code, activity_description=edit_activity_description, specific_activity_code=edit_specific_activity_code, specific_activity_description=edit_specific_activity_description, classification=edit_classification, category=edit_category, colour_code=edit_colour_code, competent_authority=edit_competent_authority, service_id=edit_service_id,has_tor=has_tor)
+    bsic_code_details.update(activity=edit_activity, colour_code=edit_colour_code, competent_authority=edit_competent_authority, service_id=edit_service_id,has_tor=has_tor)
     return redirect(bsic_master)
 
 def delete_bsic_code_master(request):

@@ -11,67 +11,11 @@
                     {% csrf_token %}
                     {% for bsic_code_details in bsic_code_details %}
                     <div class="row">
-                            <div class="col-3">
-                            <label class="form-label">Broad Activity Code</label>
-                            </div>
-                            <div class="col-sm-9">
-                            <input type="text" name="broad_activity_code" class="form-control" id="broad_activity_code" value="{{bsic_code_details.broad_activity_code}}">
-                            </div>
-                    </div>
-                    <div class="row">
                         <div class="col-3">
-                            <label class="form-label">Broad Activity Description</label>
+                            <label class="form-label">Activity</label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="text" name="activity_description" class="form-control" id="activity_description" value="{{bsic_code_details.activity_description}}">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3">
-                            <label class="form-label">Specific Activity Code</label>
-                        </div>
-                        <div class="col-sm-9">
-                            <input type="text" name="specific_activity_code" class="form-control" id="specific_activity_code" value="{{bsic_code_details.specific_activity_code}}">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-3">
-                            <label class="form-label">Specific Activity Description</label>
-                        </div>
-                        <div class="col-sm-9">
-                            <input type="text" name="specific_activity_description" class="form-control" id="specific_activity_description" value="{{bsic_code_details.specific_activity_description}}">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-3">
-                            <label class="form-label">Classification</label>
-                        </div>
-                        <div class="col-sm-9">
-                            <select type="text" name="classification" class="form-control" id="classification">
-                                {% if bsic_code_details.classification == "P" %}
-                                    <option value="P" selected>P</option>
-                                    <option value="C">C</option>
-                                    <option value="S">S</option>
-                                {% elif bsic_code_details.classification == "C" %}
-                                    <option value="P">P</option>
-                                    <option value="C" selected>C</option>
-                                    <option value="S">S</option>
-                                {% else %}
-                                    <option value="P">P</option>
-                                    <option value="C">C</option>
-                                    <option value="S" selected>S</option>
-                                {% endif %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3">
-                            <label class="form-label">Category</label>
-                        </div>
-                        <div class="col-sm-9">
-                            <input type="text" name="category" class="form-control" id="category" value="{{bsic_code_details.category}}">
+                            <textarea name="activity" class="form-control" id="activity">{{bsic_code_details.activity}}</textarea>
                         </div>
                     </div>
                     <div class="row">
@@ -154,12 +98,7 @@
                         </div>
                     </div>
                     <input type="hidden" class="form-control" id="bsic_id" value="{{bsic_code_details.bsic_id}}">
-                    <div id="edit_broad_activity_codeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                    <div id="edit_activity_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                    <div id="edit_specific_activity_codeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                    <div id="edit_specific_activity_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                    <div id="edit_classificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                    <div id="edit_categoryErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    <div id="edit_activityErrorMsg" class="alert alert-danger" style="display: none;"></div>
                     <div id="edit_colour_codeErrorMsg" class="alert alert-danger" style="display: none;"></div>
                     <div id="edit_competent_authorityErrorMsg" class="alert alert-danger" style="display: none;"></div>
                     <div id="edit_service_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -180,53 +119,18 @@
     function update_bsic_code_details()
     {
         var bsic_id = $('#bsic_id').val();
-        var broad_activity_code = $('#broad_activity_code').val();
-        var activity_description = $('#activity_description').val();
-        var specific_activity_code = $('#specific_activity_code').val();
-        var specific_activity_description = $('#specific_activity_description').val();
-        var classification = $('#classification').val();
-        var category = $('#category').val();
+        var activity = $('#activity').val();
         var colour_code = $('#colour_code').val();
         var competent_authority = $('#competent_authority').val();
         var service_id = $('#service_id').val();
         var has_tor = $('input[name="has_tor"]:checked').val();
 
 
-        if(broad_activity_code == "")
+        if(activity == "")
         {
-            $('#edit_broad_activity_codeErrorMsg').html("Enter Broad Activity Code.");
-            $('#edit_broad_activity_codeErrorMsg').show();
-            $('#edit_broad_activity_codeErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(activity_description == "")
-        {
-            $('#edit_activity_descriptionErrorMsg').html("Enter Activity Description.");
-            $('#edit_activity_descriptionErrorMsg').show();
-            $('#edit_activity_descriptionErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(specific_activity_code == "")
-        {
-            $('#edit_specific_activity_codeErrorMsg').html("Enter Specific Activity Code.");
-            $('#edit_specific_activity_codeErrorMsg').show();
-            $('#edit_specific_activity_codeErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(specific_activity_description == "")
-        {
-            $('#edit_specific_activity_descriptionErrorMsg').html("Enter Specific Activity Description.");
-            $('#edit_specific_activity_descriptionErrorMsg').show();
-            $('#edit_specific_activity_descriptionErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(category == "")
-        {
-            $('#edit_categoryErrorMsg').html("Enter Category.");
-            $('#edit_categoryErrorMsg').show();
-            $('#edit_categoryErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(classification == "")
-        {
-            $('#edit_classificationErrorMsg').html("Select classification.");
-            $('#edit_classificationErrorMsg').show();
-            $('#edit_classificationErrorMsg').delay(2000).fadeOut('slow');
+            $('#edit_activityErrorMsg').html("Enter Activity.");
+            $('#edit_activityErrorMsg').show();
+            $('#edit_activityErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(colour_code == "")
         {
@@ -257,7 +161,7 @@
             $.ajax({
                 type : "post",
                 url : "{% url 'edit_bsic_code_master' %}",
-                data : {'bsic_id':bsic_id, 'broad_activity_code':broad_activity_code, 'activity_description':activity_description, 'specific_activity_code':specific_activity_code, 'specific_activity_description':specific_activity_description, 'classification':classification, 'category':category, 'colour_code':colour_code, 'competent_authority':competent_authority, 'service_id':service_id,'has_tor':has_tor, csrfmiddlewaretoken:'{{ csrf_token }}'},
+                data : {'bsic_id':bsic_id,'activity':activity, 'colour_code':colour_code, 'competent_authority':competent_authority, 'service_id':service_id,'has_tor':has_tor, csrfmiddlewaretoken:'{{ csrf_token }}'},
                 success : function(data)
                 {
                     $('#edit_successMsg').html("BSIC Code Updated Successfully.");

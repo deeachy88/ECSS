@@ -64,7 +64,6 @@ class t_gewog_master(models.Model):
     def __str__(self):
         return self.gewog_name
 
-
 class t_village_master(models.Model):
     village_code = models.AutoField(primary_key=True)
     village_name = models.CharField(max_length=100,default=None, null=True)
@@ -93,12 +92,7 @@ class t_fees_schedule(models.Model):
 
 class t_bsic_code(models.Model):
     bsic_id = models.AutoField(primary_key=True)
-    broad_activity_code = models.CharField(max_length=10)
-    activity_description = models.CharField(max_length=250)
-    specific_activity_code = models.CharField(max_length=10)
-    specific_activity_description = models.TextField()
-    classification = models.CharField(max_length=10)
-    category = models.TextField()
+    activity = models.TextField()
     colour_code = models.CharField(max_length=10)
     competent_authority = models.CharField(max_length=250)
     entry_point = models.CharField(max_length=10)

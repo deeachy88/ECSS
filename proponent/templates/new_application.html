@@ -7,176 +7,66 @@
         <div class="col-xl-12">
             <div class="card mt-1">
                 <div class="card-body">
-                    <h4 class="header-title mb-3"> New Application</h4>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Activity Description</label>
-                                <select class="form-control select2" data-toggle="select2" name="activity_description" id="activity_description" onchange="get_specific_activity_description(this.value)">
-                                    <option value="">--SELECT-</option>
-                                    {% for bsic_details in bsic_details %}
-                                        <option value="{{ bsic_details.broad_activity_code }}">{{ bsic_details.activity_description }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div id="activity_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Specific Activity Description</label>
-                                <select class="form-control select2" data-toggle="select2" name="specific_activity_description" id="specific_activity_description" onchange="get_category(this.value)">
-                                    <option value="">--SELECT--</option>
-                                    {% for bsic_details in bsic_details %}
-                                        <option value="{{ bsic_details.specific_activity_code }}">{{ bsic_details.specific_activity_description }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div id="specific_activity_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                        </div>
+                    <div class="card-widgets">
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#user_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Category</label>
-                                <select class="form-control select2" data-toggle="select2" name="category" id="category">
-                                    <option value="">--SELECT--</option>
-                                    {% for bsic_details in bsic_details %}
-                                        <option value="{{ bsic_details.category }}" extra-attr="{{ bsic_details.service_id }}">{{ bsic_details.category }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div id="categoryErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                        </div>
+                    <h5 class="card-title mb-0">New Application - Please click on the activity to submit the form</h5>
+
+                    <div id="cardCollpase1" class="collapse pt-3 show">
+                        <table id="basic-datatable" class="table dt-responsive w-100">
+                            <thead>
+                                <th>#</th>
+                                <th>Activity</th>
+                            </thead>
+                            <tbody>
+                                {% for bsic_code_list in bsic_details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td><a href="javascript:void(0);" 
+                                            class="btn btn-outline-primary btn-sm" 
+                                            onclick="viewApplicationDetails('{{bsic_code_list.activity}}')">
+                                            {{bsic_code_list.activity}}
+                                        </a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                    
-                    <div class="text-center">
-                        <a href="#" onclick="get_application_details()" class="btn btn-primary btn-sm mt-1">Submit <i class="mdi mdi-arrow-right ms-1"></i></a>
-                    </div>
-                    <div class="alert alert-danger" id="successMsg" style="display:none"></div>
-                </div> <!-- end card-body -->
+                </div>
             </div> <!-- end card-->
         </div>
     </div>
-<script>
-    
-    function get_specific_activity_description(broad_activity_code)
+    <script>
+    function viewApplicationDetails(activity)
     {
         $.ajax({
             type : "GET",
-            url : "{% url 'get_specific_activity_description' %}",
-            data :{'broad_activity_code':broad_activity_code},
+            url : "{% url 'get_application_service_id' %}",
+            data : {'activity':activity},
             success : function(data)
             {
-                $('#specific_activity_description').html(data);
-            }
-        });
-    }
-
-    function get_category(specific_activity_code)
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'get_category' %}",
-            data :{'specific_activity_code':specific_activity_code},
-            success : function(data)
-            {
-                $('#category').html(data);
-            }
-        });
-    }
-
-    function get_application_details ()
-    {
-        var specific_activity = $('#activity_description').val();
-        var specific_activity_description = $('#specific_activity_description').val();
-        var category = $('#category').val();
-
-        if(specific_activity == "")
-        {
-            $('#activity_descriptionErrorMsg').html("Select One.");
-            $('#activity_descriptionErrorMsg').show();
-            $('#activity_descriptionErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(specific_activity_description == "")
-        {
-            $('#specific_activity_descriptionErrorMsg').html("Select One.");
-            $('#specific_activity_descriptionErrorMsg').show();
-            $('#specific_activity_descriptionErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(category == "")
-        {
-            $('#categoryErrorMsg').html("Select One.");
-            $('#categoryErrorMsg').show();
-            $('#categoryErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else
-        {
-            $.ajax({
-                type : "GET",
-                url : "{% url 'get_application_service_id' %}",
-                data : {'broad_activity_code':specific_activity,'specific_activity_code':specific_activity_description,'category':category},
-                success : function(data)
+                colour_code = data.colour_code;
+                has_tor = data.has_tor;
+                
+                if(colour_code == 'Green')
                 {
-                    service_id = data.service_id;
-                    colour_code = data.colour_code;
-                    has_tor = data.has_tor;
-                    
-                    if(colour_code == 'Green')
+                    $('#successMsg').html("No need For Environment Clearance.");
+                    $('#successMsg').show();
+                    $('#successMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    if(has_tor == 'No' && colour_code =='Blue')
                     {
-                        $('#successMsg').html("No need For Environment Clearance.");
-                        $('#successMsg').show();
-                        $('#successMsg').delay(2000).fadeOut('slow');
+                        window.location.href = '/application_form';
                     }
                     else
                     {
-                        if(service_id == '1' && has_tor == 'No' && colour_code =='Blue')
-                        {
-                            window.location.href = '/new_iee_application';
-                        }
-                        else if(service_id == '1' && has_tor == 'No' && colour_code =='Red')
-                        {
-                            window.location.href = '/new_ea_application';
-                        }
-                        else if(service_id == '2' && has_tor == 'No')
-                        {
-                            window.location.href = '/new_energy_application';
-                        }
-                        else if(service_id == '3'  && has_tor == 'No')
-                        {
-                            window.location.href = '/new_road_application';
-                        }
-                        else if(service_id == '4'  && has_tor == 'No')
-                        {
-                            window.location.href = '/new_transmission_application';
-                        }
-                        else if(service_id == '5'  && has_tor == 'No')
-                        {
-                            window.location.href = '/new_tourism_application';
-                        }
-                        else if(service_id == '6'  && has_tor == 'No')
-                        {
-                            window.location.href = '/new_ground_water_application';
-                        }
-                        else if(service_id == '7' && has_tor == 'No')
-                        {
-                            window.location.href = '/new_forestry_application';
-                        }
-                        else if(service_id == '8' && has_tor == 'No')
-                        {
-                            window.location.href = '/new_quarry_application';
-                        }
-                        else if(service_id == '9' && has_tor == 'No')
-                        {
-                            window.location.href = '/new_general_application';
-                        }
-                        else
-                        {
-                            window.location.href = '/tor_form';
-                        }
+                        window.location.href = '/tor_form';
                     }
                 }
-            });
-        }
+            }
+        });
     }
-</script>
+    </script>
 {% endblock %}
