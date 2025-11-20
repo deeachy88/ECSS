@@ -514,7 +514,7 @@ def delete_fee_schedule_master(request):
     return render(request, 'fees_schedule.html', {'fees_schedule':fees_schedule_list})
 
 def bsic_master(request):
-    bsic_code_list = t_bsic_code.objects.all().order_by('bsic_id').distinct()
+    bsic_code_list = t_bsic_code.objects.exclude(status='Deleted').order_by('bsic_id').distinct()
     service_list = t_service_master.objects.all()
     competant_authority = t_competant_authority_master.objects.values('competent_authority').distinct()
     client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
@@ -557,7 +557,8 @@ def edit_bsic_code_master(request):
 def delete_bsic_code_master(request):
     delete_bsic_id = request.POST.get('bsic_id')
     bsic_details = t_bsic_code.objects.filter(bsic_id=delete_bsic_id)
-    bsic_details.delete()
+    bsic_details.update(status="Deleted")
+    #bsic_details.delete()
     return redirect(bsic_master)
 
 def add_agency_master(request):
