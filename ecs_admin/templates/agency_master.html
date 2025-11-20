@@ -12,7 +12,7 @@
         <div class="card mt-1">
             <div class="card-body">
                 <div class="card-widgets">
-                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add_agency_modal"><i class="mdi mdi-plus-circle me-2"></i>Add</button>
+                    <!-- <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add_agency_modal"><i class="mdi mdi-plus-circle me-2"></i>Add</button> -->
                 </div>
                 <h5 class="card-title mb-0">Competent Authority Master</h5>
 
@@ -23,7 +23,7 @@
                             <th>Competent Authority</th>
                             <th>Type</th>
                             <th>Dzongkhag</th>
-                            <th></th>
+                            <!--<th></th> -->
                         </thead>
                         <tbody>
                             {% for agency_details in agency_list %}
@@ -38,7 +38,7 @@
                                         {% endif %}
                                     {% endfor %}
                                     </th>
-                                    <td>
+                                  <!--  <td>
                                         <div class="btn-group btn-group-sm">
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit Agency"
                                                      onclick="populateEditForm('{{agency_details.agency_id}}', '{{agency_details.agency_name}}')"><i class="mdi mdi-square-edit-outline"></i> </button>
@@ -46,6 +46,7 @@
                                                      onclick="populateDeleteForm('{{agency_details.agency_id}}', '{{agency_details.agency_name}}')"><i class="mdi mdi-delete"></i> </button>
                                         </div>
                                     </td>
+                                    -->
                                 </tr>
                             {% endfor %}
                         </tbody>
