@@ -503,6 +503,7 @@ class t_ec_industries_t1_general(models.Model):
     revocation_id = models.CharField(max_length=100,default=None, blank=True, null=True)
     is_revoked = models.CharField(max_length=100,default=None, blank=True, null=True)
     establishment_type = models.CharField(max_length=100,default=None, blank=True, null=True)
+    activity = models.TextField(max_length=250, default=None, blank=True, null=True)
 
 class t_ec_industries_t1_general_audit(models.Model):
     record_id = models.AutoField(primary_key=True)
