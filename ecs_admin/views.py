@@ -514,9 +514,9 @@ def delete_fee_schedule_master(request):
     return render(request, 'fees_schedule.html', {'fees_schedule':fees_schedule_list})
 
 def bsic_master(request):
-    bsic_code_list = t_bsic_code.objects.exclude(status='Deleted').order_by('bsic_id').distinct()
+    bsic_code_list = t_bsic_code.objects.exclude(status='Deleted').order_by('activity').distinct()
     service_list = t_service_master.objects.all()
-    competant_authority = t_competant_authority_master.objects.values('competent_authority').distinct()
+    competant_authority = t_competant_authority_master.objects.values('competent_authority').order_by('competent_authority').distinct()
     client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
     response = render(request, 'bsic_code_master.html', {'client_application_count':client_application_count,'bsic_code_list':bsic_code_list, 'service_list':service_list, 'competant_authority':competant_authority})
 
@@ -540,7 +540,7 @@ def add_bsic_code_master(request):
 def get_bsic_code_details(request, bsic_id):
     bsic_code_details = t_bsic_code.objects.filter(bsic_id=bsic_id)
     service_list = t_service_master.objects.all()
-    competant_authority = t_competant_authority_master.objects.values('competent_authority').distinct()
+    competant_authority = t_competant_authority_master.objects.values('competent_authority').order_by('competent_authority').distinct()
     return render(request, 'edit_bsic_code.html', {'competant_authority':competant_authority,'bsic_code_details': bsic_code_details, 'service_list':service_list})
 
 def edit_bsic_code_master(request):

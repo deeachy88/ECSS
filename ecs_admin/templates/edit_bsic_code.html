@@ -106,7 +106,7 @@
                     </form>
                     <div class="alert alert-success" id="edit_successMsg" style="display:none"></div>
                     <div class="float-end mt-1">
-                        <button type="button" class="btn btn-md btn-primary" onclick="update_bsic_code_details()">Update BSIC Code</button>
+                        <button type="button" class="btn btn-md btn-primary" onclick="update_bsic_code_details()">Update Activity</button>
                         <a href="{% url 'bsic_master' %}" class="btn btn-md btn-danger"> Cancel </a>
                     </div>
                 </div>
@@ -164,7 +164,7 @@
                 data : {'bsic_id':bsic_id,'activity':activity, 'colour_code':colour_code, 'competent_authority':competent_authority, 'service_id':service_id,'has_tor':has_tor, csrfmiddlewaretoken:'{{ csrf_token }}'},
                 success : function(data)
                 {
-                    $('#edit_successMsg').html("BSIC Code Updated Successfully.");
+                    $('#edit_successMsg').html("Activity Updated Successfully.");
                     $('#edit_successMsg').show();
                     setTimeout(function() {
                         $('#edit_successMsg').delay(3000).fadeOut('slow');
