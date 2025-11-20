@@ -1187,7 +1187,7 @@ def draft_application_list(request):
             application_no__in=Subquery(t1_general_subquery)
         ).count()
     
-    response = render(request, 'draft/application_list.html',{'application_details':application_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'service_details':service_details, 'tor_application_count':tor_application_count})
+    response = render(request, 'draft_application_list.html',{'application_details':application_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'service_details':service_details, 'tor_application_count':tor_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -1195,7 +1195,36 @@ def draft_application_list(request):
     response['Expires'] = '0'
     return response
 
+def view_draft_application_details(request):
+    application_no = request.GET.get('application_no') or request.session.get('application_no')
+    request.session['application_no'] = application_no
+    service_id = request.GET.get('service_id') or request.session.get('service_id')
+    request.session['service_id'] = service_id
+    
+    # Fetch common data
+    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Main Activity')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no)
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
+    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
 
+    context = {
+        'thromde': thromde,
+        'application_details': application_details,
+        'application_no': application_no,
+        'dzongkhag': dzongkhag,
+        'gewog': gewog,
+        'village': village,
+        'app_hist_count': app_hist_count,
+        'cl_application_count': cl_application_count,
+        'service_id': service_id,
+        'file_attach':file_attach
+    }
+    
+    return render(request, 'draft_application_details.html', context)
 # EC RENEWAL
 def ec_renewal(request):
     assigned_user_id = request.session.get('login_id', None)

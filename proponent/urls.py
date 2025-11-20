@@ -15,7 +15,8 @@ urlpatterns = [
 
     # DRAFT DETAILS
     path('draft_application_list', views.draft_application_list, name='draft_application_list'),
-
+    path('view_draft_application_details', views.view_draft_application_details, name='view_draft_application_details'),
+    
     # EC RENEWAL
     path('ec_renewal', views.ec_renewal, name='ec_renewal'),
 
