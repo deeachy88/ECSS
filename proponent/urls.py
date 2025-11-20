@@ -10,6 +10,8 @@ urlpatterns = [
     path('save_general_attachment', views.save_general_attachment, name='save_general_attachment'),
     path('save_general_attachment_details', views.save_general_attachment_details, name='save_general_attachment_details'),
     path('submit_general_application', views.submit_general_application, name='submit_general_application'),
+    path('check_file_attachment', views.check_file_attachment, name='check_file_attachment'),
+    path('delete_application_attachment', views.delete_application_attachment, name='delete_application_attachment'),
 
     # DRAFT DETAILS
     path('draft_application_list', views.draft_application_list, name='draft_application_list'),

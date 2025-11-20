@@ -6,7 +6,25 @@
     <div class="col-xl-12">
         <div class="card mt-1">
             <div class="card-body">
-                <h4 class="header-title mb-3"> Initial Environmental Examination (IEE) Form for General Projects - 2022</h4>
+                {% if request.session.service_id == '1' %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Industry Projects - 2022</h4>
+                {% elif request.session.service_id == '2' %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Energy Projects - 2022</h4>
+                {% elif request.session.service_id == '3' %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Road Projects - 2022</h4>
+                {% elif request.session.service_id == '4' %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Transmission Projects - 2022</h4>
+                {% elif request.session.service_id == '5' %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Tourism Projects - 2022</h4>
+                {% elif request.session.service_id == '6' %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Ground Water Projects - 2022</h4>
+                {% elif request.session.service_id == '7' %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Forest Projects - 2022</h4>
+                {% elif request.session.service_id == '8' %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Quarry Projects - 2022</h4>
+                {% elif request.session.service_id == '9' %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for General Projects - 2022</h4>
+                {% endif %}
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
@@ -23,50 +41,56 @@
                                     <input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="Main Activity" name="service_type" id="service_type" style="display:none;">
                                     <input type="text" class="form-control" value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label class="form-label fw-bold">Activity</label>
+                                            <p>{{request.session.activity}}</p> 
+                                        </div>
+                                    </div>
+                                    <br>
                                     <div class="alert alert-warning border-0 rounded-0" role="alert">
                                         Applicant Details
                                     </div>
+                                    
                                     <div class="row">
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of the Applicant</label>
                                                 <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Address</label>
                                                 <input type="text" name="address" class="form-control" id="address" value="{{request.session.address}}" readonly>
                                             </div>
                                             <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Contact No</label>
                                                 <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{request.session.contact_number}}" readonly>
                                             </div>
                                             <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Email</label>
                                                 <input type="email" name="email" class="form-control" id="email" value="{{request.session.email}}" readonly>
                                             </div>
                                             <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of the Project</label>
                                                 <input type="text" name="project_name" class="form-control" id="project_name">
                                             </div>
                                             <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
                                                 <textarea class="form-control" name="focal_person" id="focal_person" rows="3"></textarea>
@@ -81,7 +105,9 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold">Select One</label>
+                                                {% if request.session.ca_auth != "THROMDE" and request.session.ca_auth != "DEC" %}
+                                                    <label class="form-label fw-bold">Select One</label>
+                                                {% endif %}
                                                 <div class="mt-2">
                                                 {% if request.session.ca_auth == "THROMDE" %}
                                                     <div class="form-check form-check-inline">
@@ -128,7 +154,7 @@
                                     {% endif %}
                                     {% if request.session.ca_auth == "DEC" %}
                                         <div class="row">
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-4">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Dzongkhag</label>
                                                     <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
@@ -140,7 +166,7 @@
                                                 </div>
                                                 <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-4">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Gewog</label>
                                                     <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
@@ -152,9 +178,7 @@
                                                 </div>
                                                 <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-4">
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Village/Chiwog</label>
                                                     <select class="form-select" name="vil_chiwog" id="vil_chiwog">
@@ -323,6 +347,13 @@
                                 <div class="alert alert-success border-0 rounded-0" 
                                     role="alert" 
                                     id="general_attachment_successMsg" 
+                                    style="display:none"
+                                    aria-live="polite"
+                                    aria-atomic="true">
+                                </div>
+                                <div class="alert alert-danger border-0 rounded-0" 
+                                    role="alert" 
+                                    id="general_attachment_errorMsg" 
                                     style="display:none"
                                     aria-live="polite"
                                     aria-atomic="true">
@@ -539,27 +570,57 @@
 
     function save_general_attachment_details() {
         // Set success message and attributes
-        $('#general_attachment_successMsg')
-            .text("Saved Successfully")  // Using text() instead of html()
-            .removeAttr('tabindex')      // Remove focus blocker
-            .attr({
-                'aria-live': 'polite',
-                'aria-atomic': 'true'
-            })
-            .show()
-            .focus();  // Set focus for accessibility
+        let application_no = $('#application_no').val();
 
-        // Fade out after 2 seconds
-        setTimeout(() => {
-            $('#general_attachment_successMsg').delay(2000).fadeOut('slow');
-        }, 2000);
+        $.ajax({
+            type: "GET",
+            url: "{% url 'check_file_attachment' %}",
+            data: {'application_no':application_no},
+            success: function(data) {
+                alert(data.file_count);
+                if (data.file_count > 0) {
+                    $('#general_attachment_successMsg')
+                    .text("Saved Successfully")  // Using text() instead of html()
+                    .removeAttr('tabindex')      // Remove focus blocker
+                    .attr({
+                        'aria-live': 'polite',
+                        'aria-atomic': 'true'
+                    })
+                    .show()
+                    .focus();  // Set focus for accessibility
 
-        // Panel navigation after 2 seconds
-        setTimeout(() => {
-            $("#headingDisclaimerBtn").removeAttr("disabled");
-            $("#collapseDisclaimer").addClass("show");
-            $("#collapseAttachment").removeClass("show");
-        }, 2000);
+                    // Fade out after 2 seconds
+                    setTimeout(() => {
+                        $('#general_attachment_successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+
+                    // Panel navigation after 2 seconds
+                    setTimeout(() => {
+                        $("#headingDisclaimerBtn").removeAttr("disabled");
+                        $("#collapseDisclaimer").addClass("show");
+                        $("#collapseAttachment").removeClass("show");
+                    }, 2000);
+                } else {
+                    $('#general_attachment_errorMsg')
+                    .text("Please Attach a File")  // Using text() instead of html()
+                    .removeAttr('tabindex')      // Remove focus blocker
+                    .attr({
+                        'aria-live': 'polite',
+                        'aria-atomic': 'true'
+                    })
+                    .show()
+                    .focus();  // Set focus for accessibility
+
+                    // Fade out after 2 seconds
+                    setTimeout(() => {
+                        $('#general_attachment_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    
+                }
+            }
+        });
+
+        
     }
 
     function save_general_attachment()
@@ -716,6 +777,20 @@
         else
         {
             $('#gen_submit_btn').hide();
+        }
+    }
+
+    function check_dzong_throm(value)
+    {
+        if(value == "Dzongkhag")
+        {
+            $('.dzongkhag').show();
+            $('.thromde').hide();
+        }
+        else
+        {
+            $('.thromde').show();
+            $('.dzongkhag').hide();
         }
     }
 </script>
