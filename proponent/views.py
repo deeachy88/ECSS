@@ -122,6 +122,7 @@ def save_general_details(request):
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         service_type = request.POST.get('service_type')
         application_type = "New"
+        activity = request.POST.get('activity')
 
         # 2. Handle location data
         dzongkhag_code = gewog_code = village_code = thromde_id = None
@@ -165,6 +166,7 @@ def save_general_details(request):
             'applicant_id': request.session.get('email'),
             'colour_code': request.session.get('colour_code'),
             'service_id': request.session.get('service_id'),
+            'activity': activity
             
         }
         ca_auth = None
@@ -298,6 +300,106 @@ def save_general_attachment(request):
         data['file_url'] = file_url
         data['file_name'] = file_name
     return JsonResponse(data)
+
+def check_file_attachment(request):
+    data = dict()
+    application_no = request.GET.get('application_no')
+    print(application_no)
+    file_count = t_file_attachment.objects.filter(application_no=application_no).count()
+    data['file_count'] = file_count
+    return JsonResponse(data)
+
+def delete_application_attachment(request):
+    file_id = request.POST.get('file_id')
+    identifier = request.POST.get('attachment_type')
+    application_no = request.POST.get('application_no')
+    
+    if identifier == 'GEN':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/GEN/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'ECR':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ECR/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'TOR':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/TOR/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'FO':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/FO/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'IEE':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/IEE/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'TRA':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/TRA/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'ROA':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ROA/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'ENE':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ENE/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'EA':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/EA/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'TOU':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/TOU/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'QUA':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/QUA/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'GW':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/GW/")
+            fs.delete(str(file_name))
+        file.delete()
+    file_attach = t_file_attachment.objects.filter(application_no=application_no)
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
 
 def save_general_attachment_details(request):
     file_name = request.POST.get('filename')

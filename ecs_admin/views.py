@@ -345,8 +345,8 @@ def load_village(request):
 def check_email_id(request):
     data = dict()
     email = request.POST.get('email')
-    message_count = t_user_master.objects.filter(email_id=email).count()
-    data['count'] = message_count
+    file_count = t_user_master.objects.filter(email_id=email).count()
+    data['file_count'] = file_count
     return JsonResponse(data)
 
 def check_cid(request):
