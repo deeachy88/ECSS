@@ -1,13 +1,14 @@
 from datetime import date, datetime, timedelta, timezone
 import json
 import logging
+import re
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db import connection
 from django.contrib.sessions.models import Session
 
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 import requests
 from django.db.models import Count, Subquery, OuterRef
 from django.views.decorators.csrf import csrf_exempt
@@ -19,7 +20,8 @@ from django.utils import timezone
 
 from ecs_admin.models import t_bsic_code, t_competant_authority_master, t_dzongkhag_master, t_file_attachment, t_gewog_master, t_role_master, t_security_question_master, t_service_master, t_thromde_master, t_user_master, t_village_master
 from ecs_main.models import t_application_history
-from proponent.models import t_ec_industries_t1_general, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_report_submission_t1, t_workflow_dtls
+from ecs_main.views import make_payment_request
+from proponent.models import t_ec_industries_t1_general, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_report_submission_t1, t_report_submission_t2, t_workflow_dtls
 
 def new_application(request):
     assigned_user_id = request.session.get('login_id', None)
@@ -84,7 +86,7 @@ def application_form(request):
         service_code = 'QUA'
     else :
         service_code = 'GEN'
-    application_no = get_application_no(request, service_code, '1')
+    application_no = get_application_no(request, service_code, request.session['service_id'])
     request.session['application_no'] = application_no
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
@@ -1261,9 +1263,182 @@ def ec_renewal(request):
     response['Expires'] = '0'
     return response
 
-
+def ec_renewal_details(request):
+    ec_reference_no = request.GET.get('ec_reference_no')
+    service_code = 'REN'
+    application_no = get_ren_application_no(request, service_code, '10')
+    application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no,service_type="Main Activity")
+    ec_data = t_ec_industries_t11_ec_details.objects.filter(ec_reference_no=ec_reference_no,ec_type='Terms')
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+    ec_application_details = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)
+    if ec_application_details.exists():
+        ec_details = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)    
+        return render(request, 'renewal_details.html',{'application_details':application_details,'application_no':application_no, 'ec_details':ec_details,
+                                                        'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+    else:
+        for ec_data in ec_data:
+            t_ec_renewal_t2.objects.create(application_no=application_no, ec_reference_no=ec_reference_no,ec_heading=ec_data.ec_heading,ec_terms=ec_data.ec_terms)
+        ec_details = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)    
+        return render(request, 'renewal_details.html',{'application_details':application_details,'application_no':application_no, 'ec_details':ec_details,
+                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
 
 # TOR DETAILS
+#TOR
+def tor_form(request):
+    service_code = 'TOR'
+    application_no = get_application_no(request, service_code, None)
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
+    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+
+    return render(request, 'tor_form.html', {'app_hist_count':app_hist_count,'application_no':application_no,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde})
+
+
+def save_tor_form(request):
+    data = {}
+    try:
+        application_no = request.POST.get('application_no')
+        project_name = request.POST.get('project_name')
+        applicant_name = request.POST.get('applicant_name')
+        address = request.POST.get('address')
+        contact_no = request.POST.get('contact_no')
+        email = request.POST.get('email')
+        focal_person = request.POST.get('focal_person')
+        dzongkhag_throm = request.POST.get('dzongkhag_throm')
+        if dzongkhag_throm == 'Thromde':
+            dzongkhag = None
+            gewog = None
+            vil_chiwog = None
+            thromde = request.POST.get('thromde_id')
+        else:
+            dzongkhag = request.POST.get('dzongkhag')
+            gewog = request.POST.get('gewog')
+            vil_chiwog = request.POST.get('vil_chiwog')
+            thromde = None
+        location_name = request.POST.get('location_name')
+
+        broad_activity_code = request.session['broad_activity_code']
+        specific_activity_code = request.session['specific_activity_code']
+        category = request.session['category']
+        service_id = request.session['service_id']
+        login_id = request.session['login_id']
+        name = request.session['name']
+        colour_code = request.session['colour_code']
+
+        application_date = timezone.now().date()
+        action_date = application_date
+        ca_auth = None
+        
+        auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session['ca_auth'],
+                dzongkhag_code_id=dzongkhag if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+            )
+        ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+        # Insert record in t_ec_industries_t1_general table
+        t_ec_industries_t1_general.objects.create(
+            application_no=application_no,
+            project_name=project_name,
+            applicant_name=applicant_name,
+            application_date=application_date,
+            address=address,
+            contact_no=contact_no,
+            email=email,
+            focal_person=focal_person,
+            dzongkhag_throm=dzongkhag_throm,
+            thromde_id=thromde,
+            dzongkhag_code=dzongkhag,
+            gewog_code=gewog,
+            village_code=vil_chiwog,
+            location_name=location_name,
+            broad_activity_code=broad_activity_code,
+            specific_activity_code=specific_activity_code,
+            category=category,
+            applicant_id=request.session['email'],
+            ca_authority=ca_auth,
+            application_status='P',
+            action_date=action_date,
+            service_id=service_id,
+            application_source='ECSS',
+            colour_code=colour_code
+        )
+
+        # Insert record in t_application_history table
+        t_application_history.objects.create(
+            application_no=application_no,
+            application_date=application_date,
+            applicant_id=request.session['email'],
+            ca_authority=ca_auth,
+            service_id=service_id,
+            application_status='P',
+            action_date=action_date,
+            actor_id=login_id,
+            actor_name=name,
+            remarks='TOR Application Submitted',
+            status='P'
+        )
+
+        # Insert record in t_workflow_dtls table
+        t_workflow_dtls.objects.create(
+            application_no=application_no,
+            service_id=service_id,
+            application_status='P',
+            action_date=action_date,
+            actor_id=login_id,
+            actor_name=name,
+            assigned_user_id=None,
+            assigned_role_id='2',
+            assigned_role_name='Verifier',
+            result=None,
+            ca_authority=ca_auth,
+            application_source='ECSS'
+        )
+        make_payment_request(request,application_no,"500",'NEW TOR APPLICATION',request.session['email'],"100123","TOR")
+        send_tor_payment_mail(request.session['name'], request.session['email'], 500)
+        data['message'] = 'success'
+    except Exception as e:
+        data['error'] = str(e).split("\n")[0]
+    return JsonResponse(data)
+
+def send_tor_payment_mail(name, email_id, amount):
+    subject = 'Application Submitted'
+    message = "Dear " + name + " Your TOR Application for ECS System Is Submitted. Please Make A Payment of " \
+              + str(amount) + ""
+    recipient_list = [email_id]
+    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moenr.gov.bt', auth_password='wdiigzpprtutwmdc',
+              connection=None, html_message=None)
+
+def save_tor_attachment(request):
+    data = dict()
+    tor_attach = request.FILES['tor_attach']
+    file_name = tor_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/TOR/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, tor_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/TOR" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_tor_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url') 
+    application_no = request.POST.get('application_no')
+
+    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='TOR')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='TOR')
+
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
+
 def tor_list(request):
     applicant_id = request.session.get('email', None)
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
@@ -1292,6 +1467,58 @@ def tor_list(request):
     response['Pragma'] = 'no-cache'
     response['Expires'] = '0'
     return response
+
+def view_tor_application_details(request):
+    applicant_id = request.session.get('email', None)
+    tor_application_no = request.GET.get('application_no')
+    service_id = request.GET.get('service_id')
+    app_det = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+    tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    service_code = None
+    if service_id == '1':
+        service_code = 'IEE'
+    elif service_id == '2':
+        service_code = 'ENE'
+    elif service_id == '3':
+        service_code = 'ROA'
+    elif service_id == '4':
+        service_code = 'TRA'
+    elif service_id == '5':
+        service_code = 'TOU'
+    elif service_id == '6':
+        service_code = 'GWA'
+    elif service_id == '7':
+        service_code = 'FOR'
+    elif service_id == '8':
+        service_code = 'QUA'
+    else :
+        service_code = 'GEN'
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',applicant_id=applicant_id
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
+    for app_det in app_det:
+        request.session['ca_auth'] = app_det.ca_authority
+        request.session['colour_code'] = app_det.colour_code
+        request.session['service_id'] = app_det.service_id
+        request.session['activity'] = app_det.activity
+
+        application_no = get_application_no(request, service_code, service_id)
+        request.session['application_no'] = application_no
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
+        return render(request, 'tor/tor.html',{'thromde':thromde,'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,
+                                                'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde})
+
 
 
 # ReportSubmission
@@ -1371,6 +1598,209 @@ def report_list(request):
     return response
 
 
+def view_report_details(request):
+    report_reference_no = request.GET.get('report_reference_no')
+    report_details = t_report_submission_t1.objects.filter(report_reference_no=report_reference_no)
+    details = t_report_submission_t2.objects.filter(report_reference_no=report_reference_no)
+    file_attach = t_file_attachment.objects.filter(application_no=report_reference_no)
+    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+    
+    v_application_count = 0  # Provide default value for v_application_count
+    ec_renewal_count = 0  # Provide default value for ec_renewal_count
+
+    if request.session.get('ca_authority') is not None:
+        v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
+        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+        ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                                    application_status='A',
+                                                                                    ec_expiry_date__lt=expiry_date_threshold).count()
+    return render(request, 'report_submission/report_details.html',
+                  {'report_details': report_details, 'app_hist_count': app_hist_count, 'ec_renewal_count': ec_renewal_count, 'cl_application_count': cl_application_count, 'v_application_count': v_application_count, 'details': details, 'file_attach': file_attach})
+
+
+def viewDraftReport(request, report_reference_no):
+    applicant = request.session['email']
+    ec_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False, applicant_id=applicant)
+    report_details = t_report_submission_t1.objects.filter(report_reference_no=report_reference_no)
+    details = t_report_submission_t2.objects.filter(report_reference_no=report_reference_no)
+    file_attach = t_file_attachment.objects.filter(application_no=report_reference_no)
+    return render(request, 'report_submission/report_submission_draft.html',
+                  {'report_details':report_details, 'details':details, 'ec_details':ec_details, 'file_attach':file_attach})
+
+def report_submission_form(request):
+    applicant = request.session['email']
+    ec_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False,applicant_id=applicant)
+    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+    return render(request, 'report_submission/report_submission.html', {'ec_details': ec_details, 'app_hist_count':app_hist_count})
+
+def save_report_submission(request):
+    data = dict()
+    service_code = 'rpt'
+    reference_no = get_report_submission_ref_no(request, service_code)
+    submission_year = request.POST.get('submission_year')
+    submission_date = request.POST.get('submission_date')
+    ec_clearance_no = request.POST.get('ec_clearance_no')
+    ca_authority = request.POST.get('ca_authority')
+    proponent_name = request.POST.get('proponent_name')
+    address = request.POST.get('address')
+    remarks = request.POST.get('remarks')
+    report_type = request.POST.get('report_type')
+    created_on = datetime.now()
+    login_id = request.session['email']
+
+    t_report_submission_t1.objects.create(
+        report_type=report_type,
+        report_reference_no=reference_no,
+        submission_year=submission_year,
+        submission_date=submission_date,
+        ec_clearance_no=ec_clearance_no,
+        ca_authority=ca_authority,
+        proponent_name=proponent_name,
+        address=address,
+        remarks=remarks,
+        created_by=login_id,
+        created_date=created_on,
+        report_status='Pending',
+    )
+    data['refNo'] = reference_no
+    return JsonResponse(data)
+
+def get_report_submission_ref_no(request, service_code):
+    last_reference_no = t_report_submission_t1.objects.aggregate(Max('report_reference_no'))
+    lastRefNo = last_reference_no['report_reference_no__max']
+    if not lastRefNo:
+        year = timezone.now().year
+        newRefNo = service_code + "-" + str(year) + "-" + "0001"
+    else:
+        substring = str(lastRefNo)[9:13]
+        substring = int(substring) + 1
+        RefNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newRefNo = service_code + "-" + str(year) + "-" + RefNo
+    return newRefNo
+
+def update_report_submission(request):
+    data = dict()
+    reference_no = request.POST.get('report_reference_no')
+    submission_year = request.POST.get('submission_year')
+    submission_date = request.POST.get('submission_date')
+    ec_clearance_no = request.POST.get('ec_clearance_no')
+    ca_authority = request.POST.get('ca_authority')
+    proponent_name = request.POST.get('proponent_name')
+    address = request.POST.get('address')
+    remarks = request.POST.get('remarks')
+    report_type = request.POST.get('report_type')
+    login_id = request.session['email']
+
+    application_details = t_report_submission_t1.objects.filter(report_reference_no=reference_no)
+
+    application_details.update(submission_year=submission_year, submission_date=submission_date,
+                               ec_clearance_no=ec_clearance_no, ca_authority=ca_authority,
+                               proponent_name=proponent_name, address=address,
+                               remarks=remarks, report_type=report_type, created_by=login_id)
+
+    data['refNo'] = reference_no
+    return JsonResponse(data)
+
+def load_report_submission_details(request):
+    reference_no = request.GET.get('report_reference_no')
+    print(reference_no)
+    report_submission = t_report_submission_t2.objects.filter(report_reference_no=reference_no)
+    return render(request, 'report_submission/report_submitted_details.html',
+                  {'report_submission': report_submission})
+
+def save_report_details(request):
+    reference_no = request.POST.get('refNo')
+    ec_terms = request.POST.get('ec_terms')
+    action_taken = request.POST.get('action_taken')
+    remarks = request.POST.get('detail_remarks')
+    t_report_submission_t2.objects.create(
+        report_reference_no=reference_no,
+        ec_terms=ec_terms,
+        action_taken=action_taken,
+        remarks=remarks)
+
+    report_submission = t_report_submission_t2.objects.filter(report_reference_no=reference_no)
+    return render(request, 'report_submission/report_submitted_details.html',
+                  {'report_submission': report_submission})
+
+def delete_report_details(request):
+    record_id = request.GET.get('record_id')
+    reference_no = request.GET.get('refNo')
+    record = t_report_submission_t2.objects.filter(record_id=record_id)
+    record.delete()
+    report_submission = t_report_submission_t2.objects.filter(report_reference_no=reference_no)
+    return render(request, 'report_submission/report_submitted_details.html',
+                  {'report_submission': report_submission})
+
+def load_report_attachment_details(request):
+    referenceNo = request.GET.get('refNo')
+    attachment_details = t_file_attachment.objects.filter(application_no=referenceNo)
+    return render(request, 'report_submission/report_file_attachment.html',
+                  {'file_attach': attachment_details})
+
+def add_report_file(request):
+    data = dict()
+    myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ecs_main")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(
+            timezone.now().year) + "/ecs_main" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def add_report_file_name(request):
+    app_no = request.POST.get('refNo')
+    fileName = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    
+    t_file_attachment.objects.create(application_no=app_no,
+                                     file_path=file_url, attachment=fileName)
+    file_attach = t_file_attachment.objects.filter(application_no=app_no)
+    return render(request, 'report_submission/report_file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_report_file(request):
+    file_id = request.GET.get('file_id')
+    referenceNo = request.GET.get('refNo')
+    file = t_file_attachment.objects.filter(pk=file_id)
+    for file in file:
+        fileName = file.attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ecs_main")
+        fs.delete(str(fileName))
+    file.delete()
+    file_attach = t_file_attachment.objects.filter(application_no=referenceNo)
+    return render(request, 'report_submission/report_file_attachment.html', {'file_attach': file_attach})
+
+
+def submit_report_form(request):
+    reference_no = request.POST.get('record_id')
+    created_on = datetime.now()
+    details = t_report_submission_t1.objects.filter(report_reference_no=reference_no)
+    details.update(created_date=created_on, report_status='Submitted')
+
+    return redirect(report_list)
+
+def acknowledge_report(request):
+    report_reference_no = request.GET.get('report_reference_no')
+    details = t_report_submission_t1.objects.filter(report_reference_no=report_reference_no)
+    details.update(report_status='Acknowledged')
+
+    return redirect(report_list)
+
+#EndReportSubmission
+
+
+
+# EC PRINT DETAILS
 def ec_print_list(request):
     applicant_id = request.session.get('email', None)
     assigned_user_id= request.session.get('login_id', None)
@@ -1442,7 +1872,47 @@ def ec_print_list(request):
     response['Expires'] = '0'
     return response
 
-# OTHER MODIFICATION DETAILS
+def view_print_details(request):
+    # Retrieve the 'ec_reference_no' parameter from the GET request
+    ec_reference_no = request.GET.get('ec_reference_no')
+    
+    # Retrieve t_ec_industries_t1_general objects with ec_reference_no=ec_reference_no and service_type="Main Activity"
+    application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no, service_type="Main Activity")
+    
+    # Retrieve t_ec_industries_t11_ec_details objects with ec_reference_no=ec_reference_no
+    ec_details = t_ec_industries_t11_ec_details.objects.filter(ec_reference_no=ec_reference_no)
+    
+    # Count the number of t_application_history objects related to the logged-in user
+    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+    
+    # Count the number of t_workflow_dtls objects with assigned_user_id equal to the logged-in user
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+    
+    # Check if the 'ca_authority' exists in the session and has a non-empty value
+    if 'ca_authority' in request.session and request.session['ca_authority']:
+        # Count the number of t_workflow_dtls objects with assigned_role_id='2',
+        # assigned_role_name='Verifier', and ca_authority matching the logged-in user's 'ca_authority'
+        v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier',
+                                                              ca_authority=request.session['ca_authority']).count()
+        
+        # Count the number of t_workflow_dtls objects with assigned_role_id='3',
+        # assigned_role_name='Reviewer', and ca_authority matching the logged-in user's 'ca_authority'
+        r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer',
+                                                              ca_authority=request.session['ca_authority']).count()
+    else:
+        # If 'ca_authority' is not found or empty, set the variables to appropriate default values
+        v_application_count = 0
+        r_application_count = 0
+    
+    # Pass the retrieved data to the 'print_ec.html' template for rendering
+    return render(request, 'EC/print_ec.html', {'application_details': application_details,
+                                                 'ec_details': ec_details,
+                                                 'app_hist_count': app_hist_count,
+                                                 'cl_application_count': cl_application_count,
+                                                 'v_application_count': v_application_count,
+                                                 'r_application_count': r_application_count})
+
+
 # OTHER MODIFICATION DETAILS
 def name_change(request):
     email = request.session.get('email', None)
@@ -1643,3 +2113,130 @@ def get_other_modification_details(request):
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
     return render(request, 'other_modifications/other_modification.html',{'application_details':application_details,'dzongkhag':dzongkhag, 'gewog':gewog,
                                                 'village':village,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_no':app_no})
+
+
+# PAYMENT DETAILS
+@csrf_exempt
+def ecss_payment_update(request):
+    # Check if the request method is POST
+    if request.method == "POST":
+        try:
+            # Decode and strip raw body
+            raw_body = request.body.decode('utf-8').strip()
+            
+            # Remove unwanted characters and prefix using regex
+            cleaned_body = re.sub(r'^Payload :', '', raw_body).strip()
+            
+            # Remove invisible or non-printable characters
+            cleaned_body = ''.join(char for char in cleaned_body if char.isprintable())
+            
+            # Check for empty body
+            if not cleaned_body:
+                return JsonResponse({"statusCode": "400", "statusDescription": "Empty request body"}, status=400)
+            
+            # Attempt to parse the JSON from cleaned_body
+            data = json.loads(cleaned_body)
+            ref_no = data['refNo']
+            
+            receipt_list = data['receiptList']
+            payment_method = data['paymentMethod']
+            payment_mode = data['paymentMode']
+            instrument_date = data['instrumentDate']
+            # Extracting values from receipt list
+            receipt = receipt_list[0]  # Assuming there's only one receipt in the list
+            receipt_no = receipt['receiptNo']
+            receipt_date = receipt['receiptDate']
+            payment_advice_status = receipt['paymentAdviceStatus']
+            responseDate = data['responseDate']
+            payment_advice_amount_paid = receipt['paymentAdviceAmountPaid']
+            
+            instrument_date_datetime = datetime.fromisoformat(instrument_date.replace('Z', '+00:00'))
+            instrument_date_datetime_utc = instrument_date_datetime.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+            original_receipt_date = datetime.strptime(receipt_date, "%Y-%m-%d %H:%M:%S")
+            formatted_receipt_date = original_receipt_date.strftime("%Y-%m-%d %H:%M:%S")
+            
+            original_responseDate = datetime.strptime(responseDate, "%a %b %d %H:%M:%S BTT %Y")
+            formatted_responseDate = original_responseDate.strftime("%Y-%m-%d %H:%M:%S")
+
+            payment_details = t_payment_details.objects.filter(ref_no=ref_no)
+            payment_details.update(
+                payment_method = payment_method,
+                payment_mode = payment_mode,
+                instrument_date = instrument_date_datetime_utc,
+                receipt_no = receipt_no,
+                receipt_date = formatted_receipt_date,
+                payment_advice_status = payment_advice_status,
+                response_date = formatted_responseDate,
+                payment_advice_amount_paid = payment_advice_amount_paid
+            )
+
+            response_data = {
+                "statusCode": "200",
+                "statusDescription": "Payment Details received successfully",
+            }
+            
+            return JsonResponse(response_data)
+        
+        except json.JSONDecodeError as e:
+            # Handle JSON parse error
+            print("JSONDecodeError:", str(e))
+            return JsonResponse({"statusCode": "400", "statusDescription": "Invalid JSON payload"}, status=400)
+        
+        except Exception as e:
+            # Handle other exceptions
+            print("Error:", str(e))
+            return JsonResponse({"statusCode": "400", "statusDescription": "Bad Request"}, status=400)
+    else:
+        # Handle non-POST requests
+        return JsonResponse({"statusCode": "405", "statusDescription": "Method not allowed"}, status=405)
+
+@csrf_exempt
+def ecss_payment_reversal(request):
+    if request.method == "POST":
+        try:
+            # Decode and strip raw body
+            raw_body = request.body.decode('utf-8').strip()
+            
+            # Remove unwanted characters and prefix using regex
+            cleaned_body = re.sub(r'^Payload :', '', raw_body).strip()
+            
+            # Remove invisible or non-printable characters
+            cleaned_body = ''.join(char for char in cleaned_body if char.isprintable())
+            
+            # Check for empty body
+            if not cleaned_body:
+                return JsonResponse({"statusCode": "400", "statusDescription": "Empty request body"}, status=400)
+            
+            # Attempt to parse the JSON from cleaned_body
+            data = json.loads(cleaned_body)
+            receiptNo = data['receiptNo']
+            payment_details = t_payment_details.objects.filter(receipt_no=receiptNo)
+            cancelledDate=data['cancelledDate']
+            original_cancelledDate = datetime.strptime(cancelledDate, "%a %b %d %H:%M:%S BTT %Y")
+            formatted_cancelledDate = original_cancelledDate.strftime("%Y-%m-%d %H:%M:%S")
+            payment_details.update(
+                cancelled_date=formatted_cancelledDate,
+                cancelled_reason=data['cancelledReason'],
+                remarks=data['remarks']
+            )
+
+            response_data = {
+                "statusCode": "200",
+                "statusDescription": "Payment Details Cancelled Successfully",
+            }
+            
+            return JsonResponse(response_data)
+        
+        except json.JSONDecodeError as e:
+            # Handle JSON parse error
+            print("JSONDecodeError:", str(e))
+            return JsonResponse({"statusCode": "400", "statusDescription": "Invalid JSON payload"}, status=400)
+        
+        except Exception as e:
+            # Handle other exceptions
+            print("Error:", str(e))
+            return JsonResponse({"statusCode": "400", "statusDescription": "Bad Request"}, status=400)
+    else:
+        # Handle non-POST requests
+        return JsonResponse({"statusCode": "405", "statusDescription": "Method not allowed"}, status=405)

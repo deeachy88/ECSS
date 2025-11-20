@@ -1,0 +1,127 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div id="AppDetails">
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mt-1">
+            <div class="card-body">
+                <div class="modal-footer flex-right justify-content-right">
+                    {% if request.session.login_type == 'C' %}
+                    <a type="button" class="btn btn-sm btn-primary" href="{% url 'report_submission_form' %}">Add</a>
+                    {% endif %}
+                </div>
+                <h5 class="card-title mb-0">List of Report</h5>
+                <div id="cardCollpase1" class="collapse pt-3 show">
+                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">EC No</th>
+                                <th scope="col">Report Type</th>
+                                <th scope="col">Submission Year</th>
+                                <!--<th scope="col">Submission Date</th>-->
+                                <th scope="col">Proponent Name</th>
+                                <!--<th scope="col">Address</th>
+                                <th scope="col">Remarks</th>-->
+                                <th scope="col">Report Status</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report_list in report_list %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><button class="btn btn-primary btn-link" onclick="viewReportDetails('{{report_list.report_reference_no}}')">{{report_list.ec_clearance_no}}</button></td>
+                                    <td>{{report_list.report_type}}</td>
+                                    <td>{{report_list.submission_year}}</td>
+                                    <!--<td>{{report_list.submission_date|date:"d-m-Y"}}</td>-->
+                                    <td>{{report_list.proponent_name}}</td>
+                                    <!--<td>{{report_list.address}}</td>
+                                    <td>{{report_list.remarks}}</td>-->
+                                    <td>{{report_list.report_status}}</td>
+                                    <td>{% if request.session.login_type == 'I' %}
+                                            {% if report_list.report_status == 'Submitted' %}
+                                                <button type="button" class="btn btn-primary" onclick="acknowledgeApplication('{{report_list.report_reference_no}}')"> Acknowledge </button>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if report_list.report_status == 'Pending' %}
+                                                <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="{% url 'viewDraftReport' report_list.report_reference_no %}"><i class="mdi mdi-square-edit-outline"></i></a>
+                                            {% endif %}
+                                        {% endif %}
+</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="11" class="text-center">No Data</td>
+                                </tr>
+                                {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Report Receipt Acknowledged !
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+    {% csrf_token %}
+    <div class="modal fade" id="fhc-details-Modal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title" id="fhc_attachmentModalLabel">Fit For Human Consumption Certificate</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div id="details_FHC">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    function viewReportDetails(report_reference_no)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'view_report_details' %}",
+            data :{'report_reference_no':report_reference_no},
+            success : function(data)
+            {
+                $('#AppDetails').html(data);
+            }
+        });
+    }
+
+    function acknowledgeApplication(report_reference_no)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'acknowledge_report' %}",
+            data :{'report_reference_no':report_reference_no},
+            success : function(data)
+            {
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 2000)
+                }, 2000);
+                location.reload();
+            }
+        });
+    }
+
+</script>
+{% endblock %}
