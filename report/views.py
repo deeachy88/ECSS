@@ -474,7 +474,7 @@ def client_application_details(request):
             rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
             app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-            return render(request, 'application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'status':status,
+            return render(request, 'application_details/application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'status':status,
                                                         'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'file_attach':file_attach,'file_attach':file_attach,
                                                         'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'ec_details':ec_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach, 'rev_lu_attach':rev_lu_attach})
         elif service_id == '10':

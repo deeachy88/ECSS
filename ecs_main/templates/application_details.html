@@ -18,6 +18,14 @@
                                 <input type="text" class="form-control" value="{{status}}" id="status" name="status" style="display:none;">
                                 <input type="text" class="form-control" value="{{assigned_role_name}}" id="assigned_role_name" name="assigned_role_name" style="display:none;">
                                 <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label class="form-label fw-bold">Activity</label>
+                                        <p class="distinct-activity">{{application_details.activity}}</p>
+                                    </div>
+                                </div>
+
+                                <br>
                                 <div class="alert alert-warning border-0 rounded-0" role="alert">
                                     Applicant Details
                                 </div>

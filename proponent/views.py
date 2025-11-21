@@ -18,10 +18,10 @@ from django.db import transaction
 from django.db.models import Max
 from django.utils import timezone
 
-from ecs_admin.models import t_bsic_code, t_competant_authority_master, t_dzongkhag_master, t_file_attachment, t_gewog_master, t_role_master, t_security_question_master, t_service_master, t_thromde_master, t_user_master, t_village_master
+from ecs_admin.models import t_bsic_code, t_competant_authority_master, t_dzongkhag_master, t_fees_schedule, t_file_attachment, t_gewog_master, t_role_master, t_security_question_master, t_service_master, t_thromde_master, t_user_master, t_village_master
 from ecs_main.models import t_application_history
-from ecs_main.views import make_payment_request
-from proponent.models import t_ec_industries_t1_general, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_report_submission_t1, t_report_submission_t2, t_workflow_dtls
+from ecs_main.views import get_birms_token, insert_app_payment_details, make_payment_request
+from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t1_general, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_report_submission_t1, t_report_submission_t2, t_workflow_dtls
 
 def new_application(request):
     assigned_user_id = request.session.get('login_id', None)
@@ -1286,8 +1286,180 @@ def ec_renewal_details(request):
         return render(request, 'renewal_details.html',{'application_details':application_details,'application_no':application_no, 'ec_details':ec_details,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
 
+def submit_renew_application(request):
+    data = dict()
+    try:
+        auth = None
+        total_amount = 0
+        amount = 0
+        cid_no = None
+        mob_no = None
+        app_name = None
+        ec_reference_no = request.POST.get('ec_reference_no')
+        application_no = request.POST.get('application_no')
+        initiatives_undertaken = request.POST.get('initiatives_undertaken')
+        remarks = request.POST.get('initiatives_undertaken_remarks')
+
+        application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+
+        main_application_details = t_payment_details.objects.filter(ref_no=application_no)
+
+        for application_details in application_details:
+            auth = application_details.ca_authority
+            cid_no = application_details.cid
+            mob_no = application_details.contact_no
+            app_name = application_details.applicant_name
+            t_ec_renewal_t1.objects.create(application_no=application_no,ec_reference_no=ec_reference_no,proponent_name=application_details.applicant_name,address=application_details.address,initiatives_undertaken=initiatives_undertaken,remarks=remarks,submission_date=date.today(),action_date=date.today(),application_status='P')
+            t_workflow_dtls.objects.create(application_no=application_no, 
+                                            service_id='10',
+                                            application_status='P',
+                                            action_date=date.today(),
+                                            actor_id=request.session['login_id'],
+                                            actor_name=request.session['name'],
+                                            assigned_role_id='2',
+                                            assigned_role_name='Verifier',
+                                            ca_authority=auth,
+                                            application_source='ECSS'
+                                        )
+        fees_details = t_fees_schedule.objects.filter(service_id='10')
+        for main_application_details in main_application_details:
+            amount = main_application_details.amount
+        for fees_details in fees_details:
+            total_amount = (fees_details.rate * amount)/100 + fees_details.application_fee
+
+            token = get_birms_token()
+            print("Token:", token)
+
+            url = "https://birmsstagging.drc.gov.bt/api-services/moenr-service/api/v1/paymentdetails/create"
+            today_date_str = date.today().isoformat()
+
+            payload = {
+                "platform": "Environment Clearance Services System",
+                "refNo": application_no,
+                "taxPayerNo": cid_no,
+                "taxPayerDocumentNo": cid_no,
+                "paymentRequestDate": today_date_str,
+                "agencyCode": "DTH1552",
+                "payerEmail": request.session['email'],
+                "mobileNo": mob_no,
+                "totalPayableAmount": total_amount,
+                "paymentDueDate": None,
+                "taxPayerName": app_name,
+                "code": "moenr",
+                "paymentLists": [
+                    {
+                        "serviceCode": "100124",
+                        "description": "ec_renewal",
+                        "payableAmount": total_amount
+                    }
+                ]
+            }
+
+            headers = {'Authorization': "Bearer {}".format(token)}
+            
+            try:
+                response = requests.post(url, headers=headers, json=payload, verify=False)
+                print(payload)
+                print("Response Status Code:", response.status_code)
+                print("Response Content:", response.text)
+
+                # Check if the response content is empty
+                if response.status_code == 200:
+                    try:
+                        data = response.json()  # Parse response JSON
+                        paymentAdviceNo = data['content']['paymentAdviceNo']
+                        insert_app_payment_details(request, application_no, "ec_renewal", total_amount, "ec_renewal", paymentAdviceNo)
+                        print("Payment request successful")
+                        print("Response JSON:", data)
+                        t_payment_details.objects.create(
+                            ref_no=application_no,
+                            payment_request_date=date.today(),
+                            tax_payer_name=request.session['name'],
+                            agency_code="DTH1552",
+                            tax_payer_document_no=cid_no,
+                            mobile_no=mob_no,
+                            payer_email=request.session['email'],
+                            description="RENEW",
+                            total_payable_amount=total_amount,
+                            service_type="RENEW",
+                            payment_advice_no=paymentAdviceNo
+                        )
+                    except ValueError as e:
+                        print("Failed to parse JSON response:", e)
+                
+                else:
+                    print("Payment request failed with status code:", response.status_code)
+                    print("Response text:", response.text)
+            except requests.exceptions.RequestException as e:
+                print("HTTP Request failed:", e)
+            send_renew_payment_mail(request.session['name'],request.session['email'], total_amount)
+        data['message'] = "success"
+    except Exception as e:
+        print('An error occurred:', e)
+        data['message'] = "failure"
+    return JsonResponse(data)
+
+def save_renew_attachment(request):
+    data = dict()
+    ea_attach = request.FILES['renewal_attach']
+    file_name = ea_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ECR/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, ea_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/ECR" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_renew_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('application_no')
+    t_file_attachment.objects.create(application_no=application_no, file_path=file_url, attachment=file_name,attachment_type='ECR')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='ECR')
+
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
+
+
+def save_compliance_details(request):
+    ec_terms_id = request.POST.get('ec_terms_id')
+    action_undertaken = request.POST.get('action_undertaken')
+    remarks = request.POST.get('remarks')
+    
+
+    app_details = t_ec_renewal_t2.objects.filter(record_id=ec_terms_id)
+    app_details.update(action_undertaken=action_undertaken,remarks=remarks)
+
+    ec_details = t_ec_renewal_t2.objects.filter(record_id=ec_terms_id)
+    return render(request, 'ec_details.html', {'ec_details': ec_details})
+
+def send_renew_payment_mail(name, email_id, amount):
+    subject = 'Application Submitted'
+    message = "Dear " + name + " Your Application for Renewal OF Environment Clearance Is Submitted. Please Make A Payment of " \
+              + str(amount) + ""
+    recipient_list = [email_id]
+    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moenr.gov.bt', auth_password='wdiigzpprtutwmdc',
+              connection=None, html_message=None)
+    
+def get_ren_application_no(request, service_code, service_id):
+    last_application_no = t_ec_renewal_t1.objects.aggregate(max_app=Max('application_no'))['max_app']
+    if not last_application_no:
+        year=timezone.now().year
+        new_application_no = service_code + "-" + str(year) + "-" + "0001"
+    else:
+        substring = str(last_application_no)[9:13]
+        substring = int(substring) + 1
+        app_num = str(substring).zfill(4)
+        print(app_num)
+        year =  timezone.now().year
+        new_application_no =  service_code + "-" + str(year) + "-" + app_num
+    return new_application_no
+
 # TOR DETAILS
-#TOR
 def tor_form(request):
     service_code = 'TOR'
     application_no = get_application_no(request, service_code, None)

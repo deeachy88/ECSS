@@ -20,6 +20,10 @@ urlpatterns = [
     # EC RENEWAL
     path('ec_renewal', views.ec_renewal, name='ec_renewal'),
     path('ec_renewal_details', views.ec_renewal_details, name='ec_renewal_details'),
+    path('submit_renew_application', views.submit_renew_application, name='submit_renew_application'),
+    path('save_renew_attachment', views.save_renew_attachment, name='save_renew_attachment'),
+    path('save_renew_attachment_details', views.save_renew_attachment_details, name='save_renew_attachment_details'),
+    path('save_compliance_details', views.save_compliance_details, name='save_compliance_details'),
 
     # OTHER MODIFICATION DETAILS
     path('name_change', views.name_change, name='name_change'),
@@ -38,7 +42,6 @@ urlpatterns = [
     path('view_tor_application_details',views.view_tor_application_details, name='view_tor_application_details'),
     path('save_tor_attachment', views.save_tor_attachment, name='save_tor_attachment'),
     path('save_tor_attachment_details', views.save_tor_attachment_details, name='save_tor_attachment_details'),
-
 
     #Report Submission
     #Report Submission

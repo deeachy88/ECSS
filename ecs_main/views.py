@@ -277,7 +277,7 @@ def reviewer_application_list(request):
                 'action_date': app.action_date,
                 'application_source': app.application_source,
                 'is_clickable': is_clickable,
-                'application_status': app.application_status
+                'status': app.application_status
             })
         
         # Sort by action date (newest first)
@@ -367,6 +367,7 @@ def view_application_details(request):
     status = None
     ca_auth = None
     assigned_role_id = None
+    assigned_role_name = None
     result = t_ec_industries_t1_general.objects.filter(application_no=application_no,application_no__contains='TOR')
     workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
     pay_details = payment_details_master.objects.filter(
