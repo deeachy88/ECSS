@@ -66,21 +66,111 @@
     }
 
     @media print {
-        .btn-download, .nav-tabs, .accordion-button::after {
-            display: none !important;
-        }
-        .accordion-collapse {
-            display: block !important;
-        }
-        body {
-            padding: 0;
-            background: white;
-        }
-        .card {
-            box-shadow: none;
-            border: none;
-        }
+    /* Hide elements that shouldn't be printed */
+    .btn-download, .btn, .nav-tabs {
+        display: none !important;
     }
+    
+    /* Ensure all accordion sections are expanded */
+    .accordion-collapse {
+        display: block !important;
+        height: auto !important;
+    }
+    
+    /* Remove collapse functionality and show all content */
+    .accordion-button:not(.collapsed) {
+        color: inherit;
+        background-color: transparent;
+    }
+    
+    .accordion-button {
+        pointer-events: none;
+        cursor: default;
+    }
+    
+    /* Basic print styling */
+    body {
+        padding: 0;
+        background: white;
+        font-size: 12pt;
+        line-height: 1.4;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #ddd !important;
+        margin-bottom: 10px;
+    }
+    
+    .card-header {
+        background-color: #f8f9fa !important;
+        border-bottom: 1px solid #ddd !important;
+    }
+    
+    /* Ensure good contrast for printed text */
+    .text-muted {
+        color: #555 !important;
+    }
+    
+    /* Table styling for print */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    table, th, td {
+        border: 1px solid #ddd;
+    }
+    
+    th, td {
+        padding: 8px;
+        text-align: left;
+    }
+    
+    /* Form elements styling */
+    .form-label {
+        font-weight: bold;
+        color: #000;
+    }
+    
+    .form-control {
+        border: 1px solid #ccc;
+        background-color: #fff;
+    }
+    
+    /* Alert boxes styling */
+    .alert {
+        border: 1px solid #000;
+        background-color: #f8f9fa !important;
+        color: #000 !important;
+    }
+    
+    .alert-warning {
+        border-color: #856404;
+        background-color: #fff3cd !important;
+    }
+    
+    .alert-danger {
+        border-color: #721c24;
+        background-color: #f8d7da !important;
+    }
+    
+    .alert-success {
+        border-color: #155724;
+        background-color: #d4edda !important;
+    }
+    
+    /* Ensure no page breaks inside important elements */
+    .accordion-item, .card, .row {
+        page-break-inside: avoid;
+    }
+    
+    /* Header styling */
+    .header-title {
+        color: #000;
+        font-weight: bold;
+    }
+}
 
 </style>
 <div id="Application_Details">
@@ -162,60 +252,206 @@
         });
     }
 
-    function printDiv()
-    {
-        var contentToPrintClone = $("#print").clone();
-
-        // Show the cloned content and print it
-        contentToPrintClone.show();
-        contentToPrintClone.print();
-
-        // Remove the cloned content after printing
-        contentToPrintClone.remove();
-    }
-
-    // PDF Generation
-    document.getElementById('downloadPdfBtn').addEventListener('click', function() {
-        const element = document.querySelector('.card');
-        const opt = {
-            margin: [10, 5, 10, 5],
-            filename: 'Application_Details_' + Date.now() + '.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: {
-                scale: 2,
-                logging: true,
-                useCORS: true,
-                allowTaint: true
-            },
-            jsPDF: {
-                unit: 'mm',
-                format: 'a4',
-                orientation: 'portrait',
-                compressPDF: true
-            },
-            pagebreak: {
-                mode: ['avoid-all', 'css', 'legacy']
+    function printDiv() {
+    // Expand all accordions first
+    const collapses = document.querySelectorAll('.accordion-collapse');
+    const buttons = document.querySelectorAll('.accordion-button');
+    
+    collapses.forEach(collapse => {
+        collapse.classList.add('show');
+    });
+    
+    buttons.forEach(button => {
+        button.classList.remove('collapsed');
+        button.setAttribute('aria-expanded', 'true');
+    });
+    
+    // Add print-specific styles
+    const style = document.createElement('style');
+    style.innerHTML = `
+        /* Apply these styles immediately (for screen and print) */
+        .accordion-button {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        @media print {
+            /* Hide interactive elements */
+            .btn, .nav-tabs, .accordion-button::after,
+            [onclick], [data-bs-toggle] {
+                display: none !important;
             }
-        };
-
-        // Show loading indicator
-        const originalText = this.innerHTML;
-        this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Generating PDF...';
-        this.disabled = true;
-
-        // Generate PDF
-        html2pdf().set(opt).from(element).toPdf().get('pdf').then(function(pdf) {
-            // Restore button state
-            document.getElementById('downloadPdfBtn').innerHTML = originalText;
-            document.getElementById('downloadPdfBtn').disabled = false;
+            
+            /* Ensure accordion buttons are visible and styled */
+            .accordion-button {
+                display: block !important;
+                background: transparent !important;
+                color: #000 !important;
+                font-weight: bold !important;
+                padding: 0.75rem 0 !important;
+                font-size: 12pt !important;
+                margin-left: 4px !important;
+            }
+            
+            .accordion-button:not(.collapsed) {
+                color: #000 !important;
+                background: transparent !important;
+                box-shadow: none !important;
+            }
+            
+            /* Ensure all accordions are expanded and visible */
+            .accordion-collapse {
+                display: block !important;
+                height: auto !important;
+                page-break-inside: avoid !important;
+            }
+            
+            /* Rest of your print styles... */
+            .row {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                margin-right: -15px !important;
+                margin-left: -15px !important;
+                page-break-inside: avoid !important;
+            }
+            
+            .col-lg-4, .col-lg-6, .col-xl-12 {
+                position: relative !important;
+                width: 100% !important;
+                padding-right: 15px !important;
+                padding-left: 15px !important;
+            }
+            
+            .col-lg-4 {
+                flex: 0 0 33.333333% !important;
+                max-width: 33.333333% !important;
+            }
+            
+            .col-lg-6 {
+                flex: 0 0 50% !important;
+                max-width: 50% !important;
+            }
+            
+            .col-xl-12 {
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+            }
+            
+            .card {
+                box-shadow: none !important;
+                margin-bottom: 15px !important;
+                page-break-inside: avoid !important;
+            }
+            
+            .card-header {
+                background-color: #f8f9fa !important;
+                padding: 0.75rem 1rem !important;
+            }
+            
+            .card-body {
+                padding: 1rem !important;
+            }
+            
+            .form-label {
+                font-weight: bold !important;
+                color: #000 !important;
+                margin-bottom: 0.25rem !important;
+            }
+            
+            .form-control, .form-select {
+                border: 1px solid #000 !important;
+                background-color: #fff !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            .alert {
+                border: 1px solid !important;
+                margin-bottom: 1rem !important;
+                padding: 0.75rem !important;
+                page-break-inside: avoid !important;
+            }
+            
+            .alert-warning {
+                border-color: #856404 !important;
+                background-color: #fff3cd !important;
+                color: #856404 !important;
+            }
+            
+            .header-title {
+                color: #000 !important;
+                font-weight: bold !important;
+                font-size: 16pt !important;
+                margin-bottom: 0 !important;
+            }
+            
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                page-break-inside: avoid !important;
+            }
+            
+            table, th, td {
+                border: 1px solid #000 !important;
+            }
+            
+            th, td {
+                padding: 0.5rem !important;
+                text-align: left !important;
+            }
+            
+            .accordion-item {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            
+            @page {
+                margin: 0.5cm;
+            }
+            
+            body {
+                margin: 0 !important;
+                padding: 10px !important;
+                background: white !important;
+                font-size: 11pt !important;
+                line-height: 1.3 !important;
+                font-family: Arial, sans-serif !important;
+            }
+            
+            .mb-3 {
+                margin-bottom: 0.75rem !important;
+            }
+            
+            .mt-1 {
+                margin-top: 0.25rem !important;
+            }
+            
+            .mt-2 {
+                margin-top: 0.5rem !important;
+            }
+            
+            .d-flex.card-header {
+                display: flex !important;
+                page-break-inside: avoid !important;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Print
+    window.print();
+    
+    // Clean up
+    setTimeout(() => {
+        document.head.removeChild(style);
+        collapses.forEach(collapse => {
+            collapse.classList.remove('show');
         });
-    });
-
-    // Automatically expand all accordions when printing
-    window.addEventListener('beforeprint', function() {
-        document.querySelectorAll('.accordion-collapse').forEach(function(element) {
-            element.classList.add('show');
+        buttons.forEach(button => {
+            button.classList.add('collapsed');
+            button.setAttribute('aria-expanded', 'false');
         });
-    });
+    }, 100);
+}
 </script>
 {% endblock %}
