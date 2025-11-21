@@ -587,7 +587,6 @@
             url: "{% url 'check_file_attachment' %}",
             data: {'application_no':application_no},
             success: function(data) {
-                alert(data.file_count);
                 if (data.file_count > 0) {
                     $('#general_attachment_successMsg')
                     .text("Saved Successfully")  // Using text() instead of html()

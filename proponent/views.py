@@ -144,7 +144,7 @@ def save_general_details(request):
 
             # Project details
             'project_name': request.POST.get('project_name'),
-            'project_category': request.POST.get('project_category'),
+            #'project_category': request.POST.get('project_category'),
             'location_name': request.POST.get('project_site'),
 
             # Applicant information
