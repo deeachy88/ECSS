@@ -137,7 +137,7 @@ def login(request):
                             request.session['login_id'] = check_user.login_id
                             request.session['address'] = check_user.address
                             request.session['contact_number'] = check_user.contact_number
-                            request.session['cid'] = check_user.cid
+                            request.session['proponent_type'] = check_user.proponent_type
                             if check_user.proponent_type == 4:
                                 request.session['cid'] = check_user.cid
                             else:

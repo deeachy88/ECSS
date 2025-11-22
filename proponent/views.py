@@ -67,33 +67,11 @@ def get_application_service_id(request):
     return JsonResponse(data)
 
 def application_form(request):
-    service_code = None
-    if request.session['service_id'] == '1':
-        service_code = 'IEE'
-    elif request.session['service_id'] == '2':
-        service_code = 'ENE'
-    elif request.session['service_id'] == '3':
-        service_code = 'ROA'
-    elif request.session['service_id'] == '4':
-        service_code = 'TRA'
-    elif request.session['service_id'] == '5':
-        service_code = 'TOU'
-    elif request.session['service_id'] == '6':
-        service_code = 'GWA'
-    elif request.session['service_id'] == '7':
-        service_code = 'FOR'
-    elif request.session['service_id'] == '8':
-        service_code = 'QUA'
-    else :
-        service_code = 'GEN'
-    application_no = get_application_no(request, service_code, request.session['service_id'])
-    request.session['application_no'] = application_no
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     thromde = t_thromde_master.objects.all()
-    return render(request, 'new_application_form.html',{'application_no':application_no,'thromde':thromde,
-                                                     'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+    return render(request, 'new_application_form.html',{'thromde':thromde,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 
 def get_application_no(request, service_code, service_id):
     if service_code == "TOR":
@@ -118,13 +96,31 @@ def get_application_no(request, service_code, service_id):
 def save_general_details(request):
     data = {}
     try:
+        service_code = None
+        if request.session['service_id'] == '1':
+            service_code = 'IEE'
+        elif request.session['service_id'] == '2':
+            service_code = 'ENE'
+        elif request.session['service_id'] == '3':
+            service_code = 'ROA'
+        elif request.session['service_id'] == '4':
+            service_code = 'TRA'
+        elif request.session['service_id'] == '5':
+            service_code = 'TOU'
+        elif request.session['service_id'] == '6':
+            service_code = 'GWA'
+        elif request.session['service_id'] == '7':
+            service_code = 'FOR'
+        elif request.session['service_id'] == '8':
+            service_code = 'QUA'
+        else :
+            service_code = 'GEN'
+        application_no = get_application_no(request, service_code, request.session['service_id'])
         identifier = request.POST.get('identifier')
-        application_no = request.POST.get('application_no')
         tor_application_no = request.POST.get('tor_application_no')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         service_type = request.POST.get('service_type')
         application_type = "New"
-        activity = request.POST.get('activity')
 
         # 2. Handle location data
         dzongkhag_code = gewog_code = village_code = thromde_id = None
@@ -154,6 +150,7 @@ def save_general_details(request):
             'email': request.POST.get('email'),
             'focal_person': request.POST.get('focal_person'),
             'cid': request.session.get('cid'),
+            'proponent_type': request.session.get('proponent_type'),
 
             # Location data
             'dzongkhag_throm': dzongkhag_throm,
@@ -168,7 +165,7 @@ def save_general_details(request):
             'applicant_id': request.session.get('email'),
             'colour_code': request.session.get('colour_code'),
             'service_id': request.session.get('service_id'),
-            'activity': activity
+            'activity': request.session.get('activity')
             
         }
         ca_auth = None
@@ -262,6 +259,7 @@ def save_general_details(request):
             )
 
         data['message'] = "success"
+        data['application_no'] = application_no
     except Exception as e:
         data['error'] = str(e)
         logger.error(f"Error saving application {application_no} (service: {service_type}): {str(e)}", 

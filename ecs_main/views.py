@@ -1,4 +1,6 @@
 import json
+import random
+import string
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 import requests
@@ -1210,17 +1212,29 @@ def days_between(start_date, end_date):
         return abs((end_date - start_date).days)
     return 0
 
+def get_random_tax_no(length):
+    digits = string.digits
+    tax_no = ''.join(random.choice(digits) for i in range(length))
+    return tax_no
+
 def make_payment_request(request,application_no,total_amount,description, email, service_code,service_type):
     token = get_birms_token()
     print(token)
-    cid_no = None
+    taxPayerNo = None
+    taxPayerDocumentNo = None
     mob_no = None
     app_name = None
+    proponent_type = None
     app_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
     for app_det in app_details:
-        cid_no = app_det.cid
+        taxPayerDocumentNo = app_det.cid
         mob_no = app_det.contact_no
         app_name = app_det.applicant_name
+        proponent_type = app_det.proponent_type
+
+    if proponent_type != 4:
+        taxPayerDocumentNo = get_random_tax_no(8)
+
     # Endpoint URL
     url = "https://birmsstagging.drc.gov.bt/api-services/moenr-service/api/v1/paymentdetails/create"
 
@@ -1232,8 +1246,8 @@ def make_payment_request(request,application_no,total_amount,description, email,
     payload = {
         "platform": "BLIMS",
         "refNo": application_no,
-        "taxPayerNo": cid_no,
-        "taxPayerDocumentNo": cid_no,#id card
+        "taxPayerNo": taxPayerNo,
+        "taxPayerDocumentNo": taxPayerDocumentNo,#id card
         "paymentRequestDate": today_date_str,
         "agencyCode": "DTH1552",
         "payerEmail": email,

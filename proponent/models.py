@@ -8,10 +8,8 @@ class t_ec_industries_t1_general(models.Model):
     application_no = models.CharField(max_length=100,default=None, blank=True, null=True)
     application_date = models.DateField(default=None, blank=True, null=True)
     application_type = models.CharField(max_length=100,default=None, blank=True, null=True)
-    form_type = models.CharField(max_length=250, default=None, blank=True, null=True)
     ca_authority = models.IntegerField(default=None, blank=True, null=True)
     applicant_id = models.CharField(max_length=100,default=None, blank=True, null=True)
-    applicant_type = models.CharField(max_length=100,default=None, blank=True, null=True)
     colour_code = models.CharField(max_length=100,default=None, blank=True, null=True)
     applicant_name = models.CharField(max_length=100,default=None, blank=True, null=True)
     address = models.CharField(max_length=250,default=None, blank=True, null=True)
@@ -60,16 +58,15 @@ class t_ec_industries_t1_general(models.Model):
     revocation_id = models.CharField(max_length=100,default=None, blank=True, null=True)
     is_revoked = models.CharField(max_length=100,default=None, blank=True, null=True)
     activity = models.TextField(default=None, blank=True, null=True)
+    proponent_type = models.IntegerField(default=None, blank=True, null=True)
 
 class t_ec_industries_t1_general_audit(models.Model):
     record_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     application_date = models.DateField(default=None, blank=True, null=True)
     application_type = models.CharField(max_length=100, default=None, blank=True, null=True)
-    form_type = models.CharField(max_length=250, default=None, blank=True, null=True)
     ca_authority = models.IntegerField(default=None, blank=True, null=True)
     applicant_id = models.CharField(max_length=100, default=None, blank=True, null=True)
-    applicant_type = models.CharField(max_length=100, default=None, blank=True, null=True)
     colour_code = models.CharField(max_length=100, default=None, blank=True, null=True)
     applicant_name = models.CharField(max_length=100, default=None, blank=True, null=True)
     address = models.CharField(max_length=250, default=None, blank=True, null=True)
@@ -118,6 +115,7 @@ class t_ec_industries_t1_general_audit(models.Model):
     revocation_id = models.CharField(max_length=100, default=None, blank=True, null=True)
     is_revoked = models.CharField(max_length=100, default=None, blank=True, null=True)
     activity = models.TextField(default=None, blank=True, null=True)
+    proponent_type = models.IntegerField(default=None, blank=True, null=True)
     
 class t_ec_industries_t11_ec_details(models.Model):
     record_id = models.AutoField(primary_key=True)
