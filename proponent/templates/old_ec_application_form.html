@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
 {% load static %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <style>
     .distinct-activity {
         border: 2px solid #6c757d;
@@ -55,14 +56,15 @@
                         <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
                                 aria-expanded="true" aria-controls="collapseOne">
-                                General Information
+                                EC Information
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <form method="post" id="general_application_form">
+                                <form method="post" id="old_ec_general_application_form">
                                     {% csrf_token %}
+                                    <input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="Main Activity" name="service_type" id="service_type" style="display:none;">
                                     <input type="text" class="form-control" value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
                                     <div class="row">
@@ -71,13 +73,12 @@
                                             <p class="distinct-activity">{{request.session.activity}}</p>
                                         </div>
                                     </div>
-
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of the Applicant</label>
-                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
+                                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly>
                                             </div>
                                             <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -289,7 +290,33 @@
                                             <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-success border-0 rounded-0" 
+                                    <div class="divider-bright mb-3">
+                                        <h6 class="mb-0">EC Details</h6>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">EC Reference No:</label>
+                                                <input type="text" name="ec_reference_no" class="form-control" id="ec_reference_no" value="">
+                                            </div>
+                                            <div id="ec_reference_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">EC Issue Date</label>
+                                                <input type="date" name="ec_issue_date" id="ec_issue_date" class="form-control date-picker flatpickr-input active" onchange="validateECValidity()">
+                                            </div>
+                                            <div id="ec_issue_dateErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">EC Validity</label>
+                                                <input type="date" name="ec_validity" id="ec_validity" class="form-control date-picker flatpickr-input active" onchange="validateECValidity()">
+                                            </div>
+                                            <div id="ec_validityErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-success border-0 rounded-0"
                                         role="alert" 
                                         id="application_form_successMsg" 
                                         style="display:none"
@@ -309,7 +336,7 @@
                                     </div>
                                     <div class="row mt-4">
                                         <div class="text-sm-end">
-                                            <a href="#" class="btn btn-success" onclick="save_general_info()">
+                                            <a href="#" class="btn btn-success" onclick="save_old_ec_general_info()">
                                                 <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
                                         </div>
                                     </div>
@@ -321,14 +348,14 @@
                         <h2 class="accordion-header" id="headingAttachment">
                             <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
                                 data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment" disabled>
-                                File Attachment
+                                EC Copy
                             </button>
                         </h2>
                         <div id="collapseAttachment" class="accordion-collapse collapse" aria-labelledby="headingAttachment"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <div class="alert alert-danger border-0 rounded-0" role="alert">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Note: If the activity is proposed in the industrial area/estate/park/SEZ, the list of documents from 1 to 3 are not required.
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Copy of Environment Clearance
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12">
@@ -336,27 +363,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td>1</td>
-                                                    <td>Written consent from individual/juristic person directly impacted by the proposed project and ancillary activities authenticated by the concerned local authority</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2</td>
-                                                    <td>Records of public consultation signed by member (s) of the concerned local authority present during the consultation. If there are no individuals/public within the vicinity of the project, submit endorsement/approval of the concerned local authority.</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3</td>
-                                                    <td>KMZ file indicating the proposed site and its boundary, access road alignment, electricity tapping point and alignment (if applicable), water source, and nearby sensitive receptors as identified in the baseline information</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>4</td>
-                                                    <td>Layout plan of the proposed project, if applicable</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>5</td>
-                                                    <td>Extraction plan and production schedule</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>6</td>
-                                                    <td>Water abstraction permit from concerned local authority (Dzongkhag/Gewog Administration) for any water abstraction activity</td>
+                                                    <td>Please attach the scanned copy of Environment Clearance</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -368,7 +375,7 @@
                                             <div class="card-widgets">
                                                 <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#general_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                             </div>
-                                            <h5 class="card-title mb-0">Attachments</h5>
+                                            <h5 class="card-title mb-0">EC Copy</h5>
                                             <div id="cardCollpase7" class="collapse pt-3 show">
                                                 <div id="general_attachment">
                                                     {% include 'file_attachment_page.html' %}
@@ -393,7 +400,7 @@
                                 </div>
                                 <div class="row mt-4">
                                     <div class="text-sm-end">
-                                        <a href="#" class="btn btn-success" onclick="save_general_attachment_details()">
+                                        <a href="#" class="btn btn-success" onclick="save_old_ec_general_attachment_details()">
                                             <i class="mdi mdi-arrow-right me-1"></i> Save-Next </a>
                                     </div>
                                 </div>
@@ -410,17 +417,13 @@
                         <div id="collapseDisclaimer" class="accordion-collapse collapse" aria-labelledby="headingDisclaimer"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <form method="post" id="general_submit_form">
+                                <form method="post" id="old_ec_general_submit_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" name="general_disclaimer_application_no" id="general_disclaimer_application_no">
-                                    
-                                    <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
-                                    <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
-                                    <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
-                                    <p class="text-wrap">3.	Application Outcome: Submission of this application does not guarantee acceptance or approval. The final decision rests with the appropriate authorities, and we reserve the right to reject any application without providing any reason.</p>
-                                    <p class="text-wrap">4.	Disclaimer of Liability: To the extent permitted by law, we disclaim all liability for any loss, damage, or injury arising out of or related to your use of this online application form or reliance on any information provided herein. We shall not be responsible for any technical errors, interruptions, or inaccuracies that may occur during the application process.</p>
-                                    <p class="text-wrap">5.	Modification or Termination: We reserve the right to modify, suspend, or terminate this online application form at any time without prior notice. We may also update or change the terms and conditions of this disclaimer without notice.</p>
-                                    <p class="text-wrap">Please review this disclaimer carefully before submitting your application. If you do not agree with any part of this disclaimer, please refrain from using this online application form.</p>
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no">
+                                    <p class="text-wrap">By using this form, you agree that:</p>
+                                    <p class="text-wrap">1. The information and documents you provide are true and complete.</p>
+                                    <p class="text-wrap">2. Your details will be used only to review and update your clearance record.</p>
+                                    <p class="text-wrap">3. Submission does not guarantee acceptance. The authority may request more details or reject the update.</p>
                                     <div class="mt-3">
                                         <div class="form-check">
                                             <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
@@ -450,7 +453,7 @@
                                     </button>
                                     <div class="row mt-2">
                                         <div class="text-sm-end">
-                                            <a href="#" id="gen_submit_btn" class="btn btn-success" onclick="submit_general_application()" style="display:none;">
+                                            <a href="#" id="gen_submit_btn" class="btn btn-success" onclick="submit_old_ec_general_application()" style="display:none;">
                                                 <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
                                         </div>
                                     </div>
@@ -498,10 +501,8 @@
     </div>
     </div>
 </form>
-
-
 <script>
-    function save_general_info()
+    function save_old_ec_general_info()
     {
         let project_name = $('#project_name').val();
         let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
@@ -511,6 +512,9 @@
         let gewog_code = $('#gewog').val();
         let village_code = $('#vil_chiwog').val();
         let project_site = $('#project_site').val();
+        let refNo = $('#ec_reference_no').val();
+        let ec_issue_date = $('#ec_issue_date').val();
+        let ec_validity = $('#ec_validity').val();
 
         if (project_name === "") {
             showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');
@@ -536,12 +540,25 @@
             showErrorAndFocus('#project_siteErrorMsg', 'Enter Project Site', '#project_site');
             return false;
         }
+        else if (refNo === "") {
+            showErrorAndFocus('#ec_reference_noErrorMsg', 'Enter EC Clearance No', '#ec_reference_no');
+            return false;
+        }
+        else if (ec_issue_date === "") {
+            showErrorAndFocus('#ec_issue_dateErrorMsg', 'Enter EC Issue Date', '#ec_issue_date');
+            return false;
+        }
+        else if (ec_validity === "") {
+            showErrorAndFocus('#ec_validityErrorMsg', 'Enter EC Validity', '#ec_validity');
+            return false;
+        }
+
         else {
             // Submit the form via AJAX
             $.ajax({
                 type: "POST",
-                url: "{% url 'save_general_details' %}",
-                data: $('#general_application_form').serialize(),
+                url: "{% url 'save_old_ec_general_details' %}",
+                data: $('#old_ec_general_application_form').serialize(),
                 success: function(data) {
                     if (data.message == 'success') {
                         // Success case with accessibility
@@ -586,24 +603,24 @@
 
     function showErrorAndFocus(errorElement, message, focusElement) {
         $(errorElement).html(message).show();
-        
+
         // Use setTimeout to ensure the focus happens after the DOM updates
         setTimeout(function() {
             $(focusElement).focus();
-            
+
             // Scroll to the element if needed
             $('html, body').animate({
                 scrollTop: $(focusElement).offset().top - 100
             }, 100);
         }, 50);
-        
+
         // Hide the error after 2 seconds
         setTimeout(function() {
             $(errorElement).fadeOut('slow');
         }, 2000);
     }
 
-    function save_general_attachment_details() {
+    function save_old_ec_general_attachment_details() {
         // Set success message and attributes
         let application_no = $('#general_disclaimer_application_no').val();
         //alert(application_no);
@@ -636,7 +653,7 @@
                     }, 2000);
                 } else {
                     $('#general_attachment_errorMsg')
-                    .text("Please upload relevant IEE form")  // Using text() instead of html()
+                    .text("Please upload Copy of EC")  // Using text() instead of html()
                     .removeAttr('tabindex')      // Remove focus blocker
                     .attr({
                         'aria-live': 'polite',
@@ -649,12 +666,12 @@
                     setTimeout(() => {
                         $('#general_attachment_errorMsg').delay(2000).fadeOut('slow');
                     }, 2000);
-                    
+
                 }
             }
         });
 
-        
+
     }
 
     function save_general_attachment()
@@ -710,7 +727,7 @@
                     }
                     else
                     {
-                        $('#general_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                            $('#general_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
                         $('#general_attachErrorMsg').show();
                         $('#general_attachErrorMsg').delay(2000).fadeOut('slow');
                     }
@@ -719,18 +736,18 @@
         }
     }
 
-    function submit_general_application()
+    function submit_old_ec_general_application()
     {
         // Show loading indicator
         $("#pageloader").show();
 
         $.ajax({
             type: "POST",
-            url: "{% url 'submit_general_application' %}",
-            data: $('#general_submit_form').serialize(),
+            url: "{% url 'submit_old_ec_general_application' %}",
+            data: $('#old_ec_general_submit_form').serialize(),
             success: function(data) {
                 $("#pageloader").hide();
-                
+
                 if (data.message == 'success') {
                     // Success case
                     $('#general_submit_successMsg')
@@ -839,6 +856,68 @@
                 $('#vil_chiwog').html(data);
             }
         });
+    }
+
+
+    function validateECValidity() {
+        const refNo = document.getElementById("ec_reference_no").value.trim();
+        const issueDate = document.getElementById("ec_issue_date").value;
+        const validityDate = document.getElementById("ec_validity").value;
+
+        const refErr = document.getElementById("ec_reference_noErrorMsg");
+        const issueErr = document.getElementById("ec_issue_dateErrorMsg");
+        const validErr = document.getElementById("ec_validityErrorMsg");
+
+        let isValid = true;
+
+        // Hide errors
+        refErr.style.display = "none";
+        issueErr.style.display = "none";
+        validErr.style.display = "none";
+
+        // Helper to show error and auto-hide
+        function showError(el, msg) {
+            el.innerHTML = msg;
+            el.style.display = "block";
+            setTimeout(() => {
+                el.style.display = "none";
+            }, 5000);
+        }
+
+        // Reference no check
+        if (refNo === "") {
+            showError(refErr, "Please enter the EC reference number.");
+            isValid = false;
+        }
+
+        // Issue date check
+        if (issueDate === "") {
+            showError(issueErr, "Please select the EC issue date.");
+            isValid = false;
+        }
+
+        // Validity date check
+        if (validityDate === "") {
+            showError(validErr, "Please select the EC validity date.");
+            isValid = false;
+        }
+
+        // Validity must be after issue date
+        if (issueDate && validityDate) {
+            const iDate = new Date(issueDate);
+            const vDate = new Date(validityDate);
+
+            if (vDate < iDate) {
+                showError(validErr, "Validity date cannot be earlier than the issue date.");
+
+                // Clear validity date
+                document.getElementById("ec_validity").value = "";
+
+                isValid = false;
+            }
+        }
+
+        return isValid;
     }
 </script>
 {% endblock %}

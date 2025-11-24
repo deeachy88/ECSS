@@ -2410,3 +2410,281 @@ def ecss_payment_reversal(request):
     else:
         # Handle non-POST requests
         return JsonResponse({"statusCode": "405", "statusDescription": "Method not allowed"}, status=405)
+
+
+# OLD EC UPDATE START
+
+def old_ec_application(request):
+    assigned_user_id = request.session.get('login_id', None)
+    applicant_id = request.session.get('email', None)
+    # bsic_details = t_bsic_code.objects.all()
+    bsic_details = t_bsic_code.objects.all()
+    app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+        application_status='A', application_no__contains='TOR', applicant_id=applicant_id
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+    response = render(request, 'old_ec_application.html', {'bsic_details': bsic_details, 'app_hist_count': app_hist_count,
+                                                        'cl_application_count': cl_application_count,
+                                                        'tor_application_count': tor_application_count})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
+
+
+
+def old_ec_application_form(request):
+    service_code = None
+    if request.session['service_id'] == '1':
+        service_code = 'IEE'
+    elif request.session['service_id'] == '2':
+        service_code = 'ENE'
+    elif request.session['service_id'] == '3':
+        service_code = 'ROA'
+    elif request.session['service_id'] == '4':
+        service_code = 'TRA'
+    elif request.session['service_id'] == '5':
+        service_code = 'TOU'
+    elif request.session['service_id'] == '6':
+        service_code = 'GWA'
+    elif request.session['service_id'] == '7':
+        service_code = 'FOR'
+    elif request.session['service_id'] == '8':
+        service_code = 'QUA'
+    else:
+        service_code = 'GEN'
+    application_no = get_application_no(request, service_code, request.session['service_id'])
+    request.session['application_no'] = application_no
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
+    return render(request, 'old_ec_application_form.html', {'application_no': application_no, 'thromde': thromde,
+                                                         'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
+
+
+def get_old_ec_application_no(request, service_code, service_id):
+    if service_code == "TOR":
+        application_no = t_ec_industries_t1_general.objects.filter(application_no__contains='TOR').aggregate(
+            Max('application_no'))
+    else:
+        application_no = t_ec_industries_t1_general.objects.exclude(service_id=service_id,
+                                                                    application_no__contains='TOR').filter(
+            application_no__contains=service_code).aggregate(Max('application_no'))
+    last_application_no = application_no['application_no__max']
+    print(last_application_no)
+    if not last_application_no:
+        year = timezone.now().year
+        new_application_no = service_code + "-" + str(year) + "-" + "0001"
+    else:
+        substring = str(last_application_no)[9:13]
+        substring = int(substring) + 1
+        app_num = str(substring).zfill(4)
+        print(app_num)
+        year = timezone.now().year
+        new_application_no = service_code + "-" + str(year) + "-" + app_num
+    return new_application_no
+
+
+def save_old_ec_general_details(request):
+    data = {}
+    try:
+        service_code = None
+        if request.session['service_id'] == '1':
+            service_code = 'IEE'
+        elif request.session['service_id'] == '2':
+            service_code = 'ENE'
+        elif request.session['service_id'] == '3':
+            service_code = 'ROA'
+        elif request.session['service_id'] == '4':
+            service_code = 'TRA'
+        elif request.session['service_id'] == '5':
+            service_code = 'TOU'
+        elif request.session['service_id'] == '6':
+            service_code = 'GWA'
+        elif request.session['service_id'] == '7':
+            service_code = 'FOR'
+        elif request.session['service_id'] == '8':
+            service_code = 'QUA'
+        else:
+            service_code = 'GEN'
+        application_no = get_application_no(request, service_code, request.session['service_id'])
+        identifier = request.POST.get('identifier')
+        tor_application_no = request.POST.get('tor_application_no')
+        dzongkhag_throm = request.POST.get('dzongkhag_throm')
+        service_type = request.POST.get('service_type')
+        application_type = "Old_EC"
+        ec_reference_no = request.POST.get('ec_reference_no')
+        ec_issue_date = request.POST.get('ec_issue_date')
+        ec_validity = request.POST.get('ec_validity')
+
+        # 2. Handle location data
+        dzongkhag_code = gewog_code = village_code = thromde_id = None
+        if dzongkhag_throm == 'Thromde':
+            thromde_id = request.POST.get('thromde_id')
+        else:
+            dzongkhag_code = request.POST.get('dzongkhag')
+            gewog_code = request.POST.get('gewog')
+            village_code = request.POST.get('vil_chiwog')
+
+        common_fields = {
+            # Application metadata
+            'application_date': timezone.now().date(),
+            'application_type': application_type,
+            'application_source': 'ECSS',
+            'application_status': 'A',
+            'ec_reference_no': ec_reference_no,
+            'ec_approve_date': ec_issue_date,
+            'ec_expiry_date': ec_validity,
+
+            # Project details
+            'project_name': request.POST.get('project_name'),
+            # 'project_category': request.POST.get('project_category'),
+            'location_name': request.POST.get('project_site'),
+
+            # Applicant information
+            'applicant_name': request.POST.get('applicant_name'),
+            'address': request.POST.get('address'),
+            'contact_no': request.POST.get('contact_no'),
+            'email': request.POST.get('email'),
+            'focal_person': request.POST.get('focal_person'),
+            'cid': request.session.get('cid'),
+            'proponent_type': request.session.get('proponent_type'),
+
+            # Location data
+            'dzongkhag_throm': dzongkhag_throm,
+            'dzongkhag_code': dzongkhag_code,
+            'gewog_code': gewog_code,
+            'village_code': village_code,
+            'thromde_id': thromde_id,
+
+            # System fields
+            'service_type': service_type,
+            'tor_application_no': tor_application_no,
+            'applicant_id': request.session.get('email'),
+            'colour_code': request.session.get('colour_code'),
+            'service_id': request.session.get('service_id'),
+            'activity': request.session.get('activity')
+
+        }
+        ca_auth = None
+        if identifier not in ['DR', 'NC', 'OC'] and tor_application_no is None:
+            auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=request.session.get('ca_auth'),
+                dzongkhag_code_id=dzongkhag_code if request.session.get('ca_auth') in ['DEC', 'THROMDE'] else None
+            )
+            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+        elif identifier in ['NC', 'OC']:
+            auth_filter = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+        elif tor_application_no:
+            auth_filter = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
+            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+
+        common_fields['ca_authority'] = ca_auth
+
+        # 5. Database operations with proper service_type handling
+        with transaction.atomic():
+            # Check if application exists with same service_type
+            existing_app = t_ec_industries_t1_general.objects.filter(
+                application_no=application_no,
+                service_type=service_type
+            ).first()
+
+            if existing_app:
+                # Update existing application
+                if identifier == 'NC':
+                    update_fields = {
+                        'project_name': common_fields['project_name'],
+                        'service_type': identifier
+                    }
+                elif identifier == 'OC':
+                    update_fields = {
+                        'applicant_name': common_fields['applicant_name'],
+                        'service_type': identifier
+                    }
+                elif identifier == 'DR':
+                    protected_fields = {
+                        'service_type', 'ca_authority', 'applicant_id', 'colour_code',
+                        'activity', 'application_source', 'application_status'
+                    }
+                    update_fields = {k: v for k, v in common_fields.items()
+                                     if k not in protected_fields}
+                else:  # General update
+                    update_fields = common_fields
+
+                # Perform the update
+                t_ec_industries_t1_general.objects.filter(
+                    application_no=application_no,
+                    service_type=service_type
+                ).update(**update_fields)
+            else:
+                # Create new application
+                t_ec_industries_t1_general.objects.create(
+                    application_no=application_no,
+                    **common_fields
+                )
+
+
+            # Create history record - now properly tracking by service_type
+            if not t_application_history.objects.filter(application_no=application_no).exists():
+                t_application_history.objects.create(
+                    application_no=application_no,
+                    service_type=service_type,  # Added service_type to history
+                    application_date=timezone.now().date(),
+                    applicant_id=request.session.get('email'),
+                    ca_authority=ca_auth,
+                    service_id=request.session.get('service_id'),
+                    application_status='P',
+                    actor_id=request.session.get('login_id'),
+                    actor_name=request.session.get('name'),
+                    action_date=timezone.now()
+                )
+
+        data['message'] = "success"
+        data['application_no'] = application_no
+    except Exception as e:
+        data['error'] = str(e)
+        logger.error(f"Error saving application {application_no} (service: {service_type}): {str(e)}",
+                     exc_info=True)
+    return JsonResponse(data)
+
+def submit_old_ec_general_application(request):
+    data = {}
+    try:
+        application_no = request.POST.get('general_disclaimer_application_no')
+        disclaimer_identifier = request.POST.get('disclaimer_identifier')
+
+        # Get application details
+        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        main_application = application_details.filter(service_type='Main Activity').first()
+
+        if not main_application:
+            data['error'] = "No main application found"
+            return JsonResponse(data, status=400)
+
+        main_application.action_date = timezone.now()
+        main_application.save()
+
+        # Update HISTORY
+
+        t_application_history.objects.filter(application_no=application_no, service_type='Main Activity').update(
+            remarks='Application Submitted',
+            action_date=timezone.now()
+        )
+        data['message'] = "success"
+    except Exception as e:
+        data['error'] = str(e).split("\n")[0]
+    return JsonResponse(data)
+
+# OLD EC UPDATE END
