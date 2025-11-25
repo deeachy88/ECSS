@@ -1,278 +1,334 @@
+<style>
+    .distinct-activity {
+        border: 2px solid #6c757d;
+        border-radius: 6px;
+        padding: 12px;
+        background-color: #f8f9fa;
+        margin-bottom: 0;
+    }
+    .divider-bright {
+        background-color: #c8dbce;
+        padding: 0.35rem 0.75rem;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+    }
+
+    .divider-bright h6 {
+        color: #000000;
+        font-weight: 800;
+        letter-spacing: 0.4px;
+        margin-bottom: 0;
+        font-size: 0.8rem;
+        line-height: 1.2;
+    }
+</style>
 {% for application_details in application_details %}
 <div class="row">
     <div class="col-xl-12">
-        <div class="card mt-1">
+        <div class="card">
             <div class="card-body">
-                <h4 class="header-title mb-3"> Application Details </h4>
-                <div class="accordion" id="accordionExample">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                                aria-expanded="true" aria-controls="collapseOne">
-                                General Information
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-                            data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                <input type="text" class="form-control" value="{{status}}" id="status" name="status" style="display:none;">
-                                <input type="text" class="form-control" value="{{assigned_role_name}}" id="assigned_role_name" name="assigned_role_name" style="display:none;">
-                                <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <label class="form-label fw-bold">Activity</label>
-                                        <p class="distinct-activity">{{application_details.activity}}</p>
-                                    </div>
-                                </div>
+                {% if application_details.service_id == 1 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Industry Projects - 2022</h4>
+                {% elif application_details.service_id == 2 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Energy Projects - 2022</h4>
+                {% elif application_details.service_id == 3 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Road Projects - 2022</h4>
+                {% elif application_details.service_id == 4 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Transmission Projects - 2022</h4>
+                {% elif application_details.service_id == 5 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Tourism Projects - 2022</h4>
+                {% elif application_details.service_id == 6 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Ground Water Projects - 2022</h4>
+                {% elif application_details.service_id == 7 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Forest Projects - 2022</h4>
+                {% elif application_details.service_id == 8 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Quarry Projects - 2022</h4>
+                {% elif application_details.service_id == 9 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for General Projects - 2022</h4>
+                {% endif %}
+                <div id="rootwizard">
+                    <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
+                        <li class="nav-item" data-target-form="#accountForm">
+                            <a href="#first" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 py-2 active">
+                                <i class="mdi mdi-account-circle font-18 align-middle me-1"></i>
+                                <span class="d-none d-sm-inline">General Information</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" data-target-form="#profileForm">
+                            <a href="#second" data-bs-toggle="tab" data-toggle="tab"  class="nav-link rounded-0 py-2">
+                                <i class="mdi mdi-face-man-profile font-18 align-middle me-1"></i>
+                                <span class="d-none d-sm-inline">File Attachment</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" data-target-form="#otherForm">
+                            <a href="#third" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 py-2">
+                                <i class="mdi mdi-checkbox-marked-circle-outline font-18 align-middle me-1"></i>
+                                <span class="d-none d-sm-inline">Disclaimer</span>
+                            </a>
+                        </li>
+                    </ul>
 
-                                <br>
-                                <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    Applicant Details
+                    <div class="tab-content mb-0 b-0">
+                        <div class="tab-pane active show" id="first">
+                            <input type="text" class="form-control" value="{{status}}" id="status" name="status" style="display:none;">
+                            <input type="text" class="form-control" value="{{assigned_role_name}}" id="assigned_role_name" name="assigned_role_name" style="display:none;">
+                            <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label class="form-label fw-bold">Activity</label>
+                                    <p>{{applicaton_details.activity}}</p> 
                                 </div>
-                               <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Name of the Applicant</label>
-                                            <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{application_details.applicant_name}}" disabled> 
-                                        </div>
-                                        <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            </div>
+                            <br>
+                            <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                Applicant Details
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Name of the Applicant</label>
+                                        <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{application_details.applicant_name}}" disabled> 
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Address</label>
-                                            <input type="text" name="address" class="form-control" id="address" value="{{application_details.address}}" disabled>
-                                        </div>
-                                        <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Address</label>
+                                        <input type="text" name="address" class="form-control" id="address" value="{{application_details.address}}" disabled>
+                                    </div>
+                                    <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Contact No</label>
+                                        <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{application_details.contact_no}}" disabled>
+                                    </div>
+                                    <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Email</label>
+                                        <input type="email" name="email" class="form-control" id="email" value="{{application_details.email}}" disabled>
+                                    </div>
+                                    <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Name of the Project</label>
+                                        <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}" disabled>
+                                    </div>
+                                    <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
+                                        <textarea class="form-control" name="focal_person" id="focal_person" rows="3" disabled>{{application_details.focal_person}}</textarea>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Contact No</label>
-                                            <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{application_details.contact_no}}" disabled>
-                                        </div>
-                                        <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Email</label>
-                                            <input type="email" name="email" class="form-control" id="email" value="{{application_details.email}}" disabled>
-                                        </div>
-                                        <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Name of the Project</label>
-                                            <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}" disabled>
-                                        </div>
-                                        <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
-                                            <textarea class="form-control" name="focal_person" id="focal_person" rows="3" disabled>{{application_details.focal_person}}</textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br>
-                                <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
-                                </div>
-                                <br>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Site</label>
-                                            {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" checked>
-                                                        <label class="form-check-label" for="customRadio3">Dzongkhag</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" disabled>
-                                                        <label class="form-check-label" for="customRadio4">Thromde</label>
-                                                    </div>
+                            </div>
+                            <br>
+                            <div class="alert alert-warning border-0 rounded-0" role="alert">
+                                <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Site</label>
+                                        {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                            <div class="mt-2">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" checked>
+                                                    <label class="form-check-label" for="customRadio3">Dzongkhag</label>
                                                 </div>
-                                            {% else %}
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" disabled>
-                                                        <label class="form-check-label" for="customRadio3">Dzongkhag</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" checked>
-                                                        <label class="form-check-label" for="customRadio4">Thromde</label>
-                                                    </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" disabled>
+                                                    <label class="form-check-label" for="customRadio4">Thromde</label>
                                                 </div>
-                                            {% endif %}
-                                        </div>
-                                        <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    {% if application_details.dzongkhag_throm == 'Thromde' %}
-                                        <div class="col-lg-6 thromde_div">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Thromde</label>
-                                                <select class="form-select" disabled>
-                                                    {% for thromde in thromde %}
-                                                        <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
-                                                            {{ thromde.thromde_name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
                                             </div>
-                                            <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    {% endif %}
+                                        {% else %}
+                                            <div class="mt-2">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" disabled>
+                                                    <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" checked>
+                                                    <label class="form-check-label" for="customRadio4">Thromde</label>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
-                                <div class="row">
-                                    {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
-                                        <div class="col-lg-6 dzongkhag_div">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Dzongkhag</label>
-                                                <select class="form-select" disabled>
-                                                    {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
-                                                            {{ dzongkhag.dzongkhag_name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
+                                {% if application_details.dzongkhag_throm == 'Thromde' %}
+                                    <div class="col-lg-6 thromde_div">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Thromde</label>
+                                            <select class="form-select" disabled>
+                                                {% for thromde in thromde %}
+                                                    <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                                        {{ thromde.thromde_name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Gewog</label>
-                                                <select class="form-select" disabled>
-                                                    {% for gewog in gewog %}
-                                                        <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
-                                                            {{ gewog.gewog_name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <select class="form-select" disabled>
-                                                    {% for village in village %}
-                                                        <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
-                                                            {{ village.village_name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
+                                        <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                 {% endif %}
+                            </div>
+                            <div class="row">
+                                {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                    <div class="col-lg-6 dzongkhag_div">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Dzongkhag</label>
+                                            <select class="form-select" disabled>
+                                                {% for dzongkhag in dzongkhag %}
+                                                    <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                        {{ dzongkhag.dzongkhag_name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Gewog</label>
+                                            <select class="form-select" disabled>
+                                                {% for gewog in gewog %}
+                                                    <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                        {{ gewog.gewog_name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Name of the Particular Project Site</label>
-                                            <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}" disabled>
+                                            <label class="form-label fw-bold">Village/Chiwog</label>
+                                            <select class="form-select" disabled>
+                                                {% for village in village %}
+                                                    <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                        {{ village.village_name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
                                         </div>
-                                        <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
+                                </div>
+                            {% endif %}
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Name of the Particular Project Site</label>
+                                        <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}" disabled>
+                                    </div>
+                                    <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingAttachment">
-                            <button class="accordion-button d-block" type="button" data-bs-toggle="collapse" id="headingAttachmentBtn"
-                                data-bs-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment">
-                                File Attachment
-                            </button>
-                        </h2>
-                        <div id="collapseAttachment" class="accordion-collapse collapse" aria-labelledby="headingAttachment"
-                            data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                <div class="alert alert-danger border-0 rounded-0" role="alert">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>Note: If the activity is proposed in the industrial area/estate/park/SEZ, the list of documents from 1 to 3 are not required.
+
+                        <div class="tab-pane fade" id="second">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <table class="table table-hover table-bordered table-centered mb-0">
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Written consent from individual/juristic person directly impacted by the proposed project and ancillary activities authenticated by the concerned local authority</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>Records of public consultation signed by member (s) of the concerned local authority present during the consultation. If there are no individuals/public within the vicinity of the project, submit endorsement/approval of the concerned local authority.</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>KMZ file indicating the proposed site and its boundary, access road alignment, electricity tapping point and alignment (if applicable), water source, and nearby sensitive receptors as identified in the baseline information</td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>Layout plan of the proposed project, if applicable</td>
+                                            </tr>
+                                            <tr>
+                                                <td>5</td>
+                                                <td>Extraction plan and production schedule</td>
+                                            </tr>
+                                            <tr>
+                                                <td>6</td>
+                                                <td>Water abstraction permit from concerned local authority (Dzongkhag/Gewog Administration) for any water abstraction activity</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <table class="table table-hover table-bordered table-centered mb-0">
-                                            <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>Written consent from individual/juristic person directly impacted by the proposed project and ancillary activities authenticated by the concerned local authority</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2</td>
-                                                    <td>Records of public consultation signed by member (s) of the concerned local authority present during the consultation. If there are no individuals/public within the vicinity of the project, submit endorsement/approval of the concerned local authority.</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3</td>
-                                                    <td>KMZ file indicating the proposed site and its boundary, access road alignment, electricity tapping point and alignment (if applicable), water source, and nearby sensitive receptors as identified in the baseline information</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>4</td>
-                                                    <td>Layout plan of the proposed project, if applicable</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>5</td>
-                                                    <td>Extraction plan and production schedule</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>6</td>
-                                                    <td>Water abstraction permit from concerned local authority (Dzongkhag/Gewog Administration) for any water abstraction activity</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="card-widgets">
-                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#general_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                            </div>
-                                            <h5 class="card-title mb-0">Attachments</h5>
-                                            <div id="cardCollpase7" class="collapse pt-3 show">
-                                                <div id="general_attachment">
-                                                    {% include 'file_attachment_page.html' %}
-                                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-0">Attachments</h5>
+                                        <div id="cardCollpase7" class="collapse pt-3 show">
+                                            <div id="general_attachment">
+                                                <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">File</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for file_attach in file_attach %}
+                                                            <tr>
+                                                                <td>{{ forloop.counter }}</td>
+                                                                <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                                                                <td>
+                                                                    <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_attachment('{{ file_attach.file_id }}','{{ file_attach.attachment_type }}','{{ file_attach.application_no }}')"><i class="uil-trash"></i></button>
+                                                                </td>
+                                                            </tr>
+                                                            {% empty %}
+                                                            <tr>
+                                                                <td colspan="3" class="text-center">No Data</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingDisclaimer">
-                            <button class="accordion-button  d-block" type="button" data-bs-toggle="collapse" id="headingDisclaimerBtn"
-                                data-bs-target="#collapseDisclaimer" aria-expanded="false" aria-controls="collapseDisclaimer">
-                                Disclaimer
-                            </button>
-                        </h2>
-                        <div id="collapseDisclaimer" class="accordion-collapse collapse" aria-labelledby="headingDisclaimer"
-                            data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
-                                <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
-                                <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
-                                <p class="text-wrap">3.	Application Outcome: Submission of this application does not guarantee acceptance or approval. The final decision rests with the appropriate authorities, and we reserve the right to reject any application without providing any reason.</p>
-                                <p class="text-wrap">4.	Disclaimer of Liability: To the extent permitted by law, we disclaim all liability for any loss, damage, or injury arising out of or related to your use of this online application form or reliance on any information provided herein. We shall not be responsible for any technical errors, interruptions, or inaccuracies that may occur during the application process.</p>
-                                <p class="text-wrap">5.	Modification or Termination: We reserve the right to modify, suspend, or terminate this online application form at any time without prior notice. We may also update or change the terms and conditions of this disclaimer without notice.</p>
-                                <p class="text-wrap">Please review this disclaimer carefully before submitting your application. If you do not agree with any part of this disclaimer, please refrain from using this online application form.</p>
+
+                        <div class="tab-pane fade" id="third">
+                            <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
+                            <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
+                            <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
+                            <p class="text-wrap">3.	Application Outcome: Submission of this application does not guarantee acceptance or approval. The final decision rests with the appropriate authorities, and we reserve the right to reject any application without providing any reason.</p>
+                            <p class="text-wrap">4.	Disclaimer of Liability: To the extent permitted by law, we disclaim all liability for any loss, damage, or injury arising out of or related to your use of this online application form or reliance on any information provided herein. We shall not be responsible for any technical errors, interruptions, or inaccuracies that may occur during the application process.</p>
+                            <p class="text-wrap">5.	Modification or Termination: We reserve the right to modify, suspend, or terminate this online application form at any time without prior notice. We may also update or change the terms and conditions of this disclaimer without notice.</p>
+                            <p class="text-wrap">Please review this disclaimer carefully before submitting your application. If you do not agree with any part of this disclaimer, please refrain from using this online application form.</p>
+                            <div class="mt-3">
+                                <div class="form-check">
+                                    <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" checked>
+                                    <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
+                                </div>
                             </div>
+                            
                         </div>
-                    </div>
-                </div>
+                    </div> <!-- tab-content -->
+                </div> <!-- end #rootwizard-->
             </div> <!-- end card-body -->
         </div> <!-- end card-->
-    </div>
+    </div> <!-- end col -->
 </div>
-
-
 {% endfor %}
 <div class="card-body" id="reviewer_details_accordian" style="display:none;">
     <div class="alert alert-primary">Reviewer Details</div>
@@ -1315,7 +1371,14 @@ function forwardApplication(identifier) {
 
             if (data.message === 'success') {
                 let successMsg = identifier === 'A' ? "Application Approved" : "Application Forwarded Successfully";
-                $('#verifier_application_successMsg').html(successMsg).show();
+
+                $('#verifier_application_successMsg')
+                    .attr('tabindex', '-1')
+                    .html(successMsg)
+                    .show()
+                    .each(function() { // Use each to ensure we're working with the actual DOM element
+                        this.focus();
+                    });
 
                 setTimeout(() => {
                     $('#verifier_application_successMsg').fadeOut('slow');

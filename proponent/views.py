@@ -2268,21 +2268,25 @@ def location_change(request):
 
 def get_other_modification_details(request):
     ec_reference_no = request.GET.get('ec_reference_no')
+    identifier = request.GET.get('identifier')
     app_no = None
-
-    app_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
-
-    for app_details in app_details:
-        app_no = app_details.application_no
-
+    service_id = None
     application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
-    dzongkhag = t_dzongkhag_master.objects.all()
-    gewog = t_gewog_master.objects.all()
-    village = t_village_master.objects.all()
-    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    return render(request, 'other_modifications/other_modification.html',{'application_details':application_details,'dzongkhag':dzongkhag, 'gewog':gewog,
-                                                'village':village,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_no':app_no})
+    for app_details in application_details:
+        service_id = app_details.service_id
+        app_no = app_details.application_no
+        request.session['service_id'] = service_id
+    if identifier == 'NC' or 'OC':
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+        return render(request, 'other_modifications/other_modification.html',{'application_details':application_details,'dzongkhag':dzongkhag, 'gewog':gewog,
+                                                    'village':village,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_no':app_no})
+    else:
+        return redirect(application_form)
+    
 
 
 # PAYMENT DETAILS
