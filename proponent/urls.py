@@ -22,6 +22,7 @@ urlpatterns = [
     path('old_ec_application_form', views.old_ec_application_form, name='old_ec_application_form'),
     path('save_old_ec_general_details', views.save_old_ec_general_details, name='save_old_ec_general_details'),
     path('submit_old_ec_general_application', views.submit_old_ec_general_application, name='submit_old_ec_general_application'),
+    path('check_old_ec', views.check_old_ec, name='check_old_ec'),
 
     # EC RENEWAL
     path('ec_renewal', views.ec_renewal, name='ec_renewal'),
