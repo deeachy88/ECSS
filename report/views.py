@@ -367,7 +367,6 @@ def application_status_list(request):
 
 
 def application_history(request):
-
     login_type = request.session['login_type']
     ca_list = t_competant_authority_master.objects.all()
     dzongkhag_list = t_dzongkhag_master.objects.all()
@@ -380,16 +379,41 @@ def application_history(request):
         ca_authority = request.session['ca_authority']
 
     if login_type == 'C':
-        application_list = t_application_history.objects.filter(applicant_id=applicant_id).values()
+        # Get distinct latest applications for citizen
+        application_list = t_application_history.objects.filter(
+            applicant_id=applicant_id
+        ).order_by('application_no', '-action_date').distinct('application_no')
+        
     elif login_type == 'I' and (role == 'Admin' or role == 'NECS Head'):
-        application_list = t_application_history.objects.all()
+        # Get distinct latest applications for all
+        application_list = t_application_history.objects.all().order_by(
+            'application_no', '-action_date'
+        ).distinct('application_no')
+        
     elif login_type == 'I' and (role == 'Verifier' or role == 'Reviewer'):
-        application_list = t_application_history.objects.filter(ca_authority=ca_authority).values()
-    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+        # Get distinct latest applications for specific CA authority
+        application_list = t_application_history.objects.filter(
+            ca_authority=ca_authority
+        ).order_by('application_no', '-action_date').distinct('application_no')
+
+    app_hist_count = t_application_history.objects.filter(
+        applicant_id=request.session['login_id']
+    ).count()
+    
+    cl_application_count = t_workflow_dtls.objects.filter(
+        assigned_user_id=request.session['login_id']
+    ).count()
+    
     service_details = t_service_master.objects.all()
-    return render(request, 'application_history.html', {'ca_list': ca_list,'service_details':service_details, 'dzongkhag_list': dzongkhag_list,
-                                                           'application_list': application_list,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count})
+    
+    return render(request, 'application_history.html', {
+        'ca_list': ca_list,
+        'service_details': service_details, 
+        'dzongkhag_list': dzongkhag_list,
+        'application_list': application_list,
+        'app_hist_count': app_hist_count,
+        'cl_application_count': cl_application_count
+    })
 
 
 def application_status(request):

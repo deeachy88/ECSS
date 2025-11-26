@@ -25,7 +25,7 @@ from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t1_
 
 def verify_application_list(request):
     """
-    Simplified version
+    Optimized version - applications are clickable only when payment receipt exists
     """
     ca_authority = request.session.get('ca_authority')
     login_id = request.session.get('login_id')
@@ -37,7 +37,7 @@ def verify_application_list(request):
         })
     
     try:
-        # SIMPLIFIED QUERY - Remove complex conditions temporarily
+        # Get application list
         application_list = t_workflow_dtls.objects.filter(
             assigned_role_id='2',
             action_date__isnull=False,
@@ -47,18 +47,39 @@ def verify_application_list(request):
         
         print(f"DEBUG: Applications found: {application_list.count()}")
         
-        # Process data
+        # Get application numbers for efficient lookup
+        application_nos = [app.application_no for app in application_list]
+        
+        # OPTIMIZED: Get payment receipts only for applications in our list
+        payments_with_receipt = t_payment_details.objects.filter(
+            ref_no__in=application_nos
+        ).exclude(
+            service_type='AP'
+        ).exclude(
+            receipt_no__isnull=True
+        ).exclude(
+            receipt_no=''
+        ).values_list('ref_no', flat=True)
+        
+        # Convert to set for O(1) lookups
+        applications_with_receipt = set(payments_with_receipt)
+        
+        # Get service names
         service_lookup = dict(t_service_master.objects.values_list('service_id', 'service_name'))
         
+        # Process data
         application_data = []
         for app in application_list:
+            # Check if application has payment receipt
+            has_receipt = app.application_no in applications_with_receipt
+            
             application_data.append({
                 'application_no': app.application_no,
                 'service_id': app.service_id,
                 'service_name': service_lookup.get(app.service_id, 'Service Not Found'),
                 'action_date': app.action_date,
                 'application_source': app.application_source,
-                'is_clickable': True,  # Set all as clickable for now
+                'is_clickable': has_receipt,  # Only clickable if receipt exists
                 'application_status': app.application_status
             })
         
@@ -68,7 +89,7 @@ def verify_application_list(request):
         context = {
             'application_data': application_data,
             'v_application_count': v_application_count,
-            'ec_renewal_count': 0,  # You can add this back later
+            'ec_renewal_count': 0,
         }
         
     except Exception as e:
@@ -365,7 +386,6 @@ def view_application_details(request):
     application_no = request.GET.get('application_no')
     print(application_no)
     service_id = request.GET.get('service_id')
-    application_source = request.GET.get('application_source')
     status = None
     ca_auth = None
     assigned_role_id = None
@@ -373,7 +393,7 @@ def view_application_details(request):
     result = t_ec_industries_t1_general.objects.filter(application_no=application_no,application_no__contains='TOR')
     workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
     pay_details = payment_details_master.objects.filter(
-        Q(payment_type='RENEW') | Q(payment_type='FINE')
+        Q(payment_type='AP') | Q(payment_type='FINE')
     )
     for work_details in workflow_details:
         status = work_details.application_status
@@ -702,6 +722,7 @@ def forward_application(request):
             for app_det in application_details:
                 applicant = app_det.applicant_id
                 service_id = app_det.service_id
+                email = app_det.applicant_id
             t_application_history.objects.create(application_no=application_no,
                         application_status='P',
                         action_date=date.today(),
@@ -720,7 +741,7 @@ def forward_application(request):
                 "Main Activity"
             )
             
-            send_payment_mail(request.session['name'], request.session['email'], total_amount)
+            send_payment_mail(request.session['name'], email, total_amount)
 
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"

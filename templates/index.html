@@ -627,6 +627,7 @@
                 <div id="proponentLoginForm">
                     <form action="{% url 'login' %}" id="loginForm" method="post">
                         {% csrf_token %}
+                        <input type="hidden" name="loginType" value="proponent">
                         {% if message %}
                         <div class="alert alert-danger" id="login_error">{{ message }}</div>
                         {% endif %}
@@ -684,6 +685,7 @@
                     <!-- Repeat the same login form for now -->
                     <form action="{% url 'login' %}" id="loginForm" method="post">
                         {% csrf_token %}
+                        <input type="hidden" name="loginType" value="agency">
                         {% if message %}
                         <div class="alert alert-danger" id="login_error">{{ message }}</div>
                         {% endif %}

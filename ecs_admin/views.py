@@ -99,7 +99,11 @@ def login(request):
     if request.method == 'POST':
         _username = request.POST['username']
         _password = request.POST['password']
-        check_user = t_user_master.objects.filter(email_id=_username, is_active='Y', logical_delete='N')
+        _loginType = request.POST['loginType']
+        if _loginType == 'proponent':
+            check_user = t_user_master.objects.filter(email_id=_username, is_active='Y', logical_delete='N',employee_id__isnull=True)
+        else:
+            check_user = t_user_master.objects.filter(email_id=_username, is_active='Y', logical_delete='N',employee_id__isnull=False)
         if check_user is not None:
             for check_user in check_user:
                 check_pass = check_password(_password, check_user.password)
