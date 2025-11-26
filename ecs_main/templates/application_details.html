@@ -74,10 +74,10 @@
                             <input type="text" class="form-control" value="{{status}}" id="status" name="status" style="display:none;">
                             <input type="text" class="form-control" value="{{assigned_role_name}}" id="assigned_role_name" name="assigned_role_name" style="display:none;">
                             <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
-                            <div class="row">
+                            <div class="row justify-content-center">
                                 <div class="col-lg-6">
                                     <label class="form-label fw-bold">Activity</label>
-                                    <p>{{applicaton_details.activity}}</p> 
+                                    <p class="distinct-activity">{{application_details.activity}}</p>
                                 </div>
                             </div>
                             <br>
@@ -281,7 +281,6 @@
                                                         <tr>
                                                             <th scope="col">#</th>
                                                             <th scope="col">File</th>
-                                                            <th scope="col">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -289,9 +288,9 @@
                                                             <tr>
                                                                 <td>{{ forloop.counter }}</td>
                                                                 <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
-                                                                <td>
+                                                                <!-- <td>
                                                                     <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_attachment('{{ file_attach.file_id }}','{{ file_attach.attachment_type }}','{{ file_attach.application_no }}')"><i class="uil-trash"></i></button>
-                                                                </td>
+                                                                </td> -->
                                                             </tr>
                                                             {% empty %}
                                                             <tr>
@@ -317,7 +316,7 @@
                             <p class="text-wrap">Please review this disclaimer carefully before submitting your application. If you do not agree with any part of this disclaimer, please refrain from using this online application form.</p>
                             <div class="mt-3">
                                 <div class="form-check">
-                                    <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" checked>
+                                    <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" checked disabled>
                                     <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
                                 </div>
                             </div>

@@ -396,7 +396,7 @@ def view_application_details(request):
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
-            file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='IEA')
+            file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='GEN')
             ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
             reviewer_list = t_user_master.objects.filter(role_id='3',agency_code=ca_auth)
             eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
@@ -412,7 +412,7 @@ def view_application_details(request):
             for renewal_details_one in renewal_details_one:
                 application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=renewal_details_one.ec_reference_no,service_type='Main Activity')
             renewal_details_two = t_ec_renewal_t2.objects.filter(application_no=application_no)
-            file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='ECR')
+            file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='GEN')
             reviewer_list = t_user_master.objects.filter(role_id='3')
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
