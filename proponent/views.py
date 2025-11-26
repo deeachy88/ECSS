@@ -2418,6 +2418,16 @@ def ecss_payment_reversal(request):
 
 # OLD EC UPDATE START
 
+def check_old_ec(request):
+    old_ec = request.GET.get('ec_reference_no')
+    old_ec_count = (
+        t_ec_industries_t1_general.objects
+        .filter(ec_reference_no=old_ec)
+        .count()
+    )
+    return JsonResponse({"old_ec_count": old_ec_count})
+
+
 def old_ec_application(request):
     assigned_user_id = request.session.get('login_id', None)
     applicant_id = request.session.get('email', None)

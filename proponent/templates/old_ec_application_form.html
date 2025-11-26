@@ -297,7 +297,7 @@
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">EC Reference No:</label>
-                                                <input type="text" name="ec_reference_no" class="form-control" id="ec_reference_no" value="">
+                                                <input type="text" name="ec_reference_no" class="form-control" id="ec_reference_no" onblur="check_old_ec(this.value)">
                                             </div>
                                             <div id="ec_reference_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
@@ -854,6 +854,31 @@
             success : function(data)
             {
                 $('#vil_chiwog').html(data);
+            }
+        });
+    }
+
+    function check_old_ec(ec_reference_no) {
+        $.ajax({
+            type: "GET",
+            url: "{% url 'check_old_ec' %}",
+            data: { ec_reference_no: ec_reference_no },
+            success: function(data) {
+                if (data.old_ec_count > 0) {
+                    $("#ec_reference_noErrorMsg")
+                        .text("EC already existed")
+                        .show();
+                        // clear the field
+                        document.getElementById("ec_reference_no").value = "";
+
+                        // hide the message after 3 seconds
+                        setTimeout(function() {
+                            $("#ec_reference_noErrorMsg").fadeOut();
+                        }, 3000);
+
+                } else {
+                    $("#ec_reference_noErrorMsg").hide();
+                }
             }
         });
     }
