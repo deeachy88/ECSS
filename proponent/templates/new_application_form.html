@@ -375,6 +375,10 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="general_attachment_successMsg" style="display:none">
+                            </div>
+                            <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="general_attachment_errorMsg" style="display:none">
+                            </div>
                             <ul class="pager wizard mb-0 list-inline">
                                 <li class="next list-inline-item float-end">
                                     <button type="button" class="btn btn-success" onclick="save_general_attachment_details()">Save-Next <i class="mdi mdi-arrow-right ms-1"></i></button>
@@ -533,8 +537,6 @@
                             $('#application_form_successMsg').fadeOut('slow');
 
                             // Make general_info tab disabled
-                            $('a[href="#general_info"].nav-link').addClass("disabled");
-                            $('a[href="#general_info"].nav-link').attr("disabled", true);
                             $('a[href="#general_info"].nav-link').removeClass("active");
 
                             // Enable and activate file_attachment tab
@@ -589,7 +591,6 @@
     function save_general_attachment_details() {
         // Set success message and attributes
         let application_no = $('#general_disclaimer_application_no').val();
-        //alert(application_no);
         $.ajax({
             type: "GET",
             url: "{% url 'check_file_attachment' %}",
@@ -615,8 +616,6 @@
                     setTimeout(() => {
                         // Remove active from file_attachment and make it disabled
                         $('a[href="#file_attachment"]').removeClass("active");
-                        $('a[href="#file_attachment"]').attr("disabled", true);
-                        $('a[href="#file_attachment"]').addClass("disabled");
                         
                         // Make disclaimer active and enabled
                         $('a[href="#disclaimer"]').addClass("active");

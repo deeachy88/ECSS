@@ -259,7 +259,7 @@ def save_general_details(request):
             )
 
         data['message'] = "success"
-        data['d'] = application_no
+        data['application_no'] = application_no
     except Exception as e:
         data['error'] = str(e)
         logger.error(f"Error saving application {application_no} (service: {service_type}): {str(e)}", 
