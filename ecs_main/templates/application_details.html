@@ -440,7 +440,7 @@
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Additional Payable Amount</label>
-                                    <input type="text" name="addtional_payment_amount" class="form-control" id="addtional_payment_amount"> 
+                                    <input type="number" name="addtional_payment_amount" class="form-control" id="addtional_payment_amount"> 
                                 </div>
                             </div>
                         </div>
@@ -1256,9 +1256,9 @@ $(function() {
         }
         $('#verifier_details_accordian').show();
     }
-    else if(status == 'R' || status == 'ALS' || status == 'FEATC' || status == 'RSS' || status == 'LUS' || status == 'APP')
+    else if(status == 'R' || status == 'ALS' || status == 'AP' || status == 'FEATC' || status == 'RSS' || status == 'LUS' || status == 'APP')
     {
-        if(status == 'R')
+        if(status == 'R' || 'AP')
         {
             $('.information_complete_div').show();
             $('input[name="information"]').focus();
@@ -1333,6 +1333,7 @@ function forwardApplication(identifier) {
     let resubmit_remarks = $('#resubmit_remarks').val();
     let ec_expiry_date = $('#ec_expiry_date').val();
     let addtional_payment_amount = $('#addtional_payment_amount').val();
+    let account_head = $('#account_head').val();
     let tat = $('#tat').val();
     let forward_to = $('#forward_to').val();
     let amount = $('#amount').val();
@@ -1356,6 +1357,7 @@ function forwardApplication(identifier) {
             'ec_expiry_date': ec_expiry_date,
             'tat': tat,
             'addtional_payment_amount': addtional_payment_amount,
+            'account_head':account_head,
             'amount':amount
         });
     }
@@ -1435,41 +1437,52 @@ function forwardApplication(identifier) {
 
 function check_information_radio(value)
 {
-if(value == 'Yes')
-{
-$('.additional_payment_info').show();
-$('.additional_info_letter').hide();
-$('.LU_button').show();
-$('.AL_button').hide();
-}
-else
-{
+    if(value == 'Yes')
+    {
+        $('.additional_payment_info').show();
+        $('.additional_info_letter').hide();
+        $('.LU_button').show();
+        $('.AL_button').hide();
+    }
+    else
+    {
 
-$('.additional_info_letter').show();
-$('.additional_payment_info').hide();
-$('.LU_button').hide();
-$('.AL_button').show();
-}
+        $('.additional_info_letter').show();
+        $('.additional_payment_info').hide();
+        $('.LU_button').hide();
+        $('.AL_button').show();
+        $('.addtional_payment_div').hide();
+        $('.eatc_attachment_div').hide();
+        $('.additonal_payment_button').hide();
+        $('.rev_lu_attachment_div').hide();
+        $('input[name="addtional_payment"]').prop('checked', false);
+    }
 }
 
 function check_eatc_addtional_payment(value)
 {
-if(value == 'Yes')
-{
-    $('.eatc_attachment_div').hide();
-    $('.rev_lu_attachment_div').hide();
-    $('.addtional_payment_div').show();
-    $('.additonal_payment_button').show();
-    $('.LU_button').hide();
-}
-else
-{
-    $('.eatc_attachment_div').show();
-    $('.rev_lu_attachment_div').show();
-    $('.addtional_payment_div').hide();
-    $('.additonal_payment_button').hide();
-    $('.LU_button').show();
-}
+    if(value == 'Yes')
+    {
+        $('.eatc_attachment_div').hide();
+        $('.rev_lu_attachment_div').hide();
+        $('.addtional_payment_div').show();
+        $('.additonal_payment_button').show();
+        $('.LU_button').hide();
+        $('.AL_button').hide();
+    }
+    else
+    {
+        $('.eatc_attachment_div').show();
+        $('.rev_lu_attachment_div').show();
+        $('.addtional_payment_div').hide();
+        $('.additonal_payment_button').hide();
+        $('.LU_button').show();
+        $('.AL_button').hide();
+        
+        $('#account_head').val("");
+        $('#addtional_payment_amount').val("");
+        
+    }
 }
 
 function check_fines_and_penalty(value)

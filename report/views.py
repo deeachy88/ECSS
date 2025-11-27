@@ -303,7 +303,9 @@ def application_status_list(request):
     client_application_count = t_user_master.objects.filter(accept_reject__isnull=True, login_type='C').count()
     
     if login_type == 'C':
-        app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+        app_hist_count = t_application_history.objects.filter(
+            applicant_id=request.session['email']
+        ).distinct('application_no').count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
         t1_general_subquery = t_ec_industries_t1_general.objects.filter(
             tor_application_no=OuterRef('application_no')
@@ -382,27 +384,42 @@ def application_history(request):
         # Get distinct latest applications for citizen
         application_list = t_application_history.objects.filter(
             applicant_id=applicant_id
-        ).order_by('application_no', '-action_date').distinct('application_no')
+        ).order_by('application_no', '-action_date', '-record_id').distinct('application_no')
         
     elif login_type == 'I' and (role == 'Admin' or role == 'NECS Head'):
         # Get distinct latest applications for all
-        application_list = t_application_history.objects.all().order_by(
-            'application_no', '-action_date'
-        ).distinct('application_no')
+        application_list = t_application_history.objects.filter(
+            applicant_id=applicant_id
+        ).order_by('application_no', '-action_date', '-record_id').distinct('application_no')
         
     elif login_type == 'I' and (role == 'Verifier' or role == 'Reviewer'):
         # Get distinct latest applications for specific CA authority
         application_list = t_application_history.objects.filter(
-            ca_authority=ca_authority
-        ).order_by('application_no', '-action_date').distinct('application_no')
+            applicant_id=applicant_id
+        ).order_by('application_no', '-action_date', '-record_id').distinct('application_no')
 
-    app_hist_count = t_application_history.objects.filter(
-        applicant_id=request.session['login_id']
-    ).count()
     
     cl_application_count = t_workflow_dtls.objects.filter(
         assigned_user_id=request.session['login_id']
     ).count()
+
+    app_hist_count = t_application_history.objects.filter(
+        applicant_id=request.session['login_id']
+    ).distinct('application_no').count()
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        ec_expiry_date__lt=expiry_date_threshold,
+        service_type="Main Activity"
+    ).exclude(
+        ec_reference_no__in=Subquery(
+            t_ec_renewal_t1.objects.values('ec_reference_no')
+        )
+    )
+
+    ec_renewal_count = non_renewed_applications.count()
     
     service_details = t_service_master.objects.all()
     
@@ -412,7 +429,8 @@ def application_history(request):
         'dzongkhag_list': dzongkhag_list,
         'application_list': application_list,
         'app_hist_count': app_hist_count,
-        'cl_application_count': cl_application_count
+        'cl_application_count': cl_application_count,
+        'ec_renewal_count':ec_renewal_count
     })
 
 
@@ -496,7 +514,9 @@ def client_application_details(request):
             eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
             rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
-            app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+            app_hist_count = t_application_history.objects.filter(
+                applicant_id=request.session['login_id']
+            ).distinct('application_no').count()
             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             return render(request, 'application_details/application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'status':status,
                                                         'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'file_attach':file_attach,'file_attach':file_attach,
@@ -513,7 +533,9 @@ def client_application_details(request):
             village = t_village_master.objects.all()
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
             rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
-            app_hist_count = t_application_history.objects.filter(applicant_id=request.session['login_id']).count()
+            app_hist_count = t_application_history.objects.filter(
+                applicant_id=request.session['login_id']
+            ).distinct('application_no').count()
             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             return render(request, 'application_details/renewal_application_details.html',{'application_details':application_details,'renewal_details_one':renewal_details_one,'status':status,
                                                                     'dzongkhag':dzongkhag,'gewog':gewog,'village':village,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details_two':renewal_details_two,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})

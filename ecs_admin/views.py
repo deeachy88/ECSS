@@ -247,7 +247,9 @@ def dashboard(request):
     else:
         email_id = request.session['email']
         login_id = request.session['login_id']
-        app_hist_count = t_application_history.objects.filter(applicant_id=email_id).count()
+        app_hist_count = t_application_history.objects.filter(
+            applicant_id=email_id
+        ).distinct('application_no').count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=login_id).count()
         payment_count = t_payment_details.objects.filter(payment_advice_amount_paid__isnull=True).count()
         draft_count = t_ec_industries_t1_general.objects.filter(

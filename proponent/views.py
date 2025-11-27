@@ -28,7 +28,9 @@ def new_application(request):
     applicant_id = request.session.get('email', None)
     #bsic_details = t_bsic_code.objects.all()
     bsic_details = t_bsic_code.objects.all()
-    app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=applicant_id
+        ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
@@ -40,7 +42,21 @@ def new_application(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-    response = render(request, 'new_application.html',{'bsic_details':bsic_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'tor_application_count':tor_application_count})
+    
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        ec_expiry_date__lt=expiry_date_threshold,
+        service_type="Main Activity"
+    ).exclude(
+        ec_reference_no__in=Subquery(
+            t_ec_renewal_t1.objects.values('ec_reference_no')
+        )
+    )
+
+    ec_renewal_count = non_renewed_applications.count()
+    response = render(request, 'new_application.html',{'bsic_details':bsic_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'tor_application_count':tor_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -1176,12 +1192,27 @@ def draft_application_list(request):
     print(applicant_id)
     application_details = t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id,application_status='P',service_type='Main Activity',action_date__isnull=True)
     service_details = t_service_master.objects.all()
-    app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=applicant_id
+        ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
 
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        ec_expiry_date__lt=expiry_date_threshold,
+        service_type="Main Activity"
+    ).exclude(
+        ec_reference_no__in=Subquery(
+            t_ec_renewal_t1.objects.values('ec_reference_no')
+        )
+    )
+
+    ec_renewal_count = non_renewed_applications.count()
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_ec_industries_t1_general.objects.filter(
             application_status='A',
@@ -1190,7 +1221,7 @@ def draft_application_list(request):
             application_no__in=Subquery(t1_general_subquery)
         ).count()
     
-    response = render(request, 'draft_application_list.html',{'application_details':application_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'service_details':service_details, 'tor_application_count':tor_application_count})
+    response = render(request, 'draft_application_list.html',{'application_details':application_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'service_details':service_details, 'tor_application_count':tor_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -1211,7 +1242,9 @@ def view_draft_application_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     thromde = t_thromde_master.objects.all()
-    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=request.session['email']
+        ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
 
     context = {
@@ -1243,7 +1276,9 @@ def ec_renewal(request):
     ).exclude(ec_reference_no__in=existing_renewals)
     renewal_details = t_ec_renewal_t2.objects.filter(application_status=None)
     service_details = t_service_master.objects.all()
-    app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=applicant_id
+        ).distinct('application_no').count()
     #cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
@@ -1273,7 +1308,9 @@ def ec_renewal_details(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
-    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=request.session['email']
+        ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
     ec_application_details = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)
     if ec_application_details.exists():
@@ -1468,7 +1505,9 @@ def tor_form(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     thromde = t_thromde_master.objects.all()
-    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=request.session['email']
+        ).distinct('application_no').count()
 
     return render(request, 'tor_form.html', {'app_hist_count':app_hist_count,'application_no':application_no,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde})
 
@@ -1630,10 +1669,27 @@ def tor_list(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
+    
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        ec_expiry_date__lt=expiry_date_threshold,
+        service_type="Main Activity"
+    ).exclude(
+        ec_reference_no__in=Subquery(
+            t_ec_renewal_t1.objects.values('ec_reference_no')
+        )
+    )
+
+    ec_renewal_count = non_renewed_applications.count()
+    
     service_details = t_service_master.objects.all()
     
-    app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
-    response = render(request, 'tor/tor_list.html', {'tor_application_count':tor_application_count,'tor_details':tor_details,'service_details':service_details, 'app_hist_count':app_hist_count})
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=applicant_id
+        ).distinct('application_no').count()
+    response = render(request, 'tor/tor_list.html', {'tor_application_count':tor_application_count,'ec_renewal_count':ec_renewal_count,'tor_details':tor_details,'service_details':service_details, 'app_hist_count':app_hist_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -1677,6 +1733,21 @@ def view_tor_application_details(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
+    
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        ec_expiry_date__lt=expiry_date_threshold,
+        service_type="Main Activity"
+    ).exclude(
+        ec_reference_no__in=Subquery(
+            t_ec_renewal_t1.objects.values('ec_reference_no')
+        )
+    )
+
+    ec_renewal_count = non_renewed_applications.count()
+
     for app_det in app_det:
         request.session['ca_auth'] = app_det.ca_authority
         request.session['colour_code'] = app_det.colour_code
@@ -1689,7 +1760,7 @@ def view_tor_application_details(request):
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
         thromde = t_thromde_master.objects.all()
-        return render(request, 'tor/tor.html',{'thromde':thromde,'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,
+        return render(request, 'tor/tor.html',{'thromde':thromde,'ec_renewal_count':ec_renewal_count,'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,
                                                 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde})
 
 
@@ -1726,10 +1797,25 @@ def report_list(request):
             application_no__in=Subquery(t1_general_subquery)
         ).count()
 
+        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+        non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+            applicant_id=login_id,
+            ec_expiry_date__lt=expiry_date_threshold,
+            service_type="Main Activity"
+        ).exclude(
+            ec_reference_no__in=Subquery(
+                t_ec_renewal_t1.objects.values('ec_reference_no')
+            )
+        )
+
+        ec_renewal_count = non_renewed_applications.count()
+
         context.update({
             'report_list': report_list,
             'cl_application_count': cl_application_count,
             'tor_application_count': tor_application_count,
+            'ec_renewal_count': ec_renewal_count
         })
 
     elif login_type == 'I':
@@ -1776,7 +1862,9 @@ def view_report_details(request):
     report_details = t_report_submission_t1.objects.filter(report_reference_no=report_reference_no)
     details = t_report_submission_t2.objects.filter(report_reference_no=report_reference_no)
     file_attach = t_file_attachment.objects.filter(application_no=report_reference_no)
-    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=request.session['email']
+        ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
     
     v_application_count = 0  # Provide default value for v_application_count
@@ -1804,7 +1892,9 @@ def viewDraftReport(request, report_reference_no):
 def report_submission_form(request):
     applicant = request.session['email']
     ec_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False,applicant_id=applicant)
-    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=request.session['email']
+        ).distinct('application_no').count()
     return render(request, 'report_submission/report_submission.html', {'ec_details': ec_details, 'app_hist_count':app_hist_count})
 
 def save_report_submission(request):
@@ -1982,7 +2072,9 @@ def ec_print_list(request):
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A', service_type="Main Activity")
     
     # Count the number of t_application_history objects related to the logged-in user
-    app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=applicant_id
+        ).distinct('application_no').count()
     
     # Count the number of t_workflow_dtls objects with assigned_user_id equal to the logged-in user
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
@@ -2056,7 +2148,9 @@ def view_print_details(request):
     ec_details = t_ec_industries_t11_ec_details.objects.filter(ec_reference_no=ec_reference_no)
     
     # Count the number of t_application_history objects related to the logged-in user
-    app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=request.session['email']
+        ).distinct('application_no').count()
     
     # Count the number of t_workflow_dtls objects with assigned_user_id equal to the logged-in user
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
@@ -2092,11 +2186,27 @@ def name_change(request):
     applicant_id = request.session.get('login_id', None)
     workflow_details = t_workflow_dtls.objects.filter(application_status='A')
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=email)
-    app_hist_count = t_application_history.objects.filter(applicant_id=email).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=email
+        ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=applicant_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        ec_expiry_date__lt=expiry_date_threshold,
+        service_type="Main Activity"
+    ).exclude(
+        ec_reference_no__in=Subquery(
+            t_ec_renewal_t1.objects.values('ec_reference_no')
+        )
+    )
+
+    ec_renewal_count = non_renewed_applications.count()
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_ec_industries_t1_general.objects.filter(
@@ -2105,7 +2215,7 @@ def name_change(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'NC','tor_application_count':tor_application_count})
+    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'NC','tor_application_count':tor_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -2118,11 +2228,27 @@ def ownership_change(request):
     applicant_id = request.session.get('login_id', None)
     workflow_details = t_workflow_dtls.objects.filter(application_status='A')
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=email)
-    app_hist_count = t_application_history.objects.filter(applicant_id=email).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=email
+        ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=applicant_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        ec_expiry_date__lt=expiry_date_threshold,
+        service_type="Main Activity"
+    ).exclude(
+        ec_reference_no__in=Subquery(
+            t_ec_renewal_t1.objects.values('ec_reference_no')
+        )
+    )
+
+    ec_renewal_count = non_renewed_applications.count()
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_ec_industries_t1_general.objects.filter(
@@ -2131,7 +2257,7 @@ def ownership_change(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'OC','tor_application_count':tor_application_count})
+    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'OC','tor_application_count':tor_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -2144,11 +2270,27 @@ def technology_change(request):
     applicant_id = request.session.get('login_id', None)
     workflow_details = t_workflow_dtls.objects.filter(application_status='A', service_id__in=['1', '2', '6'])
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=email)
-    app_hist_count = t_application_history.objects.filter(applicant_id=email).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=email
+        ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=applicant_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        ec_expiry_date__lt=expiry_date_threshold,
+        service_type="Main Activity"
+    ).exclude(
+        ec_reference_no__in=Subquery(
+            t_ec_renewal_t1.objects.values('ec_reference_no')
+        )
+    )
+
+    ec_renewal_count = non_renewed_applications.count()
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_ec_industries_t1_general.objects.filter(
@@ -2157,7 +2299,7 @@ def technology_change(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'TC','tor_application_count':tor_application_count})
+    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'TC','tor_application_count':tor_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -2170,12 +2312,27 @@ def product_change(request):
     applicant_id = request.session.get('login_id', None)
     workflow_details = t_workflow_dtls.objects.filter(application_status='A', service_id='1')
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=email)
-    app_hist_count = t_application_history.objects.filter(applicant_id=email).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=email
+        ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=applicant_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
 
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        ec_expiry_date__lt=expiry_date_threshold,
+        service_type="Main Activity"
+    ).exclude(
+        ec_reference_no__in=Subquery(
+            t_ec_renewal_t1.objects.values('ec_reference_no')
+        )
+    )
+
+    ec_renewal_count = non_renewed_applications.count()
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_ec_industries_t1_general.objects.filter(
             application_status='A',
@@ -2183,7 +2340,7 @@ def product_change(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'OC','tor_application_count':tor_application_count})
+    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'OC','tor_application_count':tor_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -2196,11 +2353,27 @@ def capacity_change(request):
     applicant_id = request.session.get('login_id', None)
     workflow_details = t_workflow_dtls.objects.exclude(application_status='A', service_id='3')
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=email)
-    app_hist_count = t_application_history.objects.filter(applicant_id=email).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=email
+        ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=applicant_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        ec_expiry_date__lt=expiry_date_threshold,
+        service_type="Main Activity"
+    ).exclude(
+        ec_reference_no__in=Subquery(
+            t_ec_renewal_t1.objects.values('ec_reference_no')
+        )
+    )
+
+    ec_renewal_count = non_renewed_applications.count()
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_ec_industries_t1_general.objects.filter(
@@ -2209,7 +2382,7 @@ def capacity_change(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'CC','tor_application_count':tor_application_count})
+    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'CC','tor_application_count':tor_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -2222,11 +2395,27 @@ def area_change(request):
     applicant_id = request.session.get('login_id', None)
     workflow_details = t_workflow_dtls.objects.filter(application_status='A')
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=email)
-    app_hist_count = t_application_history.objects.filter(applicant_id=email).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=email
+        ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=applicant_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        ec_expiry_date__lt=expiry_date_threshold,
+        service_type="Main Activity"
+    ).exclude(
+        ec_reference_no__in=Subquery(
+            t_ec_renewal_t1.objects.values('ec_reference_no')
+        )
+    )
+
+    ec_renewal_count = non_renewed_applications.count()
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_ec_industries_t1_general.objects.filter(
@@ -2235,7 +2424,7 @@ def area_change(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'AC','tor_application_count':tor_application_count})
+    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'AC','tor_application_count':tor_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -2248,11 +2437,27 @@ def location_change(request):
     applicant_id = request.session.get('login_id', None)
     workflow_details = t_workflow_dtls.objects.filter(application_status='A')
     application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=email)
-    app_hist_count = t_application_history.objects.filter(applicant_id=email).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=email
+        ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        ec_expiry_date__lt=expiry_date_threshold,
+        service_type="Main Activity"
+    ).exclude(
+        ec_reference_no__in=Subquery(
+            t_ec_renewal_t1.objects.values('ec_reference_no')
+        )
+    )
+
+    ec_renewal_count = non_renewed_applications.count()
 
     # Query to count approved applications that are not in t1_general
     tor_application_count = t_ec_industries_t1_general.objects.filter(
@@ -2261,7 +2466,7 @@ def location_change(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'LC','tor_application_count':tor_application_count})
+    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'LC','tor_application_count':tor_application_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -2283,8 +2488,24 @@ def get_other_modification_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
+        app_hist_count = t_application_history.objects.filter(
+            applicant_id=request.session['email']
+        ).distinct('application_no').count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+        
+        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+        non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+            applicant_id=request.session['email'],
+            ec_expiry_date__lt=expiry_date_threshold,
+            service_type="Main Activity"
+        ).exclude(
+            ec_reference_no__in=Subquery(
+                t_ec_renewal_t1.objects.values('ec_reference_no')
+            )
+        )
+
+        ec_renewal_count = non_renewed_applications.count()
         return render(request, 'other_modifications/other_modification.html',{'application_details':application_details,'dzongkhag':dzongkhag, 'gewog':gewog,
                                                     'village':village,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_no':app_no})
     else:
@@ -2436,7 +2657,9 @@ def old_ec_application(request):
     applicant_id = request.session.get('email', None)
     # bsic_details = t_bsic_code.objects.all()
     bsic_details = t_bsic_code.objects.all()
-    app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
+    app_hist_count = t_application_history.objects.filter(
+            applicant_id=applicant_id
+        ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')

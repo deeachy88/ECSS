@@ -25,7 +25,7 @@ from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t1_
 
 def verify_application_list(request):
     """
-    Optimized version - applications are clickable only when payment receipt exists
+    Optimized version - applications are clickable only when ALL payment receipts exist
     """
     ca_authority = request.session.get('ca_authority')
     login_id = request.session.get('login_id')
@@ -51,18 +51,23 @@ def verify_application_list(request):
         application_nos = [app.application_no for app in application_list]
         
         # OPTIMIZED: Get payment receipts only for applications in our list
-        payments_with_receipt = t_payment_details.objects.filter(
-            ref_no__in=application_nos
-        ).exclude(
-            service_type='AP'
-        ).exclude(
-            receipt_no__isnull=True
-        ).exclude(
-            receipt_no=''
-        ).values_list('ref_no', flat=True)
+        payment_receipt_lookup = {}
+        payments = t_payment_details.objects.filter(ref_no__in=application_nos)
         
-        # Convert to set for O(1) lookups
-        applications_with_receipt = set(payments_with_receipt)
+        # Group payments by ref_no
+        payments_by_ref = {}
+        for payment in payments:
+            if payment.ref_no:
+                if payment.ref_no not in payments_by_ref:
+                    payments_by_ref[payment.ref_no] = []
+                payments_by_ref[payment.ref_no].append(payment)
+        
+        # Check for each ref_no if ALL entries have receipt_no
+        for ref_no, payment_list in payments_by_ref.items():
+            # Check if ALL payments for this ref_no have non-null receipt_no
+            all_have_receipt = all(payment.receipt_no is not None and payment.receipt_no != '' 
+                                 for payment in payment_list)
+            payment_receipt_lookup[ref_no] = all_have_receipt
         
         # Get service names
         service_lookup = dict(t_service_master.objects.values_list('service_id', 'service_name'))
@@ -70,8 +75,11 @@ def verify_application_list(request):
         # Process data
         application_data = []
         for app in application_list:
-            # Check if application has payment receipt
-            has_receipt = app.application_no in applications_with_receipt
+            # Check if application has payments AND all payments have receipts
+            has_payments = app.application_no in payment_receipt_lookup
+            all_payments_have_receipt = payment_receipt_lookup.get(app.application_no, False)
+            
+            is_clickable = has_payments and all_payments_have_receipt
             
             application_data.append({
                 'application_no': app.application_no,
@@ -79,7 +87,7 @@ def verify_application_list(request):
                 'service_name': service_lookup.get(app.service_id, 'Service Not Found'),
                 'action_date': app.action_date,
                 'application_source': app.application_source,
-                'is_clickable': has_receipt,  # Only clickable if receipt exists
+                'is_clickable': is_clickable,  # Only clickable if ALL receipts exist
                 'application_status': app.application_status
             })
         
@@ -149,18 +157,44 @@ def client_application_list(request):
             for service in t_service_master.objects.all()
         }
         
-        # 2. Payments lookup - only applications with receipts
+        # 2. Payments lookup - check if ALL entries for each ref_no have receipt_no
         payment_receipt_lookup = {}
-        payments = t_payment_details.objects.exclude(service_type='AP')
+        payments = t_payment_details.objects.all()
+        
+        # Group payments by ref_no
+        payments_by_ref = {}
         for payment in payments:
-            if payment.ref_no and payment.receipt_no:
-                payment_receipt_lookup[payment.ref_no] = True
+            if payment.ref_no:
+                if payment.ref_no not in payments_by_ref:
+                    payments_by_ref[payment.ref_no] = []
+                payments_by_ref[payment.ref_no].append(payment)
+        
+        # Check for each ref_no if ALL entries have receipt_no
+        for ref_no, payment_list in payments_by_ref.items():
+            # Check if ALL payments for this ref_no have non-null receipt_no
+            all_have_receipt = all(payment.receipt_no is not None and payment.receipt_no != '' 
+                                 for payment in payment_list)
+            payment_receipt_lookup[ref_no] = all_have_receipt
         
         # 3. Application history count
         app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
         
         # 4. Client application count
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=login_id).count()
+
+        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+        non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+            applicant_id=applicant_id,
+            ec_expiry_date__lt=expiry_date_threshold,
+            service_type="Main Activity"
+        ).exclude(
+            ec_reference_no__in=Subquery(
+                t_ec_renewal_t1.objects.values('ec_reference_no')
+            )
+        )
+
+        ec_renewal_count = non_renewed_applications.count()
         
         # 5. TOR application count (optimized)
         t1_general_subquery = t_ec_industries_t1_general.objects.filter(
@@ -179,7 +213,11 @@ def client_application_list(request):
         application_data = []
         for app in application_list:
             # Determine clickability
-            is_clickable = (app.service_id == 0) or (app.application_no in payment_receipt_lookup)
+            # Check if service_id is 0 OR if application has payments AND all payments have receipts
+            has_payments = app.application_no in payment_receipt_lookup
+            all_payments_have_receipt = payment_receipt_lookup.get(app.application_no, False)
+            
+            is_clickable = (app.service_id == 0) or (has_payments and all_payments_have_receipt)
             
             application_data.append({
                 'application_no': app.application_no,
@@ -189,6 +227,7 @@ def client_application_list(request):
                 'application_source': app.application_source,
                 'is_clickable': is_clickable,
                 'application_status': app.application_status
+                
             })
         
         # Sort by action date (newest first)
@@ -199,6 +238,7 @@ def client_application_list(request):
             'cl_application_count': cl_application_count,
             'app_hist_count': app_hist_count,
             'tor_application_count': tor_application_count,
+            'ec_renewal_count': ec_renewal_count
         }
         
     except Exception as e:
@@ -209,6 +249,7 @@ def client_application_list(request):
             'cl_application_count': 0,
             'app_hist_count': 0,
             'tor_application_count': 0,
+            'ec_renewal_count': 0,
             'error': 'An error occurred while loading applications'
         }
     
@@ -254,6 +295,7 @@ def reviewer_application_list(request):
             Q(application_status='RSS') |
             Q(application_status='LUS') |
             Q(application_status='APP') |
+            Q(application_status='AP') |
             Q(application_status='P')
         )
         
@@ -269,12 +311,24 @@ def reviewer_application_list(request):
             for service in t_service_master.objects.all()
         }
         
-        # 2. Payments lookup - only applications with receipts
+        # 2. Payments lookup - check if ALL entries for each ref_no have receipt_no
         payment_receipt_lookup = {}
-        payments = t_payment_details.objects.exclude(service_type='AP')
+        payments = t_payment_details.objects.all()
+        
+        # Group payments by ref_no
+        payments_by_ref = {}
         for payment in payments:
-            if payment.ref_no and payment.receipt_no:
-                payment_receipt_lookup[payment.ref_no] = True
+            if payment.ref_no:
+                if payment.ref_no not in payments_by_ref:
+                    payments_by_ref[payment.ref_no] = []
+                payments_by_ref[payment.ref_no].append(payment)
+        
+        # Check for each ref_no if ALL entries have receipt_no
+        for ref_no, payment_list in payments_by_ref.items():
+            # Check if ALL payments for this ref_no have non-null receipt_no
+            all_have_receipt = all(payment.receipt_no is not None and payment.receipt_no != '' 
+                                 for payment in payment_list)
+            payment_receipt_lookup[ref_no] = all_have_receipt
         
         # 3. Reviewer application count
         r_application_count = t_workflow_dtls.objects.filter(
@@ -290,8 +344,11 @@ def reviewer_application_list(request):
             if app.application_status == 'P':
                 is_clickable = True
             else:
-                # Original logic for other statuses
-                is_clickable = (app.service_id == 0) or (app.application_no in payment_receipt_lookup)
+                # Check if service_id is 0 OR if application has payments AND all payments have receipts
+                has_payments = app.application_no in payment_receipt_lookup
+                all_payments_have_receipt = payment_receipt_lookup.get(app.application_no, False)
+                
+                is_clickable = (app.service_id == 0) or (has_payments and all_payments_have_receipt)
             
             application_data.append({
                 'application_no': app.application_no,
@@ -931,9 +988,6 @@ def forward_application(request):
                         applicant_id=applicant,
                         remarks='Additional Payment Required',
                         service_id=service_id)
-            workflow_details.update(assigned_user_id=None)
-            workflow_details.update(assigned_role_id=None)
-            workflow_details.update(assigned_role_name=None)
             workflow_details.update(action_date=date.today())
             workflow_details.update(actor_id=request.session['login_id'])
             workflow_details.update(actor_name=request.session['name'])
@@ -1832,7 +1886,7 @@ def insert_app_payment_details(request, application_no, description, total_amoun
     if description == "NEW APPLICATION":
         identifier = "new_application"
     elif description == "ADDITIONAL PAYMENT":
-        identifier = "additional_payment"
+        identifier = "verify_application_list"
     else:
         identifier = "tor_form"
     
