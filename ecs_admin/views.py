@@ -34,39 +34,61 @@ def home(request):
     other_details = t_other_details.objects.filter(is_active='Y',is_deleted='N')
     homepage_details = t_homepage_master.objects.filter(homepage_id='1')
     pub_file_attachment = t_file_attachment.objects.filter(attachment_type='P',document_id__in=t_other_details.objects.filter(
-        is_active='Y',  # Assuming 'Y' means active
-        is_deleted='N'   # Assuming 'N' means not deleted
+        is_active='Y',
+        is_deleted='N'
     ).values('document_id'))
     down_file_attachment = t_file_attachment.objects.filter(attachment_type='D',document_id__in=t_other_details.objects.filter(
-        is_active='Y',  # Assuming 'Y' means active
-        is_deleted='N'   # Assuming 'N' means not deleted
+        is_active='Y',
+        is_deleted='N'
     ).values('document_id'))
     form_file_attachment = t_file_attachment.objects.filter(attachment_type='C',document_id__in=t_other_details.objects.filter(
-        is_active='Y',  # Assuming 'Y' means active
-        is_deleted='N'   # Assuming 'N' means not deleted
+        is_active='Y',
+        is_deleted='N'
     ).values('document_id'))
     home_attachment = t_file_attachment.objects.filter(attachment_type='H')
     pub_file_attachment_count = t_file_attachment.objects.filter(attachment_type='P',document_id__in=t_other_details.objects.filter(
-        is_active='Y',  # Assuming 'Y' means active
-        is_deleted='N'   # Assuming 'N' means not deleted
+        is_active='Y',
+        is_deleted='N'
     ).values('document_id')).count()
     down_file_attachment_count = t_file_attachment.objects.filter(attachment_type='D',document_id__in=t_other_details.objects.filter(
-        is_active='Y',  # Assuming 'Y' means active
-        is_deleted='N'   # Assuming 'N' means not deleted
+        is_active='Y',
+        is_deleted='N'
     ).values('document_id')).count()
     form_file_attachment_count = t_file_attachment.objects.filter(attachment_type='C',document_id__in=t_other_details.objects.filter(
-        is_active='Y',  # Assuming 'Y' means active
-        is_deleted='N'   # Assuming 'N' means not deleted
+        is_active='Y',
+        is_deleted='N'
     ).values('document_id')).count()
-    return render(request, 'index.html',{'proponent_type':proponent_type,'dzongkhag':dzongkhag,
-                                         'gewog':gewog,'village':village,'security':security,'menu_details':menu_details,
-                                         'submenu_details':submenu_details, 'other_details':other_details,
-                                         'pub_file_attachment':pub_file_attachment, 'homepage_details':homepage_details,
-                                         'home_attachment':home_attachment,'down_file_attachment':down_file_attachment,
-                                         'form_file_attachment':form_file_attachment,
-                                         'pub_file_attachment_count':pub_file_attachment_count,
-                                         'down_file_attachment_count':down_file_attachment_count,
-                                         'form_file_attachment_count':form_file_attachment_count})
+    
+    # Get login error message from session if it exists (no default message)
+    login_error_message = request.session.pop('login_error_message', None)
+    
+    context = {
+        'proponent_type': proponent_type,
+        'dzongkhag': dzongkhag,
+        'gewog': gewog,
+        'village': village,
+        'security': security,
+        'menu_details': menu_details,
+        'submenu_details': submenu_details,
+        'other_details': other_details,
+        'pub_file_attachment': pub_file_attachment,
+        'homepage_details': homepage_details,
+        'home_attachment': home_attachment,
+        'down_file_attachment': down_file_attachment,
+        'form_file_attachment': form_file_attachment,
+        'pub_file_attachment_count': pub_file_attachment_count,
+        'down_file_attachment_count': down_file_attachment_count,
+        'form_file_attachment_count': form_file_attachment_count,
+        'message': login_error_message  # This will be None if no error
+    }
+    
+    response = render(request, 'index.html', context)
+    
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def proponent_registration(request):
     proponent_type = t_proponent_type_master.objects.all()
@@ -95,7 +117,6 @@ def get_content_details(request):
                                                   'file_attachment':file_attachment})
 
 def login(request):
-    _message = 'Please sign in'
     if request.method == 'POST':
         _username = request.POST['username']
         _password = request.POST['password']
@@ -104,10 +125,13 @@ def login(request):
             check_user = t_user_master.objects.filter(email_id=_username, is_active='Y', logical_delete='N',employee_id__isnull=True)
         else:
             check_user = t_user_master.objects.filter(email_id=_username, is_active='Y', logical_delete='N',employee_id__isnull=False)
-        if check_user is not None:
+        
+        if check_user.exists():
+            user_found = False
             for check_user in check_user:
                 check_pass = check_password(_password, check_user.password)
                 if check_pass:
+                    user_found = True
                     if not check_user.last_login_date:
                         request.session['login_id'] = check_user.login_id
                         request.session['email'] = check_user.email_id
@@ -132,7 +156,6 @@ def login(request):
                                 request.session['login_id'] = check_user.login_id
                                 request.session['ca_authority'] = check_user.agency_code
                                 request.session['dzongkhag_code'] = check_user.dzongkhag_code
-                                # START: count no of EC due for renewal within 30 days
                                 return redirect(dashboard)
                         else:
                             request.session['name'] = check_user.proponent_name
@@ -147,20 +170,22 @@ def login(request):
                             else:
                                 request.session['cid'] = None
                             return redirect(dashboard)
-                else:
-                    _message = 'User ID or Password Not Matching.'
+            
+            if not user_found:
+                # Store only actual error messages
+                request.session['login_error_message'] = 'User ID or Password Not Matching.'
+                return redirect(home)
         else:
-            _message = 'Invalid Credentials, Please Try Again.'
-    context = {'message': _message}
-    response = render(request, 'index.html', context)
-
-    # Set cache-control headers to prevent caching
-    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response['Pragma'] = 'no-cache'
-    response['Expires'] = '0'
-    return response
+            # Store only actual error messages
+            request.session['login_error_message'] = 'Invalid Credentials, Please Try Again.'
+            return redirect(home)
+    
+    # For GET requests, redirect to home without any error message
+    return redirect(home)
 
 def dashboard(request):
+    if 'email' not in request.session:
+        return redirect(home)  # or wherever your login page is
     v_application_count = 0
     r_application_count = 0
     ec_renewal_count = 0
@@ -639,9 +664,10 @@ def user_password_reset_mail(Name, Email_Id, password):
               connection=None, html_message=None)
 
 def logout_view(request):
-     # Clear all sessions
-    request.session.clear()
-
+    # Use flush() to completely clear the session
+    request.session.flush()
+    
+    # Also logout the user if using Django's auth system
     response = redirect('/')
     
     # Add headers to prevent caching

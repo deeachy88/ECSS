@@ -115,8 +115,11 @@ def save_general_details(request):
             service_code = 'QUA'
         else :
             service_code = 'GEN'
-        application_no = get_application_no(request, service_code, request.session['service_id'])
         identifier = request.POST.get('identifier')
+        if identifier != 'DR':
+            application_no = get_application_no(request, service_code, request.session['service_id'])
+        else:
+            application_no =  request.POST.get('application_no')
         tor_application_no = request.POST.get('tor_application_no')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         service_type = request.POST.get('service_type')

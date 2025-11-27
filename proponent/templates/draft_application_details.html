@@ -50,19 +50,19 @@
                 <div id="rootwizard">
                     <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
                         <li class="nav-item" data-target-form="#accountForm">
-                            <a href="#first" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 py-2 active">
+                            <a href="#general_info" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 py-2 active">
                                 <i class="mdi mdi-account-circle font-18 align-middle me-1"></i>
                                 <span class="d-none d-sm-inline">General Information</span>
                             </a>
                         </li>
                         <li class="nav-item" data-target-form="#profileForm">
-                            <a href="#second" data-bs-toggle="tab" data-toggle="tab"  class="nav-link rounded-0 py-2">
+                            <a href="#file_attachment" data-bs-toggle="tab" data-toggle="tab"  class="nav-link rounded-0 py-2">
                                 <i class="mdi mdi-face-man-profile font-18 align-middle me-1"></i>
                                 <span class="d-none d-sm-inline">File Attachment</span>
                             </a>
                         </li>
                         <li class="nav-item" data-target-form="#otherForm">
-                            <a href="#third" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 py-2">
+                            <a href="#disclaimer" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 py-2">
                                 <i class="mdi mdi-checkbox-marked-circle-outline font-18 align-middle me-1"></i>
                                 <span class="d-none d-sm-inline">Disclaimer</span>
                             </a>
@@ -374,7 +374,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="general_attachment_successMsg" style="display:none">
+                            <div class="alert alert-success border-0 rounded-0" role="alert" tabindex="-1" id="general_attachment_successMsg" style="display:none">
                             </div>
                             <div class="alert alert-danger border-0 rounded-0" role="alert" tabindex="-1" id="general_attachment_errorMsg" style="display:none">
                             </div>
@@ -501,6 +501,8 @@
                 success: function(data) {
                     if (data.message == 'success') {
                         // Success case with accessibility
+                        let application_no = data.application_no;
+                        $('#general_disclaimer_application_no').val(application_no)
                         $('#application_form_successMsg')
                             .html('<i class="uil-folder-heart me-1 h4 align-middle"></i> Saved Successfully')
                             .removeAttr('tabindex')  // Remove focus blocker
@@ -513,9 +515,17 @@
 
                         setTimeout(() => {
                             $('#application_form_successMsg').fadeOut('slow');
-                            $("#headingAttachmentBtn").removeAttr("disabled");
-                            $("#collapseAttachment").addClass("show");
-                            $("#collapseOne").removeClass("show");
+
+                            // Make general_info tab disabled
+                            $('a[href="#general_info"].nav-link').removeClass("active");
+
+                            // Enable and activate file_attachment tab
+                            $('a[href="#file_attachment"].nav-link').addClass("active");
+
+                            // Handle tab content
+                            $("#first").removeClass("show active");
+                            $("#second").addClass("show active");
+                            $("#file_attachment").addClass("show active");
                         }, 2000);
                     } else {
                         // Error case with accessibility
@@ -559,14 +569,12 @@
 
     function save_general_attachment_details() {
         // Set success message and attributes
-        let application_no = $('#application_no').val();
-
+        let application_no = $('#general_disclaimer_application_no').val();
         $.ajax({
             type: "GET",
             url: "{% url 'check_file_attachment' %}",
             data: {'application_no':application_no},
             success: function(data) {
-                alert(data.file_count);
                 if (data.file_count > 0) {
                     $('#general_attachment_successMsg')
                     .text("Saved Successfully")  // Using text() instead of html()
@@ -585,13 +593,20 @@
 
                     // Panel navigation after 2 seconds
                     setTimeout(() => {
-                        $("#headingDisclaimerBtn").removeAttr("disabled");
-                        $("#collapseDisclaimer").addClass("show");
-                        $("#collapseAttachment").removeClass("show");
+                        // Remove active from file_attachment and make it disabled
+                        $('a[href="#file_attachment"]').removeClass("active");
+                        
+                        // Make disclaimer active and enabled
+                        $('a[href="#disclaimer"]').addClass("active");
+                        $('a[href="#disclaimer"]').removeAttr("disabled");
+                        $('a[href="#disclaimer"]').removeClass("disabled");
+                        $("#second").removeClass("show active");
+                        $("#third").addClass("show active");
+                        $("#disclaimer").addClass("show active");
                     }, 2000);
                 } else {
                     $('#general_attachment_errorMsg')
-                    .text("Please Attach a File")  // Using text() instead of html()
+                    .text("Please upload relevant IEE form")  // Using text() instead of html()
                     .removeAttr('tabindex')      // Remove focus blocker
                     .attr({
                         'aria-live': 'polite',
@@ -648,7 +663,7 @@
                     if (data.form_is_valid)
                     {
                         let file_url = data.file_url;
-                        let application_no = $('#application_no').val();
+                        let application_no = $('#general_disclaimer_application_no').val();
                         $.ajax
                         ({
                             type : "POST",
@@ -699,26 +714,13 @@
                         .focus();
 
                     setTimeout(() => {
-                        $('#general_submit_successMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-
-                    setTimeout(() => location.reload(), 2000);
-                }
-                else if (data.message == 'not submitted') {
-                    // Ancillary not submitted case
-                    $('#general_submit_errorMsg')
-                        .text("Please Submit Your Ancillary First And Try Again")
-                        .removeAttr('tabindex')
-                        .attr({
-                            'aria-live': 'assertive',
-                            'aria-atomic': 'true'
-                        })
-                        .show()
-                        .focus();
+                        $('#general_submit_successMsg').delay(3000).fadeOut('slow');
+                    }, 3000);
 
                     setTimeout(() => {
-                        $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
+                        window.location.href = '/dashboard';
+                    }, 4000);
+
                 }
                 else {
                     // Other error cases
@@ -773,13 +775,39 @@
     {
         if(value == "Dzongkhag")
         {
-            $('.dzongkhag').show();
-            $('.thromde').hide();
+            $('.dzongkhag_section').show();
+            $('.thromde_section').hide();
         }
         else
         {
-            $('.thromde').show();
-            $('.dzongkhag').hide();
+            $('.thromde_section').show();
+            $('.dzongkhag_section').hide();
         }
+    }
+
+    function getGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#gewog').html(data);
+            }
+        });
+    }
+
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#vil_chiwog').html(data);
+            }
+        });
     }
 </script>

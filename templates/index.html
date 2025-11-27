@@ -442,7 +442,7 @@
                                 <h4 class="header-title mb-1 acts"><i class="uil uil-users-alt"></i> Login</h4>
                                 <hr class="acts" style="display: none;">
                                 <div class="inbox-widget">
-                                   <p class="mb-0 text-muted">If you are registed user, please <a href="{% url 'user_login' %}" data-bs-toggle="modal" data-bs-target="#loginModalForm">Login</a> here </p> 
+                                   <p class="mb-0 text-muted">If you are registed user, please <a href="#" data-bs-toggle="modal" data-bs-target="#loginModalForm">Login</a> here </p> 
                                 </div>
                             </div>
                         </div>
@@ -629,8 +629,21 @@
                         {% csrf_token %}
                         <input type="hidden" name="loginType" value="proponent">
                         {% if message %}
-                        <div class="alert alert-danger" id="login_error">{{ message }}</div>
+                            <div class="alert alert-danger" id="login_error">{{ message }}</div>
                         {% endif %}
+                        {% if message %}
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                // Open the login modal when there's an error message
+                                var loginModal = new bootstrap.Modal(document.getElementById('loginModalForm'));
+                                loginModal.show();
+                                
+                                // Optional: Focus on the username field
+                                document.getElementById('username').focus();
+                            });
+                        </script>
+                        {% endif %}
+
                         <div class="modal-body mx-4">
                             <div class="md-form mb-2">
                                 <input type="email" id="username" name="username" placeholder="Email" class="form-control validate" autocomplete="off">
@@ -687,7 +700,19 @@
                         {% csrf_token %}
                         <input type="hidden" name="loginType" value="agency">
                         {% if message %}
-                        <div class="alert alert-danger" id="login_error">{{ message }}</div>
+                            <div class="alert alert-danger" id="login_error">{{ message }}</div>
+                        {% endif %}
+                        {% if message %}
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                // Open the login modal when there's an error message
+                                var loginModal = new bootstrap.Modal(document.getElementById('loginModalForm'));
+                                loginModal.show();
+                                
+                                // Optional: Focus on the username field
+                                document.getElementById('username').focus();
+                            });
+                        </script>
                         {% endif %}
                         
                         <div class="modal-body mx-4">
