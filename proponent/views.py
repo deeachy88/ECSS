@@ -1268,10 +1268,13 @@ def ec_renewal(request):
  
     existing_renewals = t_ec_renewal_t1.objects.values_list('ec_reference_no', flat=True)
 
+    # 60-day threshold
+    threshold_date = date.today() + timedelta(days=60)
+
     # Filter applications that are expired but not yet renewed
     application_details = t_ec_industries_t1_general.objects.filter(
         applicant_id=applicant_id,
-        ec_expiry_date__lt=date.today(),
+        ec_expiry_date__lt=threshold_date,
         service_type="Main Activity"
     ).exclude(ec_reference_no__in=existing_renewals)
     renewal_details = t_ec_renewal_t2.objects.filter(application_status=None)
