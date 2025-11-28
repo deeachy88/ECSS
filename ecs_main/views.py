@@ -1319,7 +1319,7 @@ def make_payment_request(request,application_no,total_amount,description, email,
     today_date_str = today_date.isoformat()
     # Payload data
     payload = {
-        "platform": "BLIMS",
+        "platform": "BIRMS",
         "refNo": application_no,
         "taxPayerNo": taxPayerNo,
         "taxPayerDocumentNo": taxPayerDocumentNo,#id card
