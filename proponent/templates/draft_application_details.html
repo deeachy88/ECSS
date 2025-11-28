@@ -699,7 +699,9 @@
             data: $('#general_submit_form').serialize(),
             success: function(data) {
                 if (data.message == 'success') {
-                    $("#pageloader").hide();
+                    setTimeout(() => {
+                        $("#pageloader").hide();
+                    }, 2000);
                     // Success case
                     $('#general_submit_successMsg')
                         .text("Application Submitted Successfully")

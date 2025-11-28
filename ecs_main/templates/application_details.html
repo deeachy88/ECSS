@@ -1367,7 +1367,9 @@ function forwardApplication(identifier) {
             $('.spinner-border').hide();
 
             if (data.message === 'success') {
-                let successMsg = identifier === 'A' ? "Application Approved" : "Application Forwarded Successfully";
+                let successMsg = identifier === 'A' ? "Application Approved" : 
+                identifier === 'P' ? "Payment Added" : 
+                "Application Forwarded Successfully";
 
                 $('#verifier_application_successMsg')
                     .attr('tabindex', '-1')
