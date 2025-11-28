@@ -56,7 +56,7 @@
                             </a>
                         </li>
                         <li class="nav-item" data-target-form="#profileForm">
-                            <a href="#file_attachment" data-bs-toggle="tab" data-toggle="tab"  class="nav-link rounded-0 py-2">
+                            <a href="#file_attachment" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 py-2">
                                 <i class="mdi mdi-face-man-profile font-18 align-middle me-1"></i>
                                 <span class="d-none d-sm-inline">File Attachment</span>
                             </a>
@@ -70,16 +70,17 @@
                     </ul>
 
                     <div class="tab-content mb-0 b-0">
-                        <div class="tab-pane active show" id="first">
+                        <div class="tab-pane active show" id="general_info">
                             <form method="post" id="general_application_form">
                                 {% csrf_token %}
                                 <input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">
                                 <input type="text" class="form-control" value="DR" name="identifier" style="display:none;">
                                 <input type="text" class="form-control" value="Main Activity" name="service_type" style="display:none;">
+                                <input type="text" class="form-control" value="{{application_details.activity}}" name="activity" style="display:none;">
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <label class="form-label fw-bold">Activity</label>
-                                        <p>{{request.session.activity}}</p> 
+                                        <p>{{application_details.activity}}</p> 
                                     </div>
                                 </div>
                                 <br>
@@ -303,7 +304,7 @@
                             </ul>
                         </div>
 
-                        <div class="tab-pane fade" id="second">
+                        <div class="tab-pane fade" id="file_attachment">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <table class="table table-hover table-bordered table-centered mb-0">
@@ -385,7 +386,7 @@
                             </ul>
                         </div>
 
-                        <div class="tab-pane fade" id="third">
+                        <div class="tab-pane fade" id="disclaimer">
                             <form method="post" id="general_submit_form" class="form-horizontal">
                                 {% csrf_token %}
                                 <input type="hidden" class="form-control" name="general_disclaimer_application_no" id="general_disclaimer_application_no">
@@ -523,8 +524,7 @@
                             $('a[href="#file_attachment"].nav-link').addClass("active");
 
                             // Handle tab content
-                            $("#first").removeClass("show active");
-                            $("#second").addClass("show active");
+                            $("#general_info").removeClass("show active");
                             $("#file_attachment").addClass("show active");
                         }, 2000);
                     } else {
@@ -600,8 +600,7 @@
                         $('a[href="#disclaimer"]').addClass("active");
                         $('a[href="#disclaimer"]').removeAttr("disabled");
                         $('a[href="#disclaimer"]').removeClass("disabled");
-                        $("#second").removeClass("show active");
-                        $("#third").addClass("show active");
+                        $("#file_attachment").removeClass("show active");
                         $("#disclaimer").addClass("show active");
                     }, 2000);
                 } else {
@@ -699,9 +698,8 @@
             url: "{% url 'submit_general_application' %}",
             data: $('#general_submit_form').serialize(),
             success: function(data) {
-                $("#pageloader").hide();
-                
                 if (data.message == 'success') {
+                    $("#pageloader").hide();
                     // Success case
                     $('#general_submit_successMsg')
                         .text("Application Submitted Successfully")
@@ -724,6 +722,7 @@
                 }
                 else {
                     // Other error cases
+                    $("#pageloader").hide();
                     $('#general_submit_errorMsg')
                         .text(`Application Error: ${data.error}`)
                         .removeAttr('tabindex')

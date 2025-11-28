@@ -149,7 +149,10 @@ def save_general_details(request):
             dzongkhag_code = request.POST.get('dzongkhag')
             gewog_code = request.POST.get('gewog')
             village_code = request.POST.get('vil_chiwog')
-
+        if identifier == 'DR':
+            activity = request.POST.get('activity')
+        else:
+            activity = request.session.get('activity')
         common_fields = {
             # Application metadata
             'application_date': timezone.now().date(),
@@ -184,7 +187,7 @@ def save_general_details(request):
             'applicant_id': request.session.get('email'),
             'colour_code': request.session.get('colour_code'),
             'service_id': request.session.get('service_id'),
-            'activity': request.session.get('activity')
+            'activity': activity
             
         }
         ca_auth = None
@@ -197,6 +200,15 @@ def save_general_details(request):
         elif identifier in ['NC', 'OC']:
             auth_filter = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+        elif identifier in ['DR']:
+            bsic_details = t_bsic_code.objects.filter(activity=activity)
+            for bsic_det in bsic_details:
+                com_auth = bsic_det.competent_authority
+            auth_filter = t_competant_authority_master.objects.filter(
+                competent_authority=com_auth,
+                dzongkhag_code_id=dzongkhag_code if request.session.get('ca_auth') in ['DEC', 'THROMDE'] else None
+            )
+            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
         elif tor_application_no:
             auth_filter = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
             ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
