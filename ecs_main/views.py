@@ -1187,37 +1187,36 @@ def forward_application(request):
                         
                         for email_id in application_details:
                             send_ec_approve_email(ec_no, email_id.email, application_no, service_name)
-                            
-                        token = get_auth_token()
+                        # token = get_auth_token()
                         
-                        # Prepare the data to be sent in the request body
-                        post_data = {
-                            "applicationNo": application_no,
-                            "cleareanceNo": ec_no,
-                            "status": True,  # Boolean True, not string "True"
-                            "message": "ok",
-                            "rejectionMessage": "notok",
-                            "issueDate":now().strftime("%Y-%m-%d"),
-                            "expiryDate":ec_expiry_date
-                        }
+                        # # Prepare the data to be sent in the request body
+                        # post_data = {
+                        #     "applicationNo": application_no,
+                        #     "cleareanceNo": ec_no,
+                        #     "status": True,  # Boolean True, not string "True"
+                        #     "message": "ok",
+                        #     "rejectionMessage": "notok",
+                        #     "issueDate":now().strftime("%Y-%m-%d"),
+                        #     "expiryDate":ec_expiry_date
+                        # }
 
-                        # Headers with authorization token
-                        headers = {
-                            'Authorization': f"Bearer {token}",
-                            'Content-Type': 'application/json'  # Ensure the content-type is set to application/json
-                        }
+                        # # Headers with authorization token
+                        # headers = {
+                        #     'Authorization': f"Bearer {token}",
+                        #     'Content-Type': 'application/json'  # Ensure the content-type is set to application/json
+                        # }
 
-                        # Send the POST request
-                        res = requests.post(
-                            'https://datahub-apim.tech.gov.bt/update_to_ibls_application/1.0.0/nectoibls',
-                            json=post_data,  # Send as JSON, not as a string
-                            headers=headers,
-                            verify=False  # This disables SSL verification, use with caution in production
-                        )
+                        # # Send the POST request
+                        # res = requests.post(
+                        #     'https://datahub-apim.tech.gov.bt/update_to_ibls_application/1.0.0/nectoibls',
+                        #     json=post_data,  # Send as JSON, not as a string
+                        #     headers=headers,
+                        #     verify=False  # This disables SSL verification, use with caution in production
+                        # )
 
-                        # Print the response text for debugging
-                        print(f"Status Code: {res.status_code}")
-                        print(f"Response Text: {res.text}")
+                        # # Print the response text for debugging
+                        # print(f"Status Code: {res.status_code}")
+                        # print(f"Response Text: {res.text}")
 
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
