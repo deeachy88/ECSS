@@ -1229,7 +1229,7 @@ $('#draft_ec_form').on('submit', function() {
 $(function() {
     let status = $('#status').val();
     let assigned_role_name = $('#assigned_role_name').val();
-
+    
     if(status == 'P' || status == 'DEC' || status == 'AL')
     {
         if(status == 'P' && assigned_role_name != 'Reviewer')
@@ -1256,46 +1256,42 @@ $(function() {
         }
         $('#verifier_details_accordian').show();
     }
-    else if(status == 'R' || status == 'ALS' || status == 'AP' || status == 'FEATC' || status == 'RSS' || status == 'LUS' || status == 'APP')
-    {
-        if(status == 'R' || 'AP')
-        {
-            $('.information_complete_div').show();
-            $('input[name="information"]').focus();
-            $('.AL_button').show();
-            
-        }
-        else if(status == 'ALS')
-        {
-            $('.information_complete_div').show();
-            $('.additional_info').show();
-        }
-        else if(status == 'FEATC')
-        {
-            $('.information_complete_div').hide();
-            $('.rectification_div').show();
-            $('.rectification_button').show();
-        }
-        else if(status == 'LUS')
-        {
-            $('.information_complete_div').hide();
-            $('.draft_ec_div').show();
-            $('.ec_draft_button').show();
-        }
-        else if(status == 'RSS')
-        {
-            
-            $('.information_complete_div').hide();
-            $('.rev_resubmit_remarks_div').show();
-        }
-        else if(status == 'APP')
-        {
-            $('.eatc_attachment_div').show();
-            $('.rev_lu_attachment_div').show();
-            $('.LU_button').show();
-        }
-
+    else if (['R', 'ALS', 'AP', 'FEATC', 'RSS', 'LUS', 'APP'].includes(status)) {
         $('#reviewer_details_accordian').show();
+        
+        // Reset all optional sections first
+        $('.information_complete_div, .additional_info, .rectification_div, .draft_ec_div, .rev_resubmit_remarks_div, .eatc_attachment_div, .rev_lu_attachment_div').hide();
+        $('.AL_button, .rectification_button, .ec_draft_button, .LU_button').hide();
+        
+        // Handle specific status cases
+        switch (status) {
+            case 'R':
+            case 'AP':
+                $('.information_complete_div').show();
+                $('input[name="information"]').focus();
+                $('.AL_button').show();
+                break;
+                
+            case 'ALS':
+                $('.information_complete_div, .additional_info').show();
+                break;
+                
+            case 'FEATC':
+                $('.rectification_div, .rectification_button').show();
+                break;
+                
+            case 'LUS':
+                $('.draft_ec_div, .ec_draft_button').show();
+                break;
+                
+            case 'RSS':
+                $('.rev_resubmit_remarks_div').show();
+                break;
+                
+            case 'APP':
+                $('.eatc_attachment_div, .rev_lu_attachment_div, .LU_button').show();
+                break;
+        }
     }
     else if(status == 'ALR' || status == 'ALA' || status == 'EATC' || status == 'RS' || status == 'LU')
     {
