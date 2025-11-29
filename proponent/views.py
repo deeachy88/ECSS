@@ -2727,30 +2727,6 @@ def old_ec_application_form(request):
     return render(request, 'old_ec_application_form.html', {'application_no': application_no, 'thromde': thromde,
                                                          'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
 
-
-def get_old_ec_application_no(request, service_code, service_id):
-    if service_code == "TOR":
-        application_no = t_ec_industries_t1_general.objects.filter(application_no__contains='TOR').aggregate(
-            Max('application_no'))
-    else:
-        application_no = t_ec_industries_t1_general.objects.exclude(service_id=service_id,
-                                                                    application_no__contains='TOR').filter(
-            application_no__contains=service_code).aggregate(Max('application_no'))
-    last_application_no = application_no['application_no__max']
-    print(last_application_no)
-    if not last_application_no:
-        year = timezone.now().year
-        new_application_no = service_code + "-" + str(year) + "-" + "0001"
-    else:
-        substring = str(last_application_no)[9:13]
-        substring = int(substring) + 1
-        app_num = str(substring).zfill(4)
-        print(app_num)
-        year = timezone.now().year
-        new_application_no = service_code + "-" + str(year) + "-" + app_num
-    return new_application_no
-
-
 def save_old_ec_general_details(request):
     data = {}
     try:
