@@ -622,7 +622,7 @@ def update_payment_details(request):
     return redirect(payment_list)
 
 def get_ec_no(request):
-    last_ec_no = t_ec_industries_t1_general.objects.aggregate(Max('ec_reference_no'))
+    last_ec_no = t_ec_industries_t1_general.objects.exclude(application_type='Old_EC').aggregate(Max('ec_reference_no'))
     lastECNo = last_ec_no['ec_reference_no__max']
     if not lastECNo:
         year = timezone.now().year
@@ -1120,9 +1120,13 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'A':
+            print(identifier)
             ec_expiry_date = request.POST.get('ec_expiry_date')
             tat = request.POST.get('tat')
             ec_no = get_ec_no(request)
+            print(ec_expiry_date)
+            print(tat)
+            print(ec_no)
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
 
             # Update common fields in application details
