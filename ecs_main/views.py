@@ -794,7 +794,7 @@ def forward_application(request):
                 total_amount,
                 'NEW APPLICATION',
                 request.session['email'],
-                "100123",
+                "100124",
                 "Main Activity"
             )
             
