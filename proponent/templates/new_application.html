@@ -230,6 +230,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <div id="alertMsg" class="alert alert-danger" style="display: none;"></div>
                 </div>
             </div>
         </div> <!-- end card-->
@@ -256,9 +257,9 @@
                 has_tor = data.has_tor;
 
                 if(colour_code == 'Green') {
-                    $('#successMsg').html("No need For Environment Clearance.");
-                    $('#successMsg').show();
-                    $('#successMsg').delay(2000).fadeOut('slow');
+                    $('#alertMsg').html("No need For Environment Clearance.");
+                    $('#alertMsg').show();
+                    $('#alertMsg').delay(2000).fadeOut('slow');
                 }
                 else {
                     if(has_tor == 'No' && colour_code == 'Blue') {

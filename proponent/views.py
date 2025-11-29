@@ -80,6 +80,7 @@ def get_application_service_id(request):
         data['colour_code'] = cat_details.colour_code
         data['ca_auth'] = cat_details.competent_authority
         data['has_tor'] = cat_details.has_tor
+        print(cat_details.service_id)
     return JsonResponse(data)
 
 def application_form(request):
@@ -87,7 +88,10 @@ def application_form(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     thromde = t_thromde_master.objects.all()
-    return render(request, 'new_application_form.html',{'thromde':thromde,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+    service_id = str(request.session.get('service_id'))
+
+    print(service_id)
+    return render(request, 'new_application_form.html',{'service_id': service_id,'thromde':thromde,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 
 def get_application_no(request, service_code, service_id):
     if service_code == "TOR":

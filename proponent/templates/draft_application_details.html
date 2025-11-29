@@ -20,8 +20,85 @@
         letter-spacing: 0.4px;
         margin-bottom: 0;
         font-size: 0.8rem;
-        line-height: 1.2;
+        line-height: 1.0;
     }
+
+    /* --- For the overall tab header container --- */
+    .form-wizard-header {
+        gap: 10px; /* Space between individual tabs */
+        padding: 10px 0; /* Vertical padding for the header bar */
+        border-bottom: 2px solid #e9ecef;
+        border-radius: 15px; /* Rounded corners for the entire header bar */
+        background-color: #ffffff; /* Optional: background for the header bar */
+        margin-bottom: 20px; /* Space below the tab header */
+        display: flex; /* Enables gap property and flex layout */
+        align-items: center; /* Vertically centers items */
+        justify-content: center; /* Centers the tabs horizontally if they don't fill the width */
+        flex-wrap: wrap; /* Allows tabs to wrap on smaller screens */
+    }
+
+    /* --- For individual tab links --- */
+    .form-wizard-header .nav-link {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6; /* Thinner border */
+        color: #6c757d;
+        font-weight: 600;
+        padding: 8px 15px; /* Vertical and horizontal padding */
+        border-radius: 5px; /* Pills shape */
+        transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        /* Removed rounded-pill, py-2, px-3 from HTML */
+    }
+
+    /* --- Hover effect for enabled tabs --- */
+    .form-wizard-header .nav-link:hover:not(:disabled) {
+        background-color: #e9ecef;
+        border-color: #0d6efd;
+        transform: translateY(-1px); /* Subtle lift */
+        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15); /* Softer shadow */
+    }
+
+    /* --- Active tab styling --- */
+    .form-wizard-header .nav-link.active {
+        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+        color: white;
+        border-color: #0d6efd;
+        transform: translateY(-1px); /* Match hover lift */
+        box-shadow: 0 3px 10px rgba(13, 110, 253, 0.3); /* Adjusted shadow */
+    }
+
+    /* --- Disabled tab styling --- */
+    .form-wizard-header .nav-link:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+        background-color: #e9ecef !important;
+        border-color: #dee2e6 !important;
+        color: #adb5bd !important;
+    }
+
+    /* --- Badge styling (if you have badges) --- */
+    .form-wizard-header .badge {
+        font-size: 16px;
+        transition: transform 0.3s ease;
+    }
+
+    .form-wizard-header .nav-link:hover:not(:disabled) .badge {
+        transform: scale(1.05); /* Subtle scale on hover */
+    }
+
+    /* --- Icon and Span alignment --- */
+    .form-wizard-header .nav-link .mdi,
+    .form-wizard-header .nav-link span {
+        vertical-align: middle; /* Ensure better alignment */
+    }
+
+    .custom-bg {
+        background-color: #bfc1c9 !important;
+        color: #000000;
+        line-height: 1.1;
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+
 </style>
 {% for application_details in application_details %}
 <div class="row">
@@ -50,19 +127,19 @@
                 <div id="rootwizard">
                     <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
                         <li class="nav-item" data-target-form="#accountForm">
-                            <a href="#general_info" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 py-2 active">
+                            <a href="#general_info" data-bs-toggle="tab" data-toggle="tab" class="nav-link active"> <!-- Removed: rounded-pill py-2 px-3 -->
                                 <i class="mdi mdi-account-circle font-18 align-middle me-1"></i>
                                 <span class="d-none d-sm-inline">General Information</span>
                             </a>
                         </li>
                         <li class="nav-item" data-target-form="#profileForm">
-                            <a href="#file_attachment" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 py-2">
-                                <i class="mdi mdi-face-man-profile font-18 align-middle me-1"></i>
+                            <a href="#file_attachment" data-bs-toggle="tab" data-toggle="tab" class="nav-link" disabled> <!-- Removed: rounded-pill py-2 px-3 -->
+                                <i class="mdi mdi-paperclip font-18 align-middle me-1"></i>
                                 <span class="d-none d-sm-inline">File Attachment</span>
                             </a>
                         </li>
                         <li class="nav-item" data-target-form="#otherForm">
-                            <a href="#disclaimer" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 py-2">
+                            <a href="#disclaimer" data-bs-toggle="tab" data-toggle="tab" class="nav-link" disabled> <!-- Removed: rounded-pill py-2 px-3 -->
                                 <i class="mdi mdi-checkbox-marked-circle-outline font-18 align-middle me-1"></i>
                                 <span class="d-none d-sm-inline">Disclaimer</span>
                             </a>
@@ -77,17 +154,14 @@
                                 <input type="text" class="form-control" value="DR" name="identifier" style="display:none;">
                                 <input type="text" class="form-control" value="Main Activity" name="service_type" style="display:none;">
                                 <input type="text" class="form-control" value="{{application_details.activity}}" name="activity" style="display:none;">
-                                <div class="row">
-                                    <div class="col-lg-6">
+                                <div class="row justify-content-left">
+                                    <div class="col-lg-12">
                                         <label class="form-label fw-bold">Activity</label>
-                                        <p>{{application_details.activity}}</p> 
+                                        <p class="distinct-activity">{{application_details.activity}}</p>
                                     </div>
                                 </div>
-                                <br>
-                                <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    Applicant Details
-                                </div>
-                                <div class="row">
+
+                                <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Name of the Applicant</label>
@@ -110,7 +184,7 @@
                                         <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Email</label>
@@ -132,12 +206,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <br>
-                                <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                    Project Location and Area
+                                <div class="alert custom-bg border-0" role="alert">
+                                    <h5 class="mb-0">Project Location</h5>
                                 </div>
-                                <br>
-                                <div class="row">
+                                <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                     {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
                                         <div class="col-lg-6">
                                             <div class="mb-3">
@@ -228,7 +300,7 @@
 
                                 <!-- Dzongkhag Section - Always included but conditionally hidden -->
                                 <div class="dzongkhag" {% if application_details.dzongkhag_throm != 'Dzongkhag' %}style="display:none;"{% endif %}>
-                                    <div class="row">
+                                    <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Dzongkhag</label>
@@ -269,7 +341,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Name of the Particular Project Site</label>
@@ -305,7 +377,7 @@
                         </div>
 
                         <div class="tab-pane fade" id="file_attachment">
-                            <div class="row">
+                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                 <div class="col-lg-12">
                                     <table class="table table-hover table-bordered table-centered mb-0">
                                         <tbody>
