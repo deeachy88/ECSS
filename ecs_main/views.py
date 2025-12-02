@@ -788,7 +788,11 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "ibls_application_list"
         elif identifier == 'P':
+            account_head = None
             total_amount = request.POST.get('amount')
+            payment_details_master = payment_details_master.objects.filter(payment_type='NEW')
+            for pay_dets in payment_details_master:
+                account_head = pay_dets.account_head_code
             workflow_details.update(actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_role_id='2',assigned_role_name='Verifier')
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
             for app_det in application_details:
@@ -809,7 +813,7 @@ def forward_application(request):
                 total_amount,
                 'NEW APPLICATION',
                 request.session['email'],
-                "100124",
+                account_head,
                 "Main Activity"
             )
             
@@ -1324,6 +1328,7 @@ def make_payment_request(request,application_no,total_amount,description, email,
         mob_no = app_det.contact_no
         app_name = app_det.applicant_name
         proponent_type = app_det.proponent_type
+        email_id = app_det.applicant_id
 
     if proponent_type != 4:
         taxPayerDocumentNo = get_random_tax_no(8)
@@ -1337,13 +1342,13 @@ def make_payment_request(request,application_no,total_amount,description, email,
     today_date_str = today_date.isoformat()
     # Payload data
     payload = {
-        "platform": "BIRMS",
+        "platform": "Environment Clearance Services System",
         "refNo": application_no,
         "taxPayerNo": taxPayerNo,
         "taxPayerDocumentNo": taxPayerDocumentNo,#id card
         "paymentRequestDate": today_date_str,
         "agencyCode": "DTH1552",
-        "payerEmail": email,
+        "payerEmail": email_id,
         "mobileNo": mob_no,
         "totalPayableAmount": total_amount,
         "paymentDueDate": None,

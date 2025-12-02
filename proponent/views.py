@@ -1385,6 +1385,7 @@ def submit_renew_application(request):
         cid_no = None
         mob_no = None
         app_name = None
+        account_head = None
         ec_reference_no = request.POST.get('ec_reference_no')
         application_no = request.POST.get('application_no')
         initiatives_undertaken = request.POST.get('initiatives_undertaken')
@@ -1411,6 +1412,9 @@ def submit_renew_application(request):
                                             ca_authority=auth,
                                             application_source='ECSS'
                                         )
+        payment_details_master = payment_details_master.objects.filter(payment_type='TOR')
+        for pay_dets in payment_details_master:
+            account_head = pay_dets.account_head_code    
         fees_details = t_fees_schedule.objects.filter(service_id='10')
         for main_application_details in main_application_details:
             amount = main_application_details.amount
@@ -1438,7 +1442,7 @@ def submit_renew_application(request):
                 "code": "moenr",
                 "paymentLists": [
                     {
-                        "serviceCode": "100124",
+                        "serviceCode": account_head,
                         "description": "ec_renewal",
                         "payableAmount": total_amount
                     }
@@ -1598,6 +1602,7 @@ def save_tor_form(request):
         application_date = timezone.now().date()
         action_date = application_date
         ca_auth = None
+        account_head = None
         
         auth_filter = t_competant_authority_master.objects.filter(
                 competent_authority=request.session['ca_auth'],
@@ -1662,7 +1667,10 @@ def save_tor_form(request):
             ca_authority=ca_auth,
             application_source='ECSS'
         )
-        make_payment_request(request,application_no,"500",'NEW TOR APPLICATION',request.session['email'],"100123","TOR")
+        payment_details_master = payment_details_master.objects.filter(payment_type='TOR')
+        for pay_dets in payment_details_master:
+            account_head = pay_dets.account_head_code
+        make_payment_request(request,application_no,"500",'NEW TOR APPLICATION',request.session['email'],account_head,"TOR")
         send_tor_payment_mail(request.session['name'], request.session['email'], 500)
         data['message'] = 'success'
     except Exception as e:
