@@ -1278,10 +1278,6 @@ def view_draft_application_details(request):
     
     return render(request, 'draft_application_details.html', context)
 # EC RENEWAL
-from datetime import date, timedelta
-from django.db.models import OuterRef, Subquery
-from django.shortcuts import render
-
 def ec_renewal(request):
     applicant_id = request.session.get('email', None)
     
@@ -1298,7 +1294,7 @@ def ec_renewal(request):
     # 4. Service type is "Main Activity"
     application_details = t_ec_industries_t1_general.objects.filter(
         applicant_id=applicant_id,
-        service_type="Main Activity",
+        service_type__in=["Man Activity", "Old_EC"],
         ec_reference_no__isnull=False,          # Has ec_reference_no
         ec_expiry_date__lt=threshold_date,      # Expiring within 60 days
         ec_expiry_date__isnull=False            # Has expiry date
