@@ -1278,43 +1278,77 @@ def view_draft_application_details(request):
     
     return render(request, 'draft_application_details.html', context)
 # EC RENEWAL
+from datetime import date, timedelta
+from django.db.models import OuterRef, Subquery
+from django.shortcuts import render
+
 def ec_renewal(request):
     applicant_id = request.session.get('email', None)
- 
+    
+    # Get already renewed applications
     existing_renewals = t_ec_renewal_t1.objects.values_list('ec_reference_no', flat=True)
-
+    
     # 60-day threshold
     threshold_date = date.today() + timedelta(days=60)
-
-    # Filter applications that are expired but not yet renewed
+    
+    # Filter applications:
+    # 1. Have ec_reference_no (not null)
+    # 2. Not in renewal table
+    # 3. Expiring within 60 days
+    # 4. Service type is "Main Activity"
     application_details = t_ec_industries_t1_general.objects.filter(
         applicant_id=applicant_id,
-        ec_expiry_date__lt=threshold_date,
-        service_type="Main Activity"
-    ).exclude(ec_reference_no__in=existing_renewals)
+        service_type="Main Activity",
+        ec_reference_no__isnull=False,          # Has ec_reference_no
+        ec_expiry_date__lt=threshold_date,      # Expiring within 60 days
+        ec_expiry_date__isnull=False            # Has expiry date
+    ).exclude(
+        ec_reference_no__in=existing_renewals   # Not already renewed
+    ).exclude(
+        ec_reference_no=''                      # Not empty string
+    )
+    
+    # Other data for the template
     renewal_details = t_ec_renewal_t2.objects.filter(application_status=None)
     service_details = t_service_master.objects.all()
+    
+    # Count application history
     app_hist_count = t_application_history.objects.filter(
-            applicant_id=applicant_id
-        ).distinct('application_no').count()
-    #cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
+        applicant_id=applicant_id
+    ).distinct('application_no').count()
+    
+    # Subquery for TOR applications
     t1_general_subquery = t_ec_industries_t1_general.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
-
-    # Query to count approved applications that are not in t1_general
+    
+    # Count approved TOR applications not yet converted to EC
     tor_application_count = t_ec_industries_t1_general.objects.filter(
-            application_status='A',
-            application_no__contains='TOR',applicant_id=applicant_id
-        ).exclude(
-            application_no__in=Subquery(t1_general_subquery)
-        ).count()
-    response = render(request, 'renewal.html',{'application_details':application_details,'app_hist_count':app_hist_count,'renewal_details':renewal_details,'service_details':service_details,'tor_application_count':tor_application_count})
-
+        application_status='A',
+        application_no__contains='TOR',
+        applicant_id=applicant_id
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+    
+    # Prepare context for template
+    context = {
+        'application_details': application_details,
+        'app_hist_count': app_hist_count,
+        'renewal_details': renewal_details,
+        'service_details': service_details,
+        'tor_application_count': tor_application_count,
+        'threshold_date': threshold_date,  # Optional: for display
+    }
+    
+    # Render template
+    response = render(request, 'renewal.html', context)
+    
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response['Pragma'] = 'no-cache'
     response['Expires'] = '0'
+    
     return response
 
 def ec_renewal_details(request):
