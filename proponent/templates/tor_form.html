@@ -1,0 +1,450 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card mt-1">
+            <div class="card-body">
+                <h4 class="header-title mb-3"> TOR Form</h4>
+                <form method="post" id="tor_form">
+                    {% csrf_token %}
+                    <input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Name of the Project</label>
+                                <input type="text" name="project_name" class="form-control" id="project_name">
+                            </div>
+                            <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Name of the Applicant</label>
+                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
+                            </div>
+                            <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Address</label>
+                                <input type="text" name="address" class="form-control" id="address" value="{{request.session.address}}" readonly>
+                            </div>
+                            <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Contact No</label>
+                                <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{request.session.contact_number}}" readonly>
+                            </div>
+                            <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email</label>
+                                <input type="email" name="email" class="form-control" id="email" value="{{request.session.email}}" readonly>
+                            </div>
+                            <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
+                                <textarea class="form-control" id="focal_person" name="focal_person" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div id="focal_personErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Site</label>
+                                <div class="mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" id="customRadio3" name="dzongkhag_throm" class="form-check-input"  value="Dzongkhag" onclick="check_site_radio(this.value)">
+                                        <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" id="customRadio4" name="dzongkhag_throm" class="form-check-input"  value="Thromde" onclick="check_site_radio(this.value)">
+                                        <label class="form-check-label" for="customRadio4">Thromde</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6 thromde_div" style="display:none;">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Thromde</label>
+                                <select class="form-select" name="thromde_id"  id="thromde_id">
+                                    <option value="">--SELECT THROMDE--</option>
+                                    {% for thromde in thromde %}
+                                        <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6 dzongkhag_div" style="display:none;">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Dzongkhag</label>
+                                <select class="form-select" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                    <option value="">--SELECT DZONGKHAG--</option>
+                                    {% for dzongkhag in dzongkhag %}
+                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="row dzongkhag_div" style="display:none;">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Gewog</label>
+                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                    <option value="">--SELECT GEWOG--</option>
+                                    {% for gewog in gewog %}
+                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Village/Chiwog</label>
+                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                    <option value="">--SELECT VILLAGE--</option>
+                                    {% for village in village %}
+                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Name of the Particular Project Site</label>
+                            <input type="text" name="location_name" class="form-control" id="location_name">
+                        </div>
+                        <div id="location_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-widgets">
+                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#tor_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                </div>
+                                <h5 class="card-title mb-0">Attachments</h5>
+                                <div id="cardCollpase7" class="collapse pt-3 show">
+                                    <div id="tor_attachment">
+                                        {% include 'file_attachment_page.html' %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-success border-0 rounded-0" role="alert" id="tor_form_successMsg" style="display:none">
+                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                    </div>
+                    <div class="alert alert-danger border-0 rounded-0" role="alert" id="tor_form_errorMsg" style="display:none">
+                        <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                    </div>
+                    <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                        Loading...
+                    </button>
+                    <div class="row mt-4">
+                        <div class="text-sm-end">
+                            <button type="button" class="btn btn-success" onclick="save_tor_form()">
+                                <i class="mdi mdi-arrow-right me-1"></i> Submit </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" id="tor_attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="tor_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Add Attachment</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Attachment</label>
+                        <input type="file" name="tor_attach" class="form-control" id="tor_attach" accept=".png,.jpg,.jpeg,.pdf,.doc,.kmz">
+                    </div>
+                    <div class="alert alert-danger" id="tor_attachErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="save_tor_attachment()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+
+<script>
+    function check_site_radio(value)
+    {
+        if(value == 'Thromde')
+        {
+            $('.thromde_div').show();
+            $('.dzongkhag_div').hide();
+        }
+        else
+        {
+            $('.dzongkhag_div').show();
+            $('.thromde_div').hide();
+        }
+    }
+
+    function getGewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#gewog').html(data);
+            }
+        });
+    }
+
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#vil_chiwog').html(data);
+            }
+        });
+    }
+
+    function save_tor_form()
+    {
+        let project_name = $('#project_name').val();
+        let applicant_name = $('#applicant_name').val();
+        let address = $('#address').val();
+        let contact_no = $('#contact_no').val();
+        let contact_no_length = $('#contact_no').val().length;
+        let email = $('#email').val();
+        let site = $("input[name=dzongkhag_throm]:checked").length;
+        let site_value = $("input[name=dzongkhag_throm]:checked").val();
+        let dzongkhag = $('#dzongkhag').val();
+        let gewog = $('#gewog').val();
+        let village = $('#vil_chiwog').val();
+        let thromde = $('#thromde').val();
+
+        if(project_name == "")
+        {
+            $('#project_nameErrorMsg').html("Enter Name of Project");
+            $('#project_nameErrorMsg').show();
+            $('#project_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#project_name').focus();
+        }
+        else if(applicant_name == "")
+        {
+            $('#applicant_nameErrorMsg').html("Enter Name of The Applicant");
+            $('#applicant_nameErrorMsg').show();
+            $('#applicant_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#applicant_name').focus();
+        }
+        else if(address == "")
+        {
+            $('#addressErrorMsg').html("Enter Address");
+            $('#addressErrorMsg').show();
+            $('#addressErrorMsg').delay(2000).fadeOut('slow');
+            $('#address').focus();
+        }
+        else if(contact_no == "")
+        {
+            $('#contact_noErrorMsg').html("Enter Contact No");
+            $('#contact_noErrorMsg').show();
+            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
+            $('#contact_no').focus();
+        }
+        else if(contact_no_length < 8)
+        {
+            $('#contact_noErrorMsg').html("Cannot Be Less Than Eight Digits");
+            $('#contact_noErrorMsg').show();
+            $('#contact_noErrorMsg').delay(2000).fadeOut('slow');
+            $('#contact_no').focus();
+        }
+        else if(email == "")
+        {
+            $('#emailErrorMsg').html("Enter Email");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+            $('#email').focus();
+        }
+        else if(site < 1)
+        {
+            $('#siteErrorMsg').html("Please Select One.");
+            $('#siteErrorMsg').show();
+            $('#siteErrorMsg').delay(2000).fadeOut('slow');
+            $("input[name=site]").focus();
+        }
+        else if(site_value == 'T' && thromde == "")
+        {
+            $('#thromdeErrorMsg').html("Select Thromde");
+            $('#dzongkhagErrorMsg').show();
+            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag').focus();
+        }
+        else if(site_value == 'D' && dzongkhag == "")
+        {
+            $('#dzongkhagErrorMsg').html("Select Dzongkhag");
+            $('#dzongkhagErrorMsg').show();
+            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag').focus();
+        }
+        else if(site_value == 'D' && gewog == "")
+        {
+            $('#gewogErrorMsg').html("Select Gewog");
+            $('#gewogErrorMsg').show();
+            $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+            $('#gewog').focus();
+        }
+        else if(site_value == 'D' && village == "")
+        {
+            $('#vil_chiwogErrorMsg').html("Select Village");
+            $('#vil_chiwogErrorMsg').show();
+            $('#vil_chiwogErrorMsg').delay(2000).fadeOut('slow');
+            $('#vil_chiwog').focus();
+        }
+        else
+        {
+            $("#pageloader").show();
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_tor_form' %}",
+                data : $('#tor_form').serialize(),
+                success : function(data)
+                {
+                    if(data.message == 'success')
+                    {
+                        $("#pageloader").hide();
+                        $('#tor_form_successMsg').html("Saved Successfully");
+                        $('#tor_form_successMsg').show();
+                        setTimeout(function()
+                        {
+                            $('#tor_form_successMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                        setTimeout(function() {
+                            window.location.href = '/dashboard';
+                        }, 2000);
+                    }
+                    else 
+                    {
+                        $("#pageloader").hide();
+                        var errorMsg = data.error;
+        
+                        $('#tor_form_errorMsg').html(`Application Error: ${data.error}`);
+                        $('#tor_form_errorMsg').show();
+                        $('#tor_form_errorMsg').focus();
+                        
+                        setTimeout(function() {
+                            $('#tor_form_errorMsg').delay(2000).fadeOut('slow');
+                        }, 2000);
+                    }
+                }
+            });
+        }
+    }
+
+    function save_tor_attachment()
+    {
+        let file_length = document.getElementById("tor_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#tor_attachErrorMsg').html("Please Choose A Attachment");
+            $('#tor_attachErrorMsg').show();
+            $('#tor_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var fileName = document.getElementById('tor_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('tor_attach').files[0];
+            fd.append('tor_attach', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_tor_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_tor_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#tor_attachment_modal').modal('hide');
+                                $('#tor_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#tor_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#tor_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#tor_attachErrorMsg').show();
+                        $('#tor_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}
