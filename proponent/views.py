@@ -1279,7 +1279,6 @@ def view_draft_application_details(request):
     return render(request, 'draft_application_details.html', context)
 # EC RENEWAL
 def ec_renewal(request):
-    assigned_user_id = request.session.get('login_id', None)
     applicant_id = request.session.get('email', None)
  
     existing_renewals = t_ec_renewal_t1.objects.values_list('ec_reference_no', flat=True)

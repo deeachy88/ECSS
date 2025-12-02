@@ -411,10 +411,25 @@ def ibls_application_list(request):
 def payment_list(request):
     applicant_id = request.session.get('email', None)
     assigned_user_id = request.session.get('login_id', None)
+    ca_authority = request.session.get('ca_authority', None)
+
     payment_details = t_payment_details.objects.filter(
-        receipt_no__isnull=True,
-        ref_no__in=t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id).values('application_no')
-    )
+        ref_no__in=t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority).values('application_no')
+    ).order_by('ref_no')  # Assuming ref_no is your application number
+    
+    # Add formatted description with custom mapping
+    for payment in payment_details:
+        # Clean up the description
+        clean_desc = payment.description.replace('_', ' ').title()
+        
+        # Map specific values
+        if clean_desc == "New Application":
+            payment.display_description = "Application Fees"
+        elif clean_desc == "Additional Application":  # Add more mappings as needed
+            payment.display_description = "Additional Fees"
+        else:
+            payment.display_description = clean_desc
+    
     service_details = t_service_master.objects.all()
     app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
