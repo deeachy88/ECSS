@@ -1361,6 +1361,20 @@ def ec_renewal_details(request):
         ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
     ec_application_details = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+
+    non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+        applicant_id=request.session['email'],
+        ec_expiry_date__lt=expiry_date_threshold,
+        service_type__in=["Main Activity", "Old EC"]
+    ).exclude(
+        ec_reference_no__in=Subquery(
+            t_ec_renewal_t1.objects.values('ec_reference_no')
+        )
+    )
+
+    ec_renewal_count = non_renewed_applications.count()
     if ec_application_details.exists():
         ec_details = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)    
         return render(request, 'renewal_details.html',{'application_details':application_details,'application_no':application_no, 'ec_details':ec_details,
@@ -1369,7 +1383,7 @@ def ec_renewal_details(request):
         for ec_data in ec_data:
             t_ec_renewal_t2.objects.create(application_no=application_no, ec_reference_no=ec_reference_no,ec_heading=ec_data.ec_heading,ec_terms=ec_data.ec_terms)
         ec_details = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)    
-        return render(request, 'renewal_details.html',{'application_details':application_details,'application_no':application_no, 'ec_details':ec_details,
+        return render(request, 'renewal_details.html',{'application_details':application_details,'application_no':application_no, 'ec_details':ec_details,'ec_renewal_count':ec_renewal_count,
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
 
 def submit_renew_application(request):
