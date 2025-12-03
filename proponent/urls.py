@@ -51,7 +51,6 @@ urlpatterns = [
     path('save_tor_attachment_details', views.save_tor_attachment_details, name='save_tor_attachment_details'),
 
     #Report Submission
-    #Report Submission
     path('report_list', views.report_list, name='report_list'),
     path('view_report_details', views.view_report_details, name='view_report_details'),
     path('viewDraftReport/<str:report_reference_no>', views.viewDraftReport, name='viewDraftReport'),

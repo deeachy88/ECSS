@@ -317,6 +317,20 @@ def application_status_list(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
+
+        expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+
+        non_renewed_applications = t_ec_industries_t1_general.objects.filter(
+            applicant_id=applicant_id,
+            ec_expiry_date__lt=expiry_date_threshold,
+            service_type__in=["Main Activity", "Old EC"]
+        ).exclude(
+            ec_reference_no__in=Subquery(
+                t_ec_renewal_t1.objects.values('ec_reference_no')
+            )
+        )
+
+        ec_renewal_count = non_renewed_applications.count()
     
     elif login_type == 'I':
         role = request.session['role']
@@ -407,12 +421,12 @@ def application_history(request):
         applicant_id=request.session['login_id']
     ).distinct('application_no').count()
 
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
     non_renewed_applications = t_ec_industries_t1_general.objects.filter(
         applicant_id=applicant_id,
         ec_expiry_date__lt=expiry_date_threshold,
-        service_type="Main Activity"
+        service_type__in=["Main Activity", "Old EC"]
     ).exclude(
         ec_reference_no__in=Subquery(
             t_ec_renewal_t1.objects.values('ec_reference_no')
