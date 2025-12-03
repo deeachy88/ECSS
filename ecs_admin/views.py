@@ -207,7 +207,7 @@ def dashboard(request):
         non_renewed_applications = t_ec_industries_t1_general.objects.filter(
             applicant_id=request.session['email'],
             ec_expiry_date__lt=expiry_date_threshold,
-            service_type="Main Activity"
+            service_type__in=["Main Activity", "Old EC"]
         ).exclude(
             ec_reference_no__in=Subquery(
                 t_ec_renewal_t1.objects.values('ec_reference_no')
@@ -264,7 +264,7 @@ def dashboard(request):
         non_renewed_applications = t_ec_industries_t1_general.objects.filter(
             applicant_id=email_id,
             ec_expiry_date__lt=expiry_date_threshold,
-            service_type="Main Activity"
+            service_type__in=["Main Activity", "Old EC"]
         ).exclude(
             ec_reference_no__in=Subquery(
                 t_ec_renewal_t1.objects.values('ec_reference_no')
