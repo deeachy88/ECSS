@@ -46,18 +46,6 @@ def home(request):
         is_deleted='N'
     ).values('document_id'))
     home_attachment = t_file_attachment.objects.filter(attachment_type='H')
-    pub_file_attachment_count = t_file_attachment.objects.filter(attachment_type='P',document_id__in=t_other_details.objects.filter(
-        is_active='Y',
-        is_deleted='N'
-    ).values('document_id')).count()
-    down_file_attachment_count = t_file_attachment.objects.filter(attachment_type='D',document_id__in=t_other_details.objects.filter(
-        is_active='Y',
-        is_deleted='N'
-    ).values('document_id')).count()
-    form_file_attachment_count = t_file_attachment.objects.filter(attachment_type='C',document_id__in=t_other_details.objects.filter(
-        is_active='Y',
-        is_deleted='N'
-    ).values('document_id')).count()
     
     # Get login error message from session if it exists (no default message)
     login_error_message = request.session.pop('login_error_message', None)
@@ -74,11 +62,8 @@ def home(request):
         'pub_file_attachment': pub_file_attachment,
         'homepage_details': homepage_details,
         'home_attachment': home_attachment,
-        'down_file_attachment': down_file_attachment,
+        'download_forms': down_file_attachment,
         'form_file_attachment': form_file_attachment,
-        'pub_file_attachment_count': pub_file_attachment_count,
-        'down_file_attachment_count': down_file_attachment_count,
-        'form_file_attachment_count': form_file_attachment_count,
         'message': login_error_message  # This will be None if no error
     }
     
@@ -285,6 +270,11 @@ def dashboard(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
+
+        download_forms = t_file_attachment.objects.filter(attachment_type='F',document_id__in=t_other_details.objects.filter(
+            is_active='Y',
+            is_deleted='N'
+        ).values('document_id'))
         
         response = render(request, 'dashboard.html', {
             'app_hist_count': app_hist_count,
@@ -293,7 +283,8 @@ def dashboard(request):
             'tor_application_count': tor_application_count,
             'draft_count': draft_count,
             'ec_renewal_count': ec_renewal_count,
-            'ibls_appluication_count':ibls_appluication_count
+            'ibls_appluication_count':ibls_appluication_count,
+            'download_forms':download_forms
         })
 
     # Set cache-control headers to prevent caching
@@ -1069,6 +1060,10 @@ def save_homepage_attachment_details(request):
     home_page_details = t_homepage_master.objects.filter(homepage_id=1)
     return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
 
+def download_forms(request):
+    file_attach = t_file_attachment.objects.filter(attachment_type='F')
+    return render(request, 'download_forms.html', {'download_forms': file_attach})
+
 def change_password(request):
     data = dict()
     email_id = request.session['email']
@@ -1319,15 +1314,9 @@ def add_publication_attach(request):
     title = request.POST.get('title')
     type = request.POST.get('type')
 
-    if type == 'Acts and Rules':
-        t_file_attachment.objects.create(file_path=file_url,attachment=attachment_name,document_id=document_id,
-                                         attachment_type='P')
-    elif type == 'Forms and Others':
-        t_file_attachment.objects.create(file_path=file_url, attachment=attachment_name, document_id=document_id,
-                                         attachment_type='D')
-    else:
-        t_file_attachment.objects.create(file_path=file_url, attachment=attachment_name, document_id=document_id,
-                                         attachment_type='C')
+    
+    t_file_attachment.objects.create(file_path=file_url, attachment=attachment_name, document_id=document_id,
+                                         attachment_type='F')
 
     t_other_details.objects.create(title=title, type=type, document_id=document_id,is_active='Y',
                                          is_deleted='N')

@@ -41,42 +41,51 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav align-items-center">
-                <!-- Home link -->
-                <li class="nav-item ms-3">
-                    <a class="nav-link px-2 py-2 active" href="{% url 'index' %}" onclick="setActiveNav(this)">Home</a>
-                </li>
+            <ul class="navbar-nav d-flex w-100">
+                <div class="d-flex">
+                    <!-- Home link -->
+                    <li class="nav-item ms-3">
+                        <a class="nav-link px-2 py-2 active" href="{% url 'index' %}" onclick="setActiveNav(this)">Home</a>
+                    </li>
 
-                <!-- Dynamic menu rendering -->
-                {% for menu_details in menu_details %}
-                    {% if menu_details.has_sub_menu == 'Yes' %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link px-2 py-2 dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                {{ menu_details.menu_name }}
-                            </a>
-                            <ul class="dropdown-menu">
-                                {% for submenu_details in submenu_details %}
-                                    {% if menu_details.menu_id == submenu_details.menu_id %}
-                                        <li>
-                                            <a class="dropdown-item" href="#"
-                                               onclick="loadSubMenuPage('{{ submenu_details.sub_menu_id }}'); setActiveNav(this)">
-                                                {{ submenu_details.sub_menu_name }}
-                                            </a>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link px-2 py-2" 
-                               href="#" 
-                               onclick="loadMenuPage('{{ menu_details.menu_id }}'); setActiveNav(this)">
-                                {{ menu_details.menu_name }}
-                            </a>
-                        </li>
-                    {% endif %}
-                {% endfor %}
+                    <!-- Dynamic menu rendering -->
+                    {% for menu_details in menu_details %}
+                        {% if menu_details.has_sub_menu == 'Yes' %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link px-2 py-2 dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                    {{ menu_details.menu_name }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    {% for submenu_details in submenu_details %}
+                                        {% if menu_details.menu_id == submenu_details.menu_id %}
+                                            <li>
+                                                <a class="dropdown-item" href="#"
+                                                onclick="loadSubMenuPage('{{ submenu_details.sub_menu_id }}'); setActiveNav(this)">
+                                                    {{ submenu_details.sub_menu_name }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link px-2 py-2" 
+                                href="#" 
+                                onclick="loadMenuPage('{{ menu_details.menu_id }}'); setActiveNav(this)">
+                                    {{ menu_details.menu_name }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                
+                <!-- Download Forms aligned to right -->
+                <li class="nav-item ms-auto">
+                    <a class="nav-link" href="#" onclick="download_forms(); setActiveNav(this)">
+                        Download Forms
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -93,8 +102,3 @@
         }
     </script>
 </nav>
-
-
-
-
-

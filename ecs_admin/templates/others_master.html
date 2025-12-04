@@ -20,7 +20,6 @@
                 <div id="cardCollpase1" class="collapse pt-3 show">
                     <table id="basic-datatable" class="table dt-responsive nowrap w-100">
                         <thead>
-                            <th>Type</th>
                             <th>Title</th>
                             <th>Attachment</th>
                             <th></th>
@@ -28,7 +27,6 @@
                         <tbody>
                             {% for other_details in other_details %}
                                 <tr>
-                                    <td>{{other_details.type}}</td>
                                     <td>{{other_details.title}}</td>
                                     {% for file_attachment in file_attachment %}
                                         {% if file_attachment.document_id == other_details.document_id %}
@@ -75,18 +73,6 @@
       <div class="modal-body mx-4">
         <div class="row">
             <input type="hidden" class="form-control" id="document_id" value="{{document_id}}">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Type</label>
-                    <select type="text" name="type" class="form-control" id="type">
-                        <option value="">--SELECT--</option>
-                        <option value="Acts and Rules">Acts and Rules</option>
-                        <option value="Notifications">Notifications</option>
-                        <option value="Forms and Others">Forms and Others</option>
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="typeErrorMsg" style="display:none"></div>
-            </div>
             <div class="col-lg-6">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Title</label>
@@ -183,16 +169,10 @@
 </form><!-- /.form -->
 <script>
     function add_publication_details() {
-    let type = $('#type').val();
     let title = $('#title').val();
     let fileInput = document.getElementById("others_document");
 
     // Validate input fields
-    if (!type) {
-        showErrorMessage('#typeErrorMsg', "Select Type");
-        return;
-    }
-    
     if (!title) {
         showErrorMessage('#titleErrorMsg', "Enter Title");
         return;
@@ -241,7 +221,6 @@
 
 function submitPublicationDetails(fileUrl, fileName) {
     let documentId = $('#document_id').val();
-    let type = $('#type').val();
     let title = $('#title').val();
 
     $.ajax({
@@ -249,7 +228,6 @@ function submitPublicationDetails(fileUrl, fileName) {
         url: "{% url 'add_publication_attach' %}",
         data: {
             'document_id': documentId,
-            'type': type,
             'title': title,
             'filename': fileName,
             'file_url': fileUrl
@@ -312,7 +290,6 @@ function showErrorMessage(selector, message) {
 
     function edit_publication_details()
     {
-        var type = $('#edit_type').val();
         var title = $('#edit_title').val();
         var file_length = document.getElementById("edit_others_document");
 
@@ -325,7 +302,7 @@ function showErrorMessage(selector, message) {
             ({
                 type : "POST",
                 url : "{% url 'update_publication_attach' %}",
-                data : {'document_id':edit_document_id ,'type':type, 'title':title, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'document_id':edit_document_id , 'title':title, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText)
                 {
                     $("#editpageloader").hide();
@@ -346,13 +323,7 @@ function showErrorMessage(selector, message) {
         }
         else
         {
-            if(type = "")
-            {
-                $('#edit_titleErrorMsg').html("Enter Title");
-                $('#edit_titleErrorMsg').show();
-                $('#edit_titleErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(title = "")
+            if(title = "")
             {
                 $('#edit_titleErrorMsg').html("Enter Title");
                 $('#edit_titleErrorMsg').show();
@@ -393,14 +364,13 @@ function showErrorMessage(selector, message) {
                         if (data.form_is_valid)
                         {
                             var edit_document_id = $('#edit_document_id').val();
-                            var type = $('#edit_type').val();
                             var title = $('#edit_title').val();
                             var file_url = data.file_url
                             $.ajax
                             ({
                                 type : "POST",
                                 url : "{% url 'update_publication_attach' %}",
-                                data : {'document_id':edit_document_id ,'type':type, 'title':title, 'filename':fileName, 'file_url':file_url},
+                                data : {'document_id':edit_document_id , 'title':title, 'filename':fileName, 'file_url':file_url},
                                 success : function(responseText)
                                 {
                                     $("#editpageloader").hide();

@@ -3,27 +3,6 @@
         <input type="hidden" class="form-control" id="edit_document_id" value="{{others_details.document_id}}">
         <div class="col-lg-6">
             <div class="mb-3">
-                <label class="form-label fw-bold">Type</label>
-                <select type="text" name="edit_type" class="form-control" value="{{others_details.type}}" id="edit_type">
-                    {% if others_details.type == 'Acts and Rules'%}
-                    <option value="Acts and Rules" selected>Acts and Rules</option>
-                    <option value="Notifications">Notifications</option>
-                    <option value="Forms and Others">Forms and Others</option>
-                    {% elif  others_details.type == 'Notifications'%}
-                    <option value="Acts and Rules">Acts and Rules</option>
-                    <option value="Notifications" selected>Notifications</option>
-                    <option value="Forms and Others">Forms and Others</option>
-                    {% else %}
-                    <option value="Acts and Rules">Acts and Rules</option>
-                    <option value="Notifications">Notifications</option>
-                    <option value="Forms and Others" selected>Forms and Others</option>
-                    {% endif %}
-                </select>
-            </div>
-            <div class="alert alert-danger" id="edit_typeErrorMsg" style="display:none"></div>
-        </div>
-        <div class="col-lg-6">
-            <div class="mb-3">
                 <label class="form-label fw-bold">Publication Title</label>
                 <input type="text" name="edit_title" class="form-control" value="{{others_details.title}}" id="edit_title">
             </div>

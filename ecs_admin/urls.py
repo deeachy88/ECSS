@@ -90,6 +90,7 @@ urlpatterns = [
     path('save_homepage_attachment', views.save_homepage_attachment, name='save_homepage_attachment'),
     path('save_homepage_attachment_details', views.save_homepage_attachment_details,
          name='save_homepage_attachment_details'),
+    path('download_forms', views.download_forms, name='download_forms'),
 
     #Master Details
     path('agency_master', views.agency_master, name='agency_master'),

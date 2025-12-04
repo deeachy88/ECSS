@@ -193,6 +193,17 @@
     width: 100%;
 }
 
+
+/* Banner Image - Ensures full display */
+.banner-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-height: 250px;
+    object-fit: contain;
+    background-color: #f8f9fa;
+}
+
 /* Optional: Remove margins if needed */
 .navbar-nav {
     margin: 0;
@@ -409,9 +420,9 @@
 
 <body style="background-color:white;">
     <div class="container">
-        <div class="row">
-            <div class="col-12 p-0">  <!-- Full width column with no padding -->
-                <img class="w-100 h-auto" src="{% static 'assets/images/nec_header.png' %}" alt="NEC Header">
+        <div class="row g-0">  <!-- Added g-0 to remove gutters -->
+            <div class="col-12 p-0">
+                <img class="w-100 h-auto banner-image" src="{% static 'assets/images/nec_header.png' %}" alt="NEC Header">
             </div>
         </div>
         {% include 'header.html' %}
@@ -1458,6 +1469,21 @@
 			type : "GET",
 			url : "{% url 'get_content_details' %}",
 			data : {'menu_id':menu_id, 'identifier':'M'},
+			dataType : "html",
+			success : function(responseText)
+			{
+				$("#content_div").html(responseText);
+				$('#content_div').show();
+			}
+		});
+    }
+
+    function download_forms()
+    {
+        $.ajax
+		({
+			type : "GET",
+			url : "{% url 'download_forms' %}",
 			dataType : "html",
 			success : function(responseText)
 			{

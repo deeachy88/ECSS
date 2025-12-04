@@ -201,7 +201,7 @@ class t_file_attachment(models.Model):
 
 class t_other_details(models.Model):
     others_id = models.AutoField(primary_key=True)
-    type = models.CharField(max_length=255, default=None, blank=True, null=True)
+    type = models.CharField(max_length=255, default="F", blank=True, null=True)
     title = models.CharField(max_length=255, default=None, blank=True, null=True)
     document_id = models.IntegerField(blank=True, null=True)
     is_active = models.CharField(max_length=3, default=None, blank=True, null=True)
