@@ -482,6 +482,22 @@
                                     Loading...
                                 </button>
                             </form>
+                            <div class="alert alert-success border-0 rounded-0" 
+                                role="alert" 
+                                id="general_submit_successMsg" 
+                                style="display:none"
+                                aria-live="polite"
+                                aria-atomic="true">
+                            </div>
+
+                            <!-- Error Alert -->
+                            <div class="alert alert-danger border-0 rounded-0" 
+                                role="alert" 
+                                id="general_submit_errorMsg" 
+                                style="display:none"
+                                aria-live="assertive"
+                                aria-atomic="true">
+                            </div>
                             <ul class="pager wizard mb-0 list-inline mt-1">
                                 <li class="next list-inline-item float-end">
                                     <button type="button" id="gen_submit_btn" class="btn btn-success" onclick="submit_general_application()" style="display:none;">Submit</button>

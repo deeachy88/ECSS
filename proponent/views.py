@@ -114,191 +114,321 @@ def get_application_no(request, service_code, service_id):
 
 
 def save_general_details(request):
-    data = {}
+    data = {'message': 'failure'}
+    
     try:
-        service_code = None
-        if request.session['service_id'] == '1':
-            service_code = 'IEE'
-        elif request.session['service_id'] == '2':
-            service_code = 'ENE'
-        elif request.session['service_id'] == '3':
-            service_code = 'ROA'
-        elif request.session['service_id'] == '4':
-            service_code = 'TRA'
-        elif request.session['service_id'] == '5':
-            service_code = 'TOU'
-        elif request.session['service_id'] == '6':
-            service_code = 'GWA'
-        elif request.session['service_id'] == '7':
-            service_code = 'FOR'
-        elif request.session['service_id'] == '8':
-            service_code = 'QUA'
-        else :
-            service_code = 'GEN'
         identifier = request.POST.get('identifier')
-        if identifier != 'DR':
+        dzongkhag_throm = request.POST.get('dzongkhag_throm')
+        tor_application_no = request.POST.get('tor_application_no')
+        
+        # Get service_id_to_use early for all cases
+        service_id_to_use = None
+        activity_to_use = None
+        color_code_to_use = None
+        ca_auth_to_use = None
+        
+        if identifier not in ['DR', 'NC', 'OC', 'TC', 'PC', 'LC', 'CC', 'DRAFT']:
+            # New application - use session values
+            service_id_to_use = request.session['service_id']
+            activity_to_use = request.POST.get('activity')
+            color_code_to_use = request.session['colour_code']
+        else:
+            # For modifications, get reference application number
+            ref_application_no = None
+            if identifier in ['NC', 'OC', 'DR','TC', 'PC', 'LC', 'CC']:
+                ref_application_no = request.POST.get('application_no')
+            
+            # Get existing application details
+            existing_app = None
+            if ref_application_no:
+                existing_app = t_ec_industries_t1_general.objects.filter(
+                    application_no=ref_application_no
+                ).first()
+            
+            if existing_app:
+                service_id_to_use = existing_app.service_id
+                activity_to_use = existing_app.activity
+                ca_auth_to_use = existing_app.ca_authority
+                
+                # For DR, keep existing color code; for other modifications, use previous app's color code
+                if identifier == 'DR':
+                    color_code_to_use = existing_app.colour_code
+                else:
+                    color_code_to_use = existing_app.colour_code  # Use previous app's color code
+            else:
+                # If no existing app found, fall back to session values
+                service_id_to_use = request.session['service_id']
+                activity_to_use = request.session.get('activity')
+                color_code_to_use = request.session['colour_code']
+        
+        # Now determine service_code based on service_id_to_use
+        if service_id_to_use == '1':
+            service_code = 'IEE'
+        elif service_id_to_use == '2':
+            service_code = 'ENE'
+        elif service_id_to_use == '3':
+            service_code = 'ROA'
+        elif service_id_to_use == '4':
+            service_code = 'TRA'
+        elif service_id_to_use == '5':
+            service_code = 'TOU'
+        elif service_id_to_use == '6':
+            service_code = 'GWA'
+        elif service_id_to_use == '7':
+            service_code = 'FOR'
+        elif service_id_to_use == '8':
+            service_code = 'QUA'
+        else:
+            service_code = 'GEN'
+        
+        # Determine application number based on identifier
+        if identifier not in ['DR', 'NC', 'OC', 'TC', 'PC', 'LC', 'CC', 'DRAFT']:
+            # For new applications, use session service_id
             application_no = get_application_no(request, service_code, request.session['service_id'])
         else:
-            application_no =  request.POST.get('application_no')
-        tor_application_no = request.POST.get('tor_application_no')
-        dzongkhag_throm = request.POST.get('dzongkhag_throm')
-        service_type = request.POST.get('service_type')
-        application_type = "New"
-
-        # 2. Handle location data
-        dzongkhag_code = gewog_code = village_code = thromde_id = None
-        if dzongkhag_throm == 'Thromde':
-            thromde_id = request.POST.get('thromde_id')
-        else:
+            # For modifications, use the service_id from existing application
+            application_no = get_application_no(request, service_code, service_id_to_use)
+        
+        # Get prev_ec_reference_no for TC/PC/LC/CC cases
+        prev_ec_reference_no = request.POST.get('prev_ec_reference_no') if identifier in ['TC', 'PC', 'LC', 'CC'] else None
+        
+        if dzongkhag_throm == 'Dzongkhag':
             dzongkhag_code = request.POST.get('dzongkhag')
             gewog_code = request.POST.get('gewog')
             village_code = request.POST.get('vil_chiwog')
-        if identifier == 'DR':
-            activity = request.POST.get('activity')
+            thromde_id = None
         else:
-            activity = request.session.get('activity')
-        common_fields = {
-            # Application metadata
+            dzongkhag_code = None
+            gewog_code = None
+            village_code = None
+            thromde_id = request.POST.get('thromde_id')
+
+        common_data = {
+            'application_no': application_no,
             'application_date': timezone.now().date(),
-            'application_type': application_type,
+            'application_type': 'New',
             'application_source': 'ECSS',
             'application_status': 'P',
-
-            # Project details
-            'project_name': request.POST.get('project_name'),
-            #'project_category': request.POST.get('project_category'),
-            'location_name': request.POST.get('project_site'),
-
-            # Applicant information
+            'applicant_id': request.session['email'],
             'applicant_name': request.POST.get('applicant_name'),
             'address': request.POST.get('address'),
+            'cid': request.session['cid'],
             'contact_no': request.POST.get('contact_no'),
             'email': request.POST.get('email'),
             'focal_person': request.POST.get('focal_person'),
-            'cid': request.session.get('cid'),
-            'proponent_type': request.session.get('proponent_type'),
-
-            # Location data
-            'dzongkhag_throm': dzongkhag_throm,
             'dzongkhag_code': dzongkhag_code,
             'gewog_code': gewog_code,
             'village_code': village_code,
             'thromde_id': thromde_id,
-
-            # System fields
-            'service_type':service_type,
+            'location_name': request.POST.get('project_site'),
+            'project_name': request.POST.get('project_name'),
+            'dzongkhag_throm': dzongkhag_throm,
+            'service_type': request.POST.get('service_type'),
             'tor_application_no': tor_application_no,
-            'applicant_id': request.session.get('email'),
-            'colour_code': request.session.get('colour_code'),
-            'service_id': request.session.get('service_id'),
-            'activity': activity
-            
+            'service_id': service_id_to_use,
+            'colour_code': color_code_to_use,  # Use determined color code
+            'proponent_type': request.session.get('proponent_type'),
+            'activity': activity_to_use  # Use determined activity
         }
-        ca_auth = None
-        if identifier not in ['DR', 'NC', 'OC'] and tor_application_no is None:
-            auth_filter = t_competant_authority_master.objects.filter(
-                competent_authority=request.session.get('ca_auth'),
-                dzongkhag_code_id=dzongkhag_code if request.session.get('ca_auth') in ['DEC', 'THROMDE'] else None
-            )
-            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-        elif identifier in ['NC', 'OC']:
-            auth_filter = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
-        elif identifier in ['DR']:
-            bsic_details = t_bsic_code.objects.filter(activity=activity)
-            for bsic_det in bsic_details:
-                com_auth = bsic_det.competent_authority
-            auth_filter = t_competant_authority_master.objects.filter(
-                competent_authority=com_auth,
-                dzongkhag_code_id=dzongkhag_code if request.session.get('ca_auth') in ['DEC', 'THROMDE'] else None
-            )
-            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-        elif tor_application_no:
-            auth_filter = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
-            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
-
-        common_fields['ca_authority'] = ca_auth
-
-        # 5. Database operations with proper service_type handling
+        
         with transaction.atomic():
-            # Check if application exists with same service_type
-            existing_app = t_ec_industries_t1_general.objects.filter(
-                application_no=application_no,
-                service_type=service_type
-            ).first()
+            ca_auth = ca_auth_to_use  # Use the ca_auth we already determined
+            
+            # If ca_auth wasn't determined from existing app, calculate it
+            if ca_auth is None:
+                # For modifications (NC, OC, DR, TC, PC, LC, CC), get ca_auth from existing application
+                if identifier in ['NC', 'OC', 'DR', 'TC', 'PC', 'LC', 'CC']:
+                    ref_application_no = application_no if identifier in ['NC', 'OC', 'DR'] else prev_ec_reference_no
+                    existing_app = t_ec_industries_t1_general.objects.filter(
+                        application_no=ref_application_no
+                    ).first()
+                    if existing_app:
+                        ca_auth = existing_app.ca_authority
+                    else:
+                        # If no existing app, use the same logic as new applications
+                        if tor_application_no:
+                            auth_filter = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
+                            ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+                        else:
+                            auth_filter = t_competant_authority_master.objects.filter(
+                                competent_authority=request.session['ca_auth'],
+                                dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+                            )
+                            ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+                # For new applications (not modifications)
+                elif tor_application_no:
+                    auth_filter = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
+                    ca_auth = auth_filter.first().ca_authority if auth_filter.exists() else None
+                else:
+                    auth_filter = t_competant_authority_master.objects.filter(
+                        competent_authority=request.session['ca_auth'],
+                        dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+                    )
+                    ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
 
-            if existing_app:
-                # Update existing application
-                if identifier == 'NC':
-                    update_fields = {
-                        'project_name': common_fields['project_name'],
+            # Handle different identifier cases - DO NOT UPDATE, ALWAYS CREATE NEW (except DRAFT)
+            if identifier == 'DRAFT':
+                # For draft only, update existing or create new
+                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+                if application_details.exists():
+                    # Keep existing color code for draft updates
+                    update_data = {**common_data}
+                    if 'colour_code' in update_data:
+                        del update_data['colour_code']  # Don't update color code for drafts
+                    application_details.update(**update_data)
+                else:
+                    new_data = {
+                        'ca_authority': ca_auth,
+                        'prev_ec_reference_no': prev_ec_reference_no if prev_ec_reference_no else None
+                    }
+                    t_ec_industries_t1_general.objects.create(**common_data, **new_data)
+                    
+            elif identifier == 'NC':
+                # Name Change - CREATE NEW ENTRY
+                existing_app = t_ec_industries_t1_general.objects.filter(application_no=ref_application_no).first()
+                if existing_app:
+                    new_data = {
+                        **common_data,
+                        'ca_authority': existing_app.ca_authority,  # Use existing ca_auth
+                        'prev_ec_reference_no': None,
+                        'service_type': identifier,
+                        'service_id': existing_app.service_id,  # Use existing service_id
+                        'colour_code': existing_app.colour_code,  # Use previous app's color code
+                        'activity': existing_app.activity  # Get activity from existing app
+                    }
+                    # Update project_name for the new entry
+                    new_data['project_name'] = request.POST.get('project_name')
+                    t_ec_industries_t1_general.objects.create(**new_data)
+                else:
+                    raise ValueError(f"Application {ref_application_no} does not exist for NC operation")
+                
+            elif identifier == 'OC':
+                # Ownership Change - CREATE NEW ENTRY
+                existing_app = t_ec_industries_t1_general.objects.filter(application_no=ref_application_no).first()
+                if existing_app:
+                    new_data = {
+                        **common_data,
+                        'ca_authority': existing_app.ca_authority,  # Use existing ca_auth
+                        'prev_ec_reference_no': None,
+                        'service_type': identifier,
+                        'service_id': existing_app.service_id,  # Use existing service_id
+                        'colour_code': existing_app.colour_code,  # Use previous app's color code
+                        'activity': existing_app.activity  # Get activity from existing app
+                    }
+                    # Update applicant_name for the new entry
+                    new_data['applicant_name'] = request.POST.get('applicant_name')
+                    t_ec_industries_t1_general.objects.create(**new_data)
+                else:
+                    raise ValueError(f"Application {ref_application_no} does not exist for OC operation")
+                
+            elif identifier == 'DR':
+                # Data Rectification - CREATE NEW ENTRY
+                existing_app = t_ec_industries_t1_general.objects.filter(application_no=ref_application_no).first()
+                if existing_app:
+                    # Create new entry with updated data, keep existing color code
+                    new_data = {
+                        **common_data,
+                        'ca_authority': existing_app.ca_authority,  # Use existing ca_auth
+                        'prev_ec_reference_no': None,
+                        'service_type': identifier,
+                        'service_id': existing_app.service_id,  # Use existing service_id
+                        'colour_code': existing_app.colour_code,  # Keep existing color code for DR
+                        'activity': existing_app.activity  # Get activity from existing app
+                    }
+                    t_ec_industries_t1_general.objects.create(**new_data)
+                else:
+                    # If no existing app, create new one with session color code
+                    new_data = {
+                        'ca_authority': ca_auth,
+                        'prev_ec_reference_no': prev_ec_reference_no if prev_ec_reference_no else None
+                        # colour_code is already in common_data from session
+                    }
+                    t_ec_industries_t1_general.objects.create(**common_data, **new_data)
+                    
+            elif identifier in ['TC', 'PC', 'LC', 'CC']:
+                # Transfer/Post-Completion/LC/CC Cases - CREATE NEW ENTRY
+                if prev_ec_reference_no:
+                    prev_app_details = t_ec_industries_t1_general.objects.filter(application_no=prev_ec_reference_no)
+                    for prev_app in prev_app_details:
+                        # Create new application with prev_ec_reference_no reference
+                        new_app_data = {
+                            **common_data,
+                            'ca_authority': prev_app.ca_authority,  # Use previous app's ca_auth
+                            'prev_ec_reference_no': prev_ec_reference_no,
+                            'service_type': identifier,
+                            'service_id': prev_app.service_id,  # Use previous app's service_id
+                            'colour_code': prev_app.colour_code,  # Use previous app's color code
+                            'activity': prev_app.activity  # Get activity from previous app
+                        }
+                        t_ec_industries_t1_general.objects.create(**new_app_data)
+                else:
+                    # Create new application without previous reference
+                    new_data = {
+                        'ca_authority': ca_auth,
+                        'prev_ec_reference_no': None,
                         'service_type': identifier
+                        # colour_code is already in common_data from session
                     }
-                elif identifier == 'OC':
-                    update_fields = {
-                        'applicant_name': common_fields['applicant_name'],
-                        'service_type': identifier
-                    }
-                elif identifier == 'DR':
-                    protected_fields = {
-                        'service_type', 'ca_authority', 'applicant_id', 'colour_code',
-                        'activity', 'application_source', 'application_status'
-                    }
-                    update_fields = {k: v for k, v in common_fields.items() 
-                                if k not in protected_fields}
-                else:  # General update
-                    update_fields = common_fields
-
-                # Perform the update
-                t_ec_industries_t1_general.objects.filter(
-                    application_no=application_no,
-                    service_type=service_type
-                ).update(**update_fields)
+                    t_ec_industries_t1_general.objects.create(**common_data, **new_data)
+                    
             else:
-                # Create new application
-                t_ec_industries_t1_general.objects.create(
-                    application_no=application_no,
-                    **common_fields
-                )
-
-            # Update workflow - now including service_type in the filter
-            t_workflow_dtls.objects.update_or_create(
-                application_no=application_no,
-                service_type=service_type,  # Added service_type to ensure unique workflow per service
-                defaults={
-                    'application_status': 'P',
-                    'actor_id': request.session.get('login_id'),
-                    'actor_name': request.session.get('name'),
-                    'assigned_role_id': '3',
-                    'assigned_role_name': 'Reviewer',
-                    'service_id': request.session.get('service_id'),
+                # Main Activity - New Application - CREATE NEW ENTRY
+                new_data = {
                     'ca_authority': ca_auth,
-                    'application_source': 'ECSS',
-                    'service_type':service_type
+                    'prev_ec_reference_no': prev_ec_reference_no if prev_ec_reference_no else None
+                    # colour_code is already in common_data from session
                 }
-            )
+                t_ec_industries_t1_general.objects.create(**common_data, **new_data)
 
-            # Create history record - now properly tracking by service_type
-            if not t_application_history.objects.filter(application_no=application_no).exists():
-                t_application_history.objects.create(
+            # Create application history (ALWAYS INSERT, NEVER UPDATE)
+            t_application_history.objects.create(
                 application_no=application_no,
-                service_type=service_type,  # Added service_type to history
                 application_date=timezone.now().date(),
-                applicant_id=request.session.get('email'),
+                applicant_id=request.session['email'],
                 ca_authority=ca_auth,
-                service_id=request.session.get('service_id'),
+                service_id=service_id_to_use,
                 application_status='P',
-                actor_id=request.session.get('login_id'),
-                actor_name=request.session.get('name'),
-                action_date=timezone.now()
+                action_date=timezone.now(),
+                actor_id=request.session['login_id'],
+                actor_name=request.session['name'],
+                remarks=None,
+                status=None
             )
 
-        data['message'] = "success"
-        data['application_no'] = application_no
+            # Handle workflow details - Always create for Main Activity
+            # For Main Activity (no identifier or identifier not in modification list), create workflow
+            if identifier not in ['DR']:
+                # Determine service_type based on identifier
+                if identifier in ['NC', 'OC', 'TC', 'PC', 'LC', 'CC', 'DRAFT']:
+                    # For modifications, use the identifier itself
+                    workflow_service_type = identifier
+                else:
+                    # For new applications, use the POST value
+                    workflow_service_type = request.POST.get('service_type')
+                
+                # This is Main Activity - always create workflow
+                t_workflow_dtls.objects.create(
+                    application_no=application_no,
+                    service_id=service_id_to_use,
+                    application_status='P',
+                    actor_id=request.session['login_id'],
+                    actor_name=request.session['name'],
+                    assigned_role_id='3',
+                    assigned_role_name='Reviewer',
+                    ca_authority=ca_auth,
+                    application_source='ECSS',
+                    service_type=workflow_service_type  # Use determined service_type
+                )
+            # For other identifiers (modifications), you can decide if you want to create workflow or not
+            # If you want to create workflow for modifications too, remove the condition above
+            
+            data['message'] = 'success'
+            data['application_no'] = application_no
+            
     except Exception as e:
+        print('An error occurred:', e)
         data['error'] = str(e)
-        logger.error(f"Error saving application {application_no} (service: {service_type}): {str(e)}", 
-                exc_info=True)
+        
     return JsonResponse(data)
 
 
@@ -469,25 +599,10 @@ def submit_general_application(request):
     data = {}
     try:
         application_no = request.POST.get('general_disclaimer_application_no')
-        disclaimer_identifier = request.POST.get('disclaimer_identifier')
-        
-        if disclaimer_identifier in ('OC', 'NC'):
-            t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
-            data['message'] = "success"
-            return JsonResponse(data)
         
         # Get application details
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        main_application = application_details.filter(service_type='Main Activity').first()
-
-        if disclaimer_identifier in ('OC', 'NC'):
-            t_workflow_dtls.objects.filter(application_no=application_no).update(action_date=timezone.now())
-            data['message'] = "success"
-            return JsonResponse(data)
-        
-        # Get application details
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        main_application = application_details.filter(service_type='Main Activity').first()
+        main_application = application_details.filter(service_type__in=['Main Activity','NC', 'OC', 'TC', 'PC', 'LC', 'CC']).first()
 
         if not main_application:
             data['error'] = "No main application found"
@@ -1410,6 +1525,7 @@ def submit_renew_application(request):
             cid_no = application_details.cid
             mob_no = application_details.contact_no
             app_name = application_details.applicant_name
+            email = application_details.email
             t_ec_renewal_t1.objects.create(application_no=application_no,ec_reference_no=ec_reference_no,proponent_name=application_details.applicant_name,address=application_details.address,initiatives_undertaken=initiatives_undertaken,remarks=remarks,submission_date=date.today(),action_date=date.today(),application_status='P')
             t_workflow_dtls.objects.create(application_no=application_no, 
                                             service_id='10',
@@ -1422,8 +1538,8 @@ def submit_renew_application(request):
                                             ca_authority=auth,
                                             application_source='ECSS'
                                         )
-        payment_details_master = payment_details_master.objects.filter(payment_type='TOR')
-        for pay_dets in payment_details_master:
+        payment_detail = payment_details_master.objects.filter(payment_type='RENEW')
+        for pay_dets in payment_detail:
             account_head = pay_dets.account_head_code    
         fees_details = t_fees_schedule.objects.filter(service_id='10')
         for main_application_details in main_application_details:
@@ -1444,7 +1560,7 @@ def submit_renew_application(request):
                 "taxPayerDocumentNo": cid_no,
                 "paymentRequestDate": today_date_str,
                 "agencyCode": "DTH1552",
-                "payerEmail": request.session['email'],
+                "payerEmail": email,
                 "mobileNo": mob_no,
                 "totalPayableAmount": total_amount,
                 "paymentDueDate": None,
@@ -2590,7 +2706,7 @@ def get_other_modification_details(request):
 
         ec_renewal_count = non_renewed_applications.count()
         return render(request, 'other_modifications/other_modification.html',{'application_details':application_details,'dzongkhag':dzongkhag, 'gewog':gewog,
-                                                    'village':village,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_no':app_no})
+                                                    'village':village,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_no':app_no,'identifier':identifier})
     else:
         return redirect(application_form)
     
