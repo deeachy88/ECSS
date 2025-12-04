@@ -18,7 +18,7 @@ from django.db import transaction
 from django.db.models import Max
 from django.utils import timezone
 
-from ecs_admin.models import t_bsic_code, t_competant_authority_master, t_dzongkhag_master, t_fees_schedule, t_file_attachment, t_gewog_master, t_role_master, t_security_question_master, t_service_master, t_thromde_master, t_user_master, t_village_master
+from ecs_admin.models import payment_details_master, t_bsic_code, t_competant_authority_master, t_dzongkhag_master, t_fees_schedule, t_file_attachment, t_gewog_master, t_role_master, t_security_question_master, t_service_master, t_thromde_master, t_user_master, t_village_master
 from ecs_main.models import t_application_history
 from ecs_main.views import get_birms_token, insert_app_payment_details, make_payment_request
 from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t1_general, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_report_submission_t1, t_report_submission_t2, t_workflow_dtls
@@ -1677,8 +1677,8 @@ def save_tor_form(request):
             ca_authority=ca_auth,
             application_source='ECSS'
         )
-        payment_details_master = payment_details_master.objects.filter(payment_type='TOR')
-        for pay_dets in payment_details_master:
+        payment_details = payment_details_master.objects.filter(payment_type='TOR')
+        for pay_dets in payment_details:
             account_head = pay_dets.account_head_code
         make_payment_request(request,application_no,"500",'NEW TOR APPLICATION',request.session['email'],account_head,"TOR")
         send_tor_payment_mail(request.session['name'], request.session['email'], 500)

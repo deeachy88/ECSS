@@ -790,8 +790,8 @@ def forward_application(request):
         elif identifier == 'P':
             account_head = None
             total_amount = request.POST.get('amount')
-            payment_details_master = payment_details_master.objects.filter(payment_type='NEW')
-            for pay_dets in payment_details_master:
+            payment_details = payment_details_master.objects.filter(payment_type='NEW')
+            for pay_dets in payment_details:
                 account_head = pay_dets.account_head_code
             workflow_details.update(actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_role_id='2',assigned_role_name='Verifier')
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
@@ -1021,7 +1021,7 @@ def forward_application(request):
                     service_name = service.service_name
                     for email_id in application_details:
                         emailId = email_id.email
-                        send_ec_ap_email(ec_no, emailId, application_no, service_name,addtional_payment_amount)
+                        send_ec_ap_email(application_no, emailId, application_no, service_name,addtional_payment_amount)
                         data['message'] = "success"
                         data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'LU':
@@ -1917,7 +1917,7 @@ def insert_app_payment_details(request, application_no, description, total_amoun
         cid_no = app_det.cid
         mob_no = app_det.contact_no
     
-    if 'new' in identifier or 'tor' in identifier or 'ec_renewal' in identifier or 'fines' in identifier or 'additional' in identifier:
+    if 'new' in identifier or 'tor' in identifier or 'ec_renewal' in identifier or 'fines' in identifier or 'verify' in identifier:
         t_payment_details.objects.create(
             ref_no=application_no,
             payment_request_date=date.today(),
