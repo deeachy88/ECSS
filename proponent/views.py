@@ -613,8 +613,8 @@ def submit_general_application(request):
 
         # Update workflow
         workflow_update = {'action_date': timezone.now()}
-        t_workflow_dtls.objects.filter(application_no=application_no,service_type='Main Activity').update(**workflow_update)
-        t_application_history.objects.filter(application_no=application_no,service_type='Main Activity').update(
+        t_workflow_dtls.objects.filter(application_no=application_no,service_type__in=['Main Activity','NC', 'OC', 'TC', 'PC', 'LC', 'CC']).update(**workflow_update)
+        t_application_history.objects.filter(application_no=application_no,service_type__in=['Main Activity','NC', 'OC', 'TC', 'PC', 'LC', 'CC']).update(
             remarks='Application Submitted',
             action_date=timezone.now()
         )
