@@ -20,8 +20,85 @@
         letter-spacing: 0.4px;
         margin-bottom: 0;
         font-size: 0.8rem;
-        line-height: 1.2;
+        line-height: 1.0;
     }
+
+    /* --- For the overall tab header container --- */
+    .form-wizard-header {
+        gap: 10px; /* Space between individual tabs */
+        padding: 10px 0; /* Vertical padding for the header bar */
+        border-bottom: 2px solid #e9ecef;
+        border-radius: 15px; /* Rounded corners for the entire header bar */
+        background-color: #ffffff; /* Optional: background for the header bar */
+        margin-bottom: 20px; /* Space below the tab header */
+        display: flex; /* Enables gap property and flex layout */
+        align-items: center; /* Vertically centers items */
+        justify-content: center; /* Centers the tabs horizontally if they don't fill the width */
+        flex-wrap: wrap; /* Allows tabs to wrap on smaller screens */
+    }
+
+    /* --- For individual tab links --- */
+    .form-wizard-header .nav-link {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6; /* Thinner border */
+        color: #6c757d;
+        font-weight: 600;
+        padding: 8px 15px; /* Vertical and horizontal padding */
+        border-radius: 5px; /* Pills shape */
+        transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        /* Removed rounded-pill, py-2, px-3 from HTML */
+    }
+
+    /* --- Hover effect for enabled tabs --- */
+    .form-wizard-header .nav-link:hover:not(:disabled) {
+        background-color: #e9ecef;
+        border-color: #0d6efd;
+        transform: translateY(-1px); /* Subtle lift */
+        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15); /* Softer shadow */
+    }
+
+    /* --- Active tab styling --- */
+    .form-wizard-header .nav-link.active {
+        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+        color: white;
+        border-color: #0d6efd;
+        transform: translateY(-1px); /* Match hover lift */
+        box-shadow: 0 3px 10px rgba(13, 110, 253, 0.3); /* Adjusted shadow */
+    }
+
+    /* --- Disabled tab styling --- */
+    .form-wizard-header .nav-link:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+        background-color: #e9ecef !important;
+        border-color: #dee2e6 !important;
+        color: #adb5bd !important;
+    }
+
+    /* --- Badge styling (if you have badges) --- */
+    .form-wizard-header .badge {
+        font-size: 16px;
+        transition: transform 0.3s ease;
+    }
+
+    .form-wizard-header .nav-link:hover:not(:disabled) .badge {
+        transform: scale(1.05); /* Subtle scale on hover */
+    }
+
+    /* --- Icon and Span alignment --- */
+    .form-wizard-header .nav-link .mdi,
+    .form-wizard-header .nav-link span {
+        vertical-align: middle; /* Ensure better alignment */
+    }
+
+    .custom-bg {
+        background-color: #bfc1c9 !important;
+        color: #000000;
+        line-height: 1.1;
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+
 </style>
 {% for application_details in application_details %}
 <div class="row">
@@ -75,16 +152,12 @@
                             <input type="text" class="form-control" value="{{assigned_role_name}}" id="assigned_role_name" name="assigned_role_name" style="display:none;">
                             <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
                             <div class="row justify-content-left">
-                                <div class="col-lg-6">
+                                <div class="col-lg-12">
                                     <label class="form-label fw-bold">Activity</label>
                                     <p class="distinct-activity">{{application_details.activity}}</p>
                                 </div>
                             </div>
-                            <br>
-                            <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                Applicant Details
-                            </div>
-                            <div class="row">
+                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Name of the Applicant</label>
@@ -100,7 +173,7 @@
                                     <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Contact No</label>
@@ -116,7 +189,7 @@
                                     <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Name of the Project</label>
@@ -131,12 +204,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <br>
-                            <div class="alert alert-warning border-0 rounded-0" role="alert">
-                                <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                            <div class="alert custom-bg border-0" role="alert">
+                                <h5 class="mb-0">Project Location</h5>
                             </div>
-                            <br>
-                            <div class="row">
+                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Site</label>
@@ -182,7 +253,7 @@
                                     </div>
                                 {% endif %}
                             </div>
-                            <div class="row">
+                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                 {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
                                     <div class="col-lg-6 dzongkhag_div">
                                         <div class="mb-3">
@@ -210,7 +281,7 @@
                                         <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Village/Chiwog</label>
@@ -226,7 +297,7 @@
                                     </div>
                                 </div>
                             {% endif %}
-                            <div class="row">
+                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Name of the Particular Project Site</label>
@@ -238,7 +309,7 @@
                         </div>
 
                         <div class="tab-pane fade" id="second">
-                            <div class="row">
+                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                 <div class="col-lg-12">
                                     <table class="table table-hover table-bordered table-centered mb-0">
                                         <tbody>
@@ -363,22 +434,22 @@
                     </thead>
                     <tbody>
                        {% for file_attach in ai_attach %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
-                                    <!-- <td>
-                                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_ai_attachment('{{ file_attach.file_id }}','{{ file_attach.application_no }}')"><i class="uil-trash"></i></button>
-                                    </td> -->
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
-                                </tr>
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                                <!-- <td>
+                                    <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_ai_attachment('{{ file_attach.file_id }}','{{ file_attach.application_no }}')"><i class="uil-trash"></i></button>
+                                </td> -->
+                            </tr>
+                            {% empty %}
+                            <tr>
+                              <td colspan="3" class="text-center">No Data</td>
+                            </tr>
                        {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <div class="row">
+            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                 <div class="col-lg-6 information_complete_div"  style="display: none;">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Is The Information Complete?</label>
@@ -733,7 +804,7 @@
             <div class="row verifierDiv" style="display: none;">
                 <div class="col-lg-6">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Amount</label>
+                        <label class="form-label fw-bold">Applicagtion Fees</label>
                         <input type="number" class="form-control" id="amount" name="amount">
                     </div>
                     <div id="forward_toErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -830,22 +901,22 @@
                 </div>  
                 <div class="row">
                     <div class="mb-3 R_button" style="display:none;">
-                            <a href="#" class="btn btn-success" onclick="forwardApplication('R')">
-                                <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Reviewer </a>
+                        <a href="#" class="btn btn-success" onclick="forwardApplication('R')">
+                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Reviewer </a>
                     </div>
                     <div class="mb-3 P_button" style="display:none;">
-                            <a href="#" class="btn btn-success" onclick="forwardApplication('P')">
-                                <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit Payment </a>
+                        <a href="#" class="btn btn-success" onclick="forwardApplication('P')">
+                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit Payment </a>
                     </div>
                     <div class="mb-3 ALA_button" style="display:none;">
-                            <a href="#" class="btn btn-success" onclick="forwardApplication('ALA')">
-                                <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Additional Information Required </a>
-                            <a href="#" class="btn btn-danger" onclick="forwardApplication('ALR')">
-                                <i class="uil uil-multiply me-1"></i> Additional Information Not Required </a>
+                        <a href="#" class="btn btn-success" onclick="forwardApplication('ALA')">
+                            <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Additional Information Required </a>
+                        <a href="#" class="btn btn-danger" onclick="forwardApplication('ALR')">
+                            <i class="uil uil-multiply me-1"></i> Additional Information Not Required </a>
                     </div>
                     <div class="mb-3 approveButton" style="display:none;">
-                            <a href="#" class="btn btn-success" onclick="forwardApplication('A')">
-                                <i class="ri-check-line me-1 align-middle font-16"></i> Approve </a>
+                        <a href="#" class="btn btn-success" onclick="forwardApplication('A')">
+                            <i class="ri-check-line me-1 align-middle font-16"></i> Approve </a>
                     </div>
                 </div>
             </div>
@@ -856,38 +927,38 @@
 </div>
 
 <form method="post" id="eatc_attachment_form" enctype="multipart/form-data">
-{% csrf_token %}
-<div class="modal fade" id="eatc_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-aria-hidden="true">
-<div class="modal-dialog modal-lg" role="document">
-<!--Content-->
-<div class="modal-content form-elegant">
-<!--Header-->
-<div class="modal-header text-center">
-<h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                        &nbsp;Attach</strong></h3>
-<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-</div>
-<!--Body-->
-<div class="modal-body mx-4">
-<div class="row">
-    <div class="col-lg-6">
-        <div class="mb-3">
-            <label class="form-label fw-bold">Attachment</label>
-            <input type="file" name="eatc_attach" class="form-control" id="eatc_attach" accept=".pdf, .doc, .docx">
+    {% csrf_token %}
+    <div class="modal fade" id="eatc_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+            <div class="modal-content form-elegant">
+                <!--Header-->
+                <div class="modal-header text-center">
+                    <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                            &nbsp;Attach</strong></h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+            <!--Body-->
+                <div class="modal-body mx-4">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Attachment</label>
+                                <input type="file" name="eatc_attach" class="form-control" id="eatc_attach" accept=".pdf, .doc, .docx">
+                            </div>
+                            <div class="alert alert-danger" id="eatc_attachErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer flex-center justify-content-center">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="save_eatc_attachment()">Add</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        <!--/.Content-->
         </div>
-        <div class="alert alert-danger" id="eatc_attachErrorMsg" style="display:none"></div>
     </div>
-</div>
-</div>
-<div class="modal-footer flex-center justify-content-center">
-<button type="button" class="btn btn-sm btn-primary" onclick="save_eatc_attachment()">Add</button>
-<button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-</div>
-</div>
-<!--/.Content-->
-</div>
-</div>
 </form>
 
 <form method="post" id="ai_attachment_form" enctype="multipart/form-data">
@@ -1691,148 +1762,141 @@ function save_eatc_attachment()
     }
 }
 
+function save_lu_attachment() {
+    let file_input = document.getElementById("lu_attach");
 
-function save_lu_attachment()
-{
-let file_length = document.getElementById("lu_attach");
-if(file_length.value.length < 1)
-{
-$('#lu_attachErrorMsg').html("Please Choose A Attachment");
-$('#lu_attachErrorMsg').show();
-$('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
-}
-else
-{
-let application_no = $('#application_no').val();
-var fileName = document.getElementById('lu_attach').files[0].name;
-var fd = new FormData();
-var file = document.getElementById('lu_attach').files[0];
-fd.append('lu_attach', file);
-fd.append('application_no', application_no);
-token_value=$("input[name=csrfmiddlewaretoken]").val();
-$.ajaxSetup
-({
-    beforeSend: function(xhr, settings)
-    {
-    xhr.setRequestHeader("X-CSRFToken", token_value);
-    }
-});
-$.ajax
-({
-    type : "POST",
-    url : "{% url 'save_lu_attachment' %}",
-    data : fd,
-    dataType: 'json',
-    contentType: false,
-    processData: false,
-    success : function(data)
-    {
-        if (data.form_is_valid)
-        {
-            let file_url = data.file_url;
-            let application_no = $('#application_no').val();
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'save_lu_attachment_details' %}",
-                data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
-                success : function(responseText)
-                {
-                    $('#lu_attachment_modal').modal('hide');
-                    $('#lu_file_attachment').html(responseText);
-                    $('.modal-backdrop').remove();
-                    $('#lu_attachment_form')[0].reset();
+    if (file_input.value.length < 1) {
+        $('#lu_attachErrorMsg').html("Please Choose An Attachment");
+        $('#lu_attachErrorMsg').show();
+        $('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
+    } else {
+        let application_no = $('#application_no').val();
+        let fileName = document.getElementById('lu_attach').files[0].name;
+        let file = document.getElementById('lu_attach').files[0];
+
+        let fd = new FormData();
+        fd.append('lu_attach', file);
+        fd.append('application_no', application_no);
+
+        let token_value = $("input[name=csrfmiddlewaretoken]").val();
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'save_lu_attachment' %}",
+            data: fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                if (data.form_is_valid) {
+                    let file_url = data.file_url;
+                    // application_no is already defined above, no need to re-fetch
+                    // let application_no = $('#application_no').val();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'save_lu_attachment_details' %}",
+                        data: {
+                            'application_no': application_no,
+                            'filename': fileName,
+                            'file_url': file_url
+                        },
+                        success: function(responseText) {
+                            $('#lu_attachment_modal').modal('hide');
+                            $('#lu_file_attachment').html(responseText);
+                            $('.modal-backdrop').remove();
+                            $('#lu_attachment_form')[0].reset();
+                        }
+                    });
+                } else {
+                    $('#lu_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#lu_attachErrorMsg').show();
+                    $('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
                 }
-            });
-        }
-        else
-        {
-            $('#lu_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-            $('#lu_attachErrorMsg').show();
-            $('#lu_attachErrorMsg').delay(2000).fadeOut('slow');
-        }
+            }
+        });
     }
-});
-}
 }
 
-function save_rev_lu_attachment()
-{
-let file_length = document.getElementById("rev_lu_attach");
-if(file_length.value.length < 1)
-{
-$('#rev_lu_attachErrorMsg').html("Please Choose A Attachment");
-$('#rev_lu_attachErrorMsg').show();
-$('#rev_lu_attachErrorMsg').delay(2000).fadeOut('slow');
-}
-else
-{
-let application_no = $('#application_no').val();
-var fileName = document.getElementById('rev_lu_attach').files[0].name;
-var fd = new FormData();
-var file = document.getElementById('rev_lu_attach').files[0];
-fd.append('rev_lu_attach', file);
-fd.append('application_no', application_no);
-token_value=$("input[name=csrfmiddlewaretoken]").val();
-$.ajaxSetup
-({
-    beforeSend: function(xhr, settings)
-    {
-    xhr.setRequestHeader("X-CSRFToken", token_value);
-    }
-});
-$.ajax
-({
-    type : "POST",
-    url : "{% url 'save_rev_lu_attachment' %}",
-    data : fd,
-    dataType: 'json',
-    contentType: false,
-    processData: false,
-    success : function(data)
-    {
-        if (data.form_is_valid)
-        {
-            let file_url = data.file_url;
-            let application_no = $('#application_no').val();
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'save_rev_lu_attachment_details' %}",
-                data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
-                success : function(responseText)
-                {
-                    $('#rev_lu_attachment_modal').modal('hide');
-                    $('#rev_lu_file_attachment').html(responseText);
-                    $('.modal-backdrop').remove();
-                    $('#rev_lu_attachment_form')[0].reset();
+function save_rev_lu_attachment() {
+    let file_input = document.getElementById("rev_lu_attach");
+
+    if (file_input.value.length < 1) {
+        $('#rev_lu_attachErrorMsg').html("Please Choose An Attachment");
+        $('#rev_lu_attachErrorMsg').show();
+        $('#rev_lu_attachErrorMsg').delay(2000).fadeOut('slow');
+    } else {
+        let application_no = $('#application_no').val();
+        let fileName = document.getElementById('rev_lu_attach').files[0].name;
+        let file = document.getElementById('rev_lu_attach').files[0];
+
+        let fd = new FormData();
+        fd.append('rev_lu_attach', file);
+        fd.append('application_no', application_no);
+
+        let token_value = $("input[name=csrfmiddlewaretoken]").val();
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'save_rev_lu_attachment' %}",
+            data: fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                if (data.form_is_valid) {
+                    let file_url = data.file_url;
+                    // application_no is already defined above, no need to re-fetch
+                    // let application_no = $('#application_no').val();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'save_rev_lu_attachment_details' %}",
+                        data: {
+                            'application_no': application_no,
+                            'filename': fileName,
+                            'file_url': file_url
+                        },
+                        success: function(responseText) {
+                            $('#rev_lu_attachment_modal').modal('hide');
+                            $('#rev_lu_file_attachment').html(responseText);
+                            $('.modal-backdrop').remove();
+                            $('#rev_lu_attachment_form')[0].reset();
+                        }
+                    });
+                } else {
+                    $('#rev_lu_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#rev_lu_attachErrorMsg').show();
+                    $('#rev_lu_attachErrorMsg').delay(2000).fadeOut('slow');
                 }
-            });
-        }
-        else
-        {
-            $('#rev_lu_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-            $('#rev_lu_attachErrorMsg').show();
-            $('#rev_lu_attachErrorMsg').delay(2000).fadeOut('slow');
-        }
+            }
+        });
     }
-});
-}
 }
 
-function check_rectification(value)
-{
-if(value=="Yes")
-{
-$('.rectification_button').show();
-$('.LU_button').hide();
+function check_rectification(value) {
+    if (value === "Yes") {
+        $('.rectification_button').show();
+        $('.LU_button').hide();
+    } else {
+        $('.LU_button').show();
+        $('.rectification_button').hide();
+    }
 }
-else
-{
-$('.LU_button').show();
-$('.rectification_button').hide();
-}
-}
+
+
 
 function populate_ec_details(record_id, application_no,ec_type, ec_heading, ec_terms)
 {

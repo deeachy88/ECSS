@@ -1,94 +1,55 @@
 {% load static %}
-<!--<nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="min-height: 50px;">-->
-<nav class="navbar navbar-expand-lg navbar-dark bg-custom-blue" style="min-height: 50px;">
 
-    <style>
-        .bg-custom-blue {
-            background-color: #106fde; /* Your chosen blue color */
-        }
-        /* Reduce the height of the navbar */
-        .navbar {
-            min-height: 50px !important;  /* Set the navbar's height to 50px */
-            padding-top: 0.5rem;           /* Reduced top padding */
-            padding-bottom: 0.5rem;        /* Reduced bottom padding */
-        }
+<nav class="navbar navbar-expand-lg navbar-dark bg-custom-blue">
+    <div class="container-fluid">
 
-        /* Active link styles */
-        .navbar-dark .navbar-nav .nav-link.active {
-            color: #ffffff !important;
-            font-weight: bold;
-            border: 2px solid white;
-            border-radius: 5px;
-            padding: 6px 12px;
-            background-color: #4A90E2;
-            /*background-color: rgba(255, 255, 255, 0.1); /* optional subtle highlight */ */
-        }
-
-        /* Optional spacing adjustment for nav items */
-        .navbar-nav .nav-item {
-            margin-right: 0.75rem;
-        }
-
-        /* Optional smooth transition */
-        .nav-link {
-            transition: all 0.2s ease-in-out;
-            color: #edd239 !important;
-        }
-
-        /* Further reduced padding for the nav-link items */
-        .navbar .nav-link {
-            padding-top: 0.75rem;   /* Reduced padding-top for the nav links */
-            padding-bottom: 0.75rem; /* Reduced padding-bottom for the nav links */
-        }
-    </style>
-
-    <div class="container-fluid px-0">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
-            <i class="mdi mdi-menu"></i>
+            <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav d-flex w-100">
-                <div class="d-flex">
-                    <!-- Home link -->
-                    <li class="nav-item ms-3">
-                        <a class="nav-link px-2 py-2 active" href="{% url 'index' %}" onclick="setActiveNav(this)">Home</a>
-                    </li>
 
-                    <!-- Dynamic menu rendering -->
-                    {% for menu_details in menu_details %}
-                        {% if menu_details.has_sub_menu == 'Yes' %}
-                            <li class="nav-item dropdown">
-                                <a class="nav-link px-2 py-2 dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                    {{ menu_details.menu_name }}
-                                </a>
-                                <ul class="dropdown-menu">
-                                    {% for submenu_details in submenu_details %}
-                                        {% if menu_details.menu_id == submenu_details.menu_id %}
-                                            <li>
-                                                <a class="dropdown-item" href="#"
-                                                onclick="loadSubMenuPage('{{ submenu_details.sub_menu_id }}'); setActiveNav(this)">
-                                                    {{ submenu_details.sub_menu_name }}
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                        {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link px-2 py-2" 
-                                href="#" 
-                                onclick="loadMenuPage('{{ menu_details.menu_id }}'); setActiveNav(this)">
-                                    {{ menu_details.menu_name }}
-                                </a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                
-                <!-- Download Forms aligned to right -->
-                <li class="nav-item ms-auto">
+            <ul class="navbar-nav align-items-center w-100">
+
+                <!-- Home -->
+                <li class="nav-item ms-2">
+                    <a class="nav-link active" href="{% url 'index' %}" onclick="setActiveNav(this)">Home</a>
+                </li>
+
+                <!-- Dynamically Rendered Menu -->
+                {% for menu_details in menu_details %}
+                    {% if menu_details.has_sub_menu == 'Yes' %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                {{ menu_details.menu_name }}
+                            </a>
+
+                            <ul class="dropdown-menu shadow-sm">
+                                {% for submenu_details in submenu_details %}
+                                    {% if submenu_details.menu_id == menu_details.menu_id %}
+                                        <li>
+                                            <a class="dropdown-item" href="#"
+                                               onclick="loadSubMenuPage('{{ submenu_details.sub_menu_id }}'); setActiveNav(this)">
+                                                {{ submenu_details.sub_menu_name }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               href="#"
+                               onclick="loadMenuPage('{{ menu_details.menu_id }}'); setActiveNav(this)">
+                                {{ menu_details.menu_name }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Right side: Download Forms -->
+                <li class="nav-item ms-auto me-2">
                     <a class="nav-link" href="#" onclick="download_forms(); setActiveNav(this)">
                         Download Forms
                     </a>
@@ -96,16 +57,50 @@
             </ul>
         </div>
     </div>
-
-    <!-- JS to handle active class -->
-    <script>
-        function setActiveNav(element) {
-            // Remove 'active' from all nav links
-            const links = document.querySelectorAll('.navbar-nav .nav-link');
-            links.forEach(link => link.classList.remove('active'));
-
-            // Add 'active' to the clicked one
-            element.classList.add('active');
-        }
-    </script>
 </nav>
+
+<style>
+    .bg-custom-blue {
+        background-color: #106fde;
+    }
+
+    .nav-link {
+        color: #ffd94d !important;
+        padding: 0.50rem 1rem;
+        font-size: 14px;
+        border: .5px solid rgba(255,255,255,0.4); /* subtle border */
+        border-radius: 6px;
+        transition: 0.2s ease;
+        margin: 0 4px;
+
+    }
+
+    .nav-link:hover {
+        color: white !important;
+        transform: scale(1.03);
+    }
+
+    .navbar-dark .nav-link.active {
+        color: white !important;
+        background-color: #0c5dbc;
+        font-weight: 600;
+        border-radius: 6px;
+    }
+
+    .dropdown-menu {
+        border-radius: 8px;
+        font-size: 15px;
+    }
+
+    .dropdown-item:hover {
+        background-color: #106fde;
+        color: white;
+    }
+</style>
+
+<script>
+    function setActiveNav(element) {
+        document.querySelectorAll(".nav-link").forEach(link => link.classList.remove("active"));
+        element.classList.add("active");
+    }
+</script>
