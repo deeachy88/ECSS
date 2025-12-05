@@ -187,7 +187,7 @@ def dashboard(request):
     if login_type == 'I':
         role = request.session['role']
         ca_authority = request.session['ca_authority']
-        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+        expiry_date_threshold = datetime.now().date() + timedelta(days=60)
         
         non_renewed_applications = t_ec_industries_t1_general.objects.filter(
             applicant_id=request.session['email'],
@@ -244,7 +244,7 @@ def dashboard(request):
             action_date__isnull=True
         ).count()
 
-        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+        expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
         non_renewed_applications = t_ec_industries_t1_general.objects.filter(
             applicant_id=email_id,

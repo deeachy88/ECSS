@@ -20,7 +20,7 @@ from django.utils import timezone
 
 from ecs_admin.models import payment_details_master, t_bsic_code, t_competant_authority_master, t_dzongkhag_master, t_fees_schedule, t_file_attachment, t_gewog_master, t_role_master, t_security_question_master, t_service_master, t_thromde_master, t_user_master, t_village_master
 from ecs_main.models import t_application_history
-from ecs_main.views import get_birms_token, insert_app_payment_details, make_payment_request
+from ecs_main.views import get_birms_token, get_random_tax_no, insert_app_payment_details, make_payment_request
 from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t1_general, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_report_submission_t1, t_report_submission_t2, t_workflow_dtls
 
 def new_application(request):
@@ -1511,6 +1511,8 @@ def submit_renew_application(request):
         mob_no = None
         app_name = None
         account_head = None
+        taxPayerNo = None
+        taxPayerDocumentNo = None
         ec_reference_no = request.POST.get('ec_reference_no')
         application_no = request.POST.get('application_no')
         initiatives_undertaken = request.POST.get('initiatives_undertaken')
@@ -1522,10 +1524,13 @@ def submit_renew_application(request):
 
         for application_details in application_details:
             auth = application_details.ca_authority
-            cid_no = application_details.cid
+            taxPayerDocumentNo = application_details.cid
             mob_no = application_details.contact_no
             app_name = application_details.applicant_name
             email = application_details.email
+            proponent_type = application_details.proponent_type
+            if proponent_type != 4:
+                taxPayerDocumentNo = get_random_tax_no(8)
             t_ec_renewal_t1.objects.create(application_no=application_no,ec_reference_no=ec_reference_no,proponent_name=application_details.applicant_name,address=application_details.address,initiatives_undertaken=initiatives_undertaken,remarks=remarks,submission_date=date.today(),action_date=date.today(),application_status='P')
             t_workflow_dtls.objects.create(application_no=application_no, 
                                             service_id='10',
@@ -1556,8 +1561,8 @@ def submit_renew_application(request):
             payload = {
                 "platform": "Environment Clearance Services System",
                 "refNo": application_no,
-                "taxPayerNo": cid_no,
-                "taxPayerDocumentNo": cid_no,
+                "taxPayerNo": taxPayerNo,
+                "taxPayerDocumentNo": taxPayerDocumentNo,#id card
                 "paymentRequestDate": today_date_str,
                 "agencyCode": "DTH1552",
                 "payerEmail": email,
@@ -1588,7 +1593,6 @@ def submit_renew_application(request):
                     try:
                         data = response.json()  # Parse response JSON
                         paymentAdviceNo = data['content']['paymentAdviceNo']
-                        insert_app_payment_details(request, application_no, "ec_renewal", total_amount, "ec_renewal", paymentAdviceNo)
                         print("Payment request successful")
                         print("Response JSON:", data)
                         t_payment_details.objects.create(
