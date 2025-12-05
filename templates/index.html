@@ -368,7 +368,39 @@
     /* Duplicate custom-shadow, keeping one */
     /* .custom-shadow {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        margin-bottom: 10px !important; /* smaller than mb-4 */
+
     } */
+
+    .custom-shadow .card-body {
+        font-family: "Poppins", sans-serif;
+        color: #333;
+        padding: 10px 15px;
+    }
+
+    .custom-shadow .header-title {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size:12px;
+        color: #000000;
+    }
+
+    .custom-shadow a {
+        color: #023169;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .custom-shadow a:hover {
+        color: #023169;
+        text-decoration: underline;
+    }
+    .custom-shadow i {
+        font-size: 15px;
+        background: linear-gradient(45deg, #ff0066, #007bff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 
     .credential-card {
         max-width: 400px;
@@ -465,16 +497,16 @@
                         </div> <!-- end card -->
                     </div> <!-- end col -->
                     <div class="col-xl-4 col-lg-5">
-                        <div class="card text-center mb-4 custom-shadow border-custom">
+                        <div class="card text-center mb-3 custom-shadow border-custom">
                             <div class="card-body">
                                 <h4 class="header-title mb-1 acts"><i class="uil uil-users-alt"></i> Login</h4>
                                 <hr class="acts" style="display: none;">
                                 <div class="inbox-widget">
-                                   <p class="mb-0 text-muted">If you are registed user, please <a href="#" data-bs-toggle="modal" data-bs-target="#loginModalForm">Login</a> here </p>
+                                   <p class="mb-0 text-muted">If you are registered user, please <a href="#" data-bs-toggle="modal" data-bs-target="#loginModalForm">Login</a> here </p>
                                 </div>
                             </div>
                         </div>
-                        <div class="card text-center mb-4 custom-shadow border-custom">
+                        <div class="card text-center mb-3 custom-shadow border-custom">
                             <div class="card-body">
                                 <h4 class="header-title mb-1 acts">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-journal-richtext" viewBox="0 0 16 16">
@@ -491,12 +523,10 @@
                                         here before applying for environment clearance.
                                     </p>
                                 </div>
-                        
                                 <!-- Hidden Registration Form Inside the Same Card -->
-                                
                             </div>
                         </div>
-                        <div class="card text-center mb-4 custom-shadow border-custom">
+                        <div class="card text-center mb-3 custom-shadow border-custom">
                             <div class="card-body">
                                 <h4 class="header-title mb-1 acts"><i class="uil uil-users-alt"></i> Receive Your Credentails </h4>
                                 <hr class="acts" style="display: none;">
