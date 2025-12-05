@@ -589,8 +589,6 @@ def ec_renewal_list(request):
     return response
 
 
-
-
 def send_notification(request):
     notice = request.POST.get('notice')
     ca_authority = request.session['ca_authority']
@@ -604,13 +602,24 @@ def send_notification(request):
 
     for ec in ec_list:
         ec_reference_no = ec['ec_reference_no']
-        email = [ec['applicant_id']]  # Convert the email string to a list or tuple
+        email = [ec['applicant_id']]  # Convert to list for send_mail
 
         subject = 'Environment Clearance Renewal Notification'
         message = "Dear Sir/Madam, \n\nYour Environmental Clearance No. " + ec_reference_no + " is due for renewal in less than 30 Days. DECC would like to request you to renew the Environmental Clearance before the expiry. \n\nThanking You"
-        send_mail(subject, message, 'systems@moenr.gov.bt', email, fail_silently=False,
-                  auth_user='systems@moenr.gov.bt', auth_password='aqjsbjamnzxtadvl',
-                  connection=None, html_message=None)
 
-        return redirect(ec_renewal_list)
+        send_mail(
+            subject,
+            message,
+            'systems@moenr.gov.bt',
+            email,
+            fail_silently=False,
+            auth_user='systems@moenr.gov.bt',
+            auth_password='aqjsbjamnzxtadvl',
+            connection=None,
+            html_message=None
+        )
+
+    # Move return OUTSIDE the loop
+    return redirect('ec_renewal_list')
+
 
