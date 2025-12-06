@@ -1,21 +1,69 @@
 {% load static %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12 mt-3">
-            <div class="card">
-                <div class="col-xxl-6 col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                        <h4 class="header-title">Download Forms</h4>
-                            <div class="list-group">
-                                {% for download in download_forms %}
-                                    <a href='{{download.file_path}}' target="_blank" class="list-group-item list-group-item-action active">{{download.attachment}}</a>
-                                {% endfor %}
-                            </div>
-                        </div>
+<div class="container-fluid custom-container">
+    <div class="row justify-content-center">
+        <div class="col-xxl-6 col-md-8 mt-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h4 class="header-title mb-3" style="font-family: 'Poppins', sans-serif; color: #007bff;">Download Forms</h4>
+                    <div class="list-group">
+                        {% for download in download_forms %}
+                            <a href="{{download.file_path}}" target="_blank"
+                               class="list-group-item list-group-item-action download-link">
+                               {{download.attachment}}
+                            </a>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* Custom professional container */
+    .custom-container {
+        max-width: 1200px;          /* limits width on large screens */
+        margin: 20px auto;           /* centers container */
+        padding: 30px 20px;          /* inner spacing */
+        background-color: #f9f9f9;   /* light, neutral background */
+        border-radius: 10px;         /* smooth rounded corners */
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1); /* subtle shadow */
+        transition: all 0.3s ease;
+    }
+
+    /* Optional: subtle hover lift for interactive feel */
+    .custom-container:hover {
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 768px) {
+        .custom-container {
+            padding: 20px 15px;
+            margin: 15px;
+        }
+    }
+
+/* Professional-looking download links */
+    .download-link {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+        color: #1a1a1a; /* dark text */
+        background-color: #f8f9fa; /* light background */
+        border-radius: 6px;
+        margin-bottom: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .download-link:hover {
+        background-color: #306fb3; /* highlight on hover */
+        color: #fff; /* white text on hover */
+        text-decoration: none;
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    }
+
+    .download-link:active {
+        background-color: #0056b3;
+        color: #fff;
+    }
+</style>

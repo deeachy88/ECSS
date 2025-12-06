@@ -1,3 +1,105 @@
+<style>
+    .distinct-activity {
+        border: 2px solid #6c757d;
+        border-radius: 6px;
+        padding: 12px;
+        background-color: #f8f9fa;
+        margin-bottom: 0;
+    }
+    .divider-bright {
+        background-color: #c8dbce;
+        padding: 0.35rem 0.75rem;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+    }
+
+    .divider-bright h6 {
+        color: #000000;
+        font-weight: 800;
+        letter-spacing: 0.4px;
+        margin-bottom: 0;
+        font-size: 0.8rem;
+        line-height: 1.0;
+    }
+
+    /* --- For the overall tab header container --- */
+    .form-wizard-header {
+        gap: 10px; /* Space between individual tabs */
+        padding: 10px 0; /* Vertical padding for the header bar */
+        border-bottom: 2px solid #e9ecef;
+        border-radius: 15px; /* Rounded corners for the entire header bar */
+        background-color: #ffffff; /* Optional: background for the header bar */
+        margin-bottom: 20px; /* Space below the tab header */
+        display: flex; /* Enables gap property and flex layout */
+        align-items: center; /* Vertically centers items */
+        justify-content: center; /* Centers the tabs horizontally if they don't fill the width */
+        flex-wrap: wrap; /* Allows tabs to wrap on smaller screens */
+    }
+
+    /* --- For individual tab links --- */
+    .form-wizard-header .nav-link {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6; /* Thinner border */
+        color: #6c757d;
+        font-weight: 600;
+        padding: 8px 15px; /* Vertical and horizontal padding */
+        border-radius: 5px; /* Pills shape */
+        transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        /* Removed rounded-pill, py-2, px-3 from HTML */
+    }
+
+    /* --- Hover effect for enabled tabs --- */
+    .form-wizard-header .nav-link:hover:not(:disabled) {
+        background-color: #e9ecef;
+        border-color: #0d6efd;
+        transform: translateY(-1px); /* Subtle lift */
+        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15); /* Softer shadow */
+    }
+
+    /* --- Active tab styling --- */
+    .form-wizard-header .nav-link.active {
+        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+        color: white;
+        border-color: #0d6efd;
+        transform: translateY(-1px); /* Match hover lift */
+        box-shadow: 0 3px 10px rgba(13, 110, 253, 0.3); /* Adjusted shadow */
+    }
+
+    /* --- Disabled tab styling --- */
+    .form-wizard-header .nav-link:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+        background-color: #e9ecef !important;
+        border-color: #dee2e6 !important;
+        color: #adb5bd !important;
+    }
+
+    /* --- Badge styling (if you have badges) --- */
+    .form-wizard-header .badge {
+        font-size: 16px;
+        transition: transform 0.3s ease;
+    }
+
+    .form-wizard-header .nav-link:hover:not(:disabled) .badge {
+        transform: scale(1.05); /* Subtle scale on hover */
+    }
+
+    /* --- Icon and Span alignment --- */
+    .form-wizard-header .nav-link .mdi,
+    .form-wizard-header .nav-link span {
+        vertical-align: middle; /* Ensure better alignment */
+    }
+
+    .custom-bg {
+        background-color: #bfc1c9 !important;
+        color: #000000;
+        line-height: 1.1;
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+
+</style>
 <div class="card mt-1">
     <div class="card-body">
         <h5 class="card-title mb-0 text-right">EC Renewal Details</h5>
@@ -16,12 +118,14 @@
                                 <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" readonly>
                             </div>
                         </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Activity</label>
+                                <p class="distinct-activity">{{application_details.activity}}</p>
+                            </div>
+                        </div>
                     </div>
-                    <br>
-                    <div class="alert alert-warning border-0 rounded-0" role="alert">
-                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
-                    </div>
-                    <br>
+
                     <div class="row">
                         <div class="col-lg-4">
                             <div class="mb-3">
@@ -61,7 +165,7 @@
                         </div>
                         <div id="focal_personErrorMsg" class="alert alert-danger" style="display: none;"></div>
                     </div>
-                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                    <div class="alert custom-bg border-0" role="alert">
                         <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
                     </div>
                     <div class="row">
@@ -108,9 +212,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="alert alert-warning border-0 rounded-0" role="alert">
+                    <div class="alert custom-bg border-0" role="alert">
                         <i class="uil-folder-heart me-1 h4 align-middle"></i> EC Details
                     </div>
+
                     <div class="row">
                         <div class="col-lg-4">
                             <div class="mb-3">
@@ -124,8 +229,6 @@
                                 <input type="text" name="ec_approve_date" class="form-control" id="ec_approve_date" value="{{ application_details.ec_approve_date }}" readonly>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-lg-4">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">EC Expiry Date</label>
@@ -134,7 +237,7 @@
                         </div>
                     </div>
                 {% endfor %}
-                <div class="alert alert-warning border-0 rounded-0" role="alert">
+                <div class="alert custom-bg border-0" role="alert">
                     <i class="uil-folder-heart me-1 h4 align-middle"></i> Description of the compliance to EC terms and conditions
                 </div>
                 <div class="row">
@@ -180,12 +283,26 @@
                         </div>
                     </div>
                 </div>
-                <div class="alert alert-success border-0 rounded-0" role="alert" id="application_form_successMsg" style="display:none">
-                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+               <div class="alert alert-success border-0 rounded-0"
+                    role="alert"
+                    id="general_submit_successMsg"
+                    style="display:none"
+                    aria-live="polite"
+                    aria-atomic="true">
                 </div>
-                <div class="alert alert-danger border-0 rounded-0" role="alert" id="application_form_errorMsg" style="display:none">
-                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+
+                <!-- Error Alert -->
+                <div class="alert alert-danger border-0 rounded-0"
+                    role="alert"
+                    id="general_submit_errorMsg"
+                    style="display:none"
+                    aria-live="assertive"
+                    aria-atomic="true">
                 </div>
+                <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    Loading...
+                </button>
                 <div class="row mt-4">
                     <div class="text-sm-end">
                         <a href="#" class="btn btn-success" onclick="submit_renew_application()">
@@ -231,7 +348,6 @@
       </div>
     </div>
 </form>
-
 
 <form method="post" id="compliance_form" enctype="multipart/form-data">
     {% csrf_token %}
@@ -288,6 +404,9 @@
 <script>
     function submit_renew_application()
     {
+        // Show loading indicator
+        $("#pageloader").show();
+
         $.ajax
         ({
             type : "POST",
@@ -297,28 +416,40 @@
             {
                 if(data.message == 'success')
                 {
-                    $('#application_form_successMsg').focus();
-                    $('#application_form_successMsg').html("Saved Successfully");
-                    $('#application_form_successMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#application_form_successMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        window.location.href = '/ec_renewal';
-                    }, 2000);
+                   // Success case
+                    $('#general_submit_successMsg')
+                        .text("Application Submitted Successfully")
+                        .removeAttr('tabindex')
+                        .attr({
+                            'aria-live': 'polite',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
+
+                    setTimeout(() => {
+                        $('#general_submit_successMsg').delay(3000).fadeOut('slow');
+                    }, 3000);
+
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 4000);
                 }
                 else
                 {
-                    $('#application_form_errorMsg').focus();
-                    $('#application_form_errorMsg').html("Please Check And Submit Again");
-                    $('#application_form_errorMsg').show();
-                    setTimeout(function()
-                    {
-                        $('#application_form_errorMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        window.location.href = '/ec_renewal';
+                    // Other error cases
+                    $('#general_submit_errorMsg')
+                        .text(`Application Error: ${data.error}`)
+                        .removeAttr('tabindex')
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
+
+                    setTimeout(() => {
+                        $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
                     }, 2000);
                 }
             }

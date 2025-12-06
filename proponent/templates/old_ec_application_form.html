@@ -25,8 +25,85 @@
         letter-spacing: 0.4px;
         margin-bottom: 0;
         font-size: 0.8rem;
-        line-height: 1.2;
+        line-height: 1.0;
     }
+
+    /* --- For the overall tab header container --- */
+    .form-wizard-header {
+        gap: 10px; /* Space between individual tabs */
+        padding: 10px 0; /* Vertical padding for the header bar */
+        border-bottom: 2px solid #e9ecef;
+        border-radius: 15px; /* Rounded corners for the entire header bar */
+        background-color: #ffffff; /* Optional: background for the header bar */
+        margin-bottom: 20px; /* Space below the tab header */
+        display: flex; /* Enables gap property and flex layout */
+        align-items: center; /* Vertically centers items */
+        justify-content: center; /* Centers the tabs horizontally if they don't fill the width */
+        flex-wrap: wrap; /* Allows tabs to wrap on smaller screens */
+    }
+
+    /* --- For individual tab links --- */
+    .form-wizard-header .nav-link {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6; /* Thinner border */
+        color: #6c757d;
+        font-weight: 600;
+        padding: 8px 15px; /* Vertical and horizontal padding */
+        border-radius: 5px; /* Pills shape */
+        transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        /* Removed rounded-pill, py-2, px-3 from HTML */
+    }
+
+    /* --- Hover effect for enabled tabs --- */
+    .form-wizard-header .nav-link:hover:not(:disabled) {
+        background-color: #e9ecef;
+        border-color: #0d6efd;
+        transform: translateY(-1px); /* Subtle lift */
+        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15); /* Softer shadow */
+    }
+
+    /* --- Active tab styling --- */
+    .form-wizard-header .nav-link.active {
+        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+        color: white;
+        border-color: #0d6efd;
+        transform: translateY(-1px); /* Match hover lift */
+        box-shadow: 0 3px 10px rgba(13, 110, 253, 0.3); /* Adjusted shadow */
+    }
+
+    /* --- Disabled tab styling --- */
+    .form-wizard-header .nav-link:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+        background-color: #e9ecef !important;
+        border-color: #dee2e6 !important;
+        color: #adb5bd !important;
+    }
+
+    /* --- Badge styling (if you have badges) --- */
+    .form-wizard-header .badge {
+        font-size: 16px;
+        transition: transform 0.3s ease;
+    }
+
+    .form-wizard-header .nav-link:hover:not(:disabled) .badge {
+        transform: scale(1.05); /* Subtle scale on hover */
+    }
+
+    /* --- Icon and Span alignment --- */
+    .form-wizard-header .nav-link .mdi,
+    .form-wizard-header .nav-link span {
+        vertical-align: middle; /* Ensure better alignment */
+    }
+
+    .custom-bg {
+        background-color: #bfc1c9 !important;
+        color: #000000;
+        line-height: 1.1;
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+
 </style>
 <div class="row">
     <div class="col-xl-12">
@@ -119,7 +196,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="divider-bright mb-3">
+                                    <div class="alert custom-bg border-0" role="alert">
                                         <h6 class="mb-0">Project Location</h6>
                                     </div>
                                     <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
@@ -290,7 +367,7 @@
                                             <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                    <div class="divider-bright mb-3">
+                                    <div class="alert custom-bg border-0" role="alert">
                                         <h6 class="mb-0">EC Details</h6>
                                     </div>
                                     <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
