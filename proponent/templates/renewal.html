@@ -205,7 +205,9 @@
                             <th scope="col">#</th>
                             <th scope="col">EC Reference No</th>
                             <th scope="col">Application No</th>
-                            <th scope="col">Service Name</th>
+                            <th scope="col">Project Name</th>
+                            <th scope="col">Validity</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -214,11 +216,14 @@
                                         <td>{{ forloop.counter }}</td>
                                         <td><button type="button" class="btn btn-link text-info mb-0" onclick="getECDetails('{{application_details.ec_reference_no}}')">{{application_details.ec_reference_no}}</button></td>
                                         <td>{{application_details.application_no}}</td>
-                                        {% for service_details in service_details %}
+                                        <td>{{application_details.project_name}}</td>
+                                        <td>{{application_details.ec_expiry_date}}</td>
+                                        <!--{% for service_details in service_details %}
                                             {% if application_details.service_id == service_details.service_id %}
                                                 <td>{{service_details.service_name}}</td>
                                             {% endif %}
                                         {% endfor %}
+                                        -->
                                     </tr>
                             {% empty %}
                             <tr>

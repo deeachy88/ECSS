@@ -1545,7 +1545,7 @@ def delete_lu_attachment(request):
         fs.delete(str(file_name))
     file.delete()
 
-    lu_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='RLU')
+    lu_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='LU')
     return render(request, 'lu_attachment_page.html', {'lu_attach':lu_attach})
 
 def save_draft_ec_details(request):

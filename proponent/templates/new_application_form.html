@@ -157,7 +157,9 @@
                                 <div class="row justify-content-left">
                                     <div class="col-lg-12">
                                         <label class="form-label fw-bold">Activity</label>
+                                        <input type="hidden" name="activity" class="form-control" id="activity" value="{{request.session.activity}}" readonly>
                                         <p class="distinct-activity">{{request.session.activity}}</p>
+
                                     </div>
                                 </div>
                                 <br>
@@ -555,6 +557,7 @@
 <script>
     function save_general_info()
     {
+        let activity = $('#activity').val();
         let project_name = $('#project_name').val();
         let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
         let dzongkhag_throm_val = $("input[name=dzongkhag_throm]:checked").val();

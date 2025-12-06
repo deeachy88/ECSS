@@ -344,7 +344,7 @@ def application_status_list(request):
     # FIX: Use distinct() and order by application date to get unique records
     if login_type == 'C':
         application_list = t_ec_industries_t1_general.objects.filter(
-            applicant_id=applicant_id
+            applicant_id=applicant_id, application_type='New'
         ).order_by('application_no', '-application_date').distinct('application_no')
     elif login_type == 'I' and (role == 'Admin' or role == 'NECS Head'):
         application_list = t_ec_industries_t1_general.objects.all().order_by('application_no', '-application_date').distinct('application_no')
