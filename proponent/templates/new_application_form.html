@@ -154,6 +154,7 @@
                                 {% csrf_token %}
                                 <input type="text" class="form-control" value="Main Activity" name="service_type" id="service_type" style="display:none;">
                                 <input type="text" class="form-control" value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
+                                <input type="text" class="form-control" value="{{request.session.activity}}" name="activity" style="display:none;">
                                 <div class="row justify-content-left">
                                     <div class="col-lg-12">
                                         <label class="form-label fw-bold">Activity</label>

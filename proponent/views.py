@@ -127,15 +127,19 @@ def save_general_details(request):
         color_code_to_use = None
         ca_auth_to_use = None
         
-        if identifier not in ['DR', 'NC', 'OC', 'TC', 'PC', 'LC', 'CC', 'DRAFT']:
+        if identifier not in ['DR', 'NC', 'OC', 'TC', 'PC', 'LC', 'CC']:
             # New application - use session values
             service_id_to_use = request.session['service_id']
+            # Get activity from POST data for new applications
             activity_to_use = request.POST.get('activity')
+            if not activity_to_use or activity_to_use == '':
+                # Fall back to session if POST doesn't have activity
+                activity_to_use = request.session.get('activity')
             color_code_to_use = request.session['colour_code']
         else:
             # For modifications, get reference application number
             ref_application_no = None
-            if identifier in ['NC', 'OC', 'DR','TC', 'PC', 'LC', 'CC']:
+            if identifier in ['NC', 'OC', 'DR', 'TC', 'PC', 'LC', 'CC']:
                 ref_application_no = request.POST.get('application_no')
             
             # Get existing application details
@@ -182,12 +186,16 @@ def save_general_details(request):
             service_code = 'GEN'
         
         # Determine application number based on identifier
-        if identifier not in ['DR', 'NC', 'OC', 'TC', 'PC', 'LC', 'CC', 'DRAFT']:
+        if identifier not in ['DR', 'NC', 'OC', 'TC', 'PC', 'LC', 'CC']:
             # For new applications, use session service_id
             application_no = get_application_no(request, service_code, request.session['service_id'])
         else:
             # For modifications, use the service_id from existing application
-            application_no = get_application_no(request, service_code, service_id_to_use)
+            # EXCEPT for DR (draft) - use the same application number
+            if identifier == 'DR':
+                application_no = ref_application_no  # Use existing application number for draft
+            else:
+                application_no = get_application_no(request, service_code, service_id_to_use)
         
         # Get prev_ec_reference_no for TC/PC/LC/CC cases
         prev_ec_reference_no = request.POST.get('prev_ec_reference_no') if identifier in ['TC', 'PC', 'LC', 'CC'] else None
@@ -202,6 +210,12 @@ def save_general_details(request):
             gewog_code = None
             village_code = None
             thromde_id = request.POST.get('thromde_id')
+
+        # Determine service_type - For DR always use 'Main Activity'
+        if identifier == 'DR':
+            service_type_to_use = 'Main Activity'
+        else:
+            service_type_to_use = request.POST.get('service_type')
 
         common_data = {
             'application_no': application_no,
@@ -223,7 +237,7 @@ def save_general_details(request):
             'location_name': request.POST.get('project_site'),
             'project_name': request.POST.get('project_name'),
             'dzongkhag_throm': dzongkhag_throm,
-            'service_type': request.POST.get('service_type'),
+            'service_type': service_type_to_use,  # Use determined service_type
             'tor_application_no': tor_application_no,
             'service_id': service_id_to_use,
             'colour_code': color_code_to_use,  # Use determined color code
@@ -266,22 +280,41 @@ def save_general_details(request):
                     )
                     ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
 
-            # Handle different identifier cases - DO NOT UPDATE, ALWAYS CREATE NEW (except DRAFT)
-            if identifier == 'DRAFT':
-                # For draft only, update existing or create new
-                application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-                if application_details.exists():
-                    # Keep existing color code for draft updates
-                    update_data = {**common_data}
-                    if 'colour_code' in update_data:
-                        del update_data['colour_code']  # Don't update color code for drafts
-                    application_details.update(**update_data)
+            # Handle different identifier cases
+            if identifier == 'DR':
+                # Data Rectification (Draft) - UPDATE EXISTING ENTRY
+                existing_app = t_ec_industries_t1_general.objects.filter(application_no=ref_application_no).first()
+                if existing_app:
+                    # UPDATE existing entry with new data
+                    update_data = {
+                        **common_data,
+                        'ca_authority': existing_app.ca_authority,  # Keep existing ca_auth
+                        'service_type': 'Main Activity',  # Force Main Activity for DR
+                        'service_id': existing_app.service_id,  # Keep existing service_id
+                        'colour_code': existing_app.colour_code,  # Keep existing color code for DR
+                        'activity': existing_app.activity  # Keep existing activity
+                    }
+                    
+                    # Remove fields that shouldn't be updated for draft
+                    if 'application_no' in update_data:
+                        del update_data['application_no']  # Don't update application_no
+                    
+                    # Update the existing record
+                    t_ec_industries_t1_general.objects.filter(
+                        application_no=ref_application_no
+                    ).update(**update_data)
+                    
+                    print(f"DR - Updated existing application {ref_application_no}")
                 else:
+                    # If no existing app, create new one with session color code
                     new_data = {
                         'ca_authority': ca_auth,
                         'prev_ec_reference_no': prev_ec_reference_no if prev_ec_reference_no else None
                     }
+                    # Ensure service_type is 'Main Activity' for DR
+                    common_data['service_type'] = 'Main Activity'
                     t_ec_industries_t1_general.objects.create(**common_data, **new_data)
+                    print(f"DR - Created new application {application_no}")
                     
             elif identifier == 'NC':
                 # Name Change - CREATE NEW ENTRY
@@ -321,30 +354,6 @@ def save_general_details(request):
                 else:
                     raise ValueError(f"Application {ref_application_no} does not exist for OC operation")
                 
-            elif identifier == 'DR':
-                # Data Rectification - CREATE NEW ENTRY
-                existing_app = t_ec_industries_t1_general.objects.filter(application_no=ref_application_no).first()
-                if existing_app:
-                    # Create new entry with updated data, keep existing color code
-                    new_data = {
-                        **common_data,
-                        'ca_authority': existing_app.ca_authority,  # Use existing ca_auth
-                        'prev_ec_reference_no': None,
-                        'service_type': identifier,
-                        'service_id': existing_app.service_id,  # Use existing service_id
-                        'colour_code': existing_app.colour_code,  # Keep existing color code for DR
-                        'activity': existing_app.activity  # Get activity from existing app
-                    }
-                    t_ec_industries_t1_general.objects.create(**new_data)
-                else:
-                    # If no existing app, create new one with session color code
-                    new_data = {
-                        'ca_authority': ca_auth,
-                        'prev_ec_reference_no': prev_ec_reference_no if prev_ec_reference_no else None
-                        # colour_code is already in common_data from session
-                    }
-                    t_ec_industries_t1_general.objects.create(**common_data, **new_data)
-                    
             elif identifier in ['TC', 'PC', 'LC', 'CC']:
                 # Transfer/Post-Completion/LC/CC Cases - CREATE NEW ENTRY
                 if prev_ec_reference_no:
@@ -367,7 +376,6 @@ def save_general_details(request):
                         'ca_authority': ca_auth,
                         'prev_ec_reference_no': None,
                         'service_type': identifier
-                        # colour_code is already in common_data from session
                     }
                     t_ec_industries_t1_general.objects.create(**common_data, **new_data)
                     
@@ -376,7 +384,6 @@ def save_general_details(request):
                 new_data = {
                     'ca_authority': ca_auth,
                     'prev_ec_reference_no': prev_ec_reference_no if prev_ec_reference_no else None
-                    # colour_code is already in common_data from session
                 }
                 t_ec_industries_t1_general.objects.create(**common_data, **new_data)
 
@@ -395,32 +402,54 @@ def save_general_details(request):
                 status=None
             )
 
-            # Handle workflow details - Always create for Main Activity
-            # For Main Activity (no identifier or identifier not in modification list), create workflow
-            if identifier not in ['DR']:
-                # Determine service_type based on identifier
-                if identifier in ['NC', 'OC', 'TC', 'PC', 'LC', 'CC', 'DRAFT']:
-                    # For modifications, use the identifier itself
-                    workflow_service_type = identifier
+            # Handle workflow details - Create workflow for all cases
+            # For DR (draft), check if workflow already exists before creating
+            if identifier not in []:  # Create workflow for all identifiers
+                # For DR, only create workflow if it doesn't exist
+                if identifier == 'DR':
+                    existing_workflow = t_workflow_dtls.objects.filter(
+                        application_no=application_no
+                    ).exists()
+                    if not existing_workflow:
+                        # Determine service_type for workflow
+                        workflow_service_type = 'Main Activity'  # DR should be 'Main Activity'
+                        
+                        # Create workflow
+                        t_workflow_dtls.objects.create(
+                            application_no=application_no,
+                            service_id=service_id_to_use,
+                            application_status='P',
+                            actor_id=request.session['login_id'],
+                            actor_name=request.session['name'],
+                            assigned_role_id='3',
+                            assigned_role_name='Reviewer',
+                            ca_authority=ca_auth,
+                            application_source='ECSS',
+                            service_type=workflow_service_type
+                        )
                 else:
-                    # For new applications, use the POST value
-                    workflow_service_type = request.POST.get('service_type')
-                
-                # This is Main Activity - always create workflow
-                t_workflow_dtls.objects.create(
-                    application_no=application_no,
-                    service_id=service_id_to_use,
-                    application_status='P',
-                    actor_id=request.session['login_id'],
-                    actor_name=request.session['name'],
-                    assigned_role_id='3',
-                    assigned_role_name='Reviewer',
-                    ca_authority=ca_auth,
-                    application_source='ECSS',
-                    service_type=workflow_service_type  # Use determined service_type
-                )
-            # For other identifiers (modifications), you can decide if you want to create workflow or not
-            # If you want to create workflow for modifications too, remove the condition above
+                    # For other identifiers
+                    # Determine service_type for workflow
+                    if identifier in ['NC', 'OC', 'TC', 'PC', 'LC', 'CC']:
+                        # For modifications
+                        workflow_service_type = identifier
+                    else:
+                        # For new applications
+                        workflow_service_type = request.POST.get('service_type')
+                    
+                    # Create workflow
+                    t_workflow_dtls.objects.create(
+                        application_no=application_no,
+                        service_id=service_id_to_use,
+                        application_status='P',
+                        actor_id=request.session['login_id'],
+                        actor_name=request.session['name'],
+                        assigned_role_id='3',
+                        assigned_role_name='Reviewer',
+                        ca_authority=ca_auth,
+                        application_source='ECSS',
+                        service_type=workflow_service_type
+                    )
             
             data['message'] = 'success'
             data['application_no'] = application_no

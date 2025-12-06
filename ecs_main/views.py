@@ -286,8 +286,6 @@ def reviewer_application_list(request):
         }
         
         # Application status query using Q objects
-        # Note: For 'ALS', 'FEATC', 'RSS', 'LUS', 'APP' - no assigned_user_id filter
-        # For 'R' - includes assigned_user_id filter
         status_query = (
             Q(application_status='R', assigned_user_id=login_id) |
             Q(application_status='ALS') |
@@ -311,24 +309,44 @@ def reviewer_application_list(request):
             for service in t_service_master.objects.all()
         }
         
-        # 2. Payments lookup - check if ALL entries for each ref_no have receipt_no
+        # 2. Payments lookup - check if ALL entries for each application_no OR ref_no have receipt_no
         payment_receipt_lookup = {}
         payments = t_payment_details.objects.all()
         
-        # Group payments by ref_no
-        payments_by_ref = {}
+        # Optimized: Group payments by both application_no and ref_no simultaneously
         for payment in payments:
-            if payment.ref_no:
-                if payment.ref_no not in payments_by_ref:
-                    payments_by_ref[payment.ref_no] = []
-                payments_by_ref[payment.ref_no].append(payment)
-        
-        # Check for each ref_no if ALL entries have receipt_no
-        for ref_no, payment_list in payments_by_ref.items():
-            # Check if ALL payments for this ref_no have non-null receipt_no
-            all_have_receipt = all(payment.receipt_no is not None and payment.receipt_no != '' 
-                                 for payment in payment_list)
-            payment_receipt_lookup[ref_no] = all_have_receipt
+            # Check by application_no if it exists
+            if payment.application_no:
+                if payment.application_no not in payment_receipt_lookup:
+                    # Initialize with payment data and receipt status
+                    payment_receipt_lookup[payment.application_no] = {
+                        'payments': [payment],
+                        'all_have_receipt': (payment.receipt_no is not None and payment.receipt_no != '')
+                    }
+                else:
+                    # Update existing entry
+                    existing_entry = payment_receipt_lookup[payment.application_no]
+                    existing_entry['payments'].append(payment)
+                    # Update all_have_receipt: must be True for all payments
+                    existing_entry['all_have_receipt'] = (
+                        existing_entry['all_have_receipt'] and 
+                        (payment.receipt_no is not None and payment.receipt_no != '')
+                    )
+            
+            # Also check by ref_no if it exists and is different from application_no
+            if payment.ref_no and payment.ref_no != payment.application_no:
+                if payment.ref_no not in payment_receipt_lookup:
+                    payment_receipt_lookup[payment.ref_no] = {
+                        'payments': [payment],
+                        'all_have_receipt': (payment.receipt_no is not None and payment.receipt_no != '')
+                    }
+                else:
+                    existing_entry = payment_receipt_lookup[payment.ref_no]
+                    existing_entry['payments'].append(payment)
+                    existing_entry['all_have_receipt'] = (
+                        existing_entry['all_have_receipt'] and 
+                        (payment.receipt_no is not None and payment.receipt_no != '')
+                    )
         
         # 3. Reviewer application count
         r_application_count = t_workflow_dtls.objects.filter(
@@ -345,10 +363,17 @@ def reviewer_application_list(request):
                 is_clickable = True
             else:
                 # Check if service_id is 0 OR if application has payments AND all payments have receipts
-                has_payments = app.application_no in payment_receipt_lookup
-                all_payments_have_receipt = payment_receipt_lookup.get(app.application_no, False)
+                # Lookup by both application_no and ref_no (they might be the same or different)
+                app_payment_data = payment_receipt_lookup.get(app.application_no)
                 
-                is_clickable = (app.service_id == 0) or (has_payments and all_payments_have_receipt)
+                if app_payment_data:
+                    # Found by application_no
+                    all_payments_have_receipt = app_payment_data['all_have_receipt']
+                else:
+                    # Try looking up by ref_no if application_no is different
+                    all_payments_have_receipt = False
+                
+                is_clickable = (app.service_id == 0) or (app_payment_data and all_payments_have_receipt)
             
             application_data.append({
                 'application_no': app.application_no,
@@ -1299,6 +1324,39 @@ def forward_application(request):
         data['error'] = str(error_msg.split("\n")[0])
     return JsonResponse(data)
 
+
+def generate_new_ap_no():
+    service_code = 'AP'
+    current_year = str(timezone.now().year)
+    pattern = f"^{service_code}-{current_year}-\\d{{4}}$"
+    
+    try:
+        # Get all matching application numbers
+        matching_numbers = t_payment_details.objects.filter(
+            application_no__regex=pattern
+        ).values_list('application_no', flat=True)
+        
+        if not matching_numbers:
+            return f"{service_code}-{current_year}-0001"
+        
+        # Extract and find max sequence number
+        max_seq = 0
+        for app_no in matching_numbers:
+            try:
+                seq = int(app_no[-4:])
+                if seq > max_seq:
+                    max_seq = seq
+            except ValueError:
+                continue
+        
+        next_seq = max_seq + 1
+        return f"{service_code}-{current_year}-{str(next_seq).zfill(4)}"
+        
+    except Exception as e:
+        print(f"Error generating application number: {e}")
+        return f"{service_code}-{current_year}-0001"
+
+
 def days_between(start_date, end_date):
     if start_date and end_date:
         # Ensure both are date objects, otherwise parse them
@@ -1317,12 +1375,14 @@ def get_random_tax_no(length):
 def make_payment_request(request,application_no,total_amount,description, email, service_code,service_type):
     token = get_birms_token()
     print(token)
+    new_app_no = None
     taxPayerNo = None
     taxPayerDocumentNo = None
     mob_no = None
     app_name = None
     proponent_type = None
     app_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+    
     for app_det in app_details:
         taxPayerDocumentNo = app_det.cid
         mob_no = app_det.contact_no
@@ -1332,6 +1392,11 @@ def make_payment_request(request,application_no,total_amount,description, email,
 
     if proponent_type != 4:
         taxPayerDocumentNo = get_random_tax_no(8)
+    
+    if description == "ADDITIONAL PAYMENT":
+        new_app_no = generate_new_ap_no()
+    else:
+        new_app_no = application_no
 
     # Endpoint URL
     url = "https://birmsstagging.drc.gov.bt/api-services/moenr-service/api/v1/paymentdetails/create"
@@ -1343,7 +1408,7 @@ def make_payment_request(request,application_no,total_amount,description, email,
     # Payload data
     payload = {
         "platform": "Environment Clearance Services System",
-        "refNo": application_no,
+        "refNo": new_app_no,
         "taxPayerNo": taxPayerNo,
         "taxPayerDocumentNo": taxPayerDocumentNo,#id card
         "paymentRequestDate": today_date_str,
@@ -1371,7 +1436,7 @@ def make_payment_request(request,application_no,total_amount,description, email,
     if response.status_code == 200:
         data = response.json()  # Parse response JSON
         paymentAdviceNo = data['content']['paymentAdviceNo']
-        insert_app_payment_details(request,application_no,description,total_amount,service_type,paymentAdviceNo)
+        insert_app_payment_details(request,application_no,description,total_amount,service_type,paymentAdviceNo,new_app_no)
         print("Payment request successful")
         print("Response:", response.json())
     else:
@@ -1865,7 +1930,7 @@ def save_fines_penalties(request):
                     try:
                         data = response.json()  # Parse response JSON
                         paymentAdviceNo = data['content']['paymentAdviceNo']
-                        insert_app_payment_details(request, application_no, "fines_penalties", amount, "fines_penalties", paymentAdviceNo)
+                        insert_app_payment_details(request, application_no, "fines_penalties", amount, "fines_penalties", paymentAdviceNo,None)
                        
                         t_payment_details.objects.create(
                             ref_no=application_no,
@@ -1898,7 +1963,7 @@ def save_fines_penalties(request):
         data['message'] = "failure"
     return JsonResponse(data)
 
-def insert_app_payment_details(request, application_no, description, total_amount, service_type, paymentAdviceNo):
+def insert_app_payment_details(request, application_no, description, total_amount, service_type, paymentAdviceNo,new_app_no):
     print("insert_app_payment_details")
     cid_no = None
     mob_no = None
@@ -1917,6 +1982,7 @@ def insert_app_payment_details(request, application_no, description, total_amoun
         cid_no = app_det.cid
         mob_no = app_det.contact_no
     
+    
     if 'new' in identifier or 'tor' in identifier or 'ec_renewal' in identifier or 'fines' in identifier or 'verify' in identifier:
         t_payment_details.objects.create(
             ref_no=application_no,
@@ -1929,7 +1995,8 @@ def insert_app_payment_details(request, application_no, description, total_amoun
             description=identifier,
             total_payable_amount=total_amount,
             service_type=service_type,
-            payment_advice_no=paymentAdviceNo
+            payment_advice_no=paymentAdviceNo,
+            application_no=new_app_no
         )
     
     return redirect(identifier)

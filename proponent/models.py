@@ -198,6 +198,7 @@ class t_payment_details(models.Model):
     cancelled_date = models.DateField(default=None, blank=True, null=True)
     cancelled_reason = models.CharField(max_length=255,default=None, blank=True, null=True)
     remarks = models.CharField(max_length=255,default=None, blank=True, null=True)
+    application_no = models.CharField(max_length=100,default=None, blank=True, null=True)
 
 class t_workflow_dtls(models.Model):
     instance_id = models.AutoField(primary_key=True)
