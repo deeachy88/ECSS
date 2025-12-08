@@ -439,7 +439,7 @@ def payment_list(request):
     ca_authority = request.session.get('ca_authority', None)
 
     payment_details = t_payment_details.objects.filter(
-        ref_no__in=t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority).values('application_no')
+        payer_email__in=t_ec_industries_t1_general.objects.filter(ca_authority=ca_authority).values('applicant_id')
     ).order_by('ref_no')  # Assuming ref_no is your application number
     
     # Add formatted description with custom mapping
@@ -1841,18 +1841,23 @@ def get_fines_penalties_details(request):
     ec_ref_no = request.GET.get('ec_ref_no')
 
     application_details = t_ec_industries_t1_general.objects.filter(application_no=ec_ref_no) | t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_ref_no)
+    ec_count = (
+            t_ec_industries_t1_general.objects.filter(application_no=ec_ref_no)
+            | t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_ref_no)
+    ).count()
+
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
-    return render(request, 'fines_penalties_details.html', {'application_details':application_details, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+    return render(request, 'fines_penalties_details.html', {'application_details':application_details, 'ec_count':ec_count, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 
 def save_fines_penalties(request):
     data = dict()
     try:
-        application_no = request.POST.get('application_no')
-        fines_penalties_type = request.POST.get('fines_penalty_type')
+        application_no = get_application_no_fp()
+        # fines_penalties_type = request.POST.get('fines_penalty_type')
         ec_no = request.POST.get('ec_ref_no')
-        proponent_name = request.POST.get('proponent_name')
+        proponent_name = request.POST.get('applicant_name')
         address = request.POST.get('address')
         validity = request.POST.get('ec_expiry_date')
         amount = request.POST.get('fines_and_penalties')
@@ -1861,7 +1866,6 @@ def save_fines_penalties(request):
         formatted_date = parsed_date.strftime("%Y-%m-%d")
 
         t_fines_penalties.objects.create(application_no=application_no,
-                                        fines_penalties_type=fines_penalties_type,
                                         fines_date=date.today(),
                                         ec_no=ec_no,
                                         proponent_name=proponent_name,
@@ -1870,15 +1874,17 @@ def save_fines_penalties(request):
                                         amount=amount,
                                         fines_status='P'
                                         )
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_no)
         for app_det in application_details:
+            applicationno = app_det.application_no
             applicant = app_det.applicant_id
             service_id = app_det.service_id
             ca_auth = app_det.ca_authority
             cid_no = app_det.cid
             mob_no = app_det.contact_no
-            app_name = app_det.app_name
-            t_application_history.objects.create(application_no=application_no,
+            app_name = app_det.applicant_name
+            email = app_det.email
+            t_application_history.objects.create(application_no=applicationno,
                 application_status='FP',
                 application_date=date.today(),
                 action_date=date.today(),
@@ -1898,11 +1904,11 @@ def save_fines_penalties(request):
             payload = {
                 "platform": "Environment Clearance Services System",
                 "refNo": application_no,
-                "taxPayerNo": "11303003082",
-                "taxPayerDocumentNo": "11303003082",
+                "taxPayerNo": "11122233344",
+                "taxPayerDocumentNo": "222333444555",
                 "paymentRequestDate": today_date_str,
                 "agencyCode": "DTH1552",
-                "payerEmail": request.session['email'],
+                "payerEmail": email,
                 "mobileNo": mob_no,
                 "totalPayableAmount": amount,
                 "paymentDueDate": None,
@@ -1910,8 +1916,8 @@ def save_fines_penalties(request):
                 "code": "moenr",
                 "paymentLists": [
                     {
-                        "serviceCode": "100125",
-                        "description": "ec_renewal",
+                        "serviceCode": "211",
+                        "description": "Fine and Penalities",
                         "payableAmount": amount
                     }
                 ]
@@ -1930,16 +1936,16 @@ def save_fines_penalties(request):
                     try:
                         data = response.json()  # Parse response JSON
                         paymentAdviceNo = data['content']['paymentAdviceNo']
-                        insert_app_payment_details(request, application_no, "fines_penalties", amount, "fines_penalties", paymentAdviceNo,None)
+                        #insert_app_payment_details(request, application_no, "fines_penalties", amount, "fines_penalties", paymentAdviceNo,None)
                        
                         t_payment_details.objects.create(
                             ref_no=application_no,
                             payment_request_date=date.today(),
-                            tax_payer_name=request.session['name'],
+                            tax_payer_name=app_name,
                             agency_code="DTH1552",
                             tax_payer_document_no=cid_no,
                             mobile_no=mob_no,
-                            payer_email=request.session['email'],
+                            payer_email=email,
                             description="fines_and_penalties",
                             total_payable_amount=amount,
                             service_type="FINE",
@@ -1953,7 +1959,6 @@ def save_fines_penalties(request):
                     print("Response text:", response.text)
             except requests.exceptions.RequestException as e:
                 print("HTTP Request failed:", e)
-            #insert_payment_details(request, application_no,pay_details.account_head_code,proponent_name,amount,ec_no)
         application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
         for application_details in application_details:
             fines_penalties_email(application_details.email, application_no, amount)
@@ -1962,6 +1967,19 @@ def save_fines_penalties(request):
         print('An error occurred:', e)
         data['message'] = "failure"
     return JsonResponse(data)
+
+def get_application_no_fp():
+    result = t_fines_penalties.objects.aggregate(Max('application_no'))
+    last_no = result['application_no__max']
+    year = timezone.now().year
+
+    if not last_no:
+        new_no = f"FNP-{year}-0001"
+    else:
+        seq = int(str(last_no).split("-")[2]) + 1
+        new_no = f"FNP-{year}-{str(seq).zfill(4)}"
+
+    return new_no
 
 def insert_app_payment_details(request, application_no, description, total_amount, service_type, paymentAdviceNo,new_app_no):
     print("insert_app_payment_details")
@@ -2070,10 +2088,8 @@ def tor_submit_email(email_id, application_no, service_name):
               connection=None, html_message=None)
     
 def fines_penalties(request):
-    application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False)
-    response = render(request, 'fines_penalties.html',{'application_details':application_details})
+    response = render(request, 'fines_penalties.html')
 
-    # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response['Pragma'] = 'no-cache'
     response['Expires'] = '0'
