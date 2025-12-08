@@ -370,7 +370,7 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         margin-bottom: 10px !important; /* smaller than mb-4 */
 
-    } */
+    
 
     .custom-shadow .card-body {
         font-family: "Poppins", sans-serif;
@@ -978,7 +978,7 @@
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">CID</label>
-                                        <input type="text" oninput="if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength); check_cid(this.value);"  class="form-control" id="cid" name="cid" maxlength="11" readonly>
+                                        <input type="text" oninput="if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength); check_cid(this.value);"  class="form-control" id="cid" name="cid" maxlength="11">
                                         <div id="cidErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                                     </div>
                                 </div>
@@ -1568,7 +1568,8 @@
                 $('#gewog').hide();
                 $('#village').hide();
                 $('.cid_details').show();
-                $('#proponent_name').attr("readonly", "readonly");
+                $('#generateQRCode').hide();
+               // $('#proponent_name').attr("readonly", "readonly");
                 //$('#i_dzongkhag').show();
                 $('#i_dzongkhag').attr('type', 'text');
                 $('#i_gewog').attr('type', 'text');
