@@ -1968,6 +1968,8 @@ def insert_app_payment_details(request, application_no, description, total_amoun
     cid_no = None
     mob_no = None
     identifier = None
+    app_name = None
+    email_id = None
     
     app_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
     
@@ -1981,17 +1983,19 @@ def insert_app_payment_details(request, application_no, description, total_amoun
     for app_det in app_details:
         cid_no = app_det.cid
         mob_no = app_det.contact_no
+        app_name = app_det.applicant_name
+        email_id = app_det.applicant_id
     
     
     if 'new' in identifier or 'tor' in identifier or 'ec_renewal' in identifier or 'fines' in identifier or 'verify' in identifier:
         t_payment_details.objects.create(
             ref_no=application_no,
             payment_request_date=date.today(),
-            tax_payer_name=request.session['name'],
+            tax_payer_name=app_name,
             agency_code="DTH1552",
             tax_payer_document_no=cid_no,
             mobile_no=mob_no,
-            payer_email=request.session['email'],
+            payer_email=email_id,
             description=identifier,
             total_payable_amount=total_amount,
             service_type=service_type,
