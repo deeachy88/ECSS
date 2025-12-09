@@ -540,8 +540,9 @@ def view_application_details(request):
             ren_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='ECRV')
             app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+            renewal_details = t_ec_renewal_t1.objects.filter(application_no=application_no)
             return render(request, 'renewal_application_details.html',{'application_details':application_details,'renewal_details_one':renewal_details_one,'status':status,'pay_details':pay_details,
-                                                                    'dzongkhag':dzongkhag,'ren_attach':ren_attach,'gewog':gewog,'village':village,'ai_attach':ai_attach,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details_two':renewal_details_two,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
+                                                                    'dzongkhag':dzongkhag,'renewal_details':renewal_details,'ren_attach':ren_attach,'gewog':gewog,'village':village,'ai_attach':ai_attach,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details_two':renewal_details_two,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
 
 
 def resubmit_application(request):
@@ -794,6 +795,7 @@ def forward_application(request):
         identifier = request.POST.get('identifier')
         forward_to = request.POST.get('forward_to')
         applicant = None
+        print(application_no)
         
         
         workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
