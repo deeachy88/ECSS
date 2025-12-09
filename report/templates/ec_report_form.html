@@ -115,46 +115,39 @@
     </form>
 </div>
 <script>
-function viewECIssuedList()
+    function viewECIssuedList()
     {
         var from_date = $('#fromDate').val();
         var to_date = $('#toDate').val();
         var service_id = $('#service_id').val();
         var ca_authority = $('#ca_authority').val();
-        // var dzongkhag_code = $('#dzongkhag_code').val();
 
         if(from_date == "")
         {
-            $('#fromDateErrorMsg').html("Select From Date.");
-            $('#fromDateErrorMsg').show();
-            $('#fromDateErrorMsg').delay(3000).fadeOut('slow');
+            $('#fromDateErrorMsg').html("Select From Date.").show().delay(3000).fadeOut('slow');
+            return;
         }
-        else if(to_date == "")
+        if(to_date == "")
         {
-            $('#toDateErrorMsg').html("Select To Date.");
-            $('#toDateErrorMsg').show();
-            $('#toDateErrorMsg').delay(3000).fadeOut('slow');
+            $('#toDateErrorMsg').html("Select To Date.").show().delay(3000).fadeOut('slow');
+            return;
         }
-        else if(service_id == "")
-        {
-            $('#serviceErrorMsg').html("Select Service.");
-            $('#serviceErrorMsg').show();
-            $('#serviceErrorMsg').delay(3000).fadeOut('slow');
-        }
-        else
-        {
-            var fDate = moment(from_date, "DD.MM.YYYY").format("YYYY-MM-DD");
-            var tDate = moment(to_date, "DD.MM.YYYY").format("YYYY-MM-DD");
-             $.ajax({
-                    type : "GET",
-                    url : "{% url 'view_ec_list' %}",
-                    data :{'from_date':from_date,'to_date':to_date, 'service_id':service_id, 'ca_authority':ca_authority, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                    success : function(data)
-                    {
-                    $('#ECDetails').html(data);
-                    }
-                });
-        }
+
+        $.ajax({
+            type : "GET",
+            url : "{% url 'view_ec_list' %}",
+            data :{
+                'from_date':from_date,
+                'to_date':to_date,
+                'service_id':service_id,
+                'ca_authority':ca_authority
+            },
+            success : function(data)
+            {
+                $('#ECDetails').html(data);
+            }
+        });
     }
+
 </script>
 {% endblock %}

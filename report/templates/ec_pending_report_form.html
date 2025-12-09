@@ -99,45 +99,37 @@
     </form>
 </div>
 <script>
-function viewECPendingList()
-    {
+    function viewECPendingList() {
         var from_date = $('#fromDate').val();
         var to_date = $('#toDate').val();
         var service_id = $('#service_id').val();
         var ca_authority = $('#ca_authority').val();
         var dzongkhag_code = $('#dzongkhag_code').val();
 
-        if(from_date == "")
-        {
-            $('#fromDateErrorMsg').html("Select From Date.");
-            $('#fromDateErrorMsg').show();
-            $('#fromDateErrorMsg').delay(3000).fadeOut('slow');
+        if (from_date == "") {
+            $('#fromDateErrorMsg').html("Select From Date.").show().delay(3000).fadeOut('slow');
         }
-        else if(to_date == "")
-        {
-            $('#toDateErrorMsg').html("Select To Date.");
-            $('#toDateErrorMsg').show();
-            $('#toDateErrorMsg').delay(3000).fadeOut('slow');
+        else if (to_date == "") {
+            $('#toDateErrorMsg').html("Select To Date.").show().delay(3000).fadeOut('slow');
         }
-        else if(service_id == "")
-        {
-            $('#serviceErrorMsg').html("Select Service.");
-            $('#serviceErrorMsg').show();
-            $('#serviceErrorMsg').delay(3000).fadeOut('slow');
+        else if (service_id == "") {
+            $('#serviceErrorMsg').html("Select Service.").show().delay(3000).fadeOut('slow');
         }
-        else
-        {
-            var fDate = moment(from_date, "DD.MM.YYYY").format("YYYY-MM-DD");
-            var tDate = moment(to_date, "DD.MM.YYYY").format("YYYY-MM-DD");
-             $.ajax({
-                    type : "GET",
-                    url : "{% url 'ec_pending_list' %}",
-                    data :{'from_date':from_date,'to_date':to_date, 'service_id':service_id, 'ca_authority':ca_authority, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                    success : function(data)
-                    {
+        else {
+            $.ajax({
+                type: "GET",
+                url: "{% url 'ec_pending_list' %}",
+                data: {
+                    'from_date': from_date,
+                    'to_date': to_date,
+                    'service_id': service_id,
+                    'ca_authority': ca_authority,
+                    'dzongkhag_code': dzongkhag_code
+                },
+                success: function(data) {
                     $('#ECPendingDetails').html(data);
-                    }
-                });
+                }
+            });
         }
     }
 </script>
