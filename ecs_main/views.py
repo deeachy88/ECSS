@@ -537,10 +537,11 @@ def view_application_details(request):
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
             rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
             ai_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='AI')
+            ren_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='ECRV')
             app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             return render(request, 'renewal_application_details.html',{'application_details':application_details,'renewal_details_one':renewal_details_one,'status':status,'pay_details':pay_details,
-                                                                    'dzongkhag':dzongkhag,'gewog':gewog,'village':village,'ai_attach':ai_attach,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details_two':renewal_details_two,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
+                                                                    'dzongkhag':dzongkhag,'ren_attach':ren_attach,'gewog':gewog,'village':village,'ai_attach':ai_attach,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details_two':renewal_details_two,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
 
 
 def resubmit_application(request):
@@ -2111,3 +2112,26 @@ def ec_expired_list(request):
     service_details = t_service_master.objects.all()
     return render(request,'expired_list.html',{'expired_list':expired_list, 'service_details':service_details})
 
+def save_renew_attachment_reviewer(request):
+    data = dict()
+    ea_attach = request.FILES['renewal_attach']
+    file_name = ea_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ECRV/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, ea_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/ECRV" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_renew_attachment_details_reviewer(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('application_no')
+    t_file_attachment.objects.create(application_no=application_no, file_path=file_url, attachment=file_name,attachment_type='ECRV')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='ECRV')
+
+    return render(request, 'renewal_attachment_page.html', {'file_attach': file_attach})

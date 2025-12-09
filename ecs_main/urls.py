@@ -50,7 +50,9 @@ urlpatterns = [
     path('fines_penalties', views.fines_penalties, name='fines_penalties'),
     path('get_fines_penalties_details', views.get_fines_penalties_details, name='get_fines_penalties_details'),
     path('save_fines_penalties', views.save_fines_penalties, name='save_fines_penalties'),
-    
+    path('save_renew_attachment_reviewer', views.save_renew_attachment_reviewer, name='save_renew_attachment_reviewer'),
+    path('save_renew_attachment_details_reviewer', views.save_renew_attachment_details_reviewer, name='save_renew_attachment_details_reviewer'),
+
 #TOR Details
     path('tor_to_verifier',views.tor_to_verifier, name='tor_to_verifier'),
     path('approve_tor_application', views.approve_tor_application, name='approve_tor_application'),
