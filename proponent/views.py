@@ -236,6 +236,7 @@ def save_general_details(request):
             'thromde_id': thromde_id,
             'location_name': request.POST.get('project_site'),
             'project_name': request.POST.get('project_name'),
+            'project_description': request.POST.get('project_description'),
             'dzongkhag_throm': dzongkhag_throm,
             'service_type': service_type_to_use,  # Use determined service_type
             'tor_application_no': tor_application_no,
@@ -3044,6 +3045,7 @@ def save_old_ec_general_details(request):
             'project_name': request.POST.get('project_name'),
             # 'project_category': request.POST.get('project_category'),
             'location_name': request.POST.get('project_site'),
+            'project_description': request.POST.get('project_description'),
 
             # Applicant information
             'applicant_name': request.POST.get('applicant_name'),

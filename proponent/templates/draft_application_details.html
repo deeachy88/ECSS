@@ -201,8 +201,17 @@
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
-                                            <textarea class="form-control" name="focal_person" id="focal_person" rows="3">{{application_details.focal_person}}</textarea>
+                                            <input type="text" name="focal_person" class="form-control" id="focal_person" value="{{application_details.focal_person}}">
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                                    <div class="col-lg-8">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Brief Description of the project</label>
+                                            <textarea class="form-control" name="project_description" id="project_description" rows="3">{{application_details.project_description}}</textarea>
+                                        </div>
+                                        <div id="project_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                 </div>
                                 <div class="alert custom-bg border-0" role="alert">
@@ -555,9 +564,14 @@
         let gewog_code = $('#gewog').val();
         let village_code = $('#vil_chiwog').val();
         let project_site = $('#project_site').val();
+        let project_description = $('#project_description').val();
 
         if (project_name === "") {
             showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');
+            return false;
+        }
+        else if (project_description === "") {
+            showErrorAndFocus('#project_descriptionErrorMsg', 'Enter Project Brief Description', '#project_description');
             return false;
         }
         else if (dzongkhag_throm_val === "Thromde" && thromde_id === "") {
@@ -580,6 +594,7 @@
             showErrorAndFocus('#project_siteErrorMsg', 'Enter Project Site', '#project_site');
             return false;
         }
+
         else {
             // Submit the form via AJAX
             $.ajax({
