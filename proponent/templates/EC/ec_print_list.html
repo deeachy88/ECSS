@@ -94,6 +94,14 @@
         text-align: center;
     }
 
+    #basic-datatable tbody td.app-no {
+        /* Your specific styling here */
+        font-weight: normal;
+        color: #2c3e50; /* Same as other columns */
+        text-align: left; /* Align with other columns */
+    }
+
+
     /* Table Wrapper */
     .table-responsive {
         margin-bottom: 0 !important;
@@ -202,20 +210,22 @@
                 <table id="basic-datatable" class="table dt-responsive table-sm table-centered mb-0">
                     <thead>
                         <tr>
-                            <th scope="col">Application No</th>
-                            <th scope="col">EC Reference No</th>
+                            <th scope="col">#</th>
+                            <th scope="col">Application_No</th>
+                            <th scope="col">EC_Reference_No</th>
                             <!--<th scope="col">Service Name</th>-->
+                            <th scope="col">Project_Name</th>
                             <th scope="col">Activity</th>
-                            <th scope="col">Project Name</th>
-                            <th scope="col">Application Date</th>
-                            <th scope="col">Expiry Date</th>
+                            <th scope="col">Expiry_Date</th>
+                            <!--<th scope="col">Application Date</th>-->
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for application_details in application_details %}
                             <tr>
-                                <td>{{application_details.application_no}}</td>
+                                <td>{{ forloop.counter }}</td>
+                                <td class="app-no">{{application_details.application_no}}</td>
                                 <td>{{application_details.ec_reference_no}}</td>
                                 <!--
                                 {% for service_details in service_details %}
@@ -224,10 +234,10 @@
                                     {% endif %}
                                 {% endfor %}
                                 -->
-                                <td>{{application_details.activity}}</td>
                                 <td>{{application_details.project_name}}</td>
-                                <td>{{application_details.ec_approve_date|date:"d-m-Y"}}</td>
+                                <td>{{application_details.activity}}</td>
                                 <td>{{application_details.ec_expiry_date|date:"d-m-Y"}}</td>
+                                <!--<td>{{application_details.ec_application_date|date:"d-m-Y"}}</td>-->
                                 <td><button type="button" class="btn btn-sm btn-outline-primary px-1 py-0" onclick="view_print_details('{{application_details.ec_reference_no}}')"> <i class="uil uil-file-copy-alt font-16"></i> </button></td>
                                 <!--{% for payment_details in payment_details %}
                                     {% if application_details.application_no == payment_details.ref_no %}

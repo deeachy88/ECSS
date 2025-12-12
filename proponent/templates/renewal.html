@@ -1,6 +1,16 @@
 {% extends 'common_dashboard.html' %}
 {% block content %}
 <style>
+    .distinct-activity {
+        border: 2px solid #6c757d;
+        border-radius: 6px;
+        padding: 12px;
+        background-color: #f8f9fa;
+        margin-bottom: 0;
+    }
+
+</style>
+<style>
     /* ===== HEADING STYLING ===== */
     h5 {
         color: #066106;
@@ -214,7 +224,13 @@
                         {% for application_details in application_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td><button type="button" class="btn btn-link text-info mb-0" onclick="getECDetails('{{application_details.ec_reference_no}}')">{{application_details.ec_reference_no}}</button></td>
+                                        <td>
+                                            <a href="javascript:void(0);"
+                                               class="btn btn-outline-primary btn-sm"
+                                               onclick="getECDetails('{{application_details.ec_reference_no}}')">
+                                               {{application_details.ec_reference_no}}
+                                            </a>
+                                        </td>
                                         <td>{{application_details.application_no}}</td>
                                         <td>{{application_details.project_name}}</td>
                                         <td>{{application_details.ec_expiry_date}}</td>
@@ -251,6 +267,18 @@
             }
         });
     }
+
+    // Initialize DataTable
+    $(document).ready(function() {
+        $('#basic-datatable').DataTable({
+            "pageLength": 25,
+            "order": [],
+            "language": {
+                "emptyTable": "No applications available",
+                "search": "Search:"
+            }
+        });
+    });
 </script>
 {% endblock %}       
 
