@@ -192,9 +192,17 @@
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
-                                                <textarea class="form-control" name="focal_person" id="focal_person" rows="3"></textarea>
+                                                <input type="text" name="focal_person" class="form-control" id="focal_person">
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                                        <div class="col-lg-8">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Brief Description of the project</label>
+                                                <textarea class="form-control" name="project_description" id="project_description" rows="3"></textarea>
+                                            </div>
+                                        <div id="project_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                     <div class="alert custom-bg border-0" role="alert">
                                         <h6 class="mb-0">Project Location</h6>
@@ -359,7 +367,7 @@
                                         </div>
                                     {% endif %}
                                     <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-8">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                                 <input type="text" name="project_site" class="form-control" id="project_site">
@@ -496,7 +504,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="old_ec_general_submit_form">
                                     {% csrf_token %}
-                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no">
+                                    <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no" id="general_disclaimer_application_no">
                                     <p class="text-wrap">By using this form, you agree that:</p>
                                     <p class="text-wrap">1. The information and documents you provide are true and complete.</p>
                                     <p class="text-wrap">2. Your details will be used only to review and update your clearance record.</p>
@@ -592,9 +600,14 @@
         let refNo = $('#ec_reference_no').val();
         let ec_issue_date = $('#ec_issue_date').val();
         let ec_validity = $('#ec_validity').val();
+        let project_description = $('#project_description').val();
 
         if (project_name === "") {
             showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');
+            return false;
+        }
+        else if (project_description === "") {
+            showErrorAndFocus('#project_descriptionErrorMsg', 'Enter Project Brief Description', '#project_description');
             return false;
         }
         else if (dzongkhag_throm_val === "Thromde" && thromde_id === "") {
@@ -617,6 +630,7 @@
             showErrorAndFocus('#project_siteErrorMsg', 'Enter Project Site', '#project_site');
             return false;
         }
+
         else if (refNo === "") {
             showErrorAndFocus('#ec_reference_noErrorMsg', 'Enter EC Clearance No', '#ec_reference_no');
             return false;
