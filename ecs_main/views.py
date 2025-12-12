@@ -796,6 +796,7 @@ def forward_application(request):
         forward_to = request.POST.get('forward_to')
         applicant = None
         print(application_no)
+        service_id = None
         
         
         workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
@@ -1053,23 +1054,42 @@ def forward_application(request):
                         data['message'] = "success"
                         data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'LU':
-            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+            # Choose the right model
+            if 'REN' in str(application_no):
+                ModelClass = t_ec_renewal_t1
+            else:
+                ModelClass = t_ec_industries_t1_general
+            
+            # Update the application
+            application_details = ModelClass.objects.filter(application_no=application_no)
             application_details.update(application_status='LU')
-            for app_details in application_details:
-                app_id = app_details.applicant_id
-                applicant = app_details.applicant_id
-                service_id = app_details.service_id
-                user_details = t_user_master.objects.filter(email_id=app_id)
-                for user_details in user_details:
-                    login_id = user_details.login_id
-                    workflow_details.update(application_status='LU', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=login_id, assigned_role_id=None,assigned_role_name=None)
-            t_application_history.objects.create(application_status='LU',application_no=application_no,
-                        action_date=date.today(),
-                        actor_id=request.session['login_id'], 
-                        actor_name=request.session['name'],
-                        applicant_id=applicant,
-                        remarks='Legal Undertaking Request',
-                        service_id=service_id)
+            
+            # Get application info
+            app_detail = application_details.first()
+            
+            # Get user info
+            user_detail = t_user_master.objects.filter(email_id=app_detail.applicant_id).first()
+            
+            # Update workflow
+            workflow_details.update(
+                application_status='LU',
+                action_date=date.today(),
+                actor_id=request.session['login_id'],
+                actor_name=request.session['name'],
+                assigned_user_id=user_detail.login_id if user_detail else None
+            )
+            
+            # Create history
+            t_application_history.objects.create(
+                application_status='LU',
+                application_no=application_no,
+                action_date=date.today(),
+                actor_id=request.session['login_id'],
+                applicant_id=app_detail.applicant_id,
+                service_id=app_detail.service_id,
+                remarks='Legal Undertaking Request'
+            )
+            
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'LUS':
