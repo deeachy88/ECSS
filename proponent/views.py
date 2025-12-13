@@ -1532,125 +1532,67 @@ def ec_renewal_details(request):
                                                         'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
 
 def submit_renew_application(request):
-    data = dict()
+    data = {"message": "failure"}
+
     try:
-        auth = None
-        total_amount = 0
-        amount = 0
-        cid_no = None
-        mob_no = None
-        app_name = None
-        account_head = None
-        taxPayerNo = None
-        taxPayerDocumentNo = None
         ec_reference_no = request.POST.get('ec_reference_no')
         application_no = request.POST.get('application_no')
         initiatives_undertaken = request.POST.get('initiatives_undertaken')
         remarks = request.POST.get('initiatives_undertaken_remarks')
 
-        application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
+        if not ec_reference_no or not application_no:
+            return JsonResponse(
+                {"message": "Missing required fields"},
+                status=400
+            )
 
-        main_application_details = t_payment_details.objects.filter(ref_no=application_no)
+        # Fetch single record safely
+        application_details = (
+            t_ec_industries_t1_general.objects
+            .filter(ec_reference_no=ec_reference_no)
+            .first()
+        )
 
-        for application_details in application_details:
-            auth = application_details.ca_authority
-            taxPayerDocumentNo = application_details.cid
-            mob_no = application_details.contact_no
-            app_name = application_details.applicant_name
-            email = application_details.email
-            proponent_type = application_details.proponent_type
-            if proponent_type != 4:
-                taxPayerDocumentNo = get_random_tax_no(8)
-            t_ec_renewal_t1.objects.create(application_no=application_no,ec_reference_no=ec_reference_no,proponent_name=application_details.applicant_name,address=application_details.address,initiatives_undertaken=initiatives_undertaken,remarks=remarks,submission_date=date.today(),action_date=date.today(),application_status='P')
-            t_workflow_dtls.objects.create(application_no=application_no, 
-                                            service_id='10',
-                                            application_status='P',
-                                            action_date=date.today(),
-                                            actor_id=request.session['login_id'],
-                                            actor_name=request.session['name'],
-                                            assigned_role_id='2',
-                                            assigned_role_name='Verifier',
-                                            ca_authority=auth,
-                                            application_source='ECSS'
-                                        )
-        payment_detail = payment_details_master.objects.filter(payment_type='RENEW')
-        for pay_dets in payment_detail:
-            account_head = pay_dets.account_head_code    
-        fees_details = t_fees_schedule.objects.filter(service_id='10')
-        for main_application_details in main_application_details:
-            amount = main_application_details.amount
-        for fees_details in fees_details:
-            total_amount = (fees_details.rate * amount)/100 + fees_details.application_fee
+        if not application_details:
+            return JsonResponse(
+                {"message": "Invalid EC reference number"},
+                status=404
+            )
 
-            token = get_birms_token()
-            print("Token:", token)
+        with transaction.atomic():
+            # Create renewal record
+            t_ec_renewal_t1.objects.create(
+                application_no=application_no,
+                ec_reference_no=ec_reference_no,
+                proponent_name=application_details.applicant_name,
+                address=application_details.address,
+                initiatives_undertaken=initiatives_undertaken,
+                remarks=remarks,
+                submission_date=timezone.now(),
+                action_date=timezone.now(),
+                application_status='P'
+            )
 
-            url = "https://birmsstagging.drc.gov.bt/api-services/moenr-service/api/v1/paymentdetails/create"
-            today_date_str = date.today().isoformat()
+            # Create workflow record
+            t_workflow_dtls.objects.create(
+                application_no=application_no,
+                service_id='10',
+                application_status='P',
+                action_date=timezone.now(),
+                actor_id=request.session.get('login_id'),
+                actor_name=request.session.get('name'),
+                assigned_role_id='3',
+                assigned_role_name='Reviewer',
+                ca_authority=application_details.ca_authority,
+                application_source='ECSS',
+                service_type="Renewal"
+            )
 
-            payload = {
-                "platform": "Environment Clearance Services System",
-                "refNo": application_no,
-                "taxPayerNo": taxPayerNo,
-                "taxPayerDocumentNo": taxPayerDocumentNo,#id card
-                "paymentRequestDate": today_date_str,
-                "agencyCode": "DTH1552",
-                "payerEmail": email,
-                "mobileNo": mob_no,
-                "totalPayableAmount": total_amount,
-                "paymentDueDate": None,
-                "taxPayerName": app_name,
-                "code": "moenr",
-                "paymentLists": [
-                    {
-                        "serviceCode": account_head,
-                        "description": "ec_renewal",
-                        "payableAmount": total_amount
-                    }
-                ]
-            }
+        data["message"] = "success"
 
-            headers = {'Authorization': "Bearer {}".format(token)}
-            
-            try:
-                response = requests.post(url, headers=headers, json=payload, verify=False)
-                print(payload)
-                print("Response Status Code:", response.status_code)
-                print("Response Content:", response.text)
-
-                # Check if the response content is empty
-                if response.status_code == 200:
-                    try:
-                        data = response.json()  # Parse response JSON
-                        paymentAdviceNo = data['content']['paymentAdviceNo']
-                        print("Payment request successful")
-                        print("Response JSON:", data)
-                        t_payment_details.objects.create(
-                            ref_no=application_no,
-                            payment_request_date=date.today(),
-                            tax_payer_name=request.session['name'],
-                            agency_code="DTH1552",
-                            tax_payer_document_no=cid_no,
-                            mobile_no=mob_no,
-                            payer_email=request.session['email'],
-                            description="RENEW",
-                            total_payable_amount=total_amount,
-                            service_type="RENEW",
-                            payment_advice_no=paymentAdviceNo
-                        )
-                    except ValueError as e:
-                        print("Failed to parse JSON response:", e)
-                
-                else:
-                    print("Payment request failed with status code:", response.status_code)
-                    print("Response text:", response.text)
-            except requests.exceptions.RequestException as e:
-                print("HTTP Request failed:", e)
-            send_renew_payment_mail(request.session['name'],request.session['email'], total_amount)
-        data['message'] = "success"
     except Exception as e:
-        print('An error occurred:', e)
-        data['message'] = "failure"
+        print("Submit renewal application error:", e)
+
     return JsonResponse(data)
 
 def save_renew_attachment(request):

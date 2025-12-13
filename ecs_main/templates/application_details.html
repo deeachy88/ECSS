@@ -406,8 +406,8 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Additional Information Letter</label>
-                        {% for application_details in application_details %}
-                            <textarea class="form-control" rows="2" readonly>{{application_details.additional_info_letter}}</textarea>
+                        {% for additional_info in additional_info %}
+                            <textarea class="form-control" rows="2" readonly>{{additional_info.additional_info_ca}}</textarea>
                         {% endfor %}
                     </div>
                 </div>
@@ -686,8 +686,8 @@
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Additional Information Letter</label>
-                            {% for application_details in application_details %}
-                                <textarea class="form-control" rows="2" readonly>{{application_details.additional_info_letter}}</textarea>
+                            {% for additional_info in additional_info %}
+                                <textarea class="form-control" rows="2" readonly>{{additional_info.additional_info_ca}}</textarea>
                             {% endfor %}
                         </div>
                     </div>
@@ -738,11 +738,28 @@
                 <div class="col-md-12 client_lu_attachment_div" style="display: none;">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title mb-0">Legal Undertaking</h5>
-                            <br>
-                            {% for rev_lu_attach in rev_lu_attach %}
-                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
-                            {% endfor %}
+                            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Commitee & Field Verification Paper</th>
+                                        <th scope="col">Draft Legal Undertaking</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            {% for rev_lu_attach in eatc_attach %}
+                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            {% for rev_lu_attach in rev_lu_attach %}
+                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                            {% endfor %}    
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                             <hr><br><br>
                             <div class="card-widgets">
                                 <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#lu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
@@ -799,7 +816,7 @@
             <div class="row verifierDiv" style="display: none;">
                 <div class="col-lg-6">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Applicagtion Fees</label>
+                        <label class="form-label fw-bold">Application Fees</label>
                         <input type="number" class="form-control" id="amount" name="amount">
                     </div>
                     <div id="forward_toErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -823,8 +840,8 @@
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Additional Information Letter</label>
-                            {% for application_details in application_details %}
-                                <textarea class="form-control" rows="2">{{application_details.additional_info_letter}}</textarea>
+                            {% for additional_info_det in additional_info %}
+                                <textarea class="form-control" rows="2" readonly>{{additional_info_det.additional_info_ca}}</textarea>
                             {% endfor %}
                         </div>
                     </div>

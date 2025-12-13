@@ -213,7 +213,7 @@ def dashboard(request):
                 assigned_role_id='3', 
                 assigned_role_name='Reviewer', 
                 ca_authority=ca_authority,
-                service_type='Main Activity'
+                service_type__in=['Main Activity','Renewal']
             ).count()
         elif role == 'Admin':
             client_application_count = t_user_master.objects.filter(

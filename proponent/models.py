@@ -131,7 +131,6 @@ class t_ec_industries_t11_ec_details(models.Model):
 class t_ec_additional_information(models.Model):
     record_id = models.AutoField(primary_key=True)
     application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
-    application_type = models.CharField(max_length=100, default=None, blank=True, null=True)
     additional_info_ca = models.TextField(max_length=250, default=None, blank=True, null=True)
     additional_info_ca_date = models.DateField(default=None, blank=True, null=True)
     additional_info_proponent = models.TextField(max_length=250, default=None, blank=True, null=True)
