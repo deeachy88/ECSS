@@ -207,9 +207,10 @@
                                         <th scope="col">Application Date</th>
                                         <th scope="col">Proponent</th>
                                         <th scope="col">Project Name</th>
-                                        <th scope="col">Address</th>
+                                        <!--
                                         <th scope="col">EC Number</th>
                                         <th scope="col">Approve Date</th>
+                                        -->
                                         <th scope="col">Application Status</th>
                                         <th scope="col"></th>
                                     </tr>
@@ -222,9 +223,10 @@
         <td>{{ application.application_date }}</td>
         <td>{{ application.applicant_name }}</td>
         <td>{{ application.project_name }}</td>
-        <td>{{ application.address }}</td>
+        <!--
         <td>{{ application.ec_reference_no }}</td>
         <td>{{ application.ec_approve_date }}</td>
+        -->
         {% if application.application_status == 'P' %}
             <td>Pending</td>
         {% elif application.application_status == 'A' %}
@@ -232,6 +234,7 @@
         {% else %}
             <td>None</td>
         {% endif %}
+
         <td>
             <button type="button" class="btn btn-sm btn-outline-primary px-1 py-0" 
                     onclick="viewApplicationDetails('{{ application.application_no }}','{{ application.service_id }}','{{ application.application_source }}')">
