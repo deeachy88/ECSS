@@ -176,6 +176,12 @@
     </script>
 </head>
 <style>
+.active-login-btn {
+    background-color: #0d6efd;
+    color: white;
+}
+</style>
+<style>
     /* Ensure no container constrains the width */
     /*
     .container-fluid {
@@ -669,23 +675,31 @@
             </div>
             <div id="loginBox">
                 <div class="modal-header text-center">
+                    <img
+                        src="{% static 'assets/images/necs_logo.png' %}"
+                        alt="NECS Logo"
+                        style="height: 100px; width: auto;"
+                    >
                     <h1 class="modal-title w-100" style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                 </div>
                 <div class="alert alert-danger" id="ndi_login_error" style="display: none;"></div>
                 <div id="loginSelectionBox">
-                    <div class="modal-body mx-4">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="loginType" id="proponentLogin" value="proponent" checked onclick="toggleLoginForm()">
-                            <label class="form-check-label" for="proponentLogin">Proponent Login</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="loginType" id="agencyLogin" value="agency" onclick="toggleLoginForm()">
-                            <label class="form-check-label" for="agencyLogin">Agency Login</label>
-                        </div>
+                    <div class="modal-body mx-4 d-flex gap-2 justify-content-center">
+                        <button type="button"
+                                class="btn btn-outline-primary btn-sm active-login-btn"
+                                id="btnProponent"
+                                onclick="showLoginForm('proponent')">
+                            Proponent Login
+                        </button>
+                        <button type="button"
+                                class="btn btn-outline-primary btn-sm"
+                                id="btnAgency"
+                                onclick="showLoginForm('agency')">
+                            Agency Login
+                        </button>
                     </div>
                 </div>
-
                 <div id="proponentLoginForm">
                     <form action="{% url 'login' %}" id="loginForm" method="post">
                         {% csrf_token %}
@@ -699,7 +713,7 @@
                                 // Open the login modal when there's an error message
                                 var loginModal = new bootstrap.Modal(document.getElementById('loginModalForm'));
                                 loginModal.show();
-                                
+
                                 // Optional: Focus on the username field
                                 document.getElementById('username').focus();
                             });
@@ -727,20 +741,18 @@
                     <div class="splitter">
                         <span style="background-color: rgb(255, 255, 255);">OR</span>
                     </div>
-                    <div class="mx-6 pt-3 mb-1 d-flex justify-content-center">
-                        <a href="#" 
-                           id="ndiLoginId" 
-                           class="btn d-inline-flex align-items-center justify-content-center text-white py-1 px-3" 
-                           onclick="authenticate_ndi('Login')" 
-                           style="background-color: #124143; border-radius: 8px; max-width: 250px; width: 100%; text-align: center;">
-                            <img src="{% static 'assets/images/NDI_logo.png' %}" 
-                                 alt="NDI Logo" 
-                                 class="img-fluid me-2" 
-                                 style="width: 24px; height: auto; flex-shrink: 0;">
-                            <span class="text-nowrap">Login with Bhutan NDI</span>
+
+                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-center">
+                        <a href="#"
+                           id="ndiLoginId"
+                           onclick="authenticate_ndi('Login')"
+                           style="background-color: #124143; color:white; border-radius: 6px; padding: 5px 10px; font-size: 0.9rem; display: inline-flex; align-items: center;">
+                            <img src="{% static 'assets/images/NDI_logo.png' %}"
+                                 style="width: 20px; height: 20px; margin-right: 6px;">
+                            &nbsp; &nbsp; Login with Bhutan NDI  &nbsp; &nbsp;
                         </a>
                     </div>
-                    
+
                     <!-- <div class="modal-header mx-5 pt-3 mb-1 justify-content-center">
                         <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiCredentialId" onclick="authenticate_ndi('Issuance')">
                             <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
@@ -770,13 +782,13 @@
                                 // Open the login modal when there's an error message
                                 var loginModal = new bootstrap.Modal(document.getElementById('loginModalForm'));
                                 loginModal.show();
-                                
+
                                 // Optional: Focus on the username field
                                 document.getElementById('username').focus();
                             });
                         </script>
                         {% endif %}
-                        
+
                         <div class="modal-body mx-4">
                             <div class="md-form mb-2">
                                 <input type="email" id="username" name="username" placeholder="Email" class="form-control validate" autocomplete="off">
@@ -853,7 +865,7 @@
             <div id="ndi_div" style="display: none; text-align: center">
                 <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
                 <div class="splitter"></div>
-                
+
                 <div id="deepLink" class="col-md-5 text-center" style="display: none;">
                     <button id="deepLinkBtn" class="button button1 text-white btn-bg cus-button">
                         <img src="{% static 'assets/images/NDI_logo.png' %}" alt="NDI Logo" class="ndi-logo">Open Bhutan NDI App
@@ -874,7 +886,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="row justify-content-center">
                     <div class="col-md-9 custom-vertical-align-left">
                         <br>
@@ -895,7 +907,7 @@
                             <div class="app-link">
                                 <a href="https://play.google.com/store/search?q=bhutan%20ndi&amp;c=apps&amp;hl=en_IN&amp;gl=US" target="_blank" ><img src="{% static 'assets/images/play_store.png' %}" style="height: 35px;"></a>
                                 <a href="https://apps.apple.com/in/app/bhutan-ndi/id1645493166" target="_blank" ><img src="{% static 'assets/images/app_store.png' %}" style="height: 35px;"></a>
-                                
+
                             </div>
                         </li>
                     </ul>
@@ -908,7 +920,7 @@
                     <a href="#" data-bs-dismiss="modal" class="font-small blue-text d-flex justify-content-center mb-1">Close</a>
                 </div>
             </div>
-            
+
             <div id="issuanceMessageDiv" class="alert alert-success" style="display: none; text-align: center">
                 <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
                 <div class="splitter"></div>
@@ -935,6 +947,13 @@
         <div class="modal-content modal-custom">
             <div id="proponent_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
             <!--Header-->
+            <div class="modal-body mx-4 d-flex gap-2 justify-content-center">
+                <img
+                    src="{% static 'assets/images/necs_logo.png' %}"
+                    alt="NECS Logo"
+                    style="height: 100px; width: auto;"
+                >
+            </div>
             <div style="display: flex; align-items: center; justify-content: space-between; margin-right: 20px;">
                 <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black; text-align: center; margin-top: 20px; flex: 1;">Environmental Clearance Services System</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
@@ -1885,19 +1904,22 @@
             nats_proponent_call(proofRequestThreadId, value);
         }
 
+        function showLoginForm(type) {
+            // Update button styles
+            document.getElementById('btnProponent').classList.remove('active-login-btn');
+            document.getElementById('btnAgency').classList.remove('active-login-btn');
 
-        function toggleLoginForm() {
-            var proponentLoginForm = document.getElementById('proponentLoginForm');
-            var agencyLoginForm = document.getElementById('agencyLoginForm');
-
-            if (document.getElementById('proponentLogin').checked) {
-                proponentLoginForm.style.display = 'block';
-                agencyLoginForm.style.display = 'none';
+            if (type === 'proponent') {
+                document.getElementById('btnProponent').classList.add('active-login-btn');
+                document.getElementById('proponentLoginForm').style.display = 'block';
+                document.getElementById('agencyLoginForm').style.display = 'none';
             } else {
-                proponentLoginForm.style.display = 'none';
-                agencyLoginForm.style.display = 'block';
+                document.getElementById('btnAgency').classList.add('active-login-btn');
+                document.getElementById('proponentLoginForm').style.display = 'none';
+                document.getElementById('agencyLoginForm').style.display = 'block';
             }
         }
     </script>
+
 </body>
 </html>
