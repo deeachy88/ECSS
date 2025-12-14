@@ -3,7 +3,7 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 from django.utils import timezone
 import requests,json
-from django.db.models import Count, Subquery, OuterRef
+from django.db.models import Count, Subquery, OuterRef, Exists
 
 from ecs_admin.models import t_competant_authority_master, t_user_master, t_security_question_master, t_role_master, t_service_master, \
     t_fees_schedule, t_bsic_code, t_forgot_password, \
@@ -190,16 +190,25 @@ def dashboard(request):
         
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
-        renewal_expiry_subquery = t_ec_renewal_t1.objects.filter(
+        # Renewal exists AND is NOT approved
+        pending_renewal_exists = t_ec_renewal_t1.objects.filter(
             ec_reference_no=OuterRef('ec_reference_no')
-        ).values('ec_expiry_date')[:1]
+        ).exclude(
+            application_status='A'
+        )
 
-        non_updated_renewals = t_ec_industries_t1_general.objects.filter(
-            applicant_id=request.session['email'],
-            service_type__in=["Main Activity", "Old EC"],
-            ec_expiry_date__lt=expiry_date_threshold,
-        ).filter(
-            ec_expiry_date__lt=Subquery(renewal_expiry_subquery)
+        non_updated_renewals = (
+            t_ec_industries_t1_general.objects
+            .filter(
+                applicant_id=request.session['email'],
+                service_type__in=["Main Activity", "Old EC"],
+                ec_expiry_date__lt=expiry_date_threshold,
+                ec_expiry_date__isnull=False,
+                ec_reference_no__isnull=False,
+            )
+            .exclude(ec_reference_no='')
+            .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+            .filter(has_pending_renewal=False)
         )
 
         ec_renewal_count = non_updated_renewals.count()
@@ -249,16 +258,25 @@ def dashboard(request):
 
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
-        renewal_expiry_subquery = t_ec_renewal_t1.objects.filter(
+        # Renewal exists AND is NOT approved
+        pending_renewal_exists = t_ec_renewal_t1.objects.filter(
             ec_reference_no=OuterRef('ec_reference_no')
-        ).values('ec_expiry_date')[:1]
+        ).exclude(
+            application_status='A'
+        )
 
-        non_updated_renewals = t_ec_industries_t1_general.objects.filter(
-            applicant_id=request.session['email'],
-            service_type__in=["Main Activity", "Old EC"],
-            ec_expiry_date__lt=expiry_date_threshold,
-        ).filter(
-            ec_expiry_date__lt=Subquery(renewal_expiry_subquery)
+        non_updated_renewals = (
+            t_ec_industries_t1_general.objects
+            .filter(
+                applicant_id=request.session['email'],
+                service_type__in=["Main Activity", "Old EC"],
+                ec_expiry_date__lt=expiry_date_threshold,
+                ec_expiry_date__isnull=False,
+                ec_reference_no__isnull=False,
+            )
+            .exclude(ec_reference_no='')
+            .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+            .filter(has_pending_renewal=False)
         )
 
         ec_renewal_count = non_updated_renewals.count()

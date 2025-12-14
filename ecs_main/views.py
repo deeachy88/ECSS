@@ -13,7 +13,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import Max
 from datetime import datetime, timedelta, date
 from datetime import date
-from django.db.models import Count, Subquery, OuterRef
+from django.db.models import Count, Subquery, OuterRef,Exists
 from django.utils.timezone import now
 from django.db.models import Q
 
@@ -184,17 +184,28 @@ def client_application_list(request):
 
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
-        non_renewed_applications = t_ec_industries_t1_general.objects.filter(
-            applicant_id=applicant_id,
-            ec_expiry_date__lt=expiry_date_threshold,
-            service_type__in=["Main Activity", "Old EC"]
+        # Renewal exists AND is NOT approved
+        pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+            ec_reference_no=OuterRef('ec_reference_no')
         ).exclude(
-            ec_reference_no__in=Subquery(
-                t_ec_renewal_t1.objects.values('ec_reference_no')
-            )
+            application_status='A'
         )
 
-        ec_renewal_count = non_renewed_applications.count()
+        non_updated_renewals = (
+            t_ec_industries_t1_general.objects
+            .filter(
+                applicant_id=request.session['email'],
+                service_type__in=["Main Activity", "Old EC"],
+                ec_expiry_date__lt=expiry_date_threshold,
+                ec_expiry_date__isnull=False,
+                ec_reference_no__isnull=False,
+            )
+            .exclude(ec_reference_no='')
+            .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+            .filter(has_pending_renewal=False)
+        )
+
+        ec_renewal_count = non_updated_renewals.count()
         
         # 5. TOR application count (optimized)
         t1_general_subquery = t_ec_industries_t1_general.objects.filter(
@@ -853,7 +864,7 @@ def forward_application(request):
         elif identifier == 'P':
             total_amount = request.POST.get('amount')
             workflow_details.update(actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_role_id='2',assigned_role_name='Verifier')
-            
+            application_details.update(fee=total_amount)
             t_application_history.objects.create(application_no=application_no,
                         application_status='P',
                         action_date=date.today(),
