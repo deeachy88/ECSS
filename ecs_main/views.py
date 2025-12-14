@@ -1168,40 +1168,18 @@ def forward_application(request):
             ec_expiry_date = request.POST.get('ec_expiry_date')
             tat = request.POST.get('tat')
             ec_no = get_ec_no(request)
-            # Update common fields in application details
-            application_details.update(
-                ec_approve_date=now(),
-                application_status='A',
-                tat=tat,
-                ec_expiry_date=ec_expiry_date
-            )
+            service_name = None
+            old_ec_ref = None
+            email = None
 
-            for app_det in application_details:
-                service_type = app_det.service_type
-                if service_type in ['NC', 'OC']:
-                    # Update workflow details
-                    workflow_details.update(
-                        assigned_user_id=None,
-                        assigned_role_id=None,
-                        assigned_role_name=None,
-                        action_date=now(),
-                        actor_id=request.session['login_id'],
-                        actor_name=request.session['name'],
-                        application_status='A'
-                    )
-                    
-                    service_id = app_det.service_id
-                    service_details = t_service_master.objects.filter(service_id=service_id).first()
-                    if service_details:
-                        service_name = service_details.service_name
-
-                        for email_id in application_details:
-                            send_ec_approve_email(ec_no, email_id.email, application_no, service_name)
-                else:
-                    app_det.ec_reference_no = ec_no
-                    app_det.save()
-                    
-                    t_application_history.objects.create(
+            if 'REN' in str(application_no):
+                application_details.update(
+                    ec_approve_date=now(),
+                    application_status='A',
+                    tat=tat,
+                    ec_expiry_date=ec_expiry_date
+                )
+                t_application_history.objects.create(
                         application_status='A',
                         application_no=application_no,
                         action_date=now(),
@@ -1211,27 +1189,100 @@ def forward_application(request):
                         remarks='Approved',
                         service_id=app_det.service_id
                     )
-                    
-                    t_ec_industries_t11_ec_details.objects.filter(application_no=application_no).update(ec_reference_no=ec_no)
-                    
-                    workflow_details.update(
-                        assigned_user_id=None,
-                        assigned_role_id=None,
-                        assigned_role_name=None,
-                        action_date=now(),
-                        actor_id=request.session['login_id'],
-                        actor_name=request.session['name'],
-                        application_status='A'
-                    )
-
-                    service_details = t_service_master.objects.filter(service_id=app_det.service_id).first()
-                    if service_details:
-                        service_name = service_details.service_name
                         
-                        for email_id in application_details:
-                            send_ec_approve_email(ec_no, email_id.email, application_no, service_name)
-            data['message'] = "success"
-            data['redirect_to'] = "verify_application_list"
+                t_ec_industries_t11_ec_details.objects.filter(application_no=application_no).update(ec_reference_no=ec_no)
+                        
+                workflow_details.update(
+                    assigned_user_id=None,
+                    assigned_role_id=None,
+                    assigned_role_name=None,
+                    action_date=now(),
+                    actor_id=request.session['login_id'],
+                    actor_name=request.session['name'],
+                    application_status='A'
+                )
+
+                service_details = t_service_master.objects.filter(service_id=app_det.service_id).first()
+                if service_details:
+                    service_name = service_details.service_name
+                
+                for app_dets in application_details:
+                    old_ec_ref = app_dets.ec_reference_no
+                    
+                details = t_ec_industries_t1_general.objects.filter(ec_reference_no=old_ec_ref)
+                details.update(ec_reference_no=ec_no,prev_ec_reference_no=old_ec_ref,ec_approve_date=now(),
+                    application_status='A',
+                    tat=tat,
+                    ec_expiry_date=ec_expiry_date)
+                    
+                send_ec_approve_email(ec_no, email_id.email, application_no, service_name)
+                data['message'] = "success"
+                data['redirect_to'] = "verify_application_list"
+            else:
+                # Update common fields in application details
+                application_details.update(
+                    ec_approve_date=now(),
+                    application_status='A',
+                    tat=tat,
+                    ec_expiry_date=ec_expiry_date
+                )
+
+                for app_det in application_details:
+                    service_type = app_det.service_type
+                    if service_type in ['NC', 'OC']:
+                        # Update workflow details
+                        workflow_details.update(
+                            assigned_user_id=None,
+                            assigned_role_id=None,
+                            assigned_role_name=None,
+                            action_date=now(),
+                            actor_id=request.session['login_id'],
+                            actor_name=request.session['name'],
+                            application_status='A'
+                        )
+                        
+                        service_id = app_det.service_id
+                        service_details = t_service_master.objects.filter(service_id=service_id).first()
+                        if service_details:
+                            service_name = service_details.service_name
+
+                            for email_id in application_details:
+                                send_ec_approve_email(ec_no, email_id.email, application_no, service_name)
+                    else:
+                        app_det.ec_reference_no = ec_no
+                        app_det.save()
+                        
+                        t_application_history.objects.create(
+                            application_status='A',
+                            application_no=application_no,
+                            action_date=now(),
+                            actor_id=request.session['login_id'],
+                            actor_name=request.session['name'],
+                            applicant_id=app_det.applicant_id,
+                            remarks='Approved',
+                            service_id=app_det.service_id
+                        )
+                        
+                        t_ec_industries_t11_ec_details.objects.filter(application_no=application_no).update(ec_reference_no=ec_no)
+                        
+                        workflow_details.update(
+                            assigned_user_id=None,
+                            assigned_role_id=None,
+                            assigned_role_name=None,
+                            action_date=now(),
+                            actor_id=request.session['login_id'],
+                            actor_name=request.session['name'],
+                            application_status='A'
+                        )
+
+                        service_details = t_service_master.objects.filter(service_id=app_det.service_id).first()
+                        if service_details:
+                            service_name = service_details.service_name
+                            
+                            for email_id in application_details:
+                                send_ec_approve_email(ec_no, email_id.email, application_no, service_name)
+                data['message'] = "success"
+                data['redirect_to'] = "verify_application_list"
 
         elif identifier == 'FT': # forward TOR form
             tor_remarks = request.POST.get('tor_remarks')
