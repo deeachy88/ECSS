@@ -1638,11 +1638,32 @@ def update_draft_ec_details(request):
     ec_heading = request.POST.get('ec_heading')
     ec_terms = request.POST.get('ec_terms')
 
-    ec_details = t_ec_industries_t11_ec_details.objects.filter(record_id=record_id)
-    ec_details.update(ec_type=ec_type,ec_heading=ec_heading, ec_terms=ec_terms)
-    ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no).order_by('record_id')
+    if not record_id:
+        return JsonResponse({'error': 'Record ID missing'}, status=400)
 
-    return render(request, 'ec_draft_details.html', {'ec_details':ec_details})
+    # 🔍 DEBUG (temporary)
+    print("POST DATA:", request.POST)
+
+    # ✅ UPDATE using primary key (RECOMMENDED)
+    updated_rows = t_ec_industries_t11_ec_details.objects.filter(
+        record_id=record_id
+    ).update(
+        ec_type=ec_type,
+        ec_heading=ec_heading,
+        ec_terms=ec_terms
+    )
+
+    if updated_rows == 0:
+        return JsonResponse({'error': 'No record updated'}, status=404)
+
+    # Reload updated list
+    ec_details = t_ec_industries_t11_ec_details.objects.filter(
+        application_no=application_no
+    ).order_by('record_id')
+
+    return render(request, 'ec_draft_details.html', {
+        'ec_details': ec_details
+    })
 
 def delete_draft_ec_details(request):
     record_id = request.POST.get('record_id')

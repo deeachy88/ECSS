@@ -1247,7 +1247,7 @@ aria-hidden="true">
 </form>
 
 <script>
-    var editQuill;
+   var editQuill;
 
    $(document).ready(function() {
     // Initialize Quill editor
@@ -1937,10 +1937,10 @@ $('#edit_draft_ec_modal').modal('show');
 
 function populate_delete_ec_details(record_id, application_no)
 {
-$('#delete_ec_draft_record_id').val(record_id);
-$('#delete_ec_draft_application_no').val(application_no);
+    $('#delete_ec_draft_record_id').val(record_id);
+    $('#delete_ec_draft_application_no').val(application_no);
 
-$('#delete_draft_ec_modal').modal('show');
+    $('#delete_draft_ec_modal').modal('show');
 }
 
 function update_ec_draft() {
@@ -1960,12 +1960,13 @@ function update_ec_draft() {
     let ec_heading = $('#edit_ec_heading').val();
     let ec_terms = ec_terms_html; 
 
+
     if(ec_type == "")
     {
         $('#edit_ec_typeErrorMsg').html("Choose One").show().delay(2000).fadeOut('slow');
         $('#edit_ec_type').focus();
     }
-    else if(ec_heading == "")
+    else if(ec_type == 'Terms' && ec_heading == "")
     {
         $('#edit_ec_headingErrorMsg').html("Enter EC Heading").show().delay(2000).fadeOut('slow');
         $('#edit_ec_heading').focus();

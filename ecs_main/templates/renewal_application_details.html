@@ -1792,7 +1792,7 @@ function update_ec_draft() {
         $('#edit_ec_typeErrorMsg').html("Choose One").show().delay(2000).fadeOut('slow');
         $('#edit_ec_type').focus();
     }
-    else if(ec_heading == "")
+    else if(ec_type == 'Terms' && ec_heading == "")
     {
         $('#edit_ec_headingErrorMsg').html("Enter EC Heading").show().delay(2000).fadeOut('slow');
         $('#edit_ec_heading').focus();
