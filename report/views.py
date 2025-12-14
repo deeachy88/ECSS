@@ -31,7 +31,7 @@ def ec_report_form(request):
     if ca_authority is not None:
         v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
         r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-        expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+        expiry_date_threshold = datetime.now().date() + timedelta(days=60)
         ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
@@ -87,7 +87,7 @@ def view_ec_list(request):
                                                             application_status='A').values()
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
@@ -101,7 +101,7 @@ def ec_reject_report_form(request):
     service_list = t_service_master.objects.filter(service_id__in=[1, 2, 3, 4, 5, 6, 7, 8, 9]).values()
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
@@ -151,7 +151,7 @@ def view_ec_reject_list(request):
                                                             application_status='Rejected').values()
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
@@ -164,7 +164,7 @@ def ec_pending_report_form(request):
     service_list = t_service_master.objects.filter(service_id__in=[1, 2, 3, 4, 5, 6, 7, 8, 9]).values()
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
@@ -198,7 +198,7 @@ def ec_pending_list(request):
                                                             application_status='P').values()
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
@@ -212,7 +212,7 @@ def land_use_report_form(request):
     service_list = t_service_master.objects.filter(service_id__in=[1, 2, 3, 4, 5, 6, 7, 8, 9]).values()
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
@@ -246,7 +246,7 @@ def land_use_report(request):
                                                             service_id=service_id).values()
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
@@ -259,7 +259,7 @@ def revenue_report_form(request):
     service_list = t_service_master.objects.filter(service_id__in=[1, 2, 3, 4, 5, 6, 7, 8, 9]).values()
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
@@ -281,7 +281,7 @@ def revenue_report(request):
     #    ec_list = t_ec_industries_t1_general.objects.filter(ec_approve_date__range=[from_date, to_date]).values()
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                   application_status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
@@ -320,17 +320,19 @@ def application_status_list(request):
 
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
-        non_renewed_applications = t_ec_industries_t1_general.objects.filter(
-            applicant_id=applicant_id,
+        renewal_expiry_subquery = t_ec_renewal_t1.objects.filter(
+            ec_reference_no=OuterRef('ec_reference_no')
+        ).values('ec_expiry_date')[:1]
+
+        non_updated_renewals = t_ec_industries_t1_general.objects.filter(
+            applicant_id=request.session['email'],
+            service_type__in=["Main Activity", "Old EC"],
             ec_expiry_date__lt=expiry_date_threshold,
-            service_type__in=["Main Activity", "Old EC"]
-        ).exclude(
-            ec_reference_no__in=Subquery(
-                t_ec_renewal_t1.objects.values('ec_reference_no')
-            )
+        ).filter(
+            ec_expiry_date__lt=Subquery(renewal_expiry_subquery)
         )
 
-        ec_renewal_count = non_renewed_applications.count()
+        ec_renewal_count = non_updated_renewals.count()
     
     elif login_type == 'I':
         role = request.session['role']
@@ -338,7 +340,7 @@ def application_status_list(request):
         if ca_authority is not None:
             v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
             r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-            expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+            expiry_date_threshold = datetime.now().date() + timedelta(days=60)
             ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'], application_status='A', ec_expiry_date__lt=expiry_date_threshold).count()
 
     # FIX: Use distinct() and order by application date to get unique records
@@ -423,17 +425,19 @@ def application_history(request):
 
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
-    non_renewed_applications = t_ec_industries_t1_general.objects.filter(
-        applicant_id=applicant_id,
+    renewal_expiry_subquery = t_ec_renewal_t1.objects.filter(
+        ec_reference_no=OuterRef('ec_reference_no')
+    ).values('ec_expiry_date')[:1]
+
+    non_updated_renewals = t_ec_industries_t1_general.objects.filter(
+        applicant_id=request.session['email'],
+        service_type__in=["Main Activity", "Old EC"],
         ec_expiry_date__lt=expiry_date_threshold,
-        service_type__in=["Main Activity", "Old EC"]
-    ).exclude(
-        ec_reference_no__in=Subquery(
-            t_ec_renewal_t1.objects.values('ec_reference_no')
-        )
+    ).filter(
+        ec_expiry_date__lt=Subquery(renewal_expiry_subquery)
     )
 
-    ec_renewal_count = non_renewed_applications.count()
+    ec_renewal_count = non_updated_renewals.count()
     
     service_details = t_service_master.objects.all()
     
@@ -564,7 +568,7 @@ def ec_renewal_list(request):
     ca_list = t_competant_authority_master.objects.all()
     ec_list = []  # Initialize ec_list with an empty list
 
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
     if ca_authority is not None:
         ec_list = t_ec_industries_t1_general.objects.filter(
@@ -592,7 +596,7 @@ def ec_renewal_list(request):
 def send_notification(request):
     notice = request.POST.get('notice')
     ca_authority = request.session['ca_authority']
-    expiry_date_threshold = datetime.now().date() + timedelta(days=30)
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
     ec_list = t_ec_industries_t1_general.objects.filter(
         ca_authority=ca_authority,
