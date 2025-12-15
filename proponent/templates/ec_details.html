@@ -12,9 +12,9 @@
         {% for ec_details in ec_details %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{ec_details.ec_heading}} - {{ec_details.ec_terms}}</td>
-                <td><textarea class="form-control" rows="2" name="action_undertaken" disabled>{{ ec_details.action_undertaken}}</textarea></td>
-                <td><textarea class="form-control" rows="2" name="remarks" disabled>{{ ec_details.remarks}}</textarea></td>
+                <td>{{ec_details.ec_heading}} - {{ ec_details.ec_terms|safe }}</td>
+                <td><textarea class="form-control" rows="2" name="action_undertaken" disabled>{{ ec_details.action_undertaken|default:""}}</textarea></td>
+                <td><textarea class="form-control" rows="2" name="remarks" disabled>{{ ec_details.remarks|default:""}}</textarea></td>
                 <td><a href="#" onclick="show_ec_details_modal('{{ ec_details.record_id}}','{{ec_details.ec_heading}} - {{ec_details.ec_terms}}')" class="btn btn-primary ms-2">
                         <i class="mdi mdi-autorenew"></i>
                     </a>

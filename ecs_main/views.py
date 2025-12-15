@@ -820,17 +820,21 @@ def forward_application(request):
         
         workflow_details = t_workflow_dtls.objects.filter(application_no=application_no)
         if 'REN' in str(application_no):
-            ModelClass = t_ec_renewal_t1
+            renewal_details = t_ec_renewal_t1.objects.filter(application_no=application_no).first()
+            if renewal_details:
+                application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=renewal_details.ec_reference_no)
+            else:
+                application_details = []
         else:
-            ModelClass = t_ec_industries_t1_general
-        
-        # Update the application
-        application_details = ModelClass.objects.filter(application_no=application_no)
+            application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+
+        # Extract applicant, service_id, and email
         for app_det in application_details:
             applicant = app_det.applicant_id
             service_id = app_det.service_id
             email = app_det.applicant_id
-            print(email)
+        # Update the application
+        
         
         if 'REN' in str(application_no):
             payment_type = "RENEW"
@@ -1026,7 +1030,7 @@ def forward_application(request):
             workflow_details.update(actor_id=request.session['login_id'])
             workflow_details.update(actor_name=request.session['name'])
             workflow_details.update(application_status='AP')
-
+    
             make_payment_request(request,application_no,addtional_payment_amount,description,account_head,service_type)
 
             for work_details in workflow_details:
@@ -1373,7 +1377,15 @@ def make_payment_request(request,application_no,total_amount,description, servic
     mob_no = None
     app_name = None
     proponent_type = None
-    app_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+
+    if 'REN' in str(application_no):
+        renewal_details = t_ec_renewal_t1.objects.filter(application_no=application_no).first()
+        if renewal_details:
+            app_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=renewal_details.ec_reference_no)
+        else:
+            app_details = []
+    else:
+        app_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
     
     for app_det in app_details:
         taxPayerDocumentNo = app_det.cid

@@ -1529,7 +1529,8 @@ def ec_renewal_details(request):
     service_code = 'REN'
     application_no = get_ren_application_no(request, service_code, '10')
     application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no,service_type="Main Activity")
-    ec_data = t_ec_industries_t11_ec_details.objects.filter(ec_reference_no=ec_reference_no,ec_type='Terms')
+    for app_details in application_details:
+        ec_data = t_ec_industries_t11_ec_details.objects.filter(application_no=app_details.application_no,ec_type='Terms')
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()

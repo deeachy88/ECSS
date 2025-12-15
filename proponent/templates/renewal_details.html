@@ -521,7 +521,8 @@
     function show_ec_details_modal(record_id, terms)
     {
         $('#ec_terms_id').val(record_id);
-        $('#ec_terms').val(terms);
+        const plainText = terms.replace(/<\/?[^>]+(>|$)/g, "");
+        $('#ec_terms').val(plainText);
         $('#compliance_modal').modal('show');
     }
 
