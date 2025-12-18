@@ -403,21 +403,42 @@
                 <div class="alert alert-info text-bg-info border-0" role="alert">
                     <strong>Client Details </strong>
                 </div>
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Additional Information Letter</label>
-                        {% for additional_info in additional_info %}
-                            <textarea class="form-control" rows="2" readonly>{{additional_info.additional_info_ca}}</textarea>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Additional Information</label>
-                        {% for application_details in application_details %}
-                            <textarea class="form-control" rows="2" readonly>{{application_details.additional_info}}</textarea>
-                        {% endfor %}
-                    </div>
+                <div class="col-lg-12">
+                    <label class="form-label fw-bold mb-2">Additional Information</label>
+
+                    {% for info in additional_info %}
+                        <div class="row g-2 mb-2 align-items-start">
+
+                            <!-- CA Letter -->
+                            <div class="col-lg-4">
+                                <textarea class="form-control form-control-sm"
+                                          rows="1"
+                                          readonly>{{ info.additional_info_ca }}</textarea>
+                            </div>
+
+                            <!-- CA Letter Date -->
+                            <div class="col-lg-2">
+                                <input class="form-control form-control-sm"
+                                       value="{{ info.additional_info_ca_date }}"
+                                       readonly>
+                            </div>
+
+                            <!-- Proponent Response -->
+                            <div class="col-lg-4">
+                                <textarea class="form-control form-control-sm"
+                                          rows="1"
+                                          readonly>{{ info.additional_info_proponent }}</textarea>
+                            </div>
+
+                            <!-- Proponent Date -->
+                            <div class="col-lg-2">
+                                <input class="form-control form-control-sm"
+                                       value="{{ info.additional_info_proponent_date }}"
+                                       readonly>
+                            </div>
+
+                        </div>
+                    {% endfor %}
                 </div>
                 <table id="basic-datatable" class="table dt-responsive nowrap w-100">
                     <thead>
@@ -683,20 +704,76 @@
         <form method="post" id="client_form">
             {% csrf_token %}
                 <div class="row additional_info_div">
-                    <div class="col-lg-6">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Additional Information Letter</label>
-                            {% for additional_info in additional_info %}
-                                <textarea class="form-control" rows="2" readonly>{{additional_info.additional_info_ca}}</textarea>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Additional Information</label>
-                            <textarea class="form-control" id="additional_info" name="additional_info" rows="2"></textarea>
-                        </div>
-                        <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    <div class="col-lg-12">
+                        <label class="form-label fw-bold mb-2">Additional Information Exchange</label>
+
+                        {% for info in additional_info %}
+                            <div class="mb-2 border rounded p-2">
+
+                                <div class="row g-2 align-items-start">
+                                    <!-- From CA -->
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold mb-1 small">
+                                            Remarks from Competent Authority
+                                        </label>
+                                        <textarea class="form-control form-control-sm"
+                                                  rows="1"
+                                                  readonly>{{ info.additional_info_ca }}</textarea>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label fw-semibold mb-1 small">
+                                            Remarks Date
+                                        </label>
+                                        <input id="ca_date" value="{{ info.additional_info_ca_date }}" disabled>
+                                    </div>
+
+                                    <!-- Proponent / Your Response -->
+                                    <div class="col-md-4">
+
+                                        {% if info.additional_info_proponent_date %}
+                                            <label class="form-label fw-semibold mb-1 small">
+                                                Your Response
+                                            </label>
+                                            <textarea class="form-control form-control-sm"
+                                                      rows="1"
+                                                      readonly>{{ info.additional_info_proponent }}</textarea>
+
+                                        {% else %}
+                                            <div class="p-2 rounded bg-warning bg-opacity-10 border border-warning">
+                                                <label class="form-label fw-semibold mb-1 small">
+                                                    Your Response
+                                                </label>
+
+                                                <input type="hidden"
+                                                       id="record_id"
+                                                       name="record_id"
+                                                       value="{{ info.record_id }}">
+
+                                                <textarea class="form-control form-control-sm"
+                                                          name="additional_info"
+                                                          id="additional_info"
+                                                          rows="1"
+                                                          placeholder="Type your response here..."></textarea>
+                                            </div>
+                                        {% endif %}
+
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label fw-semibold mb-1 small">
+                                            Remarks Date
+                                        </label>
+                                        <input id="ca_date" value="{{ info.additional_info_proponent_date }}" disabled>
+                                    </div>
+                                </div>
+
+                                {% if forloop.last and not info.additional_info_proponent %}
+                                    <div id="additional_infoErrorMsg"
+                                         class="alert alert-danger py-1 px-2 mt-1 mb-0 small"
+                                         style="display: none;"></div>
+                                {% endif %}
+
+                            </div>
+                        {% endfor %}
                     </div>
                     <div class="col-md-12">
                         <div class="card">
@@ -714,7 +791,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="row resubmit_remarks_div" style="display: none;">
                     <div class="col-lg-12">
                         <div class="mb-3">
@@ -781,31 +857,38 @@
                     <i class="uil-folder-heart me-1 h4 align-middle"></i>
                 </div>
                 <div class="col-lg-6">
-                    <div class="mb-3 ALS_button" style="display:none;">
-                        <div class="text-sm-end">
-                            <a href="#" class="btn btn-success" onclick="forwardApplication('ALS')">
-                                <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                        </div>
-                    </div>
-                    <div class="mb-3 FEATC_button" style="display:none;">
-                        <div class="text-sm-end">
-                            <a href="#" class="btn btn-success" onclick="forwardApplication('FEATC')">
-                                <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                        </div>
-                    </div>
-                    <div class="mb-3 RSS_button" style="display:none;">
-                        <div class="text-sm-end">
-                            <a href="#" class="btn btn-success" onclick="forwardApplication('RSS')">
-                                <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                        </div>
-                    </div>
-                    <div class="mb-3 LUS_button" style="display:none;">
-                        <div class="text-sm-end">
-                            <a href="#" class="btn btn-success" onclick="forwardApplication('LUS')">
-                                <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                        </div>
+                <div class="mb-3 ALS_button" style="display:none;">
+                    <div class="text-start">
+                        <a href="#" class="btn btn-success" onclick="forwardApplication('ALS')">
+                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit
+                        </a>
                     </div>
                 </div>
+
+                <div class="mb-3 FEATC_button" style="display:none;">
+                    <div class="text-start">
+                        <a href="#" class="btn btn-success" onclick="forwardApplication('FEATC')">
+                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mb-3 RSS_button" style="display:none;">
+                    <div class="text-start">
+                        <a href="#" class="btn btn-success" onclick="forwardApplication('RSS')">
+                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mb-3 LUS_button" style="display:none;">
+                    <div class="text-start">
+                        <a href="#" class="btn btn-success" onclick="forwardApplication('LUS')">
+                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit
+                        </a>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 </div>
@@ -837,14 +920,60 @@
                 </div>
             </div>
                 <div class="row verifier_additional_info_letter" style="display: none;">
-                    <div class="col-lg-6">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Additional Information Letter</label>
-                            {% for additional_info_det in additional_info %}
-                                <textarea class="form-control" rows="2" readonly>{{additional_info_det.additional_info_ca}}</textarea>
-                            {% endfor %}
+                    <div class="col-lg-12">
+                    <label class="form-label fw-bold mb-2">Additional Information Exchange</label>
+
+                    {% for info in additional_info %}
+                        <div class="mb-3 border rounded p-2
+                            {% if not info.additional_info_proponent %}
+                                bg-warning bg-opacity-10 border-warning
+                            {% endif %}
+                        ">
+                            <div class="row g-2 align-items-start">
+
+                                <!-- CA Remarks -->
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold mb-1 small">
+                                        Remarks from Competent Authority
+                                    </label>
+                                    <textarea class="form-control form-control-sm"
+                                              rows="1"
+                                              readonly>{{ info.additional_info_ca }}</textarea>
+                                </div>
+
+                                <!-- CA Date -->
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold mb-1 small">Remarks Date</label>
+                                    <input class="form-control form-control-sm"
+                                           value="{{ info.additional_info_ca_date }}"
+                                           disabled>
+                                </div>
+
+                                <!-- Proponent Response -->
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold mb-1 small">
+                                        Proponent's Response
+                                    </label>
+                                    <textarea class="form-control form-control-sm"
+                                              rows="1"
+                                              readonly>{{ info.additional_info_proponent|default:"" }}</textarea>
+                                </div>
+
+                                <!-- Proponent Date -->
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold mb-1 small">
+                                        Proponent's Response Date
+                                    </label>
+                                    <input class="form-control form-control-sm"
+                                           value="{{ info.additional_info_proponent_date|default:'' }}"
+                                           disabled>
+                                </div>
+
+                            </div>
                         </div>
-                    </div>
+                    {% endfor %}
+                </div>
+
                 </div>
                 <div class="col-md-12 verifier_ec_draft_div" style="display: none;">
                     <table id="basic-datatable" class="table dt-responsive nowrap w-100">
@@ -1416,6 +1545,7 @@ function forwardApplication(identifier) {
     let tat = $('#tat').val();
     let forward_to = $('#forward_to').val();
     let amount = $('#amount').val();
+    let record_id = $('#record_id').val();
 
     // Show the loader
     $('.spinner-border').show();
@@ -1429,6 +1559,7 @@ function forwardApplication(identifier) {
     if (identifier === 'R' || identifier === 'ALS') {
         postData['forward_to'] = forward_to;
         postData['additional_info'] = additional_info;
+        postData['record_id'] = record_id;
     } else {
         Object.assign(postData, {
             'additional_info_letter': additional_info_letter,
