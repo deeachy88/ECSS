@@ -122,6 +122,9 @@ class t_ec_renewal_t1(models.Model):
     submission_date = models.DateField(default=None, blank=True, null=True)
     application_status = models.CharField(max_length=20,default=None, blank=True, null=True)
     action_date = models.DateField(default=None, blank=True, null=True)
+    applicant_id = models.CharField(max_length=100, default=None, blank=True, null=True)
+    service_id = models.IntegerField(default=1, blank=True)
+    fee = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True)
 
 class t_ec_renewal_t2(models.Model):
     record_id = models.AutoField(primary_key=True)

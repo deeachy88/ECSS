@@ -71,7 +71,16 @@ def verify_application_list(request):
         
         # Get service names
         service_lookup = dict(t_service_master.objects.values_list('service_id', 'service_name'))
-        
+
+        # Industry details lookup (project_name and activity)
+        industry_lookup = {
+            industry.application_no: {
+                'project_name': industry.project_name,
+                'activity': industry.activity
+            }
+            for industry in t_ec_industries_t1_general.objects.all()
+        }
+
         # Process data
         application_data = []
         for app in application_list:
@@ -80,7 +89,7 @@ def verify_application_list(request):
             all_payments_have_receipt = payment_receipt_lookup.get(app.application_no, False)
             
             is_clickable = has_payments and all_payments_have_receipt
-            
+            industry_data = industry_lookup.get(app.application_no, {})
             application_data.append({
                 'application_no': app.application_no,
                 'service_id': app.service_id,
@@ -88,7 +97,10 @@ def verify_application_list(request):
                 'action_date': app.action_date,
                 'application_source': app.application_source,
                 'is_clickable': is_clickable,  # Only clickable if ALL receipts exist
-                'application_status': app.application_status
+                'application_status': app.application_status,
+                'project_name': industry_data.get('project_name', ''),
+                'activity': industry_data.get('activity', '')
+
             })
         
         # Get counts
@@ -219,7 +231,16 @@ def client_application_list(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-        
+
+        # Industry details lookup (project_name and activity)
+        industry_lookup = {
+            industry.application_no: {
+                'project_name': industry.project_name,
+                'activity': industry.activity
+            }
+            for industry in t_ec_industries_t1_general.objects.all()
+        }
+
         # Process application data
         application_data = []
         for app in application_list:
@@ -229,7 +250,8 @@ def client_application_list(request):
             all_payments_have_receipt = payment_receipt_lookup.get(app.application_no, False)
             
             is_clickable = (app.service_id == 0) or (has_payments and all_payments_have_receipt)
-            
+            industry_data = industry_lookup.get(app.application_no, {})
+
             application_data.append({
                 'application_no': app.application_no,
                 'service_id': app.service_id,
@@ -237,8 +259,10 @@ def client_application_list(request):
                 'action_date': app.action_date,
                 'application_source': app.application_source,
                 'is_clickable': is_clickable,
-                'application_status': app.application_status
-                
+                'application_status': app.application_status,
+                'project_name': industry_data.get('project_name', ''),
+                'activity': industry_data.get('activity', '')
+
             })
         
         # Sort by action date (newest first)
@@ -365,7 +389,16 @@ def reviewer_application_list(request):
             assigned_role_name='Reviewer', 
             ca_authority=ca_authority
         ).count()
-        
+
+        # Industry details lookup (project_name and activity)
+        industry_lookup = {
+            industry.application_no: {
+                'project_name': industry.project_name,
+                'activity': industry.activity
+            }
+            for industry in t_ec_industries_t1_general.objects.all()
+        }
+
         # Process application data
         application_data = []
         for app in application_list:
@@ -385,7 +418,8 @@ def reviewer_application_list(request):
                     all_payments_have_receipt = False
                 
                 is_clickable = (app.service_id == 0) or (app_payment_data and all_payments_have_receipt)
-            
+            industry_data = industry_lookup.get(app.application_no, {})
+
             application_data.append({
                 'application_no': app.application_no,
                 'service_id': app.service_id,
@@ -393,7 +427,10 @@ def reviewer_application_list(request):
                 'action_date': app.action_date,
                 'application_source': app.application_source,
                 'is_clickable': is_clickable,
-                'status': app.application_status
+                'status': app.application_status,
+                'project_name': industry_data.get('project_name', ''),
+                'activity': industry_data.get('activity', '')
+
             })
         
         # Sort by action date (newest first)
@@ -492,8 +529,8 @@ def payment_list(request):
 
 def view_application_details(request):
     application_no = request.GET.get('application_no')
-    print(application_no)
     service_id = request.GET.get('service_id')
+    print(service_id)
     status = None
     ca_auth = None
     assigned_role_id = None
@@ -517,7 +554,7 @@ def view_application_details(request):
         reviewer_list = t_user_master.objects.filter(role_id='3', agency_code=ca_auth)
         file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='TOR')
         tor_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RTOR')
-        additional_info = t_ec_additional_information.objects.filter(application_no=application_no)
+        additional_info = t_ec_additional_information.objects.filter(application_no=application_no).order_by('-record_id')
         return render(request, 'tor_form_details.html', {'application_details':application_details,'file_attach':file_attach,'dzongkhag':dzongkhag,'additional_info':additional_info, 'gewog':gewog, 'village':village, 'thromde':thromde, 'reviewer_list':reviewer_list,'assigned_role_id':assigned_role_id, 'status':status,'tor_attach':tor_attach,'pay_details':pay_details})
     else:
         if service_id != '10':
@@ -534,7 +571,7 @@ def view_application_details(request):
             ai_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='AI')
             app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-            additional_info = t_ec_additional_information.objects.filter(application_no=application_no)
+            additional_info = t_ec_additional_information.objects.filter(application_no=application_no).order_by('-record_id')
             return render(request, 'application_details.html',{'reviewer_list':reviewer_list,'assigned_role_name':assigned_role_name,'status':status,'ai_attach':ai_attach,'application_details':application_details,'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog,'pay_details':pay_details, 'village':village,'file_attach':file_attach,
                                                         'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'ec_details':ec_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach,'additional_info':additional_info})
         elif service_id == '10':
@@ -554,7 +591,7 @@ def view_application_details(request):
             app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             renewal_details = t_ec_renewal_t1.objects.filter(application_no=application_no)
-            additional_info = t_ec_additional_information.objects.filter(application_no=application_no)
+            additional_info = t_ec_additional_information.objects.filter(application_no=application_no).order_by('-record_id')
             return render(request, 'renewal_application_details.html',{'application_details':application_details,'assigned_role_name':assigned_role_name,'additional_info':additional_info,'renewal_details_one':renewal_details_one,'status':status,'pay_details':pay_details,
                                                                     'dzongkhag':dzongkhag,'renewal_details':renewal_details,'ren_attach':ren_attach,'gewog':gewog,'village':village,'ai_attach':ai_attach,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details_two':renewal_details_two,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
 
@@ -808,6 +845,8 @@ def forward_application(request):
         application_no = request.POST.get('application_no')
         identifier = request.POST.get('identifier')
         forward_to = request.POST.get('forward_to')
+        record_id = request.POST.get('record_id')
+        print(record_id)
 
         applicant = None
         service_id = None
@@ -947,14 +986,14 @@ def forward_application(request):
             data['redirect_to'] = "verify_application_list"
         elif identifier == 'ALS':
             additional_info = request.POST.get('additional_info')
-            aditional_details = t_ec_additional_information.objects.filter(application_no=application_no)
-            aditional_details.update(additional_info_proponent=additional_info,additional_info_proponent_date=date.today())
+            additional_details = t_ec_additional_information.objects.filter(record_id=record_id)
+            additional_details.update(additional_info_proponent=additional_info,additional_info_proponent_date=date.today())
             t_application_history.objects.create(application_status='ALS',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         applicant_id=applicant,
-                        remarks='Addtional Info Submitted',
+                        remarks='Additional Info Submitted',
                         service_id=service_id)
             workflow_details.update(application_status='ALS', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='3',assigned_role_name='Reviewer')
             data['message'] = "success"

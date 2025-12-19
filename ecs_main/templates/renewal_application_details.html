@@ -6,11 +6,11 @@
         </div>
         <div id="cardCollpase1" class="collapse pt-3 show">
             {% for renewal_details in renewal_details %}
-                <input type="text" class="form-control" value="{{renewal_details.application_no}}" name="application_no" id="application_no" style="display:none;"> 
-            {% endfor %} 
-            <input type="text" class="form-control" value="{{status}}" id="status" name="status" style="display:none;"> 
+                <input type="text" class="form-control" value="{{renewal_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+            {% endfor %}
+            <input type="text" class="form-control" value="{{status}}" id="status" name="status" style="display:none;">
             <input type="text" class="form-control" value="{{assigned_role_name}}" id="assigned_role_name" name="assigned_role_name" style="display:none;">
-            {% for application_details in application_details %}  
+            {% for application_details in application_details %}
             <div class="row">
                     <div class="col-lg-6">
                         <div class="mb-3">
@@ -240,9 +240,9 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Additional Information</label>
-                        {% for application_details in application_details %}
-                            <textarea class="form-control" rows="2" readonly>{{application_details.additional_info}}</textarea>
+                        <label class="form-label fw-bold">Additional Information From Proponent</label>
+                        {% for additional_info in additional_info %}
+                            <textarea class="form-control" rows="2" readonly>{{additional_info.additional_info_proponent}}</textarea>
                         {% endfor %}
                     </div>
                 </div>
@@ -297,7 +297,7 @@
                     </div>
                     <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
                 </div>
-                
+
                 <div class="row additional_payment_info" style="display: none;">
                     <div class="col-lg-6">
                         <div class="mb-3">
@@ -326,14 +326,14 @@
                                         <option value="">--SELECT--</option>
                                         {% for payment_details in pay_details %}
                                             <option value="{{ payment_details.account_head_code }}">{{ payment_details.account_head_name }}</option>
-                                        {% endfor %} 
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Additional Payable Amount</label>
-                                    <input type="number" name="addtional_payment_amount" class="form-control" id="addtional_payment_amount"> 
+                                    <input type="number" name="addtional_payment_amount" class="form-control" id="addtional_payment_amount">
                                 </div>
                             </div>
                         </div>
@@ -354,7 +354,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="row fines_penalty_div" style="display: none;">
                     <div class="col-lg-6">
                         <div class="mb-3">
@@ -437,7 +437,7 @@
                                         <td>
                                             {% for rev_lu_attach in rev_lu_attach %}
                                                 <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
-                                            {% endfor %}    
+                                            {% endfor %}
                                         </td>
                                         <td>
                                             {% for rev_lu_attach in lu_attach %}
@@ -520,7 +520,7 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Additional Information</label>
+                            <label class="form-label fw-bold">Additional Information From Competent</label>
                             <textarea class="form-control" id="additional_info" name="additional_info" rows="2"></textarea>
                         </div>
                         <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -550,7 +550,7 @@
                         </div>
                     </div>
                 </div>
-                    
+
                 <div class="col-md-12 eatc_attachment_details" style="display: none;">
                     <div class="card">
                         <div class="card-body">
@@ -582,7 +582,7 @@
                                         <td>
                                             {% for rev_lu_attach in rev_lu_attach %}
                                                 <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
-                                            {% endfor %}    
+                                            {% endfor %}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -692,7 +692,7 @@
                                 <td>
                                     {% for rev_lu_attach in rev_lu_attach %}
                                         <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
-                                    {% endfor %}    
+                                    {% endfor %}
                                 </td>
                                 <td>
                                     {% for rev_lu_attach in lu_attach %}
@@ -737,7 +737,7 @@
                 </div>
                 <div class="spinner-border" role="status" style="display: none;">
                     <span class="visually-hidden">Loading...</span>
-                </div>  
+                </div>
                 <div class="row">
                     <div class="mb-3 R_button" style="display:none;">
                         <a href="#" class="btn btn-success" onclick="forwardApplication('R')">
@@ -1139,7 +1139,7 @@ $('#draft_ec_form').on('submit', function() {
 $(function() {
     let status = $('#status').val();
     let assigned_role_name = $('#assigned_role_name').val();
-    
+
     if(status == 'P' || status == 'DEC' || status == 'AL')
     {
         if(status == 'P' && assigned_role_name != 'Reviewer')
@@ -1168,11 +1168,11 @@ $(function() {
     }
     else if (['R', 'ALS', 'AP', 'FEATC', 'RSS', 'LUS', 'APP'].includes(status)) {
         $('#reviewer_details_accordian').show();
-        
+
         // Reset all optional sections first
         $('.information_complete_div, .additional_info, .rectification_div, .draft_ec_div, .rev_resubmit_remarks_div, .eatc_attachment_div, .rev_lu_attachment_div').hide();
         $('.AL_button, .rectification_button, .ec_draft_button, .LU_button').hide();
-        
+
         // Handle specific status cases
         switch (status) {
             case 'R':
@@ -1181,23 +1181,23 @@ $(function() {
                 $('input[name="information"]').focus();
                 $('.AL_button').show();
                 break;
-                
+
             case 'ALS':
                 $('.information_complete_div, .additional_info').show();
                 break;
-                
+
             case 'FEATC':
                 $('.rectification_div, .rectification_button').show();
                 break;
-                
+
             case 'LUS':
                 $('.draft_ec_div, .ec_draft_button').show();
                 break;
-                
+
             case 'RSS':
                 $('.rev_resubmit_remarks_div').show();
                 break;
-                
+
             case 'APP':
                 $('.eatc_attachment_div, .rev_lu_attachment_div, .LU_button').show();
                 break;
@@ -1277,8 +1277,8 @@ function forwardApplication(identifier) {
             $('.spinner-border').hide();
 
             if (data.message === 'success') {
-                let successMsg = identifier === 'A' ? "Application Approved" : 
-                identifier === 'P' ? "Payment Added" : 
+                let successMsg = identifier === 'A' ? "Application Approved" :
+                identifier === 'P' ? "Payment Added" :
                 "Application Forwarded Successfully";
 
                 $('#verifier_application_successMsg')
@@ -1313,7 +1313,7 @@ function forwardApplication(identifier) {
                 }
             } else {
                 var errorMsg = data.error;
-        
+
                 $('#verifier_application_errorMsg').html(`Application Error: ${data.error}`).show();
                 $('#verifier_application_errorMsg').focus();
 
@@ -1331,7 +1331,7 @@ function forwardApplication(identifier) {
             // Hide the loader in case of an error
             $('.spinner-border').hide();
             var errorMsg = data.error;
-        
+
             $('#verifier_application_errorMsg').html(`Application Error: ${data.error}`).show();
             $('#verifier_application_errorMsg').focus();
 
@@ -1386,10 +1386,10 @@ function check_eatc_addtional_payment(value)
         $('.additonal_payment_button').hide();
         $('.LU_button').show();
         $('.AL_button').hide();
-        
+
         $('#account_head').val("");
         $('#addtional_payment_amount').val("");
-        
+
     }
 }
 
@@ -1400,7 +1400,7 @@ if(value == 'No')
 $('.lu_attachment_div').show();
 }
 else
-{ 
+{
 $('.lu_attachment_div').hide();
 }
 
@@ -1409,11 +1409,11 @@ function save_ec_draft() {
     let application_no = $('#application_no').val();
     let ec_type = $('#ec_type').val();
     let ec_heading = $('#ec_heading').val();
-    
+
     // Get the HTML content from Quill editor
     let quill = new Quill('#ec_terms_editor');
     let ec_terms = quill.root.innerHTML; // This gets the HTML content
-    
+
     // Or if you already have a Quill instance defined globally:
     // let ec_terms = quill.root.innerHTML;
 
@@ -1438,15 +1438,15 @@ function save_ec_draft() {
     else {
         // Set the value in the hidden input (if you're using one)
         $('#ec_terms').val(ec_terms);
-        
+
         $.ajax({
             type: "POST",
             url: "{% url 'save_draft_ec_details' %}",
             data: {
-                'application_no': application_no, 
-                'ec_type': ec_type,  
+                'application_no': application_no,
+                'ec_type': ec_type,
                 'ec_heading': ec_heading,
-                'ec_terms': ec_terms, 
+                'ec_terms': ec_terms,
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             success: function(responseText) {
@@ -1785,7 +1785,7 @@ function update_ec_draft() {
     let application_no = $('#ec_draft_application_no').val();
     let ec_type = $('#edit_ec_type').val();
     let ec_heading = $('#edit_ec_heading').val();
-    let ec_terms = ec_terms_html; 
+    let ec_terms = ec_terms_html;
 
     if(ec_type == "")
     {
@@ -1797,7 +1797,7 @@ function update_ec_draft() {
         $('#edit_ec_headingErrorMsg').html("Enter EC Heading").show().delay(2000).fadeOut('slow');
         $('#edit_ec_heading').focus();
     }
-    else if(ec_terms_text == "") 
+    else if(ec_terms_text == "")
     {
         $('#edit_ec_termsErrorMsg').html("Enter EC Terms").show().delay(2000).fadeOut('slow');
         $('#edit_ec_terms_editor').focus();
@@ -1885,4 +1885,3 @@ function check_edit_ec_draft_type(value)
 }
 </script>
 
-                    
