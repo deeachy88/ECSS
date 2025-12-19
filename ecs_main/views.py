@@ -1368,61 +1368,52 @@ def get_random_tax_no(length):
     tax_no = ''.join(random.choice(digits) for i in range(length))
     return tax_no
 
-def make_payment_request(request,application_no,total_amount,description, service_code,service_type):
+def make_payment_request(request, application_no, total_amount, description, service_code, service_type):
     token = get_birms_token()
-    print(token)
-    new_app_no = None
-    taxPayerNo = None
-    taxPayerDocumentNo = None
-    mob_no = None
-    app_name = None
-    proponent_type = None
+    new_app_no = generate_new_ap_no() if description == "ADDITIONAL PAYMENT" else application_no
 
+    # Fetch application details
     if 'REN' in str(application_no):
-        renewal_details = t_ec_renewal_t1.objects.filter(application_no=application_no).first()
-        if renewal_details:
-            app_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=renewal_details.ec_reference_no)
-        else:
-            app_details = []
+        renewal = t_ec_renewal_t1.objects.filter(application_no=application_no).first()
+        app_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=renewal.ec_reference_no) if renewal else []
     else:
         app_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-    
-    for app_det in app_details:
-        taxPayerDocumentNo = app_det.cid
-        mob_no = app_det.contact_no
-        app_name = app_det.applicant_name
-        proponent_type = app_det.proponent_type
-        email_id = app_det.applicant_id
 
+    # Use first record if available
+    app_det = app_details.first() if app_details else None
+
+    if not app_det:
+        print(f"No application details found for {application_no}")
+        return
+
+    # Extract required fields
+    taxPayerDocumentNo = app_det.cid
+    mob_no = app_det.contact_no
+    app_name = app_det.applicant_name
+    proponent_type = app_det.proponent_type
+    email_id = app_det.applicant_id
+
+    # Override taxPayerDocumentNo for non-individual proponents
     if proponent_type != 4:
         taxPayerDocumentNo = get_random_tax_no(8)
-    
-    if description == "ADDITIONAL PAYMENT":
-        new_app_no = generate_new_ap_no()
-    else:
-        new_app_no = application_no
 
     # Endpoint URL
     url = "https://birmsstagging.drc.gov.bt/api-services/moenr-service/api/v1/paymentdetails/create"
 
-    today_date = date.today()
-
-    # Convert date object to string
-    today_date_str = today_date.isoformat()
-    # Payload data
+    # Prepare payload
     payload = {
         "platform": "Environment Clearance Services System",
         "refNo": new_app_no,
-        "taxPayerNo": taxPayerNo,
-        "taxPayerDocumentNo": taxPayerDocumentNo,#id card
-        "paymentRequestDate": today_date_str,
+        "taxPayerNo": None,
+        "taxPayerDocumentNo": taxPayerDocumentNo,
+        "paymentRequestDate": date.today().isoformat(),
         "agencyCode": "DTH1552",
         "payerEmail": email_id,
         "mobileNo": mob_no,
         "totalPayableAmount": total_amount,
         "paymentDueDate": None,
         "taxPayerName": app_name,
-        "code":"moenr",
+        "code": "moenr",
         "paymentLists": [
             {
                 "serviceCode": service_code,
@@ -1432,20 +1423,19 @@ def make_payment_request(request,application_no,total_amount,description, servic
         ]
     }
 
-    # Convert payload to JSON string
-    headers = {'Authorization': "Bearer {}".format(token)}
-    response = requests.post(url, headers=headers,json=payload, verify=False)
-    print(response.text)
-    # Check response status
-    if response.status_code == 200:
-        data = response.json()  # Parse response JSON
-        paymentAdviceNo = data['content']['paymentAdviceNo']
-        insert_app_payment_details(request,application_no,description,total_amount,service_type,paymentAdviceNo,new_app_no)
-        print("Payment request successful")
-        print("Response:", response.json())
-    else:
-        print("Payment request failed")
-        print("Response:", response.text)
+    headers = {'Authorization': f"Bearer {token}"}
+
+    try:
+        response = requests.post(url, headers=headers, json=payload, verify=False)
+        response.raise_for_status()  # Raises HTTPError for bad responses
+        data = response.json()
+        paymentAdviceNo = data.get('content', {}).get('paymentAdviceNo')
+        insert_app_payment_details(request, application_no, description, total_amount, service_type, paymentAdviceNo, new_app_no)
+        print("Payment request successful:", data)
+    except requests.exceptions.RequestException as e:
+        print("Payment request failed:", e)
+        if response is not None:
+            print("Response:", response.text)
 
 def save_lu_attachment(request):
     data = dict()

@@ -162,7 +162,7 @@
                                         {% for ec_details in renewal_details_two %}
                                             <tr>
                                                 <td>{{ forloop.counter }}</td>
-                                                <td>{{ec_details.ec_heading}} - {{ec_details.ec_terms}}</td>
+                                                <td>{{ec_details.ec_heading}} - {{ec_details.ec_terms|safe}}</td>
                                                 <td>{{ ec_details.action_undertaken}}</td>
                                                 <td>{{ ec_details.remarks}}</td>
                                             </tr>
