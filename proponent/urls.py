@@ -17,12 +17,17 @@ urlpatterns = [
     path('draft_application_list', views.draft_application_list, name='draft_application_list'),
     path('view_draft_application_details', views.view_draft_application_details, name='view_draft_application_details'),
 
+
     # Update OLD EC
     path('old_ec_application', views.old_ec_application, name='old_ec_application'),
     path('old_ec_application_form', views.old_ec_application_form, name='old_ec_application_form'),
     path('save_old_ec_general_details', views.save_old_ec_general_details, name='save_old_ec_general_details'),
     path('submit_old_ec_general_application', views.submit_old_ec_general_application, name='submit_old_ec_general_application'),
     path('check_old_ec', views.check_old_ec, name='check_old_ec'),
+
+    # PENDING OLD DETAILS
+    path('view_pending_old_ec_details', views.view_pending_old_ec_details, name='view_pending_old_ec_details'),
+
 
     # EC RENEWAL
     path('ec_renewal', views.ec_renewal, name='ec_renewal'),
