@@ -1,8 +1,15 @@
 {% extends 'common_dashboard.html' %}
-{% load crispy_forms_tags %}
 {% block content %}
-{% load static %}
+<style>
+    .distinct-activity {
+        border: 2px solid #6c757d;
+        border-radius: 6px;
+        padding: 12px;
+        background-color: #f8f9fa;
+        margin-bottom: 0;
+    }
 
+</style>
 <style>
     /* ===== HEADING STYLING ===== */
     h5 {
@@ -194,68 +201,71 @@
         }
     }
 </style>
-
-<div class="row">
-    <div class="col-xl-12">
-        <div class="card mt-1">
-            <div class="card-body">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-plus-circle"></i>
-                    ADD EXISTING EC DETAILS: Please Click on the Relevant Activity
-                </h5>
-
-                <div id="cardCollpase1" class="collapse pt-3 show">
-                    <!-- Table with DataTable Search -->
-                    <div class="table-responsive">
-                        <table id="basic-datatable" class="table dt-responsive table-sm table-centered mb-0">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Activity</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for bsic_code_list in bsic_details %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>
-                                            <a href="javascript:void(0);"
-                                                class="btn btn-link text-info mb-0"
-                                                onclick="viewApplicationDetails('{{bsic_code_list.activity}}')">
-                                                {{bsic_code_list.activity}}
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+<div id="application_details">
+    <div class="card mt-1">
+        <div class="card-body">
+            <h5 class="card-title mb-0 text-right">Pending Old EC List for Submission</h5>
+            <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
+                <i class="ri-check-line me-2"></i>
             </div>
-        </div> <!-- end card-->
+            <div id="cardCollpase1" class="collapse pt-3 show">
+                <table id="basic-datatable" class="table dt-responsive table-sm table-centered mb-0 nowrap">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Application No</th>
+                            <th scope="col">Old EC Reference No</th>
+                            <th scope="col">Project name</th>
+                            <th scope="col">Activity</th>
+                            <th scope="col">Service Name</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for application_details in application_details %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <a href="javascript:void(0);"
+                                       class="btn btn-outline-primary btn-sm"
+                                       onclick="viewApplicationDetails('{{application_details.application_no}}')">
+                                       {{application_details.application_no}}
+                                    </a>
+                                </td>
+                                <td>{{application_details.ec_reference_no}}</td>
+                                <td>{{application_details.project_name}}</td>
+                                <td>{{application_details.activity}}</td>
+                                {% for service_details in service_details %}
+                                    {% if application_details.service_id == service_details.service_id %}
+                                        <td>{{service_details.service_name}}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No Data</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
-
 <script>
-    $(document).ready(function() {
-        $('#basic-datatable').DataTable({
-            "pageLength": 10,
-            "language": {
-                "search": "Search Activity:"
-            }
-        });
-    });
-
-    function viewApplicationDetails(activity) {
+    function viewApplicationDetails(application_no,service_id,application_source)
+    {
         $.ajax({
-            type: "GET",
-            url: "{% url 'get_application_service_id' %}",
-            data: {'activity': activity},
-            success: function(data) {
-                window.location.href = '/old_ec_application_form';
+            type : "GET",
+            url : "{% url 'view_pending_old_ec_details' %}",
+            data :{'application_no':application_no, 'service_id':service_id},
+            success : function(data)
+            {
+                $('#application_details').html(data);
+                $('#application_details').show();
             }
         });
     }
 </script>
-
 {% endblock %}
+

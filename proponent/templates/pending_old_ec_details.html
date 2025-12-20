@@ -105,6 +105,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
+                <h5 class="header-title mb-3">Pending Old EC for Submission</h5>
                 {% if application_details.service_id == 1 %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Industry Projects - 2022</h4>
                 {% elif application_details.service_id == 2 %}
@@ -164,7 +165,7 @@
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Name of the Applicant</label>
-                                            <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
+                                            <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly>
                                         </div>
                                         <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
@@ -223,12 +224,12 @@
                                             <div class="mb-3">
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
-                                                        <input 
-                                                            type="radio" 
-                                                            name="dzongkhag_throm" 
-                                                            id="dzongkhag-radio" 
-                                                            class="form-check-input" 
-                                                            value="Dzongkhag" 
+                                                        <input
+                                                            type="radio"
+                                                            name="dzongkhag_throm"
+                                                            id="dzongkhag-radio"
+                                                            class="form-check-input"
+                                                            value="Dzongkhag"
                                                             onclick="check_dzong_throm(this.value)"
                                                             {% if application_details.dzongkhag_throm == 'Dzongkhag' %}checked{% endif %}>
                                                         <label class="form-check-label">Dzongkhag</label>
@@ -242,12 +243,12 @@
                                             <div class="mb-3">
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
-                                                        <input 
-                                                            type="radio" 
-                                                            name="dzongkhag_throm" 
-                                                            id="thromde-radio" 
-                                                            class="form-check-input" 
-                                                            value="Thromde" 
+                                                        <input
+                                                            type="radio"
+                                                            name="dzongkhag_throm"
+                                                            id="thromde-radio"
+                                                            class="form-check-input"
+                                                            value="Thromde"
                                                             onclick="check_dzong_throm(this.value)"
                                                             {% if application_details.dzongkhag_throm == 'Thromde' %}checked{% endif %}>
                                                         <label class="form-check-label">Thromde</label>
@@ -262,23 +263,23 @@
                                                 <label class="form-label fw-bold">Select One</label>
                                                 <div class="mt-2">
                                                     <div class="form-check form-check-inline">
-                                                        <input 
-                                                            type="radio" 
-                                                            name="dzongkhag_throm" 
-                                                            id="dzongkhag-radio" 
-                                                            class="form-check-input" 
-                                                            value="Dzongkhag" 
+                                                        <input
+                                                            type="radio"
+                                                            name="dzongkhag_throm"
+                                                            id="dzongkhag-radio"
+                                                            class="form-check-input"
+                                                            value="Dzongkhag"
                                                             onclick="check_dzong_throm(this.value)"
                                                             {% if application_details.dzongkhag_throm == 'Dzongkhag' %}checked{% endif %}>
                                                         <label class="form-check-label">Dzongkhag</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input 
-                                                            type="radio" 
-                                                            name="dzongkhag_throm" 
-                                                            id="thromde-radio" 
-                                                            class="form-check-input" 
-                                                            value="Thromde" 
+                                                        <input
+                                                            type="radio"
+                                                            name="dzongkhag_throm"
+                                                            id="thromde-radio"
+                                                            class="form-check-input"
+                                                            value="Thromde"
                                                             onclick="check_dzong_throm(this.value)"
                                                             {% if application_details.dzongkhag_throm == 'Thromde' %}checked{% endif %}>
                                                         <label class="form-check-label">Thromde</label>
@@ -288,8 +289,6 @@
                                             <div id="siteErrorMsg" class="alert alert-danger d-none"></div>
                                         </div>
                                     {% endif %}
-                                    
-                                    
                                     <!-- Thromde Section - Always included but conditionally hidden -->
                                     <div class="col-lg-6 thromde" {% if application_details.dzongkhag_throm != 'Thromde' %}style="display:none;"{% endif %}>
                                         <div class="mb-3">
@@ -358,32 +357,58 @@
                                         <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                 </div>
-                            </form>
-                            <div class="alert alert-success border-0 rounded-0" 
-                                role="alert" 
-                                id="application_form_successMsg" 
-                                style="display:none"
-                                aria-live="polite"
-                                aria-atomic="true">
-                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                            </div>
 
-                            <!-- Error Alert -->
-                            <div class="alert alert-danger border-0 rounded-0" 
-                                role="alert" 
-                                id="application_form_errorMsg" 
-                                style="display:none"
-                                aria-live="assertive"
-                                aria-atomic="true">
-                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                            </div>
-                            <ul class="list-inline wizard mb-0">
-                                <li class="next list-inline-item float-end">
-                                    <a href="javascript:void(0);" class="btn btn-success" onclick="save_general_info()">Save-Next <i class="mdi mdi-arrow-right ms-1"></i></a>
-                                </li>
-                            </ul>
-                        </div>
+                                <div class="alert custom-bg border-0" role="alert">
+                                    <h6 class="mb-0">EC Details</h6>
+                                </div>
+                                <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">EC Reference No:</label>
+                                            <input type="text" name="ec_reference_no" class="form-control" id="ec_reference_no" value="{{application_details.ec_reference_no}}" onblur="check_old_ec(this.value)">
+                                        </div>
+                                        <div id="ec_reference_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">EC Issue Date</label>
+                                            <input type="date" name="ec_issue_date" id="ec_issue_date" class="form-control date-picker flatpickr-input active" value="{{ application_details.ec_approve_date|date:'Y-m-d' }}" onchange="validateECValidity()">
+                                        </div>
+                                        <div id="ec_issue_dateErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">EC Validity</label>
+                                            <input type="date" name="ec_validity" id="ec_validity" class="form-control date-picker flatpickr-input active" value="{{ application_details.ec_expiry_date|date:'Y-m-d' }}" onchange="validateECValidity()">
+                                        </div>
+                                        <div id="ec_validityErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-success border-0 rounded-0"
+                                    role="alert"
+                                    id="application_form_successMsg"
+                                    style="display:none"
+                                    aria-live="polite"
+                                    aria-atomic="true">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                </div>
 
+                                <!-- Error Alert -->
+                                <div class="alert alert-danger border-0 rounded-0"
+                                    role="alert"
+                                    id="application_form_errorMsg"
+                                    style="display:none"
+                                    aria-live="assertive"
+                                    aria-atomic="true">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                </div>
+                                <ul class="list-inline wizard mb-0">
+                                    <li class="next list-inline-item float-end">
+                                        <a href="javascript:void(0);" class="btn btn-success" onclick="save_general_info()">Save-Next <i class="mdi mdi-arrow-right ms-1"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
                         <div class="tab-pane fade" id="file_attachment">
                             <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                 <div class="col-lg-12">
@@ -470,7 +495,7 @@
                             <form method="post" id="general_submit_form" class="form-horizontal">
                                 {% csrf_token %}
                                 <input type="hidden" class="form-control" name="general_disclaimer_application_no" id="general_disclaimer_application_no">
-                                
+
                                 <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
                                 <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
                                 <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
@@ -490,18 +515,18 @@
                                     Loading...
                                 </button>
                             </form>
-                            <div class="alert alert-success border-0 rounded-0" 
-                                role="alert" 
-                                id="general_submit_successMsg" 
+                            <div class="alert alert-success border-0 rounded-0"
+                                role="alert"
+                                id="general_submit_successMsg"
                                 style="display:none"
                                 aria-live="polite"
                                 aria-atomic="true">
                             </div>
 
                             <!-- Error Alert -->
-                            <div class="alert alert-danger border-0 rounded-0" 
-                                role="alert" 
-                                id="general_submit_errorMsg" 
+                            <div class="alert alert-danger border-0 rounded-0"
+                                role="alert"
+                                id="general_submit_errorMsg"
                                 style="display:none"
                                 aria-live="assertive"
                                 aria-atomic="true">
@@ -565,6 +590,9 @@
         let village_code = $('#vil_chiwog').val();
         let project_site = $('#project_site').val();
         let project_description = $('#project_description').val();
+        let refNo = $('#ec_reference_no').val();
+        let ec_issue_date = $('#ec_issue_date').val();
+        let ec_validity = $('#ec_validity').val();
 
         if (project_name === "") {
             showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');
@@ -594,12 +622,24 @@
             showErrorAndFocus('#project_siteErrorMsg', 'Enter Project Site', '#project_site');
             return false;
         }
+        else if (refNo === "") {
+            showErrorAndFocus('#ec_reference_noErrorMsg', 'Enter EC Clearance No', '#ec_reference_no');
+            return false;
+        }
+        else if (ec_issue_date === "") {
+            showErrorAndFocus('#ec_issue_dateErrorMsg', 'Enter EC Issue Date', '#ec_issue_date');
+            return false;
+        }
+        else if (ec_validity === "") {
+            showErrorAndFocus('#ec_validityErrorMsg', 'Enter EC Validity', '#ec_validity');
+            return false;
+        }
 
         else {
             // Submit the form via AJAX
             $.ajax({
                 type: "POST",
-                url: "{% url 'save_general_details' %}",
+                url: "{% url 'save_old_ec_general_details' %}",
                 data: $('#general_application_form').serialize(),
                 success: function(data) {
                     if (data.message == 'success') {
@@ -652,17 +692,17 @@
 
     function showErrorAndFocus(errorElement, message, focusElement) {
         $(errorElement).html(message).show();
-        
+
         // Use setTimeout to ensure the focus happens after the DOM updates
         setTimeout(function() {
             $(focusElement).focus();
-            
+
             // Scroll to the element if needed
             $('html, body').animate({
                 scrollTop: $(focusElement).offset().top - 100
             }, 100);
         }, 50);
-        
+
         // Hide the error after 2 seconds
         setTimeout(function() {
             $(errorElement).fadeOut('slow');
@@ -697,7 +737,7 @@
                     setTimeout(() => {
                         // Remove active from file_attachment and make it disabled
                         $('a[href="#file_attachment"]').removeClass("active");
-                        
+
                         // Make disclaimer active and enabled
                         $('a[href="#disclaimer"]').addClass("active");
                         $('a[href="#disclaimer"]').removeAttr("disabled");
@@ -720,12 +760,12 @@
                     setTimeout(() => {
                         $('#general_attachment_errorMsg').delay(2000).fadeOut('slow');
                     }, 2000);
-                    
+
                 }
             }
         });
 
-        
+
     }
 
     function save_general_attachment()
@@ -797,7 +837,7 @@
 
         $.ajax({
             type: "POST",
-            url: "{% url 'submit_general_application' %}",
+            url: "{% url 'submit_old_ec_general_application' %}",
             data: $('#general_submit_form').serialize(),
             success: function(data) {
                 if (data.message == 'success') {
