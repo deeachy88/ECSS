@@ -3217,200 +3217,154 @@ def old_ec_application_form(request):
 
 def save_old_ec_general_details(request):
     data = {'message': 'failure'}
-
+    
     try:
-        # identifier is for Old Pending/Draft Application. identifier = 'DR'
-        # dzongkhag_throm, application_type, ec_reference_no, ec_issue_date, ec_validity are pulled from the form
-        # (old_ec_application_form.html AND pending_old_ec_details.html)
-        identifier = request.POST.get('identifier')
-        dzongkhag_throm = request.POST.get('dzongkhag_throm')
-        application_type = "Old_EC"
-        ec_reference_no = request.POST.get('ec_reference_no')
-        ec_issue_date = request.POST.get('ec_issue_date')
-        ec_validity = request.POST.get('ec_validity')
-        service_type_to_use = 'Main Activity'
-
-        # Get service_id_to_use early for all cases
-        service_id_to_use = None
-        activity_to_use = None
-        color_code_to_use = None
-        service_code = None
-        ca_auth_to_use = None
-
-        if identifier !='DR':
-            # New application - use session values.
-            # Get service_id_to_use,  activity_to_use, color_code_to_use from POST data for new applications
-            service_id_to_use = request.session['service_id']
-            activity_to_use = request.POST.get('activity')
-            color_code_to_use = request.session['colour_code']
-            # Determine service_code based on service_id_to_use
-            service_code_map = {
-                '1': 'IEE', '2': 'ENE', '3': 'ROA', '4': 'TRA',
-                '5': 'TOU', '6': 'GWA', '7': 'FOR', '8': 'QUA'
-            }
-            service_code = service_code_map.get(request.session.get('service_id'), 'GEN')
-        else:
-            # For Update, get reference application number
-            ref_application_no = None
-            if identifier == 'DR':
-                ref_application_no = request.POST.get('application_no')
-            # Get existing application details
-            existing_app = None
-            if ref_application_no:
-                existing_app = t_ec_industries_t1_general.objects.filter(
-                    application_no=ref_application_no
-                ).first()
-
-            if existing_app:
-                service_id_to_use = existing_app.service_id
-                activity_to_use = existing_app.activity
-                color_code_to_use = existing_app.colour_code
-            else:
-                # If no existing app found, fall back to session values
-                service_id_to_use = request.session['service_id']
-                activity_to_use = request.session.get('activity')
-                color_code_to_use = request.session['colour_code']
-
-        # Determine application number based on identifier
-        if identifier !='DR':
-            # For new applications, use session service_id
-            application_no = get_application_no(request, service_code, service_id_to_use)
-        else:
-            # For modifications, use the service_id from existing application
-            application_no = ref_application_no  # Use existing application number for draft
-
-        if dzongkhag_throm == 'Dzongkhag':
-            dzongkhag_code = request.POST.get('dzongkhag')
-            gewog_code = request.POST.get('gewog')
-            village_code = request.POST.get('vil_chiwog')
+        post_data = request.POST
+        session = request.session
+        
+        # Get the application number from POST data
+        application_no = post_data.get('application_no')
+        identifier = post_data.get('identifier', '')
+        
+        print(f"DEBUG: application_no from POST: {application_no}, identifier: {identifier}")
+        
+        print(f"DEBUG: Final application_no: {application_no}")
+        
+        # Check if application already exists
+        existing_app = None
+        if application_no:
+            existing_app = t_ec_industries_t1_general.objects.filter(
+                application_no=application_no
+            ).first()
+        
+        # Service code mapping
+        SERVICE_CODE_MAP = {
+            '1': 'IEE', '2': 'ENE', '3': 'ROA', '4': 'TRA',
+            '5': 'TOU', '6': 'GWA', '7': 'FOR', '8': 'QUA'
+        }
+        
+        # Get location details
+        if post_data.get('dzongkhag_throm') == 'Dzongkhag':
+            dzongkhag_code = post_data.get('dzongkhag')
+            gewog_code = post_data.get('gewog')
+            village_code = post_data.get('vil_chiwog')
             thromde_id = None
         else:
             dzongkhag_code = None
             gewog_code = None
             village_code = None
-            thromde_id = request.POST.get('thromde_id')
-
+            thromde_id = post_data.get('thromde_id')
+        
+        # Get service details
+        if existing_app:
+            # Use existing service details
+            service_id = existing_app.service_id
+            activity = existing_app.activity
+            color_code = existing_app.colour_code
+        else:
+            # Use session/service defaults
+            service_id = session.get('service_id')
+            activity = post_data.get('activity') or session.get('activity')
+            color_code = session.get('colour_code')
+        
+        service_code = SERVICE_CODE_MAP.get(str(service_id), 'GEN')
+        
+        # Determine competent authority
+        ca_auth = session.get('ca_auth')
+        if ca_auth in ['DEC', 'THROMDE'] and dzongkhag_code:
+            auth_record = t_competant_authority_master.objects.filter(
+                competent_authority=ca_auth,
+                dzongkhag_code_id=dzongkhag_code
+            ).first()
+            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
+        else:
+            ca_auth_id = ca_auth
+        
+        # Prepare data
         common_data = {
             'application_no': application_no,
             'application_date': timezone.now().date(),
-            'application_type': application_type,
+            'application_type': 'Old_EC',
             'application_source': 'ECSS',
             'application_status': 'P',
-            'applicant_id': request.session['email'],
-            'applicant_name': request.POST.get('applicant_name'),
-            'address': request.POST.get('address'),
-            'cid': request.session['cid'],
-            'contact_no': request.POST.get('contact_no'),
-            'email': request.POST.get('email'),
-            'focal_person': request.POST.get('focal_person'),
+            'applicant_id': session.get('email'),
+            'applicant_name': post_data.get('applicant_name'),
+            'address': post_data.get('address'),
+            'cid': session.get('cid'),
+            'contact_no': post_data.get('contact_no'),
+            'email': post_data.get('email'),
+            'focal_person': post_data.get('focal_person'),
             'dzongkhag_code': dzongkhag_code,
             'gewog_code': gewog_code,
             'village_code': village_code,
             'thromde_id': thromde_id,
-            'location_name': request.POST.get('project_site'),
-            'project_name': request.POST.get('project_name'),
-            'project_description': request.POST.get('project_description'),
-            'dzongkhag_throm': dzongkhag_throm,
-            'service_type': service_type_to_use,  # Use determined service_type
-            'service_id': service_id_to_use,
-            'colour_code': color_code_to_use,  # Use determined color code
-            'proponent_type': request.session.get('proponent_type'),
-            'activity': activity_to_use,  # Use determined activity,
-            'ec_reference_no': ec_reference_no,
-            'ec_approve_date': ec_issue_date,
-            'ec_expiry_date': ec_validity
+            'location_name': post_data.get('project_site'),
+            'project_name': post_data.get('project_name'),
+            'project_description': post_data.get('project_description'),
+            'dzongkhag_throm': post_data.get('dzongkhag_throm'),
+            'service_type': 'Main Activity',
+            'service_id': service_id,
+            'colour_code': color_code,
+            'proponent_type': session.get('proponent_type'),
+            'activity': activity,
+            'ec_reference_no': post_data.get('ec_reference_no'),
+            'ec_approve_date': post_data.get('ec_issue_date'),
+            'ec_expiry_date': post_data.get('ec_validity'),
+            'ca_authority': ca_auth_id
         }
-
+        
         with transaction.atomic():
-            ca_auth = ca_auth_to_use  # Use the ca_auth we already determined
-
-            # If ca_auth wasn't determined from existing app, calculate it
-            if ca_auth is None:
-                # Determine ca_auth from the POST data.
-                #IN CASE of DEC and THROMDE, based on the selection of Dzo and thromde,
-                # The ca_auth will change EVEN in DRAFT application
-                if identifier =='DR':
-                    activity_details = t_bsic_code.objects.filter(activity=activity_to_use)
-                    for cat_details in activity_details:
-                        request.session['ca_auth'] = cat_details.competent_authority
-                    auth_filter = t_competant_authority_master.objects.filter(
-                        competent_authority=request.session['ca_auth'],
-                        dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
-                    )
-                    ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-                else:
-                    auth_filter = t_competant_authority_master.objects.filter(
-                        competent_authority=request.session['ca_auth'],
-                        dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
-                    )
-                    ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-
-            # Handle different identifier cases
-            if identifier == 'DR':
-                # Data Rectification (Draft) - UPDATE EXISTING ENTRY
-                existing_app = None
-                existing_app = t_ec_industries_t1_general.objects.filter(application_no=ref_application_no).first()
-                if existing_app:
-                    # UPDATE existing entry with new data
-                    update_data = {
-                        **common_data,
-                        #'ca_authority': existing_app.ca_authority,  # Keep existing ca_auth
-                        'ca_authority': ca_auth,
-                        'service_type': 'Main Activity',  # Force Main Activity for DR
-                        'service_id': existing_app.service_id,  # Keep existing service_id
-                        'colour_code': existing_app.colour_code,  # Keep existing color code for DR
-                        'activity': existing_app.activity  # Keep existing activity
-                    }
-
-                    # Remove fields that shouldn't be updated for draft
-                    if 'application_no' in update_data:
-                        del update_data['application_no']  # Don't update application_no
-
-                    # Update the existing record
-                    t_ec_industries_t1_general.objects.filter(
-                        application_no=ref_application_no
-                    ).update(**update_data)
-
-                    print(f"DR - Updated existing application {ref_application_no}")
-                else:
-                    # If no existing app, create new one with session color code
-                    new_data = {
-                        'ca_authority': ca_auth,
-                        #'prev_ec_reference_no': prev_ec_reference_no if prev_ec_reference_no else None
-                    }
-                    # Ensure service_type is 'Main Activity' for DR
-                    common_data['service_type'] = 'Main Activity'
-                    t_ec_industries_t1_general.objects.create(**common_data, **new_data)
-                    print(f"DR - Created new application {application_no}")
+            if existing_app:
+                # UPDATE existing application
+                print(f"DEBUG: Updating application {application_no}")
+                
+                # Remove application_no from update data
+                update_data = common_data.copy()
+                del update_data['application_no']
+                
+                t_ec_industries_t1_general.objects.filter(
+                    application_no=application_no
+                ).update(**update_data)
             else:
-                new_data = {
-                    'ca_authority': ca_auth,
-                    # 'prev_ec_reference_no': prev_ec_reference_no if prev_ec_reference_no else None
-                }
-                t_ec_industries_t1_general.objects.create(**common_data, **new_data)
-
-            # Create application history (ALWAYS INSERT, NEVER UPDATE)
+                # CREATE new application (only if we don't have application_no)
+                if not application_no:
+                    # Generate new application number
+                    application_no = get_application_no(request, service_code, service_id)
+                    common_data['application_no'] = application_no
+                
+                print(f"DEBUG: Creating new application {application_no}")
+                t_ec_industries_t1_general.objects.create(**common_data)
+            
+            # Save application number to session for future tabs
+            if application_no:
+                request.session['current_application_no'] = application_no
+            
+            # Create history
             t_application_history.objects.create(
                 application_no=application_no,
                 application_date=timezone.now().date(),
-                applicant_id=request.session['email'],
-                ca_authority=ca_auth,
-                service_id=service_id_to_use,
+                applicant_id=session.get('email'),
+                ca_authority=ca_auth_id,
+                service_id=service_id,
                 application_status='P',
                 action_date=timezone.now(),
-                actor_id=request.session['login_id'],
-                actor_name=request.session['name'],
+                actor_id=session.get('login_id'),
+                actor_name=session.get('name'),
                 remarks=None,
                 status=None
             )
-
-            data['message'] = 'success'
-            data['application_no'] = application_no
-
+            
+            data.update({
+                'message': 'success',
+                'application_no': application_no
+            })
+            
     except Exception as e:
-        print('An error occurred:', e)
+        print(f'An error occurred: {e}')
+        import traceback
+        traceback.print_exc()
         data['error'] = str(e)
-
+    
     return JsonResponse(data)
 
 def submit_old_ec_general_application(request):

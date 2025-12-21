@@ -141,7 +141,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="old_ec_general_application_form">
                                     {% csrf_token %}
-                                    <!--<input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">-->
+                                    <input type="text" class="form-control" id="application_no" name="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="Main Activity" name="service_type" id="service_type" style="display:none;">
                                     <input type="text" class="form-control" value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
                                     <div class="row">
@@ -654,6 +654,7 @@
                     if (data.message == 'success') {
                         // Success case with accessibility
                         let application_no = data.application_no;
+                        $('#application_no').val(application_no)
                         $('#general_disclaimer_application_no').val(application_no)
                         $('#application_form_successMsg')
                             .html('<i class="uil-folder-heart me-1 h4 align-middle"></i> Saved Successfully')
