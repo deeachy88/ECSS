@@ -123,6 +123,7 @@ def save_general_details(request):
         identifier = request.POST.get('identifier')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         tor_application_no = request.POST.get('tor_application_no')
+
         
         # Get service_id_to_use early for all cases
         service_id_to_use = None
@@ -3088,11 +3089,9 @@ def check_old_ec(request):
     )
     return JsonResponse({"old_ec_count": old_ec_count})
 
-
 def old_ec_application(request):
     assigned_user_id = request.session.get('login_id', None)
     applicant_id = request.session.get('email', None)
-    # bsic_details = t_bsic_code.objects.all()
     bsic_details = t_bsic_code.objects.all()
     app_hist_count = t_application_history.objects.filter(
             applicant_id=applicant_id
@@ -3167,8 +3166,8 @@ def old_ec_application_form(request):
         service_code = 'QUA'
     else:
         service_code = 'GEN'
-    application_no = get_application_no(request, service_code, request.session['service_id'])
-    request.session['application_no'] = application_no
+    #application_no = get_application_no(request, service_code, request.session['service_id'])
+    #request.session['application_no'] = application_no
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -3213,42 +3212,48 @@ def old_ec_application_form(request):
         application_no__in=Subquery(t1_general_subquery)
     ).count()
 
-    return render(request, 'old_ec_application_form.html', {'application_no': application_no,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'tor_application_count':tor_application_count, 'thromde': thromde,'ec_renewal_count':ec_renewal_count,
+    return render(request, 'old_ec_application_form.html', {'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'tor_application_count':tor_application_count, 'thromde': thromde,'ec_renewal_count':ec_renewal_count,
                                                          'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
 
 def save_old_ec_general_details(request):
     data = {'message': 'failure'}
 
     try:
+        # identifier is for Old Pending/Draft Application. identifier = 'DR'
+        # dzongkhag_throm, application_type, ec_reference_no, ec_issue_date, ec_validity are pulled from the form
+        # (old_ec_application_form.html AND pending_old_ec_details.html)
         identifier = request.POST.get('identifier')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
-        tor_application_no = request.POST.get('tor_application_no')
         application_type = "Old_EC"
         ec_reference_no = request.POST.get('ec_reference_no')
         ec_issue_date = request.POST.get('ec_issue_date')
         ec_validity = request.POST.get('ec_validity')
+        service_type_to_use = 'Main Activity'
 
         # Get service_id_to_use early for all cases
         service_id_to_use = None
         activity_to_use = None
         color_code_to_use = None
+        service_code = None
         ca_auth_to_use = None
 
-        if identifier not in ['DR']:
-            # New application - use session values
+        if identifier !='DR':
+            # New application - use session values.
+            # Get service_id_to_use,  activity_to_use, color_code_to_use from POST data for new applications
             service_id_to_use = request.session['service_id']
-            # Get activity from POST data for new applications
             activity_to_use = request.POST.get('activity')
-            if not activity_to_use or activity_to_use == '':
-                # Fall back to session if POST doesn't have activity
-                activity_to_use = request.session.get('activity')
             color_code_to_use = request.session['colour_code']
+            # Determine service_code based on service_id_to_use
+            service_code_map = {
+                '1': 'IEE', '2': 'ENE', '3': 'ROA', '4': 'TRA',
+                '5': 'TOU', '6': 'GWA', '7': 'FOR', '8': 'QUA'
+            }
+            service_code = service_code_map.get(request.session.get('service_id'), 'GEN')
         else:
             # For Update, get reference application number
             ref_application_no = None
-            if identifier in ['DR']:
+            if identifier == 'DR':
                 ref_application_no = request.POST.get('application_no')
-
             # Get existing application details
             existing_app = None
             if ref_application_no:
@@ -3260,28 +3265,18 @@ def save_old_ec_general_details(request):
                 service_id_to_use = existing_app.service_id
                 activity_to_use = existing_app.activity
                 color_code_to_use = existing_app.colour_code
-                #ca_auth_to_use = existing_app.ca_authority
             else:
                 # If no existing app found, fall back to session values
                 service_id_to_use = request.session['service_id']
                 activity_to_use = request.session.get('activity')
                 color_code_to_use = request.session['colour_code']
 
-        # Now determine service_code based on service_id_to_use
-        service_code = None
-        service_code_map = {
-            '1': 'IEE', '2': 'ENE', '3': 'ROA', '4': 'TRA',
-            '5': 'TOU', '6': 'GWA', '7': 'FOR', '8': 'QUA'
-        }
-        service_code = service_code_map.get(request.session.get('service_id'), 'GEN')
-
         # Determine application number based on identifier
-        if identifier not in ['DR']:
+        if identifier !='DR':
             # For new applications, use session service_id
-            application_no = get_application_no(request, service_code, request.session['service_id'])
+            application_no = get_application_no(request, service_code, service_id_to_use)
         else:
             # For modifications, use the service_id from existing application
-            # EXCEPT for DR (draft) - use the same application number
             application_no = ref_application_no  # Use existing application number for draft
 
         if dzongkhag_throm == 'Dzongkhag':
@@ -3294,12 +3289,6 @@ def save_old_ec_general_details(request):
             gewog_code = None
             village_code = None
             thromde_id = request.POST.get('thromde_id')
-
-        # Determine service_type - For DR always use 'Main Activity'
-        if identifier == 'DR':
-            service_type_to_use = 'Main Activity'
-        else:
-            service_type_to_use = request.POST.get('service_type')
 
         common_data = {
             'application_no': application_no,
@@ -3323,7 +3312,6 @@ def save_old_ec_general_details(request):
             'project_description': request.POST.get('project_description'),
             'dzongkhag_throm': dzongkhag_throm,
             'service_type': service_type_to_use,  # Use determined service_type
-            'tor_application_no': tor_application_no,
             'service_id': service_id_to_use,
             'colour_code': color_code_to_use,  # Use determined color code
             'proponent_type': request.session.get('proponent_type'),
@@ -3331,7 +3319,6 @@ def save_old_ec_general_details(request):
             'ec_reference_no': ec_reference_no,
             'ec_approve_date': ec_issue_date,
             'ec_expiry_date': ec_validity
-
         }
 
         with transaction.atomic():
@@ -3339,18 +3326,17 @@ def save_old_ec_general_details(request):
 
             # If ca_auth wasn't determined from existing app, calculate it
             if ca_auth is None:
-                # For modifications (NC, OC, DR, TC, PC, LC, CC), get ca_auth from existing application
-                if identifier in ['DR']:
+                # Determine ca_auth from the POST data.
+                #IN CASE of DEC and THROMDE, based on the selection of Dzo and thromde,
+                # The ca_auth will change EVEN in DRAFT application
+                if identifier =='DR':
                     activity_details = t_bsic_code.objects.filter(activity=activity_to_use)
-
                     for cat_details in activity_details:
                         request.session['ca_auth'] = cat_details.competent_authority
-
                     auth_filter = t_competant_authority_master.objects.filter(
                         competent_authority=request.session['ca_auth'],
                         dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
                     )
-
                     ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
                 else:
                     auth_filter = t_competant_authority_master.objects.filter(
@@ -3362,6 +3348,7 @@ def save_old_ec_general_details(request):
             # Handle different identifier cases
             if identifier == 'DR':
                 # Data Rectification (Draft) - UPDATE EXISTING ENTRY
+                existing_app = None
                 existing_app = t_ec_industries_t1_general.objects.filter(application_no=ref_application_no).first()
                 if existing_app:
                     # UPDATE existing entry with new data
@@ -3395,12 +3382,10 @@ def save_old_ec_general_details(request):
                     common_data['service_type'] = 'Main Activity'
                     t_ec_industries_t1_general.objects.create(**common_data, **new_data)
                     print(f"DR - Created new application {application_no}")
-
             else:
-                # Main Activity - New Application - CREATE NEW ENTRY
                 new_data = {
                     'ca_authority': ca_auth,
-                    #'prev_ec_reference_no': prev_ec_reference_no if prev_ec_reference_no else None
+                    # 'prev_ec_reference_no': prev_ec_reference_no if prev_ec_reference_no else None
                 }
                 t_ec_industries_t1_general.objects.create(**common_data, **new_data)
 

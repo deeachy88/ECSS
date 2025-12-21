@@ -230,6 +230,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <div id="alertMsg" class="alert alert-danger" style="display: none;"></div>
                 </div>
             </div>
         </div> <!-- end card-->
@@ -250,12 +251,33 @@
         $.ajax({
             type: "GET",
             url: "{% url 'get_application_service_id' %}",
-            data: {'activity': activity},
+            data: { 'activity': activity },
             success: function(data) {
-                window.location.href = '/old_ec_application_form';
+                // Validate response
+                if (!data || !data.colour_code) {
+                    alert("Invalid response from server.");
+                    return;
+                }
+
+                const colourCode = data.colour_code;
+                const hasTor = data.has_tor;
+
+                if (colourCode === 'Green') {
+                    $('#alertMsg').html("No need for Environment Clearance.");
+                    $('#alertMsg').show();
+                    $('#alertMsg').delay(2000).fadeOut('slow');
+                } else {
+                    window.location.href = "{% url 'old_ec_application_form' %}";
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Request failed:", error);
+                alert("Failed to retrieve application details. Please try again.");
             }
         });
     }
+
+
 </script>
 
 {% endblock %}

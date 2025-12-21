@@ -141,7 +141,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="old_ec_general_application_form">
                                     {% csrf_token %}
-                                    <input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">
+                                    <!--<input type="text" class="form-control" value="{{application_no}}" id="application_no" name="application_no" style="display:none;">-->
                                     <input type="text" class="form-control" value="Main Activity" name="service_type" id="service_type" style="display:none;">
                                     <input type="text" class="form-control" value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
                                     <div class="row">

@@ -17,7 +17,6 @@ urlpatterns = [
     path('draft_application_list', views.draft_application_list, name='draft_application_list'),
     path('view_draft_application_details', views.view_draft_application_details, name='view_draft_application_details'),
 
-
     # Update OLD EC
     path('old_ec_application', views.old_ec_application, name='old_ec_application'),
     path('old_ec_application_form', views.old_ec_application_form, name='old_ec_application_form'),
