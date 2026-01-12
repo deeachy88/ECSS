@@ -302,7 +302,7 @@ def application_status_list(request):
     applicant_id = request.session.get('email', None)
     client_application_count = t_user_master.objects.filter(accept_reject__isnull=True, login_type='C').count()
     
-    if login_type == 'C':
+    if login_type == 'C': # 'C' is client OR Proponent
         app_hist_count = t_application_history.objects.filter(
             applicant_id=request.session['email']
         ).distinct('application_no').count()
@@ -343,7 +343,7 @@ def application_status_list(request):
 
         ec_renewal_count = non_updated_renewals.count()
     
-    elif login_type == 'I':
+    elif login_type == 'I':  # 'I' is Internal OR Competent Authority
         role = request.session['role']
         ca_authority = request.session.get('ca_authority', None)
         if ca_authority is not None:
@@ -388,10 +388,6 @@ def application_status_list(request):
     response['Pragma'] = 'no-cache'
     response['Expires'] = '0'
     return response
-
-
-
-
 
 def application_history(request):
     login_type = request.session['login_type']
@@ -544,7 +540,7 @@ def client_application_details(request):
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
-            file_attach = t_file_attachment.objects.filter(attachment_type=service_code)
+            file_attach = t_file_attachment.objects.filter(attachment_type=service_code, application_no=application_no)
             ec_details = t_ec_industries_t11_ec_details.objects.filter(application_no=application_no)
             reviewer_list = t_user_master.objects.filter(role_id='3',agency_code=ca_auth)
             eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')

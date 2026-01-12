@@ -47,6 +47,9 @@ class t_ec_industries_t1_general(models.Model):
     activity = models.TextField(default=None, blank=True, null=True)
     proponent_type = models.IntegerField(default=None, blank=True, null=True)
     project_description = models.TextField(default=None, blank=True, null=True)
+    assigned_to = models.IntegerField(default=None, blank=True, null=True)
+    assigned_date = models.DateField(default=None, blank=True, null=True)
+    assigned_by = models.IntegerField(default=None, blank=True, null=True)
 
 class t_ec_industries_t1_general_audit(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -92,6 +95,9 @@ class t_ec_industries_t1_general_audit(models.Model):
     activity = models.TextField(default=None, blank=True, null=True)
     proponent_type = models.IntegerField(default=None, blank=True, null=True)
     project_description = models.TextField(default=None, blank=True, null=True)
+    assigned_to = models.IntegerField(default=None, blank=True, null=True)
+    assigned_date = models.DateField(default=None, blank=True, null=True)
+    assigned_by = models.IntegerField(default=None, blank=True, null=True)
     
 class t_ec_industries_t11_ec_details(models.Model):
     record_id = models.AutoField(primary_key=True)

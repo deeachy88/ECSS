@@ -1,8 +1,8 @@
 from django.core.files.storage import FileSystemStorage
 from django.db import models
+from ckeditor.fields import RichTextField
 
 fs = FileSystemStorage()
-
 
 # Create your models here.
 class t_role_master(models.Model):
@@ -81,6 +81,7 @@ class t_section_master(models.Model):
 class t_service_master(models.Model):
     service_id = models.AutoField(primary_key=True)
     service_name = models.CharField(max_length=100)
+    attachments = RichTextField(default=None, blank=True, null=True)
 
 class t_fees_schedule(models.Model):
     fees_id = models.AutoField(primary_key=True)

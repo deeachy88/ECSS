@@ -185,19 +185,25 @@
                                         <label class="form-label fw-bold">Email</label>
                                         <input type="email" name="email" class="form-control" id="email" value="{{application_details.email}}" disabled>
                                     </div>
-                                    <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Name of the Project</label>
                                         <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}" disabled>
                                     </div>
-                                    <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
-                                        <textarea class="form-control" name="focal_person" id="focal_person" rows="3" disabled>{{application_details.focal_person}}</textarea>
+                                        <input type="text" name="focal_person" class="form-control" id="focal_person" value="{{application_details.focal_person}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Brief Description of the Project</label>
+                                        <textarea class="form-control" id="project_description" name="project_description" disabled>{{application_details.project_description}}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -498,19 +504,19 @@
                             <label class="form-label fw-bold">Is There Additional Payment?</label>
                             <div class="mt-2">
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" id="customRadio3" name="addtional_payment" class="form-check-input"  value="Yes" onclick="check_eatc_addtional_payment(this.value)">
+                                    <input type="radio" id="customRadio3" name="additional_payment" class="form-check-input"  value="Yes" onclick="check_eatc_additional_payment(this.value)">
                                     <label class="form-check-label" for="customRadio3">Yes</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" id="customRadio4" name="addtional_payment" class="form-check-input"  value="No" onclick="check_eatc_addtional_payment(this.value)">
+                                    <input type="radio" id="customRadio4" name="additional_payment" class="form-check-input"  value="No" onclick="check_eatc_additional_payment(this.value)">
                                     <label class="form-check-label" for="customRadio4">No</label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    <div id="additional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
                 </div>
-                <div class="col-md-12 addtional_payment_div" style="display: none;">
+                <div class="col-md-12 additional_payment_div" style="display: none;">
                     <div class="card">
                         <div class="card-body">
                             <div class="col-lg-6">
@@ -527,7 +533,7 @@
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Additional Payable Amount</label>
-                                    <input type="number" name="addtional_payment_amount" class="form-control" id="addtional_payment_amount"> 
+                                    <input type="number" name="additional_payment_amount" class="form-control" id="additional_payment_amount">
                                 </div>
                             </div>
                         </div>
@@ -565,7 +571,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="addtional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    <div id="additional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
                 </div>
                 <div class="row rev_resubmit_remarks_div" style="display: none;">
                     <div class="col-lg-12">
@@ -676,7 +682,7 @@
                         <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
                 </div>
             </div>
-            <div class="row mt-3 additonal_payment_button" style="display: none;">
+            <div class="row mt-3 additional_payment_button" style="display: none;">
                 <div class="mb-3">
                     <a href="#" class="btn btn-success" onclick="forwardApplication('AP')">
                         <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
@@ -902,7 +908,7 @@
                         <label class="form-label fw-bold">Application Fees</label>
                         <input type="number" class="form-control" id="amount" name="amount">
                     </div>
-                    <div id="forward_toErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    <div id="amount_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
                 </div>
             </div>
             <div class="row forwardTo" style="display: none;">
@@ -1540,14 +1546,25 @@ function forwardApplication(identifier) {
     let additional_info = $('#additional_info').val();
     let resubmit_remarks = $('#resubmit_remarks').val();
     let ec_expiry_date = $('#ec_expiry_date').val();
-    let addtional_payment_amount = $('#addtional_payment_amount').val();
+    let additional_payment_amount = $('#additional_payment_amount').val();
     let account_head = $('#account_head').val();
     let tat = $('#tat').val();
     let forward_to = $('#forward_to').val();
     let amount = $('#amount').val();
     let record_id = $('#record_id').val();
+    //alert(amount);
+    //alert(identifier);
 
     // Show the loader
+
+    if (identifier === 'P' && amount === "") {
+        $('#amount_ErrorMsg').html("Enter Applicable Fees");
+        $('#amount_ErrorMsg').show();
+        $('#amount_ErrorMsg').delay(2000).fadeOut('slow');
+        $('#amount').focus();
+        return; // stop execution here
+    }
+
     $('.spinner-border').show();
     $('#amount').focus();
     let postData = {
@@ -1566,7 +1583,7 @@ function forwardApplication(identifier) {
             'resubmit_remarks': resubmit_remarks,
             'ec_expiry_date': ec_expiry_date,
             'tat': tat,
-            'addtional_payment_amount': addtional_payment_amount,
+            'additional_payment_amount': additional_payment_amount,
             'account_head':account_head,
             'amount':amount
         });
@@ -1663,22 +1680,22 @@ function check_information_radio(value)
         $('.additional_payment_info').hide();
         $('.LU_button').hide();
         $('.AL_button').show();
-        $('.addtional_payment_div').hide();
+        $('.additional_payment_div').hide();
         $('.eatc_attachment_div').hide();
-        $('.additonal_payment_button').hide();
+        $('.additional_payment_button').hide();
         $('.rev_lu_attachment_div').hide();
-        $('input[name="addtional_payment"]').prop('checked', false);
+        $('input[name="additional_payment"]').prop('checked', false);
     }
 }
 
-function check_eatc_addtional_payment(value)
+function check_eatc_additional_payment(value)
 {
     if(value == 'Yes')
     {
         $('.eatc_attachment_div').hide();
         $('.rev_lu_attachment_div').hide();
-        $('.addtional_payment_div').show();
-        $('.additonal_payment_button').show();
+        $('.additional_payment_div').show();
+        $('.additional_payment_button').show();
         $('.LU_button').hide();
         $('.AL_button').hide();
     }
@@ -1686,13 +1703,13 @@ function check_eatc_addtional_payment(value)
     {
         $('.eatc_attachment_div').show();
         $('.rev_lu_attachment_div').show();
-        $('.addtional_payment_div').hide();
-        $('.additonal_payment_button').hide();
+        $('.additional_payment_div').hide();
+        $('.additional_payment_button').hide();
         $('.LU_button').show();
         $('.AL_button').hide();
         
         $('#account_head').val("");
-        $('#addtional_payment_amount').val("");
+        $('#additional_payment_amount').val("");
         
     }
 }

@@ -457,6 +457,162 @@ def reviewer_application_list(request):
     response['Expires'] = '0'
     return response
 
+# Admin Payment Update LIST START
+
+def admin_application_list(request):
+    """
+    Optimized reviewer application list view with preprocessed data
+    """
+    # Get session data
+    ca_authority = request.session.get('ca_authority')
+    login_id = request.session.get('login_id')
+    print(ca_authority, login_id)
+
+    # Validate session data
+    if not ca_authority or not login_id:
+        context = {
+            'application_data': [],
+            'r_application_count': 0,
+            'error': 'Invalid session data'
+        }
+        return render(request, 'application_list.html', context)
+
+    try:
+        # Base query filters
+        base_filters = {
+            'assigned_role_id': '3',
+            'action_date__isnull': False,
+            'ca_authority': '1',
+            'application_status': 'P'
+        }
+
+        # Get applications - single optimized query
+        application_list = t_workflow_dtls.objects.filter(
+            Q(**base_filters)
+        )
+
+        # Prefetch all related data in single queries
+        # 1. Services lookup
+        service_lookup = {
+            service.service_id: service.service_name
+            for service in t_service_master.objects.all()
+        }
+
+        # 2. Payments lookup - check if ALL entries for each application_no OR ref_no have receipt_no
+        payment_receipt_lookup = {}
+        payments = t_payment_details.objects.all()
+
+        # Optimized: Group payments by both application_no and ref_no simultaneously
+        for payment in payments:
+            # Check by application_no if it exists
+            if payment.application_no:
+                if payment.application_no not in payment_receipt_lookup:
+                    # Initialize with payment data and receipt status
+                    payment_receipt_lookup[payment.application_no] = {
+                        'payments': [payment],
+                        'all_have_receipt': (payment.receipt_no is not None and payment.receipt_no != '')
+                    }
+                else:
+                    # Update existing entry
+                    existing_entry = payment_receipt_lookup[payment.application_no]
+                    existing_entry['payments'].append(payment)
+                    # Update all_have_receipt: must be True for all payments
+                    existing_entry['all_have_receipt'] = (
+                            existing_entry['all_have_receipt'] and
+                            (payment.receipt_no is not None and payment.receipt_no != '')
+                    )
+
+            # Also check by ref_no if it exists and is different from application_no
+            if payment.ref_no and payment.ref_no != payment.application_no:
+                if payment.ref_no not in payment_receipt_lookup:
+                    payment_receipt_lookup[payment.ref_no] = {
+                        'payments': [payment],
+                        'all_have_receipt': (payment.receipt_no is not None and payment.receipt_no != '')
+                    }
+                else:
+                    existing_entry = payment_receipt_lookup[payment.ref_no]
+                    existing_entry['payments'].append(payment)
+                    existing_entry['all_have_receipt'] = (
+                            existing_entry['all_have_receipt'] and
+                            (payment.receipt_no is not None and payment.receipt_no != '')
+                    )
+
+        # 3. Reviewer application count
+        r_application_count = t_workflow_dtls.objects.filter(
+            assigned_role_id='3',
+            assigned_role_name='Reviewer',
+            ca_authority='1'
+        ).count()
+
+        # Industry details lookup (project_name and activity)
+        industry_lookup = {
+            industry.application_no: {
+                'project_name': industry.project_name,
+                'activity': industry.activity
+            }
+            for industry in t_ec_industries_t1_general.objects.all()
+        }
+
+        # Process application data
+        application_data = []
+        for app in application_list:
+            # Determine clickability - applications with status 'P' are always clickable
+            if app.application_status == 'P':
+                is_clickable = True
+            else:
+                # Check if service_id is 0 OR if application has payments AND all payments have receipts
+                # Lookup by both application_no and ref_no (they might be the same or different)
+                app_payment_data = payment_receipt_lookup.get(app.application_no)
+
+                if app_payment_data:
+                    # Found by application_no
+                    all_payments_have_receipt = app_payment_data['all_have_receipt']
+                else:
+                    # Try looking up by ref_no if application_no is different
+                    all_payments_have_receipt = False
+
+                is_clickable = (app.service_id == 0) or (app_payment_data and all_payments_have_receipt)
+            industry_data = industry_lookup.get(app.application_no, {})
+
+            application_data.append({
+                'application_no': app.application_no,
+                'service_id': app.service_id,
+                'service_name': service_lookup.get(app.service_id, 'Service Not Found'),
+                'action_date': app.action_date,
+                'application_source': app.application_source,
+                'is_clickable': is_clickable,
+                'status': app.application_status,
+                'project_name': industry_data.get('project_name', ''),
+                'activity': industry_data.get('activity', '')
+
+            })
+
+        # Sort by action date (newest first)
+        application_data.sort(key=lambda x: x['action_date'], reverse=True)
+
+        context = {
+            'application_data': application_data,
+            'r_application_count': r_application_count
+        }
+
+    except Exception as e:
+        # Log the error
+        print(f"Error in reviewer_application_list: {e}")
+        context = {
+            'application_data': [],
+            'r_application_count': 0,
+            'error': 'An error occurred while loading applications'
+        }
+
+    response = render(request, 'admin_application_list.html', context)
+    # Add cache control
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
+
+# Admin Payment Update LIST END
+
 # APPLICATION LISTS FORM IBLS
 def ibls_application_list(request):
     role_id = request.session['role_id']
@@ -763,12 +919,12 @@ def get_tor_clearance_no(request,service_id):
         newClearanceNo ="TOR" + "-" + str(service_name) + "-" + str(year) + "-" + ecNo
     return newClearanceNo
 
-def send_ec_ap_email(ec_no, email, application_no, service_name, addtional_payment_amount):
+def send_ec_ap_email(ec_no, email, application_no, service_name, additional_payment_amount):
     subject = 'ADDITIONAL PAYMENT'
     message = "Dear Sir," \
               "" \
               "Your EC Application For " + service_name + " Has Additional Payment. Your " \
-              " Amount is " + str(addtional_payment_amount) + " Please Make Payment To Proceed Further"\
+              " Amount is " + str(additional_payment_amount) + " Please Make Payment To Proceed Further"\
               " . " 
     recipient_list = [email]
     send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
@@ -846,6 +1002,7 @@ def forward_application(request):
         identifier = request.POST.get('identifier')
         forward_to = request.POST.get('forward_to')
         record_id = request.POST.get('record_id')
+        actor_id = request.session['login_id'],
         print(record_id)
 
         applicant = None
@@ -926,7 +1083,7 @@ def forward_application(request):
             data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'R':
             workflow_details.update(application_status='R', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=forward_to, assigned_role_id='3',assigned_role_name='Reviewer')
-            application_details.update(application_status='R')
+            application_details.update(application_status='R', assigned_to=forward_to, assigned_date=date.today(), assigned_by=request.session['login_id'])
             t_application_history.objects.create(application_no=application_no,
                         application_status='R',
                         action_date=date.today(),
@@ -949,7 +1106,7 @@ def forward_application(request):
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         applicant_id=applicant,
-                        remarks='Addtional Info Required',
+                        remarks='Additional Info Required',
                         service_id=service_id)
             workflow_details.update(application_status='AL', action_date=date.today(), actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_user_id=None, assigned_role_id='2',assigned_role_name='Verifier')
             data['message'] = "success"
@@ -965,7 +1122,7 @@ def forward_application(request):
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         applicant_id=applicant,
-                        remarks='Addtional Info Approved',
+                        remarks='Additional Info Approved',
                         service_id=service_id)
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
@@ -980,7 +1137,7 @@ def forward_application(request):
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         applicant_id=applicant,
-                        remarks='Addtional Info Rejected',
+                        remarks='Additional Info Rejected',
                         service_id=service_id)
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
@@ -1056,7 +1213,7 @@ def forward_application(request):
             data['message'] = "success"
             data['redirect_to'] = "client_application_list"
         elif identifier == 'AP':
-            addtional_payment_amount = request.POST.get('addtional_payment_amount')
+            additional_payment_amount = request.POST.get('additional_payment_amount')
             application_details.update(application_status='AP')
             t_application_history.objects.create(application_status='AP',application_no=application_no,
                         action_date=date.today(),
@@ -1070,7 +1227,7 @@ def forward_application(request):
             workflow_details.update(actor_name=request.session['name'])
             workflow_details.update(application_status='AP')
     
-            make_payment_request(request,application_no,addtional_payment_amount,description,account_head,service_type)
+            make_payment_request(request,application_no,additional_payment_amount,description,account_head,service_type)
 
             for work_details in workflow_details:
                 service_id = work_details.service_id
@@ -1079,7 +1236,7 @@ def forward_application(request):
                     service_name = service.service_name
                     for email_id in application_details:
                         emailId = email_id.email
-                        send_ec_ap_email(application_no, emailId, application_no, service_name,addtional_payment_amount)
+                        send_ec_ap_email(application_no, emailId, application_no, service_name,additional_payment_amount)
                         data['message'] = "success"
                         data['redirect_to'] = "reviewer_application_list"
         elif identifier == 'LU':

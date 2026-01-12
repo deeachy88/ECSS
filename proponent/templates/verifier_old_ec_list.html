@@ -204,7 +204,7 @@
 <div id="application_details">
     <div class="card mt-1">
         <div class="card-body">
-            <h5 class="card-title mb-0 text-right">Pending Old EC List for Submission</h5>
+            <h5 class="card-title mb-0 text-right">Old/Existing EC List </h5>
             <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
                 <i class="ri-check-line me-2"></i>
             </div>
@@ -217,7 +217,7 @@
                             <th scope="col">Old EC Reference No</th>
                             <th scope="col">Project name</th>
                             <th scope="col">Activity</th>
-                            <th scope="col">Application Status</th>
+                            <th scope="col">Service Name</th>
 
                         </tr>
                     </thead>
@@ -235,22 +235,15 @@
                                 <td>{{application_details.ec_reference_no}}</td>
                                 <td>{{application_details.project_name}}</td>
                                 <td>{{application_details.activity}}</td>
-                                {% if application_details.application_status == 'P' %}
-                                    <td>Pending / Due for Submission</td>
-                                {% elif application_details.application_status == 'R' %}
-                                    <td>Resubmission</td>
-                                {% endif %}
-                                <!--
                                 {% for service_details in service_details %}
                                     {% if application_details.service_id == service_details.service_id %}
                                         <td>{{service_details.service_name}}</td>
                                     {% endif %}
                                 {% endfor %}
-                                -->
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="5" class="text-center">No Data</td>
+                                <td colspan="6" class="text-center">No Data</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -264,7 +257,7 @@
     {
         $.ajax({
             type : "GET",
-            url : "{% url 'view_pending_old_ec_details' %}",
+            url : "{% url 'view_verifier_pending_old_ec_details' %}",
             data :{'application_no':application_no, 'service_id':service_id},
             success : function(data)
             {

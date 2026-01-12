@@ -7,6 +7,7 @@ urlpatterns = [
     path('get_application_service_id',views.get_application_service_id, name='get_application_service_id'),
     path('application_form', views.application_form, name='application_form'),
     path('save_general_details', views.save_general_details, name='save_general_details'),
+    path('save_new_general_details', views.save_new_general_details, name='save_new_general_details'),
     path('save_general_attachment', views.save_general_attachment, name='save_general_attachment'),
     path('save_general_attachment_details', views.save_general_attachment_details, name='save_general_attachment_details'),
     path('submit_general_application', views.submit_general_application, name='submit_general_application'),
@@ -16,6 +17,11 @@ urlpatterns = [
     # DRAFT DETAILS
     path('draft_application_list', views.draft_application_list, name='draft_application_list'),
     path('view_draft_application_details', views.view_draft_application_details, name='view_draft_application_details'),
+
+    # LIST OLD EC FOR APPROVAL/REJECT BY VERIFIER
+    path('old_ec_application_list', views.old_ec_application_list, name='old_ec_application_list'),
+    path('view_old_ec_application_details', views.view_old_ec_application_details, name='view_old_ec_application_details'),
+    path('view_verifier_pending_old_ec_details', views.view_verifier_pending_old_ec_details, name='view_verifier_pending_old_ec_details'),
 
     # Update OLD EC
     path('old_ec_application', views.old_ec_application, name='old_ec_application'),

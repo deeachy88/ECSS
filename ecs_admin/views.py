@@ -281,8 +281,12 @@ def dashboard(request):
 
         ec_renewal_count = non_updated_renewals.count()
 
-       
-        
+        old_ec_draft_count = t_ec_industries_t1_general.objects.filter(
+                applicant_id=request.session['email'],
+                application_type='Old_EC',
+                application_status__in=['P', 'R']
+            ).count()
+
         t1_general_subquery = t_ec_industries_t1_general.objects.filter(
             tor_application_no=OuterRef('application_no')
         ).values('tor_application_no')
@@ -307,7 +311,8 @@ def dashboard(request):
             'draft_count': draft_count,
             'ec_renewal_count': ec_renewal_count,
             'ibls_appluication_count':ibls_appluication_count,
-            'download_forms':download_forms
+            'download_forms':download_forms,
+            'old_ec_draft_count':old_ec_draft_count
         })
 
     # Set cache-control headers to prevent caching
@@ -533,6 +538,22 @@ def service_master(request):
     response['Pragma'] = 'no-cache'
     response['Expires'] = '0'
     return response
+
+def get_service_details(request, service_id):
+    service_details = t_service_master.objects.filter(service_id=service_id)
+    service_list = t_service_master.objects.all()
+    competant_authority = t_competant_authority_master.objects.values('competent_authority').order_by('competent_authority').distinct()
+    return render(request, 'edit_service.html', {'competant_authority':competant_authority,'service_details': service_details, 'service_list':service_list})
+
+def edit_service_master(request):
+    service_id = request.POST.get('service_id')
+    attachments = request.POST.get('attachments')
+
+    t_service_master.objects.filter(service_id=service_id).update(
+        attachments=attachments
+    )
+
+    return JsonResponse({"status": "success"})
 
 def fee_schedule_master(request):
     fees_schedule_list = t_fees_schedule.objects.all().order_by('service_name')
@@ -1478,4 +1499,7 @@ def get_auth_token():
 
     json = res.json()
     return json["access_token"]
+
+
+import bleach
 

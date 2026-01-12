@@ -1,0 +1,93 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+{% load static %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-2">
+            <div class="card-body">
+                <h5 class="card-title mb-0">Edit Service Attachments</h5>
+                <div id="cardCollpase1" class="collapse pt-3 show">
+                    <form method="post" id="edit_bsic_code_form">
+                    {% csrf_token %}
+                    {% for service_details in service_details %}
+                    <div class="row">
+                      <div class="col-3">
+                          <label class="form-label">Service Name</label>
+                      </div>
+                      <div class="col-sm-9">
+                          <input class="form-control" name="service_name" id="service_name" value="{{service_details.service_name}}" readonly>
+                      </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Attachments Description</label>  <!-- Fixed label -->
+                        </div>
+                        <div class="col-sm-9">
+                            <textarea name="attachments" class="form-control" id="attachments">{{service_details.attachments}}</textarea>
+                        </div>
+                    </div>
+                    <input type="hidden" class="form-control" id="service_id" name="service_id"value="{{service_details.service_id}}">
+                    <div id="edit_attachmentsErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    <div id="edit_colour_codeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    <div id="edit_competent_authorityErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    <div id="edit_service_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                    {% endfor %}
+                    </form>
+                    <div class="alert alert-success" id="edit_successMsg" style="display:none"></div>
+                    <div class="float-end mt-1">
+                        <button type="button" class="btn btn-md btn-primary" onclick="update_service_details()">Update</button>
+                        <a href="{% url 'service_master' %}" class="btn btn-md btn-danger"> Cancel </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#attachments'))
+        .then(editor => {
+            window.editor = editor;
+        });
+</script>
+<script>
+function update_service_details()
+{
+    var service_id = $('#service_id').val();
+    var attachments = window.editor.getData();
+
+    var plainText = attachments.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+
+    if (plainText === "")
+    {
+        $('#edit_attachmentsErrorMsg').html("Enter Attachments Description.").show().delay(2000).fadeOut('slow');
+        return;
+    }
+
+    $('.btn-primary').prop('disabled', true).text('Updating...');
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'edit_service_master' %}",
+        data: {
+            service_id: service_id,
+            attachments: attachments,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        success: function () {
+            $('#edit_successMsg').html("Attachments Updated Successfully.").show();
+            setTimeout(function () {
+                window.location.href = "{% url 'service_master' %}";
+            }, 2000);
+        },
+        error: function () {
+            $('#edit_attachmentsErrorMsg').html("Error updating attachments.").show().delay(3000).fadeOut('slow');
+            $('.btn-primary').prop('disabled', false).text('Update');
+        }
+    });
+}
+</script>
+
+{% endblock %}

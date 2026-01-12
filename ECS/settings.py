@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'ecs_main',
     'report',
     'corsheaders',
-
 ]
 
 MIDDLEWARE = [

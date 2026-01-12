@@ -245,13 +245,13 @@
                                     <td>
                                         <div class="btn-group btn-group-sm">
                                             {% if user.is_active == "Y" %}
-                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Deactivate" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Deactivate')"><i class="uil uil-lock-alt"></i></button>
+                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Deactivate" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Deactivate')"><i class="uil uil-lock-alt">Deactivate</i></button>
                                             {% else %}
-                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Activate')"><i class="uil uil-unlock"></i></button>
+                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Activate')"><i class="uil uil-unlock">Activate</i></button>
                                             {% endif %}
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit"
-                                                     onclick="populateEditForm('{{user.login_id}}', '{{user.name}}', '{{user.gender}}', '{{user.email_id}}','{{user.contact_number}}', '{{user.role_id_id}}', '{{user.agency_code}}')"><i class="mdi mdi-square-edit-outline"></i> </button>
-                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Reset Password" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Reset')"><i class="uil-key-skeleton"></i></button>
+                                                     onclick="populateEditForm('{{user.login_id}}', '{{user.name}}', '{{user.gender}}', '{{user.email_id}}','{{user.contact_number}}', '{{user.role_id_id}}', '{{user.agency_code}}')"><i class="mdi mdi-square-edit-outline">Edit</i> </button>
+                                            <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Reset Password" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Reset')"><i class="uil-key-skeleton">Reset Password</i></button>
                                         </div>
                                     </td>
                                 </tr>

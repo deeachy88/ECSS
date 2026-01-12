@@ -152,6 +152,7 @@
                         <div class="tab-pane active show" id="general_info">
                             <form method="post" id="general_application_form">
                                 {% csrf_token %}
+                                <input type="text" class="form-control" id="application_no" name="application_no" style="display:none;">
                                 <input type="text" class="form-control" value="Main Activity" name="service_type" id="service_type" style="display:none;">
                                 <input type="text" class="form-control" value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
                                 <input type="text" class="form-control" value="{{request.session.activity}}" name="activity" style="display:none;">
@@ -478,7 +479,7 @@
                         <div class="tab-pane fade" id="disclaimer">
                             <form method="post" id="general_submit_form" class="form-horizontal">
                                 {% csrf_token %}
-                                <input type="hidden" class="form-control" name="general_disclaimer_application_no" id="general_disclaimer_application_no">
+                                <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no" id="general_disclaimer_application_no">
                                 
                                 <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
                                 <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
@@ -612,12 +613,13 @@
             // Submit the form via AJAX
             $.ajax({
                 type: "POST",
-                url: "{% url 'save_general_details' %}",
+                url: "{% url 'save_new_general_details' %}",
                 data: $('#general_application_form').serialize(),
                 success: function(data) {
                     if (data.message == 'success') {
                         // Success case with accessibility
                         let application_no = data.application_no;
+                        $('#application_no').val(application_no)
                         $('#general_disclaimer_application_no').val(application_no)
                         $('#application_form_successMsg')
                             .html('<i class="uil-folder-heart me-1 h4 align-middle"></i> Saved Successfully')

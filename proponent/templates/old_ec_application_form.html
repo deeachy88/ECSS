@@ -141,7 +141,7 @@
                             <div class="accordion-body">
                                 <form method="post" id="old_ec_general_application_form">
                                     {% csrf_token %}
-                                    <input type="text" class="form-control" id="application_no" name="application_no" style="display:none;">
+                                    <input type="text" class="form-control" id="application_no" name="application_no" >
                                     <input type="text" class="form-control" value="Main Activity" name="service_type" id="service_type" style="display:none;">
                                     <input type="text" class="form-control" value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
                                     <div class="row">
@@ -835,7 +835,7 @@
 
         $.ajax({
             type: "POST",
-            url: "{% url 'submit_old_ec_general_application' %}",
+            url: "{% url 'submit_old_ec_general_application' %}?identifier=SM",
             data: $('#old_ec_general_submit_form').serialize(),
             success: function(data) {
                 $("#pageloader").hide();

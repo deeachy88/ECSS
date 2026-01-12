@@ -7,6 +7,7 @@ urlpatterns = [
     path('verify_application_list', views.verify_application_list, name='verify_application_list'),
     path('client_application_list', views.client_application_list, name='client_application_list'),
     path('reviewer_application_list', views.reviewer_application_list, name='reviewer_application_list'),
+    path('admin_application_list', views.admin_application_list, name='admin_application_list'),
     #IBLS APPLICATION LIST
     path('ibls_application_list', views.ibls_application_list, name='ibls_application_list'),
 

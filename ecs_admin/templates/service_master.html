@@ -211,12 +211,18 @@
                         <thead>
                             <th>#</th>
                             <th>Service Name</th>
+                            <th></th>
                         </thead>
                         <tbody>
                             {% for service in service %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{service.service_name}}</td>
+                                     <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="{% url 'get_service_details' service.service_id %}"><i class="mdi mdi-square-edit-outline"></i></a>
+                                        </div>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>

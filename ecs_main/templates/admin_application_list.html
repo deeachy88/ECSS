@@ -1,0 +1,311 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+<style>
+    .distinct-activity {
+        border: 2px solid #6c757d;
+        border-radius: 6px;
+        padding: 12px;
+        background-color: #f8f9fa;
+        margin-bottom: 0;
+    }
+
+</style>
+<style>
+    /* ===== HEADING STYLING ===== */
+    h5 {
+        color: #066106;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    h5 i {
+        color: #4682B4;
+        font-size: 1.2rem;
+    }
+
+    /* ===== SIMPLIFIED DATA TABLE STYLING ===== */
+
+    /* Table Container */
+    #basic-datatable {
+        border-collapse: collapse;
+        width: 100%;
+        box-shadow: 0 2px 8px rgba(70, 130, 180, 0.12);
+        margin-bottom: 0 !important;
+    }
+
+    /* Table Header */
+    #basic-datatable thead {
+        background: #226ce3;
+        color: #ffffff;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    #basic-datatable thead th {
+        padding: 12px 14px;
+        text-align: left;
+        font-size: 0.82rem;
+        border: none;
+        vertical-align: middle;
+    }
+
+    /* Table Body */
+    #basic-datatable tbody tr {
+        border-bottom: 1px solid #6f946f;
+        transition: all 0.2s ease;
+        background-color: #ffffff;
+    }
+
+    #basic-datatable tbody tr:hover {
+        background-color: #e8f8ed;
+    }
+
+    #basic-datatable tbody td {
+        padding: 10px 14px;
+        vertical-align: middle;
+        font-size: 0.95rem;
+        color: #2c3e50;
+    }
+
+    /* Alternating Row Colors */
+    #basic-datatable tbody tr:nth-child(even) {
+        background-color: #edeef5;
+    }
+
+    #basic-datatable tbody tr:nth-child(even):hover {
+        background-color: #e8f4f8;
+    }
+
+    /* Link Button Styling */
+    #basic-datatable .btn-link {
+        color: #4682B4 !important;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        padding: 0 !important;
+        border: none !important;
+    }
+
+    #basic-datatable .btn-link:hover {
+        color: #1e5a96 !important;
+        text-decoration: underline;
+    }
+
+    /* Index Column */
+    #basic-datatable tbody td:first-child {
+        font-weight: 700;
+        color: #4682B4;
+        width: 50px;
+        text-align: center;
+    }
+
+    /* Table Wrapper */
+    .table-responsive {
+        margin-bottom: 0 !important;
+    }
+
+    /* Card Adjustments */
+    .card-body {
+        padding: 20px;
+    }
+
+    /* DataTable Search Styling - Centered */
+    .dataTables_filter {
+        text-align: center !important;
+        margin-bottom: 15px !important;
+    }
+
+    .dataTables_filter label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    .dataTables_filter input {
+        padding: 10px 15px !important;
+        border: 2px solid #226ce3 !important;
+        border-radius: 6px !important;
+        font-size: 0.95rem !important;
+        transition: all 0.2s ease !important;
+        width: 400px !important;
+        max-width: 100% !important;
+    }
+
+    .dataTables_filter input:focus {
+        outline: none !important;
+        border-color: #1e5a96 !important;
+        box-shadow: 0 0 8px rgba(34, 108, 227, 0.3) !important;
+        background-color: #f8fbff !important;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        h5 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        #basic-datatable thead th,
+        #basic-datatable tbody td {
+            padding: 9px 10px;
+            font-size: 0.9rem;
+        }
+
+        #basic-datatable thead {
+            font-size: 0.75rem;
+        }
+
+        .dataTables_filter input {
+            width: 100% !important;
+            padding: 9px 12px !important;
+            font-size: 0.9rem !important;
+        }
+
+        .dataTables_filter label {
+            flex-wrap: wrap;
+        }
+    }
+
+    @media (max-width: 480px) {
+        h5 {
+            font-size: 0.95rem;
+            gap: 8px;
+        }
+
+        h5 i {
+            font-size: 1rem;
+        }
+
+        #basic-datatable thead th,
+        #basic-datatable tbody td {
+            padding: 8px 8px;
+            font-size: 0.85rem;
+        }
+
+        #basic-datatable tbody td:first-child {
+            width: 40px;
+        }
+
+        .dataTables_filter input {
+            width: 100% !important;
+            padding: 8px 10px !important;
+            font-size: 0.85rem !important;
+        }
+    }
+</style>
+<div id="application_details">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mt-1">
+                    <div class="card-body">
+                        <h5 class="card-title mb-0 text-right">Application List</h5>
+                        <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
+                            <i class="ri-check-line me-2"></i>
+                        </div>
+                        <div id="cardCollpase1" class="collapse pt-3 show">
+                            <div class="table-responsive">
+                                <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Application No</th>
+                                            <th scope="col">Project Name</th>
+                                            <th scope="col">Activity</th>
+                                            <th scope="col">Application Date</th>
+                                            <!--<th scope="col">Application Source</th>
+                                            -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for app in application_data %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>
+                                                    {% if app.is_clickable %}
+                                                        <a href="javascript:void(0);"
+                                                           class="btn btn-outline-primary btn-sm"
+                                                           onclick="viewApplicationDetails('{{app.application_no}}','{{app.service_id}}','{{app.application_source}}')">
+                                                           {{app.application_no}}
+                                                        </a>
+                                                    {% else %}
+                                                        {{app.application_no}}
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{app.project_name}}</td>
+                                                <td>{{app.activity}}</td>
+                                                <td>{{app.action_date|date:"d-m-Y"}}</td>
+                                               <!-- <td>{{app.application_source}}</td>
+                                               -->
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="5" class="text-center">No Data</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function viewApplicationDetails(application_no, service_id, application_source) {
+        // Show loading state
+        const originalContent = $('#application_details').html();
+        $('#application_details').html(`
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Loading application details...</p>
+            </div>
+        `);
+
+        $.ajax({
+            type: "GET",
+            url: "{% url 'view_application_details' %}",
+            data: {
+                'application_no': application_no,
+                'service_id': service_id,
+                'application_source': application_source
+            },
+            success: function(data) {
+                $('#application_details').html(data);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading application details:', error);
+                // Restore original content on error
+                $('#application_details').html(originalContent);
+                // Show error message
+                alert('Error loading application details. Please try again.');
+            }
+        });
+    }
+
+    // Initialize DataTable
+    $(document).ready(function() {
+        $('#basic-datatable').DataTable({
+            "pageLength": 25,
+            "order": [],
+            "language": {
+                "emptyTable": "No applications available",
+                "search": "Search:"
+            }
+        });
+    });
+</script>
+{% endblock %}

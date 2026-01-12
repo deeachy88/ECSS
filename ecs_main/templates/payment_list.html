@@ -241,6 +241,8 @@
                             <th scope="col">Email</th>
                             <th scope="col">Payable Amt</th>
                             <th scope="col">Details</th>
+                            <th scope="col">Receipt No</th>
+                            <th scope="col">Receipt Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -253,6 +255,8 @@
                                 <td>{{ payment_details.payer_email }}</td>
                                 <td>{{ payment_details.total_payable_amount }}</td>
                                 <td>{{ payment_details.display_description }}</td>
+                                <td>{{ payment_details.receipt_no }}</td>
+                                <td>{{ payment_details.receipt_date }}</td>
                             </tr>
                         {% empty %}
                             <tr>
