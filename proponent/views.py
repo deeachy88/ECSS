@@ -78,23 +78,35 @@ def new_application(request):
     return response
 
 def get_application_service_id(request):
-    data = dict()
+    data = {}
     activity = request.GET.get('activity')
 
     activity_details = t_bsic_code.objects.filter(activity=activity)
+
     for cat_details in activity_details:
-        print(cat_details.competent_authority)
+        service_id = cat_details.service_id
+
+        service_master = t_service_master.objects.filter(
+            service_id=service_id
+        ).first()
+
+        attachments = service_master.attachments if service_master else ''
+
+        # Store everything in session
+        request.session['service_id'] = service_id
         request.session['ca_auth'] = cat_details.competent_authority
         request.session['colour_code'] = cat_details.colour_code
-        request.session['service_id'] = cat_details.service_id
         request.session['has_tor'] = cat_details.has_tor
         request.session['activity'] = cat_details.activity
-        data['service_id'] = cat_details.service_id
-        data['colour_code'] = cat_details.colour_code
-        data['ca_auth'] = cat_details.competent_authority
-        data['has_tor'] = cat_details.has_tor
-        print(cat_details.service_id)
+        request.session['attachments'] = attachments   #
+
+        data = {
+            'colour_code': cat_details.colour_code,
+            'has_tor': cat_details.has_tor
+        }
+
     return JsonResponse(data)
+
 
 def application_form(request):
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -1600,9 +1612,17 @@ def draft_application_list(request):
 def view_draft_application_details(request):
     application_no = request.GET.get('application_no') or request.session.get('application_no')
     request.session['application_no'] = application_no
-    service_id = request.GET.get('service_id') or request.session.get('service_id')
+    service_id = request.GET.get('service_id')
+
     request.session['service_id'] = service_id
-    
+
+    service_master = t_service_master.objects.filter(
+        service_id=service_id
+    ).first()
+
+    attachments = service_master.attachments if service_master else ''
+    request.session['attachments'] = attachments
+
     # Fetch common data
     application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Main Activity')
     file_attach = t_file_attachment.objects.filter(application_no=application_no)

@@ -227,7 +227,7 @@
                                 <td>
                                     <a href="javascript:void(0);"
                                        class="btn btn-outline-primary btn-sm"
-                                       onclick="viewApplicationDetails('{{application_details.application_no}}')">
+                                       onclick="viewApplicationDetails('{{application_details.application_no}}','{{ application_details.service_id }}')">
                                        {{application_details.application_no}}
                                     </a>
                                 </td>
@@ -251,7 +251,7 @@
     </div>
 </div>
 <script>
-    function viewApplicationDetails(application_no,service_id,application_source)
+    function viewApplicationDetails(application_no,service_id)
     {
         $.ajax({
             type : "GET",

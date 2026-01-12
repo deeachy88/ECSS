@@ -388,31 +388,8 @@
                             <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                 <div class="col-lg-12">
                                     <table class="table table-hover table-bordered table-centered mb-0">
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Written consent from individual/juristic person directly impacted by the proposed project and ancillary activities authenticated by the concerned local authority</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>Records of public consultation signed by member (s) of the concerned local authority present during the consultation. If there are no individuals/public within the vicinity of the project, submit endorsement/approval of the concerned local authority.</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3</td>
-                                                <td>KMZ file indicating the proposed site and its boundary, access road alignment, electricity tapping point and alignment (if applicable), water source, and nearby sensitive receptors as identified in the baseline information</td>
-                                            </tr>
-                                            <tr>
-                                                <td>4</td>
-                                                <td>Layout plan of the proposed project, if applicable</td>
-                                            </tr>
-                                            <tr>
-                                                <td>5</td>
-                                                <td>Extraction plan and production schedule</td>
-                                            </tr>
-                                            <tr>
-                                                <td>6</td>
-                                                <td>Water abstraction permit from concerned local authority (Dzongkhag/Gewog Administration) for any water abstraction activity</td>
-                                            </tr>
+                                        <tbody id="attachments_tbody">
+                                            {{ request.session.attachments|safe }}
                                         </tbody>
                                     </table>
                                 </div>
