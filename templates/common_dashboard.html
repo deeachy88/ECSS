@@ -25,6 +25,7 @@
         <link rel="stylesheet" href="{% static 'assets/vendor/daterangepicker/daterangepicker.css' %}">
         <link rel="stylesheet" href="{% static 'assets/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css' %}">
 
+
         <!-- Theme Config Js -->
         <script src="{% static 'assets/js/hyper-config.js' %}"></script>
 
@@ -38,58 +39,8 @@
         <link href="{% static 'assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
         <link href="{% static 'assets/vendor/quill/quill.core.css' %}" rel="stylesheet" type="text/css" />
         <link href="{% static 'assets/vendor/quill/quill.snow.css' %}" rel="stylesheet" type="text/css" />
-        
-        <style>
-            .badge {
-                display: block;
-                position: absolute;
-                top: 2px;
-                right: 65px;
-                line-height: 16px;
-                height: 16px;
-                padding: 0 5px;
-                color: #ff0303;
-                text-shadow: 0 1px rgb(0 0 0 / 0%);
-                border-width: 1px;
-                border-style: solid;
-                border-radius: 10px;
-                border-color: #f84343;
-            }
-            .cl-badge {
-                display: block;
-                position: absolute;
-                top: 2px;
-                right: 36px;
-                line-height: 16px;
-                height: 16px;
-                padding: 0 5px;
-                color: #ff0303;
-                text-shadow: 0 1px rgb(0 0 0 / 0%);
-                border-width: 1px;
-                border-style: solid;
-                border-radius: 10px;
-                border-color: #f84343;
-            }
-            
-            .re-badge {
-                display: block;
-                position: absolute;
-                top: 2px;
-                right: 18px;
-                line-height: 16px;
-                height: 16px;
-                padding: 0 5px;
-                color: #ff0303;
-                text-shadow: 0 1px rgb(0 0 0 / 0%);
-                border-width: 1px;
-                border-style: solid;
-                border-radius: 10px;
-                border-color: #f84343;
-            }
-            #idletimeout { background:#0088AA; border:3px solid #969696; color:#fff; font-family:arial, sans-serif; text-align:center; font-size:12px; padding:10px; position:relative; top:0px; left:0; right:0; z-index:100000; display:none; }
-            #idletimeout a { color:#fff; font-weight:bold }
-            #idletimeout span { font-weight:bold }
-        </style>
+        <!-- ✅ CUSTOM CSS MUST BE LAST -->
+        <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
 
     </head>
 
@@ -363,8 +314,9 @@
                                     <i class="uil-home-alt"></i>
                                     <span> Application List</span>
                                     {% if v_application_count > 0 %}</span>
-                                        <span class="badge badge-danger client_count">{{ v_application_count }}</span>
+                                        <span class="badge badge-danger re-badge">{{ v_application_count }}</span>
                                     {% endif %}
+
                                 </a>
                             </li>
                             <li class="side-nav-item">
@@ -472,7 +424,7 @@
                                     <i class="uil-home-alt"></i>
                                     <span> Application List</span>
                                     {% if r_application_count > 0 %}
-                                        <span class="badge badge-danger">{{ r_application_count }}</span>
+                                        <span class="badge badge-danger re-badge">{{ r_application_count }}</span>
                                     {% endif %}
                                 </a>
                             </li>
@@ -598,7 +550,10 @@
                                             <a href="{% url 'new_application' %}">New Application</a>
                                         </li>
                                         <li>
-                                            <a href="{% url 'draft_application_list' %}?identifier=NEW">Draft Application</a>
+                                            <a href="{% url 'draft_application_list' %}?identifier=NEW">
+                                                <span class="badge badge-danger re-badge">{{ draft_count }}</span>
+                                                <span> Draft Application </span>
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>

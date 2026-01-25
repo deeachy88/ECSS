@@ -44,6 +44,13 @@ def new_application(request):
             application_no__in=Subquery(t1_general_subquery)
         ).count()
 
+    draft_count = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        application_status='P',
+        service_type='Main Activity',
+        action_date__isnull=True
+    ).count()
+
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
     # Renewal exists AND is NOT approved
@@ -69,7 +76,7 @@ def new_application(request):
 
     ec_renewal_count = non_updated_renewals.count()
 
-    response = render(request, 'new_application.html',{'bsic_details':bsic_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'tor_application_count':tor_application_count})
+    response = render(request, 'new_application.html',{'bsic_details':bsic_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'tor_application_count':tor_application_count,'draft_count':draft_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -109,14 +116,60 @@ def get_application_service_id(request):
 
 
 def application_form(request):
+    # Get session data
+    login_id = request.session.get('login_id')
+    applicant_id = request.session.get('email')
+
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     thromde = t_thromde_master.objects.all()
     service_id = str(request.session.get('service_id'))
 
-    print(service_id)
-    return render(request, 'new_application_form.html',{'service_id': service_id,'thromde':thromde,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+    # Renewal exists AND is NOT approved
+    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+        ec_reference_no=OuterRef('ec_reference_no')
+    ).exclude(
+        application_status='A'
+    )
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+    non_updated_renewals = (
+        t_ec_industries_t1_general.objects
+        .filter(
+            applicant_id=request.session['email'],
+            service_type__in=["Main Activity", "Old EC"],
+            ec_expiry_date__lt=expiry_date_threshold,
+            ec_expiry_date__isnull=False,
+            ec_reference_no__isnull=False,
+        )
+        .exclude(ec_reference_no='')
+        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+        .filter(has_pending_renewal=False)
+    )
+
+    ec_renewal_count = non_updated_renewals.count()
+
+    # 5. TOR application count (optimized)
+    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    tor_application_count = t_ec_industries_t1_general.objects.filter(
+        application_status='A',
+        application_no__contains='TOR',
+        applicant_id=applicant_id
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+
+    draft_count = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        application_status='P',
+        service_type='Main Activity',
+        action_date__isnull=True
+    ).count()
+
+    return render(request, 'new_application_form.html',{'service_id': service_id,'thromde':thromde,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'draft_count':draft_count,'tor_application_count':tor_application_count, 'ec_renewal_count':ec_renewal_count})
 
 def get_application_no(request, service_code, service_id):
     if service_code == "TOR":
@@ -1600,8 +1653,15 @@ def draft_application_list(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
+
+    draft_count = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        application_status='P',
+        service_type='Main Activity',
+        action_date__isnull=True
+    ).count()
     
-    response = render(request, template_name,{'application_details':application_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'service_details':service_details, 'tor_application_count':tor_application_count})
+    response = render(request, template_name,{'application_details':application_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'service_details':service_details, 'tor_application_count':tor_application_count, 'draft_count':draft_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -1824,6 +1884,7 @@ def ec_renewal(request):
         return redirect('login')
 
     threshold_date = date.today() + timedelta(days=60)
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
     # -----------------------------------
     # Subquery: renewal exists AND is NOT approved
@@ -1892,6 +1953,35 @@ def ec_renewal(request):
         .count()
     )
 
+    # Renewal exists AND is NOT approved
+    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+        ec_reference_no=OuterRef('ec_reference_no')
+    ).exclude(
+        application_status='A'
+    )
+
+    non_updated_renewals = (
+        t_ec_industries_t1_general.objects
+        .filter(
+            applicant_id=request.session['email'],
+            service_type__in=["Main Activity", "Old EC"],
+            ec_expiry_date__lt=expiry_date_threshold,
+            ec_expiry_date__isnull=False,
+            ec_reference_no__isnull=False,
+        )
+        .exclude(ec_reference_no='')
+        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+        .filter(has_pending_renewal=False)
+    )
+
+    ec_renewal_count = non_updated_renewals.count()
+
+    draft_count = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        application_status='P',
+        service_type='Main Activity',
+        action_date__isnull=True
+    ).count()
     # -----------------------------------
     # Context
     # -----------------------------------
@@ -1899,7 +1989,9 @@ def ec_renewal(request):
         'application_details': application_details,
         'app_hist_count': app_hist_count,
         'renewal_details': renewal_details,
+        'ec_renewal_count': ec_renewal_count,
         'service_details': service_details,
+        'draft_count': draft_count,
         'tor_application_count': tor_application_count,
         'threshold_date': threshold_date,
     }
@@ -1915,6 +2007,7 @@ def ec_renewal(request):
 
 
 def ec_renewal_details(request):
+    applicant_id = request.session.get('email')
     ec_reference_no = request.GET.get('ec_reference_no')
     service_code = 'REN'
     application_no = get_ren_application_no(request, service_code, '10')
@@ -1952,18 +2045,24 @@ def ec_renewal_details(request):
         .annotate(has_pending_renewal=Exists(pending_renewal_exists))
         .filter(has_pending_renewal=False)
     )
+    draft_count = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        application_status='P',
+        service_type='Main Activity',
+        action_date__isnull=True
+    ).count()
 
     ec_renewal_count = non_updated_renewals.count()
     if ec_application_details.exists():
         ec_details = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)    
         return render(request, 'renewal_details.html',{'application_details':application_details,'application_no':application_no, 'ec_details':ec_details,
-                                                        'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+                                                        'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'draft_count':draft_count})
     else:
         for ec_data in ec_data:
             t_ec_renewal_t2.objects.create(application_no=application_no, ec_reference_no=ec_reference_no,ec_heading=ec_data.ec_heading,ec_terms=ec_data.ec_terms)
         ec_details = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)    
         return render(request, 'renewal_details.html',{'application_details':application_details,'application_no':application_no, 'ec_details':ec_details,'ec_renewal_count':ec_renewal_count,
-                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village})
+                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'draft_count':draft_count})
 
 def submit_renew_application(request):
     data = {"message": "failure"}
@@ -2290,13 +2389,20 @@ def tor_list(request):
     )
 
     ec_renewal_count = non_updated_renewals.count()
+
+    draft_count = t_ec_industries_t1_general.objects.filter(
+        applicant_id=applicant_id,
+        application_status='P',
+        service_type='Main Activity',
+        action_date__isnull=True
+    ).count()
     
     service_details = t_service_master.objects.all()
     
     app_hist_count = t_application_history.objects.filter(
             applicant_id=applicant_id
         ).distinct('application_no').count()
-    response = render(request, 'tor/tor_list.html', {'tor_application_count':tor_application_count,'ec_renewal_count':ec_renewal_count,'tor_details':tor_details,'service_details':service_details, 'app_hist_count':app_hist_count})
+    response = render(request, 'tor/tor_list.html', {'tor_application_count':tor_application_count,'ec_renewal_count':ec_renewal_count,'tor_details':tor_details,'service_details':service_details, 'app_hist_count':app_hist_count, 'draft_count':draft_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'

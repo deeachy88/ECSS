@@ -1,0 +1,380 @@
+/* ==============================
+   EC CARD & BUTTON STYLES
+============================== */
+
+.ec-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f3c88;
+}
+
+.ec-card-text {
+    font-size: 13px;
+    color: #000000;
+}
+
+.btn.ec-btn-primary {
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #1f3c88;
+    border-color: #1f3c88;
+    color: #ffffff;
+}
+
+.btn.ec-btn-primary:hover {
+    background-color: #162d63;
+    border-color: #162d63;
+}
+
+.btn.ec-btn-pending {
+    font-size: 14px;
+    font-weight: 500;
+    color: #856404;
+    border-color: #ffc107;
+}
+
+.btn.ec-btn-pending:hover {
+    background-color: #fff3cd;
+    color: #533f03;
+}
+
+.badge.re-badge {
+    display: block;
+    color: #ffffff;
+}
+
+.hover-bg-light:hover {
+    background-color: #d3e0d3 !important;
+}
+
+/* ==============================
+   HEADINGS
+============================== */
+
+h5 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #066106;
+    margin-bottom: 15px;
+}
+
+h5 i {
+    font-size: 1.2rem;
+    color: #4682B4;
+}
+
+/* ==============================
+   DATA TABLE
+============================== */
+
+#basic-datatable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0 !important;
+    box-shadow: 0 2px 8px rgba(70, 130, 180, 0.12);
+}
+
+#basic-datatable thead {
+    background-color: #226ce3;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#basic-datatable thead th {
+    padding: 12px 14px;
+    font-size: 0.82rem;
+    text-align: left;
+    border: none;
+    vertical-align: middle;
+}
+
+#basic-datatable tbody tr {
+    background-color: #ffffff;
+    border-bottom: 1px solid #6f946f;
+    transition: background-color 0.2s ease;
+}
+
+#basic-datatable tbody tr:hover {
+    background-color: #e8f8ed;
+}
+
+#basic-datatable tbody tr:nth-child(even) {
+    background-color: #edeef5;
+}
+
+#basic-datatable tbody tr:nth-child(even):hover {
+    background-color: #e8f4f8;
+}
+
+#basic-datatable tbody td {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    color: #2c3e50;
+    vertical-align: middle;
+}
+
+#basic-datatable tbody td:first-child {
+    width: 50px;
+    text-align: center;
+    font-weight: 700;
+    color: #4682B4;
+}
+
+#basic-datatable .btn-link {
+    padding: 0 !important;
+    border: none !important;
+    font-weight: 600;
+    color: #4682B4 !important;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+#basic-datatable .btn-link:hover {
+    color: #1e5a96 !important;
+    text-decoration: underline;
+}
+
+/* ==============================
+   LAYOUT HELPERS
+============================== */
+
+.table-responsive {
+    margin-bottom: 0 !important;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* ==============================
+   DATATABLE SEARCH
+============================== */
+
+.dataTables_filter {
+    text-align: center !important;
+    margin-bottom: 15px !important;
+}
+
+.dataTables_filter label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.dataTables_filter input {
+    width: 400px !important;
+    max-width: 100% !important;
+    padding: 10px 15px !important;
+    font-size: 0.95rem !important;
+    border: 2px solid #226ce3 !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+}
+
+.dataTables_filter input:focus {
+    outline: none !important;
+    border-color: #1e5a96 !important;
+    background-color: #f8fbff !important;
+    box-shadow: 0 0 8px rgba(34, 108, 227, 0.3) !important;
+}
+
+/* ==============================
+   BADGES & NOTIFICATIONS
+============================== */
+
+.badge,
+.cl-badge {
+    display: block;
+    position: absolute;
+    top: 2px;
+    height: 16px;
+    line-height: 16px;
+    padding: 0 5px;
+    color: #ff0303;
+    border: 1px solid #f84343;
+    border-radius: 10px;
+}
+
+.badge {
+    right: 65px;
+}
+
+.cl-badge {
+    right: 36px;
+}
+
+/* ==============================
+   IDLE TIMEOUT
+============================== */
+
+#idletimeout {
+    display: none;
+    position: relative;
+    z-index: 100000;
+    padding: 10px;
+    font-size: 12px;
+    text-align: center;
+    color: #ffffff;
+    background-color: #0088AA;
+    border: 3px solid #969696;
+}
+
+#idletimeout a {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+#idletimeout span {
+    font-weight: bold;
+}
+
+/* ==============================
+   FORM WIZARD
+============================== */
+
+.form-wizard-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+    border-bottom: 2px solid #e9ecef;
+    border-radius: 15px;
+}
+
+.form-wizard-header .nav-link {
+    padding: 8px 15px;
+    font-weight: 600;
+    color: #6c757d;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.form-wizard-header .nav-link:hover:not(:disabled) {
+    background-color: #e9ecef;
+    border-color: #0d6efd;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15);
+}
+
+.form-wizard-header .nav-link.active {
+    color: #ffffff;
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    border-color: #0d6efd;
+    box-shadow: 0 3px 10px rgba(13, 110, 253, 0.3);
+}
+
+.form-wizard-header .nav-link:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    background-color: #e9ecef !important;
+    border-color: #dee2e6 !important;
+    color: #adb5bd !important;
+}
+
+.form-wizard-header .badge {
+    font-size: 16px;
+}
+
+.form-wizard-header .nav-link:hover:not(:disabled) .badge {
+    transform: scale(1.05);
+}
+
+/* ==============================
+   MISC
+============================== */
+
+.distinct-activity {
+    padding: 12px;
+    margin-bottom: 0;
+    background-color: #f8f9fa;
+    border: 2px solid #6c757d;
+    border-radius: 6px;
+}
+
+.divider-bright {
+    display: flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    background-color: #c8dbce;
+    border-radius: 4px;
+}
+
+.divider-bright h6 {
+    margin-bottom: 0;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #000000;
+    letter-spacing: 0.4px;
+}
+
+.custom-bg {
+    padding: 6px 0;
+    line-height: 1.1;
+    color: #000000;
+    background-color: #bfc1c9 !important;
+}
+
+/* ==============================
+   RESPONSIVE
+============================== */
+
+@media (max-width: 768px) {
+    h5 {
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+
+    #basic-datatable thead th,
+    #basic-datatable tbody td {
+        padding: 9px 10px;
+        font-size: 0.9rem;
+    }
+
+    .dataTables_filter label {
+        flex-wrap: wrap;
+    }
+
+    .dataTables_filter input {
+        width: 100% !important;
+        padding: 9px 12px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    h5 {
+        font-size: 0.95rem;
+        gap: 8px;
+    }
+
+    h5 i {
+        font-size: 1rem;
+    }
+
+    #basic-datatable tbody td:first-child {
+        width: 40px;
+    }
+
+    #basic-datatable thead th,
+    #basic-datatable tbody td {
+        padding: 8px;
+        font-size: 0.85rem;
+    }
+
+    .dataTables_filter input {
+        padding: 8px 10px !important;
+        font-size: 0.85rem !important;
+    }
+}

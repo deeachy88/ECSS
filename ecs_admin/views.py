@@ -21,6 +21,7 @@ from ecs_main.models import t_application_history
 from datetime import datetime, timedelta
 from django.views.decorators.cache import cache_control
 from proponent.models import t_workflow_dtls
+from django.db.models import Case, When, Value, CharField, Count
 
 # Create your views here.
 def home(request):
@@ -177,7 +178,8 @@ def dashboard(request):
     payment_count = 0
     cl_application_count = 0
     client_application_count = 0  # Initialize here to avoid UnboundLocalError
-    ibls_appluication_count = 0
+    ibls_application_count = 0
+    reviewer_application_count = 0
     
     try:
         login_type = request.session['login_type']
@@ -187,6 +189,7 @@ def dashboard(request):
     if login_type == 'I':
         role = request.session['role']
         ca_authority = request.session['ca_authority']
+        login_id = request.session['login_id']
         
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
@@ -215,31 +218,53 @@ def dashboard(request):
         
         if role == 'Verifier':
             v_application_count = t_workflow_dtls.objects.filter(
-                assigned_role_id='2', 
+                assigned_role_id='2',
                 assigned_role_name='Verifier', 
                 ca_authority=ca_authority, 
                 action_date__isnull=False
             ).count()
         elif role == 'Reviewer':
             r_application_count = t_workflow_dtls.objects.filter(
-                assigned_role_id='3', 
-                assigned_role_name='Reviewer', 
+                assigned_role_id='3',
+                assigned_user_id=login_id,
+                assigned_role_name='Reviewer',
                 ca_authority=ca_authority,
                 service_type__in=['Main Activity','Renewal']
             ).count()
+
+            reviewer_status_counts = (
+                t_ec_industries_t1_general.objects
+                .filter(assigned_to=login_id)
+                .annotate(
+                    status_group=Case(
+                        When(application_status='A', then=Value('Approved')),
+                        default=Value('Pending'),
+                        output_field=CharField()
+                    )
+                )
+                .values('status_group')
+                .annotate(total=Count('record_id'))  # Use record_id instead of id
+            )
+
+            reviewer_application_count = {
+                row['status_group']: row['total']
+                for row in reviewer_status_counts
+            }
+
         elif role == 'Admin':
             client_application_count = t_user_master.objects.filter(
                 accept_reject__isnull=True,
                 login_type='C'
             ).count()
-            ibls_appluication_count = t_workflow_dtls.objects.filter(application_status='P', assigned_role_id=request.session['role_id'], action_date__isnull=False).count()
+            ibls_application_count = t_workflow_dtls.objects.filter(application_status='P', assigned_role_id=request.session['role_id'], action_date__isnull=False).count()
             
         response = render(request, 'dashboard.html', {
             'v_application_count': v_application_count,
             'r_application_count': r_application_count,
             'ec_renewal_count': ec_renewal_count,
             'client_application_count': client_application_count,  # Now always defined
-            'ibls_appluication_count':ibls_appluication_count
+            'ibls_application_count':ibls_application_count,
+            'reviewer_application_count':reviewer_application_count
         })
     else:
         email_id = request.session['email']
@@ -310,7 +335,7 @@ def dashboard(request):
             'tor_application_count': tor_application_count,
             'draft_count': draft_count,
             'ec_renewal_count': ec_renewal_count,
-            'ibls_appluication_count':ibls_appluication_count,
+            'ibls_application_count':ibls_application_count,
             'download_forms':download_forms,
             'old_ec_draft_count':old_ec_draft_count
         })

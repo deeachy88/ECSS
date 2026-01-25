@@ -224,6 +224,13 @@ def client_application_list(request):
             tor_application_no=OuterRef('application_no')
         ).values('tor_application_no')
 
+        draft_count = t_ec_industries_t1_general.objects.filter(
+            applicant_id=applicant_id,
+            application_status='P',
+            service_type='Main Activity',
+            action_date__isnull=True
+        ).count()
+
         tor_application_count = t_ec_industries_t1_general.objects.filter(
             application_status='A',
             application_no__contains='TOR',
@@ -273,6 +280,7 @@ def client_application_list(request):
             'cl_application_count': cl_application_count,
             'app_hist_count': app_hist_count,
             'tor_application_count': tor_application_count,
+            'draft_count': draft_count,
             'ec_renewal_count': ec_renewal_count
         }
         
@@ -316,6 +324,7 @@ def reviewer_application_list(request):
         # Base query filters
         base_filters = {
             'assigned_role_id': '3',
+            'assigned_user_id' : login_id,
             'action_date__isnull': False,
             'ca_authority': ca_authority
         }
@@ -686,7 +695,13 @@ def payment_list(request):
 def view_application_details(request):
     application_no = request.GET.get('application_no')
     service_id = request.GET.get('service_id')
-    print(service_id)
+
+    service_master = t_service_master.objects.filter(
+        service_id=service_id
+    ).first()
+
+    attachments = service_master.attachments if service_master else ''
+
     status = None
     ca_auth = None
     assigned_role_id = None
@@ -711,7 +726,8 @@ def view_application_details(request):
         file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='TOR')
         tor_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RTOR')
         additional_info = t_ec_additional_information.objects.filter(application_no=application_no).order_by('-record_id')
-        return render(request, 'tor_form_details.html', {'application_details':application_details,'file_attach':file_attach,'dzongkhag':dzongkhag,'additional_info':additional_info, 'gewog':gewog, 'village':village, 'thromde':thromde, 'reviewer_list':reviewer_list,'assigned_role_id':assigned_role_id, 'status':status,'tor_attach':tor_attach,'pay_details':pay_details})
+        attachments = attachments
+        return render(request, 'tor_form_details.html', {'application_details':application_details,'file_attach':file_attach,'dzongkhag':dzongkhag,'additional_info':additional_info, 'gewog':gewog, 'village':village, 'thromde':thromde, 'reviewer_list':reviewer_list,'assigned_role_id':assigned_role_id, 'status':status,'tor_attach':tor_attach,'pay_details':pay_details,'attachments': attachments})
     else:
         if service_id != '10':
             application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,service_type='Main Activity')
@@ -728,8 +744,9 @@ def view_application_details(request):
             app_hist_count = t_application_history.objects.filter(applicant_id=request.session['email']).count()
             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             additional_info = t_ec_additional_information.objects.filter(application_no=application_no).order_by('-record_id')
+            attachments = attachments
             return render(request, 'application_details.html',{'reviewer_list':reviewer_list,'assigned_role_name':assigned_role_name,'status':status,'ai_attach':ai_attach,'application_details':application_details,'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog,'pay_details':pay_details, 'village':village,'file_attach':file_attach,
-                                                        'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'ec_details':ec_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach,'additional_info':additional_info})
+                                                        'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'ec_details':ec_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach,'additional_info':additional_info,'attachments': attachments})
         elif service_id == '10':
             renewal_details_one = t_ec_renewal_t1.objects.filter(application_no=application_no)
             for renewal_details_one in renewal_details_one:
@@ -748,8 +765,9 @@ def view_application_details(request):
             cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
             renewal_details = t_ec_renewal_t1.objects.filter(application_no=application_no)
             additional_info = t_ec_additional_information.objects.filter(application_no=application_no).order_by('-record_id')
+            attachments = attachments
             return render(request, 'renewal_application_details.html',{'application_details':application_details,'assigned_role_name':assigned_role_name,'additional_info':additional_info,'renewal_details_one':renewal_details_one,'status':status,'pay_details':pay_details,
-                                                                    'dzongkhag':dzongkhag,'renewal_details':renewal_details,'ren_attach':ren_attach,'gewog':gewog,'village':village,'ai_attach':ai_attach,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details_two':renewal_details_two,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach})
+                                                                    'dzongkhag':dzongkhag,'renewal_details':renewal_details,'ren_attach':ren_attach,'gewog':gewog,'village':village,'ai_attach':ai_attach,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details_two':renewal_details_two,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach,'attachments': attachments})
 
 
 def resubmit_application(request):
