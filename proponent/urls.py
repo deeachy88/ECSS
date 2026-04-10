@@ -8,6 +8,7 @@ urlpatterns = [
     path('application_form', views.application_form, name='application_form'),
     path('save_general_details', views.save_general_details, name='save_general_details'),
     path('save_new_general_details', views.save_new_general_details, name='save_new_general_details'),
+    path('save_draft_general_details', views.save_draft_general_details, name='save_draft_general_details'),
     path('save_general_attachment', views.save_general_attachment, name='save_general_attachment'),
     path('save_general_attachment_details', views.save_general_attachment_details, name='save_general_attachment_details'),
     path('submit_general_application', views.submit_general_application, name='submit_general_application'),
@@ -43,14 +44,25 @@ urlpatterns = [
     path('save_compliance_details', views.save_compliance_details, name='save_compliance_details'),
 
     # OTHER MODIFICATION DETAILS
-    path('name_change', views.name_change, name='name_change'),
-    path('ownership_change', views.ownership_change, name='ownership_change'),
-    path('technology_change', views.technology_change, name='technology_change'),
-    path('product_change', views.product_change, name='product_change'),
-    path('capacity_change', views.capacity_change, name='capacity_change'),
-    path('area_change', views.area_change, name='area_change'),
-    path('location_change', views.location_change, name='location_change'),
-    path('get_other_modification_details', views.get_other_modification_details, name='get_other_modification_details'),
+    path('other_modifications/', views.other_modifications, name='other_modifications'),
+
+    path('name_change/', views.name_change, name='name_change'),
+    path('save_nc_attachment', views.save_nc_attachment, name='save_nc_attachment'),
+    path('save_nc_attachment_details', views.save_nc_attachment_details, name='save_nc_attachment_details'),
+    path('submit_nc_application', views.submit_nc_application, name='submit_nc_application'),
+    path('view_nc_application_details', views.view_nc_application_details, name='view_nc_application_details'),
+
+    path('ownership_change/', views.ownership_change, name='ownership_change'),
+    path('save_oc_attachment', views.save_oc_attachment, name='save_oc_attachment'),
+    path('save_oc_attachment_details', views.save_oc_attachment_details, name='save_oc_attachment_details'),
+    path('submit_oc_application', views.submit_oc_application, name='submit_oc_application'),
+    path('oc_application', views.oc_application, name='oc_application'),
+    path('view_oc_application_details', views.view_oc_application_details, name='view_oc_application_details'),
+    path('oc_decide_application', views.oc_decide_application, name='oc_decide_application'),
+
+    path('other_change/', views.other_change, name='other_change'),
+    path('save_other_modification_general_details', views.save_other_modification_general_details, name='save_other_modification_general_details'),
+
 
     #TOR DETAILS
     path('tor_form', views.tor_form, name='tor_form'),
@@ -96,6 +108,7 @@ urlpatterns = [
 
     #Payment_part
     path('ecss_payment_update', views.ecss_payment_update, name='ecss_payment_update'),
-    path('ecss_payment_reversal', views.ecss_payment_reversal, name='ecss_payment_reversal')
+    path('ecss_payment_reversal', views.ecss_payment_reversal, name='ecss_payment_reversal'),
+
 
 ]

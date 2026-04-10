@@ -6,6 +6,7 @@ from ECS import settings
 urlpatterns = [
     path('verify_application_list', views.verify_application_list, name='verify_application_list'),
     path('client_application_list', views.client_application_list, name='client_application_list'),
+    path('reviewer_application_list_payment', views.reviewer_application_list_payment, name='reviewer_application_list_payment'),
     path('reviewer_application_list', views.reviewer_application_list, name='reviewer_application_list'),
     path('admin_application_list', views.admin_application_list, name='admin_application_list'),
     #IBLS APPLICATION LIST
@@ -18,6 +19,8 @@ urlpatterns = [
     path('validate_receipt_no', views.validate_receipt_no, name='validate_receipt_no'),
     path('save_eatc_attachment', views.save_eatc_attachment, name='save_eatc_attachment'),
     path('save_eatc_attachment_details', views.save_eatc_attachment_details, name='save_eatc_attachment_details'),
+    path('save_reject_attachment', views.save_reject_attachment, name='save_reject_attachment'),
+    path('save_reject_attachment_details', views.save_reject_attachment_details, name='save_reject_attachment_details'),
     path('save_draft_ec_details', views.save_draft_ec_details, name='save_draft_ec_details'),
     path('update_draft_ec_details', views.update_draft_ec_details, name='update_draft_ec_details'),
     path('delete_draft_ec_details', views.delete_draft_ec_details, name='delete_draft_ec_details'),

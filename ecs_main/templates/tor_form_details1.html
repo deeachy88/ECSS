@@ -181,14 +181,14 @@
                                             </thead>
                                             <tbody>
                                                {% for file_attach in file_attach %}
-                                                    <tr>
-                                                        <td>{{ forloop.counter }}</td>
-                                                        <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
-                                                    </tr>
-                                                    {% empty %}
-                                                    <tr>
-                                                      <td colspan="3" class="text-center">No Data</td>
-                                                    </tr>
+                                                        <tr>
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                                                        </tr>
+                                                        {% empty %}
+                                                        <tr>
+                                                          <td colspan="3" class="text-center">No Data</td>
+                                                        </tr>
                                                {% endfor %}
                                             </tbody>
                                         </table>
@@ -206,6 +206,7 @@
         <div class="alert alert-primary">Reviewer Details</div>
         <form method="post" id="reviewer_form">
             {% csrf_token %}
+
             <!-- Change verifierPaymentDiv to ID -->
             <div class="row" id="verifierPaymentDiv" style="display: none;">
                 <div class="col-lg-6">
@@ -235,21 +236,57 @@
             <div class="alert alert-danger border-0 rounded-0" role="alert" id="reviewer_application_errorMsg" style="display:none">
                 <i class="uil-folder-heart me-1 h4 align-middle"></i>
             </div>
+            <div class="row" id="verifier_attach_detailsDiv" style="display: none;">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-0">DRAFT TOR</h5>
+                        <div id="cardCollpase7" class="collapse pt-3 show">
+                            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">File</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   {% for tor_attach in tor_attach %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td><a href='{{tor_attach.file_path}}' target="_blank">{{tor_attach.attachment}}</a></td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="3" class="text-center">No Data</td>
+                                            </tr>
+                                   {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 tor_remarks_div"  style="display: none;">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Remarks</label>
+                    <textarea class="form-control" rows="2" readonly>{{application_details.tor_remarks}}</textarea>
+                </div>
+            </div>
+            <div class="row mt-4 show_reviewer_details" style="display: none;">
+                <div class="mb-3 F_button" style="display:none;">
+                    <button type="button" class="btn btn-success" onclick="forward_tor_form('FT')">
+                        <i class="mdi mdi-arrow-right me-1"></i> Forward </button>
+                </div>
+            </div>
             <div class="col-md-12 reviewer_attach_details" style="display: none;">
                 <div class="card">
                     <div class="card-body">
                         <div class="card-widgets">
-                            <button type="button" class="btn btn-primary btn-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#rev_tor_attachment_modal"
-                                    onclick="setAttachmentTarget('reviewer')">
-                                <i class="mdi mdi-plus me-2"></i>Add
-                            </button>
+                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#rev_tor_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                         </div>
                         <h5 class="card-title mb-0">DRAFT TOR</h5>
                         <div id="cardCollpase7" class="collapse pt-3 show">
                             <div id="tor_rev_attachment">
-                                {% include 'tor_attachment_page.html' with container_id='tor_rev_attachment' table_id='basic-datatable-reviewer' %}
+                                {% include 'tor_attachment_page.html' %}
                             </div>
                         </div>
                     </div>
@@ -257,16 +294,6 @@
             </div>
             <div class="alert alert-success border-0 rounded-0" role="alert" id="tor_form_successMsg" style="display:none">
                 <i class="uil-folder-heart me-1 h4 align-middle"></i>
-            </div>
-            <div class="col-lg-12 tor_remarks_div"  style="display: none;">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Remarks</label>
-                    <textarea class="form-control" name="tor_remarks" id="tor_remarks" rows="2"></textarea>
-                </div>
-            </div>
-            <div class="mb-3 F_button" style="display:none;">
-                <a href="#" class="btn btn-success" onclick="forward_tor_form('FT')">
-                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward </a>
             </div>
         </form>
     </div>
@@ -286,11 +313,19 @@
                         {% endfor %}
                         </select>
                     </div>
-                    <div class="col-lg-3 text-lg-end" id="verifierForwardButtonDiv" style="display:none;">
-                        <button type="button" class="btn btn-success" onclick="forward_tor_form('R')">
-                            <i class="mdi mdi-arrow-right me-1"></i> Forward
-                        </button>
+                    <div class="col-lg-5 show_reviewer_details" style="display:none;">
+                      <label class="form-label fw-bold">Remarks</label>
+                      <textarea class="form-control" rows="2" id="tor_remarks" name="tor_remarks"></textarea>
                     </div>
+                    <div class="col-lg-3 text-lg-end" id="verifierForwardButtonDiv" style="display:none;">
+                      <button type="button" class="btn btn-success" onclick="forward_tor_form('R')">
+                        <i class="mdi mdi-arrow-right me-1"></i> Forward
+                      </button>
+                    </div>
+                    <!-- Full-width error under the row -->
+                        <div class="col-12">
+                            <div id="forward_toErrorMsg" class="alert alert-danger mb-0" style="display:none;"></div>
+                        </div>
                 </div>
                 <div class="alert alert-danger border-0 rounded-0" role="alert" id="tor_form_errorMsg" style="display:none">
                     <i class="uil-folder-heart me-1 h4 align-middle"></i>
@@ -304,70 +339,10 @@
                         <p class="text-muted">Please wait, this may take a few moments.</p>
                     </div>
                 </div>
-                <div class="row" id="verifier_attach_detailsDiv" style="display: none;">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="card-widgets">
-                                <button type="button" class="btn btn-primary btn-sm"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#rev_tor_attachment_modal"
-                                        onclick="setAttachmentTarget('verifier')">
-                                    <i class="mdi mdi-plus me-2"></i>Add
-                                </button>
-                            </div>
-                            <h5 class="card-title mb-0">DRAFT TOR</h5>
-                            <div id="cardCollpase7" class="collapse pt-3 show">
-                                <div id="tor_ver_attachment">
-                                    {% include 'tor_attachment_page.html' with container_id='tor_ver_attachment' table_id='basic-datatable-verifier' %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-12 tor_verifier_remarks_div"  style="display: none;">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Remarks</label>
-                        <textarea class="form-control" name="tor_remarks" id="tor_remarks" rows="2" readonly>{{application_details.tor_remarks}}</textarea>
-                    </div>
-                </div>
-                <div class="col-lg-12 tor_verifier_reject_reason_div"  style="display: none;">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Reject Reason</label>
-                        <textarea class="form-control" name="reject_reason" id="reject_reason" rows="2" ></textarea>
-                    </div>
-                </div>
-                <div class="row g-2 align-items-end" id="approveButtonDiv" style="display:none;">
-                    <div class="col-lg-4">
-                        <button type="button" class="btn btn-success me-2" onclick="forward_tor_form('AT')">
-                            <i class="mdi mdi-arrow-right me-1"></i> Approve
-                        </button>
-                        <button type="button" class="btn btn-danger" id="openRejectModalBtn">
-                            <i class="mdi mdi-close-circle me-1"></i> Reject
-                        </button>
-                    </div>
-                </div>
             </form>
     </div>
 
 {% endfor %}
-
-<div class="modal fade" id="rejectConfirmModal" tabindex="-1" aria-labelledby="rejectConfirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="rejectConfirmModalLabel">Confirm Reject</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            Are you sure you want to reject this TOR?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmRejectBtn">Yes, Reject</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <form method="post" id="rev_tor_attachment_form" enctype="multipart/form-data">
     {% csrf_token %}
@@ -409,113 +384,47 @@
         let role_id = $('#role_id').val();
         let user_id = $('#user_id').val();
         console.log('Status:', status, 'Role ID:', role_id, 'User ID:', user_id); // Debug line
-
         if(status == 'P' && role_id=='3' && user_id=='None')
         {
             console.log('Condition 1 met'); // Debug
             $('#reviewer_details_accordian').show();
             $('#verifierPaymentDiv').show();
             $('.P_button').show();
-            $('#approveButtonDiv').hide();
         }
         else if(status == 'P' && role_id=='2' && user_id=='None')
         {
-            console.log('Condition 2 met');
+            console.log('Condition 2 met'); // Debug
             $('#verifier_details_accordian').show();
             $('#verifierForwardDiv').show();
             $('#verifierForwardButtonDiv').show();
-            // Method 1: Set visibility + position absolute
-            $('#approveButtonDiv').css({
-                'visibility': 'hidden',
-                'position': 'absolute',
-                'height': '0',
-                'overflow': 'hidden'
-            });
-
         }
         else if(status == 'R' && role_id=='3' && user_id!='None')
         {
             console.log('Condition 3 met'); // Debug
             $('#reviewer_details_accordian').show();
-            // Show BOTH (as you confirmed "YES")
-            $('.reviewer_attach_details').show();     // add attachment card
-            $('.tor_remarks_div').show(); //
+            $('#verifier_attach_detailsDiv').show();
             $('.F_button').show();
-            $('#approveButtonDiv').hide();
         }
-        else if(status == 'FT' && role_id=='2' && user_id=='None')
+        else if(status == 'FT' && role_id=='2' && user_id!='None')
         {
             console.log('Condition 4 met'); // Debug
-            $('#verifier_details_accordian').show();
-            $('#verifier_attach_detailsDiv').show();
-            $('.tor_verifier_remarks_div').show();
-            $('.tor_verifier_reject_reason_div').show();
-            $('#approveButtonDiv').show();
-
+            $('.tor_remarks_div').show();
+            $('.show_AT_reviewer_details').show();
+            $('.verifier_attach_details').show();
         }
         else
         {
             console.log('Default condition met'); // Debug
             $('.show_reviewer_details').show();
             $('.reviewer_attach_details').show();
-            $('#approveButtonDiv').hide();
         }
     });
-
-    (function () {
-      const openBtn = document.getElementById('openRejectModalBtn');
-      const confirmBtn = document.getElementById('confirmRejectBtn');
-      const modalEl = document.getElementById('rejectConfirmModal');
-      const errBox = document.getElementById('tor_form_errorMsg');
-      const rejectDiv = document.querySelector('.tor_verifier_reject_reason_div');
-      const rejectReasonEl = document.getElementById('reject_reason');
-      const loader = document.getElementById('pageloader');
-      if (!openBtn || !confirmBtn || !modalEl || !rejectReasonEl) return;
-      function rejectReason() {
-        return (rejectReasonEl.value || '').trim();
-      }
-      function showErr(msg) {
-        if (!errBox) return;
-        errBox.style.display = 'block';
-        errBox.innerHTML = msg;
-      }
-      function clearErr() {
-        if (!errBox) return;
-        errBox.style.display = 'none';
-        errBox.innerHTML = '';
-      }
-      // Click "Reject" -> validate BEFORE opening modal
-      openBtn.addEventListener('click', () => {
-        clearErr();
-        if (rejectDiv) rejectDiv.style.display = 'block';
-        if (!rejectReason()) {
-          showErr('Please enter Reject Reason before rejecting.');
-          rejectReasonEl.focus();
-          return;
-        }
-        bootstrap.Modal.getOrCreateInstance(modalEl).show();
-      });
-      // Click "Yes, Reject" -> show loader + submit
-      confirmBtn.addEventListener('click', () => {
-        clearErr();
-        if (!rejectReason()) {
-          showErr('Please enter Reject Reason before rejecting.');
-          rejectReasonEl.focus();
-          return;
-        }
-        bootstrap.Modal.getOrCreateInstance(modalEl).hide();
-        if (loader) loader.style.display = 'block';   // progress spinner/progress UI
-        forward_tor_form('RJ');
-      });
-    })();
 
     function forward_tor_form(identifier)
     {
         let application_no = $('#application_no').val();
         let forward_to = $('#forward_to').val();
         let tor_remarks = $('#tor_remarks').val();
-        let reject_reason = $('#reject_reason').val();
-
         if(identifier == 'R')
         {
             $.ajax
@@ -556,7 +465,7 @@
             ({
                 type : "POST",
                 url : "{% url 'forward_application' %}",
-                data : {'application_no':application_no,'tor_remarks':tor_remarks, 'reject_reason':reject_reason, 'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data : {'application_no':application_no,'tor_remarks':tor_remarks, 'identifier':identifier, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data)
                 {
                     if(data.message == 'success' && identifier == 'AT')
@@ -585,19 +494,6 @@
                             location.reload()
                         }, 2000);
                     }
-                    else if(data.message == 'success' && identifier == 'RJ')
-                    {
-                        $("#pageloader").hide();
-                        $('#tor_form_successMsg').html("TOR Application REJECTED.");
-                        $('#tor_form_successMsg').show();
-                        setTimeout(function()
-                        {
-                            $('#tor_form_successMsg').delay(2000).fadeOut('slow');
-                        }, 2000);
-                        setTimeout(function() {
-                            location.reload()
-                        }, 2000);
-                    }
                     else
                     {
                         $("#pageloader").hide();
@@ -614,68 +510,75 @@
 
     }
 
-    let attachmentTargetDiv = '#tor_rev_attachment'; // default
-    function setAttachmentTarget(who) {
-        attachmentTargetDiv = (who === 'verifier')
-            ? '#tor_ver_attachment'
-            : '#tor_rev_attachment';
-    }
-
-    function save_rev_tor_attachment() {
+    function save_rev_tor_attachment()
+    {
         let file_length = document.getElementById("rev_tor_attach");
-        if (file_length.value.length < 1) {
-            $('#rev_tor_attachErrorMsg').html("Please Choose A Attachment").show().delay(2000).fadeOut('slow');
-            return;
+        if(file_length.value.length < 1)
+        {
+            $('#rev_tor_attachErrorMsg').html("Please Choose A Attachment");
+            $('#rev_tor_attachErrorMsg').show();
+            $('#rev_tor_attachErrorMsg').delay(2000).fadeOut('slow');
         }
-        let application_no = $('#application_no').val();
-        let fileName = document.getElementById('rev_tor_attach').files[0].name;
-        let fd = new FormData();
-        let file = document.getElementById('rev_tor_attach').files[0];
-        fd.append('rev_tor_attach', file);
-        fd.append('application_no', application_no);
-        let token_value = $("input[name=csrfmiddlewaretoken]").val();
-        $.ajaxSetup({
-            beforeSend: function(xhr) {
+        else
+        {
+            let application_no = $('#application_no').val();
+            var fileName = document.getElementById('rev_tor_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('rev_tor_attach').files[0];
+            fd.append('rev_tor_attach', file);
+            fd.append('application_no', application_no);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
                 xhr.setRequestHeader("X-CSRFToken", token_value);
-            }
-        });
-        $.ajax({
-            type: "POST",
-            url: "{% url 'save_rev_tor_attachment' %}",
-            data: fd,
-            dataType: 'json',
-            contentType: false,
-            processData: false,
-            success: function(data) {
-                if (data.form_is_valid) {
-                    let file_url = data.file_url;
-                    $.ajax({
-                        type: "POST",
-                        url: "{% url 'save_rev_tor_attachment_details' %}",
-                        data: { application_no, filename: fileName, file_url },
-                        success: function(responseText) {
-                            $('#rev_tor_attachment_modal').modal('hide');
-                            // IMPORTANT: refresh the right section
-                            $(attachmentTargetDiv).html(responseText);
-                            $('.modal-backdrop').remove();
-                            $('#rev_tor_attachment_form')[0].reset();
-                        }
-                    });
-                } else {
-                    $('#rev_tor_attachErrorMsg')
-                        .html("File Already Exists With Same Name. Please Upload Another File")
-                        .show().delay(2000).fadeOut('slow');
                 }
-            }
-        });
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_rev_tor_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let application_no = $('#application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_rev_tor_attachment_details' %}",
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#rev_tor_attachment_modal').modal('hide');
+                                $('#tor_rev_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#rev_tor_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#rev_tor_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#rev_tor_attachErrorMsg').show();
+                        $('#rev_tor_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+        }
     }
-
 
     function forwardApplication(identifier) {
         let application_no = $('#application_no').val();
         let amount = $('#amount').val();
         let record_id = $('#record_id').val();
-        // ONLY validation needed: Check amount
+        // ✅ ONLY validation needed: Check amount
         if (amount === "") {
             $('#amount_ErrorMsg')
                 .html("Enter Applicable Fees")
@@ -685,20 +588,20 @@
             $('#amount').focus();
             return; // Stop execution here
         }
-        // Show spinner AFTER validation passes
+        // ✅ Show spinner AFTER validation passes
         $('#pageloader').show();
 
-        // NEW: Scroll to spinner smoothly
+        // ✅ NEW: Scroll to spinner smoothly
         $('html, body').animate({
             scrollTop: $('#pageloader').offset().top - 200 // Offset to show spinner with some space
         }, 500); // 500ms animation
 
-        // NEW: Set focus to spinner for accessibility
+        // ✅ NEW: Set focus to spinner for accessibility
         $('#pageloader').focus();
-        // Build postData with all required fields
+        // ✅ Build postData with all required fields
         let postData = {
             'application_no': application_no,
-            'identifier': identifier,
+            'identifier': identifier, // Always 'P'
             'amount': amount,
             'record_id': record_id,
             csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -710,7 +613,7 @@
             success: function (data) {
                 // Hide the loader
                 $('#pageloader').hide();
-                // Check response validity
+                // ✅ Check response validity
                 if (!data || typeof data !== 'object') {
                     $('#reviewer_application_errorMsg')
                         .html("Invalid server response")
@@ -727,11 +630,11 @@
                         .show()
                         .focus();
 
-                    // NEW: Scroll to success message
+                    // ✅ NEW: Scroll to success message
                     $('html, body').animate({
                         scrollTop: $('#reviewer_application_successMsg').offset().top - 200
                     }, 500);
-                    // Reload after fade-out completes
+                    // ✅ Reload after fade-out completes
                     setTimeout(() => {
                         $('#reviewer_application_successMsg').fadeOut('slow', function() {
                             location.reload();
@@ -745,7 +648,7 @@
                         .show()
                         .focus();
 
-                    // NEW: Scroll to error message
+                    // ✅ NEW: Scroll to error message
                     $('html, body').animate({
                         scrollTop: $('#reviewer_application_errorMsg').offset().top - 200
                     }, 500);
@@ -755,7 +658,7 @@
                 }
             },
             error: function (xhr, status, error) {
-                // Handle AJAX errors properly
+                // ✅ Handle AJAX errors properly
                 $('#pageloader').hide();
                 let errorMsg = "Network error occurred";
                 if (xhr.responseJSON && xhr.responseJSON.error) {
@@ -772,7 +675,7 @@
                     .show()
                     .focus();
 
-                // NEW: Scroll to error message
+                // ✅ NEW: Scroll to error message
                 $('html, body').animate({
                     scrollTop: $('#reviewer_application_errorMsg').offset().top - 200
                 }, 500);

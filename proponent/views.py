@@ -1,7 +1,12 @@
 from datetime import date, datetime, timedelta, timezone
 import json
 import logging
+from django.db import transaction
+import threading
 import re
+import secrets
+import random
+import zlib
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db import connection
@@ -14,15 +19,22 @@ from django.db.models import Count, Subquery, OuterRef,Exists
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
+from django.conf import settings
 from django.db import transaction
 from django.db.models import Max
 from django.utils import timezone
+from django_extensions.management.jobs import noneimplementation
+
 from pyasn1.codec.ber.eoo import endOfOctets
 
-from ecs_admin.models import payment_details_master, t_bsic_code, t_competant_authority_master, t_dzongkhag_master, t_fees_schedule, t_file_attachment, t_gewog_master, t_role_master, t_security_question_master, t_service_master, t_thromde_master, t_user_master, t_village_master
+from ecs_admin.models import payment_details_master, t_bsic_code, t_competant_authority_master, t_dzongkhag_master, t_fees_schedule, t_file_attachment, t_gewog_master, t_role_master, t_security_question_master, t_service_master, t_thromde_master, t_user_master, t_village_master, t_other_details
 from ecs_main.models import t_application_history
 from ecs_main.views import get_birms_token, get_random_tax_no, insert_app_payment_details, make_payment_request
-from proponent.models import t_ec_industries_t11_ec_details, t_ec_industries_t1_general, t_ec_renewal_t1, t_ec_renewal_t2, t_payment_details, t_report_submission_t1, t_report_submission_t2, t_workflow_dtls
+from proponent.models import t_ec_application_t2, t_ec_application_t1, t_ec_compliance, t_payment_details, t_report_submission_t1, t_report_submission_t2, t_workflow_dtls, t_ec_t1, t_ec_t2, t_ec_t1_history
+
+logger = logging.getLogger(__name__)
+
+MAIN_SERVICE_TYPES = ['Main Activity', 'NC', 'OC', 'TC', 'PC', 'LC', 'CC', 'AC']
 
 def new_application(request):
     assigned_user_id = request.session.get('login_id', None)
@@ -33,41 +45,43 @@ def new_application(request):
             applicant_id=applicant_id
         ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+    t1_general_subquery = t_ec_application_t1.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
+    tor_application_count = t_ec_application_t1.objects.filter(
             application_status='A',application_no__contains='TOR',applicant_id=applicant_id
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
 
-    draft_count = t_ec_industries_t1_general.objects.filter(
+    draft_count = t_ec_application_t1.objects.filter(
         applicant_id=applicant_id,
         application_status='P',
-        service_type='Main Activity',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
         action_date__isnull=True
     ).count()
 
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
     # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
         ec_reference_no=OuterRef('ec_reference_no')
     ).exclude(
         application_status='A'
     )
 
     non_updated_renewals = (
-        t_ec_industries_t1_general.objects
+        t_ec_t1.objects
         .filter(
             applicant_id=request.session['email'],
             service_type__in=["Main Activity", "Old EC"],
             ec_expiry_date__lt=expiry_date_threshold,
             ec_expiry_date__isnull=False,
             ec_reference_no__isnull=False,
+            status='A',
+
         )
         .exclude(ec_reference_no='')
         .annotate(has_pending_renewal=Exists(pending_renewal_exists))
@@ -87,33 +101,26 @@ def new_application(request):
 def get_application_service_id(request):
     data = {}
     activity = request.GET.get('activity')
-
     activity_details = t_bsic_code.objects.filter(activity=activity)
-
-    for cat_details in activity_details:
-        service_id = cat_details.service_id
-
+    for activity_details in activity_details:
+        service_id = activity_details.service_id
         service_master = t_service_master.objects.filter(
             service_id=service_id
         ).first()
-
         attachments = service_master.attachments if service_master else ''
-
         # Store everything in session
         request.session['service_id'] = service_id
-        request.session['ca_auth'] = cat_details.competent_authority
-        request.session['colour_code'] = cat_details.colour_code
-        request.session['has_tor'] = cat_details.has_tor
-        request.session['activity'] = cat_details.activity
+        request.session['ca_auth'] = activity_details.competent_authority
+        request.session['colour_code'] = activity_details.colour_code
+        request.session['has_tor'] = activity_details.has_tor
+        request.session['activity'] = activity_details.activity
         request.session['attachments'] = attachments   #
-
         data = {
-            'colour_code': cat_details.colour_code,
-            'has_tor': cat_details.has_tor
+            'colour_code': activity_details.colour_code,
+            'has_tor': activity_details.has_tor
         }
 
     return JsonResponse(data)
-
 
 def application_form(request):
     # Get session data
@@ -127,20 +134,22 @@ def application_form(request):
     service_id = str(request.session.get('service_id'))
 
     # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
         ec_reference_no=OuterRef('ec_reference_no')
     ).exclude(
         application_status='A'
     )
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     non_updated_renewals = (
-        t_ec_industries_t1_general.objects
+        t_ec_t1.objects
         .filter(
             applicant_id=request.session['email'],
             service_type__in=["Main Activity", "Old EC"],
             ec_expiry_date__lt=expiry_date_threshold,
             ec_expiry_date__isnull=False,
             ec_reference_no__isnull=False,
+            status='A',
+
         )
         .exclude(ec_reference_no='')
         .annotate(has_pending_renewal=Exists(pending_renewal_exists))
@@ -150,11 +159,11 @@ def application_form(request):
     ec_renewal_count = non_updated_renewals.count()
 
     # 5. TOR application count (optimized)
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+    t1_general_subquery = t_ec_application_t1.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
 
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
+    tor_application_count = t_ec_application_t1.objects.filter(
         application_status='A',
         application_no__contains='TOR',
         applicant_id=applicant_id
@@ -162,20 +171,19 @@ def application_form(request):
         application_no__in=Subquery(t1_general_subquery)
     ).count()
 
-    draft_count = t_ec_industries_t1_general.objects.filter(
+    draft_count = t_ec_application_t1.objects.filter(
         applicant_id=applicant_id,
         application_status='P',
-        service_type='Main Activity',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
         action_date__isnull=True
     ).count()
-
     return render(request, 'new_application_form.html',{'service_id': service_id,'thromde':thromde,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'draft_count':draft_count,'tor_application_count':tor_application_count, 'ec_renewal_count':ec_renewal_count})
 
 def get_application_no(request, service_code, service_id):
     if service_code == "TOR":
-        application_no= t_ec_industries_t1_general.objects.filter(application_no__contains='TOR').aggregate(Max('application_no'))
+        application_no= t_ec_application_t1.objects.filter(application_no__contains='TOR').aggregate(Max('application_no'))
     else:
-        application_no= t_ec_industries_t1_general.objects.exclude(service_id=service_id, application_no__contains='TOR').filter(application_no__contains=service_code).aggregate(Max('application_no'))
+        application_no= t_ec_application_t1.objects.exclude(service_id=service_id, application_no__contains='TOR').filter(application_no__contains=service_code).aggregate(Max('application_no'))
     last_application_no= application_no['application_no__max']
     print(last_application_no)
     if not last_application_no:
@@ -190,6 +198,13 @@ def get_application_no(request, service_code, service_id):
         new_application_no =  service_code + "-" + str(year) + "-" + app_num
     return new_application_no
 
+def get_temp_application_no(login_id, digits=10):
+    login_id_str = login_id
+    random_number = secrets.randbelow(10**digits)  # 0 .. (10^digits - 1)
+    random_part = str(random_number).zfill(digits)
+    new_application_no = f"TOR-{login_id_str}-{random_part}"
+    print(new_application_no)
+    return new_application_no
 
 def save_general_details(request):
     data = {'message': 'failure'}
@@ -209,7 +224,7 @@ def save_general_details(request):
         # Check if application already exists
         existing_app = None
         if application_no:
-            existing_app = t_ec_industries_t1_general.objects.filter(
+            existing_app = t_ec_application_t1.objects.filter(
                 application_no=application_no
             ).first()
 
@@ -237,7 +252,7 @@ def save_general_details(request):
             # Get existing application details
             existing_app = None
             if ref_application_no:
-                existing_app = t_ec_industries_t1_general.objects.filter(
+                existing_app = t_ec_application_t1.objects.filter(
                     application_no=ref_application_no
                 ).first()
             
@@ -268,14 +283,16 @@ def save_general_details(request):
         # Determine application number based on identifier
         if identifier not in ['DR', 'NC', 'OC', 'TC', 'PC', 'LC', 'CC']:
             # For new applications, use session service_id
-            application_no = get_application_no(request, service_code, request.session['service_id'])
+            # application_no = get_application_no(request, service_code, request.session['service_id'])
+            application_no = get_new_application_no(request, service_code)
         else:
             # For modifications, use the service_id from existing application
             # EXCEPT for DR (draft) - use the same application number
             if identifier == 'DR':
                 application_no = ref_application_no  # Use existing application number for draft
             else:
-                application_no = get_application_no(request, service_code, service_id_to_use)
+                # application_no = get_application_no(request, service_code, service_id_to_use)
+                application_no = get_new_application_no(request, service_code)
         
         # Get prev_ec_reference_no for TC/PC/LC/CC cases
         prev_ec_reference_no = request.POST.get('prev_ec_reference_no') if identifier in ['TC', 'PC', 'LC', 'CC'] else None
@@ -355,7 +372,7 @@ def save_general_details(request):
             # Handle different identifier cases
             if identifier == 'DR':
                 # Data Rectification (Draft) - UPDATE EXISTING ENTRY
-                existing_app = t_ec_industries_t1_general.objects.filter(application_no=ref_application_no).first()
+                existing_app = t_ec_application_t1.objects.filter(application_no=ref_application_no).first()
                 if existing_app:
                     # UPDATE existing entry with new data
                     update_data = {
@@ -373,7 +390,7 @@ def save_general_details(request):
                         del update_data['application_no']  # Don't update application_no
                     
                     # Update the existing record
-                    t_ec_industries_t1_general.objects.filter(
+                    t_ec_application_t1.objects.filter(
                         application_no=ref_application_no
                     ).update(**update_data)
                     
@@ -386,12 +403,12 @@ def save_general_details(request):
                     }
                     # Ensure service_type is 'Main Activity' for DR
                     common_data['service_type'] = 'Main Activity'
-                    t_ec_industries_t1_general.objects.create(**common_data, **new_data)
+                    t_ec_application_t1.objects.create(**common_data, **new_data)
                     print(f"DR - Created new application {application_no}")
                     
             elif identifier == 'NC':
                 # Name Change - CREATE NEW ENTRY
-                existing_app = t_ec_industries_t1_general.objects.filter(application_no=ref_application_no).first()
+                existing_app = t_ec_application_t1.objects.filter(application_no=ref_application_no).first()
                 if existing_app:
                     new_data = {
                         **common_data,
@@ -404,13 +421,13 @@ def save_general_details(request):
                     }
                     # Update project_name for the new entry
                     new_data['project_name'] = request.POST.get('project_name')
-                    t_ec_industries_t1_general.objects.create(**new_data)
+                    t_ec_application_t1.objects.create(**new_data)
                 else:
                     raise ValueError(f"Application {ref_application_no} does not exist for NC operation")
                 
             elif identifier == 'OC':
                 # Ownership Change - CREATE NEW ENTRY
-                existing_app = t_ec_industries_t1_general.objects.filter(application_no=ref_application_no).first()
+                existing_app = t_ec_application_t1.objects.filter(application_no=ref_application_no).first()
                 if existing_app:
                     new_data = {
                         **common_data,
@@ -423,14 +440,14 @@ def save_general_details(request):
                     }
                     # Update applicant_name for the new entry
                     new_data['applicant_name'] = request.POST.get('applicant_name')
-                    t_ec_industries_t1_general.objects.create(**new_data)
+                    t_ec_application_t1.objects.create(**new_data)
                 else:
                     raise ValueError(f"Application {ref_application_no} does not exist for OC operation")
                 
             elif identifier in ['TC', 'PC', 'LC', 'CC']:
                 # Transfer/Post-Completion/LC/CC Cases - CREATE NEW ENTRY
                 if prev_ec_reference_no:
-                    prev_app_details = t_ec_industries_t1_general.objects.filter(application_no=prev_ec_reference_no)
+                    prev_app_details = t_ec_application_t1.objects.filter(application_no=prev_ec_reference_no)
                     for prev_app in prev_app_details:
                         # Create new application with prev_ec_reference_no reference
                         new_app_data = {
@@ -442,7 +459,7 @@ def save_general_details(request):
                             'colour_code': prev_app.colour_code,  # Use previous app's color code
                             'activity': prev_app.activity  # Get activity from previous app
                         }
-                        t_ec_industries_t1_general.objects.create(**new_app_data)
+                        t_ec_application_t1.objects.create(**new_app_data)
                 else:
                     # Create new application without previous reference
                     new_data = {
@@ -450,7 +467,7 @@ def save_general_details(request):
                         'prev_ec_reference_no': None,
                         'service_type': identifier
                     }
-                    t_ec_industries_t1_general.objects.create(**common_data, **new_data)
+                    t_ec_application_t1.objects.create(**common_data, **new_data)
                     
             else:
                 # Main Activity - New Application - CREATE NEW ENTRY
@@ -458,7 +475,7 @@ def save_general_details(request):
                     'ca_authority': ca_auth,
                     'prev_ec_reference_no': prev_ec_reference_no if prev_ec_reference_no else None
                 }
-                t_ec_industries_t1_general.objects.create(**common_data, **new_data)
+                t_ec_application_t1.objects.create(**common_data, **new_data)
 
             # Create application history (ALWAYS INSERT, NEVER UPDATE)
             t_application_history.objects.create(
@@ -534,10 +551,8 @@ def save_general_details(request):
     return JsonResponse(data)
 
 # Save NEW General Details START
-
 def save_new_general_details(request):
     data = {'message': 'failure'}
-
     try:
         post_data = request.POST
         session = request.session
@@ -545,15 +560,13 @@ def save_new_general_details(request):
         # Get the application number from POST data
         application_no = post_data.get('application_no')
         identifier = post_data.get('identifier', '')
-
-        print(f"DEBUG: application_no from POST: {application_no}, identifier: {identifier}")
-
-        print(f"DEBUG: Final application_no: {application_no}")
+        #print(f"DEBUG: application_no from POST: {application_no}, identifier: {identifier}")
+        #print(f"DEBUG: Final application_no: {application_no}")
 
         # Check if application already exists
         existing_app = None
         if application_no:
-            existing_app = t_ec_industries_t1_general.objects.filter(
+            existing_app = t_ec_application_t1.objects.filter(
                 application_no=application_no
             ).first()
 
@@ -591,10 +604,16 @@ def save_new_general_details(request):
 
         # Determine competent authority
         ca_auth = session.get('ca_auth')
-        if ca_auth in ['DEC', 'THROMDE'] and dzongkhag_code:
+        if ca_auth =='DEC' and dzongkhag_code:
             auth_record = t_competant_authority_master.objects.filter(
                 competent_authority=ca_auth,
                 dzongkhag_code_id=dzongkhag_code
+            ).first()
+            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
+        elif ca_auth == 'THROMDE' and thromde_id:
+            auth_record = t_competant_authority_master.objects.filter(
+                competent_authority=ca_auth,
+                thromde_id_id=thromde_id
             ).first()
             ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
         else:
@@ -633,17 +652,20 @@ def save_new_general_details(request):
             'ec_reference_no': post_data.get('ec_reference_no'),
             'ec_approve_date': post_data.get('ec_issue_date'),
             'ec_expiry_date': post_data.get('ec_validity'),
-            'ca_authority': ca_auth_id
+            'ca_authority': ca_auth_id,
+            'tor_application_no': post_data.get('tor_no'),
+            'fmfsr_no' : post_data.get('fmfsr_no'),
+
         }
 
         with transaction.atomic():
             if existing_app:
                 # UPDATE existing application
-                print(f"DEBUG: Updating application {application_no}")
+                #print(f"DEBUG: Updating application {application_no}")
                 # Remove application_no from update data
                 update_data = common_data.copy()
                 del update_data['application_no']
-                t_ec_industries_t1_general.objects.filter(
+                t_ec_application_t1.objects.filter(
                     application_no=application_no
                 ).update(**update_data)
                 t_workflow_dtls.objects.filter(
@@ -653,10 +675,11 @@ def save_new_general_details(request):
                 # CREATE new application (only if we don't have application_no)
                 if not application_no:
                     # Generate new application number
-                    application_no = get_application_no(request, service_code, service_id)
+                    # application_no = get_application_no(request, service_code, service_id)
+                    application_no = get_new_application_no(request, service_code)
                     common_data['application_no'] = application_no
                 print(f"DEBUG: Creating new application {application_no}")
-                t_ec_industries_t1_general.objects.create(**common_data)
+                t_ec_application_t1.objects.create(**common_data)
                 # Create workflow
                 t_workflow_dtls.objects.create(
                     application_no=application_no,
@@ -699,6 +722,266 @@ def save_new_general_details(request):
     return JsonResponse(data)
 # Save NEW General Details END
 
+# Save OTHER MODIFICATION General Details START
+def save_other_modification_general_details(request):
+    data = {'message': 'failure'}
+    try:
+        post_data = request.POST
+        session = request.session
+
+        # Get the application number from POST data
+        new_application_no = post_data.get('new_application_no')
+        previous_ec_reference_no = post_data.get('previous_ec_reference_no')
+        identifier = post_data.get('identifier')
+        service_id = post_data.get('service_id')
+        colour_code = post_data.get('colour_code')
+        activity = post_data.get('activity')
+
+        #print(f"DEBUG: application_no from POST: {application_no}, identifier: {identifier}")
+        #print(f"DEBUG: Final application_no: {application_no}")
+
+        # Check if application already exists
+        existing_app = None
+        if new_application_no:
+            existing_app = t_ec_application_t1.objects.filter(
+                application_no=new_application_no
+            ).first()
+
+        # Get location details
+        if post_data.get('dzongkhag_throm') == 'Dzongkhag':
+            dzongkhag_code = post_data.get('dzongkhag')
+            gewog_code = post_data.get('gewog')
+            village_code = post_data.get('vil_chiwog')
+            thromde_id = None
+        else:
+            dzongkhag_code = None
+            gewog_code = None
+            village_code = None
+            thromde_id = post_data.get('thromde_id')
+
+        # START Fetch Activity, Service, ca_auth from the existing record.
+        # These values do not change during the draft application. Its already been selected and saved While saving the New Application
+        activity_details = t_ec_t1.objects.filter(ec_reference_no=previous_ec_reference_no).first()
+        other_modification_activity = activity_details.activity
+
+        ca_details = t_bsic_code.objects.filter(activity=other_modification_activity).first()
+        ca_auth = ca_details.competent_authority
+
+        # Get service details
+        if existing_app:
+            # Use existing service details
+            service_id = existing_app.service_id
+            activity = existing_app.activity
+            color_code = existing_app.colour_code
+        else:
+            # Use session/service defaults
+            service_id = service_id
+            activity = activity
+            color_code = colour_code
+
+        service_code = identifier
+
+        if ca_auth =='DEC' and dzongkhag_code:
+            auth_record = t_competant_authority_master.objects.filter(
+                competent_authority=ca_auth,
+                dzongkhag_code_id=dzongkhag_code
+            ).first()
+            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
+        elif ca_auth == 'THROMDE' and thromde_id:
+            auth_record = t_competant_authority_master.objects.filter(
+                competent_authority=ca_auth,
+                thromde_id_id=thromde_id
+            ).first()
+            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
+        else:
+            auth_record = t_competant_authority_master.objects.filter(
+                competent_authority=ca_auth
+            ).first()
+            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
+
+        # Prepare data
+        common_data = {
+            'application_no': new_application_no,
+            'application_date': timezone.now().date(),
+            'application_type': identifier,
+            'application_source': 'ECSS',
+            'application_status': 'P',
+            'applicant_id': session.get('email'),
+            'applicant_name': post_data.get('applicant_name'),
+            'address': post_data.get('address'),
+            'cid': session.get('cid'),
+            'contact_no': post_data.get('contact_no'),
+            'email': post_data.get('email'),
+            'focal_person': post_data.get('focal_person'),
+            'dzongkhag_code': dzongkhag_code,
+            'gewog_code': gewog_code,
+            'village_code': village_code,
+            'thromde_id': thromde_id,
+            'location_name': post_data.get('project_site'),
+            'project_name': post_data.get('project_name'),
+            'project_description': post_data.get('project_description'),
+            'dzongkhag_throm': post_data.get('dzongkhag_throm'),
+            'service_type': 'Main Activity',
+            'service_id': service_id,
+            'colour_code': color_code,
+            'proponent_type': session.get('proponent_type'),
+            'activity': activity,
+            'prev_ec_reference_no': previous_ec_reference_no,
+            'ca_authority': ca_auth_id
+        }
+
+        with transaction.atomic():
+            if existing_app:
+                # UPDATE existing application
+                #print(f"DEBUG: Updating application {application_no}")
+                # Remove application_no from update data
+                update_data = common_data.copy()
+                del update_data['application_no']
+                t_ec_application_t1.objects.filter(
+                    application_no=new_application_no
+                ).update(**update_data)
+                t_workflow_dtls.objects.filter(
+                    application_no=new_application_no
+                ).update(ca_authority=ca_auth_id,)
+            else:
+                # CREATE new application (only if we don't have application_no)
+                if not new_application_no:
+                    # Generate new application number
+                    # application_no = get_application_no(request, service_code, service_id)
+                    new_application_no = get_new_application_no(request, service_code)
+                    common_data['application_no'] = new_application_no
+                print(f"DEBUG: Creating new application {new_application_no}")
+                t_ec_application_t1.objects.create(**common_data)
+                # Create workflow
+                t_workflow_dtls.objects.create(
+                    application_no=new_application_no,
+                    service_id=service_id,
+                    application_status='P',
+                    actor_id=request.session['login_id'],
+                    actor_name=request.session['name'],
+                    assigned_role_id='3',
+                    assigned_role_name='Reviewer',
+                    ca_authority=ca_auth_id,
+                    application_source='ECSS',
+                    service_type=identifier,
+                )
+            # Save application number to session for future tabs
+            if new_application_no:
+                request.session['current_application_no'] = new_application_no
+            # Create history
+            t_application_history.objects.create(
+                application_no=new_application_no,
+                application_date=timezone.now().date(),
+                applicant_id=session.get('email'),
+                ca_authority=ca_auth_id,
+                service_id=service_id,
+                application_status='P',
+                action_date=timezone.now(),
+                actor_id=session.get('login_id'),
+                actor_name=session.get('name'),
+                remarks=None,
+                status=None
+            )
+            data.update({
+                'message': 'success',
+                'new_application_no': new_application_no
+            })
+    except Exception as e:
+        print(f'An error occurred: {e}')
+        import traceback
+        traceback.print_exc()
+        data['error'] = str(e)
+    return JsonResponse(data)
+# Save OTHER MODIFICATION General Details END
+
+# Save DRAFT General Details START
+def save_draft_general_details(request):
+    data = {'message': 'failure'}
+    try:
+        post_data = request.POST
+        session = request.session
+
+        # Get the application number from POST data
+        application_no = post_data.get('application_no')
+        identifier = post_data.get('identifier', '')
+
+        # Get location details
+        if post_data.get('dzongkhag_throm') == 'Dzongkhag':
+            dzongkhag_code = post_data.get('dzongkhag')
+            gewog_code = post_data.get('gewog')
+            village_code = post_data.get('vil_chiwog')
+            thromde_id = None
+        else:
+            dzongkhag_code = None
+            gewog_code = None
+            village_code = None
+            thromde_id = post_data.get('thromde_id')
+
+        # START Fetch Activity, Service, ca_auth from the existing record.
+        # These values do not change during the draft application. Its already been selected and saved While saving the New Application
+        activity_details = t_ec_application_t1.objects.filter(application_no=application_no).first()
+        draft_activity = activity_details.activity
+
+        ca_details = t_bsic_code.objects.filter(activity=draft_activity).first()
+        ca_auth = ca_details.competent_authority
+
+        #print(ca_auth)
+
+        # END Fetch Activity, Service, ca_auth from the existing record.
+
+        if ca_auth =='DEC' and dzongkhag_code:
+            auth_record = t_competant_authority_master.objects.filter(
+                competent_authority=ca_auth,
+                dzongkhag_code_id=dzongkhag_code
+            ).first()
+            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
+        elif ca_auth == 'THROMDE' and thromde_id:
+            auth_record = t_competant_authority_master.objects.filter(
+                competent_authority=ca_auth,
+                thromde_id_id=thromde_id
+            ).first()
+            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
+        else:
+            auth_record = t_competant_authority_master.objects.filter(
+                competent_authority=ca_auth
+            ).first()
+            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
+
+        # Prepare data
+        update_data = {
+            'focal_person': post_data.get('focal_person'),
+            'dzongkhag_code': dzongkhag_code,
+            'gewog_code': gewog_code,
+            'village_code': village_code,
+            'thromde_id': thromde_id,
+            'location_name': post_data.get('project_site'),
+            'project_name': post_data.get('project_name'),
+            'project_description': post_data.get('project_description'),
+            'dzongkhag_throm': post_data.get('dzongkhag_throm'),
+            'ca_authority': ca_auth_id
+        }
+
+        with transaction.atomic():
+            t_ec_application_t1.objects.filter(
+                application_no=application_no
+            ).update(**update_data)
+
+            t_workflow_dtls.objects.filter(
+                application_no=application_no
+            ).update(ca_authority=ca_auth_id)
+
+        data.update({
+            'message': 'success',
+            'application_no': application_no
+        })
+        return JsonResponse(data, status=200)
+
+    except Exception as e:
+        print('An error occurred:', e)
+        data['error'] = str(e)
+        return JsonResponse(data, status=500)
+# Save DRAFT General Details END
+
 def save_general_attachment(request):
     data = dict()
     general_attach = request.FILES['general_attach']
@@ -722,7 +1005,7 @@ def save_general_attachment(request):
     else :
         service_code = 'GEN'
     file_name = general_attach.name
-    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + service_code)
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/" + service_code)
     if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
@@ -758,6 +1041,20 @@ def delete_application_attachment(request):
         for file in file:
             file_name = file.attachment
             fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ECR/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'ECOC':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ECOC/")
+            fs.delete(str(file_name))
+        file.delete()
+    elif identifier == 'ECNC':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ECNC/")
             fs.delete(str(file_name))
         file.delete()
     elif identifier == 'TOR':
@@ -863,36 +1160,127 @@ def save_general_attachment_details(request):
     return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
 
 def submit_general_application(request):
-    data = {}
     try:
         application_no = request.POST.get('general_disclaimer_application_no')
-        
-        # Get application details
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
-        main_application = application_details.filter(service_type__in=['Main Activity','NC', 'OC', 'TC', 'PC', 'LC', 'CC']).first()
+        if not application_no:
+            return JsonResponse({'error': 'Missing application number'}, status=400)
 
-        if not main_application:
-            data['error'] = "No main application found"
-            return JsonResponse(data, status=400)
-        
-        main_application.action_date = timezone.now()
-        main_application.save()
+        email = request.session.get('email')
+        name = request.session.get('name', '')
+        if not email:
+            return JsonResponse({'error': 'Missing email in session'}, status=400)
 
-        # Update workflow
-        workflow_update = {'action_date': timezone.now()}
-        t_workflow_dtls.objects.filter(application_no=application_no,service_type__in=['Main Activity','NC', 'OC', 'TC', 'PC', 'LC', 'CC']).update(**workflow_update)
-        t_application_history.objects.filter(application_no=application_no,service_type__in=['Main Activity','NC', 'OC', 'TC', 'PC', 'LC', 'CC']).update(
-            remarks='Application Submitted',
-            action_date=timezone.now()
-        )
-        data['message'] = "success"
-    except Exception as e:
-        data['error'] = str(e).split("\n")[0]
-    return JsonResponse(data)
+        now = timezone.now()
+
+        with transaction.atomic():
+            # Get and update application
+            application = t_ec_application_t1.objects.get(application_no=application_no)
+            application.action_date = now
+            application.save(update_fields=['action_date'])
+
+            # Update workflow
+            t_workflow_dtls.objects.filter(
+                application_no=application_no
+            ).update(action_date=now)
+
+            # Update application history
+            t_application_history.objects.filter(
+                application_no=application_no
+            ).update(remarks='Application Submitted', action_date=now)
+
+            # Send email after successful commit
+            transaction.on_commit(lambda: threading.Thread(
+                target=_send_submit_email_in_background,
+                args=(name, email, application_no),
+                daemon=True
+            ).start())
+
+        return JsonResponse({'message': 'success'})
+
+    except t_ec_application_t1.DoesNotExist:
+        return JsonResponse({'error': 'Application not found'}, status=400)
+    except Exception as exc:
+        return JsonResponse({'error': str(exc).splitlines()[0]}, status=500)
+
+def _send_submit_email_in_background(name, email_id, application_no):
+    """
+    Thread target: never uses request/session. Only uses passed primitives.
+    """
+    try:
+        send_submit_application_mail(name, email_id, application_no)
+    except Exception:
+        # Don't crash the web request; just log the failure.
+        logger.exception("Failed to send submit email for application_no=%s", application_no)
+
+def send_submit_application_mail(name, email_id, application_no):
+    subject = "Application Submitted"
+    message = (
+        f"Dear {name},\n\n"
+        f"Your Environment Clearance application has been submitted successfully.\n"
+        f"Your application number is: {application_no}\n"
+    )
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+        recipient_list=[email_id],
+        fail_silently=False,
+    )
+
+def _send_submit_email_in_background_tor(name, email, application_no):
+    """
+    Thread target: never uses request/session. Only uses passed primitives.
+    """
+    try:
+        send_submit_tor_mail(name, email, application_no)
+    except Exception:
+        # Don't crash the web request; just log the failure.
+        logger.exception("Failed to send submit email for application_no=%s", application_no)
+
+def send_submit_tor_mail(name, email, application_no):
+    subject = "Application Submitted"
+    message = (
+        f"Dear {name},\n\n"
+        f"Your TOR application has been submitted successfully.\n"
+        f"Your application number is: {application_no}\n"
+    )
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+        recipient_list=[email],
+        fail_silently=False,
+    )
+
+def _send_submit_renewal_email_in_background(name, email_id, application_no):
+    """
+    Thread target: never uses request/session. Only uses passed primitives.
+    """
+    try:
+        send_submit_renewal_application_mail(name, email_id, application_no)
+    except Exception:
+        # Don't crash the web request; just log the failure.
+        logger.exception("Failed to send submit email for application_no=%s", application_no)
+
+def send_submit_renewal_application_mail(name, email_id, application_no):
+    subject = "Application Submitted"
+    message = (
+        f"Dear {name},\n\n"
+        f"Your Environment Clearance Renewal Application has been submitted successfully.\n"
+        f"Your application number is: {application_no}\n"
+    )
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+        recipient_list=[email_id],
+        fail_silently=False,
+    )
+
 
 ## NDI IMPLEMENTATION START
 # Set up logging
-logger = logging.getLogger(__name__)
+#logger = logging.getLogger(__name__)
 
 def proof_request(request):
     category = request.GET.get('category', '')
@@ -1432,7 +1820,7 @@ def issuance_call(request):
             return JsonResponse({'error': 'Failed to retrieve NDI access token'}, status=500)
 
         # Fetch application details in a single query
-        application_details = t_ec_industries_t1_general.objects.filter(cid=id_number, application_status='A')
+        application_details = t_ec_application_t1.objects.filter(cid=id_number, application_status='A')
 
         if not application_details.exists():
             return JsonResponse({'error': 'No application details found for the provided ID number'}, status=404)
@@ -1510,7 +1898,7 @@ def issuance_call(request):
 
 
 def revoke_vc(request, id_number):
-    issuance_detail = t_ec_industries_t1_general.objects.filter(
+    issuance_detail = t_ec_application_t1.objects.filter(
         cid=id_number, application_status='A', revocation_id__isnull=False
     ).first()
 
@@ -1551,7 +1939,7 @@ def revoke_ec(request):
         'accept': '*/*',
         'Authorization': f'Bearer {ndi_token}',
     }
-    app_details = t_ec_industries_t1_general.objects.filter(revocation_id=revocation_id)
+    app_details = t_ec_application_t1.objects.filter(revocation_id=revocation_id)
     app_details.update(is_revoked='Y')
     response = requests.post(url, headers=headers, params=params)
 
@@ -1589,24 +1977,24 @@ def draft_application_list(request):
     applicant_id = request.session.get('email', None)
     identifier = request.GET.get('identifier')
 
-    #application_details = t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id,application_status='P',service_type='Main Activity',action_date__isnull=True)
+    #application_details = t_ec_application_t1.objects.filter(applicant_id=applicant_id,application_status='P',service_type='Main Activity',action_date__isnull=True)
     # -----------------------------
     # Application details based on identifier
     # -----------------------------
     if identifier == 'OLD':
-        application_details = t_ec_industries_t1_general.objects.filter(
+        application_details = t_ec_application_t1.objects.filter(
             applicant_id=applicant_id,
             #application_status='R',
-            application_status__in=['P', 'R'],
+            application_status__in=['P', 'RS'],
             application_type='Old_EC',
             #action_date__isnull=True
         ).order_by('-record_id')
         template_name = 'pending_old_ec_list.html'
     else:  # NEW
-        application_details = t_ec_industries_t1_general.objects.filter(
+        application_details = t_ec_application_t1.objects.filter(
             applicant_id=applicant_id,
             application_status='P',
-            application_type='New',
+            application_type__in=["New", "TC", "PC", "CC", "AC", "LC"],
             action_date__isnull=True
         ).order_by('-record_id')
         template_name = 'draft_application_list.html'
@@ -1616,27 +2004,29 @@ def draft_application_list(request):
             applicant_id=applicant_id
         ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+    t1_general_subquery = t_ec_application_t1.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
 
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
     # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
         ec_reference_no=OuterRef('ec_reference_no')
     ).exclude(
         application_status='A'
     )
 
     non_updated_renewals = (
-        t_ec_industries_t1_general.objects
+        t_ec_t1.objects
         .filter(
             applicant_id=request.session['email'],
             service_type__in=["Main Activity", "Old EC"],
             ec_expiry_date__lt=expiry_date_threshold,
             ec_expiry_date__isnull=False,
             ec_reference_no__isnull=False,
+            status='A',
+
         )
         .exclude(ec_reference_no='')
         .annotate(has_pending_renewal=Exists(pending_renewal_exists))
@@ -1645,19 +2035,18 @@ def draft_application_list(request):
 
     ec_renewal_count = non_updated_renewals.count()
 
-
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
+    tor_application_count = t_ec_application_t1.objects.filter(
             application_status='A',
             application_no__contains='TOR',applicant_id=applicant_id
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
 
-    draft_count = t_ec_industries_t1_general.objects.filter(
+    draft_count = t_ec_application_t1.objects.filter(
         applicant_id=applicant_id,
         application_status='P',
-        service_type='Main Activity',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
         action_date__isnull=True
     ).count()
     
@@ -1672,6 +2061,8 @@ def draft_application_list(request):
 def view_draft_application_details(request):
     application_no = request.GET.get('application_no') or request.session.get('application_no')
     request.session['application_no'] = application_no
+    applicant_id = request.session.get('email', None)
+    assigned_user_id = request.session.get('login_id', None)
     service_id = request.GET.get('service_id')
 
     request.session['service_id'] = service_id
@@ -1684,17 +2075,65 @@ def view_draft_application_details(request):
     request.session['attachments'] = attachments
 
     # Fetch common data
-    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no, service_type='Main Activity')
+    application_details = t_ec_application_t1.objects.filter(application_no=application_no, service_type='Main Activity')
     file_attach = t_file_attachment.objects.filter(application_no=application_no)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     thromde = t_thromde_master.objects.all()
-    app_hist_count = t_application_history.objects.filter(
-            applicant_id=request.session['email']
-        ).distinct('application_no').count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
 
+    # Badge COUNT START
+    service_details = t_service_master.objects.all()
+    app_hist_count = t_application_history.objects.filter(
+        applicant_id=applicant_id
+    ).distinct('application_no').count()
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
+    t1_general_subquery = t_ec_application_t1.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+
+    # Renewal exists AND is NOT approved
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
+        ec_reference_no=OuterRef('ec_reference_no')
+    ).exclude(
+        application_status='A'
+    )
+
+    non_updated_renewals = (
+        t_ec_t1.objects
+        .filter(
+            applicant_id=request.session['email'],
+            service_type__in=["Main Activity", "Old EC"],
+            ec_expiry_date__lt=expiry_date_threshold,
+            ec_expiry_date__isnull=False,
+            ec_reference_no__isnull=False,
+            status='A',
+
+        )
+        .exclude(ec_reference_no='')
+        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+        .filter(has_pending_renewal=False)
+    )
+
+    ec_renewal_count = non_updated_renewals.count()
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_ec_application_t1.objects.filter(
+        application_status='A',
+        application_no__contains='TOR', applicant_id=applicant_id
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+
+    draft_count = t_ec_application_t1.objects.filter(
+        applicant_id=applicant_id,
+        application_status='P',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
+        action_date__isnull=True
+    ).count()
+    # Badge COUNT END
     context = {
         'thromde': thromde,
         'application_details': application_details,
@@ -1702,12 +2141,16 @@ def view_draft_application_details(request):
         'dzongkhag': dzongkhag,
         'gewog': gewog,
         'village': village,
+        'service_id': service_id,
+        'file_attach':file_attach,
+        'ec_renewal_count': ec_renewal_count,
         'app_hist_count': app_hist_count,
         'cl_application_count': cl_application_count,
-        'service_id': service_id,
-        'file_attach':file_attach
+        'tor_application_count': tor_application_count,
+        'draft_count': draft_count
+
     }
-    
+
     return render(request, 'draft_application_details.html', context)
 
 
@@ -1717,12 +2160,12 @@ def old_ec_application_list(request):
     applicant_id = request.session.get('email', None)
     identifier = request.GET.get('identifier')
 
-    # application_details = t_ec_industries_t1_general.objects.filter(applicant_id=applicant_id,application_status='SM',service_type='Main Activity')
+    # application_details = t_ec_application_t1.objects.filter(applicant_id=applicant_id,application_status='SM',service_type='Main Activity')
     # -----------------------------SM- Submitted
     # Application details based on identifier
     # -----------------------------
 
-    application_details = t_ec_industries_t1_general.objects.filter(
+    application_details = t_ec_application_t1.objects.filter(
         ca_authority=request.session['ca_authority'],
         application_status='SM',
         application_type='Old_EC'
@@ -1734,17 +2177,17 @@ def old_ec_application_list(request):
         applicant_id=applicant_id
     ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+    t1_general_subquery = t_ec_application_t1.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
 
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
-    renewal_exists = t_ec_renewal_t1.objects.filter(
+    renewal_exists = t_ec_application_t1.objects.filter(
         ec_reference_no=OuterRef('ec_reference_no')
     )
 
-    non_updated_renewals = t_ec_industries_t1_general.objects.filter(
+    non_updated_renewals = t_ec_t1.objects.filter(
         applicant_id=request.session['email'],
         service_type__in=["Main Activity", "Old EC"],
         ec_expiry_date__lt=expiry_date_threshold,
@@ -1754,7 +2197,7 @@ def old_ec_application_list(request):
 
     ec_renewal_count = non_updated_renewals.count()
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
+    tor_application_count = t_ec_application_t1.objects.filter(
         application_status='A',
         application_no__contains='TOR', applicant_id=applicant_id
     ).exclude(
@@ -1780,7 +2223,7 @@ def view_old_ec_application_details(request):
     request.session['service_id'] = service_id
 
     # Fetch common data
-    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,
+    application_details = t_ec_application_t1.objects.filter(application_no=application_no,
                                                                     service_type='Main Activity')
     file_attach = t_file_attachment.objects.filter(application_no=application_no)
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -1815,7 +2258,7 @@ def view_verifier_pending_old_ec_details(request):
     request.session['service_id'] = service_id
 
     # Fetch common data
-    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,
+    application_details = t_ec_application_t1.objects.filter(application_no=application_no,
                                                                     service_type='Main Activity')
     file_attach = t_file_attachment.objects.filter(application_no=application_no)
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -1851,7 +2294,7 @@ def view_pending_old_ec_details(request):
     request.session['service_id'] = service_id
 
     # Fetch common data
-    application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no,
+    application_details = t_ec_application_t1.objects.filter(application_no=application_no,
                                                                     service_type='Main Activity')
     file_attach = t_file_attachment.objects.filter(application_no=application_no)
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -1889,7 +2332,7 @@ def ec_renewal(request):
     # -----------------------------------
     # Subquery: renewal exists AND is NOT approved
     # -----------------------------------
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
         ec_reference_no=OuterRef('ec_reference_no')
     ).exclude(application_status='A')
 
@@ -1897,7 +2340,7 @@ def ec_renewal(request):
     # ECs expiring soon & NOT pending renewal
     # -----------------------------------
     application_details = (
-        t_ec_industries_t1_general.objects
+        t_ec_t1.objects
         .filter(
             applicant_id=applicant_id,
             service_type__in=["Main Activity", "Old EC"],
@@ -1905,6 +2348,7 @@ def ec_renewal(request):
             ec_reference_no__gt='',          # covers empty string
             ec_expiry_date__isnull=False,
             ec_expiry_date__lt=threshold_date,
+            status='A',
         )
         .annotate(has_pending_renewal=Exists(pending_renewal_exists))
         .filter(has_pending_renewal=False)
@@ -1914,7 +2358,7 @@ def ec_renewal(request):
     # -----------------------------------
     # Renewal details (pending only)
     # -----------------------------------
-    renewal_details = t_ec_renewal_t2.objects.filter(
+    renewal_details = t_ec_compliance.objects.filter(
         application_status__isnull=True
     )
 
@@ -1937,12 +2381,12 @@ def ec_renewal(request):
     # -----------------------------------
     # TOR applications not yet converted
     # -----------------------------------
-    tor_converted_exists = t_ec_industries_t1_general.objects.filter(
+    tor_converted_exists = t_ec_application_t1.objects.filter(
         tor_application_no=OuterRef('application_no')
     )
 
     tor_application_count = (
-        t_ec_industries_t1_general.objects
+        t_ec_application_t1.objects
         .filter(
             applicant_id=applicant_id,
             application_status='A',
@@ -1954,20 +2398,21 @@ def ec_renewal(request):
     )
 
     # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
         ec_reference_no=OuterRef('ec_reference_no')
     ).exclude(
         application_status='A'
     )
 
     non_updated_renewals = (
-        t_ec_industries_t1_general.objects
+        t_ec_t1.objects
         .filter(
             applicant_id=request.session['email'],
             service_type__in=["Main Activity", "Old EC"],
             ec_expiry_date__lt=expiry_date_threshold,
             ec_expiry_date__isnull=False,
             ec_reference_no__isnull=False,
+            status='A',
         )
         .exclude(ec_reference_no='')
         .annotate(has_pending_renewal=Exists(pending_renewal_exists))
@@ -1976,10 +2421,10 @@ def ec_renewal(request):
 
     ec_renewal_count = non_updated_renewals.count()
 
-    draft_count = t_ec_industries_t1_general.objects.filter(
+    draft_count = t_ec_application_t1.objects.filter(
         applicant_id=applicant_id,
         application_status='P',
-        service_type='Main Activity',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
         action_date__isnull=True
     ).count()
     # -----------------------------------
@@ -2010,103 +2455,175 @@ def ec_renewal_details(request):
     applicant_id = request.session.get('email')
     ec_reference_no = request.GET.get('ec_reference_no')
     service_code = 'REN'
-    application_no = get_ren_application_no(request, service_code, '10')
-    application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no,service_type="Main Activity")
-    for app_details in application_details:
-        ec_data = t_ec_industries_t11_ec_details.objects.filter(application_no=app_details.application_no,ec_type='Terms')
+    temp_application_no = get_ren_temp_application_no(request, service_code, '10')
+
+    # Parent EC applications (as you had)
+    application_details = t_ec_t1.objects.filter(
+        ec_reference_no=ec_reference_no, service_type="Main Activity"
+    )
+
+    # Fetch ALL EC terms for display (no DB writes here)
+    ec_terms = t_ec_t2.objects.filter(
+        ec_reference_no=ec_reference_no, ec_type='Terms'
+    ).order_by('record_id')  # adjust ordering if needed (e.g., seq_no)
+
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+
     app_hist_count = t_application_history.objects.filter(
-            applicant_id=request.session['email']
-        ).distinct('application_no').count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    ec_application_details = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)
+        applicant_id=request.session['email']
+    ).distinct('application_no').count()
+
+    cl_application_count = t_workflow_dtls.objects.filter(
+        assigned_user_id=request.session['login_id']
+    ).count()
 
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-
-    # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
         ec_reference_no=OuterRef('ec_reference_no')
-    ).exclude(
-        application_status='A'
-    )
+    ).exclude(application_status='A')
 
     non_updated_renewals = (
-        t_ec_industries_t1_general.objects
+        t_ec_t1.objects
         .filter(
             applicant_id=request.session['email'],
             service_type__in=["Main Activity", "Old EC"],
             ec_expiry_date__lt=expiry_date_threshold,
             ec_expiry_date__isnull=False,
             ec_reference_no__isnull=False,
+            status='A',
         )
         .exclude(ec_reference_no='')
         .annotate(has_pending_renewal=Exists(pending_renewal_exists))
         .filter(has_pending_renewal=False)
     )
-    draft_count = t_ec_industries_t1_general.objects.filter(
+
+    draft_count = t_ec_application_t1.objects.filter(
         applicant_id=applicant_id,
         application_status='P',
-        service_type='Main Activity',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
         action_date__isnull=True
     ).count()
 
     ec_renewal_count = non_updated_renewals.count()
-    if ec_application_details.exists():
-        ec_details = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)    
-        return render(request, 'renewal_details.html',{'application_details':application_details,'application_no':application_no, 'ec_details':ec_details,
-                                                        'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'draft_count':draft_count})
-    else:
-        for ec_data in ec_data:
-            t_ec_renewal_t2.objects.create(application_no=application_no, ec_reference_no=ec_reference_no,ec_heading=ec_data.ec_heading,ec_terms=ec_data.ec_terms)
-        ec_details = t_ec_renewal_t2.objects.filter(ec_reference_no=ec_reference_no)    
-        return render(request, 'renewal_details.html',{'application_details':application_details,'application_no':application_no, 'ec_details':ec_details,'ec_renewal_count':ec_renewal_count,
-                                                        'dzongkhag':dzongkhag,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'gewog':gewog, 'village':village, 'draft_count':draft_count})
+
+    # Note: Do NOT create t_ec_compliance rows here.
+    # Just pass ec_terms to the template for temporary display.
+    return render(
+        request,
+        'renewal_details.html',
+        {
+            'application_details': application_details,
+            'temp_application_no': temp_application_no,
+            'ec_terms': ec_terms,  # pass terms for display
+            'dzongkhag': dzongkhag,
+            'gewog': gewog,
+            'village': village,
+            'draft_count': draft_count,
+            'app_hist_count': app_hist_count,
+            'cl_application_count': cl_application_count,
+            'ec_renewal_count': ec_renewal_count,
+        }
+    )
 
 def submit_renew_application(request):
+    if request.method != "POST":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
     data = {"message": "failure"}
 
     try:
+        # Basic fields
         ec_reference_no = request.POST.get('ec_reference_no')
-        application_no = request.POST.get('application_no')
+        temp_application_no = request.POST.get('temp_application_no')
         initiatives_undertaken = request.POST.get('initiatives_undertaken')
-        remarks = request.POST.get('initiatives_undertaken_remarks')
+        initiatives_remarks = request.POST.get('initiatives_undertaken_remarks')
+        name = request.session.get('name')
+        email_id = request.session.get('email')
+        service_code = 'REN'
+        print(ec_reference_no, temp_application_no, initiatives_undertaken, initiatives_remarks, name, email_id, service_code, email_id, service_code)
 
+        # Per-term arrays (may be empty if no EC terms exist)
+        t2_record_ids = request.POST.getlist('t2_record_id[]')        # hidden record_id from t_ec_t2
+        actions_list = request.POST.getlist('action_undertaken[]')    # action per term
+        remarks_list = request.POST.getlist('remarks[]')              # remarks per term
+
+        # Validate essentials (but NOT the presence of EC terms)
+        #application_no = get_ren_application_no(request, service_code, '10')
+        application_no = get_new_application_no(request, service_code)
         if not ec_reference_no or not application_no:
-            return JsonResponse(
-                {"message": "Missing required fields"},
-                status=400
-            )
+            return JsonResponse({"message": "Missing required fields"}, status=400)
 
-        # Fetch single record safely
+        # Source application (copy static fields)
         application_details = (
-            t_ec_industries_t1_general.objects
+            t_ec_t1.objects
             .filter(ec_reference_no=ec_reference_no)
             .first()
         )
 
         if not application_details:
-            return JsonResponse(
-                {"message": "Invalid EC reference number"},
-                status=404
+            return JsonResponse({"message": "Invalid EC reference number"}, status=404)
+
+        # ===== OPTIONAL VALIDATION: Only if terms were posted =====
+        terms_map = {}
+        if t2_record_ids:  # Only validate IF user posted term rows
+            if not (len(t2_record_ids) == len(actions_list) == len(remarks_list)):
+                return JsonResponse({"message": "Mismatched EC details arrays"}, status=400)
+
+            # Fetch referenced t_ec_t2 rows by record_id (and ensure they belong to this EC)
+            terms_qs = (
+                t_ec_t2.objects
+                .filter(record_id__in=t2_record_ids, ec_reference_no=ec_reference_no)  # , ec_type='Terms'
+                .order_by('record_id')
             )
+            terms_map = {str(t.record_id): t for t in terms_qs}
+            if len(terms_map) != len(set(t2_record_ids)):
+                return JsonResponse({"message": "Some EC term identifiers are invalid or do not match the EC reference"}, status=400)
+
+        # If you still need to copy all terms into t_ec_application_t2
+        ec_details_qs = (
+            t_ec_t2.objects
+            .filter(ec_reference_no=ec_reference_no)
+            .order_by('record_id')
+        )
 
         with transaction.atomic():
-            # Create renewal record
-            t_ec_renewal_t1.objects.create(
+            # A) Create renewal record (parent) - ALWAYS HAPPENS
+            t_ec_application_t1.objects.create(
                 application_no=application_no,
                 ec_reference_no=ec_reference_no,
-                proponent_name=application_details.applicant_name,
+                applicant_name=application_details.applicant_name,
                 address=application_details.address,
                 initiatives_undertaken=initiatives_undertaken,
-                remarks=remarks,
-                submission_date=timezone.now(),
+                initiatives_remarks=initiatives_remarks,  # ensure field name matches your model
+                applicant_id=application_details.applicant_id,
+                service_id=application_details.service_id,
+                application_date=timezone.now(),
                 action_date=timezone.now(),
-                application_status='P'
+                application_status='P',
+                application_type='Renewal',
+                ca_authority=application_details.ca_authority,
+                colour_code=application_details.colour_code,
+                contact_no=application_details.contact_no,
+                email=application_details.email,
+                focal_person=application_details.focal_person,
+                thromde_id=application_details.thromde_id,
+                dzongkhag_code=application_details.dzongkhag_code,
+                gewog_code=application_details.gewog_code,
+                village_code=application_details.village_code,
+                location_name=application_details.location_name,
+                application_source=application_details.application_source,
+                dzongkhag_throm=application_details.dzongkhag_throm,
+                activity=application_details.activity,
+                project_description=application_details.project_description,
+                project_name=application_details.project_name,
+                service_type=application_details.service_type,
+                proponent_type=application_details.proponent_type,
+                cid=application_details.cid
             )
 
-            # Create workflow record
+            # B) Create workflow record - ALWAYS HAPPENS
             t_workflow_dtls.objects.create(
                 application_no=application_no,
                 service_id='10',
@@ -2121,12 +2638,67 @@ def submit_renew_application(request):
                 service_type="Renewal"
             )
 
+            # C) (Optional) Copy ALL EC terms into application-specific table
+            if ec_details_qs.exists():
+                app_t2_rows = [
+                    t_ec_application_t2(
+                        application_no=application_no,
+                        ec_type=ed.ec_type,
+                        ec_heading=ed.ec_heading,
+                        ec_terms=ed.ec_terms,
+                        ec_reference_no=ec_reference_no,
+                        order=ed.order,
+                        # If t_ec_application_t2 has a record_id/seq_no, copy it too:
+                        # record_id=ed.record_id,
+                        # seq_no=ed.seq_no,
+                    )
+                    for ed in ec_details_qs
+                ]
+                t_ec_application_t2.objects.bulk_create(app_t2_rows, batch_size=1000)
+
+            # D) Build compliance rows from posted arrays + server-fetched terms - ONLY IF POSTED
+            if t2_record_ids:  # Only save compliance data if user posted any terms
+                compliance_rows = []
+                for rid, action_txt, remark_txt in zip(t2_record_ids, actions_list, remarks_list):
+                    term = terms_map.get(str(rid))
+                    if not term:
+                        raise ValueError(f"Invalid EC term identifier: {rid}")
+
+                    compliance_rows.append(
+                        t_ec_compliance(
+                            application_no=application_no,
+                            ec_reference_no=ec_reference_no,
+                            ec_heading=term.ec_heading,
+                            ec_terms=term.ec_terms,
+                            order=term.order,
+                            # Ensure these names match your t_ec_compliance model:
+                            action_undertaken=(action_txt or '').strip(),
+                            remarks=(remark_txt or '').strip(),
+                        )
+                    )
+                if compliance_rows:
+                    t_ec_compliance.objects.bulk_create(compliance_rows, batch_size=1000)
+
+            # E) Remap attachments from temp to final application_no - ALWAYS HAPPENS
+            t_file_attachment.objects.filter(application_no=temp_application_no).update(
+                application_no=application_no
+            )
+
+            # F) Send email after commit - ALWAYS HAPPENS
+            transaction.on_commit(
+                lambda: threading.Thread(
+                    target=_send_submit_renewal_email_in_background,
+                    args=(name, email_id, application_no),
+                    daemon=True
+                ).start()
+            )
+
         data["message"] = "success"
+        return JsonResponse(data)
 
     except Exception as e:
         print("Submit renewal application error:", e)
-
-    return JsonResponse(data)
+        return JsonResponse({"message": "failure", "error": str(e)}, status=500)
 
 def save_renew_attachment(request):
     data = dict()
@@ -2146,11 +2718,622 @@ def save_renew_attachment(request):
 def save_renew_attachment_details(request):
     file_name = request.POST.get('filename')
     file_url = request.POST.get('file_url')
-    application_no = request.POST.get('application_no')
+    application_no = request.POST.get('temp_application_no')
     t_file_attachment.objects.create(application_no=application_no, file_path=file_url, attachment=file_name,attachment_type='ECR')
     file_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='ECR')
 
     return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
+
+def submit_oc_application(request):
+    if request.method != "POST":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+    data = {"message": "failure"}
+
+    try:
+        # Basic fields
+        ec_reference_no = request.POST.get('ec_reference_no')
+        temp_application_no = request.POST.get('temp_application_no')
+        applicant_focal_person = request.POST.get('applicant_focal_person')
+        name = request.session.get('name')
+        email_id = request.session.get('email')
+        service_code = 'OC'
+
+        # Validate essentials
+        #application_no = get_oc_application_no(request, service_code, '12')
+        application_no = get_new_application_no(request, service_code)
+        if not ec_reference_no or not application_no:
+            return JsonResponse({"message": "Missing required fields"}, status=400)
+
+        # Source application (copy static fields)
+        application_details = (
+            t_ec_t1.objects
+            .filter(ec_reference_no=ec_reference_no)
+            .first()
+        )
+        if not application_details:
+            return JsonResponse({"message": "Invalid EC reference number"}, status=404)
+
+        # Source applicant details
+        applicant_details = (
+            t_user_master.objects
+            .filter(email_id=email_id)
+            .first()
+        )
+
+        # Get all EC terms from original application
+        ec_details_qs = (
+            t_ec_t2.objects
+            .filter(ec_reference_no=ec_reference_no)
+            .order_by('record_id')
+        )
+
+        with transaction.atomic():
+            # A) Create ownership change record (parent)
+            t_ec_application_t1.objects.create(
+                application_no=application_no,
+                ec_reference_no=ec_reference_no,
+                applicant_name=application_details.applicant_name,
+                address=application_details.address,
+                applicant_id=application_details.applicant_id,
+                service_id=application_details.service_id,
+                application_date=timezone.now(),
+                action_date=timezone.now(),
+                application_status='OC',
+                application_type='OC',
+                ca_authority=application_details.ca_authority,
+                colour_code=application_details.colour_code,
+                contact_no=application_details.contact_no,
+                email=application_details.email,
+                focal_person=application_details.focal_person,
+                thromde_id=application_details.thromde_id,
+                dzongkhag_code=application_details.dzongkhag_code,
+                gewog_code=application_details.gewog_code,
+                village_code=application_details.village_code,
+                location_name=application_details.location_name,
+                application_source=application_details.application_source,
+                dzongkhag_throm=application_details.dzongkhag_throm,
+                activity=application_details.activity,
+                project_description=application_details.project_description,
+                project_name=application_details.project_name,
+                service_type=application_details.service_type,
+                proponent_type=application_details.proponent_type,
+                cid=application_details.cid,
+                buyer_applicant_name=applicant_details.proponent_name,
+                buyer_address=applicant_details.address,
+                buyer_cid=applicant_details.cid,
+                buyer_email=applicant_details.email_id,
+                buyer_contact_no=applicant_details.contact_number,
+                buyer_proponent_type=applicant_details.proponent_type,
+                buyer_project_name=application_details.project_name,
+                buyer_focal_person=applicant_focal_person
+            )
+
+            # B) Create workflow record
+            t_workflow_dtls.objects.create(
+                application_no=application_no,
+                service_id='12',
+                application_status='P',
+                action_date=timezone.now(),
+                actor_id=request.session.get('login_id'),
+                actor_name=request.session.get('name'),
+                assigned_role_id='3',
+                assigned_role_name='Reviewer',
+                ca_authority=application_details.ca_authority,
+                application_source='ECSS',
+                service_type="OC"
+            )
+
+            # C) Copy ALL EC terms into application-specific table
+            if ec_details_qs.exists():
+                app_t2_rows = [
+                    t_ec_application_t2(
+                        application_no=application_no,
+                        ec_type=ed.ec_type,
+                        ec_heading=ed.ec_heading,
+                        ec_terms=ed.ec_terms,
+                        ec_reference_no=ec_reference_no,
+                        order=ed.order
+                    )
+                    for ed in ec_details_qs
+                ]
+                t_ec_application_t2.objects.bulk_create(app_t2_rows, batch_size=1000)
+
+            # D) Remap attachments from temp to final application_no
+            t_file_attachment.objects.filter(application_no=temp_application_no).update(
+                application_no=application_no
+            )
+
+            # E) Send email after commit
+            transaction.on_commit(
+                lambda: threading.Thread(
+                    target=_send_submit_renewal_email_in_background,
+                    args=(name, email_id, application_no),
+                    daemon=True
+                ).start()
+            )
+
+        data["message"] = "success"
+        return JsonResponse(data)
+
+    except Exception as e:
+        print("Submit OC application error:", e)
+        return JsonResponse({"message": "failure", "error": str(e)}, status=500)
+
+def save_oc_attachment(request):
+    data = dict()
+    ea_attach = request.FILES['oc_attach']
+    file_name = ea_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ECOC/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, ea_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/ECOC" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_oc_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('temp_application_no')
+    t_file_attachment.objects.create(application_no=application_no, file_path=file_url, attachment=file_name,attachment_type='ECOC')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='ECOC')
+
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
+
+
+def oc_application(request):
+    applicant_id = request.session.get('email', None)
+    t1_general_subquery = t_ec_application_t1.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    # Query to count approved applications that are not in t1_general
+    oc_details = t_ec_application_t1.objects.filter(
+        application_status='OC', application_type='OC', applicant_id=applicant_id
+    )
+    tor_application_count = t_ec_application_t1.objects.filter(
+        application_status='A',
+        application_no__contains='TOR', applicant_id=applicant_id
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+
+    # Renewal exists AND is NOT approved
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
+        ec_reference_no=OuterRef('ec_reference_no')
+    ).exclude(
+        application_status='A'
+    )
+
+    non_updated_renewals = (
+        t_ec_t1.objects
+        .filter(
+            applicant_id=request.session['email'],
+            service_type__in=["Main Activity", "Old EC"],
+            ec_expiry_date__lt=expiry_date_threshold,
+            ec_expiry_date__isnull=False,
+            ec_reference_no__isnull=False,
+            status='A',
+        )
+        .exclude(ec_reference_no='')
+        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+        .filter(has_pending_renewal=False)
+    )
+
+    ec_renewal_count = non_updated_renewals.count()
+
+    draft_count = t_ec_application_t1.objects.filter(
+        applicant_id=applicant_id,
+        application_status='P',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
+        action_date__isnull=True
+    ).count()
+
+    service_details = t_service_master.objects.all()
+
+    app_hist_count = t_application_history.objects.filter(
+        applicant_id=applicant_id
+    ).distinct('application_no').count()
+    response = render(request, 'oc_request_list.html',
+                      {'tor_application_count': tor_application_count, 'ec_renewal_count': ec_renewal_count,
+                       'oc_details': oc_details, 'service_details': service_details, 'app_hist_count': app_hist_count,
+                       'draft_count': draft_count})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
+
+def view_oc_application_details(request):
+    application_no = request.GET.get('application_no') or request.session.get('application_no')
+    request.session['application_no'] = application_no
+    applicant_id = request.session.get('email', None)
+    assigned_user_id = request.session.get('login_id', None)
+    service_id = request.GET.get('service_id')
+
+    request.session['service_id'] = service_id
+
+    service_master = t_service_master.objects.filter(
+        service_id=service_id
+    ).first()
+
+    attachments = service_master.attachments if service_master else ''
+    request.session['attachments'] = attachments
+
+    # Fetch common data
+    application_details = t_ec_application_t1.objects.filter(application_no=application_no)
+    file_attach = t_file_attachment.objects.filter(application_no=application_no)
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
+
+    # Badge COUNT START
+    service_details = t_service_master.objects.all()
+    app_hist_count = t_application_history.objects.filter(
+        applicant_id=applicant_id
+    ).distinct('application_no').count()
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
+    t1_general_subquery = t_ec_application_t1.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+
+    # Renewal exists AND is NOT approved
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
+        ec_reference_no=OuterRef('ec_reference_no')
+    ).exclude(
+        application_status='A'
+    )
+
+    non_updated_renewals = (
+        t_ec_t1.objects
+        .filter(
+            applicant_id=request.session['email'],
+            service_type__in=["Main Activity", "Old EC"],
+            ec_expiry_date__lt=expiry_date_threshold,
+            ec_expiry_date__isnull=False,
+            ec_reference_no__isnull=False,
+            status='A',
+
+        )
+        .exclude(ec_reference_no='')
+        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+        .filter(has_pending_renewal=False)
+    )
+
+    ec_renewal_count = non_updated_renewals.count()
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_ec_application_t1.objects.filter(
+        application_status='A',
+        application_no__contains='TOR', applicant_id=applicant_id
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+
+    draft_count = t_ec_application_t1.objects.filter(
+        applicant_id=applicant_id,
+        application_status='P',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
+        action_date__isnull=True
+    ).count()
+    # Badge COUNT END
+    context = {
+        'thromde': thromde,
+        'application_details': application_details,
+        'application_no': application_no,
+        'dzongkhag': dzongkhag,
+        'gewog': gewog,
+        'village': village,
+        'service_id': service_id,
+        'file_attach':file_attach,
+        'ec_renewal_count': ec_renewal_count,
+        'app_hist_count': app_hist_count,
+        'cl_application_count': cl_application_count,
+        'tor_application_count': tor_application_count,
+        'draft_count': draft_count
+
+    }
+
+    return render(request, 'oc_application_details.html', context)
+
+
+
+def oc_decide_application(request):
+    try:
+        application_no = request.POST.get('application_no')
+        decision = request.POST.get('decision')
+
+        if not application_no or decision not in ('accept', 'reject'):
+            return JsonResponse(
+                {'message': 'failure', 'error': 'Invalid payload'},
+                status=400
+            )
+
+        status_map = {
+            'accept': 'P',
+            'reject': 'RJ'
+        }
+        new_status = status_map[decision]
+
+        now = timezone.now()
+
+        with transaction.atomic():
+            updated_app = t_ec_application_t1.objects.filter(
+                application_no=application_no
+            ).update(application_status=new_status, action_date=now)
+
+            updated_workflow = t_workflow_dtls.objects.filter(
+                application_no=application_no
+            ).update(application_status=new_status, action_date=now)
+
+            if not updated_app and not updated_workflow:
+                return JsonResponse(
+                    {'message': 'failure', 'error': 'Application not found'},
+                    status=404
+                )
+
+        return JsonResponse({'message': 'success', 'status': new_status})
+
+    except Exception as e:
+        return JsonResponse({'message': 'failure', 'error': str(e)}, status=500)
+
+def submit_nc_application(request):
+    if request.method != "POST":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+    data = {"message": "failure"}
+
+    try:
+        # Basic fields
+        ec_reference_no = request.POST.get('ec_reference_no')
+        temp_application_no = request.POST.get('temp_application_no')
+        new_project_name = request.POST.get('new_project_name')
+        name = request.session.get('name')
+        email_id = request.session.get('email')
+        service_code = 'NC'
+
+        # Validate essentials
+        application_no = get_new_application_no(request, service_code)
+        if not ec_reference_no or not application_no:
+            return JsonResponse({"message": "Missing required fields"}, status=400)
+
+        # Source application (copy static fields)
+        application_details = (
+            t_ec_t1.objects
+            .filter(ec_reference_no=ec_reference_no)
+            .first()
+        )
+        if not application_details:
+            return JsonResponse({"message": "Invalid EC reference number"}, status=404)
+
+        # Source applicant details
+        applicant_details = (
+            t_user_master.objects
+            .filter(email_id=email_id)
+            .first()
+        )
+
+        # Get all EC terms from original application
+        ec_details_qs = (
+            t_ec_t2.objects
+            .filter(ec_reference_no=ec_reference_no)
+            .order_by('record_id')
+        )
+
+        with transaction.atomic():
+            # A) Create ownership change record (parent)
+            t_ec_application_t1.objects.create(
+                application_no=application_no,
+                ec_reference_no=ec_reference_no,
+                applicant_name=application_details.applicant_name,
+                address=application_details.address,
+                applicant_id=application_details.applicant_id,
+                service_id=application_details.service_id,
+                application_date=timezone.now(),
+                action_date=timezone.now(),
+                application_status='P',
+                application_type='NC',
+                ca_authority=application_details.ca_authority,
+                colour_code=application_details.colour_code,
+                contact_no=application_details.contact_no,
+                email=application_details.email,
+                focal_person=application_details.focal_person,
+                thromde_id=application_details.thromde_id,
+                dzongkhag_code=application_details.dzongkhag_code,
+                gewog_code=application_details.gewog_code,
+                village_code=application_details.village_code,
+                location_name=application_details.location_name,
+                application_source=application_details.application_source,
+                dzongkhag_throm=application_details.dzongkhag_throm,
+                activity=application_details.activity,
+                project_description=application_details.project_description,
+                project_name=application_details.project_name,
+                service_type=application_details.service_type,
+                proponent_type=application_details.proponent_type,
+                cid=application_details.cid,
+                new_project_name=new_project_name
+
+            )
+
+            # B) Create workflow record
+            t_workflow_dtls.objects.create(
+                application_no=application_no,
+                service_id='11',
+                application_status='P',
+                action_date=timezone.now(),
+                actor_id=request.session.get('login_id'),
+                actor_name=request.session.get('name'),
+                assigned_role_id='3',
+                assigned_role_name='Reviewer',
+                ca_authority=application_details.ca_authority,
+                application_source='ECSS',
+                service_type="NC"
+            )
+
+            # C) Copy ALL EC terms into application-specific table
+            if ec_details_qs.exists():
+                app_t2_rows = [
+                    t_ec_application_t2(
+                        application_no=application_no,
+                        ec_type=ed.ec_type,
+                        ec_heading=ed.ec_heading,
+                        ec_terms=ed.ec_terms,
+                        ec_reference_no=ec_reference_no,
+                        order=ed.order
+                    )
+                    for ed in ec_details_qs
+                ]
+                t_ec_application_t2.objects.bulk_create(app_t2_rows, batch_size=1000)
+
+            # D) Remap attachments from temp to final application_no
+            t_file_attachment.objects.filter(application_no=temp_application_no).update(
+                application_no=application_no
+            )
+
+            # E) Send email after commit
+            transaction.on_commit(
+                lambda: threading.Thread(
+                    target=_send_submit_renewal_email_in_background,
+                    args=(name, email_id, application_no),
+                    daemon=True
+                ).start()
+            )
+
+        data["message"] = "success"
+        return JsonResponse(data)
+
+    except Exception as e:
+        print("Submit NC application error:", e)
+        return JsonResponse({"message": "failure", "error": str(e)}, status=500)
+
+def save_nc_attachment(request):
+    data = dict()
+    ea_attach = request.FILES['nc_attach']
+    file_name = ea_attach.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ECNC/")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, ea_attach)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/ECNC" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+def save_nc_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('temp_application_no')
+    t_file_attachment.objects.create(application_no=application_no, file_path=file_url, attachment=file_name,attachment_type='ECNC')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='ECNC')
+
+    return render(request, 'application_attachment_page.html', {'file_attach': file_attach})
+
+def view_nc_application_details(request):
+    application_no = request.GET.get('application_no') or request.session.get('application_no')
+    request.session['application_no'] = application_no
+    applicant_id = request.session.get('email', None)
+    assigned_user_id = request.session.get('login_id', None)
+    service_id = request.GET.get('service_id')
+
+    request.session['service_id'] = service_id
+
+    service_master = t_service_master.objects.filter(
+        service_id=service_id
+    ).first()
+
+    attachments = service_master.attachments if service_master else ''
+    request.session['attachments'] = attachments
+
+    # Fetch common data
+    application_details = t_ec_application_t1.objects.filter(application_no=application_no)
+    file_attach = t_file_attachment.objects.filter(application_no=application_no)
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
+
+    # Badge COUNT START
+    service_details = t_service_master.objects.all()
+    app_hist_count = t_application_history.objects.filter(
+        applicant_id=applicant_id
+    ).distinct('application_no').count()
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
+    t1_general_subquery = t_ec_application_t1.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+
+    # Renewal exists AND is NOT approved
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
+        ec_reference_no=OuterRef('ec_reference_no')
+    ).exclude(
+        application_status='A'
+    )
+
+    non_updated_renewals = (
+        t_ec_t1.objects
+        .filter(
+            applicant_id=request.session['email'],
+            service_type__in=["Main Activity", "Old EC"],
+            ec_expiry_date__lt=expiry_date_threshold,
+            ec_expiry_date__isnull=False,
+            ec_reference_no__isnull=False,
+            status='A',
+
+        )
+        .exclude(ec_reference_no='')
+        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+        .filter(has_pending_renewal=False)
+    )
+
+    ec_renewal_count = non_updated_renewals.count()
+
+    # Query to count approved applications that are not in t1_general
+    tor_application_count = t_ec_application_t1.objects.filter(
+        application_status='A',
+        application_no__contains='TOR', applicant_id=applicant_id
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+
+    draft_count = t_ec_application_t1.objects.filter(
+        applicant_id=applicant_id,
+        application_status='P',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
+        action_date__isnull=True
+    ).count()
+    # Badge COUNT END
+    context = {
+        'thromde': thromde,
+        'application_details': application_details,
+        'application_no': application_no,
+        'dzongkhag': dzongkhag,
+        'gewog': gewog,
+        'village': village,
+        'service_id': service_id,
+        'file_attach':file_attach,
+        'ec_renewal_count': ec_renewal_count,
+        'app_hist_count': app_hist_count,
+        'cl_application_count': cl_application_count,
+        'tor_application_count': tor_application_count,
+        'draft_count': draft_count
+
+    }
+
+    return render(request, 'nc_application_details.html', context)
 
 
 def save_compliance_details(request):
@@ -2159,10 +3342,10 @@ def save_compliance_details(request):
     remarks = request.POST.get('remarks')
     
 
-    app_details = t_ec_renewal_t2.objects.filter(record_id=ec_terms_id)
+    app_details = t_ec_compliance.objects.filter(record_id=ec_terms_id)
     app_details.update(action_undertaken=action_undertaken,remarks=remarks)
 
-    ec_details = t_ec_renewal_t2.objects.filter(record_id=ec_terms_id)
+    ec_details = t_ec_compliance.objects.filter(record_id=ec_terms_id)
     return render(request, 'ec_details.html', {'ec_details': ec_details})
 
 def send_renew_payment_mail(name, email_id, amount):
@@ -2174,8 +3357,20 @@ def send_renew_payment_mail(name, email_id, amount):
               auth_user='systems@moenr.gov.bt', auth_password='wdiigzpprtutwmdc',
               connection=None, html_message=None)
     
+
+def get_ren_temp_application_no(request, service_code, service_id):
+    """
+    Generates a unique application number using a random 4-digit sequence.
+    No DB query or thread locking needed.
+    """
+    year = timezone.now().year
+    rand_num = str(random.randint(1000, 9999))  # Always 4 digits
+    temp_application_no = f"{service_code}-{year}-{rand_num}"
+
+    return temp_application_no
+
 def get_ren_application_no(request, service_code, service_id):
-    last_application_no = t_ec_renewal_t1.objects.aggregate(max_app=Max('application_no'))['max_app']
+    last_application_no = t_ec_application_t1.objects.aggregate(max_app=Max('application_no'))['max_app']
     if not last_application_no:
         year=timezone.now().year
         new_application_no = service_code + "-" + str(year) + "-" + "0001"
@@ -2188,10 +3383,101 @@ def get_ren_application_no(request, service_code, service_id):
         new_application_no =  service_code + "-" + str(year) + "-" + app_num
     return new_application_no
 
+def get_oc_application_no(request, service_code, service_id):
+    last_application_no = t_ec_application_t1.objects.aggregate(max_app=Max('application_no'))['max_app']
+    if not last_application_no:
+        year=timezone.now().year
+        new_application_no = service_code + "-" + str(year) + "-" + "0001"
+    else:
+        substring = str(last_application_no)[9:13]
+        substring = int(substring) + 1
+        app_num = str(substring).zfill(4)
+        print(app_num)
+        year =  timezone.now().year
+        new_application_no =  service_code + "-" + str(year) + "-" + app_num
+    return new_application_no
+
+def get_nc_application_no(request, service_code, service_id):
+    last_application_no = t_ec_application_t1.objects.aggregate(max_app=Max('application_no'))['max_app']
+    if not last_application_no:
+        year=timezone.now().year
+        new_application_no = service_code + "-" + str(year) + "-" + "0001"
+    else:
+        substring = str(last_application_no)[9:13]
+        substring = int(substring) + 1
+        app_num = str(substring).zfill(4)
+        print(app_num)
+        year =  timezone.now().year
+        new_application_no =  service_code + "-" + str(year) + "-" + app_num
+    return new_application_no
+
+DIGITS = 5  # number of digits for sequence part, change to 5 if you want 00001
+
+def _to_int32_signed(x: int) -> int:
+    """
+    Convert an unsigned 32-bit value to signed 32-bit range [-2^31, 2^31-1].
+    """
+    if x > 0x7FFFFFFF:
+        return x - 0x100000000
+    return x
+
+def _advisory_lock(service_code: str, year: int) -> None:
+    """
+    Acquire a transaction-scoped advisory lock for (service_code, year)
+    using the two-int32 variant of pg_advisory_xact_lock.
+    """
+    sc_crc32 = zlib.crc32(service_code.upper().encode("utf-8")) & 0xFFFFFFFF
+    key1 = _to_int32_signed(sc_crc32)  # must be signed 32-bit
+    key2 = int(year)                   # year fits comfortably in int4
+
+    with connection.cursor() as cur:
+        cur.execute("SELECT pg_advisory_xact_lock(%s, %s);", [key1, key2])
+
+def _next_number_unlocked(service_code: str, year: int, digits: int = DIGITS) -> str:
+    """
+    Compute the next application_no for the given service_code and year.
+    MUST be called only while holding the advisory lock.
+    """
+    prefix = f"{service_code.upper()}-{year}-"
+    last_app = (
+        t_ec_application_t1.objects
+        .filter(application_no__startswith=prefix)
+        .aggregate(max_val=Max("application_no"))
+        .get("max_val")
+    )
+
+    if last_app:
+        try:
+            last_num = int(last_app.split("-")[-1])
+        except (ValueError, IndexError):
+            last_num = 0
+        next_num = last_num + 1
+    else:
+        next_num = 1
+
+    return f"{prefix}{next_num:0{digits}d}"
+
+def get_new_application_no(request, service_code, service_id=None) -> str:
+    """
+    Concurrency-safe number generator.
+    IMPORTANT: Call this INSIDE the same transaction where you also INSERT the row.
+    """
+    if not service_code:
+        raise ValueError("service_code is required")
+
+    current_year = timezone.now().year
+    _advisory_lock(service_code, current_year)
+    return _next_number_unlocked(service_code, current_year, digits=DIGITS)
+
+
 # TOR DETAILS
 def tor_form(request):
     service_code = 'TOR'
-    application_no = get_application_no(request, service_code, None)
+    login_id = request.session.get('login_id')
+    applicant_id = request.session.get('email')
+
+    #application_no = get_application_no(request, service_code, None)
+    temp_application_no = get_temp_application_no(login_id)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -2199,36 +3485,87 @@ def tor_form(request):
     app_hist_count = t_application_history.objects.filter(
             applicant_id=request.session['email']
         ).distinct('application_no').count()
+    print(temp_application_no)
 
-    return render(request, 'tor_form.html', {'app_hist_count':app_hist_count,'application_no':application_no,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde})
+    # Renewal exists AND is NOT approved
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
+        ec_reference_no=OuterRef('ec_reference_no')
+    ).exclude(
+        application_status='A'
+    )
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+    non_updated_renewals = (
+        t_ec_t1.objects
+        .filter(
+            applicant_id=request.session['email'],
+            service_type__in=["Main Activity", "Old EC"],
+            ec_expiry_date__lt=expiry_date_threshold,
+            ec_expiry_date__isnull=False,
+            ec_reference_no__isnull=False,
+            status='A',
+
+        )
+        .exclude(ec_reference_no='')
+        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+        .filter(has_pending_renewal=False)
+    )
+
+    ec_renewal_count = non_updated_renewals.count()
+
+    # 5. TOR application count (optimized)
+    t1_general_subquery = t_ec_application_t1.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+
+    tor_application_count = t_ec_application_t1.objects.filter(
+        application_status='A',
+        application_no__contains='TOR',
+        applicant_id=applicant_id
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+
+    draft_count = t_ec_application_t1.objects.filter(
+        applicant_id=applicant_id,
+        application_status='P',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
+        action_date__isnull=True
+    ).count()
+
+    return render(request, 'tor_form.html', {'app_hist_count':app_hist_count,'temp_application_no':temp_application_no,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde, 'draft_count': draft_count, 'tor_application_count': tor_application_count,
+                   'ec_renewal_count': ec_renewal_count})
 
 
 def save_tor_form(request):
     data = {}
     try:
-        application_no = request.POST.get('application_no')
+        temp_application_no = request.POST.get('temp_application_no')
         project_name = request.POST.get('project_name')
         applicant_name = request.POST.get('applicant_name')
         address = request.POST.get('address')
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
+        project_description = request.POST.get('project_description')
         focal_person = request.POST.get('focal_person')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
-        if dzongkhag_throm == 'Thromde':
-            dzongkhag = None
-            gewog = None
-            vil_chiwog = None
-            thromde = request.POST.get('thromde_id')
+        proponent_type = request.session['proponent_type']
+        project_site = request.POST.get('project_site')
+
+        # Get location details
+        if dzongkhag_throm == 'Dzongkhag':
+            dzongkhag_code = request.POST.get('dzongkhag')
+            gewog_code = request.POST.get('gewog')
+            village_code = request.POST.get('vil_chiwog')
+            thromde_id = None
         else:
-            dzongkhag = request.POST.get('dzongkhag')
-            gewog = request.POST.get('gewog')
-            vil_chiwog = request.POST.get('vil_chiwog')
-            thromde = None
+            dzongkhag_code = None
+            gewog_code = None
+            village_code = None
+            thromde_id = request.POST.get('thromde_id')
+
         location_name = request.POST.get('location_name')
 
-        broad_activity_code = request.session['broad_activity_code']
-        specific_activity_code = request.session['specific_activity_code']
-        category = request.session['category']
+        activity = request.session['activity']
         service_id = request.session['service_id']
         login_id = request.session['login_id']
         name = request.session['name']
@@ -2239,13 +3576,39 @@ def save_tor_form(request):
         ca_auth = None
         account_head = None
         
-        auth_filter = t_competant_authority_master.objects.filter(
-                competent_authority=request.session['ca_auth'],
-                dzongkhag_code_id=dzongkhag if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
-            )
-        ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-        # Insert record in t_ec_industries_t1_general table
-        t_ec_industries_t1_general.objects.create(
+        #auth_filter = t_competant_authority_master.objects.filter(
+        #        competent_authority=request.session['ca_auth'],
+        #        dzongkhag_code_id=dzongkhag if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
+        #    )
+        #ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+
+        # Determine competent authority
+        ca_auth = request.session.get('ca_auth')
+        if ca_auth == 'DEC' and dzongkhag_code:
+            auth_record = t_competant_authority_master.objects.filter(
+                competent_authority=ca_auth,
+                dzongkhag_code_id=dzongkhag_code
+            ).first()
+            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
+        elif ca_auth == 'THROMDE' and thromde_id:
+            auth_record = t_competant_authority_master.objects.filter(
+                competent_authority=ca_auth,
+                thromde_id_id=thromde_id
+            ).first()
+            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
+        else:
+            auth_record = t_competant_authority_master.objects.filter(
+                competent_authority=ca_auth
+            ).first()
+            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
+
+        # Generate Application Number
+        service_code = 'TOR'
+        #application_no = get_application_no(request, service_code, service_id)
+        application_no = get_new_application_no(request, service_code)
+
+        # Insert record in t_ec_application_t1 table
+        t_ec_application_t1.objects.create(
             application_no=application_no,
             project_name=project_name,
             applicant_name=applicant_name,
@@ -2255,21 +3618,23 @@ def save_tor_form(request):
             email=email,
             focal_person=focal_person,
             dzongkhag_throm=dzongkhag_throm,
-            thromde_id=thromde,
-            dzongkhag_code=dzongkhag,
-            gewog_code=gewog,
-            village_code=vil_chiwog,
-            location_name=location_name,
-            broad_activity_code=broad_activity_code,
-            specific_activity_code=specific_activity_code,
-            category=category,
+            thromde_id=thromde_id,
+            dzongkhag_code=dzongkhag_code,
+            gewog_code=gewog_code,
+            village_code=village_code,
+            location_name=project_site,
+            activity=activity,
             applicant_id=request.session['email'],
-            ca_authority=ca_auth,
+            ca_authority=ca_auth_id,
             application_status='P',
             action_date=action_date,
             service_id=service_id,
             application_source='ECSS',
-            colour_code=colour_code
+            colour_code=colour_code,
+            proponent_type=proponent_type,
+            service_type='TOR',
+            application_type='New',
+            project_description=project_description
         )
 
         # Insert record in t_application_history table
@@ -2277,14 +3642,15 @@ def save_tor_form(request):
             application_no=application_no,
             application_date=application_date,
             applicant_id=request.session['email'],
-            ca_authority=ca_auth,
+            ca_authority=ca_auth_id,
             service_id=service_id,
             application_status='P',
             action_date=action_date,
             actor_id=login_id,
             actor_name=name,
             remarks='TOR Application Submitted',
-            status='P'
+            status='P',
+            service_type='TOR'
         )
 
         # Insert record in t_workflow_dtls table
@@ -2296,17 +3662,30 @@ def save_tor_form(request):
             actor_id=login_id,
             actor_name=name,
             assigned_user_id=None,
-            assigned_role_id='2',
-            assigned_role_name='Verifier',
+            assigned_role_id='3',
+            assigned_role_name='Reviewer',
             result=None,
-            ca_authority=ca_auth,
-            application_source='ECSS'
+            ca_authority=ca_auth_id,
+            application_source='ECSS',
+            service_type='TOR'
         )
-        payment_details = payment_details_master.objects.filter(payment_type='TOR')
-        for pay_dets in payment_details:
-            account_head = pay_dets.account_head_code
-        make_payment_request(request,application_no,"500",'NEW TOR APPLICATION',request.session['email'],account_head,"TOR")
-        send_tor_payment_mail(request.session['name'], request.session['email'], 500)
+
+        t_file_attachment.objects.filter(application_no=temp_application_no).update(application_no=application_no)
+
+        #payment_details = payment_details_master.objects.filter(payment_type='TOR')
+        #for pay_dets in payment_details:
+        #    account_head = pay_dets.account_head_code
+        #make_payment_request(request,temp_application_no,"500",'NEW TOR APPLICATION',request.session['email'],account_head,"TOR")
+        #send_tor_payment_mail(request.session['name'], request.session['email'], 500)
+
+        # Start the thread ONLY after successful DB commit
+
+        transaction.on_commit(lambda: threading.Thread(
+            target=_send_submit_email_in_background_tor,
+            args=(name, email, application_no),
+            daemon=True
+        ).start())
+
         data['message'] = 'success'
     except Exception as e:
         data['error'] = str(e).split("\n")[0]
@@ -2339,7 +3718,7 @@ def save_tor_attachment(request):
 def save_tor_attachment_details(request):
     file_name = request.POST.get('filename')
     file_url = request.POST.get('file_url') 
-    application_no = request.POST.get('application_no')
+    application_no = request.POST.get('temp_application_no')
 
     t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='TOR')
     file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='TOR')
@@ -2348,17 +3727,17 @@ def save_tor_attachment_details(request):
 
 def tor_list(request):
     applicant_id = request.session.get('email', None)
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+    t1_general_subquery = t_ec_application_t1.objects.filter(
         tor_application_no=OuterRef('application_no') 
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_details = t_ec_industries_t1_general.objects.filter(
+    tor_details = t_ec_application_t1.objects.filter(
         application_status='A',application_no__contains='TOR',applicant_id=applicant_id
     ).exclude(
         application_no__in=Subquery(t1_general_subquery)
     )
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
+    tor_application_count = t_ec_application_t1.objects.filter(
             application_status='A',
             application_no__contains='TOR',applicant_id=applicant_id
         ).exclude(
@@ -2368,20 +3747,21 @@ def tor_list(request):
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
     # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
         ec_reference_no=OuterRef('ec_reference_no')
     ).exclude(
         application_status='A'
     )
 
     non_updated_renewals = (
-        t_ec_industries_t1_general.objects
+        t_ec_t1.objects
         .filter(
             applicant_id=request.session['email'],
             service_type__in=["Main Activity", "Old EC"],
             ec_expiry_date__lt=expiry_date_threshold,
             ec_expiry_date__isnull=False,
             ec_reference_no__isnull=False,
+            status='A',
         )
         .exclude(ec_reference_no='')
         .annotate(has_pending_renewal=Exists(pending_renewal_exists))
@@ -2390,10 +3770,10 @@ def tor_list(request):
 
     ec_renewal_count = non_updated_renewals.count()
 
-    draft_count = t_ec_industries_t1_general.objects.filter(
+    draft_count = t_ec_application_t1.objects.filter(
         applicant_id=applicant_id,
         application_status='P',
-        service_type='Main Activity',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
         action_date__isnull=True
     ).count()
     
@@ -2414,56 +3794,51 @@ def view_tor_application_details(request):
     applicant_id = request.session.get('email', None)
     tor_application_no = request.GET.get('application_no')
     service_id = request.GET.get('service_id')
-    app_det = t_ec_industries_t1_general.objects.filter(application_no=tor_application_no)
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+    app_det = t_ec_application_t1.objects.filter(application_no=tor_application_no)
+    t1_general_subquery = t_ec_application_t1.objects.filter(
     tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
 
+    project_name = None
+    focal_person = None
+    project_description = None
+    location_name = None
     service_code = None
-    if service_id == '1':
-        service_code = 'IEE'
-    elif service_id == '2':
-        service_code = 'ENE'
-    elif service_id == '3':
-        service_code = 'ROA'
-    elif service_id == '4':
-        service_code = 'TRA'
-    elif service_id == '5':
-        service_code = 'TOU'
-    elif service_id == '6':
-        service_code = 'GWA'
-    elif service_id == '7':
-        service_code = 'FOR'
-    elif service_id == '8':
-        service_code = 'QUA'
-    else :
-        service_code = 'GEN'
+
+    # Service code mapping
+    SERVICE_CODES = {
+        '1': 'IEE', '2': 'ENE', '3': 'ROA', '4': 'TRA',
+        '5': 'TOU', '6': 'GWA', '7': 'FOR', '8': 'QUA'
+    }
+    service_code = SERVICE_CODES.get(service_id, 'GEN')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
+    tor_application_count = t_ec_application_t1.objects.filter(
             application_status='A',
             application_no__contains='TOR',applicant_id=applicant_id
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-    
+
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
     # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
         ec_reference_no=OuterRef('ec_reference_no')
     ).exclude(
         application_status='A'
     )
 
     non_updated_renewals = (
-        t_ec_industries_t1_general.objects
+        t_ec_t1.objects
         .filter(
             applicant_id=request.session['email'],
             service_type__in=["Main Activity", "Old EC"],
             ec_expiry_date__lt=expiry_date_threshold,
             ec_expiry_date__isnull=False,
             ec_reference_no__isnull=False,
+            status='A',
+
         )
         .exclude(ec_reference_no='')
         .annotate(has_pending_renewal=Exists(pending_renewal_exists))
@@ -2477,25 +3852,52 @@ def view_tor_application_details(request):
         request.session['colour_code'] = app_det.colour_code
         request.session['service_id'] = app_det.service_id
         request.session['activity'] = app_det.activity
-
-        application_no = get_application_no(request, service_code, service_id)
-        request.session['application_no'] = application_no
+        project_name = app_det.project_name
+        focal_person = app_det.focal_person
+        project_description = app_det.project_description
+        location_name = app_det.location_name
+        dzongkhag_throm = app_det.dzongkhag_throm
+        thromde_id = app_det.thromde_id
+        dzongkhag_code = app_det.dzongkhag_code
+        gewog_code = app_det.gewog_code
+        village_code = app_det.village_code
+        print(request.session['ca_auth'])
+        print(dzongkhag_throm)
+        print(thromde_id)
+        #application_no = get_application_no(request, service_code, service_id)
+        #application_no = get_new_application_no(request, service_code)
+        #request.session['application_no'] = application_no
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
         thromde = t_thromde_master.objects.all()
-        return render(request, 'tor/tor.html',{'thromde':thromde,'ec_renewal_count':ec_renewal_count,'tor_application_count':tor_application_count,'tor_application_no':tor_application_no,
-                                                'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde})
 
 
+    return render(request, 'new_application_form_tor.html',{'thromde':thromde,
+                                                'ec_renewal_count':ec_renewal_count,
+                                                'tor_application_count':tor_application_count,
+                                                'tor_application_no':tor_application_no,
+                                                'dzongkhag':dzongkhag, 'gewog':gewog,
+                                                'village':village, 'thromde':thromde,
+                                                'project_name':project_name,
+                                                'project_description':project_description,
+                                                'location_name':location_name,
+                                                'focal_person':focal_person,
+                                                'dzongkhag_throm':dzongkhag_throm,
+                                                'thromde_id':thromde_id,
+                                                'dzongkhag_code':dzongkhag_code,
+                                                'gewog_code':gewog_code,
+                                                'village_code':village_code
+                                                })
 
 # ReportSubmission
 def report_list(request):
     login_type = request.session.get('login_type', None)
-    login_id = request.session.get('email', None)
+    login_id = request.session['login_id']
+    email_id = request.session['email']
 
     user_list = t_user_master.objects.all()
-    ec_details = t_ec_industries_t1_general.objects.all()
+    ec_details = t_ec_application_t1.objects.all()
 
     common_context = {
         'app_hist_count': t_application_history.objects.filter(applicant_id=login_id).count(),
@@ -2508,49 +3910,91 @@ def report_list(request):
     if login_type == 'C':
         report_list = t_report_submission_t1.objects.filter(created_by=login_id).order_by('submission_date')
 
-        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+        # Get application history count
+        oc_application_count = t_ec_application_t1.objects.filter(
+            applicant_id=email_id, application_type='OC', application_status='OC'
+        ).distinct('application_no').count()
 
-        t1_general_subquery = t_ec_industries_t1_general.objects.filter(
-            tor_application_no=OuterRef('application_no')
-        ).values('tor_application_no')
+        # Get application history count
+        app_hist_count = t_application_history.objects.filter(
+            applicant_id=email_id
+        ).distinct('application_no').count()
 
-        tor_application_count = t_ec_industries_t1_general.objects.filter(
-            application_status='A',
-            application_no__contains='TOR',applicant_id=login_id
-        ).exclude(
-            application_no__in=Subquery(t1_general_subquery)
+        # Get assigned applications count
+        cl_application_count = t_workflow_dtls.objects.filter(
+            assigned_user_id=login_id
         ).count()
 
+        # Get pending payments
+        payment_count = t_payment_details.objects.filter(
+            payment_advice_amount_paid__isnull=True
+        ).count()
+
+        # Get draft applications
+        draft_count = t_ec_application_t1.objects.filter(
+            applicant_id=email_id,
+            application_status='P',
+            service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
+            action_date__isnull=True
+        ).count()
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-
-        # Renewal exists AND is NOT approved
-        pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+        # Check for pending renewals
+        pending_renewal_exists = t_ec_application_t1.objects.filter(
             ec_reference_no=OuterRef('ec_reference_no')
-        ).exclude(
-            application_status='A'
-        )
-
+        ).exclude(application_status='A')
         non_updated_renewals = (
-            t_ec_industries_t1_general.objects
+            t_ec_t1.objects
             .filter(
                 applicant_id=request.session['email'],
                 service_type__in=["Main Activity", "Old EC"],
                 ec_expiry_date__lt=expiry_date_threshold,
                 ec_expiry_date__isnull=False,
                 ec_reference_no__isnull=False,
+                status='A',
+
             )
             .exclude(ec_reference_no='')
             .annotate(has_pending_renewal=Exists(pending_renewal_exists))
             .filter(has_pending_renewal=False)
         )
-
         ec_renewal_count = non_updated_renewals.count()
+        # Get old EC draft count
+        old_ec_draft_count = t_ec_application_t1.objects.filter(
+            applicant_id=request.session['email'],
+            application_type='Old_EC',
+            application_status__in=['P', 'RS']
+        ).count()
+        # Get TOR applications count
+        t1_general_subquery = t_ec_application_t1.objects.filter(
+            tor_application_no=OuterRef('application_no')
+        ).values('tor_application_no')
+        tor_application_count = t_ec_application_t1.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',
+            applicant_id=email_id
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
+        # Get download forms
+        download_forms = t_file_attachment.objects.filter(
+            attachment_type='F',
+            document_id__in=t_other_details.objects.filter(
+                is_active='Y',
+                is_deleted='N'
+            ).values('document_id')
+        )
 
         context.update({
             'report_list': report_list,
+            'oc_application_count':oc_application_count,
+            'app_hist_count': app_hist_count,
             'cl_application_count': cl_application_count,
+            'payment_count': payment_count,
             'tor_application_count': tor_application_count,
-            'ec_renewal_count': ec_renewal_count
+            'draft_count': draft_count,
+            'ec_renewal_count': ec_renewal_count,
+            'download_forms': download_forms,
+            'old_ec_draft_count': old_ec_draft_count
         })
 
     elif login_type == 'I':
@@ -2565,27 +4009,19 @@ def report_list(request):
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
         # Renewal exists AND is NOT approved
-        pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+        pending_renewal_exists = t_ec_application_t1.objects.filter(
             ec_reference_no=OuterRef('ec_reference_no')
         ).exclude(
             application_status='A'
         )
+        # EC Renewal List ( Due for renewal)
+        expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+        ec_renewal_count = t_ec_application_t1.objects.filter(
+            ca_authority=ca_authority,
+            application_status='A',
+            ec_expiry_date__lt=expiry_date_threshold
+        ).count()
 
-        non_updated_renewals = (
-            t_ec_industries_t1_general.objects
-            .filter(
-                applicant_id=request.session['email'],
-                service_type__in=["Main Activity", "Old EC"],
-                ec_expiry_date__lt=expiry_date_threshold,
-                ec_expiry_date__isnull=False,
-                ec_reference_no__isnull=False,
-            )
-            .exclude(ec_reference_no='')
-            .annotate(has_pending_renewal=Exists(pending_renewal_exists))
-            .filter(has_pending_renewal=False)
-        )
-
-        ec_renewal_count = non_updated_renewals.count()
 
         context.update({
             'report_list': report_list,
@@ -2618,7 +4054,7 @@ def view_report_details(request):
     if request.session.get('ca_authority') is not None:
         v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-        ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
+        ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'],
                                                                                     application_status='A',
                                                                                     ec_expiry_date__lt=expiry_date_threshold).count()
         
@@ -2628,7 +4064,7 @@ def view_report_details(request):
 
 def viewDraftReport(request, report_reference_no):
     applicant = request.session['email']
-    ec_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False, applicant_id=applicant)
+    ec_details = t_ec_application_t1.objects.filter(ec_reference_no__isnull=False, applicant_id=applicant)
     report_details = t_report_submission_t1.objects.filter(report_reference_no=report_reference_no)
     details = t_report_submission_t2.objects.filter(report_reference_no=report_reference_no)
     file_attach = t_file_attachment.objects.filter(application_no=report_reference_no)
@@ -2637,7 +4073,7 @@ def viewDraftReport(request, report_reference_no):
 
 def report_submission_form(request):
     applicant = request.session['email']
-    ec_details = t_ec_industries_t1_general.objects.filter(ec_reference_no__isnull=False,applicant_id=applicant)
+    ec_details = t_ec_application_t1.objects.filter(ec_reference_no__isnull=False,applicant_id=applicant)
     app_hist_count = t_application_history.objects.filter(
             applicant_id=request.session['email']
         ).distinct('application_no').count()
@@ -2808,99 +4244,162 @@ def acknowledge_report(request):
 #EndReportSubmission
 
 
-
 # EC PRINT DETAILS
 def ec_print_list(request):
     applicant_id = request.session.get('email', None)
-    assigned_user_id= request.session.get('login_id', None)
-    
-    # Retrieve t_ec_industries_t1_general objects with application_status='A' and service_type="Main Activity"
-    application_details = t_ec_industries_t1_general.objects.filter(application_status='A', service_type="Main Activity")
-    
+    assigned_user_id = request.session.get('login_id', None)
+    ca_authority = request.session.get('ca_authority', None)
+
+    # Calculate expiry date threshold ONCE - Fixed duplicate calculations
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+    oc_application_count = 0
+    payment_count = 0
+    draft_count = 0
+    old_ec_draft_count = 0
     # Count the number of t_application_history objects related to the logged-in user
-    app_hist_count = t_application_history.objects.filter(
+    app_hist_count = 0
+    if applicant_id:
+        app_hist_count = t_application_history.objects.filter(
             applicant_id=applicant_id
         ).distinct('application_no').count()
-    
     # Count the number of t_workflow_dtls objects with assigned_user_id equal to the logged-in user
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
-    tor_application_no=OuterRef('application_no')
-    ).values('tor_application_no')
+    cl_application_count = 0
+    if assigned_user_id:
+        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
 
-    # Query to count approved applications that are not in t1_general
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
+    # TOR application count calculation
+    tor_application_count = 0
+    if applicant_id:
+        t1_general_subquery = t_ec_application_t1.objects.filter(
+            tor_application_no=OuterRef('application_no')
+        ).values('tor_application_no')
+        # Query to count approved applications that are not in t1_general
+        tor_application_count = t_ec_application_t1.objects.filter(
             application_status='A',
-            application_no__contains='TOR',applicant_id=applicant_id
+            application_no__contains='TOR',
+            applicant_id=applicant_id
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-    # Check if the 'ca_authority' exists in the session and has a non-empty value
-    if 'ca_authority' in request.session and request.session['ca_authority']:
+    # Fixed: Role-based logic with proper conditions
+    if ca_authority:
+        # Retrieve t_ec_application_t1 objects with application_status='A' and service_type="Main Activity"
+        #application_details = t_ec_t1.objects.filter(status='A',service_type="Main Activity", ca_authority=ca_authority)
+        application_details = t_ec_t1.objects.filter(status='A', ca_authority=ca_authority)
         # Count the number of t_workflow_dtls objects with assigned_role_id='2',
         # assigned_role_name='Verifier', and ca_authority matching the logged-in user's 'ca_authority'
-        v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier',
-                                                              ca_authority=request.session['ca_authority']).count()
-        
+        v_application_count = t_workflow_dtls.objects.filter(
+            assigned_role_id='2',
+            assigned_role_name='Verifier',
+            ca_authority=ca_authority  # Fixed: Use local variable instead of session
+        ).count()
         # Count the number of t_workflow_dtls objects with assigned_role_id='3',
         # assigned_role_name='Reviewer', and ca_authority matching the logged-in user's 'ca_authority'
-        r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer',
-                                                              ca_authority=request.session['ca_authority']).count()
-        
-        # Calculate the expiry date threshold as today's date plus 30 days
-        expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-        
-        # Count the number of t_ec_industries_t1_general objects with ca_authority matching the logged-in user's 'ca_authority',
-        # application_status='A', and ec_expiry_date less than the expiry date threshold
-        ec_renewal_count = t_ec_industries_t1_general.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                     application_status='A',
-                                                                     ec_expiry_date__lt=expiry_date_threshold).count()
-
-        
-    else:
-        # If 'ca_authority' is not found or empty, set the variables to appropriate default values
-        v_application_count = 0
-        r_application_count = 0
-        ec_renewal_count = 0
-    
-    # Pass the retrieved data to the 'ec_print_list.html' template for rendering
-    payment_details = t_payment_details.objects.all()
-    service_details = t_service_master.objects.all()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-
-    # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
-        ec_reference_no=OuterRef('ec_reference_no')
-    ).exclude(
-        application_status='A'
-    )
-
-    non_updated_renewals = (
-        t_ec_industries_t1_general.objects
-        .filter(
-            applicant_id=request.session['email'],
-            service_type__in=["Main Activity", "Old EC"],
+        r_application_count = t_workflow_dtls.objects.filter(
+            assigned_role_id='3',
+            assigned_role_name='Reviewer',
+            ca_authority=ca_authority  # Fixed: Use local variable instead of session
+        ).count()
+        # Fixed: EC renewals due within 60 days - ONLY calculated ONCE
+        ec_renewal_count = t_ec_application_t1.objects.filter(
+            ca_authority=ca_authority,
+            application_status='A',
             ec_expiry_date__lt=expiry_date_threshold,
-            ec_expiry_date__isnull=False,
-            ec_reference_no__isnull=False,
+            ec_expiry_date__isnull=False  # Added safety check
+        ).count()
+    else:
+        # Retrieve t_ec_application_t1 objects with application_status='A' and service_type="Main Activity"
+        application_details = t_ec_t1.objects.filter(status='A', applicant_id=applicant_id)
+        # If 'ca_authority' is not found or empty, set the variables to appropriate default values
+        email_id = request.session['email']
+        login_id = request.session['login_id']
+
+        # Get application history count
+        oc_application_count = t_ec_application_t1.objects.filter(
+            applicant_id=email_id, application_type='OC', application_status='OC'
+        ).distinct('application_no').count()
+
+        # Get application history count
+        app_hist_count = t_application_history.objects.filter(
+            applicant_id=email_id
+        ).distinct('application_no').count()
+
+        # Get assigned applications count
+        cl_application_count = t_workflow_dtls.objects.filter(
+            assigned_user_id=login_id
+        ).count()
+
+        # Get pending payments
+        payment_count = t_payment_details.objects.filter(
+            payment_advice_amount_paid__isnull=True
+        ).count()
+
+        # Get draft applications
+        draft_count = t_ec_application_t1.objects.filter(
+            applicant_id=email_id,
+            application_status='P',
+            service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
+            action_date__isnull=True
+        ).count()
+        expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+        # Check for pending renewals
+        pending_renewal_exists = t_ec_application_t1.objects.filter(
+            ec_reference_no=OuterRef('ec_reference_no')
+        ).exclude(application_status='A')
+        non_updated_renewals = (
+            t_ec_t1.objects
+            .filter(
+                applicant_id=request.session['email'],
+                service_type__in=["Main Activity", "Old EC"],
+                ec_expiry_date__lt=expiry_date_threshold,
+                ec_expiry_date__isnull=False,
+                ec_reference_no__isnull=False,
+                status='A',
+
+            )
+            .exclude(ec_reference_no='')
+            .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+            .filter(has_pending_renewal=False)
         )
-        .exclude(ec_reference_no='')
-        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
-        .filter(has_pending_renewal=False)
-    )
+        ec_renewal_count = non_updated_renewals.count()
+        # Get old EC draft count
+        old_ec_draft_count = t_ec_application_t1.objects.filter(
+            applicant_id=request.session['email'],
+            application_type='Old_EC',
+            application_status__in=['P', 'RS']
+        ).count()
+        # Get TOR applications count
+        t1_general_subquery = t_ec_application_t1.objects.filter(
+            tor_application_no=OuterRef('application_no')
+        ).values('tor_application_no')
+        tor_application_count = t_ec_application_t1.objects.filter(
+            application_status='A',
+            application_no__contains='TOR',
+            applicant_id=email_id
+        ).exclude(
+            application_no__in=Subquery(t1_general_subquery)
+        ).count()
+        # Get download forms
+        download_forms = t_file_attachment.objects.filter(
+            attachment_type='F',
+            document_id__in=t_other_details.objects.filter(
+                is_active='Y',
+                is_deleted='N'
+            ).values('document_id')
+        )
 
-    ec_renewal_count = non_updated_renewals.count()
-
-    response = render(request, 'EC/ec_print_list.html', {'application_details': application_details,
-                                                     'ec_renewal_count': ec_renewal_count,
-                                                     'app_hist_count': app_hist_count,
-                                                     'cl_application_count': cl_application_count,
-                                                     'v_application_count': v_application_count,
-                                                     'r_application_count': r_application_count,
-                                                     'tor_application_count':tor_application_count,
-                                                     'service_details':service_details,
-                                                     'payment_details':payment_details})
-
+    # Pass the retrieved data to the 'ec_print_list.html' template for rendering
+    response = render(request, 'EC/ec_print_list.html', {
+        'application_details': application_details,
+        'oc_application_count': oc_application_count,
+        'app_hist_count': app_hist_count,
+        'cl_application_count': cl_application_count,
+        'payment_count': payment_count,
+        'tor_application_count': tor_application_count,
+        'draft_count': draft_count,
+        'ec_renewal_count': ec_renewal_count,
+        'old_ec_draft_count': old_ec_draft_count
+    })
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response['Pragma'] = 'no-cache'
@@ -2910,12 +4409,19 @@ def ec_print_list(request):
 def view_print_details(request):
     # Retrieve the 'ec_reference_no' parameter from the GET request
     ec_reference_no = request.GET.get('ec_reference_no')
+    ca_authority = request.GET.get('ca_authority')
+
+    #Retrieve competent_authority
+    competent_authority = t_competant_authority_master.objects.filter(
+        competent_authority_id=ca_authority
+    ).first()
+    ca_name = competent_authority.remarks if competent_authority else None
+    print(ca_name)
+    # Retrieve t_ec_application_t1 objects with ec_reference_no=ec_reference_no and service_type="Main Activity"
+    application_details = t_ec_t1.objects.filter(ec_reference_no=ec_reference_no, service_type="Main Activity")
     
-    # Retrieve t_ec_industries_t1_general objects with ec_reference_no=ec_reference_no and service_type="Main Activity"
-    application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no, service_type="Main Activity")
-    
-    # Retrieve t_ec_industries_t11_ec_details objects with ec_reference_no=ec_reference_no
-    ec_details = t_ec_industries_t11_ec_details.objects.filter(ec_reference_no=ec_reference_no)
+    # Retrieve t_ec_application_t2 objects with ec_reference_no=ec_reference_no
+    ec_details = t_ec_t2.objects.filter(ec_reference_no=ec_reference_no).order_by('order')
     
     # Count the number of t_application_history objects related to the logged-in user
     app_hist_count = t_application_history.objects.filter(
@@ -2947,429 +4453,367 @@ def view_print_details(request):
                                                  'app_hist_count': app_hist_count,
                                                  'cl_application_count': cl_application_count,
                                                  'v_application_count': v_application_count,
-                                                 'r_application_count': r_application_count})
-
+                                                 'r_application_count': r_application_count,
+                                                'competent_authority': ca_name}
+                                                )
 
 # OTHER MODIFICATION DETAILS
+# Name CHANGE
 def name_change(request):
-    email = request.session.get('email', None)
-    applicant_id = request.session.get('login_id', None)
-    workflow_details = t_workflow_dtls.objects.filter(application_status='A')
-    application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=email)
-    app_hist_count = t_application_history.objects.filter(
-            applicant_id=email
-        ).distinct('application_no').count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=applicant_id).count()
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
-        tor_application_no=OuterRef('application_no')
-    ).values('tor_application_no')
-
-    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-
-    # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
-        ec_reference_no=OuterRef('ec_reference_no')
-    ).exclude(
-        application_status='A'
-    )
-
-    non_updated_renewals = (
-        t_ec_industries_t1_general.objects
-        .filter(
-            applicant_id=request.session['email'],
-            service_type__in=["Main Activity", "Old EC"],
-            ec_expiry_date__lt=expiry_date_threshold,
-            ec_expiry_date__isnull=False,
-            ec_reference_no__isnull=False,
-        )
-        .exclude(ec_reference_no='')
-        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
-        .filter(has_pending_renewal=False)
-    )
-
-    ec_renewal_count = non_updated_renewals.count()
-
-    # Query to count approved applications that are not in t1_general
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
-            application_status='A',
-            application_no__contains='TOR',applicant_id=email
-        ).exclude(
-            application_no__in=Subquery(t1_general_subquery)
-        ).count()
-    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'NC','tor_application_count':tor_application_count})
-
-    # Set cache-control headers to prevent caching
-    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response['Pragma'] = 'no-cache'
-    response['Expires'] = '0'
-    return response
-
-def ownership_change(request):
-    email = request.session.get('email', None)
-    applicant_id = request.session.get('login_id', None)
-    workflow_details = t_workflow_dtls.objects.filter(application_status='A')
-    application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=email)
-    app_hist_count = t_application_history.objects.filter(
-            applicant_id=email
-        ).distinct('application_no').count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=applicant_id).count()
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
-        tor_application_no=OuterRef('application_no')
-    ).values('tor_application_no')
-
-    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-
-    # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
-        ec_reference_no=OuterRef('ec_reference_no')
-    ).exclude(
-        application_status='A'
-    )
-
-    non_updated_renewals = (
-        t_ec_industries_t1_general.objects
-        .filter(
-            applicant_id=request.session['email'],
-            service_type__in=["Main Activity", "Old EC"],
-            ec_expiry_date__lt=expiry_date_threshold,
-            ec_expiry_date__isnull=False,
-            ec_reference_no__isnull=False,
-        )
-        .exclude(ec_reference_no='')
-        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
-        .filter(has_pending_renewal=False)
-    )
-
-    ec_renewal_count = non_updated_renewals.count()
-
-    # Query to count approved applications that are not in t1_general
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
-            application_status='A',
-            application_no__contains='TOR',applicant_id=email
-        ).exclude(
-            application_no__in=Subquery(t1_general_subquery)
-        ).count()
-    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'OC','tor_application_count':tor_application_count})
-
-    # Set cache-control headers to prevent caching
-    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response['Pragma'] = 'no-cache'
-    response['Expires'] = '0'
-    return response
-
-def technology_change(request):
-    email = request.session.get('email', None)
-    applicant_id = request.session.get('login_id', None)
-    workflow_details = t_workflow_dtls.objects.filter(application_status='A', service_id__in=['1', '2', '6'])
-    application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=email)
-    app_hist_count = t_application_history.objects.filter(
-            applicant_id=email
-        ).distinct('application_no').count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=applicant_id).count()
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
-        tor_application_no=OuterRef('application_no')
-    ).values('tor_application_no')
-
-    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-
-    # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
-        ec_reference_no=OuterRef('ec_reference_no')
-    ).exclude(
-        application_status='A'
-    )
-
-    non_updated_renewals = (
-        t_ec_industries_t1_general.objects
-        .filter(
-            applicant_id=request.session['email'],
-            service_type__in=["Main Activity", "Old EC"],
-            ec_expiry_date__lt=expiry_date_threshold,
-            ec_expiry_date__isnull=False,
-            ec_reference_no__isnull=False,
-        )
-        .exclude(ec_reference_no='')
-        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
-        .filter(has_pending_renewal=False)
-    )
-
-    ec_renewal_count = non_updated_renewals.count()
-
-    # Query to count approved applications that are not in t1_general
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
-            application_status='A',
-            application_no__contains='TOR',applicant_id=email
-        ).exclude(
-            application_no__in=Subquery(t1_general_subquery)
-        ).count()
-    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'TC','tor_application_count':tor_application_count})
-
-    # Set cache-control headers to prevent caching
-    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response['Pragma'] = 'no-cache'
-    response['Expires'] = '0'
-    return response
-
-def product_change(request):
-    email = request.session.get('email', None)
-    applicant_id = request.session.get('login_id', None)
-    workflow_details = t_workflow_dtls.objects.filter(application_status='A', service_id='1')
-    application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=email)
-    app_hist_count = t_application_history.objects.filter(
-            applicant_id=email
-        ).distinct('application_no').count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=applicant_id).count()
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
-        tor_application_no=OuterRef('application_no')
-    ).values('tor_application_no')
-
-    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-
-    # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
-        ec_reference_no=OuterRef('ec_reference_no')
-    ).exclude(
-        application_status='A'
-    )
-
-    non_updated_renewals = (
-        t_ec_industries_t1_general.objects
-        .filter(
-            applicant_id=request.session['email'],
-            service_type__in=["Main Activity", "Old EC"],
-            ec_expiry_date__lt=expiry_date_threshold,
-            ec_expiry_date__isnull=False,
-            ec_reference_no__isnull=False,
-        )
-        .exclude(ec_reference_no='')
-        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
-        .filter(has_pending_renewal=False)
-    )
-
-    ec_renewal_count = non_updated_renewals.count()
-    # Query to count approved applications that are not in t1_general
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
-            application_status='A',
-            application_no__contains='TOR',applicant_id=email
-        ).exclude(
-            application_no__in=Subquery(t1_general_subquery)
-        ).count()
-    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'OC','tor_application_count':tor_application_count})
-
-    # Set cache-control headers to prevent caching
-    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response['Pragma'] = 'no-cache'
-    response['Expires'] = '0'
-    return response
-
-def capacity_change(request):
-    email = request.session.get('email', None)
-    applicant_id = request.session.get('login_id', None)
-    workflow_details = t_workflow_dtls.objects.exclude(application_status='A', service_id='3')
-    application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=email)
-    app_hist_count = t_application_history.objects.filter(
-            applicant_id=email
-        ).distinct('application_no').count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=applicant_id).count()
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
-        tor_application_no=OuterRef('application_no')
-    ).values('tor_application_no')
-
-    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-
-    # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
-        ec_reference_no=OuterRef('ec_reference_no')
-    ).exclude(
-        application_status='A'
-    )
-
-    non_updated_renewals = (
-        t_ec_industries_t1_general.objects
-        .filter(
-            applicant_id=request.session['email'],
-            service_type__in=["Main Activity", "Old EC"],
-            ec_expiry_date__lt=expiry_date_threshold,
-            ec_expiry_date__isnull=False,
-            ec_reference_no__isnull=False,
-        )
-        .exclude(ec_reference_no='')
-        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
-        .filter(has_pending_renewal=False)
-    )
-
-    ec_renewal_count = non_updated_renewals.count()
-
-    # Query to count approved applications that are not in t1_general
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
-            application_status='A',
-            application_no__contains='TOR',applicant_id=email
-        ).exclude(
-            application_no__in=Subquery(t1_general_subquery)
-        ).count()
-    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'CC','tor_application_count':tor_application_count})
-
-    # Set cache-control headers to prevent caching
-    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response['Pragma'] = 'no-cache'
-    response['Expires'] = '0'
-    return response
-
-def area_change(request):
-    email = request.session.get('email', None)
-    applicant_id = request.session.get('login_id', None)
-    workflow_details = t_workflow_dtls.objects.filter(application_status='A')
-    application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=email)
-    app_hist_count = t_application_history.objects.filter(
-            applicant_id=email
-        ).distinct('application_no').count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=applicant_id).count()
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
-        tor_application_no=OuterRef('application_no')
-    ).values('tor_application_no')
-
-    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-
-    # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
-        ec_reference_no=OuterRef('ec_reference_no')
-    ).exclude(
-        application_status='A'
-    )
-
-    non_updated_renewals = (
-        t_ec_industries_t1_general.objects
-        .filter(
-            applicant_id=request.session['email'],
-            service_type__in=["Main Activity", "Old EC"],
-            ec_expiry_date__lt=expiry_date_threshold,
-            ec_expiry_date__isnull=False,
-            ec_reference_no__isnull=False,
-        )
-        .exclude(ec_reference_no='')
-        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
-        .filter(has_pending_renewal=False)
-    )
-
-    ec_renewal_count = non_updated_renewals.count()
-
-    # Query to count approved applications that are not in t1_general
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
-            application_status='A',
-            application_no__contains='TOR',applicant_id=email
-        ).exclude(
-            application_no__in=Subquery(t1_general_subquery)
-        ).count()
-    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'AC','tor_application_count':tor_application_count})
-
-    # Set cache-control headers to prevent caching
-    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response['Pragma'] = 'no-cache'
-    response['Expires'] = '0'
-    return response
-
-def location_change(request):
-    email = request.session.get('email', None)
-    applicant_id = request.session.get('login_id', None)
-    workflow_details = t_workflow_dtls.objects.filter(application_status='A')
-    application_details = t_ec_industries_t1_general.objects.filter(application_status='A',applicant_id=email)
-    app_hist_count = t_application_history.objects.filter(
-            applicant_id=email
-        ).distinct('application_no').count()
-    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
-        tor_application_no=OuterRef('application_no')
-    ).values('tor_application_no')
-
-    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-
-    # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
-        ec_reference_no=OuterRef('ec_reference_no')
-    ).exclude(
-        application_status='A'
-    )
-
-    non_updated_renewals = (
-        t_ec_industries_t1_general.objects
-        .filter(
-            applicant_id=request.session['email'],
-            service_type__in=["Main Activity", "Old EC"],
-            ec_expiry_date__lt=expiry_date_threshold,
-            ec_expiry_date__isnull=False,
-            ec_reference_no__isnull=False,
-        )
-        .exclude(ec_reference_no='')
-        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
-        .filter(has_pending_renewal=False)
-    )
-
-    ec_renewal_count = non_updated_renewals.count()
-
-    # Query to count approved applications that are not in t1_general
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
-            application_status='A',
-            application_no__contains='TOR',applicant_id=email
-        ).exclude(
-            application_no__in=Subquery(t1_general_subquery)
-        ).count()
-    response = render(request, 'other_modification_details.html', {'workflow_details':workflow_details,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'cl_application_count':cl_application_count, 'application_details':application_details, 'identifier':'LC','tor_application_count':tor_application_count})
-
-    # Set cache-control headers to prevent caching
-    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response['Pragma'] = 'no-cache'
-    response['Expires'] = '0'
-    return response
-
-def get_other_modification_details(request):
+    applicant_id = request.session.get('email')
     ec_reference_no = request.GET.get('ec_reference_no')
+    service_code = 'NC'
+    temp_application_no = get_ren_temp_application_no(request, service_code, '11')
+    print(ec_reference_no)
+    print(applicant_id)
+    # Parent EC applications (as you had)
+    application_details = t_ec_t1.objects.filter(
+        ec_reference_no=ec_reference_no
+    )
+    # Applicant 's Details
+
+    applicant_details = t_user_master.objects.filter(
+        email_id=applicant_id
+    )
+    # Fetch ALL EC terms for display (no DB writes here)
+    ec_terms = t_ec_t2.objects.filter(
+        ec_reference_no=ec_reference_no, ec_type='Terms'
+    ).order_by('record_id')  # adjust ordering if needed (e.g., seq_no)
+
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+
+    app_hist_count = t_application_history.objects.filter(
+        applicant_id=request.session['email']
+    ).distinct('application_no').count()
+
+    cl_application_count = t_workflow_dtls.objects.filter(
+        assigned_user_id=request.session['login_id']
+    ).count()
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
+        ec_reference_no=OuterRef('ec_reference_no')
+    ).exclude(application_status='A')
+
+    non_updated_renewals = (
+        t_ec_t1.objects
+        .filter(
+            applicant_id=request.session['email'],
+            service_type__in=["Main Activity", "Old EC"],
+            ec_expiry_date__lt=expiry_date_threshold,
+            ec_expiry_date__isnull=False,
+            ec_reference_no__isnull=False,
+            status='A',
+        )
+        .exclude(ec_reference_no='')
+        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+        .filter(has_pending_renewal=False)
+    )
+
+    draft_count = t_ec_application_t1.objects.filter(
+        applicant_id=applicant_id,
+        application_status='P',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
+        action_date__isnull=True
+    ).count()
+
+    ec_renewal_count = non_updated_renewals.count()
+
+    # Note: Do NOT create t_ec_compliance rows here.
+    # Just pass ec_terms to the template for temporary display.
+    return render(
+        request,
+        'nc_change_details.html',
+        {
+            'application_details': application_details,
+            'applicant_details': applicant_details,
+            'temp_application_no': temp_application_no,
+            'ec_terms': ec_terms,  # pass terms for display
+            'dzongkhag': dzongkhag,
+            'gewog': gewog,
+            'village': village,
+            'draft_count': draft_count,
+            'app_hist_count': app_hist_count,
+            'cl_application_count': cl_application_count,
+            'ec_renewal_count': ec_renewal_count,
+        }
+    )
+
+# Ownership CHANGE
+def ownership_change(request):
+    applicant_id = request.session.get('email')
+    ec_reference_no = request.GET.get('ec_reference_no')
+    service_code = 'OC'
+    temp_application_no = get_ren_temp_application_no(request, service_code, '12')
+    print(ec_reference_no)
+    print(applicant_id)
+    # Parent EC applications (as you had)
+    application_details = t_ec_t1.objects.filter(
+        ec_reference_no=ec_reference_no
+    )
+    #Applicant 's Details
+
+    applicant_details = t_user_master.objects.filter(
+        email_id=applicant_id
+    )
+    # Fetch ALL EC terms for display (no DB writes here)
+    ec_terms = t_ec_t2.objects.filter(
+        ec_reference_no=ec_reference_no, ec_type='Terms'
+    ).order_by('record_id')  # adjust ordering if needed (e.g., seq_no)
+
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+
+    app_hist_count = t_application_history.objects.filter(
+        applicant_id=request.session['email']
+    ).distinct('application_no').count()
+
+    cl_application_count = t_workflow_dtls.objects.filter(
+        assigned_user_id=request.session['login_id']
+    ).count()
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
+        ec_reference_no=OuterRef('ec_reference_no')
+    ).exclude(application_status='A')
+
+    non_updated_renewals = (
+        t_ec_t1.objects
+        .filter(
+            applicant_id=request.session['email'],
+            service_type__in=["Main Activity", "Old EC"],
+            ec_expiry_date__lt=expiry_date_threshold,
+            ec_expiry_date__isnull=False,
+            ec_reference_no__isnull=False,
+            status='A',
+        )
+        .exclude(ec_reference_no='')
+        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+        .filter(has_pending_renewal=False)
+    )
+
+    draft_count = t_ec_application_t1.objects.filter(
+        applicant_id=applicant_id,
+        application_status='P',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
+        action_date__isnull=True
+    ).count()
+
+    ec_renewal_count = non_updated_renewals.count()
+
+    # Note: Do NOT create t_ec_compliance rows here.
+    # Just pass ec_terms to the template for temporary display.
+    return render(
+        request,
+        'ownership_change_details.html',
+        {
+            'application_details': application_details,
+            'applicant_details': applicant_details,
+            'temp_application_no': temp_application_no,
+            'ec_terms': ec_terms,  # pass terms for display
+            'dzongkhag': dzongkhag,
+            'gewog': gewog,
+            'village': village,
+            'draft_count': draft_count,
+            'app_hist_count': app_hist_count,
+            'cl_application_count': cl_application_count,
+            'ec_renewal_count': ec_renewal_count,
+        }
+    )
+
+#Other CHANGE
+def other_change(request):
+    applicant_id = request.session.get('email')
+    ec_reference_no = request.GET.get('ec_reference_no')
+    identifier = (request.GET.get('identifier') or '').upper().strip()
+
+    # Map identifiers to display names
+    IDENTIFIER_LABELS = {
+        'TC': 'Technology Change',
+        'PC': 'Product Change',
+        'CC': 'Capacity Change',
+        'AC': 'Area Change',
+        'LC': 'Location Change',
+    }
+    identifier_name = IDENTIFIER_LABELS.get(identifier, 'Other Modification')
+
+    # Parent EC applications (as you had)
+    application_details = t_ec_t1.objects.filter(
+        ec_reference_no=ec_reference_no
+    )
+    # Applicant 's Details
+
+    applicant_details = t_user_master.objects.filter(
+        email_id=applicant_id
+    )
+
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+
+    app_hist_count = t_application_history.objects.filter(
+        applicant_id=request.session['email']
+    ).distinct('application_no').count()
+
+    cl_application_count = t_workflow_dtls.objects.filter(
+        assigned_user_id=request.session['login_id']
+    ).count()
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
+        ec_reference_no=OuterRef('ec_reference_no')
+    ).exclude(application_status='A')
+
+    non_updated_renewals = (
+        t_ec_t1.objects
+        .filter(
+            applicant_id=request.session['email'],
+            service_type__in=["Main Activity", "Old EC"],
+            ec_expiry_date__lt=expiry_date_threshold,
+            ec_expiry_date__isnull=False,
+            ec_reference_no__isnull=False,
+            status='A',
+        )
+        .exclude(ec_reference_no='')
+        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+        .filter(has_pending_renewal=False)
+    )
+
+    draft_count = t_ec_application_t1.objects.filter(
+        applicant_id=applicant_id,
+        application_status='P',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
+        action_date__isnull=True
+    ).count()
+
+    ec_renewal_count = non_updated_renewals.count()
+
+    # Note: Do NOT create t_ec_compliance rows here.
+    # Just pass ec_terms to the template for temporary display.
+    return render(
+        request,
+        'other_modification_application_details.html',
+        {
+            'application_details': application_details,
+            'applicant_details': applicant_details,
+            'dzongkhag': dzongkhag,
+            'gewog': gewog,
+            'village': village,
+            'draft_count': draft_count,
+            'app_hist_count': app_hist_count,
+            'cl_application_count': cl_application_count,
+            'ec_renewal_count': ec_renewal_count,
+            'identifier': identifier,
+            'identifier_name': identifier_name,
+        }
+    )
+
+def other_modifications(request):
+    # Get identifier from URL parameter, default to 'NC' if not provided
     identifier = request.GET.get('identifier')
-    app_no = None
-    service_id = None
-    application_details = t_ec_industries_t1_general.objects.filter(ec_reference_no=ec_reference_no)
-    for app_details in application_details:
-        service_id = app_details.service_id
-        app_no = app_details.application_no
-        request.session['service_id'] = service_id
-    if identifier == 'NC' or 'OC':
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        app_hist_count = t_application_history.objects.filter(
-            applicant_id=request.session['email']
-        ).distinct('application_no').count()
-        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        
-        expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+    # print(identifier)
+    email = request.session.get('email', None)
+    applicant_id = request.session.get('login_id', None)
+    workflow_details = t_workflow_dtls.objects.filter(application_status='A')
+    application_details = t_ec_t1.objects.filter(status='A', applicant_id=email)
+    email_id = request.session['email']
+    login_id = request.session['login_id']
 
-        # Renewal exists AND is NOT approved
-        pending_renewal_exists = t_ec_renewal_t1.objects.filter(
-            ec_reference_no=OuterRef('ec_reference_no')
-        ).exclude(
-            application_status='A'
+    # Get application history count
+    oc_application_count = t_ec_application_t1.objects.filter(
+        applicant_id=email_id, application_type='OC', application_status='OC'
+    ).distinct('application_no').count()
+
+    # Get application history count
+    app_hist_count = t_application_history.objects.filter(
+        applicant_id=email_id
+    ).distinct('application_no').count()
+
+    # Get assigned applications count
+    cl_application_count = t_workflow_dtls.objects.filter(
+        assigned_user_id=login_id
+    ).count()
+
+    # Get pending payments
+    payment_count = t_payment_details.objects.filter(
+        payment_advice_amount_paid__isnull=True
+    ).count()
+
+    # Get draft applications
+    draft_count = t_ec_application_t1.objects.filter(
+        applicant_id=email_id,
+        application_status='P',
+        service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
+        action_date__isnull=True
+    ).count()
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+    # Check for pending renewals
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
+        ec_reference_no=OuterRef('ec_reference_no')
+    ).exclude(application_status='A')
+    non_updated_renewals = (
+        t_ec_t1.objects
+        .filter(
+            applicant_id=request.session['email'],
+            service_type__in=["Main Activity", "Old EC"],
+            ec_expiry_date__lt=expiry_date_threshold,
+            ec_expiry_date__isnull=False,
+            ec_reference_no__isnull=False,
+            status='A',
+
         )
+        .exclude(ec_reference_no='')
+        .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+        .filter(has_pending_renewal=False)
+    )
+    ec_renewal_count = non_updated_renewals.count()
+    # Get old EC draft count
+    old_ec_draft_count = t_ec_application_t1.objects.filter(
+        applicant_id=request.session['email'],
+        application_type='Old_EC',
+        application_status__in=['P', 'RS']
+    ).count()
+    # Get TOR applications count
+    t1_general_subquery = t_ec_application_t1.objects.filter(
+        tor_application_no=OuterRef('application_no')
+    ).values('tor_application_no')
+    tor_application_count = t_ec_application_t1.objects.filter(
+        application_status='A',
+        application_no__contains='TOR',
+        applicant_id=email_id
+    ).exclude(
+        application_no__in=Subquery(t1_general_subquery)
+    ).count()
+    # Get download forms
+    download_forms = t_file_attachment.objects.filter(
+        attachment_type='F',
+        document_id__in=t_other_details.objects.filter(
+            is_active='Y',
+            is_deleted='N'
+        ).values('document_id')
+    )
 
-        non_updated_renewals = (
-            t_ec_industries_t1_general.objects
-            .filter(
-                applicant_id=request.session['email'],
-                service_type__in=["Main Activity", "Old EC"],
-                ec_expiry_date__lt=expiry_date_threshold,
-                ec_expiry_date__isnull=False,
-                ec_reference_no__isnull=False,
-            )
-            .exclude(ec_reference_no='')
-            .annotate(has_pending_renewal=Exists(pending_renewal_exists))
-            .filter(has_pending_renewal=False)
-        )
+    # Pass the dynamic identifier instead of hardcoded 'NC'
+    response = render(request, 'other_modification_details.html',
+                      {
+                          'workflow_details': workflow_details,
+                          'ec_renewal_count': ec_renewal_count,
+                          'app_hist_count': app_hist_count,
+                          'cl_application_count': cl_application_count,
+                          'application_details': application_details,
+                          'identifier': identifier,  # Dynamic identifier passed here
+                          'tor_application_count': tor_application_count,
+                          'draft_count': draft_count,
+                      })
 
-        ec_renewal_count = non_updated_renewals.count()
-        return render(request, 'other_modifications/other_modification.html',{'application_details':application_details,'dzongkhag':dzongkhag, 'gewog':gewog,
-                                                    'village':village,'ec_renewal_count':ec_renewal_count,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count, 'application_no':app_no,'identifier':identifier})
-    else:
-        return redirect(application_form)
-    
-
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 # PAYMENT DETAILS
 @csrf_exempt
@@ -3503,7 +4947,7 @@ def ecss_payment_reversal(request):
 def check_old_ec(request):
     old_ec = request.GET.get('ec_reference_no')
     old_ec_count = (
-        t_ec_industries_t1_general.objects
+        t_ec_application_t1.objects
         .filter(ec_reference_no=old_ec)
         .count()
     )
@@ -3517,12 +4961,12 @@ def old_ec_application(request):
             applicant_id=applicant_id
         ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+    t1_general_subquery = t_ec_application_t1.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
+    tor_application_count = t_ec_application_t1.objects.filter(
         application_status='A', application_no__contains='TOR', applicant_id=applicant_id
     ).exclude(
         application_no__in=Subquery(t1_general_subquery)
@@ -3531,20 +4975,22 @@ def old_ec_application(request):
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
     # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
         ec_reference_no=OuterRef('ec_reference_no')
     ).exclude(
         application_status='A'
     )
 
     non_updated_renewals = (
-        t_ec_industries_t1_general.objects
+        t_ec_t1.objects
         .filter(
             applicant_id=request.session['email'],
             service_type__in=["Main Activity", "Old EC"],
             ec_expiry_date__lt=expiry_date_threshold,
             ec_expiry_date__isnull=False,
             ec_reference_no__isnull=False,
+            status='A',
+
         )
         .exclude(ec_reference_no='')
         .annotate(has_pending_renewal=Exists(pending_renewal_exists))
@@ -3595,20 +5041,22 @@ def old_ec_application_form(request):
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
     # Renewal exists AND is NOT approved
-    pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+    pending_renewal_exists = t_ec_application_t1.objects.filter(
         ec_reference_no=OuterRef('ec_reference_no')
     ).exclude(
         application_status='A'
     )
 
     non_updated_renewals = (
-        t_ec_industries_t1_general.objects
+        t_ec_t1.objects
         .filter(
             applicant_id=request.session['email'],
             service_type__in=["Main Activity", "Old EC"],
             ec_expiry_date__lt=expiry_date_threshold,
             ec_expiry_date__isnull=False,
             ec_reference_no__isnull=False,
+            status='A',
+
         )
         .exclude(ec_reference_no='')
         .annotate(has_pending_renewal=Exists(pending_renewal_exists))
@@ -3621,12 +5069,12 @@ def old_ec_application_form(request):
             applicant_id=applicant_id
         ).distinct('application_no').count()
     cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=assigned_user_id).count()
-    t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+    t1_general_subquery = t_ec_application_t1.objects.filter(
         tor_application_no=OuterRef('application_no')
     ).values('tor_application_no')
 
     # Query to count approved applications that are not in t1_general
-    tor_application_count = t_ec_industries_t1_general.objects.filter(
+    tor_application_count = t_ec_application_t1.objects.filter(
         application_status='A', application_no__contains='TOR', applicant_id=applicant_id
     ).exclude(
         application_no__in=Subquery(t1_general_subquery)
@@ -3635,13 +5083,12 @@ def old_ec_application_form(request):
     return render(request, 'old_ec_application_form.html', {'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'tor_application_count':tor_application_count, 'thromde': thromde,'ec_renewal_count':ec_renewal_count,
                                                          'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
 
+
 def save_old_ec_general_details(request):
     data = {'message': 'failure'}
 
     try:
-        # identifier is for Old Pending/Draft Application. identifier = 'DR'
-        # dzongkhag_throm, application_type, ec_reference_no, ec_issue_date, ec_validity are pulled from the form
-        # (old_ec_application_form.html AND pending_old_ec_details.html)
+        # Get basic form data
         identifier = request.POST.get('identifier')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         application_type = "Old_EC"
@@ -3650,34 +5097,33 @@ def save_old_ec_general_details(request):
         ec_validity = request.POST.get('ec_validity')
         service_type_to_use = 'Main Activity'
 
-        # Get service_id_to_use early for all cases
+        # 🔥 CRITICAL FIX: Initialize ALL variables early
         service_id_to_use = None
         activity_to_use = None
         color_code_to_use = None
         service_code = None
-        ca_auth_to_use = None
+        ca_auth = None  # ✅ Initialize ca_auth early to prevent errors
+        ref_application_no = None
 
-        if identifier !='DR':
-            # New application - use session values.
-            # Get service_id_to_use,  activity_to_use, color_code_to_use from POST data for new applications
-            service_id_to_use = request.session['service_id']
-            activity_to_use = request.POST.get('activity')
-            color_code_to_use = request.session['colour_code']
-            # Determine service_code based on service_id_to_use
+        if identifier != 'DR':
+            # New application - use session values
+            service_id_to_use = request.session.get('service_id')
+            activity_to_use = request.session.get('activity')
+            color_code_to_use = request.session.get('colour_code')
+
             service_code_map = {
                 '1': 'IEE', '2': 'ENE', '3': 'ROA', '4': 'TRA',
                 '5': 'TOU', '6': 'GWA', '7': 'FOR', '8': 'QUA'
             }
-            service_code = service_code_map.get(request.session.get('service_id'), 'GEN')
+            service_code = service_code_map.get(str(service_id_to_use), 'GEN')
         else:
-            # For Update, get reference application number
-            ref_application_no = None
-            if identifier == 'DR':
-                ref_application_no = request.POST.get('application_no')
+            # For Draft/Update, get reference application number
+            ref_application_no = request.POST.get('application_no')
+
             # Get existing application details
             existing_app = None
             if ref_application_no:
-                existing_app = t_ec_industries_t1_general.objects.filter(
+                existing_app = t_ec_application_t1.objects.filter(
                     application_no=ref_application_no
                 ).first()
 
@@ -3685,20 +5131,21 @@ def save_old_ec_general_details(request):
                 service_id_to_use = existing_app.service_id
                 activity_to_use = existing_app.activity
                 color_code_to_use = existing_app.colour_code
+                ca_auth = existing_app.ca_authority  # ✅ Get ca_auth from existing app
             else:
-                # If no existing app found, fall back to session values
-                service_id_to_use = request.session['service_id']
+                # Fallback to session values
+                service_id_to_use = request.session.get('service_id')
                 activity_to_use = request.session.get('activity')
-                color_code_to_use = request.session['colour_code']
+                color_code_to_use = request.session.get('colour_code')
 
-        # Determine application number based on identifier
-        if identifier !='DR':
-            # For new applications, use session service_id
-            application_no = get_application_no(request, service_code, service_id_to_use)
+        # Determine application number
+        if identifier != 'DR':
+           #application_no = get_application_no(request, service_code, service_id_to_use)
+            application_no = get_new_application_no(request, service_code)
         else:
-            # For modifications, use the service_id from existing application
-            application_no = ref_application_no  # Use existing application number for draft
+            application_no = ref_application_no
 
+        # Handle location data
         if dzongkhag_throm == 'Dzongkhag':
             dzongkhag_code = request.POST.get('dzongkhag')
             gewog_code = request.POST.get('gewog')
@@ -3710,16 +5157,17 @@ def save_old_ec_general_details(request):
             village_code = None
             thromde_id = request.POST.get('thromde_id')
 
+        # Prepare common data
         common_data = {
             'application_no': application_no,
             'application_date': timezone.now().date(),
             'application_type': application_type,
             'application_source': 'ECSS',
             'application_status': 'P',
-            'applicant_id': request.session['email'],
+            'applicant_id': request.session.get('email'),
             'applicant_name': request.POST.get('applicant_name'),
             'address': request.POST.get('address'),
-            'cid': request.session['cid'],
+            'cid': request.session.get('cid'),
             'contact_no': request.POST.get('contact_no'),
             'email': request.POST.get('email'),
             'focal_person': request.POST.get('focal_person'),
@@ -3731,95 +5179,124 @@ def save_old_ec_general_details(request):
             'project_name': request.POST.get('project_name'),
             'project_description': request.POST.get('project_description'),
             'dzongkhag_throm': dzongkhag_throm,
-            'service_type': service_type_to_use,  # Use determined service_type
+            'service_type': service_type_to_use,
             'service_id': service_id_to_use,
-            'colour_code': color_code_to_use,  # Use determined color code
+            'colour_code': color_code_to_use,
             'proponent_type': request.session.get('proponent_type'),
-            'activity': activity_to_use,  # Use determined activity,
+            'activity': activity_to_use,
             'ec_reference_no': ec_reference_no,
             'ec_approve_date': ec_issue_date,
             'ec_expiry_date': ec_validity
         }
 
         with transaction.atomic():
-            ca_auth = ca_auth_to_use  # Use the ca_auth we already determined
-
-            # If ca_auth wasn't determined from existing app, calculate it
+            # 🔥 CRITICAL FIX: Determine ca_auth with proper error handling
             if ca_auth is None:
-                # Determine ca_auth from the POST data.
-                #IN CASE of DEC and THROMDE, based on the selection of Dzo and thromde,
-                # The ca_auth will change EVEN in DRAFT application
-                if identifier =='DR':
-                    activity_details = t_bsic_code.objects.filter(activity=activity_to_use)
-                    for cat_details in activity_details:
-                        request.session['ca_auth'] = cat_details.competent_authority
-                    auth_filter = t_competant_authority_master.objects.filter(
-                        competent_authority=request.session['ca_auth'],
-                        dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
-                    )
-                    ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
-                else:
-                    auth_filter = t_competant_authority_master.objects.filter(
-                        competent_authority=request.session['ca_auth'],
-                        dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC', 'THROMDE'] else None
-                    )
-                    ca_auth = auth_filter.first().competent_authority_id if auth_filter.exists() else None
+                try:
+                    # Method 1: Get from activity
+                    if activity_to_use:
+                        activity_details = t_bsic_code.objects.filter(activity=activity_to_use).first()
+                        if activity_details:
+                            ca_authority_code = activity_details.competent_authority
+                            request.session['ca_auth'] = ca_authority_code
+
+                            # Get the actual ca_authority_id
+                            auth_filter = t_competant_authority_master.objects.filter(
+                                competent_authority=ca_authority_code,
+                                dzongkhag_code_id=dzongkhag_code if ca_authority_code in ['DEC', 'THROMDE'] else None
+                            )
+
+                            if auth_filter.exists():
+                                ca_auth = auth_filter.first().competent_authority_id
+                            else:
+                                print(f"Warning: No competent authority found for {ca_authority_code}")
+                                # Try without dzongkhag filter as fallback
+                                fallback_auth = t_competant_authority_master.objects.filter(
+                                    competent_authority=ca_authority_code
+                                ).first()
+                                ca_auth = fallback_auth.competent_authority_id if fallback_auth else None
+                        else:
+                            print(f"Warning: No activity details found for {activity_to_use}")
+
+                    # Method 2: Fallback to session ca_auth
+                    if ca_auth is None and request.session.get('ca_auth'):
+                        auth_filter = t_competant_authority_master.objects.filter(
+                            competent_authority=request.session['ca_auth'],
+                            dzongkhag_code_id=dzongkhag_code if request.session['ca_auth'] in ['DEC',
+                                                                                               'THROMDE'] else None
+                        )
+                        if auth_filter.exists():
+                            ca_auth = auth_filter.first().competent_authority_id
+                        else:
+                            # Try without dzongkhag filter
+                            fallback_auth = t_competant_authority_master.objects.filter(
+                                competent_authority=request.session['ca_auth']
+                            ).first()
+                            ca_auth = fallback_auth.competent_authority_id if fallback_auth else None
+
+                except Exception as ca_error:
+                    print(f"Error determining ca_auth: {ca_error}")
+                    ca_auth = None
+
+            # 🔥 CRITICAL VALIDATION: Ensure ca_auth is not None
+            if ca_auth is None:
+                error_msg = "Unable to determine competent authority (ca_auth). Please check activity and location data."
+                print(f"ERROR: {error_msg}")
+                data['error'] = error_msg
+                return JsonResponse(data)
+
+            print(f"✅ Final ca_auth value: {ca_auth}")
 
             # Handle different identifier cases
             if identifier == 'DR':
                 # Data Rectification (Draft) - UPDATE EXISTING ENTRY
-                existing_app = None
-                existing_app = t_ec_industries_t1_general.objects.filter(application_no=ref_application_no).first()
+                existing_app = t_ec_application_t1.objects.filter(
+                    application_no=ref_application_no
+                ).first()
+
                 if existing_app:
-                    # UPDATE existing entry with new data
+                    # UPDATE existing entry
                     update_data = {
                         **common_data,
-                        #'ca_authority': existing_app.ca_authority,  # Keep existing ca_auth
                         'ca_authority': ca_auth,
-                        'service_type': 'Main Activity',  # Force Main Activity for DR
-                        'service_id': existing_app.service_id,  # Keep existing service_id
-                        'colour_code': existing_app.colour_code,  # Keep existing color code for DR
-                        'activity': existing_app.activity  # Keep existing activity
+                        'service_type': 'Main Activity',
+                        'service_id': existing_app.service_id,
+                        'colour_code': existing_app.colour_code,
+                        'activity': existing_app.activity
                     }
 
-                    # Remove fields that shouldn't be updated for draft
+                    # Remove application_no from update (shouldn't be updated)
                     if 'application_no' in update_data:
-                        del update_data['application_no']  # Don't update application_no
+                        del update_data['application_no']
 
-                    # Update the existing record
-                    t_ec_industries_t1_general.objects.filter(
+                    t_ec_application_t1.objects.filter(
                         application_no=ref_application_no
                     ).update(**update_data)
 
-                    print(f"DR - Updated existing application {ref_application_no}")
+                    print(f"✅ DR - Updated existing application {ref_application_no}")
                 else:
-                    # If no existing app, create new one with session color code
-                    new_data = {
-                        'ca_authority': ca_auth,
-                        #'prev_ec_reference_no': prev_ec_reference_no if prev_ec_reference_no else None
-                    }
-                    # Ensure service_type is 'Main Activity' for DR
+                    # Create new if existing not found
+                    new_data = {'ca_authority': ca_auth}
                     common_data['service_type'] = 'Main Activity'
-                    t_ec_industries_t1_general.objects.create(**common_data, **new_data)
-                    print(f"DR - Created new application {application_no}")
+                    t_ec_application_t1.objects.create(**common_data, **new_data)
+                    print(f"✅ DR - Created new application {application_no}")
             else:
-                new_data = {
-                    'ca_authority': ca_auth,
-                    # 'prev_ec_reference_no': prev_ec_reference_no if prev_ec_reference_no else None
-                }
-                t_ec_industries_t1_general.objects.create(**common_data, **new_data)
+                # Create new application
+                new_data = {'ca_authority': ca_auth}
+                t_ec_application_t1.objects.create(**common_data, **new_data)
+                print(f"✅ Created new application {application_no}")
 
-            # Create application history (ALWAYS INSERT, NEVER UPDATE)
+            # Create application history
             t_application_history.objects.create(
                 application_no=application_no,
                 application_date=timezone.now().date(),
-                applicant_id=request.session['email'],
+                applicant_id=request.session.get('email'),
                 ca_authority=ca_auth,
                 service_id=service_id_to_use,
                 application_status='P',
                 action_date=timezone.now(),
-                actor_id=request.session['login_id'],
-                actor_name=request.session['name'],
+                actor_id=request.session.get('login_id'),
+                actor_name=request.session.get('name'),
                 remarks=None,
                 status=None
             )
@@ -3828,7 +5305,9 @@ def save_old_ec_general_details(request):
             data['application_no'] = application_no
 
     except Exception as e:
-        print('An error occurred:', e)
+        print(f'❌ An error occurred: {e}')
+        import traceback
+        print(f'📊 Traceback: {traceback.format_exc()}')
         data['error'] = str(e)
 
     return JsonResponse(data)
@@ -3837,10 +5316,12 @@ def submit_old_ec_general_application(request):
     data = {}
     try:
         application_no = request.POST.get('general_disclaimer_application_no')
+        ec_reference_no = request.POST.get('ec_reference_no')
         identifier = request.GET.get('identifier')
+        print(application_no, ec_reference_no, identifier)
 
         # Get application details
-        application_details = t_ec_industries_t1_general.objects.filter(application_no=application_no)
+        application_details = t_ec_application_t1.objects.filter(application_no=application_no)
         main_application = application_details.filter(service_type='Main Activity').first()
 
         if not main_application:
@@ -3852,22 +5333,120 @@ def submit_old_ec_general_application(request):
             main_application.assigned_by = request.session['login_id']
             main_application.assigned_date = timezone.now()
             main_application.save()
+
+            # Push to main/history tables ONLY when approved
+            _handle_old_application_ec_tables(ec_reference_no, application_no)
+
+            remarks = 'OLD EC Approved'
         else:
             main_application.action_date = timezone.now()
             main_application.application_status = identifier
             main_application.save()
 
-        # Update HISTORY
+            remarks='OLD EC Sent back for Resubmission'
 
-        t_application_history.objects.filter(application_no=application_no, service_type='Main Activity').update(
-            remarks='OLD EC Submitted',
+        # Update existing history row(s) for the main activity
+        t_application_history.objects.filter(
+            application_no=application_no,
+            service_type='Main Activity'
+        ).update(
+            remarks=remarks,
             action_date=timezone.now(),
-            application_status= identifier
-
+            application_status=identifier
         )
+
+
         data['message'] = "success"
     except Exception as e:
         data['error'] = str(e).split("\n")[0]
     return JsonResponse(data)
 
 # OLD EC UPDATE END
+
+def _handle_old_application_ec_tables(ec_reference_no, application_no):
+    source_t1_records = t_ec_application_t1.objects.filter(
+        ec_reference_no=ec_reference_no.strip(),
+        application_no=application_no.strip()
+    )
+    print(ec_reference_no)
+    print(application_no)
+    t1_objects_to_create = []
+    t1_history_objects = []
+
+    for source in source_t1_records:
+        t1_record = t_ec_t1(
+            application_source=source.application_source,
+            activity=source.activity,
+            project_description=source.project_description,
+            service_id=source.service_id,
+            colour_code=source.colour_code,
+            service_type=source.service_type,
+            ca_authority=source.ca_authority,
+            proponent_type=source.proponent_type,
+            applicant_id=source.applicant_id,
+            applicant_name=source.applicant_name,
+            address=source.address,
+            cid=source.cid,
+            contact_no=source.contact_no,
+            email=source.email,
+            project_name=source.project_name,
+            focal_person=source.focal_person,
+            dzongkhag_throm=source.dzongkhag_throm,
+            thromde_id=source.thromde_id,
+            dzongkhag_code=source.dzongkhag_code,
+            gewog_code=source.gewog_code,
+            village_code=source.village_code,
+            location_name=source.location_name,
+            ec_reference_no=source.ec_reference_no,
+            prev_ec_reference_no=source.prev_ec_reference_no,
+            ec_approve_date=source.ec_approve_date,
+            ec_expiry_date=source.ec_expiry_date,
+            tor_approve_date=source.tor_approve_date,
+            tor_remarks=source.tor_remarks,
+            tor_clearance_no=source.tor_clearance_no,
+            status='A',
+            application_no=application_no
+        )
+        t1_objects_to_create.append(t1_record)
+
+        t1_history_objects.append(t_ec_t1_history(
+            application_source=source.application_source,
+            activity=source.activity,
+            project_description=source.project_description,
+            service_id=source.service_id,
+            colour_code=source.colour_code,
+            service_type=source.service_type,
+            ca_authority=source.ca_authority,
+            proponent_type=source.proponent_type,
+            applicant_id=source.applicant_id,
+            applicant_name=source.applicant_name,
+            address=source.address,
+            cid=source.cid,
+            contact_no=source.contact_no,
+            email=source.email,
+            project_name=source.project_name,
+            focal_person=source.focal_person,
+            dzongkhag_throm=source.dzongkhag_throm,
+            thromde_id=source.thromde_id,
+            dzongkhag_code=source.dzongkhag_code,
+            gewog_code=source.gewog_code,
+            village_code=source.village_code,
+            location_name=source.location_name,
+            ec_reference_no=source.ec_reference_no,
+            prev_ec_reference_no=source.prev_ec_reference_no,
+            ec_approve_date=source.ec_approve_date,
+            ec_expiry_date=source.ec_expiry_date,
+            tor_approve_date=source.tor_approve_date,
+            tor_remarks=source.tor_remarks,
+            tor_clearance_no=source.tor_clearance_no,
+            status='A',
+            history_date=timezone.now(),
+            history_action='OLD_EC',
+            application_no=application_no
+        ))
+
+    if t1_objects_to_create:
+        t_ec_t1.objects.bulk_create(t1_objects_to_create)
+        t_ec_t1_history.objects.bulk_create(t1_history_objects)
+
+

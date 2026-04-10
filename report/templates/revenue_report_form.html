@@ -64,39 +64,36 @@
     </form>
 </div>
 <script>
-function viewECIssuedList()
-    {
-        var from_date = $('#fromDate').val();
-        var to_date = $('#toDate').val();
-        var service_id = $('#service_id').val();
+function viewECIssuedList() {
+    const from_date = $('#fromDate').val();
+    const to_date = $('#toDate').val();
 
-        if(from_date == "")
-        {
-            $('#fromDateErrorMsg').html("Select From Date.");
-            $('#fromDateErrorMsg').show();
-            $('#fromDateErrorMsg').delay(3000).fadeOut('slow');
-        }
-        else if(to_date == "")
-        {
-            $('#toDateErrorMsg').html("Select To Date.");
-            $('#toDateErrorMsg').show();
-            $('#toDateErrorMsg').delay(3000).fadeOut('slow');
-        }
-
-        else
-        {
-            var fDate = moment(from_date, "DD.MM.YYYY").format("YYYY-MM-DD");
-            var tDate = moment(to_date, "DD.MM.YYYY").format("YYYY-MM-DD");
-             $.ajax({
-                    type : "GET",
-                    url : "{% url 'revenue_report' %}",
-                    data :{'from_date':from_date,'to_date':to_date, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                    success : function(data)
-                    {
-                    $('#RevenueDetails').html(data);
-                    }
-                });
-        }
+    if (!from_date) {
+        $('#fromDateErrorMsg').html("Select From Date.").show().delay(3000).fadeOut('slow');
+        return;
     }
+    if (!to_date) {
+        $('#toDateErrorMsg').html("Select To Date.").show().delay(3000).fadeOut('slow');
+        return;
+    }
+    if (from_date > to_date) {
+        $('#toDateErrorMsg').html("To Date must be on/after From Date.").show().delay(3000).fadeOut('slow');
+        return;
+    }
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'revenue_report' %}",
+        data :{
+            'from_date':from_date,
+            'to_date':to_date
+        },
+        success : function(data)
+        {
+            $('#RevenueDetails').html(data);
+        }
+    });
+
+}
 </script>
 {% endblock %}

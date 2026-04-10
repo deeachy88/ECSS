@@ -1,5 +1,5 @@
 
-    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+<table id="{{ table_id }}" class="table dt-responsive nowrap w-100">
     <thead>
         <tr>
             <th scope="col">#</th>
@@ -8,31 +8,48 @@
         </tr>
     </thead>
     <tbody>
-       {% for tor_attach in tor_attach %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td><a href='{{tor_attach.file_path}}' target="_blank">{{tor_attach.attachment}}</a></td>
-                    <td>
-                        <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_attachment('{{ tor_attach.file_id }}','{{ tor_attach.application_no }}')"><i class="uil-trash"></i></button>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                  <td colspan="3" class="text-center">No Data</td>
-                </tr>
-       {% endfor %}
+        {% for tor_attach in tor_attach %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><a href="{{ tor_attach.file_path }}" target="_blank">{{ tor_attach.attachment }}</a></td>
+                <td>
+                    <button type="button"
+                          class="btn btn-outline-danger btn-sm"
+                          onclick="delete_attachment('{{ tor_attach.file_id }}','{{ tor_attach.application_no }}','{{ container_id }}','{{ table_id }}')">
+                    <i class="uil-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3" class="text-center">No Data</td>
+            </tr>
+    {% endfor %}
     </tbody>
 </table>
+
 <script>
-    function delete_attachment(file_id, application_no)
+    function delete_attachment(file_id, application_no, container_id, table_id)
     {
+        // If you use DataTables, destroy before replacing
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#' + table_id)) {
+            $('#' + table_id).DataTable().destroy();
+        }
         $.ajax({
-            type : "POST",
-            url : "{% url 'delete_rev_tor_attachment' %}",
-            data :{'file_id':file_id , 'application_no': application_no, csrfmiddlewaretoken: '{{ csrf_token }}'},
-            success : function(responseText)
-            {
-                $('#tor_rev_attachment').html(responseText);
+            type: "POST",
+            url: "{% url 'delete_rev_tor_attachment' %}",
+            data: {
+                file_id: file_id,
+                application_no: application_no,
+                csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").first().val()
+            },
+            success: function(responseText) {
+                // Refresh the correct section (reviewer OR verifier)
+                $('#' + container_id).html(responseText);
+                // Re-init DataTable if needed
+                if ($.fn.DataTable) {
+                    $('#' + table_id).DataTable({ responsive: true });
+                }
             }
         });
     }

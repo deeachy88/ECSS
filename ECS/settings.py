@@ -168,12 +168,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_BACKEND = 'ecs_admin.backends.email_backend.EmailBackend'
-
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'sparkletechnologies0509@gmail.com'
-EMAIL_HOST_PASSWORD = 'htosvqmtrozajpey'
+EMAIL_HOST_USER = 'systems@moenr.gov.bt'
+EMAIL_HOST_PASSWORD = 'wdiigzpprtutwmdc'
+
+
+
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_PORT = 587
+#EMAIL_USE_TLS = True
+#EMAIL_HOST_USER = 'sparkletechnologies0509@gmail.com'
+#EMAIL_HOST_PASSWORD = 'htosvqmtrozajpey'
 
 NATS_SERVER_URL = 'nats://13.229.203.54:4222'
 

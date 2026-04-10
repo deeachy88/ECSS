@@ -1,0 +1,56 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+<div id="application_details">
+    <div class="card mt-1">
+        <div class="card-body">
+            <h5 class="card-title mb-0 text-right">Ownership Change Request List</h5>
+            <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
+                <i class="ri-check-line me-2"></i>
+            </div>
+            <div id="cardCollpase1" class="collapse pt-3 show">
+                <table id="basic-datatable" class="table dt-responsive table-sm table-centered mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Application No</th>
+                            <th scope="col">Project Name</th>
+                            <th scope="col">Ownership Request By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for application_details in oc_details %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><button type="button" class="btn btn-link text-info mb-0" onclick="viewApplicationDetails('{{application_details.application_no}}')">{{application_details.application_no}}</button></td>
+                                <td>{{application_details.project_name}}</td>
+                                <td>{{application_details.buyer_applicant_name}}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No Data</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function viewApplicationDetails(application_no)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'view_oc_application_details' %}",
+            data :{'application_no':application_no},
+            success : function(data)
+            {
+                $('#application_details').html(data);
+                $('#application_details').show();
+            }
+        });
+    }
+</script>
+{% endblock %}       
+
+                    

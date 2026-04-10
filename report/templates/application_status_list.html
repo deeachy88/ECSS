@@ -27,36 +27,52 @@
                                 </thead>
                                 <tbody>
                                     {% for application in application_list %}
-    <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{ application.application_no }}</td>
-        <td>{{ application.application_date }}</td>
-        <td>{{ application.applicant_name }}</td>
-        <td>{{ application.project_name }}</td>
-        <!--
-        <td>{{ application.ec_reference_no }}</td>
-        <td>{{ application.ec_approve_date }}</td>
-        -->
-        {% if application.application_status == 'P' %}
-            <td>Pending</td>
-        {% elif application.application_status == 'A' %}
-            <td>Approved</td>
-        {% else %}
-            <td>None</td>
-        {% endif %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ application.application_no }}</td>
+                                        <td>{{ application.application_date }}</td>
+                                        <td>{{ application.applicant_name }}</td>
+                                        <td>{{ application.project_name }}</td>
+                                        <!--
+                                        <td>{{ application.ec_reference_no }}</td>
+                                        <td>{{ application.ec_approve_date }}</td>
+                                        -->
+                                        {% if application.application_status == 'P' %}
+                                            <td>Pending</td>
+                                        {% elif application.application_status == 'R' %}
+                                            <td>Application Under Review</td>
+                                        {% elif application.application_status == 'AP' %}
+                                            <td>Additional Payment Pending</td>
+                                        {% elif application.application_status == 'A' %}
+                                            <td>Approved</td>
+                                        {% elif application.application_status == 'ALR' %}
+                                            <td>Awaiting Additional Information</td>
+                                        {% elif application.application_status == 'ALS' %}
+                                            <td>Additional Information Submitted</td>
+                                        {% elif application.application_status == 'LU' %}
+                                            <td>Awaiting Legal Undertaking</td>
+                                        {% elif application.application_status == 'LUS' %}
+                                            <td>Legal Undertaking Submitted</td>
+                                        {% elif application.application_status == 'DEC' %}
+                                            <td>Draft EC Forwarded to Verifier</td>
+                                        {% elif application.application_status == 'RJ' %}
+                                            <td>Application Rejected</td>
+                                        {% else %}
+                                            <td>None</td>
+                                        {% endif %}
 
-        <td>
-            <button type="button" class="btn btn-sm btn-outline-primary px-1 py-0" 
-                    onclick="viewApplicationDetails('{{ application.application_no }}','{{ application.service_id }}','{{ application.application_source }}')">
-                <i class="uil uil-file-copy-alt font-16"></i>
-            </button>
-        </td>
-    </tr>
-{% empty %}
-    <tr>
-        <td colspan="9" class="text-center">No Data</td>
-    </tr>
-{% endfor %}
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-outline-primary px-1 py-0"
+                                                    onclick="viewApplicationDetails('{{ application.application_no }}','{{ application.service_id }}','{{ application.application_source }}')">
+                                                <i class="uil uil-file-copy-alt font-16"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="9" class="text-center">No Data</td>
+                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>

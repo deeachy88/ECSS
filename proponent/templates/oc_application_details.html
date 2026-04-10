@@ -1,0 +1,257 @@
+{% block content %}
+<div class="card mt-1">
+  <div class="card-body">
+    {% for details in application_details %}
+      <h5 class="card-title mb-0 text-right">
+        <span style="color: #d9534f; font-weight: bold;">Ownership Change:</span>
+        EC: Reference Number:- {{ details.ec_reference_no }}
+      </h5>
+
+      <form method="post" id="oc_form">
+        {% csrf_token %}
+        <input type="hidden" name="ec_reference_no" id="ec_reference_no" value="{{ details.ec_reference_no }}">
+        <input type="hidden" name="application_no" id="application_no" value="{{ details.application_no }}">
+
+        <!-- Project Info -->
+        <div class="row mt-3">
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Name of the Project</label>
+              <input type="text" class="form-control" value="{{ details.project_name }}" readonly>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Activity</label>
+              <input type="text" class="form-control" value="{{ details.activity }}" readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- Current Owner Section -->
+        <div class="alert alert-primary border-0" role="alert">
+          <i class="uil-folder-heart me-1 h4 align-middle"></i> CURRENT OWNER / SELLER's Details
+        </div>
+
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Name of the Applicant</label>
+              <input type="text" class="form-control" value="{{ details.applicant_name }}" readonly>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Address</label>
+              <input type="text" class="form-control" value="{{ details.address }}" readonly>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Contact No</label>
+              <input type="text" class="form-control" value="{{ details.contact_no }}" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Email</label>
+              <input type="email" class="form-control" value="{{ details.email }}" readonly>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Focal Person</label>
+              <textarea class="form-control" rows="3" readonly>{{ details.focal_person }}</textarea>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Brief Project Description</label>
+              <textarea class="form-control" rows="3" readonly>{{ details.project_description }}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="alert alert-info border-0" role="alert">
+          <i class="uil-location-point me-1 h4 align-middle"></i> Project Location and Area
+        </div>
+
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Dzongkhag/Thromde</label>
+              <select class="form-select" disabled>
+                {% for dz in dzongkhag %}
+                  <option {% if details.dzongkhag_code == dz.dzongkhag_code %}selected{% endif %}>
+                    {{ dz.dzongkhag_name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Gewog</label>
+              <select class="form-select" disabled>
+                {% for gw in gewog %}
+                  <option {% if details.gewog_code == gw.gewog_code %}selected{% endif %}>
+                    {{ gw.gewog_name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Village/Chiwog</label>
+              <select class="form-select" disabled>
+                {% for v in village %}
+                  <option {% if details.village_code == v.village_code %}selected{% endif %}>
+                    {{ v.village_name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- New Owner Section -->
+        <div class="alert alert-success border-0" role="alert">
+          <i class="uil-user-plus me-1 h4 align-middle"></i> NEW OWNER / BUYER's Details
+        </div>
+
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Name of the Buyer</label>
+              <input type="text" class="form-control" value="{{ details.buyer_applicant_name }}" readonly>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Buyer Address</label>
+              <input type="text" class="form-control" value="{{ details.buyer_address }}" readonly>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Buyer Contact</label>
+              <input type="text" class="form-control" value="{{ details.buyer_contact_no }}" readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attachments Section - SIMPLIFIED (no problematic include) -->
+        <div class="card mt-4">
+          <div class="card-body">
+            <h5 class="card-title mb-3">
+              <i class="mdi mdi-attachment me-2"></i>Attachments (Supporting Documents)
+            </h5>
+            <div class="row">
+              {% for attachment in file_attach %}
+                <div class="col-md-6 mb-2">
+                  <div class="border rounded p-3">
+                    <i class="mdi mdi-file-document text-primary me-2"></i>
+                    <strong><a href='{{attachment.file_path}}' target="_blank">{{attachment.attachment}}</a></strong>
+                    <br>
+                  </div>
+                </div>
+              {% empty %}
+                <div class="col-12">
+                  <p class="text-muted mb-0">No attachments found for this application.</p>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Messages -->
+        <div class="alert alert-success border-0 mt-3" id="successMsg" style="display:none;" aria-live="polite"></div>
+        <div class="alert alert-danger border-0 mt-3" id="errorMsg" style="display:none;" aria-live="assertive"></div>
+
+        <!-- Loader -->
+        <button id="pageloader" class="btn btn-primary" type="button" disabled style="display:none;">
+          <span class="spinner-border spinner-border-sm me-1"></span> Processing...
+        </button>
+
+        <!-- Action Buttons -->
+        <div class="row mt-4">
+          <div class="col-12 text-end">
+            <button type="button" class="btn btn-success me-2" onclick="decide_oc('accept')">
+              <i class="mdi mdi-check me-1"></i> Accept
+            </button>
+            <button type="button" class="btn btn-danger" onclick="decide_oc('reject')">
+              <i class="mdi mdi-close me-1"></i> Reject
+            </button>
+          </div>
+        </div>
+
+      </form>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+function decide_oc(decision) {
+  const ecRef = document.getElementById('ec_reference_no').value;
+  const application_no = document.getElementById('application_no').value;
+  if (!ecRef) {
+    showError('Missing EC reference number.');
+    return;
+  }
+
+  if (decision === 'reject' && !confirm('Are you sure you want to reject this application?')) {
+    return;
+  }
+
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  document.getElementById('pageloader').style.display = 'inline-block';
+
+  fetch('oc_decide_application', {  // UPDATE THIS to your actual URL
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': csrfToken,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({
+      ec_reference_no: ecRef,
+      application_no: application_no,
+      decision: decision
+    })
+  })
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById('pageloader').style.display = 'none';
+    if (data.message === 'success') {
+      showSuccess('Application ' + (decision === 'accept' ? 'accepted' : 'rejected') + ' successfully.');
+      setTimeout(() => window.location.href = '/dashboard', 2000);  // UPDATE THIS to your dashboard URL
+    } else {
+      showError(data.error || 'Unknown error occurred.');
+    }
+  })
+  .catch(err => {
+    document.getElementById('pageloader').style.display = 'none';
+    showError('Network error. Please try again.');
+    console.error(err);
+  });
+}
+
+function showSuccess(msg) {
+  const el = document.getElementById('successMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 5000);
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 5000);
+}
+</script>
+{% endblock %}

@@ -62,7 +62,7 @@
                 }
                 else if(attachment_type == 'ECR')
                 {
-                    $('#renew_file_attachment').html(responseText);
+                    $('#renewal_file_attachment').html(responseText);
                 }
                 else if(attachment_type == 'TOR')
                 {
@@ -80,6 +80,16 @@
                 {
                     $('#quarry_attachment').html(responseText);
                 }
+                else if(attachment_type == 'ECOC')
+                {
+                    $('#oc_file_attachment').html(responseText);
+                }
+                else if(attachment_type == 'ECNC')
+                {
+                    $('#nc_file_attachment').html(responseText);
+                }
+
+
             }
         });
     }

@@ -1,50 +1,124 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
+<style>
+/* Print-friendly styles */
+@media print {
+    .no-print, .no-print * { display: none !important; }
+    body {
+        font-size: 10px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        margin: 0.5in;
+    }
+    .card, .card-header, .card-body {
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 9px !important;
+    }
+    thead { display: table-header-group; }
+    tfoot { display: table-footer-group; }
+    .table th, .table td {
+        padding: 3px !important;
+        word-wrap: break-word;
+        overflow: hidden;
+    }
+    /* Column width optimization for print */
+    .table th:nth-child(1), .table td:nth-child(1) { width: 5%; } /* # */
+    .table th:nth-child(2), .table td:nth-child(2) { width: 15%; } /* Proponent */
+    .table th:nth-child(3), .table td:nth-child(3) { width: 20%; } /* Project Name */
+    .table th:nth-child(4), .table td:nth-child(4) { width: 15%; } /* Activity */
+    .table th:nth-child(5), .table td:nth-child(5) { width: 10%; } /* Contact */
+    .table th:nth-child(6), .table td:nth-child(6) { width: 15%; } /* Email */
+    .table th:nth-child(7), .table td:nth-child(7) { width: 12%; } /* Address */
+    .table th:nth-child(8), .table td:nth-child(8) { width: 8%; } /* Application Date */
+
+    /* Force page orientation to landscape for better fit */
+    @page {
+        size: A4 landscape;
+        margin: 0.5in;
+    }
+
+    /* Break long text */
+    .table td {
+        word-break: break-word;
+        hyphens: auto;
+    }
+}
+
+/* Screen styles */
+.card-header .btn { white-space: nowrap; }
+
+/* Responsive table improvements */
+@media screen and (max-width: 768px) {
+    .table-responsive {
+        font-size: 12px;
+    }
+}
+</style>
+
 <div id="ECPendingDetails">
-    <div class="animated fadeIn">
+   <div class="animated fadeIn">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Report</h4>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title mb-0">Report</h4>
+                        <!-- Top-right Print Button -->
+                        <button type="button" class="btn btn-primary btn-sm no-print" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
                     </div>
                     <div class="card-body">
-                        <h4 class="card-title">List of Pending Environment Clearance Application.</h4>
-                        <div class="table-responsive">
-                        <table id="basic-datatable" class="table dt-responsive table-sm table-centered mb-0">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Proponent</th>
-                                    <th scope="col">Project Name</th>
-                                    <th scope="col">Activity</th>
-                                    <th scope="col">Contact No</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Address</th>
-                                    <th scope="col">Application Date</th>
+                        <h4 class="card-title no-print">List of Pending Environment Clearance Application.</h4>
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for ec_list in ec_list %}
+                        <!-- Print header (only visible when printing) -->
+                        <div style="display: none;">
+                            <h3 style="text-align: center; margin: 10px 0; font-size: 16px;">Environment Clearance Services</h3>
+                            <h4 style="text-align: center; margin: 5px 0; font-size: 14px;">List of Pending Environment Clearance Applications</h4>
+                            <p style="text-align: center; margin: 5px 0; font-size: 10px;">Generated on: {% now "F d, Y g:i A" %}</p>
+                            <hr style="margin: 10px 0;">
+                        </div>
+
+                        <div class="table-responsive">
+                            <table id="basic-datatable" class="table dt-responsive table-sm table-centered mb-0 table-bordered">
+                                <thead>
                                     <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{ec_list.applicant_name}}</td>
-                                        <td>{{ec_list.project_name}}</td>
-                                        <td>{{ec_list.activity}}</td>
-                                        <td>{{ec_list.contact_no}}</td>
-                                        <td>{{ec_list.email}}</td>
-                                        <td>{{ec_list.address}}</td>
-                                        <td>{{ec_list.application_date}}</td>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Proponent</th>
+                                        <th scope="col">Project Name</th>
+                                        <th scope="col">Activity</th>
+                                        <th scope="col">Contact No</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">App. Date</th>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ec_list in ec_list %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ ec_list.applicant_name }}</td>
+                                            <td>{{ ec_list.project_name }}</td>
+                                            <td>{{ ec_list.activity }}</td>
+                                            <td>{{ ec_list.contact_no }}</td>
+                                            <td>{{ ec_list.email }}</td>
+                                            <td>{{ ec_list.address }}</td>
+                                            <td>{{ ec_list.application_date|date:"M d, Y" }}</td>
+                                        </tr>
                                     {% empty %}
-                                    <tr>
-                                      <td colspan="7" class="text-center">No Data</td>
-                                    </tr>
+                                        <tr>
+                                            <td colspan="8" class="text-center">No Data</td>
+                                        </tr>
                                     {% endfor %}
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -52,34 +126,11 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function()
-        {
-            $("#ec_pending_table").DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        title: 'List of Pending Environment Clearance Application',
-                        text:'<i class="fas fa-file-excel"></i>',
-                        titleAttr: 'Excel'
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'List of Pending Environment Clearance Application',
-                        text:'<i class="fas fa-file-pdf"></i>',
-                        titleAttr: 'PDF'
-                    },
-                     {
-                        extend: 'print',
-                        title: 'List of Pending Environment Clearance Application',
-                        text: '<i class="fas fa-print"></i>',
-                        titleAttr: 'Print'
-                    },
-                ]
-            });
-        }
-    );
 
+<script>
+window.addEventListener('beforeprint', function() {
+    document.body.style.transform = 'rotate(0deg)';
+});
 </script>
+
 {% endblock %}

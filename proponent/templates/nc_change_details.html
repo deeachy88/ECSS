@@ -1,0 +1,366 @@
+{% extends 'common_dashboard.html' %}
+{% block content %}
+<div class="card mt-1">
+    <div class="card-body">
+        {% for nc_details in application_details %}
+            <h5 class="card-title mb-0 text-right">
+                <span style="color: #d9534f; font-weight: bold;">Name Change:</span>
+                EC Reference Number:- {{nc_details.ec_reference_no}}
+            </h5>
+        {% endfor %}
+        <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
+            <i class="ri-check-line me-2"></i>
+        </div>
+        <form method="post" id="nc_form">
+            {% csrf_token %}
+            {% for application_details in application_details %}
+                <!-- ADD THIS LINE -->
+                <input type="hidden" name="ec_reference_no" id="ec_reference_no" value="{{ application_details.ec_reference_no }}">
+                <input type="text" class="form-control" value="{{temp_application_no}}" id="temp_application_no" name="temp_application_no" style="display:none;">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Name of the Project</label>
+                                <input type="text" name="project_name" class="form-control" id="project_name" value="{{ application_details.project_name }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Activity</label>
+                                <p class="distinct-activity">{{application_details.activity}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert custom-bg border-0" role="alert">
+                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Proposed Change
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Proposed New Name</label>
+                                <input type="text" name="new_project_name" class="form-control" id="new_project_name" >
+                            </div>
+                            <div id="new_project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="alert custom-bg border-0" role="alert">
+                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Applicant Details
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Name of the Applicant</label>
+                                <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{ application_details.applicant_name }}" readonly>
+                            </div>
+                            <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Address</label>
+                                <input type="text" name="address" class="form-control" id="address" value="{{ application_details.address }}" readonly>
+                            </div>
+                            <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Contact No</label>
+                                <input type="number" min="1"  name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{ application_details.contact_no }}" readonly>
+                            </div>
+                            <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email</label>
+                                <input type="email" name="email" class="form-control" id="email" value="{{ application_details.email }}" readonly>
+                            </div>
+                            <div id="emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
+                                <textarea class="form-control" id="project_description" name="project_description" rows="3" readonly>{{ application_details.project_description }}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Brief Project Description</label>
+                                <textarea class="form-control" id="focal_person" name="focal_person" rows="3" readonly>{{ application_details.focal_person }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert custom-bg border-0" role="alert">
+                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Dzongkhag/Thromde</label>
+                                <select class="form-select" name="dzo_throm"  id="dzo_throm" disabled>
+                                    {% for dzongkhag in dzongkhag %}
+                                        <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                            {{ dzongkhag.dzongkhag_name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Gewog</label>
+                                <select class="form-select" name="gewog" id="gewog" disabled>
+                                    {% for gewog in gewog %}
+                                        <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                            {{ gewog.gewog_name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Village/Chiwog</label>
+                                <select class="form-select" name="vil_chiwog" id="vil_chiwog" disabled>
+                                    {% for village in village %}
+                                    <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                        {{ village.village_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Name of the Particular Project Site</label>
+                                <input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-widgets">
+                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#nc_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                            </div>
+                            <h5 class="card-title mb-0">Attachments (Supporting Documents If Any)</h5>
+                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                <div id="nc_file_attachment">
+                                    {% include 'application_attachment_page.html' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               <div class="alert alert-success border-0 rounded-0"
+                    role="alert"
+                    id="general_submit_successMsg"
+                    style="display:none"
+                    aria-live="polite"
+                    aria-atomic="true">
+                </div>
+
+                <!-- Error Alert -->
+                <div class="alert alert-danger border-0 rounded-0"
+                    role="alert"
+                    id="general_submit_errorMsg"
+                    style="display:none"
+                    aria-live="assertive"
+                    aria-atomic="true">
+                </div>
+                <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    Loading...
+                </button>
+                <div class="row mt-4">
+                    <div class="text-sm-end">
+                        <a href="#" class="btn btn-success" onclick="submit_nc_application()">
+                            <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<form method="post" id="nc_attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="nc_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <div class="modal-content form-elegant">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                    &nbsp;Add Attachment</strong></h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+          </div>
+          <!--Body-->
+          <div class="modal-body mx-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Attachment</label>
+                        <input type="file" name="nc_attach" class="form-control" id="nc_attach" accept=".png,.jpg,.jpeg,.pdf,.doc,.docx">
+                    </div>
+                    <div class="alert alert-danger" id="nc_attachErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer flex-center justify-content-center">
+            <button type="button" class="btn btn-sm btn-primary" onclick="save_nc_attachment()">Add</button>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
+</form>
+
+<script>
+    function submit_nc_application()
+    {
+        let new_project_name = $('#new_project_name').val();
+            if (new_project_name === "") {
+                showErrorAndFocus('#new_project_nameErrorMsg', 'Enter New Proposed Name', '#new_project_name');
+                return false;
+            }
+
+        // Show loading indicator
+        $("#pageloader").show();
+
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'submit_nc_application' %}",
+            data : $('#nc_form').serialize(),
+            success : function(data)
+            {
+                if(data.message == 'success')
+                {
+                   // Success case
+                    $('#general_submit_successMsg')
+                        .text("Application Submitted Successfully")
+                        .removeAttr('tabindex')
+                        .attr({
+                            'aria-live': 'polite',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
+
+                    setTimeout(() => {
+                        $('#general_submit_successMsg').delay(3000).fadeOut('slow');
+                    }, 3000);
+
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 4000);
+                }
+                else
+                {
+                    // Other error cases
+                    $('#general_submit_errorMsg')
+                        .text(`Application Error: ${data.error}`)
+                        .removeAttr('tabindex')
+                        .attr({
+                            'aria-live': 'assertive',
+                            'aria-atomic': 'true'
+                        })
+                        .show()
+                        .focus();
+
+                    setTimeout(() => {
+                        $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                }
+            }
+        });
+    }
+
+    function showErrorAndFocus(errorElement, message, focusElement) {
+        $(errorElement).html(message).show();
+
+        // Use setTimeout to ensure the focus happens after the DOM updates
+        setTimeout(function() {
+            $(focusElement).focus();
+
+            // Scroll to the element if needed
+            $('html, body').animate({
+                scrollTop: $(focusElement).offset().top - 100
+            }, 100);
+        }, 50);
+
+        // Hide the error after 2 seconds
+        setTimeout(function() {
+            $(errorElement).fadeOut('slow');
+        }, 2000);
+    }
+
+    function save_nc_attachment()
+    {
+        let file_length = document.getElementById("nc_attach");
+        if(file_length.value.length < 1)
+        {
+            $('#nc_attachErrorMsg').html("Please Choose An Attachment");
+            $('#nc_attachErrorMsg').show();
+            $('#nc_attachErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var fileName = document.getElementById('nc_attach').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('nc_attach').files[0];
+            fd.append('nc_attach', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
+                {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+                }
+            });
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_nc_attachment' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        let file_url = data.file_url;
+                        let temp_application_no = $('#temp_application_no').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'save_nc_attachment_details' %}",
+                            data : {'temp_application_no':temp_application_no, 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#nc_attachment_modal').modal('hide');
+                                $('#nc_file_attachment').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#nc_attachment_form')[0].reset();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#nc_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#nc_attachErrorMsg').show();
+                        $('#nc_attachErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+        }
+    }
+
+</script>
+{% endblock %}

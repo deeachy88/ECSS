@@ -10,18 +10,23 @@ from ecs_admin.models import t_competant_authority_master, t_user_master, t_secu
     t_file_attachment, t_menu_master, t_agency_master, t_proponent_type_master, t_dzongkhag_master, t_village_master,\
     t_gewog_master,t_submenu_master, t_other_details, t_about_us, t_notification_details, t_homepage_master
 from ecs_admin.forms import UserForm, RoleForm
-from proponent.models import t_ec_industries_t1_general, t_ec_renewal_t1, t_payment_details
+from proponent.models import t_ec_application_t1, t_payment_details, t_ec_t1, t_ec_t2
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password, check_password
 import string
 import random
 from django.http import HttpResponse, JsonResponse
+from django.urls import reverse
+from django.shortcuts import redirect, render
 from datetime import date
 from ecs_main.models import t_application_history
 from datetime import datetime, timedelta
 from django.views.decorators.cache import cache_control
 from proponent.models import t_workflow_dtls
 from django.db.models import Case, When, Value, CharField, Count
+
+#from proponent.views import oc_application
+
 
 # Create your views here.
 def home(request):
@@ -135,13 +140,22 @@ def login(request):
                             role_details = t_role_master.objects.filter(role_id=check_user.role_id_id)
                             for roles in role_details:
                                 request.session['name'] = check_user.name
-                                request.session['role'] = roles.role_name
-                                request.session['role_id'] = roles.role_id
+                                request.session['both_role_id'] = roles.role_id
+
+                                # ============ ASSIGN ROLE_ID WITH CONDITION ============
+                                if request.session['both_role_id'] == 5:
+                                    request.session['role_id'] = 2  # Assign Verifier role
+                                    request.session['role'] = 'Verifier'
+                                else:
+                                    request.session['role_id'] = roles.role_id
+                                    request.session['role'] = roles.role_name
+
                                 request.session['email'] = check_user.email_id
                                 request.session['login_type'] = check_user.login_type
                                 request.session['login_id'] = check_user.login_id
                                 request.session['ca_authority'] = check_user.agency_code
                                 request.session['dzongkhag_code'] = check_user.dzongkhag_code
+
                                 return redirect(dashboard)
                         else:
                             request.session['name'] = check_user.proponent_name
@@ -170,181 +184,428 @@ def login(request):
     return redirect(home)
 
 def dashboard(request):
+    """Dashboard view displaying user-specific counts and applications"""
+
+    # ============ AUTHENTICATION CHECK ============
     if 'email' not in request.session:
-        return redirect(home)  # or wherever your login page is
+        return redirect('home')  # Replace with your actual home URL name
+
+    # ============ INITIALIZE ALL COUNTERS ============
     v_application_count = 0
+    v_old_ec_count = 0
     r_application_count = 0
+    p_application_count = 0
     ec_renewal_count = 0
     payment_count = 0
     cl_application_count = 0
-    client_application_count = 0  # Initialize here to avoid UnboundLocalError
+    client_application_count = 0
     ibls_application_count = 0
-    reviewer_application_count = 0
-    
+    p_a_application_count = 0
+    reviewer_application_count = {}
+    reviewer_applications = {}
+    applications_by_reviewer = {}
+    reviewer_counts = {}
+    reviewer_names = {}
+    applications_list = {}
+
     try:
         login_type = request.session['login_type']
-    except:
+    except KeyError:
         login_type = None
-        
+
+    # ============ INTERNAL USER (Verifier/Reviewer) ============
     if login_type == 'I':
-        role = request.session['role']
-        ca_authority = request.session['ca_authority']
-        login_id = request.session['login_id']
-        
+        role = request.session.get('role')
+        ca_authority = request.session.get('ca_authority')
+        login_id = request.session.get('login_id')
+
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-
-        # Renewal exists AND is NOT approved
-        pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+        # Check for pending renewals
+        pending_renewal_exists = t_ec_application_t1.objects.filter(
             ec_reference_no=OuterRef('ec_reference_no')
-        ).exclude(
-            application_status='A'
-        )
-
+        ).exclude(application_status='A')
         non_updated_renewals = (
-            t_ec_industries_t1_general.objects
+            t_ec_t1.objects
             .filter(
-                applicant_id=request.session['email'],
+                # applicant_id=request.session['email'],
                 service_type__in=["Main Activity", "Old EC"],
                 ec_expiry_date__lt=expiry_date_threshold,
                 ec_expiry_date__isnull=False,
                 ec_reference_no__isnull=False,
+                status='A',
+
             )
             .exclude(ec_reference_no='')
             .annotate(has_pending_renewal=Exists(pending_renewal_exists))
             .filter(has_pending_renewal=False)
         )
-
         ec_renewal_count = non_updated_renewals.count()
-        
+
+        # ============ VERIFIER ROLE ============
         if role == 'Verifier':
             v_application_count = t_workflow_dtls.objects.filter(
                 assigned_role_id='2',
-                assigned_role_name='Verifier', 
-                ca_authority=ca_authority, 
+                assigned_role_name='Verifier',
+                application_status__in=['P', 'DEC', 'AL', 'FT', 'V', 'RRJ'],
+                ca_authority=ca_authority,
                 action_date__isnull=False
             ).count()
+
+            v_old_ec_count = t_ec_application_t1.objects.filter(
+                ca_authority=ca_authority,
+                application_status = 'SM',
+                application_type = 'Old_EC'
+            ).count()
+
+            expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+            ec_renewal_count = t_ec_application_t1.objects.filter(
+                ca_authority=ca_authority,
+                application_status='A',
+                ec_expiry_date__lt=expiry_date_threshold
+            ).count()
+
+            # Get applications grouped by reviewer with names from t_user_master
+            applications_by_reviewer_qs = (
+                t_ec_application_t1.objects
+                .filter(ca_authority=ca_authority)
+                .values(
+                    'record_id',
+                    'project_name',
+                    'applicant_name',
+                    'application_status',
+                    'application_date',
+                    'application_no',
+                    'location_name',
+                    'service_id',
+                    'assigned_to',
+                    'application_source'
+                )
+                .order_by('-assigned_to', 'application_date')
+            )
+            # Convert QuerySet to list
+            applications_list = list(applications_by_reviewer_qs)
+            # Extract unique reviewer IDs (skip None/NULL values)
+            unique_reviewer_ids = set(
+                app['assigned_to'] for app in applications_list
+                if app['assigned_to']
+            )
+            #print(f"DEBUG 1 - Unique reviewer IDs: {unique_reviewer_ids}")
+            # Fetch reviewer names from t_user_master in ONE query
+            reviewer_name_map = {}
+            if unique_reviewer_ids:
+                reviewers_from_db = t_user_master.objects.filter(
+                    login_id__in=unique_reviewer_ids
+                ).values('login_id', 'name')
+
+                #print(f"DEBUG 2 - Reviewers found: {list(reviewers_from_db)}")
+
+                # Build mapping dictionary: login_id → name
+                reviewer_name_map = {
+                    reviewer['login_id']: reviewer['name']
+                    for reviewer in reviewers_from_db
+                }
+            #print(f"DEBUG 3 - Reviewer name map: {reviewer_name_map}")
+            # Initialize result dictionaries
+            applications_by_reviewer = {}
+            reviewer_counts = {}
+            reviewer_names = {}
+            # Group applications and map reviewer names
+            for application in applications_list:
+                reviewer_id = application['assigned_to']
+
+                # Skip unassigned applications
+                if not reviewer_id:
+                    continue
+
+                # Get reviewer name from mapping (default to 'Unknown Reviewer' if not found)
+                reviewer_name = reviewer_name_map.get(reviewer_id, 'Unknown Reviewer')
+
+                #print(f"DEBUG 4 - Reviewer ID: {reviewer_id}, Reviewer Name: {reviewer_name}")
+
+                # Store reviewer name (only once per reviewer)
+                if reviewer_id not in reviewer_names:
+                    reviewer_names[reviewer_id] = reviewer_name
+
+                # Count applications by reviewer
+                if reviewer_id not in reviewer_counts:
+                    reviewer_counts[reviewer_id] = 0
+                reviewer_counts[reviewer_id] += 1
+
+                # Group applications by reviewer
+                if reviewer_id not in applications_by_reviewer:
+                    applications_by_reviewer[reviewer_id] = []
+                applications_by_reviewer[reviewer_id].append(application)
+
+                #print(applications_by_reviewer)
+            #print(f"DEBUG 5 - Final reviewer_names: {reviewer_names}")
+            #print(f"DEBUG 6 - Final reviewer_counts: {reviewer_counts}")
+
+
+        # ============ REVIEWER ROLE ============
         elif role == 'Reviewer':
+
+            # Reviewer application count
             r_application_count = t_workflow_dtls.objects.filter(
                 assigned_role_id='3',
                 assigned_user_id=login_id,
                 assigned_role_name='Reviewer',
-                ca_authority=ca_authority,
-                service_type__in=['Main Activity','Renewal']
+                ca_authority=ca_authority
             ).count()
 
-            reviewer_status_counts = (
-                t_ec_industries_t1_general.objects
+            # Reviewer application count for Payment update
+            p_application_count = t_workflow_dtls.objects.filter(
+                assigned_role_id='3',
+                assigned_role_name='Reviewer',
+                ca_authority=ca_authority,
+                assigned_user_id__isnull=True,  # assigned_user_id is null
+                action_date__isnull=False  # action_date is not null
+            ).exclude(
+                ca_authority=1  # Exclude ca_authority = 1
+            ).count()
+
+            # print(p_application_count)
+            # Get reviewer applications grouped by status
+            reviewer_applications_qs = (
+                t_ec_application_t1.objects
                 .filter(assigned_to=login_id)
-                .annotate(
-                    status_group=Case(
-                        When(application_status='A', then=Value('Approved')),
-                        default=Value('Pending'),
-                        output_field=CharField()
-                    )
+                .values(
+                    'record_id',
+                    'project_name',
+                    'applicant_name',
+                    'application_status',
+                    'application_date',
+                    'application_no',
+                    'location_name',
+                    'service_id',
+                    'application_source'
                 )
-                .values('status_group')
-                .annotate(total=Count('record_id'))  # Use record_id instead of id
+                .order_by('-application_date')
             )
 
-            reviewer_application_count = {
-                row['status_group']: row['total']
-                for row in reviewer_status_counts
-            }
+            # Create count dictionary and group applications by status
+            reviewer_application_count = {}
+            reviewer_applications = {}
+
+            for application in reviewer_applications_qs:
+                # Determine status group
+                if application['application_status'] == 'A':
+                    status_group = 'Approved'
+                #elif application['application_status'] == 'P':
+                #    status_group = 'Pending'
+                else:
+                    #status_group = application.get('application_status', 'Other')
+                    status_group = 'Pending'
+
+                # Count applications by status
+                if status_group not in reviewer_application_count:
+                    reviewer_application_count[status_group] = 0
+                reviewer_application_count[status_group] += 1
+
+                # Group applications by status
+                if status_group not in reviewer_applications:
+                    reviewer_applications[status_group] = []
+                reviewer_applications[status_group].append(application)
 
         elif role == 'Admin':
             client_application_count = t_user_master.objects.filter(
                 accept_reject__isnull=True,
                 login_type='C'
             ).count()
-            ibls_application_count = t_workflow_dtls.objects.filter(application_status='P', assigned_role_id=request.session['role_id'], action_date__isnull=False).count()
-            
-        response = render(request, 'dashboard.html', {
+            p_a_application_count = t_workflow_dtls.objects.filter(
+                assigned_role_id='3',
+                assigned_role_name='Reviewer',
+                ca_authority=1,
+                assigned_user_id__isnull=True,  # assigned_user_id is null
+                action_date__isnull=False  # action_date is not null
+            ).count()
+            ibls_application_count = t_workflow_dtls.objects.filter(application_status='P',
+                                                                    assigned_role_id=request.session['role_id'],
+                                                                    action_date__isnull=False).count()
+            # Get applications grouped by reviewer with names from t_user_master
+            applications_by_reviewer_qs = (
+                t_ec_application_t1.objects
+                .filter(ca_authority='1')
+                .values(
+                    'record_id',
+                    'project_name',
+                    'applicant_name',
+                    'application_status',
+                    'application_date',
+                    'application_no',
+                    'location_name',
+                    'service_id',
+                    'assigned_to',
+                    'application_source'
+                )
+                .order_by('-assigned_to', 'application_date')
+            )
+            # Convert QuerySet to list
+            applications_list = list(applications_by_reviewer_qs)
+            # Extract unique reviewer IDs (skip None/NULL values)
+            unique_reviewer_ids = set(
+                app['assigned_to'] for app in applications_list
+                if app['assigned_to']
+            )
+            # Fetch reviewer names from t_user_master in ONE query
+            reviewer_name_map = {}
+            if unique_reviewer_ids:
+                reviewers_from_db = t_user_master.objects.filter(
+                    login_id__in=unique_reviewer_ids
+                ).values('login_id', 'name')
+
+                # Build mapping dictionary: login_id → name
+                reviewer_name_map = {
+                    reviewer['login_id']: reviewer['name']
+                    for reviewer in reviewers_from_db
+                }
+            # Initialize result dictionaries
+            applications_by_reviewer = {}
+            reviewer_counts = {}
+            reviewer_names = {}
+            # Group applications and map reviewer names
+            for application in applications_list:
+                reviewer_id = application['assigned_to']
+
+                # Skip unassigned applications
+                if not reviewer_id:
+                    continue
+
+                # Get reviewer name from mapping (default to 'Unknown Reviewer' if not found)
+                reviewer_name = reviewer_name_map.get(reviewer_id, 'Unknown Reviewer')
+
+                # Store reviewer name (only once per reviewer)
+                if reviewer_id not in reviewer_names:
+                    reviewer_names[reviewer_id] = reviewer_name
+
+                # Count applications by reviewer
+                if reviewer_id not in reviewer_counts:
+                    reviewer_counts[reviewer_id] = 0
+                reviewer_counts[reviewer_id] += 1
+
+                # Group applications by reviewer
+                if reviewer_id not in applications_by_reviewer:
+                    applications_by_reviewer[reviewer_id] = []
+                applications_by_reviewer[reviewer_id].append(application)
+
+        # ============ CONTEXT FOR INTERNAL USERS ============
+        context = {
             'v_application_count': v_application_count,
+            'v_old_ec_count':v_old_ec_count,
             'r_application_count': r_application_count,
+            'p_application_count': p_application_count,
+            'p_a_application_count': p_a_application_count,
             'ec_renewal_count': ec_renewal_count,
-            'client_application_count': client_application_count,  # Now always defined
-            'ibls_application_count':ibls_application_count,
-            'reviewer_application_count':reviewer_application_count
-        })
+            'client_application_count': client_application_count,
+            'ibls_application_count': ibls_application_count,
+            'reviewer_application_count': reviewer_application_count,
+            'reviewer_applications': reviewer_applications,
+            'applications_by_reviewer': applications_by_reviewer,
+            'reviewer_counts': reviewer_counts,
+            'reviewer_names': reviewer_names,  # ← MAKE SURE THIS IS HERE
+            'total_applications': len(applications_list),
+            'total_reviewers': len(reviewer_names)
+        }
+        response = render(request, 'dashboard.html', context)
+    # ============ EXTERNAL USER (Client) ============
     else:
         email_id = request.session['email']
         login_id = request.session['login_id']
+
+        # Get application history count
+        oc_application_count = t_ec_application_t1.objects.filter(
+            applicant_id=email_id, application_type='OC', application_status='OC'
+        ).distinct('application_no').count()
+
+        # Get application history count
         app_hist_count = t_application_history.objects.filter(
             applicant_id=email_id
         ).distinct('application_no').count()
-        cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=login_id).count()
-        payment_count = t_payment_details.objects.filter(payment_advice_amount_paid__isnull=True).count()
-        draft_count = t_ec_industries_t1_general.objects.filter(
-            applicant_id=email_id,
-            application_status='P',
-            service_type='Main Activity',
-            action_date__isnull=True
+
+        # Get assigned applications count
+        cl_application_count = t_workflow_dtls.objects.filter(
+            assigned_user_id=login_id
         ).count()
 
+        # Get pending payments
+        payment_count = t_payment_details.objects.filter(
+            payment_advice_amount_paid__isnull=True
+        ).count()
+
+        # Get draft applications
+        draft_count = t_ec_application_t1.objects.filter(
+            applicant_id=email_id,
+            application_status='P',
+            service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
+            action_date__isnull=True
+        ).count()
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-
-        # Renewal exists AND is NOT approved
-        pending_renewal_exists = t_ec_renewal_t1.objects.filter(
+        # Check for pending renewals
+        pending_renewal_exists = t_ec_application_t1.objects.filter(
             ec_reference_no=OuterRef('ec_reference_no')
-        ).exclude(
-            application_status='A'
-        )
-
+        ).exclude(application_status='A')
         non_updated_renewals = (
-            t_ec_industries_t1_general.objects
+            t_ec_t1.objects
             .filter(
                 applicant_id=request.session['email'],
                 service_type__in=["Main Activity", "Old EC"],
                 ec_expiry_date__lt=expiry_date_threshold,
                 ec_expiry_date__isnull=False,
                 ec_reference_no__isnull=False,
+                status='A',
+
             )
             .exclude(ec_reference_no='')
             .annotate(has_pending_renewal=Exists(pending_renewal_exists))
             .filter(has_pending_renewal=False)
         )
-
         ec_renewal_count = non_updated_renewals.count()
-
-        old_ec_draft_count = t_ec_industries_t1_general.objects.filter(
-                applicant_id=request.session['email'],
-                application_type='Old_EC',
-                application_status__in=['P', 'R']
-            ).count()
-
-        t1_general_subquery = t_ec_industries_t1_general.objects.filter(
+        # Get old EC draft count
+        old_ec_draft_count = t_ec_application_t1.objects.filter(
+            applicant_id=request.session['email'],
+            application_type='Old_EC',
+            application_status__in=['P', 'RS']
+        ).count()
+        # Get TOR applications count
+        t1_general_subquery = t_ec_application_t1.objects.filter(
             tor_application_no=OuterRef('application_no')
         ).values('tor_application_no')
-
-        tor_application_count = t_ec_industries_t1_general.objects.filter(
+        tor_application_count = t_ec_application_t1.objects.filter(
             application_status='A',
-            application_no__contains='TOR',applicant_id=email_id
+            application_no__contains='TOR',
+            applicant_id=email_id
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-
-        download_forms = t_file_attachment.objects.filter(attachment_type='F',document_id__in=t_other_details.objects.filter(
-            is_active='Y',
-            is_deleted='N'
-        ).values('document_id'))
-        
-        response = render(request, 'dashboard.html', {
+        # Get download forms
+        download_forms = t_file_attachment.objects.filter(
+            attachment_type='F',
+            document_id__in=t_other_details.objects.filter(
+                is_active='Y',
+                is_deleted='N'
+            ).values('document_id')
+        )
+        # ============ CONTEXT FOR EXTERNAL USERS ============
+        context = {
+            'oc_application_count':oc_application_count,
             'app_hist_count': app_hist_count,
             'cl_application_count': cl_application_count,
             'payment_count': payment_count,
             'tor_application_count': tor_application_count,
             'draft_count': draft_count,
             'ec_renewal_count': ec_renewal_count,
-            'ibls_application_count':ibls_application_count,
-            'download_forms':download_forms,
-            'old_ec_draft_count':old_ec_draft_count
-        })
-
-    # Set cache-control headers to prevent caching
+            'ibls_application_count': ibls_application_count,
+            'download_forms': download_forms,
+            'old_ec_draft_count': old_ec_draft_count
+        }
+        response = render(request, 'dashboard.html', context)
+    # ============ CACHE CONTROL HEADERS ============
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response['Pragma'] = 'no-cache'
     response['Expires'] = '0'
+
     return response
+
+
 
 def add_user(request):
     employee_id = request.POST.get('employee_id')
@@ -806,35 +1067,57 @@ def save_submenu_attachment_details(request):
     file_attach = t_file_attachment.objects.filter(document_id=document_id,attachment_type='SM')
     return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
 
+
 def delete_attachment(request):
     file_id = request.POST.get('file_id')
     identifier = request.POST.get('attachment_type')
-    document_id = request.POST.get('document_id')
+    application_no = request.POST.get('application_no')
+
+    files_to_delete = t_file_attachment.objects.filter(file_id=file_id)  # ✅ Renamed variable
+
     if identifier == 'M':
-        file = t_file_attachment.objects.filter(file_id=file_id)
-        for file in file:
-            file_name = file.attachment
+        for file_obj in files_to_delete:  # ✅ Different variable name
+            file_name = file_obj.attachment
             fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/menu/")
             fs.delete(str(file_name))
-        file.delete()
+        files_to_delete.delete()  # ✅ Delete QuerySet, not iteration variable
+
     elif identifier == 'SM':
-        file = t_file_attachment.objects.filter(file_id=file_id)
-        for file in file:
-            file_name = file.attachment
+        for file_obj in files_to_delete:
+            file_name = file_obj.attachment
             fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/submenu/")
             fs.delete(str(file_name))
-        file.delete()
+        files_to_delete.delete()
+
     elif identifier == 'H':
-        file = t_file_attachment.objects.filter(file_id=file_id)
-        for file in file:
-            file_name = file.attachment
+        for file_obj in files_to_delete:
+            file_name = file_obj.attachment
             fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/homepage/")
             fs.delete(str(file_name))
-        file.delete()
-    file_attach = t_file_attachment.objects.filter(document_id=document_id)
+        files_to_delete.delete()
+
+    elif identifier == 'GEN':
+        for file_obj in files_to_delete:
+            file_name = file_obj.attachment
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/GEN/")
+            fs.delete(str(file_name))
+        files_to_delete.delete()
+
+    elif identifier == 'RRJ':
+        for file_obj in files_to_delete:
+            file_name = file_obj.attachment
+            new_file_name = f"{application_no}-{file_name}"
+            print(new_file_name)
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/RRJ/")
+            fs.delete(str(new_file_name))
+        files_to_delete.delete()
+
+        # ✅ Fixed template name for RRJ
+        reject_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='RRJ')
+        return render(request, 'reject_attachment_page.html', {'reject_attach': reject_attach})
+
+    file_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type=identifier)
     return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
-
-
 
 
 def save_menu_details(request):
@@ -1524,6 +1807,256 @@ def get_auth_token():
 
     json = res.json()
     return json["access_token"]
+
+
+def change_role(request):
+    """
+    Handle role switching for users with dual roles
+    Updates session and prepares dashboard context for new role
+    """
+    try:
+        data = json.loads(request.body)
+        new_role_id = int(data.get('role_id'))
+
+        # ============ VALIDATE USER HAS DUAL ROLES ============
+        if request.session.get('both_role_id') != 5:
+            return JsonResponse({
+                'success': False,
+                'message': 'You do not have permission to switch roles.'
+            }, status=403)
+
+        # ============ VALIDATE ROLE_ID ============
+        valid_roles = {
+            2: {'role': 'Verifier', 'role_id': 2},
+            3: {'role': 'Reviewer', 'role_id': 3}
+        }
+
+        if new_role_id not in valid_roles:
+            return JsonResponse({
+                'success': False,
+                'message': 'Invalid role selected.'
+            }, status=400)
+
+        # ============ UPDATE SESSION WITH NEW ROLE ============
+        role_data = valid_roles[new_role_id]
+        request.session['role'] = role_data['role']
+        request.session['role_id'] = role_data['role_id']
+        request.session.modified = True
+
+        # ============ PREPARE DASHBOARD CONTEXT ============
+        context = prepare_dashboard_context(request, role_data['role'])
+
+        # ============ REDIRECT TO DASHBOARD ============
+        redirect_url = reverse('dashboard')
+
+        return JsonResponse({
+            'success': True,
+            'message': f'Role switched to {role_data["role"]} successfully!',
+            'redirect_url': redirect_url
+        })
+
+    except (json.JSONDecodeError, ValueError):
+        return JsonResponse({
+            'success': False,
+            'message': 'Invalid request format.'
+        }, status=400)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'An error occurred: {str(e)}'
+        }, status=500)
+
+
+def prepare_dashboard_context(request, role):
+    """
+    Prepare dashboard context based on the role
+    Mirrors the logic from the dashboard view
+    """
+
+    # ============ INITIALIZE ALL COUNTERS ============
+    context = {
+        'v_application_count': 0,
+        'r_application_count': 0,
+        'ec_renewal_count': 0,
+        'client_application_count': 0,
+        'ibls_application_count': 0,
+        'reviewer_application_count': {},
+        'reviewer_applications': {},
+        'applications_by_reviewer': {},
+        'reviewer_counts': {},
+        'reviewer_names': {},
+        'total_applications': 0,
+        'total_reviewers': 0
+    }
+
+    try:
+        login_type = request.session.get('login_type')
+        login_id = request.session.get('login_id')
+        email = request.session.get('email')
+        ca_authority = request.session.get('ca_authority')
+
+        # ============ EC RENEWAL COUNT (Common for Verifier/Reviewer) ============
+        expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+        pending_renewal_exists = t_ec_application_t1.objects.filter(
+            ec_reference_no=OuterRef('ec_reference_no')
+        ).exclude(application_status='A')
+
+        non_updated_renewals = (
+            t_ec_t1.objects
+            .filter(
+                applicant_id=email,
+                service_type__in=["Main Activity", "Old EC"],
+                ec_expiry_date__lt=expiry_date_threshold,
+                ec_expiry_date__isnull=False,
+                ec_reference_no__isnull=False,
+            )
+            .exclude(ec_reference_no='')
+            .annotate(has_pending_renewal=Exists(pending_renewal_exists))
+            .filter(has_pending_renewal=False)
+        )
+        context['ec_renewal_count'] = non_updated_renewals.count()
+
+        # ============ VERIFIER ROLE ============
+        if role == 'Verifier':
+            # Get verifier application count
+            context['v_application_count'] = t_workflow_dtls.objects.filter(
+                assigned_role_id='2',
+                assigned_role_name='Verifier',
+                ca_authority=ca_authority,
+                action_date__isnull=False
+            ).count()
+
+            # Get applications grouped by reviewer
+            applications_by_reviewer_qs = (
+                t_ec_application_t1.objects
+                .filter(ca_authority=ca_authority)
+                .values(
+                    'record_id',
+                    'project_name',
+                    'applicant_name',
+                    'application_status',
+                    'application_date',
+                    'application_no',
+                    'location_name',
+                    'service_id',
+                    'assigned_to',
+                    'application_source'
+                )
+                .order_by('-assigned_to', 'application_date')
+            )
+
+            applications_list = list(applications_by_reviewer_qs)
+
+            # Extract unique reviewer IDs
+            unique_reviewer_ids = set(
+                app['assigned_to'] for app in applications_list
+                if app['assigned_to']
+            )
+
+            # Fetch reviewer names
+            reviewer_name_map = {}
+            if unique_reviewer_ids:
+                reviewers_from_db = t_user_master.objects.filter(
+                    login_id__in=unique_reviewer_ids
+                ).values('login_id', 'name')
+
+                reviewer_name_map = {
+                    reviewer['login_id']: reviewer['name']
+                    for reviewer in reviewers_from_db
+                }
+
+            # Initialize result dictionaries
+            applications_by_reviewer = {}
+            reviewer_counts = {}
+            reviewer_names = {}
+
+            # Group applications by reviewer
+            for application in applications_list:
+                reviewer_id = application['assigned_to']
+
+                if not reviewer_id:
+                    continue
+
+                reviewer_name = reviewer_name_map.get(reviewer_id, 'Unknown Reviewer')
+
+                if reviewer_id not in reviewer_names:
+                    reviewer_names[reviewer_id] = reviewer_name
+
+                if reviewer_id not in reviewer_counts:
+                    reviewer_counts[reviewer_id] = 0
+                reviewer_counts[reviewer_id] += 1
+
+                if reviewer_id not in applications_by_reviewer:
+                    applications_by_reviewer[reviewer_id] = []
+                applications_by_reviewer[reviewer_id].append(application)
+
+            context.update({
+                'applications_by_reviewer': applications_by_reviewer,
+                'reviewer_counts': reviewer_counts,
+                'reviewer_names': reviewer_names,
+                'total_applications': len(applications_list),
+                'total_reviewers': len(reviewer_names)
+            })
+
+        # ============ REVIEWER ROLE ============
+        elif role == 'Reviewer':
+            # Get reviewer application count
+            context['r_application_count'] = t_workflow_dtls.objects.filter(
+                assigned_role_id='3',
+                assigned_user_id=login_id,
+                assigned_role_name='Reviewer',
+                ca_authority=ca_authority,
+                service_type__in=['Main Activity', 'Renewal']
+            ).count()
+
+            # Get reviewer applications grouped by status
+            reviewer_applications_qs = (
+                t_ec_application_t1.objects
+                .filter(assigned_to=login_id)
+                .values(
+                    'record_id',
+                    'project_name',
+                    'applicant_name',
+                    'application_status',
+                    'application_date',
+                    'application_no',
+                    'location_name',
+                    'service_id',
+                    'application_source'
+                )
+                .order_by('-application_date')
+            )
+
+            reviewer_application_count = {}
+            reviewer_applications = {}
+
+            for application in reviewer_applications_qs:
+                # Determine status group
+                if application['application_status'] == 'A':
+                    status_group = 'Approved'
+                else:
+                    status_group = 'Pending'
+
+                # Count applications by status
+                if status_group not in reviewer_application_count:
+                    reviewer_application_count[status_group] = 0
+                reviewer_application_count[status_group] += 1
+
+                # Group applications by status
+                if status_group not in reviewer_applications:
+                    reviewer_applications[status_group] = []
+                reviewer_applications[status_group].append(application)
+
+            context.update({
+                'reviewer_application_count': reviewer_application_count,
+                'reviewer_applications': reviewer_applications
+            })
+
+        return context
+
+    except Exception as e:
+        print(f"Error preparing dashboard context: {str(e)}")
+        return context
 
 
 import bleach

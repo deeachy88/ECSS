@@ -1,30 +1,29 @@
+{% block content %}
+{% load static %}
 
-{% for application_details in application_details %}
-<div class="row">
+<div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <h5 class="header-title mb-3">Pending Old EC for Submission</h5>
-                {% if application_details.service_id == 1 %}
+                {% if service_id == '1' %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Industry Projects</h4>
-                {% elif application_details.service_id == 2 %}
+                {% elif service_id == '2' %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Energy Projects</h4>
-                {% elif application_details.service_id == 3 %}
+                {% elif service_id == '3' %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Road Projects</h4>
-                {% elif application_details.service_id == 4 %}
+                {% elif service_id == '4' %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Transmission Projects</h4>
-                {% elif application_details.service_id == 5 %}
+                {% elif service_id == '5' %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Tourism Projects</h4>
-                {% elif application_details.service_id == 6 %}
+                {% elif service_id == '6' %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Ground Water Projects</h4>
-                {% elif application_details.service_id == 7 %}
+                {% elif service_id == '7' %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Forest Projects</h4>
-                {% elif application_details.service_id == 8 %}
+                {% elif service_id == '8' %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Quarry Projects</h4>
-                {% elif application_details.service_id == 9 %}
+                {% elif service_id == '9' %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for General Projects</h4>
                 {% endif %}
-
                 <div id="rootwizard">
                     <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
                         <li class="nav-item" data-target-form="#accountForm">
@@ -34,7 +33,7 @@
                             </a>
                         </li>
                         <li class="nav-item" data-target-form="#profileForm">
-                            <a href="#file_attachment" data-bs-toggle="tab" data-toggle="tab" class="nav-link" > <!-- Removed: rounded-pill py-2 px-3 -->
+                            <a href="#file_attachment" data-bs-toggle="tab" data-toggle="tab" class="nav-link" disabled> <!-- Removed: rounded-pill py-2 px-3 -->
                                 <i class="mdi mdi-paperclip font-18 align-middle me-1"></i>
                                 <span class="d-none d-sm-inline">File Attachment</span>
                             </a>
@@ -50,22 +49,47 @@
                         <div class="tab-pane active show" id="general_info">
                             <form method="post" id="general_application_form">
                                 {% csrf_token %}
-                                <input type="text" class="form-control" value="{{application_details.application_no}}" id="application_no" name="application_no" style="display:none;">
-                                <input type="text" class="form-control" value="DR" name="identifier" style="display:none;">
-                                <input type="text" class="form-control" value="Main Activity" name="service_type" style="display:none;">
-                                <input type="text" class="form-control" value="{{application_details.activity}}" name="activity" style="display:none;">
+                                <input type="text" class="form-control" id="tor_no" name="tor_no" value="{{tor_application_no}}" style="display:none;">
+                                <input type="text" class="form-control" id="application_no" name="application_no" style="display:none;">
+                                <input type="text" class="form-control" value="Main Activity" name="service_type" id="service_type" style="display:none;">
+                                <input type="text" class="form-control" value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
+                                <input type="text" class="form-control" value="{{request.session.activity}}" name="activity" style="display:none;">
                                 <div class="row justify-content-left">
                                     <div class="col-lg-12">
                                         <label class="form-label fw-bold">Activity</label>
-                                        <p class="distinct-activity">{{application_details.activity}}</p>
+                                        <input type="hidden" name="activity" class="form-control" id="activity" value="{{request.session.activity}}" readonly>
+                                        <p class="distinct-activity">{{request.session.activity}}</p>
                                     </div>
                                 </div>
-
+                                <br>
+                                <!-- FMFSR Number + Retrieve -->
+                                <div class="row" style="margin-bottom: -15px;">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">
+                                                FMFSR Number
+                                                <span style="color: red; font-weight: 600;">(If Processing from MAS)</span>
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="fmfsr_no" name="fmfsr_no" placeholder="e.g., FMFSR-00123">
+                                                <button type="button" id="btnFmfsrLookup" class="btn btn-outline-secondary">
+                                                    <i class="mdi mdi-database-search me-1"></i> Retrieve
+                                                </button>
+                                            </div>
+                                            <small class="text-muted">Enter FMFSR number to auto-fill project details</small>
+                                            <div id="fmfsr_error" class="text-danger mt-1" style="display:none;"></div>
+                                            <div id="fmfsr_success" class="text-success mt-1" style="display:none;">
+                                                <i class="mdi mdi-check-circle me-1"></i> Project details retrieved successfully
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
                                 <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Name of the Applicant</label>
-                                            <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly>
+                                            <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{request.session.name}}" readonly> 
                                         </div>
                                         <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
@@ -76,7 +100,7 @@
                                         </div>
                                         <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
-                                        <div class="col-lg-4">
+                                    <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Contact No</label>
                                             <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{request.session.contact_number}}" readonly>
@@ -95,14 +119,14 @@
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Name of the Project</label>
-                                            <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}">
+                                            <input type="text" name="project_name" class="form-control" id="project_name" value="{{project_name}}">
                                         </div>
                                         <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
-                                            <input type="text" name="focal_person" class="form-control" id="focal_person" value="{{application_details.focal_person}}">
+                                            <input type="text" name="focal_person" class="form-control" id="focal_person" value="{{focal_person}}">
                                         </div>
                                     </div>
                                 </div>
@@ -110,7 +134,7 @@
                                     <div class="col-lg-8">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Brief Description of the project</label>
-                                            <textarea class="form-control" name="project_description" id="project_description" rows="3">{{application_details.project_description}}</textarea>
+                                            <textarea class="form-control" name="project_description" id="project_description" rows="3">{{project_description}}</textarea>
                                         </div>
                                         <div id="project_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
@@ -119,202 +143,212 @@
                                     <h5 class="mb-0">Project Location</h5>
                                 </div>
                                 <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
-                                    {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input
-                                                            type="radio"
-                                                            name="dzongkhag_throm"
-                                                            id="dzongkhag-radio"
-                                                            class="form-check-input"
-                                                            value="Dzongkhag"
-                                                            onclick="check_dzong_throm(this.value)"
-                                                            {% if application_details.dzongkhag_throm == 'Dzongkhag' %}checked{% endif %}>
-                                                        <label class="form-check-label">Dzongkhag</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div id="siteErrorMsg" class="alert alert-danger d-none"></div>
-                                        </div>
-                                    {% elif application_details.dzongkhag_throm == 'Thromde' %}
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input
-                                                            type="radio"
-                                                            name="dzongkhag_throm"
-                                                            id="thromde-radio"
-                                                            class="form-check-input"
-                                                            value="Thromde"
-                                                            onclick="check_dzong_throm(this.value)"
-                                                            {% if application_details.dzongkhag_throm == 'Thromde' %}checked{% endif %}>
-                                                        <label class="form-check-label">Thromde</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div id="siteErrorMsg" class="alert alert-danger d-none"></div>
-                                        </div>
-                                    {% else %}
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Select One</label>
-                                                <div class="mt-2">
-                                                    <div class="form-check form-check-inline">
-                                                        <input
-                                                            type="radio"
-                                                            name="dzongkhag_throm"
-                                                            id="dzongkhag-radio"
-                                                            class="form-check-input"
-                                                            value="Dzongkhag"
-                                                            onclick="check_dzong_throm(this.value)"
-                                                            {% if application_details.dzongkhag_throm == 'Dzongkhag' %}checked{% endif %}>
-                                                        <label class="form-check-label">Dzongkhag</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input
-                                                            type="radio"
-                                                            name="dzongkhag_throm"
-                                                            id="thromde-radio"
-                                                            class="form-check-input"
-                                                            value="Thromde"
-                                                            onclick="check_dzong_throm(this.value)"
-                                                            {% if application_details.dzongkhag_throm == 'Thromde' %}checked{% endif %}>
-                                                        <label class="form-check-label">Thromde</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div id="siteErrorMsg" class="alert alert-danger d-none"></div>
-                                        </div>
-                                    {% endif %}
-                                    <!-- Thromde Section - Always included but conditionally hidden -->
-                                    <div class="col-lg-6 thromde" {% if application_details.dzongkhag_throm != 'Thromde' %}style="display:none;"{% endif %}>
+                                    <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Thromde</label>
-                                            <select class="form-select" id="thromde_id" name="thromde_id">
-                                                {% for thromde in thromde %}
-                                                    <option value="{{ thromde.thromde_id }}" {% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
-                                                        {{ thromde.thromde_name }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
+                                            {% if dzongkhag_throm != "Thromde" and dzongkhag_throm != "Dzongkhag" %}
+                                                <label class="form-label fw-bold">Select One</label>
+                                            {% endif %}
+                                            <div class="mt-2">
+                                                {% if dzongkhag_throm == "Thromde" %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" checked>
+                                                        <label class="form-label">Thromde</label>
+                                                    </div>
+                                                {% elif dzongkhag_throm == "DEC" %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" checked>
+                                                        <label class="form-label">Dzongkhag</label>
+                                                    </div>
+                                                {% else %}
+                                                    {# Default case: Both options available, Thromde is checked by default #}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde"
+                                                            onclick="check_dzong_throm(this.value)" checked>
+                                                        <label class="form-label">Thromde</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag"
+                                                            onclick="check_dzong_throm(this.value)">
+                                                        <label class="form-label">Dzongkhag</label>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
                                         </div>
-                                        <div id="thromdeErrorMsg" class="alert alert-danger d-none"></div>
+                                        <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                 </div>
 
-                                <!-- Dzongkhag Section - Always included but conditionally hidden -->
-                                <div class="dzongkhag" {% if application_details.dzongkhag_throm != 'Dzongkhag' %}style="display:none;"{% endif %}>
+                                <!---------------------------------------------------------------------------------------------------->
+                                {# Section for Thromde selection #}
+                                {% if dzongkhag_throm == "Thromde" %}
+                                    <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Thromde</label>
+                                                <select class="form-select" name="thromde_id" id="thromde_id">
+                                                    <option value="">--SELECT THROMDE--</option>
+                                                    {% for thromde in thromde %}
+                                                        <option value="{{ thromde.thromde_id }}"
+                                                            {% if thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                                            {{ thromde.thromde_name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <!---------------------------------------------------------------------------------------------------->
+                                {# Section for DEC selection #}
+                                {% if dzongkhag_throm == "Dzongkhag" %}
                                     <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Dzongkhag</label>
                                                 <select class="form-select" name="dzongkhag" id="dzongkhag" onchange="getGewog(this.value)">
+                                                    <option value="">--SELECT DZONGKHAG--</option>
                                                     {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{ dzongkhag.dzongkhag_code }}" {% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
-                                                            {{ dzongkhag.dzongkhag_name }}
+                                                        <option value="{{ dzongkhag.dzongkhag_code }}"
+                                                            {% if dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                            {{ dzongkhag.dzongkhag_code }}
                                                         </option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
+                                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Gewog</label>
                                                 <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                    <option value="">--SELECT GEWOG--</option>
                                                     {% for gewog in gewog %}
-                                                        <option value="{{ gewog.gewog_code }}" {% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
-                                                            {{ gewog.gewog_name }}
+                                                        <option value="{{ gewog.gewog_code }}"
+                                                            {% if gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                            {{ gewog.gewog_code }}
                                                         </option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
-                                            <div id="gewogErrorMsg" class="alert alert-danger d-none"></div>
+                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Village/Chiwog</label>
                                                 <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                    <option value="">--SELECT VILLAGE--</option>
                                                     {% for village in village %}
-                                                        <option value="{{ village.village_code }}" {% if application_details.village_code == village.village_code %}selected{% endif %}>
-                                                            {{ village.village_name }}
+                                                        <option value="{{ village.village_code }}"
+                                                            {% if village_code == village.village_code %}selected{% endif %}>
+                                                            {{ village.villageg_code }}
                                                         </option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
-                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger d-none"></div>
+                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-                                </div>
+                                {% endif %}
+                                <!---------------------------------------------------------------------------------------------------->
+                                {# Section for when ca_auth is neither Thromde nor DEC #}
+                                {% if dzongkhag_throm != "Thromde" and dzongkhag_throm != "Dzongkhag" %}
+                                    {# Thromde selection #}
+                                    <div class="row thromde_section"> {# Added a class for potential JavaScript targeting #}
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Thromde</label>
+                                                <select class="form-select" name="thromde_id" id="thromde_id">
+                                                    <option value="">--SELECT THROMDE--</option>
+                                                    {% for thromde in thromde %}
+                                                        <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    {# Dzongkhag, Gewog, Village selection #}
+                                    <div class="row dzongkhag_section" style="display: none;"> {# Added a class for potential JavaScript targeting #}
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Dzongkhag</label>
+                                                <select class="form-select" name="dzongkhag" id="dzongkhag" onchange="getGewog(this.value)">
+                                                    <option value="">--SELECT DZONGKHAG--</option>
+                                                    {% for dzongkhag in dzongkhag %}
+                                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Gewog</label>
+                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                                    <option value="">--SELECT GEWOG--</option>
+                                                    {% for gewog in gewog %}
+                                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Village/Chiwog</label>
+                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
+                                                    <option value="">--SELECT VILLAGE--</option>
+                                                    {% for village in village %}
+                                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                {% endif %}
                                 <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Name of the Particular Project Site</label>
-                                            <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}">
+                                            <input type="text" name="project_site" class="form-control" id="project_site" value="{{ location_name }}">
                                         </div>
                                         <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                 </div>
-
-                                <div class="alert custom-bg border-0" role="alert">
-                                    <h6 class="mb-0">EC Details</h6>
-                                </div>
-                                <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
-                                    <div class="col-lg-4">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">EC Reference No:</label>
-                                            <input type="text" name="ec_reference_no" class="form-control" id="ec_reference_no" value="{{application_details.ec_reference_no}}" onblur="check_old_ec(this.value)">
-                                        </div>
-                                        <div id="ec_reference_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">EC Issue Date</label>
-                                            <input type="date" name="ec_issue_date" id="ec_issue_date" class="form-control date-picker flatpickr-input active" value="{{ application_details.ec_approve_date|date:'Y-m-d' }}" onchange="validateECValidity()">
-                                        </div>
-                                        <div id="ec_issue_dateErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">EC Validity</label>
-                                            <input type="date" name="ec_validity" id="ec_validity" class="form-control date-picker flatpickr-input active" value="{{ application_details.ec_expiry_date|date:'Y-m-d' }}" onchange="validateECValidity()">
-                                        </div>
-                                        <div id="ec_validityErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                </div>
-                                <div class="alert alert-success border-0 rounded-0"
-                                    role="alert"
-                                    id="application_form_successMsg"
-                                    style="display:none"
-                                    aria-live="polite"
-                                    aria-atomic="true">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                </div>
-
-                                <!-- Error Alert -->
-                                <div class="alert alert-danger border-0 rounded-0"
-                                    role="alert"
-                                    id="application_form_errorMsg"
-                                    style="display:none"
-                                    aria-live="assertive"
-                                    aria-atomic="true">
-                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                                </div>
-                                <ul class="list-inline wizard mb-0">
-                                    <li class="next list-inline-item float-end">
-                                        <a href="javascript:void(0);" class="btn btn-success" onclick="save_general_info()">Save-Next <i class="mdi mdi-arrow-right ms-1"></i></a>
-                                    </li>
-                                </ul>
+                            </form>
+                            <div class="alert alert-success border-0 rounded-0" 
+                                role="alert" 
+                                id="application_form_successMsg" 
+                                style="display:none"
+                                aria-live="polite"
+                                aria-atomic="true">
+                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
                             </div>
-                        </form>
+                            <!-- Error Alert -->
+                            <div class="alert alert-danger border-0 rounded-0" 
+                                role="alert" 
+                                id="application_form_errorMsg" 
+                                style="display:none"
+                                aria-live="assertive"
+                                aria-atomic="true">
+                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                            </div>
+                            <ul class="list-inline wizard mb-0">
+                                <li class="next list-inline-item float-end">
+                                    <a href="javascript:void(0);" class="btn btn-success" onclick="save_general_info()">Save-Next <i class="mdi mdi-arrow-right ms-1"></i></a>
+                                </li>
+                            </ul>
+                        </div>
                         <div class="tab-pane fade" id="file_attachment">
-                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                            <div class="row" style="margin-bottom: -15px;">
                                 <div class="col-lg-12">
-                                    <div class="alert alert-danger border-0 rounded-0" role="alert">
-                                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Copy of Environment Clearance (Please attach the scanned copy of Environment Clearance)
-                                    </div>
+                                    <table class="table table-hover table-bordered table-centered mb-0">
+                                        <tbody id="attachments_tbody">
+                                            {{ request.session.attachments|safe }}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -342,51 +376,58 @@
                                 </li>
                             </ul>
                         </div>
-
                         <div class="tab-pane fade" id="disclaimer">
                             <form method="post" id="general_submit_form" class="form-horizontal">
                                 {% csrf_token %}
                                 <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no" id="general_disclaimer_application_no">
-                                <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
-                                <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
-                                <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
-                                <p class="text-wrap">3.	Application Outcome: Submission of this application does not guarantee acceptance or approval. The final decision rests with the appropriate authorities, and we reserve the right to reject any application without providing any reason.</p>
-                                <p class="text-wrap">4.	Disclaimer of Liability: To the extent permitted by law, we disclaim all liability for any loss, damage, or injury arising out of or related to your use of this online application form or reliance on any information provided herein. We shall not be responsible for any technical errors, interruptions, or inaccuracies that may occur during the application process.</p>
-                                <p class="text-wrap">5.	Modification or Termination: We reserve the right to modify, suspend, or terminate this online application form at any time without prior notice. We may also update or change the terms and conditions of this disclaimer without notice.</p>
-                                <p class="text-wrap">Please review this disclaimer carefully before submitting your application. If you do not agree with any part of this disclaimer, please refrain from using this online application form.</p>
+                                <div class="disclaimer-section">
+                                    <h3>Disclaimer</h3>
+                                    <p class="text-wrap">
+                                    By submitting this application, you acknowledge and agree that:
+                                    </p>
+                                    <ul style="margin-left: 1.5em;">
+                                        <li><strong>Accuracy:</strong> All information provided is accurate and complete. False or incomplete information may result in rejection.</li>
+                                        <li><strong>Data Use:</strong> Your information will be used to evaluate your application and shared with relevant authorities as required by law. We handle data per applicable privacy laws, but cannot guarantee security of online transmission.</li>
+                                        <li><strong>Decision:</strong> Submission does not guarantee approval. Final decisions rest with the appropriate regulatory authorities.</li>
+                                        <li><strong>Liability:</strong> We are not responsible for technical errors, system interruptions, or delays in processing. We disclaim liability for losses arising from use of this form, except where prohibited by law.</li>
+                                        <li><strong>Changes:</strong> We may modify or terminate this system at any time without notice.</li>
+                                    </ul>
+                                    <p class="text-wrap" style="margin-top: 1em;">
+                                    <strong>If you do not agree, do not submit your application.</strong>
+                                    </p>
+                                </div>
                                 <div class="mt-3">
                                     <div class="form-check">
                                         <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
                                         <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
                                     </div>
                                 </div>
-
+                                <div class="alert alert-success border-0 rounded-0"
+                                    role="alert"
+                                    id="general_submit_successMsg"
+                                    style="display:none"
+                                    aria-live="polite"
+                                    aria-atomic="true">
+                                </div>
+                                <!-- Error Alert -->
+                                <div class="alert alert-danger border-0 rounded-0"
+                                    role="alert"
+                                    id="general_submit_errorMsg"
+                                    style="display:none"
+                                    aria-live="assertive"
+                                    aria-atomic="true">
+                                </div>
                                 <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
                                     <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                                     Loading...
                                 </button>
+                                <div class="row mt-2">
+                                    <div class="text-sm-end">
+                                        <a href="#" id="gen_submit_btn" class="btn btn-success" onclick="submit_general_application()" style="display:none;">
+                                            <i class="mdi mdi-arrow-right me-1"></i> Submit </a>
+                                    </div>
+                                </div>
                             </form>
-                            <div class="alert alert-success border-0 rounded-0"
-                                role="alert"
-                                id="general_submit_successMsg"
-                                style="display:none"
-                                aria-live="polite"
-                                aria-atomic="true">
-                            </div>
-
-                            <!-- Error Alert -->
-                            <div class="alert alert-danger border-0 rounded-0"
-                                role="alert"
-                                id="general_submit_errorMsg"
-                                style="display:none"
-                                aria-live="assertive"
-                                aria-atomic="true">
-                            </div>
-                            <ul class="pager wizard mb-0 list-inline mt-1">
-                                <li class="next list-inline-item float-end">
-                                    <button type="button" id="gen_submit_btn" class="btn btn-success" onclick="submit_general_application()" style="display:none;">Submit</button>
-                                </li>
-                            </ul>
                         </div>
                     </div> <!-- tab-content -->
                 </div> <!-- end #rootwizard-->
@@ -394,7 +435,6 @@
         </div> <!-- end card-->
     </div> <!-- end col -->
 </div>
-{% endfor %}
 <form method="post" id="general_attachment_form" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="modal fade" id="general_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -432,6 +472,7 @@
 <script>
     function save_general_info()
     {
+        let activity = $('#activity').val();
         let project_name = $('#project_name').val();
         let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
         let dzongkhag_throm_val = $("input[name=dzongkhag_throm]:checked").val();
@@ -441,9 +482,6 @@
         let village_code = $('#vil_chiwog').val();
         let project_site = $('#project_site').val();
         let project_description = $('#project_description').val();
-        let refNo = $('#ec_reference_no').val();
-        let ec_issue_date = $('#ec_issue_date').val();
-        let ec_validity = $('#ec_validity').val();
 
         if (project_name === "") {
             showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');
@@ -473,29 +511,17 @@
             showErrorAndFocus('#project_siteErrorMsg', 'Enter Project Site', '#project_site');
             return false;
         }
-        else if (refNo === "") {
-            showErrorAndFocus('#ec_reference_noErrorMsg', 'Enter EC Clearance No', '#ec_reference_no');
-            return false;
-        }
-        else if (ec_issue_date === "") {
-            showErrorAndFocus('#ec_issue_dateErrorMsg', 'Enter EC Issue Date', '#ec_issue_date');
-            return false;
-        }
-        else if (ec_validity === "") {
-            showErrorAndFocus('#ec_validityErrorMsg', 'Enter EC Validity', '#ec_validity');
-            return false;
-        }
-
         else {
             // Submit the form via AJAX
             $.ajax({
                 type: "POST",
-                url: "{% url 'save_old_ec_general_details' %}?identifier=SM",
+                url: "{% url 'save_new_general_details' %}",
                 data: $('#general_application_form').serialize(),
                 success: function(data) {
                     if (data.message == 'success') {
                         // Success case with accessibility
                         let application_no = data.application_no;
+                        $('#application_no').val(application_no)
                         $('#general_disclaimer_application_no').val(application_no)
                         $('#application_form_successMsg')
                             .html('<i class="uil-folder-heart me-1 h4 align-middle"></i> Saved Successfully')
@@ -514,10 +540,12 @@
                             $('a[href="#general_info"].nav-link').removeClass("active");
 
                             // Enable and activate file_attachment tab
+                            $('a[href="#file_attachment"].nav-link').removeClass("disabled");
+                            $('a[href="#file_attachment"].nav-link').removeAttr("disabled");
                             $('a[href="#file_attachment"].nav-link').addClass("active");
 
                             // Handle tab content
-                            $("#general_info").removeClass("show active");
+                            $(".tab-pane").removeClass("show active");
                             $("#file_attachment").addClass("show active");
                         }, 2000);
                     } else {
@@ -543,17 +571,17 @@
 
     function showErrorAndFocus(errorElement, message, focusElement) {
         $(errorElement).html(message).show();
-
+        
         // Use setTimeout to ensure the focus happens after the DOM updates
         setTimeout(function() {
             $(focusElement).focus();
-
+            
             // Scroll to the element if needed
             $('html, body').animate({
                 scrollTop: $(focusElement).offset().top - 100
             }, 100);
         }, 50);
-
+        
         // Hide the error after 2 seconds
         setTimeout(function() {
             $(errorElement).fadeOut('slow');
@@ -588,12 +616,12 @@
                     setTimeout(() => {
                         // Remove active from file_attachment and make it disabled
                         $('a[href="#file_attachment"]').removeClass("active");
-
+                        
                         // Make disclaimer active and enabled
                         $('a[href="#disclaimer"]').addClass("active");
                         $('a[href="#disclaimer"]').removeAttr("disabled");
                         $('a[href="#disclaimer"]').removeClass("disabled");
-                        $("#file_attachment").removeClass("show active");
+                        $(".tab-pane").removeClass("show active");
                         $("#disclaimer").addClass("show active");
                     }, 2000);
                 } else {
@@ -611,12 +639,12 @@
                     setTimeout(() => {
                         $('#general_attachment_errorMsg').delay(2000).fadeOut('slow');
                     }, 2000);
-
+                    
                 }
             }
         });
 
-
+        
     }
 
     function save_general_attachment()
@@ -688,13 +716,12 @@
 
         $.ajax({
             type: "POST",
-            url: "{% url 'submit_old_ec_general_application' %}?identifier=SM",
+            url: "{% url 'submit_general_application' %}",
             data: $('#general_submit_form').serialize(),
             success: function(data) {
+                $("#pageloader").hide();
+                
                 if (data.message == 'success') {
-                    setTimeout(() => {
-                        $("#pageloader").hide();
-                    }, 2000);
                     // Success case
                     $('#general_submit_successMsg')
                         .text("Application Submitted Successfully")
@@ -717,7 +744,6 @@
                 }
                 else {
                     // Other error cases
-                    $("#pageloader").hide();
                     $('#general_submit_errorMsg')
                         .text(`Application Error: ${data.error}`)
                         .removeAttr('tabindex')
@@ -805,3 +831,4 @@
         });
     }
 </script>
+{% endblock %}

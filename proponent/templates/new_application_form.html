@@ -8,23 +8,23 @@
         <div class="card">
             <div class="card-body">
                 {% if service_id == '1' %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Industry Projects - 2022</h4>
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Industry Projects</h4>
                 {% elif service_id == '2' %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Energy Projects - 2022</h4>
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Energy Projects</h4>
                 {% elif service_id == '3' %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Road Projects - 2022</h4>
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Road Projects</h4>
                 {% elif service_id == '4' %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Transmission Projects - 2022</h4>
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Transmission Projects</h4>
                 {% elif service_id == '5' %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Tourism Projects - 2022</h4>
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Tourism Projects</h4>
                 {% elif service_id == '6' %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Ground Water Projects - 2022</h4>
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Ground Water Projects</h4>
                 {% elif service_id == '7' %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Forest Projects - 2022</h4>
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Forest Projects</h4>
                 {% elif service_id == '8' %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Quarry Projects - 2022</h4>
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Quarry Projects</h4>
                 {% elif service_id == '9' %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for General Projects - 2022</h4>
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for General Projects</h4>
                 {% endif %}
                 <div id="rootwizard">
                     <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
@@ -60,7 +60,6 @@
                                         <label class="form-label fw-bold">Activity</label>
                                         <input type="hidden" name="activity" class="form-control" id="activity" value="{{request.session.activity}}" readonly>
                                         <p class="distinct-activity">{{request.session.activity}}</p>
-
                                     </div>
                                 </div>
                                 <br>
@@ -175,9 +174,7 @@
                                         </div>
                                     </div>
                                 {% endif %}
-
                                 <!---------------------------------------------------------------------------------------------------->
-
                                 {# Section for DEC selection #}
                                 {% if request.session.ca_auth == "DEC" %}
                                     <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
@@ -219,9 +216,7 @@
                                         </div>
                                     </div>
                                 {% endif %}
-
                                 <!---------------------------------------------------------------------------------------------------->
-
                                 {# Section for when ca_auth is neither THROMDE nor DEC #}
                                 {% if request.session.ca_auth != "THROMDE" and request.session.ca_auth != "DEC" %}
                                     {# Thromde selection #}
@@ -239,7 +234,6 @@
                                             <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
-
                                     {# Dzongkhag, Gewog, Village selection #}
                                     <div class="row dzongkhag_section" style="display: none;"> {# Added a class for potential JavaScript targeting #}
                                         <div class="col-lg-4">
@@ -288,7 +282,6 @@
                                         </div>
                                         <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
-
                                 </div>
                             </form>
                             <div class="alert alert-success border-0 rounded-0" 
@@ -299,7 +292,6 @@
                                 aria-atomic="true">
                                 <i class="uil-folder-heart me-1 h4 align-middle"></i>
                             </div>
-
                             <!-- Error Alert -->
                             <div class="alert alert-danger border-0 rounded-0" 
                                 role="alert" 
@@ -315,7 +307,6 @@
                                 </li>
                             </ul>
                         </div>
-
                         <div class="tab-pane fade" id="file_attachment">
                             <div class="row" style="margin-bottom: -15px;">
                                 <div class="col-lg-12">
@@ -351,26 +342,32 @@
                                 </li>
                             </ul>
                         </div>
-
                         <div class="tab-pane fade" id="disclaimer">
                             <form method="post" id="general_submit_form" class="form-horizontal">
                                 {% csrf_token %}
                                 <input type="hidden" class="form-control" value="{{application_no}}" name="general_disclaimer_application_no" id="general_disclaimer_application_no">
-
-                                <p class="text-wrap"> By accessing and using this online application form, you acknowledge and agree to the following:</p>
-                                <p class="text-wrap">1.	Accuracy of Information: You understand that all information provided in this application form is accurate, complete, and up to date to the best of your knowledge. Any false, misleading, or incomplete information may result in the rejection of your application.</p>
-                                <p class="text-wrap">2.	Use of Information: The information provided in this application form will be used solely for the purpose of evaluating your eligibility and processing your application. We will handle your personal information in accordance with applicable data protection and privacy laws. However, we cannot guarantee the security of the information transmitted through this online form.</p>
-                                <p class="text-wrap">3.	Application Outcome: Submission of this application does not guarantee acceptance or approval. The final decision rests with the appropriate authorities, and we reserve the right to reject any application without providing any reason.</p>
-                                <p class="text-wrap">4.	Disclaimer of Liability: To the extent permitted by law, we disclaim all liability for any loss, damage, or injury arising out of or related to your use of this online application form or reliance on any information provided herein. We shall not be responsible for any technical errors, interruptions, or inaccuracies that may occur during the application process.</p>
-                                <p class="text-wrap">5.	Modification or Termination: We reserve the right to modify, suspend, or terminate this online application form at any time without prior notice. We may also update or change the terms and conditions of this disclaimer without notice.</p>
-                                <p class="text-wrap">Please review this disclaimer carefully before submitting your application. If you do not agree with any part of this disclaimer, please refrain from using this online application form.</p>
+                                <div class="disclaimer-section">
+                                    <h3>Disclaimer</h3>
+                                    <p class="text-wrap">
+                                    By submitting this application, you acknowledge and agree that:
+                                    </p>
+                                    <ul style="margin-left: 1.5em;">
+                                        <li><strong>Accuracy:</strong> All information provided is accurate and complete. False or incomplete information may result in rejection.</li>
+                                        <li><strong>Data Use:</strong> Your information will be used to evaluate your application and shared with relevant authorities as required by law. We handle data per applicable privacy laws, but cannot guarantee security of online transmission.</li>
+                                        <li><strong>Decision:</strong> Submission does not guarantee approval. Final decisions rest with the appropriate regulatory authorities.</li>
+                                        <li><strong>Liability:</strong> We are not responsible for technical errors, system interruptions, or delays in processing. We disclaim liability for losses arising from use of this form, except where prohibited by law.</li>
+                                        <li><strong>Changes:</strong> We may modify or terminate this system at any time without notice.</li>
+                                    </ul>
+                                    <p class="text-wrap" style="margin-top: 1em;">
+                                    <strong>If you do not agree, do not submit your application.</strong>
+                                    </p>
+                                </div>
                                 <div class="mt-3">
                                     <div class="form-check">
                                         <input type="checkbox" name="ec_terms" class="form-check-input" id="ec_terms" onclick="check_terms()">
                                         <label class="form-check-label" for="customCheck1">I herby Agree To all the above terms and conditions</label>
                                     </div>
                                 </div>
-
                                 <div class="alert alert-success border-0 rounded-0"
                                     role="alert"
                                     id="general_submit_successMsg"
@@ -378,7 +375,6 @@
                                     aria-live="polite"
                                     aria-atomic="true">
                                 </div>
-
                                 <!-- Error Alert -->
                                 <div class="alert alert-danger border-0 rounded-0"
                                     role="alert"
@@ -405,7 +401,6 @@
         </div> <!-- end card-->
     </div> <!-- end col -->
 </div>
-
 <form method="post" id="general_attachment_form" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="modal fade" id="general_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -440,8 +435,6 @@
     </div>
     </div>
 </form>
-
-
 <script>
     function save_general_info()
     {
@@ -484,7 +477,6 @@
             showErrorAndFocus('#project_siteErrorMsg', 'Enter Project Site', '#project_site');
             return false;
         }
-
         else {
             // Submit the form via AJAX
             $.ajax({

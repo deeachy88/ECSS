@@ -1,40 +1,33 @@
+<div class="card mt-1">
+    <div class="card-body">
+        {% for renewal_details in renewal_details %}
+            <h5 class="card-title mb-0 text-right">
+                <span style="color: #d9534f; font-weight: bold;">EC Renewal:</span>
+                EC Reference Number:- {{renewal_details.ec_reference_no}}
+                <input type="text" class="form-control" value="{{renewal_details.ec_reference_no}}" name="ec_reference_no" id="ec_reference_no" style="display:none;">
+            </h5>
+        {% endfor %}
+
+        <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
+            <i class="ri-check-line me-2"></i>
+        </div>
+        <div id="cardCollpase1" class="collapse pt-3 show">
+            {% for renewal_details in renewal_details %}
+                <input type="text" class="form-control" value="{{renewal_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% for application_details in application_details %}
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
+            <!--
+            <div class="alert alert-success border-0" role="alert">
+              <i class="uil-user-plus me-1 h4 align-middle"></i> Application Type: EC Renewal
+            </div>
+            -->
             <div class="card-body">
-                <h5 class="card-title mb-0 text-right">
-                    <span style="color: #d9534f; font-weight: bold;">
-                        {% if application_details.application_type == 'New' %}New EC
-                        {% elif application_details.application_type == 'AC' %}Area Change
-                        {% elif application_details.application_type == 'CC' %}Capacity Change
-                        {% elif application_details.application_type == 'PC' %}Product Change
-                        {% elif application_details.application_type == 'TC' %}Technology Change
-                        {% elif application_details.application_type == 'LC' %}Location Change
-                        {% else %}Other Modification
-                        {% endif %}:
-                    </span>
-                    Application Number:- {{ application_details.application_no }}
-                </h5>
-                {% if application_details.service_id == 1 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Industry Projects</h4>
-                {% elif application_details.service_id == 2 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Energy Projects</h4>
-                {% elif application_details.service_id == 3 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Road Projects</h4>
-                {% elif application_details.service_id == 4 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Transmission Projects</h4>
-                {% elif application_details.service_id == 5 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Tourism Projects</h4>
-                {% elif application_details.service_id == 6 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Ground Water Projects</h4>
-                {% elif application_details.service_id == 7 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Forest Projects</h4>
-                {% elif application_details.service_id == 8 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Quarry Projects</h4>
-                {% elif application_details.service_id == 9 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for General Projects</h4>
-                {% endif %}
                 <div id="rootwizard">
                     <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
                         <li class="nav-item" data-target-form="#accountForm">
@@ -65,7 +58,7 @@
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Name of the Applicant</label>
-                                        <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{application_details.applicant_name}}" disabled> 
+                                        <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{application_details.applicant_name}}" disabled>
                                     </div>
                                     <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
@@ -213,47 +206,32 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="tab-pane fade" id="second">
-                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
-                                <div class="col-lg-12">
-                                    <table class="table table-hover table-bordered table-centered mb-0">
-                                        <tbody id="attachments_tbody">
-                                            {{ attachments|safe }}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title mb-0">Attachments</h5>
+                                        <h5 class="card-title mb-0">Attachments (Any Supporting Document(s)) </h5>
                                         <div id="cardCollpase7" class="collapse pt-3 show">
-                                            <div id="general_attachment">
-                                                <table id="basic-datatable" class="table dt-responsive nowrap w-100">
-                                                    <thead>
+                                            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">File</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                   {% for file_attach in ren_attach %}
                                                         <tr>
-                                                            <th scope="col">#</th>
-                                                            <th scope="col">File</th>
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
                                                         </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {% for file_attach in file_attach %}
-                                                            <tr>
-                                                                <td>{{ forloop.counter }}</td>
-                                                                <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
-                                                                <!-- <td>
-                                                                    <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_attachment('{{ file_attach.file_id }}','{{ file_attach.attachment_type }}','{{ file_attach.application_no }}')"><i class="uil-trash"></i></button>
-                                                                </td> -->
-                                                            </tr>
-                                                            {% empty %}
-                                                            <tr>
-                                                                <td colspan="3" class="text-center">No Data</td>
-                                                            </tr>
-                                                        {% endfor %}
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                        {% empty %}
+                                                        <tr>
+                                                            <td colspan="3" class="text-center">No Data</td>
+                                                        </tr>
+                                                   {% endfor %}
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -266,14 +244,68 @@
     </div> <!-- end col -->
 </div>
 {% endfor %}
+{% if renewal_details_two %}
+<div class="alert alert-warning border-0 rounded-0" role="alert">
+    <i class="uil-folder-heart me-1 h4 align-middle"></i> Description of the compliance to EC terms and conditions
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-0"></h5>
+                <div id="cardCollpase7" class="collapse pt-3 show">
+                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Terms and Condition of the EC</th>
+                                <th>Action/activities undertaken/implemented to achieve compliance including evidence, wherever applicable</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ec_details in renewal_details_two %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ec_details.ec_heading}} - {{ec_details.ec_terms|safe}}</td>
+                                    <td>{{ ec_details.action_undertaken}}</td>
+                                    <td>{{ ec_details.remarks}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% for renewal_details in renewal_details %}
+<div class="row">
+    <div class="col-lg-6">
+        <div class="mb-3">
+            <label class="form-label fw-bold">Any other initiatives undertaken other than stipulated in the EC </label>
+            <textarea class="form-control" id="initiatives_undertaken" name="initiatives_undertaken" rows="2" readonly>{{ renewal_details.initiatives_undertaken }}</textarea>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="mb-3">
+            <label class="form-label fw-bold">Remarks </label>
+            <textarea class="form-control" id="initiatives_undertaken_remarks" name="initiatives_undertaken_remarks" rows="2" readonly>{{ renewal_details.initiatives_remarks }}</textarea>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
 <div class="card-body" id="reviewer_details_accordian" style="display:none;">
     <div class="alert alert-primary">Reviewer Details</div>
         <form method="post" id="reviewer_form">
             {% csrf_token %}
-            {% if additional_info %}
+            {% if additional_info or ai_attach %}
             <div class="row additional_info" style="display: none;">
                 <div class="col-lg-12">
-                    <label class="form-label fw-bold mb-3">Additional Information</label>
+                    {% if additional_info %}
+                        <label class="form-label fw-bold mb-3">Additional Information</label>
                         {% for info in additional_info %}
                             <div class="card mb-3 shadow-sm">
                                 <div class="card-header bg-light">
@@ -290,23 +322,15 @@
                                         <div class="row g-2 mb-2">
                                             <div class="col-lg-8">
                                                 <label class="form-label small fw-bold">Remarks from Competent Authority</label>
-                                                <textarea class="form-control form-control-sm"
-                                                          rows="2"
-                                                          readonly>{{ info.additional_info_ca }}</textarea>
+                                                <textarea class="form-control form-control-sm" rows="2" readonly>{{ info.additional_info_ca }}</textarea>
                                             </div>
                                             <div class="col-lg-2">
-                                                <label class="form-label small fw-bold">Response Request Date</label>
-                                                <input class="form-control form-control-sm"
-                                                       type="text"
-                                                       value="{{ info.additional_info_ca_date }}"
-                                                       readonly>
+                                                <label class="form-label small fw-bold">Remarks Date</label>
+                                                <input class="form-control form-control-sm" type="text" value="{{ info.additional_info_ca_date }}" readonly>
                                             </div>
                                             <div class="col-lg-2">
                                                 <label class="form-label small fw-bold">Due Date</label>
-                                                <input class="form-control form-control-sm"
-                                                       type="text"
-                                                       value="{{ info.additional_info_due_date }}"
-                                                       readonly>
+                                                <input class="form-control form-control-sm" type="text" value="{{ info.additional_info_due_date }}" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -315,57 +339,50 @@
                                         <div class="row g-2">
                                             <div class="col-lg-8">
                                                 <label class="form-label small fw-bold">Proponent Response</label>
-                                                <textarea class="form-control form-control-sm"
-                                                          rows="2"
-                                                          readonly>{{ info.additional_info_proponent }}</textarea>
+                                                <textarea class="form-control form-control-sm" rows="2" readonly>{{ info.additional_info_proponent }}</textarea>
                                             </div>
                                             <div class="col-lg-2">
                                                 <label class="form-label small fw-bold">Response Date</label>
-                                                <input class="form-control form-control-sm"
-                                                       type="text"
-                                                       value="{{ info.additional_info_proponent_date }}"
-                                                       readonly>
+                                                <input class="form-control form-control-sm" type="text" value="{{ info.additional_info_proponent_date }}" readonly>
                                             </div>
-                                            <div class="col-lg-2">
-                                                <!-- Empty for alignment -->
-                                            </div>
+                                            <div class="col-lg-2"><!-- Spacer for alignment --></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         {% endfor %}
+                    {% endif %}
+
+                    {% if ai_attach %}
+                        <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">File</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for file_attach in ai_attach %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td><a href="{{ file_attach.file_path }}" target="_blank">{{ file_attach.attachment }}</a></td>
+                                        <!--
+                                        <td>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_ai_attachment('{{ file_attach.file_id }}','{{ file_attach.application_no }}')">
+                                                <i class="uil-trash"></i>
+                                            </button>
+                                        </td>
+                                        -->
+                                        <td></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+
                 </div>
-                <table id="basic-datatable" class="table dt-responsive nowrap w-100">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">File</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                       {% for file_attach in ai_attach %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
-                                <!-- <td>
-                                    <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_ai_attachment('{{ file_attach.file_id }}','{{ file_attach.application_no }}')"><i class="uil-trash"></i></button>
-                                </td> -->
-                            </tr>
-                            {% empty %}
-                            <tr>
-                              <td colspan="3" class="text-center">No Data</td>
-                            </tr>
-                       {% endfor %}
-                    </tbody>
-                </table>
             </div>
-            {% else %}
-            <!--
-                <div class="alert alert-info" role="alert">
-                    <strong> No Additional Information</strong>
-                </div>
-                -->
             {% endif %}
             <!-- Add spacing after the above section -->
             <div class="row mt-2 mb-2">
@@ -488,7 +505,7 @@
                                         <option value="">--SELECT--</option>
                                         {% for payment_details in pay_details %}
                                             <option value="{{ payment_details.account_head_code }}">{{ payment_details.account_head_name }}</option>
-                                        {% endfor %} 
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
@@ -563,7 +580,7 @@
                             </div>
                             <h5 class="card-title mb-0">Attach Rejection Letter/Justification</h5>
                             <div id="cardCollpase7" class="collapse pt-3 show">
-                                <div id="reject_file_attachment">
+                                <div id="reviewer_reject_file_attachment">
                                     {% include 'reject_attachment_page.html' %}
                                 </div>
                             </div>
@@ -647,6 +664,7 @@
                     </div>
                 </div>
                 <div class="col-md-12 draft_ec_div" style="display: none;">
+                    <!--
                     <div class="card">
                         <div class="card-body">
                             <table id="basic-datatable" class="table dt-responsive nowrap w-100" style="table-layout: fixed;">
@@ -679,6 +697,7 @@
                             </table>
                         </div>
                     </div>
+                    -->
                     <div class="card">
                         <div class="card-body">
                             <div class="card-widgets">
@@ -767,6 +786,7 @@
                 <div class="row additional_info_div">
                     <div class="col-lg-12">
                         <label class="form-label fw-bold mb-2">Additional Information Exchange</label>
+
                         {% for info in additional_info %}
                             <div class="mb-2 border rounded p-2">
 
@@ -861,7 +881,7 @@
                         </div>
                     </div>
                 </div>
-                    
+
                 <div class="col-md-12 eatc_attachment_details" style="display: none;">
                     <div class="card">
                         <div class="card-body">
@@ -1005,7 +1025,7 @@
                             </div>
                             <!-- CA Date -->
                             <div class="col-md-2">
-                                <label class="form-label fw-semibold mb-1 small">Response Request Date</label>
+                                <label class="form-label fw-semibold mb-1 small">Remarks Date</label>
                                 <input class="form-control form-control-sm"
                                     value="{{ info.additional_info_ca_date }}"
                                     disabled>
@@ -1103,6 +1123,7 @@
                 </div>
             </div>
             <div class="col-md-12 verifier_ec_draft_div" style="display: none;">
+                <!--
                 <table id="basic-datatable" class="table dt-responsive nowrap w-100" style="table-layout: fixed;">
                     <thead>
                         <tr>
@@ -1131,6 +1152,7 @@
                         </tr>
                     </tbody>
                 </table>
+                -->
                 <br>
                 <div class="card">
                     <div class="card-body">
@@ -1198,7 +1220,7 @@
                         </div>
                         <h5 class="card-title mb-0">Attach Rejection Letter/Justification</h5>
                         <div id="cardCollpase7" class="collapse pt-3 show">
-                            <div id="reject_file_attachment">
+                            <div id="verifier_reject_file_attachment">
                                 {% include 'reject_attachment_page.html' %}
                             </div>
                         </div>
@@ -1419,36 +1441,36 @@ aria-hidden="true">
     {% csrf_token %}
     <div class="modal fade" id="rev_lu_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-    <!--Content-->
-    <div class="modal-content form-elegant">
-    <!--Header-->
-    <div class="modal-header text-center">
-    <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
-                                            &nbsp;Attach</strong></h3>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-    </div>
-    <!--Body-->
-    <div class="modal-body mx-4">
-    <div class="row">
-        <div class="col-lg-6">
-            <div class="mb-3">
-                <label class="form-label fw-bold">Attachment</label>
-                <input type="file" name="rev_lu_attach" class="form-control" id="rev_lu_attach" accept=".pdf, .doc, .docx">
+        <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+            <div class="modal-content form-elegant">
+            <!--Header-->
+                <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Attach</strong></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <!--Body-->
+                <div class="modal-body mx-4">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Attachment</label>
+                                <input type="file" name="rev_lu_attach" class="form-control" id="rev_lu_attach" accept=".pdf, .doc, .docx">
+                            </div>
+                            <div class="alert alert-danger" id="rev_lu_attachErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer flex-center justify-content-center">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="save_rev_lu_attachment()">Add</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
-            <div class="alert alert-danger" id="rev_lu_attachErrorMsg" style="display:none"></div>
+        <!--/.Content-->
         </div>
     </div>
-    </div>
-    <div class="modal-footer flex-center justify-content-center">
-    <button type="button" class="btn btn-sm btn-primary" onclick="save_rev_lu_attachment()">Add</button>
-    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
-    </div>
-    </div>
-    <!--/.Content-->
-    </div>
-    </div>
-    </form>
+</form>
 
 <form method="post" id="draft_ec_form" enctype="multipart/form-data">
     {% csrf_token %}
@@ -1536,6 +1558,7 @@ aria-hidden="true">
         </div>
     </div>
 </form>
+
 
 <form method="post" id="edit_draft_ec_form" enctype="multipart/form-data">
 {% csrf_token %}
@@ -1811,6 +1834,7 @@ $(function() {
             case 'APP':
                 $('.eatc_attachment_div, .rev_lu_attachment_div, .LU_button').show();
                 break;
+
         }
     }
     else if(status == 'ALR' || status == 'ALA' || status == 'EATC' || status == 'RS' || status == 'LU')
@@ -1873,7 +1897,6 @@ function forwardApplication(identifier) {
     let record_id = $('#record_id').val();
     let reject_remarks = $('#reject_remarks').val();
     let reject_reason = $('#reject_reason').val();
-    let applicant_id = $('#email').val();
     const isInformationChecked = $('input[name="information"]:checked').length > 0;
     const isAddPaymentChecked = $('input[name="additional_payment"]:checked').length > 0;
     const isDecisionChecked = $('input[name="decision"]:checked').length > 0;
@@ -1981,6 +2004,7 @@ function forwardApplication(identifier) {
             return; // stop execution here
         }
     }
+
     if (identifier === 'DEC' && tat_ecr === "") {
         $('#tat_ecrErrorMsg').html("Please Enter Turn Around Time.");
         $('#tat_ecrErrorMsg').show();
@@ -2047,7 +2071,6 @@ function forwardApplication(identifier) {
     let postData = {
         'application_no': application_no,
         'identifier': identifier,
-        'applicant_id': applicant_id,
         csrfmiddlewaretoken: '{{ csrf_token }}'
     };
 
@@ -2083,8 +2106,8 @@ function forwardApplication(identifier) {
             $('.spinner-border').hide();
 
             if (data.message === 'success') {
-                let successMsg = identifier === 'A' ? "Application Approved" : 
-                identifier === 'P' ? "Payment Added" : 
+                let successMsg = identifier === 'A' ? "Application Approved" :
+                identifier === 'P' ? "Payment Added" :
                 "Application Forwarded Successfully";
 
                 $('#verifier_application_successMsg')
@@ -2119,7 +2142,7 @@ function forwardApplication(identifier) {
                 }
             } else {
                 var errorMsg = data.error;
-        
+
                 $('#verifier_application_errorMsg').html(`Application Error: ${data.error}`).show();
                 $('#verifier_application_errorMsg').focus();
 
@@ -2137,7 +2160,7 @@ function forwardApplication(identifier) {
             // Hide the loader in case of an error
             $('.spinner-border').hide();
             var errorMsg = data.error;
-        
+
             $('#verifier_application_errorMsg').html(`Application Error: ${data.error}`).show();
             $('#verifier_application_errorMsg').focus();
 
@@ -2225,16 +2248,18 @@ function check_decision(value)
     //alert(status);
     if(value == 'Yes')
     {
-        $('.eatc_attachment_div').show();
+        $('.eatc_attachment_div').hide();
         $('.reject_attachment_div').hide();
-        $('.rev_lu_attachment_div').show();
+        $('.rev_lu_attachment_div').hide();
         $('.reject_remarks_div').hide();
         $('.tat_div').hide();
         $('.reject_button').hide();
-        $('.LU_button').show();
+        $('.LU_button').hide();
         $('.AL_button').hide();
         $('#account_head').val("");
         $('#additional_payment_amount').val("");
+
+        $('.draft_ec_div, .ec_draft_button').show();
 
     }
     else
@@ -2243,6 +2268,7 @@ function check_decision(value)
         $('.eatc_attachment_div').hide();
         $('.rev_lu_attachment_div').hide();
         $('.reject_remarks_div').show();
+        $('.draft_ec_div, .ec_draft_button').hide();
         $('.tat_div').show();
         $('.reject_button').show();
         $('.LU_button').hide();
@@ -2258,12 +2284,11 @@ if(value == 'No')
 $('.lu_attachment_div').show();
 }
 else
-{ 
+{
 $('.lu_attachment_div').hide();
 }
 
 }
-
 function save_ec_draft() {
     let application_no = $('#application_no').val();
     let ec_reference_no = $('#ec_reference_no').val();
@@ -2518,11 +2543,30 @@ function save_reject_attachment()
                     data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
                     success : function(responseText)
                     {
-                        $('#reject_attachment_modal').modal('hide');
-                        $('#reject_file_attachment').html(responseText);
-                        $('.modal-backdrop').remove();
-                        $('#reject_attachment_form')[0].reset();
+                    //    $('#reject_attachment_modal').modal('hide');
+                    //    $('#reject_file_attachment').html(responseText);
+                    //    $('.modal-backdrop').remove();
+                    //    $('#reject_attachment_form')[0].reset();
+
+
+                        $('#reviewer_reject_file_attachment').html(responseText);
+                        $('#verifier_reject_file_attachment').html(responseText);
+
+                        // Focus on the visible div
+                        if ($('.reject_attachment_div').is(':visible')) {
+                            $('#reject_attachment_modal').modal('hide');
+                            $('#reviewer_reject_file_attachment').html(responseText);
+                            $('.modal-backdrop').remove();
+                            $('#reject_attachment_form')[0].reset();
+                        } else if ($('.reject_attachment_div_v').is(':visible')) {
+                           $('#reject_attachment_modal').modal('hide');
+                            $('#verifier_reject_file_attachment').html(responseText);
+                            $('.modal-backdrop').remove();
+                            $('#reject_attachment_form')[0].reset();
+                        }
+
                     }
+
                 });
             }
             else
@@ -2823,17 +2867,56 @@ success : function(responseText)
 });
 }
 
-function check_ec_draft_type(value)
-{
-    if(value=="Terms")
-    {
-        $('.heading_div').show();
+function check_ec_draft_type(value) {
+    const contentLabel = document.getElementById('content_label');
+    const headingDiv = document.querySelector('.heading_div');
+    const orderField = document.getElementById('order');
+    const headingField = document.getElementById('ec_heading');
+
+    // Hide all error messages when type changes
+    document.getElementById('ec_typeErrorMsg').style.display = 'none';
+    document.getElementById('orderErrorMsg').style.display = 'none';
+    document.getElementById('ec_headingErrorMsg').style.display = 'none';
+    document.getElementById('ec_termsErrorMsg').style.display = 'none';
+
+    // Update label and visibility based on type
+    switch(value) {
+        case 'Header':
+            contentLabel.textContent = 'Header Content';
+            headingDiv.style.display = 'none';
+            // Clear fields when not needed
+            orderField.value = '';
+            headingField.value = '';
+            break;
+
+        case 'Footer':
+            contentLabel.textContent = 'Footer Content';
+            headingDiv.style.display = 'none';
+            // Clear fields when not needed
+            orderField.value = '';
+            headingField.value = '';
+            break;
+
+        case 'Terms':
+            contentLabel.textContent = 'EC Terms and Conditions';
+            headingDiv.style.display = 'block';
+            break;
+
+        default:
+            contentLabel.textContent = 'EC Content';
+            headingDiv.style.display = 'none';
+            // Clear all fields when no type selected
+            orderField.value = '';
+            headingField.value = '';
+            break;
     }
-    else
-    {
-        $('.heading_div').hide();
+
+    // Clear the Quill editor content if it exists
+    if (window.quillEditor) {
+        window.quillEditor.setContents([]);
     }
 }
+
 
 function check_edit_ec_draft_type(value)
 {

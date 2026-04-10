@@ -2,6 +2,10 @@
    EC CARD & BUTTON STYLES
 ============================== */
 
+#approveButtonDiv {
+    display: flex !important;
+}
+
 .ec-card-title {
     font-size: 15px;
     font-weight: 600;

@@ -1,62 +1,141 @@
 {% extends 'common_dashboard.html' %}
 {% block content %}
 <div id="other_modification_details">
-    <div class="card mt-1">
-        <div class="card-body">
-            {% if identifier == 'NC' %}
-                <h5 class="card-title mb-0 text-right">Name Change</h5>
-            {% elif identifier == 'OC' %}
-                <h5 class="card-title mb-0 text-right">Ownership Change</h5>
-            {% elif identifier == 'TC' %}
-                <h5 class="card-title mb-0 text-right">Technology Change</h5>
-            {% elif identifier == 'PC' %}
-                <h5 class="card-title mb-0 text-right">Product Change</h5>
-            {% elif identifier == 'CC' %}
-                <h5 class="card-title mb-0 text-right">Capacity Change</h5>
-            {% elif identifier == 'AC' %}
-                <h5 class="card-title mb-0 text-right">Area Change</h5>
-            {% else %}
-                <h5 class="card-title mb-0 text-right">Location Change</h5>
-            {% endif %}
-            <div id="cardCollpase1" class="collapse pt-3 show">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="mb-3">
-                            <form id="other_modification_form" method="post">
-                                <input type="hidden" name="identifier" id="identifier" value="{{identifier}}">
-                                <label class="form-label fw-bold">EC Reference No</label>
-                                <select id="ec_reference_no" name="ec_reference_no" class="form-control">
-                                    <option value="">--SELECT-</option>
-                                    {% for application_details in application_details %}
-                                        <option value="{{ application_details.ec_reference_no }}">{{ application_details.ec_reference_no }}</option>
-                                    {% endfor %}
-                                </select>
-                                <button class="btn btn-primary mt-1" type="button" onclick="getECDetails()">
-                                    Submit <i class="uil uil-arrow-right"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<script>
-    function getECDetails()
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'get_other_modification_details' %}",
-            data :$('#other_modification_form').serialize(),
-            success : function(data)
-            {
-                $('#other_modification_details').html(data);
-                $('#other_modification_details').show();
-            }
-        });
-    }
-</script>
-{% endblock %}       
+  <div class="card mt-1">
+    <div class="card-body">
+      {% if identifier == 'NC' %}
+        <h5 class="card-title mb-0 text-right">Name Change</h5>
+      {% elif identifier == 'OC' %}
+        <h5 class="card-title mb-0 text-right">Ownership Change</h5>
+      {% elif identifier == 'TC' %}
+        <h5 class="card-title mb-0 text-right">Technology Change</h5>
+      {% elif identifier == 'PC' %}
+        <h5 class="card-title mb-0 text-right">Product Change</h5>
+      {% elif identifier == 'CC' %}
+        <h5 class="card-title mb-0 text-right">Capacity Change</h5>
+      {% elif identifier == 'AC' %}
+        <h5 class="card-title mb-0 text-right">Area Change</h5>
+      {% elif identifier == 'LC' %}
+        <h5 class="card-title mb-0 text-right">Location Change</h5>
+      {% endif %}
 
-                    
+      <div id="cardCollpase1" class="collapse pt-3 show">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <form id="other_modification_form" method="get">
+                <input type="hidden" name="identifier" id="identifier" value="{{ identifier }}">
+                <label class="form-label fw-bold">EC Reference No</label>
+
+                {% if identifier == 'OC' %}
+                  <input type="text" id="ec_reference_no" name="ec_reference_no"
+                         class="form-control" placeholder="Enter EC Reference Number">
+                  <small class="form-text text-muted">Please enter the EC Reference Number manually</small>
+                {% else %}
+                  <select id="ec_reference_no" name="ec_reference_no" class="form-control">
+                    <option value="">--SELECT--</option>
+                    {% for application_details in application_details %}
+                      <option value="{{ application_details.ec_reference_no }}">{{ application_details.ec_reference_no }}</option>
+                    {% endfor %}
+                  </select>
+                {% endif %}
+
+                <div id="formErrorMsg" class="alert alert-danger d-none mt-2" role="alert"></div>
+
+                <button class="btn btn-primary mt-1" id="submitBtn" type="button" onclick="getECDetails()">
+                  Submit <i class="uil uil-arrow-right"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  function qs(sel) { return document.querySelector(sel); }
+
+  function showError(message, focusSelector) {
+    const box = qs('#formErrorMsg');
+    if (box) {
+      box.textContent = message;
+      box.classList.remove('d-none');
+      box.style.display = '';
+    } else {
+      alert(message);
+    }
+    if (focusSelector) {
+      const el = qs(focusSelector);
+      if (el) {
+        setTimeout(function () {
+          el.focus();
+          const top = el.getBoundingClientRect().top + window.pageYOffset - 100;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }, 20);
+      }
+    }
+  }
+
+  function clearError() {
+    const box = qs('#formErrorMsg');
+    if (box) {
+      box.textContent = '';
+      box.classList.add('d-none');
+      box.style.display = 'none';
+    }
+  }
+
+  window.getECDetails = function () {
+    clearError();
+
+    const identifier = (qs('#identifier')?.value || '').trim();
+    const ecReferenceNo = (qs('#ec_reference_no')?.value || '').trim();
+    const btn = qs('#submitBtn');
+
+    // Validation
+    if (identifier === 'OC') {
+      if (!ecReferenceNo) {
+        showError('Enter EC Reference No', '#ec_reference_no');
+        return;
+      }
+    } else {
+      if (!ecReferenceNo) {
+        showError('Please select an EC Reference No', '#ec_reference_no');
+        return;
+      }
+    }
+
+    // Choose target URL
+    const targetUrl =
+      identifier === 'NC'
+        ? "{% url 'name_change' %}"
+        : identifier === 'OC'
+          ? "{% url 'ownership_change' %}"
+          : "{% url 'other_change' %}";
+
+    // Navigate with parameters - FIXED: removed extra $$ characters
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = 'Processing... <i class="uil uil-spinner-alt"></i>';
+    }
+    const url = `${targetUrl}?identifier=${encodeURIComponent(identifier)}&ec_reference_no=${encodeURIComponent(ecReferenceNo)}`;
+    window.location.href = url;
+  };
+
+  // Uppercase OC input as user types + clear error
+  document.addEventListener('DOMContentLoaded', function () {
+    const idEl = qs('#identifier');
+    const input = qs('#ec_reference_no');
+    if (idEl && input && idEl.value === 'OC') {
+      input.addEventListener('input', function (e) {
+        e.target.value = (e.target.value || '').toUpperCase();
+        clearError();
+      });
+    }
+  });
+})();
+</script>
+{% endblock %}

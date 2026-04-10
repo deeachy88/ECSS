@@ -38,6 +38,8 @@
                                                 <td class="text-warning">Pending</td>
                                             {% elif application_list.application_status == 'A' %}
                                                 <td class="text-success">Approved</td>
+                                            {% elif application_list.application_status == 'OC' %}
+                                                <td class="text-success">Application waiting for OC Acceptance</td>
                                             {% else %}
                                                 <td class="text-warning">Pending</td>
                                             {% endif %}

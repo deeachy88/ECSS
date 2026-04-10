@@ -2,39 +2,11 @@
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
+            <h5 class="card-title mb-0 text-right">
+                <span style="color: #d9534f; font-weight: bold;">Ownership Change:</span>
+                EC Reference Number:- {{application_details.ec_reference_no}}
+            </h5>
             <div class="card-body">
-                <h5 class="card-title mb-0 text-right">
-                    <span style="color: #d9534f; font-weight: bold;">
-                        {% if application_details.application_type == 'New' %}New EC
-                        {% elif application_details.application_type == 'AC' %}Area Change
-                        {% elif application_details.application_type == 'CC' %}Capacity Change
-                        {% elif application_details.application_type == 'PC' %}Product Change
-                        {% elif application_details.application_type == 'TC' %}Technology Change
-                        {% elif application_details.application_type == 'LC' %}Location Change
-                        {% else %}Other Modification
-                        {% endif %}:
-                    </span>
-                    Application Number:- {{ application_details.application_no }}
-                </h5>
-                {% if application_details.service_id == 1 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Industry Projects</h4>
-                {% elif application_details.service_id == 2 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Energy Projects</h4>
-                {% elif application_details.service_id == 3 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Road Projects</h4>
-                {% elif application_details.service_id == 4 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Transmission Projects</h4>
-                {% elif application_details.service_id == 5 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Tourism Projects</h4>
-                {% elif application_details.service_id == 6 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Ground Water Projects</h4>
-                {% elif application_details.service_id == 7 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Forest Projects</h4>
-                {% elif application_details.service_id == 8 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Quarry Projects</h4>
-                {% elif application_details.service_id == 9 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for General Projects</h4>
-                {% endif %}
                 <div id="rootwizard">
                     <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
                         <li class="nav-item" data-target-form="#accountForm">
@@ -61,11 +33,52 @@
                                     <p class="distinct-activity">{{application_details.activity}}</p>
                                 </div>
                             </div>
+                            <div class="alert alert-success border-0" role="alert">
+                              <i class="uil-user-plus me-1 h4 align-middle"></i> NEW OWNER / BUYER's Details
+                            </div>
+                            <div class="row">
+                              <div class="col-lg-4">
+                                <div class="mb-3">
+                                  <label class="form-label fw-bold">Name of the Buyer</label>
+                                  <input type="text" class="form-control" value="{{ application_details.buyer_applicant_name }}" readonly>
+                                </div>
+                              </div>
+                              <div class="col-lg-4">
+                                <div class="mb-3">
+                                  <label class="form-label fw-bold">Buyer Address</label>
+                                  <input type="text" class="form-control" value="{{ application_details.buyer_address }}" readonly>
+                                </div>
+                              </div>
+                              <div class="col-lg-4">
+                                <div class="mb-3">
+                                  <label class="form-label fw-bold">Buyer Contact No</label>
+                                  <input type="text" class="form-control" value="{{ application_details.buyer_contact_no }}" readonly>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-lg-4">
+                                <div class="mb-3">
+                                  <label class="form-label fw-bold">Email of the Buyer</label>
+                                  <input type="text" class="form-control" value="{{ application_details.buyer_email }}" readonly>
+                                </div>
+                              </div>
+                              <div class="col-lg-8">
+                                <div class="mb-3">
+                                  <label class="form-label fw-bold">Buyer Focal Person and Contact Details</label>
+                                  <input type="text" class="form-control" value="{{ application_details.buyer_focal_person }}" readonly>
+                                  <input type="hidden" class="form-control" value="{{ application_details.buyer_proponent_type }}" >
+                                </div>
+                              </div>
+                            </div>
+                            <div class="alert alert-success border-0" role="alert">
+                              <i class="uil-user-plus me-1 h4 align-middle"></i> EXISTING OWNER / SELLER's Details
+                            </div>
                             <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Name of the Applicant</label>
-                                        <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{application_details.applicant_name}}" disabled> 
+                                        <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{application_details.applicant_name}}" disabled>
                                     </div>
                                     <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
@@ -213,21 +226,11 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="tab-pane fade" id="second">
-                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
-                                <div class="col-lg-12">
-                                    <table class="table table-hover table-bordered table-centered mb-0">
-                                        <tbody id="attachments_tbody">
-                                            {{ attachments|safe }}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title mb-0">Attachments</h5>
+                                        <h5 class="card-title mb-0">Attachments (Supporting Dcouments)</h5>
                                         <div id="cardCollpase7" class="collapse pt-3 show">
                                             <div id="general_attachment">
                                                 <table id="basic-datatable" class="table dt-responsive nowrap w-100">
@@ -295,7 +298,7 @@
                                                           readonly>{{ info.additional_info_ca }}</textarea>
                                             </div>
                                             <div class="col-lg-2">
-                                                <label class="form-label small fw-bold">Response Request Date</label>
+                                                <label class="form-label small fw-bold">Remarks Date</label>
                                                 <input class="form-control form-control-sm"
                                                        type="text"
                                                        value="{{ info.additional_info_ca_date }}"
@@ -488,7 +491,7 @@
                                         <option value="">--SELECT--</option>
                                         {% for payment_details in pay_details %}
                                             <option value="{{ payment_details.account_head_code }}">{{ payment_details.account_head_name }}</option>
-                                        {% endfor %} 
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
@@ -570,6 +573,7 @@
                         </div>
                     </div>
                 </div>
+                <!--
                 <div class="col-md-12 eatc_attachment_div" style="display: none;">
                     <div class="card">
                         <div class="card-body">
@@ -585,6 +589,7 @@
                         </div>
                     </div>
                 </div>
+                -->
                 <div class="row fines_penalty_div" style="display: none;">
                     <div class="col-lg-6">
                         <div class="mb-3">
@@ -652,18 +657,12 @@
                             <table id="basic-datatable" class="table dt-responsive nowrap w-100" style="table-layout: fixed;">
                                 <thead>
                                     <tr>
-                                        <th scope="col" style="width: 33.33%;">Commitee & Field Verification Paper</th>
-                                        <th scope="col" style="width: 33.33%;">Draft Legal Undertaking</th>
-                                        <th scope="col" style="width: 33.34%;">Legal Undertaking Attached</th>
+                                        <th scope="col" style="width: 50%;">Draft Legal Undertaking</th>
+                                        <th scope="col" style="width: 50%;">Legal Undertaking Attached</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>
-                                            {% for rev_lu_attach in eatc_attach %}
-                                                <a class="btn btn-primary btn-sm mb-1 d-block" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
-                                            {% endfor %}
-                                        </td>
                                         <td>
                                             {% for rev_lu_attach in rev_lu_attach %}
                                                 <a class="btn btn-primary btn-sm mb-1 d-block" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
@@ -767,6 +766,7 @@
                 <div class="row additional_info_div">
                     <div class="col-lg-12">
                         <label class="form-label fw-bold mb-2">Additional Information Exchange</label>
+
                         {% for info in additional_info %}
                             <div class="mb-2 border rounded p-2">
 
@@ -861,7 +861,7 @@
                         </div>
                     </div>
                 </div>
-                    
+
                 <div class="col-md-12 eatc_attachment_details" style="display: none;">
                     <div class="card">
                         <div class="card-body">
@@ -1005,7 +1005,7 @@
                             </div>
                             <!-- CA Date -->
                             <div class="col-md-2">
-                                <label class="form-label fw-semibold mb-1 small">Response Request Date</label>
+                                <label class="form-label fw-semibold mb-1 small">Remarks Date</label>
                                 <input class="form-control form-control-sm"
                                     value="{{ info.additional_info_ca_date }}"
                                     disabled>
@@ -1032,6 +1032,8 @@
                     </div>
                 {% endfor %}
                 </div>
+                {% endif %}
+                {% if ai_attach %}
                 <table id="basic-datatable" class="table dt-responsive nowrap w-100">
                     <thead>
                         <tr>
@@ -1106,18 +1108,12 @@
                 <table id="basic-datatable" class="table dt-responsive nowrap w-100" style="table-layout: fixed;">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 33.33%;">Commitee & Field Verification Paper</th>
                             <th scope="col" style="width: 33.33%;">Draft Legal Undertaking</th>
                             <th scope="col" style="width: 33.34%;">Legal Undertaking Attached</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>
-                                {% for rev_lu_attach in eatc_attach %}
-                                    <a class="btn btn-primary btn-sm mb-1 d-block" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
-                                {% endfor %}
-                            </td>
                             <td>
                                 {% for rev_lu_attach in rev_lu_attach %}
                                     <a class="btn btn-primary btn-sm mb-1 d-block" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
@@ -1873,7 +1869,6 @@ function forwardApplication(identifier) {
     let record_id = $('#record_id').val();
     let reject_remarks = $('#reject_remarks').val();
     let reject_reason = $('#reject_reason').val();
-    let applicant_id = $('#email').val();
     const isInformationChecked = $('input[name="information"]:checked').length > 0;
     const isAddPaymentChecked = $('input[name="additional_payment"]:checked').length > 0;
     const isDecisionChecked = $('input[name="decision"]:checked').length > 0;
@@ -1943,10 +1938,10 @@ function forwardApplication(identifier) {
         // Check if both attachments are empty
         const revLuHasFiles = $('#rev_lu_file_attachment tbody tr td:contains("No Data")').length === 0 &&
                              $('#rev_lu_file_attachment tbody tr').length > 0;
-        const eatcHasFiles = $('#eatc_file_attachment tbody tr td:contains("No Data")').length === 0 &&
-                            $('#eatc_file_attachment tbody tr').length > 0;
-        if (!revLuHasFiles || !eatcHasFiles) {
-            $('#luErrorMsg').html("Please upload attachments for both Legal Undertaking and Committee/Field Verification sections before submitting.");
+        //const eatcHasFiles = $('#eatc_file_attachment tbody tr td:contains("No Data")').length === 0 &&
+        //                    $('#eatc_file_attachment tbody tr').length > 0;
+        if (!revLuHasFiles) {
+            $('#luErrorMsg').html("Please upload Draft Legal Undertaking and Committee before submitting.");
             $('#luErrorMsg').show();
             $('#luErrorMsg').delay(2000).fadeOut('slow');
             $('#luErrorMsg').focus();
@@ -1981,6 +1976,7 @@ function forwardApplication(identifier) {
             return; // stop execution here
         }
     }
+
     if (identifier === 'DEC' && tat_ecr === "") {
         $('#tat_ecrErrorMsg').html("Please Enter Turn Around Time.");
         $('#tat_ecrErrorMsg').show();
@@ -2047,7 +2043,6 @@ function forwardApplication(identifier) {
     let postData = {
         'application_no': application_no,
         'identifier': identifier,
-        'applicant_id': applicant_id,
         csrfmiddlewaretoken: '{{ csrf_token }}'
     };
 
@@ -2083,8 +2078,8 @@ function forwardApplication(identifier) {
             $('.spinner-border').hide();
 
             if (data.message === 'success') {
-                let successMsg = identifier === 'A' ? "Application Approved" : 
-                identifier === 'P' ? "Payment Added" : 
+                let successMsg = identifier === 'A' ? "Application Approved" :
+                identifier === 'P' ? "Payment Added" :
                 "Application Forwarded Successfully";
 
                 $('#verifier_application_successMsg')
@@ -2119,7 +2114,7 @@ function forwardApplication(identifier) {
                 }
             } else {
                 var errorMsg = data.error;
-        
+
                 $('#verifier_application_errorMsg').html(`Application Error: ${data.error}`).show();
                 $('#verifier_application_errorMsg').focus();
 
@@ -2137,7 +2132,7 @@ function forwardApplication(identifier) {
             // Hide the loader in case of an error
             $('.spinner-border').hide();
             var errorMsg = data.error;
-        
+
             $('#verifier_application_errorMsg').html(`Application Error: ${data.error}`).show();
             $('#verifier_application_errorMsg').focus();
 
@@ -2258,7 +2253,7 @@ if(value == 'No')
 $('.lu_attachment_div').show();
 }
 else
-{ 
+{
 $('.lu_attachment_div').hide();
 }
 

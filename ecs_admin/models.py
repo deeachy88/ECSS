@@ -53,7 +53,7 @@ class t_dzongkhag_master(models.Model):
     dzongkhag_name = models.CharField(max_length=100,default=None, null=True)
 
     def __str__(self):
-        return self.Dzongkhag_Name
+        return self.dzongkhag_name or ""
 
 
 class t_gewog_master(models.Model):
@@ -106,6 +106,7 @@ class t_competant_authority_master(models.Model):
     competent_authority_id = models.AutoField(primary_key=True)
     competent_authority = models.CharField(max_length=100)
     dzongkhag_code = models.ForeignKey(t_dzongkhag_master, on_delete=models.CASCADE, null=True, blank=True)
+    thromde_id = models.ForeignKey(t_thromde_master, on_delete=models.CASCADE, null=True, blank=True,db_column="thromde_id")
     remarks = models.CharField(max_length=250, default=None, blank=True, null=True)
 
 class t_location_field_office_mapping(models.Model):
