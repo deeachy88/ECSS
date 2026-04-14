@@ -1,0 +1,133 @@
+{% extends 'common_dashboard.html' %}
+
+{% block content %}
+
+<div id="Application_Details">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mt-1">
+                    <div class="card-body">
+                        <h5 class="card-title mb-0">Additional Information Requested</h5>
+                        <div id="cardCollpase1" class="collapse pt-3 show">
+                            <table id="basic-datatable" class="table table-hover dt-responsive nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Application Number</th>
+                                        <th scope="col">Proponent</th>
+                                        <th scope="col">Additional Information Required</th>
+                                        <th scope="col">AI Request Date</th>
+                                        <th scope="col">Due Date</th>
+                                        <!-- Dedicated Reminders Column -->
+                                        <th scope="col">Reminders</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for application in application_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ application.application_no }}</td>
+                                        <td>{{ application.applicant_name }}</td>
+
+                                        <!-- The Specific AI Request -->
+                                        <td style="white-space: normal; min-width: 250px;">
+                                            {{ application.additional_info_ca }}
+                                        </td>
+
+                                        <td>{{ application.additional_info_ca_date|date:"d M Y" }}</td>
+                                        <td>{{ application.additional_info_due_date|date:"d M Y" }}</td>
+
+                                        <!-- Reminders Button for THIS Specific AI Request -->
+                                        <td>
+                                            {% if application.reminder_count > 0 %}
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-sm btn-info text-white rounded-pill"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#reminderModal"
+                                                    data-app-no="{{ application.application_no }}"
+                                                    data-reminders="{% for r in application.reminder_list %}{{ r.reminder_sent|date:'d M Y' }}{% if not forloop.last %}|{% endif %}{% endfor %}"
+                                                >
+                                                    <i class="mdi mdi-bell-ring-outline"></i>
+                                                    {{ application.reminder_count }} Reminder{{ application.reminder_count|pluralize }}
+                                                </button>
+                                            {% else %}
+                                                <span class="badge bg-light text-secondary border">0 Reminders</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4 text-muted">No Additional Information Requests Found</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reminder Modal (Kept safely outside the table to prevent layout breaking) -->
+<div class="modal fade" id="reminderModal" tabindex="-1" aria-labelledby="reminderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reminderModalLabel">Reminders Sent History</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3 text-muted">
+                    Application No: <strong id="modalAppNo" class="text-dark"></strong>
+                </p>
+                <div id="reminderDateList" class="list-group">
+                    <!-- Reminder dates will be injected here by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to handle modal population -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const reminderModal = document.getElementById('reminderModal');
+
+        if (reminderModal) {
+            reminderModal.addEventListener('show.bs.modal', function (event) {
+                const triggerBtn = event.relatedTarget;
+                const appNo = triggerBtn.getAttribute('data-app-no');
+                const remindersStr = triggerBtn.getAttribute('data-reminders');
+
+                // Set application number
+                document.getElementById('modalAppNo').textContent = appNo;
+
+                // Clear previous list
+                const listEl = document.getElementById('reminderDateList');
+                listEl.innerHTML = '';
+
+                // Populate with new list
+                if (remindersStr) {
+                    const dates = remindersStr.split('|');
+                    dates.forEach(function(dateStr, index) {
+                        const div = document.createElement('div');
+                        div.className = 'list-group-item d-flex justify-content-between align-items-center';
+                        div.innerHTML = `
+                            <span><i class="mdi mdi-calendar-check text-success me-2"></i> Sent on: <strong>${dateStr}</strong></span>
+                        `;
+                        listEl.appendChild(div);
+                    });
+                }
+            });
+        }
+    });
+</script>
+
+{% endblock %}

@@ -6,34 +6,81 @@
 /* Print-friendly styles */
 @media print {
     .no-print, .no-print * { display: none !important; }
-    body { font-size: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .card, .card-header, .card-body { border: none !important; box-shadow: none !important; }
-    table { width: 100% !important; border-collapse: collapse !important; }
-    thead { display: table-header-group; } /* repeat table header on each printed page */
+    body {
+        font-size: 10px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        margin: 0.5in;
+    }
+    .card, .card-header, .card-body {
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 9px !important;
+    }
+    thead { display: table-header-group; }
     tfoot { display: table-footer-group; }
-    .table th, .table td { padding: 6px !important; }
+    .table th, .table td {
+        padding: 3px !important;
+        word-wrap: break-word;
+        overflow: hidden;
+    }
+    /* Column width optimization for print */
+    .table th:nth-child(1), .table td:nth-child(1) { width: 5%; } /* # */
+    .table th:nth-child(2), .table td:nth-child(2) { width: 15%; } /* Proponent */
+    .table th:nth-child(3), .table td:nth-child(3) { width: 20%; } /* Project Name */
+    .table th:nth-child(4), .table td:nth-child(4) { width: 15%; } /* Activity */
+    .table th:nth-child(5), .table td:nth-child(5) { width: 10%; } /* Contact */
+    .table th:nth-child(6), .table td:nth-child(6) { width: 15%; } /* Email */
+    .table th:nth-child(7), .table td:nth-child(7) { width: 12%; } /* Address */
+    .table th:nth-child(8), .table td:nth-child(8) { width: 8%; } /* Application Date */
+
+    /* Force page orientation to landscape for better fit */
+    @page {
+        size: A4 landscape;
+        margin: 0.5in;
+    }
+
+    /* Break long text */
+    .table td {
+        word-break: break-word;
+        hyphens: auto;
+    }
 }
-/* Optional: keep header layout tight on screen */
+
+/* Screen styles */
 .card-header .btn { white-space: nowrap; }
+
+/* Responsive table improvements */
+@media screen and (max-width: 768px) {
+    .table-responsive {
+        font-size: 12px;
+    }
+}
 </style>
 
+
 <div id="ECDetails">
-    <div class="animated fadeIn">
+   <div class="animated fadeIn">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title mb-0">Report</h4>
-                        <!-- Top-right Print Button -->
-                        <button type="button" class="btn btn-primary btn-sm no-print" onclick="window.print()">
-                            <i class="fas fa-print"></i> Print
+                        <div>
+                            <h5 class="mb-1">Environment Clearance Services</h5>
+                            <small class="text-muted">List of Environmental Clearance issued</small>
+                        </div>
+
+                        <button type="button" class="btn btn-outline-secondary btn-sm no-print" onclick="window.print()">
+                        Print
                         </button>
                     </div>
-
                     <div class="card-body">
-                        <h4 class="card-title">List of Environment Clearance Issued.</h4>
-
                         <div class="table-responsive">
                             <table id="basic-datatable" class="table dt-responsive table-sm table-centered mb-0 table-bordered">
                                 <thead>

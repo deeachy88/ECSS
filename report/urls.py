@@ -30,4 +30,7 @@ urlpatterns = [
     path('ec_renewal_list', views.ec_renewal_list, name='ec_renewal_list'),
     path('send_notification', views.send_notification, name='send_notification'),
 
+#ADDITIONAL Information
+    path('ai_list', views.ai_list, name='ai_list'),
+
 ]

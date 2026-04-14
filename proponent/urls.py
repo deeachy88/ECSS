@@ -92,6 +92,7 @@ urlpatterns = [
     #EC PRint
     path('ec_print_list', views.ec_print_list, name='ec_print_list'),
     path('view_print_details', views.view_print_details, name='view_print_details'),
+    path('public/ec/<str:ec_reference_no>/', views.view_ec, name='view_ec'),
 
     #NDI
     path('proof_request/', views.proof_request, name='proof_request'),
@@ -109,6 +110,8 @@ urlpatterns = [
     #Payment_part
     path('ecss_payment_update', views.ecss_payment_update, name='ecss_payment_update'),
     path('ecss_payment_reversal', views.ecss_payment_reversal, name='ecss_payment_reversal'),
+
+
 
 
 ]

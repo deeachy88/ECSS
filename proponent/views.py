@@ -19,6 +19,7 @@ from django.db.models import Count, Subquery, OuterRef,Exists
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
+from django.http import HttpResponse
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Max
@@ -3896,6 +3897,8 @@ def report_list(request):
     login_id = request.session['login_id']
     email_id = request.session['email']
 
+    print(login_type, login_id, email_id)
+
     user_list = t_user_master.objects.all()
     ec_details = t_ec_application_t1.objects.all()
 
@@ -3908,7 +3911,7 @@ def report_list(request):
     context = {}
 
     if login_type == 'C':
-        report_list = t_report_submission_t1.objects.filter(created_by=login_id).order_by('submission_date')
+        report_list = t_report_submission_t1.objects.filter(created_by=email_id).order_by('submission_date')
 
         # Get application history count
         oc_application_count = t_ec_application_t1.objects.filter(
@@ -4003,10 +4006,12 @@ def report_list(request):
         report_list = t_report_submission_t1.objects.filter(ca_authority=ca_authority).exclude(report_status='Pending').values().order_by('submission_date')
 
         v_application_count = t_workflow_dtls.objects.filter(
-            assigned_role_id='2', assigned_role_name='Verifier', ca_authority=ca_authority
+            assigned_role_id='2',
+            assigned_role_name='Verifier',
+            action_date__isnull=False,
+            application_status__in=['P', 'DEC', 'AL', 'FT', 'V', 'RRJ'],
+            ca_authority=ca_authority
         ).count()
-
-        expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
         # Renewal exists AND is NOT approved
         pending_renewal_exists = t_ec_application_t1.objects.filter(
@@ -4064,16 +4069,17 @@ def view_report_details(request):
 
 def viewDraftReport(request, report_reference_no):
     applicant = request.session['email']
+    print(report_reference_no)
     ec_details = t_ec_application_t1.objects.filter(ec_reference_no__isnull=False, applicant_id=applicant)
     report_details = t_report_submission_t1.objects.filter(report_reference_no=report_reference_no)
-    details = t_report_submission_t2.objects.filter(report_reference_no=report_reference_no)
+    report_submission = t_report_submission_t2.objects.filter(report_reference_no=report_reference_no)
     file_attach = t_file_attachment.objects.filter(application_no=report_reference_no)
     return render(request, 'report_submission/report_submission_draft.html',
-                  {'report_details':report_details, 'details':details, 'ec_details':ec_details, 'file_attach':file_attach})
+                  {'report_details':report_details, 'report_submission':report_submission, 'ec_details':ec_details, 'file_attach':file_attach})
 
 def report_submission_form(request):
     applicant = request.session['email']
-    ec_details = t_ec_application_t1.objects.filter(ec_reference_no__isnull=False,applicant_id=applicant)
+    ec_details = t_ec_t1.objects.filter(ec_reference_no__isnull=False,applicant_id=applicant).order_by('ec_reference_no')
     app_hist_count = t_application_history.objects.filter(
             applicant_id=request.session['email']
         ).distinct('application_no').count()
@@ -4082,6 +4088,7 @@ def report_submission_form(request):
 def save_report_submission(request):
     data = dict()
     service_code = 'rpt'
+    print('inside save_report_submission')
     reference_no = get_report_submission_ref_no(request, service_code)
     submission_year = request.POST.get('submission_year')
     submission_date = request.POST.get('submission_date')
@@ -4173,6 +4180,8 @@ def save_report_details(request):
 def delete_report_details(request):
     record_id = request.GET.get('record_id')
     reference_no = request.GET.get('refNo')
+    print(record_id)
+    print(reference_no)
     record = t_report_submission_t2.objects.filter(record_id=record_id)
     record.delete()
     report_submission = t_report_submission_t2.objects.filter(report_reference_no=reference_no)
@@ -4189,14 +4198,14 @@ def add_report_file(request):
     data = dict()
     myFile = request.FILES['document']
     app_no = request.POST.get('appNo')
-    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
-    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ecs_main")
+    file_name = app_no + "_" + myFile.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/REPORT")
     if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
         fs.save(file_name, myFile)
         file_url = "attachments" + "/" + str(
-            timezone.now().year) + "/ecs_main" + "/" + file_name
+            timezone.now().year) + "/REPORT" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
         data['file_name'] = file_name
@@ -4212,18 +4221,23 @@ def add_report_file_name(request):
     file_attach = t_file_attachment.objects.filter(application_no=app_no)
     return render(request, 'report_submission/report_file_attachment.html', {'file_attach': file_attach})
 
-
 def delete_report_file(request):
     file_id = request.GET.get('file_id')
     referenceNo = request.GET.get('refNo')
-    file = t_file_attachment.objects.filter(pk=file_id)
+
+    file = t_file_attachment.objects.filter(file_id=file_id)
+
     for file in file:
-        fileName = file.attachment
-        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ecs_main")
-        fs.delete(str(fileName))
+        file_name = file.attachment
+        file_n = f"{referenceNo}_{file_name}"
+        print(file_n)
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/REPORT")
+        fs.delete(str(file_n))
     file.delete()
+
     file_attach = t_file_attachment.objects.filter(application_no=referenceNo)
-    return render(request, 'report_submission/report_file_attachment.html', {'file_attach': file_attach})
+    return render(request, 'report_submission/report_file_attachment.html', {'file_attach':file_attach})
+
 
 
 def submit_report_form(request):
@@ -4247,6 +4261,7 @@ def acknowledge_report(request):
 # EC PRINT DETAILS
 def ec_print_list(request):
     applicant_id = request.session.get('email', None)
+    login_id = request.session.get('login_id')
     assigned_user_id = request.session.get('login_id', None)
     ca_authority = request.session.get('ca_authority', None)
 
@@ -4256,6 +4271,9 @@ def ec_print_list(request):
     payment_count = 0
     draft_count = 0
     old_ec_draft_count = 0
+    v_application_count = 0
+    r_application_count = 0
+    p_application_count = 0
     # Count the number of t_application_history objects related to the logged-in user
     app_hist_count = 0
     if applicant_id:
@@ -4281,6 +4299,8 @@ def ec_print_list(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
+
+    service_details = t_service_master.objects.all()
     # Fixed: Role-based logic with proper conditions
     if ca_authority:
         # Retrieve t_ec_application_t1 objects with application_status='A' and service_type="Main Activity"
@@ -4291,15 +4311,30 @@ def ec_print_list(request):
         v_application_count = t_workflow_dtls.objects.filter(
             assigned_role_id='2',
             assigned_role_name='Verifier',
-            ca_authority=ca_authority  # Fixed: Use local variable instead of session
+            action_date__isnull=False,
+            application_status__in=['P', 'DEC', 'AL', 'FT', 'V', 'RRJ'],
+            ca_authority=request.session['ca_authority']
         ).count()
         # Count the number of t_workflow_dtls objects with assigned_role_id='3',
         # assigned_role_name='Reviewer', and ca_authority matching the logged-in user's 'ca_authority'
+        # Reviewer application count
         r_application_count = t_workflow_dtls.objects.filter(
             assigned_role_id='3',
+            assigned_user_id=login_id,
             assigned_role_name='Reviewer',
-            ca_authority=ca_authority  # Fixed: Use local variable instead of session
+            ca_authority=ca_authority
         ).count()
+        # Reviewer application count Payment List
+        p_application_count = t_workflow_dtls.objects.filter(
+            assigned_role_id='3',
+            assigned_role_name='Reviewer',
+            ca_authority=ca_authority,
+            assigned_user_id__isnull=True,  # assigned_user_id is null
+            action_date__isnull=False  # action_date is not null
+        ).exclude(
+            ca_authority=1  # Exclude ca_authority = 1
+        ).count()
+        # print(p_application_count)
         # Fixed: EC renewals due within 60 days - ONLY calculated ONCE
         ec_renewal_count = t_ec_application_t1.objects.filter(
             ca_authority=ca_authority,
@@ -4391,8 +4426,12 @@ def ec_print_list(request):
     # Pass the retrieved data to the 'ec_print_list.html' template for rendering
     response = render(request, 'EC/ec_print_list.html', {
         'application_details': application_details,
+        'service_details' : service_details,
         'oc_application_count': oc_application_count,
         'app_hist_count': app_hist_count,
+        'v_application_count': v_application_count,
+        'r_application_count': r_application_count,
+        'p_application_count': p_application_count,
         'cl_application_count': cl_application_count,
         'payment_count': payment_count,
         'tor_application_count': tor_application_count,
@@ -4456,6 +4495,39 @@ def view_print_details(request):
                                                  'r_application_count': r_application_count,
                                                 'competent_authority': ca_name}
                                                 )
+
+#VIEW EC from OUTSIDE START
+
+def view_ec(request, ec_reference_no):
+    token = request.GET.get('token')
+
+    if not ec_reference_no:
+        return HttpResponse("EC Reference Number is required", status=400)
+
+    if token != settings.EC_PUBLIC_TOKEN:
+        return HttpResponse("Unauthorized", status=403)
+
+    application_details = t_ec_t1.objects.filter(ec_reference_no=ec_reference_no)
+    app = application_details.first()
+
+    if not app:
+        return HttpResponse("EC not found", status=404)
+
+    ec_details = t_ec_t2.objects.filter(ec_reference_no=ec_reference_no).order_by('order')
+
+    competent_authority = t_competant_authority_master.objects.filter(
+        competent_authority_id=app.ca_authority
+    ).first()
+
+    ca_name = competent_authority.remarks if competent_authority else None
+
+    return render(request, 'EC/print_ec.html', {
+        'application_details': application_details,
+        'ec_details': ec_details,
+        'competent_authority': ca_name
+    })
+#VIEW EC from OUTSIDE START
+
 
 # OTHER MODIFICATION DETAILS
 # Name CHANGE

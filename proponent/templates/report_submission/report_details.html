@@ -1,134 +1,230 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
+
 <style>
-    label{
-    font-weight:bold;
+/* PRINT SETTINGS */
+@media print {
+  body * { visibility: hidden; }
+  #printArea, #printArea * { visibility: visible; }
+  #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+  .no-print { display: none !important; }
+  .card { border: none !important; box-shadow: none !important; }
+
+  .row { display: flex !important; flex-wrap: wrap !important; }
+  .col-md-4 { width: 33.33% !important; }
+  .col-md-12 { width: 100% !important; }
 }
 
-</style>
-<div class="card">
-    <div class="card-header">
-        <h4 class="card-title">Report Details</h4>
-    </div>
-    <div class="card-body">
-        {% for report_details in report_details %}
-        {% csrf_token %}
-            <div class="tab-content mt-2 mb-3" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                    <div id="applicant_details">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Report Type: &nbsp;&nbsp;</label> {{ report_details.report_type }}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Name of the Proponent: &nbsp;&nbsp;</label> {{ report_details.proponent_name }}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">EC Number: &nbsp;&nbsp;</label> {{ report_details.ec_clearance_no }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Address: &nbsp;&nbsp;</label>{{ report_details.address }}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Submission Date: &nbsp;&nbsp;</label>{{ report_details.submission_date|date:'d-m-Y' }}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Submission Year: &nbsp;&nbsp;</label>{{ report_details.submission_year }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-8">
-                                <div class="form-group">
-                                    <label class="form-label">Remarks: &nbsp;&nbsp;</label>{{report_details.remarks}}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Report Status: &nbsp;&nbsp;</label>{{report_details.report_status}}
-                                </div>
-                            </div>
-                        </div>
+.report-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2b6bcf; /* soft professional grey */
+  border: 1px solid #e3e6ea;
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
 
-                    </div>
-                </div>
-                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Report</span>
-                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
-                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                </div>
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">EC Terms</th>
-                                <th scope="col">Action Taken</th>
-                                <th scope="col">Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for details in details %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{details.ec_terms}}</td>
-                                    <td>{{details.action_taken}}</td>
-                                    <td>{{details.remarks}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="4" class="text-center">No Data</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
-                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
-                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                </div>
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">File</th>
-                               <!-- <th scope="col">Action</th>-->
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for file_attach in file_attach %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="3" class="text-center">No Data</td>
-                                    </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+.header-left h4 {
+  margin: 0;
+  font-weight: 600;
+  color: #000000;
+}
+
+.header-left p {
+  margin: 2px 0 0 0;
+  font-size: 13px;
+  color: #ffffff;
+}
+
+.status-badge {
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+}
+
+.btn-print {
+  border: 1px solid #ced4da;
+  background: #fff;
+  padding: 5px 12px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-print:hover {
+  background-color: #e9ecef;
+}
+
+/* CONTENT */
+.section-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.label {
+  font-size: 14px;
+  color: #000000;
+}
+
+.value {
+  font-weight: 500;
+}
+</style>
+
+<div class="container-fluid px-3">
+  <div class="card border-0 shadow-sm mt-3">
+    <div class="card-body p-4">
+
+      {% for report_details in report_details %}
+
+      <!-- HEADER -->
+      <div class="report-card-header no-print">
+        <div class="header-left">
+          <h4>Report Details</h4>
+          <p>Environmental Clearance Monitoring Report</p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <span class="status-badge">
+            {{ report_details.report_status }}
+          </span>
+
+          <button class="btn-print" onclick="printReport()">
+            Print
+          </button>
+        </div>
+      </div>
+
+      <!-- PRINT AREA -->
+      <div id="printArea">
+
+      <!-- SUMMARY -->
+      <div class="card border mb-4">
+        <div class="card-body">
+          <div class="row g-3">
+
+            <div class="col-md-4">
+              <div class="label">Report Type</div>
+              <div class="value">{{ report_details.report_type }}</div>
             </div>
-        {% endfor %}
+
+            <div class="col-md-4">
+              <div class="label">Proponent</div>
+              <div class="value">{{ report_details.proponent_name }}</div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="label">EC Number</div>
+              <div class="value">{{ report_details.ec_clearance_no }}</div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="label">Address</div>
+              <div class="value">{{ report_details.address }}</div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="label">Submission Date</div>
+              <div class="value">{{ report_details.submission_date|date:'d M Y' }}</div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="label">Year</div>
+              <div class="value">{{ report_details.submission_year }}</div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="label">Remarks</div>
+              <div class="value">{{ report_details.remarks }}</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- DETAILS TABLE -->
+      <div class="mb-4">
+        <div class="section-title">Report Details</div>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered align-middle">
+            <thead class="table-light">
+              <tr>
+                <th style="width:50px;">#</th>
+                <th>EC Terms</th>
+                <th>Action Taken</th>
+                <th>Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for details in details %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ details.ec_terms }}</td>
+                <td>{{ details.action_taken }}</td>
+                <td>{{ details.remarks }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center">No records available</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ATTACHMENTS -->
+      <div>
+        <div class="section-title">Attachments</div>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered align-middle">
+            <thead class="table-light">
+              <tr>
+                <th style="width:50px;">#</th>
+                <th>File Name</th>
+                <th style="width:120px;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for file_attach in file_attach %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ file_attach.attachment.name|cut:"uploads/" }}</td>
+                <td>
+                  <a href="{{ file_attach.attachment.url }}"
+                     class="btn btn-sm btn-outline-primary"
+                     download>
+                     Download
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="3" class="text-center">No attachments</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      </div> <!-- END PRINT AREA -->
+
+      {% endfor %}
+
     </div>
+  </div>
 </div>
+
+<script>
+function printReport() {
+  window.print();
+}
+</script>
+
 {% endblock %}

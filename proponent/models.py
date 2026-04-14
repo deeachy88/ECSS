@@ -84,6 +84,21 @@ class t_ec_additional_information(models.Model):
     additional_info_proponent_date = models.DateField(default=None, blank=True, null=True)
     additional_info_due_date = models.DateField(default=None, blank=True, null=True)
     applicant_id = models.CharField(max_length=100, default=None, blank=True, null=True)
+    last_reminder_sent = models.DateField(default=None, blank=True, null=True)
+
+class t_ec_ai_remainder(models.Model):
+    record_id = models.AutoField(primary_key=True)
+    application_no = models.CharField(max_length=100, default=None, blank=True, null=True)
+    applicant_id = models.CharField(max_length=100, default=None, blank=True, null=True)
+    reminder_sent = models.DateField(default=None, blank=True, null=True)
+    precord_id = models.IntegerField(default=None, blank=True, null=True)
+
+    class Meta:
+        db_table = 'proponent_t_ec_ai_remainder'  # Explicit table name
+
+    def __str__(self):
+        return f"App: {self.application_no} | To: {self.applicant_id} | Date: {self.reminder_sent}"
+
 
 class t_ec_compliance(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -201,6 +216,9 @@ class t_fines_penalties(models.Model):
     validity = models.DateField(default=None, blank=True, null=True)
     amount = models.IntegerField(default=None, blank=True, null=True)
     fines_status = models.CharField(max_length=10, default=None, blank=True, null=True)
+    ca_authority = models.IntegerField(default=None, blank=True, null=True)
+    remarks = models.TextField(default=None, blank=True, null=True)
+
 
 class t_payment_details(models.Model):
     record_id = models.AutoField(primary_key=True)

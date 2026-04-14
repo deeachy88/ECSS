@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'ecs_main',
     'report',
     'corsheaders',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -101,6 +102,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ECS.wsgi.application'
+
+EC_PUBLIC_TOKEN = "ecss_2026_secure_X9kLmP78"
 
 
 # Database
@@ -186,3 +189,31 @@ NATS_SERVER_URL = 'nats://13.229.203.54:4222'
 
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'attachments')
 MEDIA_URL = '/attachments/'
+
+
+# ============================================================
+# ✅ CELERY CONFIGURATION
+# ============================================================
+from celery.schedules import crontab
+
+# Broker — Redis running on localhost
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+# ✅ Timezone
+CELERY_TIMEZONE = 'Asia/Thimphu'   # Bhutan Standard Time (UTC+6)
+CELERY_ENABLE_UTC = False          # ✅ Use local time, NOT UTC
+USE_TZ = True
+
+# ✅ Periodic task schedule
+CELERY_BEAT_SCHEDULE = {
+    'send-ai-reminders-daily': {
+        'task': 'ecs_admin.tasks.send_additional_info_reminder',
+        'schedule': crontab(hour=22, minute=14),   # 8 AM Thimphu time
+    },
+}
+

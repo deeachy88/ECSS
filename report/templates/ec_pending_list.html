@@ -69,23 +69,16 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title mb-0">Report</h4>
-                        <!-- Top-right Print Button -->
-                        <button type="button" class="btn btn-primary btn-sm no-print" onclick="window.print()">
-                            <i class="fas fa-print"></i> Print
+                        <div>
+                            <h5 class="mb-1">Environment Clearance Services</h5>
+                            <small class="text-muted">List of Environmental Clearance Application Pending</small>
+                        </div>
+
+                        <button type="button" class="btn btn-outline-secondary btn-sm no-print" onclick="window.print()">
+                        Print
                         </button>
                     </div>
                     <div class="card-body">
-                        <h4 class="card-title no-print">List of Pending Environment Clearance Application.</h4>
-
-                        <!-- Print header (only visible when printing) -->
-                        <div style="display: none;">
-                            <h3 style="text-align: center; margin: 10px 0; font-size: 16px;">Environment Clearance Services</h3>
-                            <h4 style="text-align: center; margin: 5px 0; font-size: 14px;">List of Pending Environment Clearance Applications</h4>
-                            <p style="text-align: center; margin: 5px 0; font-size: 10px;">Generated on: {% now "F d, Y g:i A" %}</p>
-                            <hr style="margin: 10px 0;">
-                        </div>
-
                         <div class="table-responsive">
                             <table id="basic-datatable" class="table dt-responsive table-sm table-centered mb-0 table-bordered">
                                 <thead>

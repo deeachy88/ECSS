@@ -1,0 +1,313 @@
+
+<style>
+/* PRINT SETTINGS */
+@media print {
+  body * { visibility: hidden; }
+  #printArea, #printArea * { visibility: visible; }
+  #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+  .no-print { display: none !important; }
+  .card { border: none !important; box-shadow: none !important; }
+
+  .row { display: flex !important; flex-wrap: wrap !important; }
+  .col-md-4 { width: 33.33% !important; }
+  .col-md-12 { width: 100% !important; }
+}
+
+.report-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #939bad; /* soft professional grey */
+  border: 1px solid #e3e6ea;
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.header-left h4 {
+  margin: 0;
+  font-weight: 600;
+  color: #000000;
+}
+
+.header-left p {
+  margin: 2px 0 0 0;
+  font-size: 13px;
+  color: #ffffff;
+}
+
+.status-badge {
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+}
+
+.btn-print {
+  border: 1px solid #ced4da;
+  background: #fff;
+  padding: 5px 12px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-print:hover {
+  background-color: #e9ecef;
+}
+
+/* CONTENT */
+.section-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.label {
+  font-size: 14px;
+  color: #000000;
+}
+
+.value {
+  font-weight: 500;
+}
+</style>
+{% for application_details in application_details %}
+<div id="printArea">
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card mt-1">
+                <div class="card-body">
+                    <div class="report-card-header no-print">
+                        {% if application_details.application_status == 'P' %}
+                            <h5 class="mb-0">Application Status: Pending</h5>
+                        {% elif application_details.application_status == 'R' %}
+                            <h5 class="mb-0">Application Status: Application Under Review</h5>
+                        {% elif application_details.application_status == 'AP' %}
+                            <h5 class="mb-0">Application Status: Additional Payment Pending</h5>
+                        {% elif application_details.application_status == 'A' %}
+                            <h5 class="mb-0">Application Status: Approved</h5>
+                        {% elif application_details.application_status == 'ALR' %}
+                            <h5 class="mb-0">Application Status: Awaiting Additional Information</h5>
+                        {% elif application_details.application_status == 'ALS' %}
+                            <h5 class="mb-0">Application Status: Additional Information Submitted</h5>
+                        {% elif application_details.application_status == 'LU' %}
+                            <h5 class="mb-0">Application Status: Awaiting Legal Undertaking</h5>
+                        {% elif application_details.application_status == 'LUS' %}
+                            <h5 class="mb-0">Application Status: Legal Undertaking Submitted</h5>
+                        {% elif application_details.application_status == 'DEC' %}
+                            <h5 class="mb-0">Application Status: Draft EC Forwarded to Verifier</h5>
+                        {% elif application_details.application_status == 'RJ' %}
+                            <h5 class="mb-0">Application Status: Rejected</h5>
+                        {% else %}
+                            <h5 class="mb-0">Application Status: None</h5>
+                        {% endif %}
+                        <button class="btn-print" onclick="printReport()">
+                            Print
+                        </button>
+                    </div>
+                    <h4 class="header-title mb-3"> TOR Form Details</h4>
+                    <form method="post" id="tor_form">
+                        {% csrf_token %}
+                        <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+                        <input type="text" class="form-control" value="{{assigned_role_id}}" id="role_id" name="role_id" style="display:none;">
+                        <input type="text" class="form-control" value="{{status}}" id="status" name="status" style="display:none;">
+                        <input type="text" class="form-control" value="{{assigned_user_id}}" id="user_id" name="user_id" style="display:none;">
+                        <div class="row justify-content-left">
+                            <div class="col-lg-12">
+                                <label class="form-label fw-bold">Activity</label>
+                                <p class="distinct-activity">{{application_details.activity}}</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Name of the Applicant</label>
+                                    <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{application_details.applicant_name}}" disabled>
+                                </div>
+                                <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Address</label>
+                                    <input type="text" name="address" class="form-control" id="address" value="{{application_details.address}}" disabled>
+                                </div>
+                                <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Contact No</label>
+                                    <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{application_details.contact_no}}" disabled>
+                                </div>
+                                <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Email</label>
+                                    <input type="email" name="email" class="form-control" id="email" value="{{application_details.email}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Name of the Project</label>
+                                    <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
+                                    <input type="text" name="focal_person" class="form-control" id="focal_person" value="{{application_details.focal_person}}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                            <div class="col-lg-12">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Brief Description of the Project</label>
+                                    <textarea class="form-control" id="project_description" name="project_description" disabled>{{application_details.project_description}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert custom-bg border-0" role="alert">
+                            <h5 class="mb-0">Project Location</h5>
+                        </div>
+                        <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Site</label>
+                                    {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                        <div class="mt-2">
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" checked>
+                                                <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" disabled>
+                                                <label class="form-check-label" for="customRadio4">Thromde</label>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="mt-2">
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" disabled>
+                                                <label class="form-check-label" for="customRadio3">Dzongkhag</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" checked>
+                                                <label class="form-check-label" for="customRadio4">Thromde</label>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            </div>
+                            {% if application_details.dzongkhag_throm == 'Thromde' %}
+                                <div class="col-lg-6 thromde_div">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Thromde</label>
+                                        <select class="form-select" disabled>
+                                            {% for thromde in thromde %}
+                                                <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                                    {{ thromde.thromde_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                            {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                <div class="col-lg-4 dzongkhag_div">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Dzongkhag</label>
+                                        <select class="form-select" disabled>
+                                            {% for dzongkhag in dzongkhag %}
+                                                <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                    {{ dzongkhag.dzongkhag_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Gewog</label>
+                                        <select class="form-select" disabled>
+                                            {% for gewog in gewog %}
+                                                <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                    {{ gewog.gewog_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Village/Chiwog</label>
+                                        <select class="form-select" disabled>
+                                            {% for village in village %}
+                                                <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                    {{ village.village_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                            <div class="col-lg-8">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Name of the Particular Project Site</label>
+                                    <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}" disabled>
+                                </div>
+                                <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-0">Attachments</h5>
+                                    <div id="cardCollpase7" class="collapse pt-3 show">
+                                        <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">File</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                               {% for file_attach in file_attach %}
+                                                        <tr>
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                                                        </tr>
+                                                        {% empty %}
+                                                        <tr>
+                                                          <td colspan="3" class="text-center">No Data</td>
+                                                        </tr>
+                                               {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function printReport() {
+      window.print();
+    }
+</script>
+{% endfor %}

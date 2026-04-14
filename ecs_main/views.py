@@ -3512,6 +3512,8 @@ def inspection_list(request):
         v_application_count = t_workflow_dtls.objects.filter(
             assigned_role_id='2',
             assigned_role_name='Verifier',
+            action_date__isnull=False,
+            application_status__in=['P', 'DEC', 'AL', 'FT', 'V', 'RRJ'],
             ca_authority=request.session['ca_authority']
         ).count()
         # Reviewer application count
@@ -3710,28 +3712,30 @@ def get_birms_token():
 
 def get_fines_penalties_details(request):
     ec_ref_no = request.GET.get('ec_ref_no')
+    ca_authority = request.session.get('ca_authority')
+    #print(ca_authority)
 
-    application_details = t_ec_application_t1.objects.filter(application_no=ec_ref_no) | t_ec_application_t1.objects.filter(ec_reference_no=ec_ref_no)
+    application_details = t_ec_t1.objects.filter(ec_reference_no=ec_ref_no, ca_authority=ca_authority)
     ec_count = (
-            t_ec_application_t1.objects.filter(application_no=ec_ref_no)
-            | t_ec_application_t1.objects.filter(ec_reference_no=ec_ref_no)
+            t_ec_t1.objects.filter(ec_reference_no=ec_ref_no,ca_authority=ca_authority)
     ).count()
 
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
-    return render(request, 'fines_penalties_details.html', {'application_details':application_details, 'ec_count':ec_count, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
+    return render(request, 'fines_penalties_details.html', {'application_details':application_details, 'ca_authority':ca_authority, 'ec_count':ec_count, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 
 def save_fines_penalties(request):
     data = dict()
     try:
         application_no = get_application_no_fp()
-        # fines_penalties_type = request.POST.get('fines_penalty_type')
+        fines_penalties_remarks = request.POST.get('fines_penalties_remarks')
         ec_no = request.POST.get('ec_ref_no')
         proponent_name = request.POST.get('applicant_name')
         address = request.POST.get('address')
         validity = request.POST.get('ec_expiry_date')
         amount = request.POST.get('fines_and_penalties')
+        ca_authority = request.POST.get('ca_authority')
         
         parsed_date = datetime.strptime(validity, "%d-%m-%Y")
         formatted_date = parsed_date.strftime("%Y-%m-%d")
@@ -3743,9 +3747,11 @@ def save_fines_penalties(request):
                                         address=address,
                                         validity=formatted_date,
                                         amount=amount,
-                                        fines_status='P'
+                                        fines_status='P',
+                                        ca_authority=ca_authority,
+                                        remarks=fines_penalties_remarks
                                         )
-        application_details = t_ec_application_t1.objects.filter(ec_reference_no=ec_no)
+        application_details = t_ec_t1.objects.filter(ec_reference_no=ec_no)
         for app_det in application_details:
             applicationno = app_det.application_no
             applicant = app_det.applicant_id
@@ -3820,7 +3826,10 @@ def save_fines_penalties(request):
                             description="fines_and_penalties",
                             total_payable_amount=amount,
                             service_type="FINE",
-                            payment_advice_no=paymentAdviceNo
+                            payment_advice_no=paymentAdviceNo,
+                            payment_type='Fines and Penalties',
+                            application_no=application_no,
+                            ca_authority=ca_authority
                         )
                     except ValueError as e:
                         print("Failed to parse JSON response:", e)
@@ -3978,7 +3987,33 @@ def tor_submit_email(email_id, application_no, service_name):
               connection=None, html_message=None)
     
 def fines_penalties(request):
-    response = render(request, 'fines_penalties.html')
+    login_id = request.session.get('login_id')
+    ca_auth = request.session.get('ca_authority')
+
+    v_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='2',
+        assigned_role_name='Verifier',
+        ca_authority=ca_auth
+    ).count()
+    # Reviewer application count
+    r_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='3',
+        assigned_user_id=login_id,
+        assigned_role_name='Reviewer',
+        ca_authority=ca_auth
+    ).count()
+
+    p_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='3',
+        assigned_role_name='Reviewer',
+        ca_authority=ca_auth,
+        assigned_user_id__isnull=True,  # assigned_user_id is null
+        action_date__isnull=False  # action_date is not null
+    ).count()
+
+    response = render(request, 'fines_penalties.html',
+                  {'v_application_count': v_application_count, 'r_application_count': r_application_count,
+                   'p_application_count': p_application_count})
 
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response['Pragma'] = 'no-cache'

@@ -22,9 +22,15 @@
                         <td>{{ forloop.counter }}</td>
                         <td>{{report_submission.ec_terms}}</td>
                         <td>{{report_submission.action_taken}}</td>
-                        <td>{{report_submission.remarks}}</td>
+                        <td>{{report_submission.remarks}}{{report_submission.report_reference_no}}</td>
+
                         <td>
-                            <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="DeleteReportDetails('{{ report_submission.record_id }}')"><i class="uil-trash"></i></button>
+                            <button type="button" class="btn btn-outline-danger btn-sm"
+                                    data-bs-toggle="tooltip"
+                                    title="Delete"
+                                    onclick="DeleteReportDetails('{{ report_submission.record_id }}', '{{ report_submission.report_reference_no }}')">
+                                <i class="uil-trash"></i>
+                            </button>
                         </td>
                     </tr>
                     {% empty %}
@@ -47,16 +53,15 @@ function save_next() {
     $('#file_attachment_tab').removeClass('disabled');
 }
 
-function DeleteReportDetails(record_id)
-{
-    var refNo = $('#report_reference_no').val();
+function DeleteReportDetails(record_id, ref_no) {
+
     $.ajax({
         type : "GET",
         url : "{% url 'delete_report_details' %}",
-        data :{'refNo':refNo , 'record_id': record_id},
+        data :{'refNo':ref_no , 'record_id': record_id},
         success : function(responseText)
         {
-            $('#report_submitted_details').html(responseText);
+            $('#report_details').html(responseText);
         }
     });
 }

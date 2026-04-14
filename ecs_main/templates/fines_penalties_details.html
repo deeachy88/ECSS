@@ -23,6 +23,7 @@
                             {% csrf_token %}
                             {% for application_details in application_details %}
                             <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" style="display:none;">
+                            <input type="text" class="form-control" value="{{application_details.ca_authority}}" name="ca_authority" id="ca_authority" style="display:none;">
                             <div class="alert custom-bg border-0" role="alert">
                                 <h5 class="mb-0">Proponent Information</h5>
                             </div>

@@ -12,10 +12,6 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: "Times New Roman", serif;
-        }
-
         #print {
             width: 100%;
             margin: auto;
@@ -58,14 +54,17 @@
         .title {
             text-align: center;
             margin-top: 10px;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
+            color: #000000;
         }
 
         .subtitle {
             text-align: center;
-            font-size: 14px;
+            font-size: 16px;
             margin-bottom: 10px;
+            font-weight: bold;
+            color: #106126;
         }
 
         .content p {
@@ -182,7 +181,7 @@
 
         <!-- Title -->
         <div class="title">ENVIRONMENT CLEARANCE</div>
-        <div class="subtitle">Issued By: {{competent_authority}}</div>
+        <div class="subtitle" style="text-align: center;">Issued By: {{competent_authority}}</div>
 
         <!-- Header Content -->
         <div class="content">
