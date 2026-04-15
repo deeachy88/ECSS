@@ -17,8 +17,8 @@
                                         <th scope="col">#</th>
                                         <th scope="col">Application No</th>
                                         <th scope="col">Applicant</th>
+                                        <th scope="col">Project Name</th>
                                         <th scope="col">Service</th>
-                                        <th scope="col">Remarks</th>
                                         <th scope="col">Status</th>
                                     </tr>
                                 </thead>
@@ -28,21 +28,36 @@
                                             <td>{{ forloop.counter }}</td>
                                             <td>{{application_list.application_no}}</td>
                                             <td>{{application_list.applicant_id}}</td>
+                                            <td>{{application_list.project_name}}</td>
                                             {% for service_details in service_details %}
                                                 {% if application_list.service_id == service_details.service_id %}
                                                     <td>{{service_details.service_name}}</td>
                                                 {% endif %}
                                             {% endfor %}
-                                            <td>{{application_list.remarks}}</td>
                                             {% if application_list.application_status == 'P' %}
-                                                <td class="text-warning">Pending</td>
+                                                <td>Pending</td>
+                                            {% elif application_list.application_status == 'R' %}
+                                                <td>Application Under Review</td>
+                                            {% elif application_list.application_status == 'AP' %}
+                                                <td>Additional Payment Pending</td>
                                             {% elif application_list.application_status == 'A' %}
-                                                <td class="text-success">Approved</td>
-                                            {% elif application_list.application_status == 'OC' %}
-                                                <td class="text-success">Application waiting for OC Acceptance</td>
+                                                <td>Approved</td>
+                                            {% elif application_list.application_status == 'ALR' %}
+                                                <td>Awaiting Additional Information</td>
+                                            {% elif application_list.application_status == 'ALS' %}
+                                                <td>Additional Information Submitted</td>
+                                            {% elif application_list.application_status == 'LU' %}
+                                                <td>Awaiting Legal Undertaking</td>
+                                            {% elif application_list.application_status == 'LUS' %}
+                                                <td>Legal Undertaking Submitted</td>
+                                            {% elif application_list.application_status == 'DEC' %}
+                                                <td>Draft EC Forwarded to Verifier</td>
+                                            {% elif application_list.application_status == 'RJ' %}
+                                                <td>Application Rejected</td>
                                             {% else %}
-                                                <td class="text-warning">Pending</td>
+                                                <td>None</td>
                                             {% endif %}
+
                                         </tr>
                                         {% empty %}
                                         <tr>

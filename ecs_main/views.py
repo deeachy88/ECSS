@@ -245,8 +245,13 @@ def client_application_list(request):
             payment_receipt_lookup[ref_no] = all_have_receipt
         
         # 3. Application history count
-        app_hist_count = t_application_history.objects.filter(applicant_id=applicant_id).count()
-        
+        app_hist_count = (
+            t_application_history.objects.filter(
+                applicant_id=applicant_id)
+            .values('application_no')
+            .distinct()
+            .count()
+        )
         # 4. Client application count
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=login_id).count()
 
