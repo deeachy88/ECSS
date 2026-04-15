@@ -184,6 +184,115 @@
 }
 </style>
 <style>
+    /* ── Modal Overall ─────────────────────────────── */
+    #registrationModalForm .modal-content {
+        font-size: 0.875rem;
+        line-height: 1.4;
+    }
+
+    /* ── Modal Body Padding ────────────────────────── */
+    #registrationModalForm .modal-body {
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
+    }
+
+    /* ── Row & Column Gaps ─────────────────────────── */
+    #registrationModalForm .row {
+        margin-bottom: 0;
+        row-gap: 0;
+    }
+
+    /* ── Form Groups ───────────────────────────────── */
+    #registrationModalForm .mb-3 {
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* ── Labels ────────────────────────────────────── */
+    #registrationModalForm .form-label {
+        margin-bottom: 0.2rem;
+        font-size: 0.8rem;
+        line-height: 1.5;
+    }
+
+    /* ── Inputs & Selects ──────────────────────────── */
+    #registrationModalForm .form-control,
+    #registrationModalForm .form-select {
+        padding-top: 0.3rem;
+        padding-bottom: 0.3rem;
+        font-size: 0.8rem;
+        line-height: 1.4;
+        height: auto;
+    }
+
+    /* ── Error Alert Divs ──────────────────────────── */
+    #registrationModalForm .alert {
+        padding: 0.25rem 0.6rem;
+        font-size: 0.78rem;
+        margin-bottom: 0.4rem;
+        line-height: 1.3;
+    }
+
+    /* ── HR Divider ────────────────────────────────── */
+    #registrationModalForm hr {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* ── Modal Header Title ────────────────────────── */
+    #registrationModalForm h1,
+    #registrationModalForm h2 {
+        line-height: 1.3;
+        margin-bottom: 0.3rem !important;
+        margin-top: 0.3rem !important;
+    }
+
+    /* ── Logo Section ──────────────────────────────── */
+    #registrationModalForm .modal-body:has(img[alt="NECS Logo"]) {
+        padding-top: 0.75rem;
+        padding-bottom: 0.4rem;
+    }
+
+    /* ── Footer Buttons ────────────────────────────── */
+    #registrationModalForm .modal-footer {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    /* ── NDI Button Row ────────────────────────────── */
+    #registrationModalForm .modal-header.justify-content-center {
+        padding-top: 0.4rem;
+        padding-bottom: 0.4rem;
+        border: none;
+    }
+
+    /* ── QR / NDI Section ──────────────────────────── */
+    #registrationModalForm #ndi_div_proponent .modal-body-video-btn,
+    #registrationModalForm #ndi_div_proponent .modal-body-question {
+        margin-top: 0.4rem;
+        margin-bottom: 0.4rem;
+    }
+
+    #registrationModalForm #ndi_div_proponent ul {
+        margin-bottom: 0.4rem;
+        padding-left: 1rem;
+    }
+
+    #registrationModalForm #ndi_div_proponent li {
+        line-height: 1.5;
+        margin-bottom: 0.2rem;
+        font-size: 0.82rem;
+    }
+
+    /* ── Success / Error Message Divs ──────────────── */
+    #registrationModalForm #client_registration_message_div,
+    #registrationModalForm #client_registration_error_message_div {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+        margin-top: 0.4rem;
+        margin-bottom: 0;
+    }
+</style>
+<style>
     /* Ensure no container constrains the width */
     /*
     .container-fluid {
@@ -1148,780 +1257,778 @@
     </div>
 </div>
 
-    <!-- Vendor js -->
-    <script src="{% static 'assets/js/vendor.min.js' %}"></script>
-    <!-- Daterangepicker js -->
-    <script src="{% static 'assets/vendor/daterangepicker/moment.min.js' %}"></script>
-    <script src="{% static 'assets/vendor/daterangepicker/daterangepicker.js' %}"></script>
-    <!-- App js -->
-    <script src="{% static 'assets/js/app.min.js' %}"></script>
-    <!-- NDI -->
-    <script src="{% static 'assets/js/ndi.js' %}"></script>
-    <script src="{% static 'assets/js/jquery-qrcode.min.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/nats@2.1.7/dist/nats-base-client.umd.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.load-more-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const cardId = this.getAttribute('data-target');
-                    const card = document.getElementById(cardId);
-                    const moreDiv = card.querySelector('.more-attachments');
-                    const icon = this.querySelector('i');
-                    const title = card.querySelector('.acts');
+<!-- Vendor js -->
+<script src="{% static 'assets/js/vendor.min.js' %}"></script>
+<!-- Daterangepicker js -->
+<script src="{% static 'assets/vendor/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'assets/vendor/daterangepicker/daterangepicker.js' %}"></script>
+<!-- App js -->
+<script src="{% static 'assets/js/app.min.js' %}"></script>
+<!-- NDI -->
+<script src="{% static 'assets/js/ndi.js' %}"></script>
+<script src="{% static 'assets/js/jquery-qrcode.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/nats@2.1.7/dist/nats-base-client.umd.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.load-more-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const cardId = this.getAttribute('data-target');
+                const card = document.getElementById(cardId);
+                const moreDiv = card.querySelector('.more-attachments');
+                const icon = this.querySelector('i');
+                const title = card.querySelector('.acts');
 
-                    if (moreDiv.style.display === 'none') {
-                        moreDiv.style.display = 'block';
-                        title.style.display = 'block';
-                        icon.className = 'mdi mdi-chevron-up me-1';
-                        this.innerHTML = icon.outerHTML + ' Show less';
-                    } else {
-                        moreDiv.style.display = 'none';
-                        title.style.display = 'none';
-                        icon.className = 'mdi mdi-chevron-down me-1';
-                        this.innerHTML = icon.outerHTML + ' Acts and Rules ({{ pub_file_attachment_count }})';
-                    }
-                });
-            });
-
-            document.querySelectorAll('.form-load-more-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const cardId = this.getAttribute('data-target');
-                    const card = document.getElementById(cardId);
-                    const moreDiv = card.querySelector('.form-more-attachments');
-                    const icon = this.querySelector('i');
-                    const title = card.querySelector('.notification');
-                    
-                    if (moreDiv.style.display === 'none') {
-                        moreDiv.style.display = 'block';
-                        title.style.display = 'block';
-                        icon.className = 'mdi mdi-chevron-up me-1';
-                        this.innerHTML = icon.outerHTML + ' Show less';
-                    } else {
-                        moreDiv.style.display = 'none';
-                        title.style.display = 'none';
-                        icon.className = 'mdi mdi-chevron-down me-1';
-                        this.innerHTML = icon.outerHTML + ' Notifications ({{ form_file_attachment_count }})';
-                    }
-                });
-            });
-
-            document.querySelectorAll('.down-load-more-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const cardId = this.getAttribute('data-target');
-                    const card = document.getElementById(cardId);
-                    const moreDiv = card.querySelector('.down-more-attachments');
-                    const icon = this.querySelector('i');
-                    const title = card.querySelector('.forms');
-                    
-                    if (moreDiv.style.display === 'none') {
-                        moreDiv.style.display = 'block';
-                        title.style.display = 'block';
-                        icon.className = 'mdi mdi-chevron-up me-1';
-                        this.innerHTML = icon.outerHTML + ' Show less';
-                    } else {
-                        moreDiv.style.display = 'none';
-                        title.style.display = 'none';
-                        icon.className = 'mdi mdi-chevron-down me-1';
-                        this.innerHTML = icon.outerHTML + ' Forms and Others ({{ down_file_attachment_count }})';
-                    }
-                });
+                if (moreDiv.style.display === 'none') {
+                    moreDiv.style.display = 'block';
+                    title.style.display = 'block';
+                    icon.className = 'mdi mdi-chevron-up me-1';
+                    this.innerHTML = icon.outerHTML + ' Show less';
+                } else {
+                    moreDiv.style.display = 'none';
+                    title.style.display = 'none';
+                    icon.className = 'mdi mdi-chevron-down me-1';
+                    this.innerHTML = icon.outerHTML + ' Acts and Rules ({{ pub_file_attachment_count }})';
+                }
             });
         });
-        
-	    $('.modal').on('hide.bs.modal', function (e) {
-            // Check if the event was triggered by clicking outside the modal
-            if ($(e.target).hasClass('modal')) {
-                location.reload(); // Reload the page
+
+        document.querySelectorAll('.form-load-more-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const cardId = this.getAttribute('data-target');
+                const card = document.getElementById(cardId);
+                const moreDiv = card.querySelector('.form-more-attachments');
+                const icon = this.querySelector('i');
+                const title = card.querySelector('.notification');
+
+                if (moreDiv.style.display === 'none') {
+                    moreDiv.style.display = 'block';
+                    title.style.display = 'block';
+                    icon.className = 'mdi mdi-chevron-up me-1';
+                    this.innerHTML = icon.outerHTML + ' Show less';
+                } else {
+                    moreDiv.style.display = 'none';
+                    title.style.display = 'none';
+                    icon.className = 'mdi mdi-chevron-down me-1';
+                    this.innerHTML = icon.outerHTML + ' Notifications ({{ form_file_attachment_count }})';
+                }
+            });
+        });
+
+        document.querySelectorAll('.down-load-more-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const cardId = this.getAttribute('data-target');
+                const card = document.getElementById(cardId);
+                const moreDiv = card.querySelector('.down-more-attachments');
+                const icon = this.querySelector('i');
+                const title = card.querySelector('.forms');
+
+                if (moreDiv.style.display === 'none') {
+                    moreDiv.style.display = 'block';
+                    title.style.display = 'block';
+                    icon.className = 'mdi mdi-chevron-up me-1';
+                    this.innerHTML = icon.outerHTML + ' Show less';
+                } else {
+                    moreDiv.style.display = 'none';
+                    title.style.display = 'none';
+                    icon.className = 'mdi mdi-chevron-down me-1';
+                    this.innerHTML = icon.outerHTML + ' Forms and Others ({{ down_file_attachment_count }})';
+                }
+            });
+        });
+    });
+
+    $('.modal').on('hide.bs.modal', function (e) {
+        // Check if the event was triggered by clicking outside the modal
+        if ($(e.target).hasClass('modal')) {
+            location.reload(); // Reload the page
+        }
+    });
+
+    function forgotPassword()
+    {
+        $('#loginBox').hide();
+        $('#ForgotBox').show();
+    }
+
+     function back()
+     {
+        $('#loginBox').show();
+        $('#ForgotBox').hide();
+        $('#ndi_div').hide();
+        $('#issuanceMessageDiv').hide();
+    }
+
+    function get_gewog(dzongkhag_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
+            {
+                $('#gewog').html(data);
             }
         });
-        
-        function forgotPassword()
+    }
+
+    function get_village(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#village').html(data);
+            }
+        });
+    }
+
+    function validate_email_id(email)
+    {
+        var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+        var no=email.match(pattern);
+
+        if(no==null)
         {
-			$('#loginBox').hide();
-			$('#ForgotBox').show();
-	 	}
-
-         function back()
-         {
-			$('#loginBox').show();
-			$('#ForgotBox').hide();
-			$('#ndi_div').hide();
-            $('#issuanceMessageDiv').hide();
-	 	}
-
-        function get_gewog(dzongkhag_id)
+            $('#emailErrorMsg').html("The email is invalid");
+            $('#email').val("");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
         {
-            $.ajax({
-                type : "GET",
-                url : "{% url 'load_gewog' %}",
-                data :{'dzongkhag_id':dzongkhag_id},
-                success : function(data)
-                {
-                    $('#gewog').html(data);
-                }
-            });
+            $('#emailErrorMsg').hide();
+        }
+    }
+
+    function register_client() {
+        const formData = {
+            proponent_type: $('#proponent_type').val(),
+            cid: $('#cid').val(),
+            proponent_name: $('#proponent_name').val(),
+            address: $('#proponent_address').val(),
+            contact_person: $('#contact_person').val(),
+            email: $('#email').val(),
+            contact_number: $('#contact_number').val(),
+            dzongkhag: $('#dzongkhag').val(),
+            gewog: $('#gewog').val(),
+            village: $('#village').val(),
+        };
+
+        // Helper function to show error messages
+        function showError(element, message) {
+            $(element).html(message).show().delay(2000).fadeOut('slow');
         }
 
-        function get_village(gewog_id)
-        {
-            $.ajax({
-                type : "GET",
-                url : "{% url 'load_village' %}",
-                data :{'gewog_id':gewog_id},
-                success : function(data)
-                {
-                    $('#village').html(data);
-                }
-            });
-        }
+        // Validation checks
+        if (!formData.proponent_type) return showError('#proponent_typeErrorMsg', "Select Proponent Type.");
+        if (formData.proponent_type == '4' && !formData.cid) return showError('#cidErrorMsg', "Enter CID.");
+        if (!formData.proponent_name) return showError('#proponent_nameErrorMsg', "Enter Proponent Name.");
+        if (!formData.address) return showError('#proponent_addressErrorMsg', "Enter Address.");
+        if (!formData.contact_person) return showError('#contact_personErrorMsg', "Enter Contact Person.");
+        if (!formData.email) return showError('#emailErrorMsg', "Enter Official Email.");
+        if (!formData.contact_number) return showError('#mobileErrorMsg', "Enter Contact Number.");
+        if (formData.contact_number.length < 8) return showError('#mobileErrorMsg', "Cannot Be Less Than Eight Digits.");
+        if (formData.proponent_type != '4' && !formData.dzongkhag) return showError('#dzongkhagErrorMsg', "Select Dzongkhag.");
+        if (formData.proponent_type != '4' && !formData.gewog) return showError('#gewogErrorMsg', "Select Gewog.");
+        if (formData.proponent_type != '4' && !formData.village) return showError('#villageErrorMsg', "Select Village.");
 
-        function validate_email_id(email)
-        {
-            var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
-            var no=email.match(pattern);
-
-            if(no==null)
-            {
-                $('#emailErrorMsg').html("The email is invalid");
-                $('#email').val("");
-                $('#emailErrorMsg').show();
-                $('#emailErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else
-            {
-                $('#emailErrorMsg').hide();
-            }
-        }
-
-        function register_client() {
-            const formData = {
-                proponent_type: $('#proponent_type').val(),
-                cid: $('#cid').val(),
-                proponent_name: $('#proponent_name').val(),
-                address: $('#proponent_address').val(),
-                contact_person: $('#contact_person').val(),
-                email: $('#email').val(),
-                contact_number: $('#contact_number').val(),
-                dzongkhag: $('#dzongkhag').val(),
-                gewog: $('#gewog').val(),
-                village: $('#village').val(),
-            };
-
-            // Helper function to show error messages
-            function showError(element, message) {
-                $(element).html(message).show().delay(2000).fadeOut('slow');
-            }
-
-            // Validation checks
-            if (!formData.proponent_type) return showError('#proponent_typeErrorMsg', "Select Proponent Type.");
-            if (formData.proponent_type == '4' && !formData.cid) return showError('#cidErrorMsg', "Enter CID.");
-            if (!formData.proponent_name) return showError('#proponent_nameErrorMsg', "Enter Proponent Name.");
-            if (!formData.address) return showError('#proponent_addressErrorMsg', "Enter Address.");
-            if (!formData.contact_person) return showError('#contact_personErrorMsg', "Enter Contact Person.");
-            if (!formData.email) return showError('#emailErrorMsg', "Enter Official Email.");
-            if (!formData.contact_number) return showError('#mobileErrorMsg', "Enter Contact Number.");
-            if (formData.contact_number.length < 8) return showError('#mobileErrorMsg', "Cannot Be Less Than Eight Digits.");
-            if (formData.proponent_type != '4' && !formData.dzongkhag) return showError('#dzongkhagErrorMsg', "Select Dzongkhag.");
-            if (formData.proponent_type != '4' && !formData.gewog) return showError('#gewogErrorMsg', "Select Gewog.");
-            if (formData.proponent_type != '4' && !formData.village) return showError('#villageErrorMsg', "Select Village.");
-
-            // AJAX request to check email existence
-            $.ajax({
-                type: "POST",
-                url: "{% url 'check_email_id' %}",
-                data: $('#client_registration_form').serialize(),
-                success: function(data) {
-                    if (data.count == "1") {
-                        $('#emailErrorMsg').html("Email Already Exists. Try With Another Email");
-                        $('#email').val("");
-                        $('#emailErrorMsg').show();
-                        $('#emailErrorMsg').delay(2000).fadeOut('slow');
-                    }
-                    else
-                    {
-                        if (formData.proponent_type != '4')
-                        {
-                            alert();
-                            registerClient(formData);
-                        }
-                        else
-                        {
-                            checkCidAndRegister(formData);
-                        }
-                    }
-                },
-                error: function() {
-                    showError('#client_registration_error_message_div', "An error occurred during email validation.");
-                }
-            });
-        }
-
-        // Function to check CID and register client if valid
-        function checkCidAndRegister(formData) {
-            $.ajax({
-                type: "POST",
-                url: "{% url 'check_cid' %}",
-                data: { cid: formData.cid, csrfmiddlewaretoken: '{{ csrf_token }}' },
-                success: function(data) {
-                    if (data.count == "1") {
-                        $('#cidErrorMsg').html("CID Already Exists. Try With Another CID");
-                        $('#cidErrorMsg').show();
-                        $('#cidErrorMsg').delay(2000).fadeOut('slow');
-                        $('#client_registration_form')[0].reset();
-                    }
-                    registerClient(formData);
-                },
-                error: function() {
-                    showError('#cidErrorMsg', "An error occurred during CID validation.");
-                }
-            });
-        }
-
-        // Function to register client
-        function registerClient(formData) {
-            $.ajax({
-                type: "POST",
-                url: "{% url 'client_registration' %}",
-                data: $('#client_registration_form').serialize(),
-                success: function(data) {
-                    const messageDiv = data.message == "registration successful" ? '#client_registration_message_div' : '#client_registration_error_message_div';
-                    const messageText = data.message == "registration successful" ? "Client Registered Successfully" : "Client Registration Failed";
-                    
-                    $(messageDiv).html(messageText).show().delay(2000).fadeOut('slow');
-                    setTimeout(() => location.reload(), 3000);
-                },
-                error: function() {
-                    showError('#client_registration_error_message_div', "An error occurred during registration.");
-                }
-            });
-        }
-
-
-        function update_password()
-        {
-
-            var uid = $('#email_id').val();
-            var answer = $('#answer').val();
-            var security = $('#security').val();
-            var answerForm =  $('#securityAnswer').val();
-
-            if(uid == "")
-            {
-                $('#emailErrorMsg').html("Email Is Required");
-                $('#emailErrorMsg').show();
-                $('#email').focus();
-                $('#emailErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(security == "")
-            {
-                $('#securityErrorMsg').html("Select Security Question");
-                $('#securityErrorMsg').show();
-                $('#security').focus();
-                $('#securityErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(answer == "")
-            {
-                $('#answerErrorMsg').html("Enter Your Security Questions Answer");
-                $('#answerErrorMsg').show();
-                $('#answer').focus();
-                $('#answerErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else
-            {
-                var enteredAnswer = $('#answer').val();
-                if(answerForm.toLowerCase() == enteredAnswer.toLowerCase())
-                {
-                    $('#answerErrorMsg').html("Please Wait..");
-                    $('#answerErrorMsg').show();
-                    $('#answerErrorMsg').delay(3000).fadeOut('slow');
-                    $('#submit_button').hide();
-                    $.ajax({
-                        type: 'POST',
-                        url : "{% url 'update_password' %}",
-                        data : $('#forgot_password_form').serialize(),
-                        success: function(data)
-                        {
-                            $('#sucessMsg').show();
-                            $('#sucessMsg').delay(2000).fadeOut('slow');
-                            $('#submit_button').show();
-                            setTimeout('location.reload()',3000);
-                        }
-                    });
+        // AJAX request to check email existence
+        $.ajax({
+            type: "POST",
+            url: "{% url 'check_email_id' %}",
+            data: $('#client_registration_form').serialize(),
+            success: function(data) {
+                if (data.file_count == "1") {
+                    $('#emailErrorMsg').html("Email Already Exists. Try With Another Email");
+                    $('#email').val("");
+                    $('#emailErrorMsg').show();
+                    $('#emailErrorMsg').delay(2000).fadeOut('slow');
                 }
                 else
                 {
-                    $('#answerErrorMsg').html("The answer you entered does not match your previous answer, please verify and try again else contact administrator");
-                    $('#answerErrorMsg').show();
-                    $('#answerErrorMsg').delay(2000).fadeOut('slow');
-                }
-            }
-        }
-
-        function getSecurityQuestion(uid)
-        {
-            if(uid == "")
-            {
-                $('#email_idErrorMsg').html("Email Is Required.");
-                $('#email_idErrorMsg').show();
-                $('#email_idErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else
-            {
-                $.ajax({
-                    type : "GET",
-                    url : "{% url 'load_security_question' %}",
-                    data :{'email':uid},
-                    success : function(data)
+                    if (formData.proponent_type != '4')
                     {
-                        $('#security_question').html(data);
+                        registerClient(formData);
+                    }
+                    else
+                    {
+                        checkCidAndRegister(formData);
+                    }
+                }
+            },
+            error: function() {
+                showError('#client_registration_error_message_div', "An error occurred during email validation.");
+            }
+        });
+    }
+
+    // Function to check CID and register client if valid
+    function checkCidAndRegister(formData) {
+        $.ajax({
+            type: "POST",
+            url: "{% url 'check_cid' %}",
+            data: { cid: formData.cid, csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function(data) {
+                if (data.count == "1") {
+                    $('#cidErrorMsg').html("CID Already Exists. Try With Another CID");
+                    $('#cidErrorMsg').show();
+                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                    $('#client_registration_form')[0].reset();
+                }
+                registerClient(formData);
+            },
+            error: function() {
+                showError('#cidErrorMsg', "An error occurred during CID validation.");
+            }
+        });
+    }
+
+    // Function to register client
+    function registerClient(formData) {
+        $.ajax({
+            type: "POST",
+            url: "{% url 'client_registration' %}",
+            data: $('#client_registration_form').serialize(),
+            success: function(data) {
+                const messageDiv = data.message == "registration successful" ? '#client_registration_message_div' : '#client_registration_error_message_div';
+                const messageText = data.message == "registration successful" ? "Client Registered Successfully" : "Client Registration Failed";
+
+                $(messageDiv).html(messageText).show().delay(2000).fadeOut('slow');
+                setTimeout(() => location.reload(), 3000);
+            },
+            error: function() {
+                showError('#client_registration_error_message_div', "An error occurred during registration.");
+            }
+        });
+    }
+
+
+    function update_password()
+    {
+
+        var uid = $('#email_id').val();
+        var answer = $('#answer').val();
+        var security = $('#security').val();
+        var answerForm =  $('#securityAnswer').val();
+
+        if(uid == "")
+        {
+            $('#emailErrorMsg').html("Email Is Required");
+            $('#emailErrorMsg').show();
+            $('#email').focus();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(security == "")
+        {
+            $('#securityErrorMsg').html("Select Security Question");
+            $('#securityErrorMsg').show();
+            $('#security').focus();
+            $('#securityErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(answer == "")
+        {
+            $('#answerErrorMsg').html("Enter Your Security Questions Answer");
+            $('#answerErrorMsg').show();
+            $('#answer').focus();
+            $('#answerErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var enteredAnswer = $('#answer').val();
+            if(answerForm.toLowerCase() == enteredAnswer.toLowerCase())
+            {
+                $('#answerErrorMsg').html("Please Wait..");
+                $('#answerErrorMsg').show();
+                $('#answerErrorMsg').delay(3000).fadeOut('slow');
+                $('#submit_button').hide();
+                $.ajax({
+                    type: 'POST',
+                    url : "{% url 'update_password' %}",
+                    data : $('#forgot_password_form').serialize(),
+                    success: function(data)
+                    {
+                        $('#sucessMsg').show();
+                        $('#sucessMsg').delay(2000).fadeOut('slow');
+                        $('#submit_button').show();
+                        setTimeout('location.reload()',3000);
                     }
                 });
             }
-        }
-
-        function getAnswer(questionId)
-        {
-            var uid = $('#email_id').val();
-            $.ajax({
-                async: false,
-                type: 'GET',
-                url : "{% url 'get_security_answer' %}",
-                data :{'questionId':questionId, 'email_id':uid,  csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success: function(data)
-                {
-                    $('#securityAnswer').val(data.answer);
-                }
-            });
-        }
-
-        function validateemailId(emailId)
-        {
-            var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
-            var no=emailId.match(pattern);
-
-            if(no==null)
-            {
-                $('#email_idErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
-                $('#email_id').val("");
-                $('#email_idErrorMsg').show();
-                $('#email_idErrorMsg').delay(2000).fadeOut('slow');
-            }else{
-             $('#email_idErrorMsg').hide();
-            }
-
-        }
-
-        function loadSubMenuPage(menu_id)
-        {
-            $.ajax
-            ({
-                type : "GET",
-                url : "{% url 'get_content_details' %}",
-                data : {'menu_id':menu_id, 'identifier':'SM'},
-                dataType : "html",
-                success : function(responseText)
-                {
-                    $('#content_div').show();
-                    $("#content_div").html(responseText);
-                }
-            });
-        }
-
-        function loadMenuPage(menu_id)
-        {
-            $.ajax
-            ({
-                type : "GET",
-                url : "{% url 'get_content_details' %}",
-                data : {'menu_id':menu_id, 'identifier':'M'},
-                dataType : "html",
-                success : function(responseText)
-                {
-                    $("#content_div").html(responseText);
-                    $('#content_div').show();
-                }
-            });
-        }
-
-        function download_forms()
-        {
-            $.ajax
-            ({
-                type : "GET",
-                url : "{% url 'download_forms' %}",
-                dataType : "html",
-                success : function(responseText)
-                {
-                    $("#content_div").html(responseText);
-                    $('#content_div').show();
-                }
-            });
-        }
-
-        function check_cid(cid)
-        {
-            $.ajax({
-                type: "POST",
-                url: "{% url 'check_cid' %}",
-                data: {'cid':cid, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success: function(data) {
-                    if (data.count == "1") {
-                        $('#cidErrorMsg').html("CID Already Exists. Try With Another CID");
-                        $('#cid').val("");
-                        $('#proponent_name').val("");
-                        $('#i_dzongkhag').val("");
-                        $('#i_gewog').val("");
-                        $('#i_village').val("");
-                        $('#cidErrorMsg').show();
-                        $('#cidErrorMsg').delay(2000).fadeOut('slow');
-                    } else {
-                        $('#cidErrorMsg').hide();
-                    }
-                }
-            });
-        }
-
-        function show_details(value)
-        {
-            if (value=="4")
-            {
-                $('#dzongkhag').hide();
-                $('#gewog').hide();
-                $('#village').hide();
-                $('.cid_details').show();
-                $('#generateQRCode').hide();
-               // $('#proponent_name').attr("readonly", "readonly");
-                //$('#i_dzongkhag').show();
-                $('#i_dzongkhag').attr('type', 'text');
-                $('#i_gewog').attr('type', 'text');
-                $('#i_village').attr('type', 'text');
-                // $('#i_gewog').show();
-                // $('#i_village').show();
-            // Clear the values of the fields
-                $('#dzongkhag').val('');
-                $('#gewog').val('');
-                $('#village').val('');
-                $('#cid').val('');
-                $('#proponent_name').val('');
-                $('#i_dzongkhag').val('');
-                $('#i_gewog').val('');
-                $('#i_village').val('');
-            }
             else
             {
-                $('#dzongkhag').show();
-                $('#gewog').show();
-                $('#village').show();
-                $('#proponent_name').removeAttr("readonly");
-                $('.cid_details').hide();
-                $('#i_dzongkhag').attr('type', 'hidden');
-                $('#i_gewog').attr('type', 'hidden');
-                $('#i_village').attr('type', 'hidden');
-            // Clear the values of the fields
-
-                $('#dzongkhag').val('');
-                $('#gewog').val('');
-                $('#village').val('');
-                $('#proponent_name').val('');
-                $('#i_dzongkhag').val('');
-                $('#i_gewog').val('');
-                $('#i_village').val('');
+                $('#answerErrorMsg').html("The answer you entered does not match your previous answer, please verify and try again else contact administrator");
+                $('#answerErrorMsg').show();
+                $('#answerErrorMsg').delay(2000).fadeOut('slow');
             }
         }
-        function getCitizenDetails(cid)
+    }
+
+    function getSecurityQuestion(uid)
+    {
+        if(uid == "")
+        {
+            $('#email_idErrorMsg').html("Email Is Required.");
+            $('#email_idErrorMsg').show();
+            $('#email_idErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
         {
             $.ajax({
                 type : "GET",
-                url : "{% url 'check_cid_exists' %}",
-                data :{'cid':cid},
+                url : "{% url 'load_security_question' %}",
+                data :{'email':uid},
                 success : function(data)
                 {
-                    if(data.count > 0)
+                    $('#security_question').html(data);
+                }
+            });
+        }
+    }
+
+    function getAnswer(questionId)
+    {
+        var uid = $('#email_id').val();
+        $.ajax({
+            async: false,
+            type: 'GET',
+            url : "{% url 'get_security_answer' %}",
+            data :{'questionId':questionId, 'email_id':uid,  csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(data)
+            {
+                $('#securityAnswer').val(data.answer);
+            }
+        });
+    }
+
+    function validateemailId(emailId)
+    {
+        var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+        var no=emailId.match(pattern);
+
+        if(no==null)
+        {
+            $('#email_idErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+            $('#email_id').val("");
+            $('#email_idErrorMsg').show();
+            $('#email_idErrorMsg').delay(2000).fadeOut('slow');
+        }else{
+         $('#email_idErrorMsg').hide();
+        }
+
+    }
+
+    function loadSubMenuPage(menu_id)
+    {
+        $.ajax
+        ({
+            type : "GET",
+            url : "{% url 'get_content_details' %}",
+            data : {'menu_id':menu_id, 'identifier':'SM'},
+            dataType : "html",
+            success : function(responseText)
+            {
+                $('#content_div').show();
+                $("#content_div").html(responseText);
+            }
+        });
+    }
+
+    function loadMenuPage(menu_id)
+    {
+        $.ajax
+        ({
+            type : "GET",
+            url : "{% url 'get_content_details' %}",
+            data : {'menu_id':menu_id, 'identifier':'M'},
+            dataType : "html",
+            success : function(responseText)
+            {
+                $("#content_div").html(responseText);
+                $('#content_div').show();
+            }
+        });
+    }
+
+    function download_forms()
+    {
+        $.ajax
+        ({
+            type : "GET",
+            url : "{% url 'download_forms' %}",
+            dataType : "html",
+            success : function(responseText)
+            {
+                $("#content_div").html(responseText);
+                $('#content_div').show();
+            }
+        });
+    }
+
+    function check_cid(cid)
+    {
+        $.ajax({
+            type: "POST",
+            url: "{% url 'check_cid' %}",
+            data: {'cid':cid, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(data) {
+                if (data.count == "1") {
+                    $('#cidErrorMsg').html("CID Already Exists. Try With Another CID");
+                    $('#cid').val("");
+                    $('#proponent_name').val("");
+                    $('#i_dzongkhag').val("");
+                    $('#i_gewog').val("");
+                    $('#i_village').val("");
+                    $('#cidErrorMsg').show();
+                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                } else {
+                    $('#cidErrorMsg').hide();
+                }
+            }
+        });
+    }
+
+    function show_details(value)
+    {
+        if (value=="4")
+        {
+            $('#dzongkhag').hide();
+            $('#gewog').hide();
+            $('#village').hide();
+            $('.cid_details').show();
+            $('#generateQRCode').hide();
+           // $('#proponent_name').attr("readonly", "readonly");
+            //$('#i_dzongkhag').show();
+            $('#i_dzongkhag').attr('type', 'text');
+            $('#i_gewog').attr('type', 'text');
+            $('#i_village').attr('type', 'text');
+            // $('#i_gewog').show();
+            // $('#i_village').show();
+        // Clear the values of the fields
+            $('#dzongkhag').val('');
+            $('#gewog').val('');
+            $('#village').val('');
+            $('#cid').val('');
+            $('#proponent_name').val('');
+            $('#i_dzongkhag').val('');
+            $('#i_gewog').val('');
+            $('#i_village').val('');
+        }
+        else
+        {
+            $('#dzongkhag').show();
+            $('#gewog').show();
+            $('#village').show();
+            $('#proponent_name').removeAttr("readonly");
+            $('.cid_details').hide();
+            $('#i_dzongkhag').attr('type', 'hidden');
+            $('#i_gewog').attr('type', 'hidden');
+            $('#i_village').attr('type', 'hidden');
+        // Clear the values of the fields
+
+            $('#dzongkhag').val('');
+            $('#gewog').val('');
+            $('#village').val('');
+            $('#proponent_name').val('');
+            $('#i_dzongkhag').val('');
+            $('#i_gewog').val('');
+            $('#i_village').val('');
+        }
+    }
+    function getCitizenDetails(cid)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'check_cid_exists' %}",
+            data :{'cid':cid},
+            success : function(data)
+            {
+                if(data.count > 0)
+                {
+                    $('#cid').val("");
+                    $('#proponent_name').val("");
+                    $('#i_dzongkhag').val("");
+                    $('#i_gewog').val("");
+                    $('#i_village').val("");
+                    $('#cidErrorMsg').html("CID Already Exists.Try With Another one");
+                    $('#cidErrorMsg').show();
+                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    const myObj =data.response;
+                    if(myObj.citizendatas.citizendata == undefined)
                     {
                         $('#cid').val("");
-                        $('#proponent_name').val("");
-                        $('#i_dzongkhag').val("");
-                        $('#i_gewog').val("");
-                        $('#i_village').val("");
-                        $('#cidErrorMsg').html("CID Already Exists.Try With Another one");
+                        $('#cidErrorMsg').html("Invalid CID.Try With Another one");
                         $('#cidErrorMsg').show();
                         $('#cidErrorMsg').delay(2000).fadeOut('slow');
                     }
                     else
                     {
-                        const myObj =data.response;
-                        if(myObj.citizendatas.citizendata == undefined)
-                        {
-                            $('#cid').val("");
-                            $('#cidErrorMsg').html("Invalid CID.Try With Another one");
-                            $('#cidErrorMsg').show();
-                            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-                        }
-                        else
-                        {
-                            var CitizenName = myObj.citizendatas.citizendata[0].Name
-                            var dzongkhagName = myObj.citizendatas.citizendata[0].Dzongkhag_Name
-                            var villageName = myObj.citizendatas.citizendata[0].Gewog_Name
-                            var gewogName = myObj.citizendatas.citizendata[0].Village_Name
-                            $('#proponent_name').val(CitizenName);
-                            $('#i_dzongkhag').val(dzongkhagName);
-                            $('#i_gewog').val(gewogName);
-                            $('#i_village').val(villageName);
-                        }
+                        var CitizenName = myObj.citizendatas.citizendata[0].Name
+                        var dzongkhagName = myObj.citizendatas.citizendata[0].Dzongkhag_Name
+                        var villageName = myObj.citizendatas.citizendata[0].Gewog_Name
+                        var gewogName = myObj.citizendatas.citizendata[0].Village_Name
+                        $('#proponent_name').val(CitizenName);
+                        $('#i_dzongkhag').val(dzongkhagName);
+                        $('#i_gewog').val(gewogName);
+                        $('#i_village').val(villageName);
                     }
                 }
-            });
-        }
-
-        function authenticate_ndi(value) {
-            // Show progress indicator
-            if(value=="Issuance")
-            {
-                $('#loginModalForm').modal('show');
-                $('#progressLoader').show();
-                $('#loginBox').hide();
-                $('#cls_but').show();
-
-
-                setTimeout(() => {
-                    $('#progressLoader').hide(); // Hide loader
-                }, 5000); // Adjust timing as needed
-
             }
-            else
-            {
-                $('#back_but').show();
-            }
+        });
+    }
 
-            $('#progressIndicator').show();
-
-            $.ajax({
-                type: "GET",
-                url: `/proof_request/?category=${value}`, // Pass category as a query parameter
-                success: function(data) {
-                    var verifierData = data.data;
-                    var proofRequestURL = verifierData.proofRequestURL;
-                    var proofRequestThreadId = verifierData.proofRequestThreadId;
-                    var deepLinkURL = verifierData.deepLinkURL;
-                    sessionId = data.session_id; // Store session ID from response
-
-                    $('.modal-footer').hide();
-                    updateDisplay(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
-
-                    // Hide progress indicator
-                    $('#progressIndicator').hide();
-                },
-                error: function() {
-                    // Hide progress indicator in case of error
-                    $('#progressIndicator').hide();
-                }
-            });
-        }
-
-        function updateDisplay(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
+    function authenticate_ndi(value) {
+        // Show progress indicator
+        if(value=="Issuance")
+        {
+            $('#loginModalForm').modal('show');
+            $('#progressLoader').show();
             $('#loginBox').hide();
-            $("#ndi_div").show();
+            $('#cls_but').show();
 
-            if (isMobileDevice()) {
-                // Show button on mobile devices
-                $("#deepLink").show();
-                $("#deepLinkBtn").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
-                $('#qrcode').show();
-            } else {
-                // Show QR code on larger screens
-                $("#deepLink").hide();
-                $('#qrcode').empty(); // Clear previous QR code
-                $('#qrcode').qrcode({
-                    render: 'canvas',
-                    minVersion: 1,
-                    maxVersion: 40,
-                    ecLevel: 'L',
-                    left: 0,
-                    top: 0,
-                    size: 200,
-                    fill: '#000',
-                    background: '#fff',
-                    text: proofRequestURL,
-                    radius: 0,
-                    quiet: 0,
-                    mode: 4,
-                    mSize: 0.15,
-                    mPosX: 0.5,
-                    mPosY: 0.5,
-                    label: '',
-                    fontcolor: '#000',
-                    fontname: 'sans',
-                    image: document.getElementById('logo'),
-                });
-                $('#qrcode').show(); // Show the QR code
-            }
-            nats_call(proofRequestThreadId, value);
+
+            setTimeout(() => {
+                $('#progressLoader').hide(); // Hide loader
+            }, 5000); // Adjust timing as needed
+
+        }
+        else
+        {
+            $('#back_but').show();
         }
 
-        function isMobileDevice() {
-            return /Mobi|Android/i.test(navigator.userAgent);
-        }
+        $('#progressIndicator').show();
 
+        $.ajax({
+            type: "GET",
+            url: `/proof_request/?category=${value}`, // Pass category as a query parameter
+            success: function(data) {
+                var verifierData = data.data;
+                var proofRequestURL = verifierData.proofRequestURL;
+                var proofRequestThreadId = verifierData.proofRequestThreadId;
+                var deepLinkURL = verifierData.deepLinkURL;
+                sessionId = data.session_id; // Store session ID from response
 
-        function authenticate_ndi_empid(value) {
-            // Show progress indicator
-            $('#progressIndicator').show();
-
-            $.ajax({
-                type: "GET",
-                url: `/proof_request_employee/?category=${value}`, // Pass category as a query parameter
-                success: function(data) {
-                    var verifierData = data.data;
-                    var proofRequestURL = verifierData.proofRequestURL;
-                    var proofRequestThreadId = verifierData.proofRequestThreadId;
-                    var deepLinkURL = verifierData.deepLinkURL;
-                    sessionId = data.session_id; // Store session ID from response
-
-                    $('.modal-footer').hide();
-                    updateDisplayEmp(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
+                $('.modal-footer').hide();
+                updateDisplay(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
 
                 // Hide progress indicator
-                    $('#progressIndicator').hide();
-                },
-                error: function() {
-                    // Hide progress indicator in case of error
-                    $('#progressIndicator').hide();
-                }
+                $('#progressIndicator').hide();
+            },
+            error: function() {
+                // Hide progress indicator in case of error
+                $('#progressIndicator').hide();
+            }
+        });
+    }
+
+    function updateDisplay(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
+        $('#loginBox').hide();
+        $("#ndi_div").show();
+
+        if (isMobileDevice()) {
+            // Show button on mobile devices
+            $("#deepLink").show();
+            $("#deepLinkBtn").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
+            $('#qrcode').show();
+        } else {
+            // Show QR code on larger screens
+            $("#deepLink").hide();
+            $('#qrcode').empty(); // Clear previous QR code
+            $('#qrcode').qrcode({
+                render: 'canvas',
+                minVersion: 1,
+                maxVersion: 40,
+                ecLevel: 'L',
+                left: 0,
+                top: 0,
+                size: 200,
+                fill: '#000',
+                background: '#fff',
+                text: proofRequestURL,
+                radius: 0,
+                quiet: 0,
+                mode: 4,
+                mSize: 0.15,
+                mPosX: 0.5,
+                mPosY: 0.5,
+                label: '',
+                fontcolor: '#000',
+                fontname: 'sans',
+                image: document.getElementById('logo'),
             });
+            $('#qrcode').show(); // Show the QR code
         }
+        nats_call(proofRequestThreadId, value);
+    }
 
-        function updateDisplayEmp(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
-            $('#loginBox').hide();
-            $("#ndi_div").show();
+    function isMobileDevice() {
+        return /Mobi|Android/i.test(navigator.userAgent);
+    }
 
-            if (isMobileDevice()) {
-                // Show button on mobile devices
-                $("#deepLink").show();
-                $("#deepLinkBtn").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
-                $('#qrcode').show();
-            } else {
-                // Show QR code on larger screens
-                // Clear previous QR code
-                $('#qrcode').empty();
 
-                // Generate new QR code
-                $('#qrcode').qrcode({
-                    render: 'canvas',
-                    minVersion: 1,
-                    maxVersion: 40,
-                    ecLevel: 'L',
-                    left: 0,
-                    top: 0,
-                    size: 200,
-                    fill: '#000',
-                    background: '#fff',
-                    text: proofRequestURL,
-                    radius: 0,
-                    quiet: 0,
-                    mode: 4,
-                    mSize: 0.15,
-                    mPosX: 0.5,
-                    mPosY: 0.5,
-                    label: '',
-                    fontcolor: '#000',
-                    fontname: 'sans',
-                    image: document.getElementById('logo'),
-                });
-                $('#qrcode').show(); // Show the QR code
+    function authenticate_ndi_empid(value) {
+        // Show progress indicator
+        $('#progressIndicator').show();
+
+        $.ajax({
+            type: "GET",
+            url: `/proof_request_employee/?category=${value}`, // Pass category as a query parameter
+            success: function(data) {
+                var verifierData = data.data;
+                var proofRequestURL = verifierData.proofRequestURL;
+                var proofRequestThreadId = verifierData.proofRequestThreadId;
+                var deepLinkURL = verifierData.deepLinkURL;
+                sessionId = data.session_id; // Store session ID from response
+
+                $('.modal-footer').hide();
+                updateDisplayEmp(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
+
+            // Hide progress indicator
+                $('#progressIndicator').hide();
+            },
+            error: function() {
+                // Hide progress indicator in case of error
+                $('#progressIndicator').hide();
             }
-            nats_call(proofRequestThreadId, value);
-        }
+        });
+    }
 
-        function registerauthenticateWithAPI(value) {
-            // Show progress indicator
-            $('#progressIndicator1').show();
+    function updateDisplayEmp(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
+        $('#loginBox').hide();
+        $("#ndi_div").show();
 
-            $.ajax({
-                type: "GET",
-                url: `/proof_request_proponent/?category=${value}`, // Pass the category as a query parameter
-                success: function(data) {
-                    var verifierData = data.data;
-                    var proofRequestURL = verifierData.proofRequestURL;
-                    var proofRequestThreadId = verifierData.proofRequestThreadId;
-                    var deepLinkURL = verifierData.deepLinkURL;
-                    sessionId = data.session_id; // Store session ID from response
+        if (isMobileDevice()) {
+            // Show button on mobile devices
+            $("#deepLink").show();
+            $("#deepLinkBtn").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
+            $('#qrcode').show();
+        } else {
+            // Show QR code on larger screens
+            // Clear previous QR code
+            $('#qrcode').empty();
 
-                    $('.modal-footer').hide();
-                    updateDisplayProponent(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
-                    // Hide progress indicator
-                    $('#progressIndicator1').hide();
-                },
-                error: function() {
-                    // Hide progress indicator in case of error
-                    $('#progressIndicator1').hide();
-                }
+            // Generate new QR code
+            $('#qrcode').qrcode({
+                render: 'canvas',
+                minVersion: 1,
+                maxVersion: 40,
+                ecLevel: 'L',
+                left: 0,
+                top: 0,
+                size: 200,
+                fill: '#000',
+                background: '#fff',
+                text: proofRequestURL,
+                radius: 0,
+                quiet: 0,
+                mode: 4,
+                mSize: 0.15,
+                mPosX: 0.5,
+                mPosY: 0.5,
+                label: '',
+                fontcolor: '#000',
+                fontname: 'sans',
+                image: document.getElementById('logo'),
             });
+            $('#qrcode').show(); // Show the QR code
         }
+        nats_call(proofRequestThreadId, value);
+    }
 
-        function updateDisplayProponent(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
+    function registerauthenticateWithAPI(value) {
+        // Show progress indicator
+        $('#progressIndicator1').show();
 
-            if (isMobileDevice()) {
-                // Show button on mobile devices
-                // Ensure that the required elements are shown/hidden without refreshing or closing the modal
-                $('#registration_div').hide();
-                $("#ndi_div_proponent").show();
-                $("#deepLinkPro").show();
-                $("#deepLinkBtnPro").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
-                $('#qrcode').show();
-            } else {
-                // Show QR code on larger screens
-                $('#registration_div').hide();
-                $("#ndi_div_proponent").show();
+        $.ajax({
+            type: "GET",
+            url: `/proof_request_proponent/?category=${value}`, // Pass the category as a query parameter
+            success: function(data) {
+                var verifierData = data.data;
+                var proofRequestURL = verifierData.proofRequestURL;
+                var proofRequestThreadId = verifierData.proofRequestThreadId;
+                var deepLinkURL = verifierData.deepLinkURL;
+                sessionId = data.session_id; // Store session ID from response
 
-                // Clear previous QR code
-                $('#qrcodeproponent').empty();
-
-                // Generate new QR code
-                $('#qrcodeproponent').qrcode({
-                    render: 'canvas',
-                    minVersion: 1,
-                    maxVersion: 40,
-                    ecLevel: 'L',
-                    left: 0,
-                    top: 0,
-                    size: 200,
-                    fill: '#000',
-                    background: '#fff',
-                    text: proofRequestURL,
-                    radius: 0,
-                    quiet: 0,
-                    mode: 4,
-                    mSize: 0.15,
-                    mPosX: 0.5,
-                    mPosY: 0.5,
-                    label: '',
-                    fontcolor: '#000',
-                    fontname: 'sans',
-                    image: document.getElementById('logo'),
-                });
-
-                $('#qrcodeproponent').show(); // Show the QR code
-                $("#ndi_button").hide();
+                $('.modal-footer').hide();
+                updateDisplayProponent(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
+                // Hide progress indicator
+                $('#progressIndicator1').hide();
+            },
+            error: function() {
+                // Hide progress indicator in case of error
+                $('#progressIndicator1').hide();
             }
-            nats_proponent_call(proofRequestThreadId, value);
+        });
+    }
+
+    function updateDisplayProponent(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
+
+        if (isMobileDevice()) {
+            // Show button on mobile devices
+            // Ensure that the required elements are shown/hidden without refreshing or closing the modal
+            $('#registration_div').hide();
+            $("#ndi_div_proponent").show();
+            $("#deepLinkPro").show();
+            $("#deepLinkBtnPro").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
+            $('#qrcode').show();
+        } else {
+            // Show QR code on larger screens
+            $('#registration_div').hide();
+            $("#ndi_div_proponent").show();
+
+            // Clear previous QR code
+            $('#qrcodeproponent').empty();
+
+            // Generate new QR code
+            $('#qrcodeproponent').qrcode({
+                render: 'canvas',
+                minVersion: 1,
+                maxVersion: 40,
+                ecLevel: 'L',
+                left: 0,
+                top: 0,
+                size: 200,
+                fill: '#000',
+                background: '#fff',
+                text: proofRequestURL,
+                radius: 0,
+                quiet: 0,
+                mode: 4,
+                mSize: 0.15,
+                mPosX: 0.5,
+                mPosY: 0.5,
+                label: '',
+                fontcolor: '#000',
+                fontname: 'sans',
+                image: document.getElementById('logo'),
+            });
+
+            $('#qrcodeproponent').show(); // Show the QR code
+            $("#ndi_button").hide();
         }
+        nats_proponent_call(proofRequestThreadId, value);
+    }
 
-        function showLoginForm(type) {
-            // Update button styles
-            document.getElementById('btnProponent').classList.remove('active-login-btn');
-            document.getElementById('btnAgency').classList.remove('active-login-btn');
+    function showLoginForm(type) {
+        // Update button styles
+        document.getElementById('btnProponent').classList.remove('active-login-btn');
+        document.getElementById('btnAgency').classList.remove('active-login-btn');
 
-            if (type === 'proponent') {
-                document.getElementById('btnProponent').classList.add('active-login-btn');
-                document.getElementById('proponentLoginForm').style.display = 'block';
-                document.getElementById('agencyLoginForm').style.display = 'none';
-            } else {
-                document.getElementById('btnAgency').classList.add('active-login-btn');
-                document.getElementById('proponentLoginForm').style.display = 'none';
-                document.getElementById('agencyLoginForm').style.display = 'block';
-            }
+        if (type === 'proponent') {
+            document.getElementById('btnProponent').classList.add('active-login-btn');
+            document.getElementById('proponentLoginForm').style.display = 'block';
+            document.getElementById('agencyLoginForm').style.display = 'none';
+        } else {
+            document.getElementById('btnAgency').classList.add('active-login-btn');
+            document.getElementById('proponentLoginForm').style.display = 'none';
+            document.getElementById('agencyLoginForm').style.display = 'block';
         }
-    </script>
-
+    }
+</script>
 </body>
 </html>

@@ -6,16 +6,39 @@
         window.location.replace("{% url 'index' %}");
     </script>
 {% endif %}
+<style>
+    /* All modals */
+    .modal .modal-header {
+        background-color: #dce5f2;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .modal .modal-footer {
+        background-color: #dce5f2;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    modal .modal-title {
+        color: #333;
+        font-weight: 600;
+    }
+
+    .modal .modal-content {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+
+</style>
 <div class="row">
     <div class="col-md-12">
         <div class="card mt-1">
             <div class="card-body">
-                <div class="card-widgets">
-                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#user_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                </div>
                 <h5 class="card-title mb-0">User Manage</h5>
-
                 <div id="cardCollpase1" class="collapse pt-3 show">
+                    <div class="card-widgets">
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#user_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                    </div>
                     <table id="basic-datatable" class="table dt-responsive nowrap w-100">
                         <thead>
                             <th>#</th>
@@ -59,7 +82,7 @@
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Activate')"><i class="uil uil-unlock">Activate</i></button>
                                             {% endif %}
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit"
-                                                     onclick="populateEditForm('{{user.login_id}}', '{{user.name}}', '{{user.gender}}', '{{user.email_id}}','{{user.contact_number}}', '{{user.role_id_id}}', '{{user.agency_code}}')"><i class="mdi mdi-square-edit-outline">Edit</i> </button>
+                                                     onclick="populateEditForm('{{user.login_id}}', '{{user.employee_id}}', '{{user.name}}', '{{user.gender}}', '{{user.email_id}}','{{user.contact_number}}', '{{user.role_id_id}}', '{{user.agency_code}}')"><i class="mdi mdi-square-edit-outline">Edit</i> </button>
                                             <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Reset Password" onclick="manage_user('{{ user.login_id }}','{{user.email_id}}','{{user.name}}','Reset')"><i class="uil-key-skeleton">Reset Password</i></button>
                                         </div>
                                     </td>
@@ -78,7 +101,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="fullWidthModalLabel">Manage Users</h4>
+                    <h4 class="modal-title" id="fullWidthModalLabel">Add Users</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                 </div>
                 <div class="modal-body">
@@ -88,14 +111,14 @@
                                 <label class="form-label fw-bold">Employee Id</label>
                                 <input type="text" name="employee_id" class="form-control" id="employee_id" onchange="validate_emp_id(this.value)">
                             </div>
-                            <div id="employee_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            <div id="employee_idErrorMsg" class="alert alert-danger" style="display:none;"></div>
                         </div>
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Name</label>
                                 <input type="text" name="name" class="form-control" id="name">
                             </div>
-                            <div id="nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            <div id="nameErrorMsg" class="alert alert-danger" style="display:none;"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -113,23 +136,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="genderErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                            <div id="genderErrorMsg" class="alert alert-danger" style="display:none;"></div>
                         </div>
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Email</label>
                                 <input type="email" name="email" class="form-control" id="email" onchange="validate_email_id(this.value)">
                             </div>
-                            <div id="emailErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                            <!-- ✅ Also used for duplicate email server response -->
+                            <div id="emailErrorMsg" class="alert alert-danger" style="display:none;"></div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Contact Number</label>
-                                <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contact_number" maxlength="8" min="1">
+                                <input type="number" class="form-control" id="contact_number"
+                                    oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                    name="contact_number" maxlength="8" min="1">
                             </div>
-                            <div id="contact_numberErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                            <div id="contact_numberErrorMsg" class="alert alert-danger" style="display:none;"></div>
                         </div>
                         <div class="col-lg-6">
                             <div class="mb-3">
@@ -141,7 +167,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div id="roleErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                            <div id="roleErrorMsg" class="alert alert-danger" style="display:none;"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -155,30 +181,34 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div id="agencyErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                            <div id="agencyErrorMsg" class="alert alert-danger" style="display:none;"></div>
                         </div>
                     </div>
                 </div>
-                <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
+
+                <button id="pageloader" class="btn btn-primary" type="button" disabled style="display:none;">
                     <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                     Loading...
                 </button>
-                <div class="alert alert-success" id="successMsg" style="display:none"></div>
+                <div class="alert alert-success" id="successMsg" style="display:none;"></div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" onclick="save_users()">Add</button>
                 </div>
+
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 </form>
+
 <form method="post" id="edit_user_form">
     {% csrf_token %}
     <div id="edit-user-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="edit-user-modal" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="fullWidthModalLabel">Edit Users</h4>
+                    <h4 class="modal-title">Edit Users</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                 </div>
                 <div class="modal-body">
@@ -274,29 +304,29 @@
     </div><!-- /.modal -->
 </form>
 <script>
-    function check_role_id(value)
+function check_role_id(value)
+{
+    if(value == '1')
     {
-        if(value == '1')
-        {
-            $('.com_auth_div').hide();
-        }
-        else
-        {
-            $('.com_auth_div').show();
-        }
+        $('.com_auth_div').hide();
     }
+    else
+    {
+        $('.com_auth_div').show();
+    }
+}
 
-    function check_edit_role_id(value)
+function check_edit_role_id(value)
+{
+    if(value == '1')
     {
-        if(value == '1')
-        {
-            $('.edit_com_auth_div').hide();
-        }
-        else
-        {
-            $('.edit_com_auth_div').show();
-        }
+        $('.edit_com_auth_div').hide();
     }
+    else
+    {
+        $('.edit_com_auth_div').show();
+    }
+}
 
 function validate_email_id(emailId)
 {
@@ -358,90 +388,76 @@ function validate_emp_id(employee_id)
     });
 }
 
-function save_users()
-{
-        let employee_id = $('#employee_id').val();
-        let name = $('#name').val();
-        let gender = $("input[name=gender]:checked").length;
-        let email = $('#email').val();
-        let contact_number = $('#contact_number').val();
-        let role = $('#role').val();
-        let agency = $('#agency').val();
-        let contact_number_count = $('#contact_number').val().length;
+function save_users() {
 
-        if(employee_id == "")
-        {
-            $('#employee_idErrorMsg').html("Enter Employee Id.");
-            $('#employee_idErrorMsg').show();
-            $('#employee_idErrorMsg').delay(2000).fadeOut('slow');
+    let employee_id          = $('#employee_id').val();
+    let name                 = $('#name').val();
+    let gender               = $("input[name=gender]:checked").length;
+    let email                = $('#email').val();
+    let contact_number       = $('#contact_number').val();
+    let role                 = $('#role').val();
+    let agency               = $('#agency').val();
+    let contact_number_count = $('#contact_number').val().length;
+
+    // ── Helper ─────────────────────────────────────────────
+    function showError(id, message) {
+        $('#' + id).html(message).show().delay(2500).fadeOut('slow');
+    }
+
+    // ── Validation ─────────────────────────────────────────
+    if (employee_id == "") {
+        return showError('employee_idErrorMsg', 'Enter Employee Id.');
+    }
+    if (name == "") {
+        return showError('nameErrorMsg', 'Enter Name.');
+    }
+    if (gender < 1) {
+        return showError('genderErrorMsg', 'Select One Gender.');
+    }
+    if (email == "") {
+        return showError('emailErrorMsg', 'Enter Email.');
+    }
+    if (contact_number == "") {
+        return showError('contact_numberErrorMsg', 'Enter Contact Number.');
+    }
+    if (contact_number_count < 8) {
+        return showError('contact_numberErrorMsg', 'Cannot Be Less Than Eight Digits.');
+    }
+    if (role == "") {
+        return showError('roleErrorMsg', 'Select Role.');
+    }
+    if (role != "1" && agency == "") {
+        return showError('agencyErrorMsg', 'Select Agency.');
+    }
+
+    // ── AJAX Submit ────────────────────────────────────────
+    $('#pageloader').show();
+
+    $.ajax({
+        type    : 'POST',
+        url     : "{% url 'add_user' %}",
+        data    : $('#add_user_form').serialize(),
+        success : function(response) {
+            $('#pageloader').hide();
+
+            if (response.status === 'error') {
+                // ── Duplicate email or any server-side error ──
+                return showError('emailErrorMsg', response.message);
+            }
+
+            // ── Success ────────────────────────────────────
+            $('#successMsg').html(response.message).show();
+            $('#add_user_form')[0].reset();
+
+            setTimeout(function() { $('#successMsg').fadeOut('slow'); }, 3000);
+            setTimeout(function() { $('#user_modal').modal('hide'); }, 2500);
+            setTimeout(function() { location.reload(); }, 3200);
+        },
+        error : function() {
+            $('#pageloader').hide();
+            showError('emailErrorMsg', 'Something went wrong. Please try again.');
         }
-        else if(name == "")
-        {
-            $('#nameErrorMsg').html("Enter Name.");
-            $('#nameErrorMsg').show();
-            $('#nameErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(gender < 1)
-        {
-            $('#genderErrorMsg').html("Select One Gender.");
-            $('#genderErrorMsg').show();
-            $('#genderErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(email == "")
-        {
-            $('#emailErrorMsg').html("Enter Email.");
-            $('#emailErrorMsg').show();
-            $('#emailErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(contact_number == "")
-        {
-            $('#contact_numberErrorMsg').html("Enter Contact Number.");
-            $('#contact_numberErrorMsg').show();
-            $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(contact_number_count < 8)
-        {
-            $('#contact_numberErrorMsg').html("Cannot Be Less Than Eight Digits.");
-            $('#contact_numberErrorMsg').show();
-            $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(role == "")
-        {
-            $('#roleErrorMsg').html("Select Role.");
-            $('#roleErrorMsg').show();
-            $('#roleErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(role != "1" && agency == "")
-        {
-            $('#agencyErrorMsg').html("Select Agency.");
-            $('#agencyErrorMsg').show();
-            $('#agencyErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else
-        {
-            $("#pageloader").show();
-            $.ajax({
-                type : "POST",
-                url : "{% url 'add_user' %}",
-                data : $('#add_user_form').serialize(),
-                success : function()
-                {
-                    $("#pageloader").hide();
-                    $('#successMsg').html("User Successfully Added.");
-                    $('#successMsg').show();
-                    setTimeout(function() {
-                        $('#successMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
-                    setTimeout(function() {
-                        $('#user_modal').modal('hide');
-                    }, 2000);
-                    setTimeout(function() {
-                        location.reload();
-                    }, 3000);
-                    $('#add_user_form')[0].reset();
-                }
-            });
-        }
+    });
 }
 
 
@@ -531,9 +547,10 @@ function update_users()
     }
 }
 
-function populateEditForm(loginId, name, gender, emailId, contactNumber, roleId, agencyId)
+function populateEditForm(loginId, employee_id, name, gender, emailId, contactNumber, roleId, agencyId)
 {
     $('#editLoginId').val(loginId);
+    $('#edit_employee_id').val(employee_id);
     $('#edit_name').val(name);
     if(gender == "M")
     {

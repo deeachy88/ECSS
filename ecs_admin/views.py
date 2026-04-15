@@ -605,32 +605,64 @@ def dashboard(request):
 
     return response
 
-
-
 def add_user(request):
-    employee_id = request.POST.get('employee_id')
-    name = request.POST.get('name')
-    gender = request.POST.get('gender')
-    email = request.POST.get('email')
-    contact_number = request.POST.get('contact_number')
-    role = request.POST.get('role')
-    agency = request.POST.get('agency')
-    password = get_random_password_string(8)
+    employee_id     = request.POST.get('employee_id')
+    name            = request.POST.get('name')
+    gender          = request.POST.get('gender')
+    email           = request.POST.get('email')
+    contact_number  = request.POST.get('contact_number')
+    role            = request.POST.get('role')
+    agency          = request.POST.get('agency')
+
+    # ── Duplicate Email Check ──────────────────────────────
+    if t_user_master.objects.filter(email_id=email).exists():
+        return JsonResponse({'status': 'error', 'message': 'Email is already in use.'})
+
+    # ── Create User ────────────────────────────────────────
+    password       = get_random_password_string(8)
     password_value = make_password(password)
+
     if role == '1':
-        t_user_master.objects.create(login_type="I", employee_id=employee_id, name=name, gender=gender,
-                                        contact_number=contact_number, email_id=email,
-                                        password=password_value, is_active="Y",agency_code=None,
-                                        logical_delete="N", last_login_date=None, created_by=None,
-                                        created_on=date.today(), modified_by=None, modified_on=None, role_id_id=role)
+        t_user_master.objects.create(
+            login_type      = "I",
+            employee_id     = employee_id,
+            name            = name,
+            gender          = gender,
+            contact_number  = contact_number,
+            email_id        = email,
+            password        = password_value,
+            is_active       = "Y",
+            agency_code     = None,
+            logical_delete  = "N",
+            last_login_date = None,
+            created_by      = None,
+            created_on      = date.today(),
+            modified_by     = None,
+            modified_on     = None,
+            role_id_id      = role
+        )
     else:
-        t_user_master.objects.create(login_type="I", employee_id=employee_id, name=name, gender=gender,
-                                        contact_number=contact_number, email_id=email,
-                                        password=password_value, is_active="Y",agency_code=agency,
-                                        logical_delete="N", last_login_date=None, created_by=request.session['login_id'],
-                                        created_on=date.today(), modified_by=None, modified_on=None, role_id_id=role)
+        t_user_master.objects.create(
+            login_type      = "I",
+            employee_id     = employee_id,
+            name            = name,
+            gender          = gender,
+            contact_number  = contact_number,
+            email_id        = email,
+            password        = password_value,
+            is_active       = "Y",
+            agency_code     = agency,
+            logical_delete  = "N",
+            last_login_date = None,
+            created_by      = request.session['login_id'],
+            created_on      = date.today(),
+            modified_by     = None,
+            modified_on     = None,
+            role_id_id      = role
+        )
+
     sendmail(request, name, email, password)
-    return redirect(user_master)
+    return JsonResponse({'status': 'success', 'message': 'User successfully added.'})
 
 def update_user(request):
     login_id = request.POST.get('editLoginId')
@@ -682,7 +714,9 @@ def load_village(request):
 def check_email_id(request):
     data = dict()
     email = request.POST.get('email')
+    print(email)
     file_count = t_user_master.objects.filter(email_id=email).count()
+    print(file_count)
     data['file_count'] = file_count
     return JsonResponse(data)
 
