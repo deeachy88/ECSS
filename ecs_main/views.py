@@ -2243,7 +2243,7 @@ def _move_ec_to_history(ec_reference_no):
             history_date=now(),
             history_action='MOVED_TO_HISTORY',
             application_no=record.application_no,
-            fmfsr=record.fmfsr
+            fmfsr_no=record.fmfsr
         ))
 
     if t1_history_objects:
@@ -2311,7 +2311,7 @@ def _handle_new_application_ec_tables(ec_refs, application_no):
             tor_clearance_no=source.tor_clearance_no,
             status='A',
             application_no=application_no,
-            fmfsr=source.fmfsr
+            fmfsr_no=source.fmfsr_no
         )
         t1_objects_to_create.append(t1_record)
 
@@ -2349,7 +2349,7 @@ def _handle_new_application_ec_tables(ec_refs, application_no):
             history_date=now(),
             history_action='NEW_APPLICATION',
             application_no=application_no,
-            fmfsr=source.fmfsr
+            fmfsr_no=source.fmfsr_no
         ))
 
     if t1_objects_to_create:
