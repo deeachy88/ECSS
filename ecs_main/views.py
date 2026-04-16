@@ -2243,7 +2243,7 @@ def _move_ec_to_history(ec_reference_no):
             history_date=now(),
             history_action='MOVED_TO_HISTORY',
             application_no=record.application_no,
-            fmfsr_no=record.fmfsr
+            fmfsr_no=record.fmfsr_no
         ))
 
     if t1_history_objects:
