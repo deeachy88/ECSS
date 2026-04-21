@@ -29,10 +29,9 @@
         </div>
 
         <!-- Current Owner Section -->
-        <div class="alert alert-primary border-0" role="alert">
-          <i class="uil-folder-heart me-1 h4 align-middle"></i> CURRENT OWNER / SELLER's Details
+        <div class="alert alert-info border-0" role="alert">
+          <i class="uil-user-plus me-1 h4 align-middle"></i> CURRENT OWNER / SELLER's Details
         </div>
-
         <div class="row">
           <div class="col-lg-4">
             <div class="mb-3">
@@ -74,12 +73,10 @@
             </div>
           </div>
         </div>
-
         <!-- Location -->
-        <div class="alert alert-info border-0" role="alert">
-          <i class="uil-location-point me-1 h4 align-middle"></i> Project Location and Area
+        <div class="alert custom-bg border-0" role="alert">
+            <h5 class="mb-0">Project Location and Area</h5>
         </div>
-
         <div class="row">
           <div class="col-lg-4">
             <div class="mb-3">
@@ -120,10 +117,9 @@
         </div>
 
         <!-- New Owner Section -->
-        <div class="alert alert-success border-0" role="alert">
+        <div class="alert alert-info border-0" role="alert">
           <i class="uil-user-plus me-1 h4 align-middle"></i> NEW OWNER / BUYER's Details
         </div>
-
         <div class="row">
           <div class="col-lg-4">
             <div class="mb-3">
@@ -143,6 +139,22 @@
               <input type="text" class="form-control" value="{{ details.buyer_contact_no }}" readonly>
             </div>
           </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email</label>
+                    <input type="email" name="applicant_email" class="form-control" id="applicant_email" value="{{ details.buyer_email }}" readonly>
+                </div>
+                <div id="applicant_emailErrorMsg" class="alert alert-danger" style="display: none;"></div>
+            </div>
+            <div class="col-lg-8">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
+                    <textarea class="form-control" id="applicant_focal_person" name="applicant_focal_person" rows="3" readonly >{{details.buyer_focal_person}}</textarea>
+                </div>
+            </div>
+            <div id="applicant_focal_personErrorMsg" class="alert alert-danger" style="display: none;"></div>
         </div>
 
         <!-- Attachments Section - SIMPLIFIED (no problematic include) -->

@@ -299,7 +299,21 @@ h5 i {
 /* ==============================
    MISC
 ============================== */
-
+/*
+*/
+  input.form-control[readonly],
+  textarea.form-control[readonly],
+  select.form-select:disabled,
+  select.form-control:disabled,
+  input.form-control:disabled {
+    background-color: #dce1e6 !important;
+    color: #6c757d !important;
+    border-color: #dee2e6 !important;
+    cursor: not-allowed;
+    opacity: 1 !important;
+  }
+/*
+*/
 .distinct-activity {
     padding: 12px;
     margin-bottom: 0;
@@ -381,4 +395,49 @@ h5 i {
         padding: 8px 10px !important;
         font-size: 0.85rem !important;
     }
+}
+
+/* ==============================
+   GLOBAL FORM STYLING (READONLY/DISABLED)
+============================== */
+
+/* Targeted selector to override Bootstrap & Hyper Theme defaults */
+html body .form-control[readonly],
+html body .form-control:disabled,
+html body .form-select:disabled,
+html body .form-control-plaintext[readonly] {
+    background-color: #dce1e6 !important; /* Light Gray/White shade */
+    color: #6c757d !important;           /* Muted text color */
+    border-color: #dee2e6 !important;    /* Soft border */
+    cursor: not-allowed !important;      /* Shows the 'no' icon on hover */
+    opacity: 1 !important;               /* Prevents looking too faded in some browsers */
+}
+
+/* Specific fix for textareas */
+html body textarea.form-control[readonly] {
+    background-color: #f8f9fa !important;
+}
+
+/* Optional: remove the focus blue glow on readonly fields */
+html body .form-control[readonly]:focus,
+html body .form-select:disabled:focus {
+    box-shadow: none !important;
+    border-color: #dee2e6 !important;
+}
+
+html body textarea.form-control[readonly],
+html body textarea[readonly].form-control {
+    background-color: #dce1e6 !important;
+    color: #6c757d !important;
+    border-color: #dee2e6 !important;
+    cursor: not-allowed !important;
+    opacity: 1 !important;
+    resize: none !important;              /* Optional: prevents resizing readonly textarea */
+}
+
+/* Remove focus effects on readonly textarea */
+html body textarea.form-control[readonly]:focus {
+    box-shadow: none !important;
+    border-color: #dee2e6 !important;
+    background-color: #dce1e6 !important;
 }

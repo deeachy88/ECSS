@@ -60,8 +60,7 @@ function save_report_form()
 function DeleteReportAttachment(id)
 {
     var refNo = $('#attachment_refNo').val();
-    alert(refNo);
-    alert(id);
+
     $.ajax({
         type : "GET",
         url : "{% url 'delete_report_file' %}",

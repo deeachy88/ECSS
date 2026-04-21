@@ -48,7 +48,8 @@ urlpatterns = [
     path('edit_inspection', views.edit_inspection, name='edit_inspection'),
     path('delete_inspection', views.delete_inspection, name='delete_inspection'),
     path('submit_inspection_form', views.submit_inspection_form, name='submit_inspection_form'),
-
+    path('add_inspection_report_file', views.add_inspection_report_file, name='add_inspection_report_file'),
+    path('add_inspection_report_file_name', views.add_inspection_report_file_name, name='add_inspection_report_file_name'),
 
 #fines and penalties
     path('fines_penalties', views.fines_penalties, name='fines_penalties'),

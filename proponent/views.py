@@ -4619,8 +4619,8 @@ def ownership_change(request):
     ec_reference_no = request.GET.get('ec_reference_no')
     service_code = 'OC'
     temp_application_no = get_ren_temp_application_no(request, service_code, '12')
-    print(ec_reference_no)
-    print(applicant_id)
+    # print(ec_reference_no)
+    # print(applicant_id)
     # Parent EC applications (as you had)
     application_details = t_ec_t1.objects.filter(
         ec_reference_no=ec_reference_no

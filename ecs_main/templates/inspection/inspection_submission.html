@@ -8,20 +8,22 @@
                 {% csrf_token %}
                 <input type="hidden" name="record_id" id="record_id">
                 <h4 class="header-title mb-3"> Add Inspection/Monitoring Report</h4>
-                <ul class="nav nav-tabs nav-bordered mb-3">
-                    <li class="nav-item">
-                        <a href="#profile-b1" id="report_submission_tab" data-bs-toggle="tab" aria-expanded="true" class="nav-link active">
-                            <i class="mdi mdi-account-circle d-md-none d-block"></i>
-                            <span class="d-none d-md-block">Inspection Report Details</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#settings-b1" id="file_attachment_tab" data-bs-toggle="tab" aria-expanded="false" class="nav-link disabled">
-                            <i class="mdi mdi-settings-outline d-md-none d-block"></i>
-                            <span class="d-none d-md-block">File Attachment</span>
-                        </a>
-                    </li>
-                </ul>
+                <div id="rootwizard">
+                    <ul class="nav nav-tabs nav-justified form-wizard-header mb-3">
+                        <li class="nav-item">
+                            <a href="#profile-b1" id="report_submission_tab" data-bs-toggle="tab" aria-expanded="true" class="nav-link active">
+                                <i class="mdi mdi-account-circle d-md-none d-block"></i>
+                                <span class="d-none d-md-block">Inspection Report Details</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#settings-b1" id="file_attachment_tab" data-bs-toggle="tab" aria-expanded="false" class="nav-link disabled">
+                                <i class="mdi mdi-settings-outline d-md-none d-block"></i>
+                                <span class="d-none d-md-block">File Attachment</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 <div class="tab-content">
                     <div class="tab-pane show active" id="profile-b1">
                         <div id="applicant_details">
@@ -61,19 +63,19 @@
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Proponent Name</label>
-                                        <input type="text" name="proponent_name" class="form-control" id="proponent_name" >
+                                        <input type="text" name="proponent_name" class="form-control" id="proponent_name" readonly>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Project Name</label>
-                                        <input type="text" name="project_name" class="form-control" id="project_name">
+                                        <input type="text" name="project_name" class="form-control" id="project_name" readonly>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Address</label>
-                                        <input type="text" name="address" class="form-control" id="address">
+                                        <input type="text" name="address" class="form-control" id="address" readonly>
                                         <input type="hidden" name="applicant_id" class="form-control" id="applicant_id">
                                     </div>
                                 </div>
@@ -300,13 +302,16 @@ function save_report()
                 $('#refNo').val(data.ref_no);
                 $('#attachment_refNo').val(data.ref_no);
                 $('#submitMsg').show();
-                url : "{% url 'load_inspection_attachment_details' %}",
                 setTimeout(function() {
                     $('#submitMsg').delay(2500).fadeOut('slow');
-                    $('.nav-tabs a[href="#settings-b1"]').tab('show');
-                    $('#file_attachment_tab').removeClass('show');
-                    $('#file_attachment_tab').removeClass('active');
+
+                    // Enable the tab
                     $('#file_attachment_tab').removeClass('disabled');
+
+                    // Activate tab (Bootstrap 5 way)
+                    var tab = new bootstrap.Tab(document.querySelector('#file_attachment_tab'));
+                    tab.show();
+
                 }, 1500);
             }
         });
@@ -379,7 +384,7 @@ function save_report_attachment()
         $.ajax
         ({
             type : "POST",
-            url : "{% url 'add_report_file' %}",
+            url : "{% url 'add_inspection_report_file' %}",
             data : fd,
             dataType: 'json',
             contentType: false,
@@ -393,7 +398,7 @@ function save_report_attachment()
                     $.ajax
                     ({
                         type : "POST",
-                        url : "{% url 'add_report_file_name' %}",
+                        url : "{% url 'add_inspection_report_file_name' %}",
                         data : {'refNo':refNo, 'filename':fileName, 'file_url':file_url},
                         success : function(responseText)
                         {

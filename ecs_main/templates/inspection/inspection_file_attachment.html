@@ -16,7 +16,7 @@
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">File</th>
+                    <th scope="col">File (Inspection File)</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
@@ -50,14 +50,17 @@ function save_report_form()
 	$.ajax({
 			type : "POST",
 			url : "{% url 'submit_inspection_form' %}",
-			data : $('#inspection_submission_form').serialize(),
+			data : $('#report_submission_form').serialize(),
 			cache : false,
 			dataType : "html",
 			success : function(responseText)
-			{
-			    $('#submitMsg').show();
-                location.reload()
-			}
+            {
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    window.location.href = "{% url 'inspection_list' %}";
+                }, 2000); // Show message for 2 seconds, then redirect
+            }
+
 	});
 }
 

@@ -33,9 +33,7 @@
                                     <p class="distinct-activity">{{application_details.activity}}</p>
                                 </div>
                             </div>
-                            <div class="alert alert-success border-0" role="alert">
-                              <i class="uil-user-plus me-1 h4 align-middle"></i> NEW OWNER / BUYER's Details
-                            </div>
+                            <div class="alert alert-info"><i class="uil-user-plus me-1 h4 align-middle"></i>NEW OWNER / BUYER's Details</div>
                             <div class="row">
                               <div class="col-lg-4">
                                 <div class="mb-3">
@@ -71,9 +69,7 @@
                                 </div>
                               </div>
                             </div>
-                            <div class="alert alert-success border-0" role="alert">
-                              <i class="uil-user-plus me-1 h4 align-middle"></i> EXISTING OWNER / SELLER's Details
-                            </div>
+                            <div class="alert alert-info"><i class="uil-user-plus me-1 h4 align-middle"></i>EXISTING OWNER / SELLER's Details</div>
                             <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                 <div class="col-lg-4">
                                     <div class="mb-3">
@@ -276,73 +272,83 @@
             {% if additional_info %}
             <div class="row additional_info" style="display: none;">
                 <div class="col-lg-12">
-                    <label class="form-label fw-bold mb-3">Additional Information</label>
-                        {% for info in additional_info %}
-                            <div class="card mb-3 shadow-sm">
-                                <div class="card-header bg-light">
-                                    <h6 class="mb-0 text-dark">
-                                        <strong>Request #{{ forloop.counter }}</strong>
-                                        {% if info.additional_info_ca_date %}
-                                            <span class="text-muted float-end">Submitted: {{ info.additional_info_ca_date }}</span>
-                                        {% endif %}
-                                    </h6>
-                                </div>
-                                <div class="card-body">
-                                    <!-- Competent Authority Section -->
-                                    <div class="mb-4">
-                                        <div class="row g-2 mb-2">
-                                            <div class="col-lg-8">
-                                                <label class="form-label small fw-bold">Remarks from Competent Authority</label>
-                                                <textarea class="form-control form-control-sm"
-                                                          rows="2"
-                                                          readonly>{{ info.additional_info_ca }}</textarea>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <label class="form-label small fw-bold">Remarks Date</label>
-                                                <input class="form-control form-control-sm"
-                                                       type="text"
-                                                       value="{{ info.additional_info_ca_date }}"
-                                                       readonly>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <label class="form-label small fw-bold">Due Date</label>
-                                                <input class="form-control form-control-sm"
-                                                       type="text"
-                                                       value="{{ info.additional_info_due_date }}"
-                                                       readonly>
-                                            </div>
-                                        </div>
+                    <div class="alert alert-success border-0" role="alert">
+                      Additional Information
+                    </div>
+                    {% for info in additional_info %}
+                    <div class="card mb-3 shadow-sm border-0">
+                        <div class="card-header" style="background-color: #e1edfa;">
+                            <h6 class="mb-0 text-dark">
+                                <strong>Request #{{ forloop.counter }}</strong>
+                                {% if info.additional_info_ca_date %}
+                                    <span class="text-muted float-end">Submitted: {{ info.additional_info_ca_date }}</span>
+                                {% endif %}
+                            </h6>
+                        </div>
+
+                        <div class="card-body bg-white">
+                            <!-- COMPETENT AUTHORITY SECTION (Green background removed) -->
+                            <div class="mb-4">
+                                <div class="row g-2">
+                                    <div class="col-lg-8">
+                                        <label class="form-label small fw-bold text-muted">Remarks from Competent Authority</label>
+                                        <textarea class="form-control form-control-sm border-light"
+                                                  rows="2"
+                                                  readonly
+                                                  style="background-color: #f8f9fa;">{{ info.additional_info_ca }}</textarea>
                                     </div>
-                                    <!-- Proponent Response Section -->
-                                    <div>
-                                        <div class="row g-2">
-                                            <div class="col-lg-8">
-                                                <label class="form-label small fw-bold">Proponent Response</label>
-                                                <textarea class="form-control form-control-sm"
-                                                          rows="2"
-                                                          readonly>{{ info.additional_info_proponent }}</textarea>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <label class="form-label small fw-bold">Response Date</label>
-                                                <input class="form-control form-control-sm"
-                                                       type="text"
-                                                       value="{{ info.additional_info_proponent_date }}"
-                                                       readonly>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <!-- Empty for alignment -->
-                                            </div>
-                                        </div>
+                                    <div class="col-lg-2">
+                                        <label class="form-label small fw-bold text-muted">Remarks Date</label>
+                                        <input class="form-control form-control-sm border-light"
+                                               type="text"
+                                               value="{{ info.additional_info_ca_date }}"
+                                               readonly
+                                               style="background-color: #f8f9fa;">
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label class="form-label small fw-bold text-muted">Due Date</label>
+                                        <input class="form-control form-control-sm border-light"
+                                               type="text"
+                                               value="{{ info.additional_info_due_date }}"
+                                               readonly
+                                               style="background-color: #f8f9fa;">
                                     </div>
                                 </div>
                             </div>
-                        {% endfor %}
+
+                            <!-- PROPONENT RESPONSE SECTION -->
+                            <div class="mt-3">
+                                <div class="row g-2">
+                                    <div class="col-lg-8">
+                                        <label class="form-label small fw-bold text-muted">Proponent Response</label>
+                                        <textarea class="form-control form-control-sm border-light"
+                                                  rows="2"
+                                                  readonly
+                                                  style="background-color: #f8f9fa;">{{ info.additional_info_proponent }}</textarea>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label class="form-label small fw-bold text-muted">Response Date</label>
+                                        <input class="form-control form-control-sm border-light"
+                                               type="text"
+                                               value="{{ info.additional_info_proponent_date }}"
+                                               readonly
+                                               style="background-color: #f8f9fa;">
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <!-- Space alignment -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
                 </div>
                 <table id="basic-datatable" class="table dt-responsive nowrap w-100">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">File</th>
+                            <th scope="col">File (Additional Information Attachment)</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -370,64 +376,59 @@
                 </div>
                 -->
             {% endif %}
-            <!-- Add spacing after the above section -->
-            <div class="row mt-2 mb-2">
-                <div class="col-lg-12">
-                    <hr class="my-2">
-                </div>
-            </div>
             <div class="row payment_info" style="display: none;">
                 <div class="col-lg-12">
-                    <div class="card border-0 shadow-sm">
-                        <label class="form-label fw-bold mb-3">Payment Information</label>
-                        <div class="card-body p-0">
-                            {% if payment_details %}
-                                <div class="table-responsive">
-                                    <table class="table table-sm mb-0">
-                                        <thead class="bg-light">
-                                            <tr>
-                                                <th scope="col" class="text-center border-0 py-2">#</th>
-                                                <th scope="col" class="border-0 py-2">Type</th>
-                                                <th scope="col" class="border-0 py-2 text-end">Amount</th>
-                                                <th scope="col" class="border-0 py-2">Receipt</th>
-                                                <th scope="col" class="border-0 py-2">Date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for payment in payment_details %}
-                                            <tr class="border-bottom">
-                                                <td>{{ forloop.counter }}</td>
-                                                <td class="py-2">{{ payment.payment_type }}</td>
-                                                <td class="py-2 text-end fw-bold text-success">
-                                                    Nu. {{ payment.total_receipt_amount|floatformat:2 }}
-                                                </td>
-                                                <td class="py-2">
-                                                    <code class="bg-light text-dark px-2 py-1 rounded">{{ payment.receipt_no }}</code>
-                                                </td>
-                                                <td class="py-2 text-muted">{{ payment.receipt_date|date:"d/m/Y" }}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            {% else %}
-                                <div class="p-4 text-center text-muted">
-                                    <i class="fas fa-receipt fa-2x mb-2 opacity-50"></i>
-                                    <p class="mb-0">No Payment Details Available</p>
-                                </div>
-                            {% endif %}
-                        </div>
+                    <div class="alert alert-success border-0" role="alert">
+                      Payment Information
                     </div>
-
+                    <div class="card-body p-0">
+                        {% if payment_details %}
+                            {% for payment in payment_details %}
+                                <div class="mb-3 border rounded p-2
+                                    {% if not info.additional_info_proponent %}
+                                        bg-warning bg-opacity-10 border-warning
+                                    {% endif %}">
+                                    <div class="row g-2 align-items-start">
+                                         <div class="col-md-3">
+                                            <label class="form-label fw-semibold mb-1 small">
+                                                Payment Advice No
+                                            </label>
+                                            <input class="form-control form-control-sm"
+                                                value="{{ payment.payment_advice_no }}"
+                                                disabled>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-semibold mb-1 small">
+                                                Payable Amount
+                                            </label>
+                                            <input class="form-control form-control-sm"
+                                                value="{{ payment.total_payable_amount }}"
+                                                disabled>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-semibold mb-1 small">Receipt No</label>
+                                            <input class="form-control form-control-sm"
+                                                value="{{ payment.receipt_no }}"
+                                                disabled>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-semibold mb-1 small">
+                                                Receipt Date-Time
+                                            </label>
+                                            <input class="form-control form-control-sm"
+                                                value="{{ payment.receipt_date }}"
+                                                disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-            <!-- Add spacing after the above section -->
-            <div class="row mt-2 mb-2">
-                <div class="col-lg-12">
-                    <hr class="my-2">
-                </div>
+            <div class="alert alert-success border-0" role="alert">
+              Evaluation Information
             </div>
-
             <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                 <div class="col-lg-6 information_complete_div"  style="display: none;">
                     <div class="mb-3">
@@ -573,23 +574,7 @@
                         </div>
                     </div>
                 </div>
-                <!--
-                <div class="col-md-12 eatc_attachment_div" style="display: none;">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="card-widgets">
-                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#eatc_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                            </div>
-                            <h5 class="card-title mb-0">Attach Committee And Field Verification Paper</h5>
-                            <div id="cardCollpase7" class="collapse pt-3 show">
-                                <div id="eatc_file_attachment">
-                                    {% include 'eatc_attachment_page.html' %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                -->
+
                 <div class="row fines_penalty_div" style="display: none;">
                     <div class="col-lg-6">
                         <div class="mb-3">
@@ -765,8 +750,9 @@
             {% csrf_token %}
                 <div class="row additional_info_div">
                     <div class="col-lg-12">
-                        <label class="form-label fw-bold mb-2">Additional Information Exchange</label>
-
+                        <div class="alert alert-success border-0" role="alert">
+                          Additional Information
+                        </div>
                         {% for info in additional_info %}
                             <div class="mb-2 border rounded p-2">
 
@@ -836,6 +822,7 @@
 
                             </div>
                         {% endfor %}
+                        <div id="additional_infoCErrorMsg" class="alert alert-danger" style="display: none;"></div>
                     </div>
                     <div class="col-md-12">
                         <div class="card">
@@ -987,58 +974,83 @@
             {% if additional_info %}
             <div class="row verifier_additional_info_letter" style="display: none;">
                 <div class="col-lg-12">
-                <label class="form-label fw-bold mb-2">Additional Information Exchange</label>
-                {% for info in additional_info %}
-                    <div class="mb-3 border rounded p-2
-                        {% if not info.additional_info_proponent %}
-                            bg-warning bg-opacity-10 border-warning
-                        {% endif %}">
-                        <div class="row g-2 align-items-start">
-                            <!-- CA Remarks -->
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold mb-1 small">
-                                    Remarks from Competent Authority
-                                </label>
-                                <textarea class="form-control form-control-sm"
-                                      rows="1"
-                                      readonly>{{ info.additional_info_ca }}</textarea>
+                    <div class="alert alert-success border-0" role="alert">
+                      Additional Information
+                    </div>
+                    {% for info in additional_info %}
+                    <div class="card mb-3 shadow-sm border-0">
+                        <div class="card-header" style="background-color: #e1edfa;">
+                            <h6 class="mb-0 text-dark">
+                                <strong>Request #{{ forloop.counter }}</strong>
+                                {% if info.additional_info_ca_date %}
+                                    <span class="text-muted float-end">Submitted: {{ info.additional_info_ca_date }}</span>
+                                {% endif %}
+                            </h6>
+                        </div>
+
+                        <div class="card-body bg-white">
+                            <!-- COMPETENT AUTHORITY SECTION (Green background removed) -->
+                            <div class="mb-4">
+                                <div class="row g-2">
+                                    <div class="col-lg-8">
+                                        <label class="form-label small fw-bold text-muted">Remarks from Competent Authority</label>
+                                        <textarea class="form-control form-control-sm border-light"
+                                                  rows="2"
+                                                  readonly
+                                                  style="background-color: #f8f9fa;">{{ info.additional_info_ca }}</textarea>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label class="form-label small fw-bold text-muted">Remarks Date</label>
+                                        <input class="form-control form-control-sm border-light"
+                                               type="text"
+                                               value="{{ info.additional_info_ca_date }}"
+                                               readonly
+                                               style="background-color: #f8f9fa;">
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label class="form-label small fw-bold text-muted">Due Date</label>
+                                        <input class="form-control form-control-sm border-light"
+                                               type="text"
+                                               value="{{ info.additional_info_due_date }}"
+                                               readonly
+                                               style="background-color: #f8f9fa;">
+                                    </div>
+                                </div>
                             </div>
-                            <!-- CA Date -->
-                            <div class="col-md-2">
-                                <label class="form-label fw-semibold mb-1 small">Remarks Date</label>
-                                <input class="form-control form-control-sm"
-                                    value="{{ info.additional_info_ca_date }}"
-                                    disabled>
-                            </div>
-                            <!-- Proponent Response -->
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold mb-1 small">
-                                    Proponent's Response
-                                </label>
-                                <textarea class="form-control form-control-sm"
-                                      rows="1"
-                                      readonly>{{ info.additional_info_proponent|default:"" }}</textarea>
-                            </div>
-                            <!-- Proponent Date -->
-                            <div class="col-md-2">
-                                <label class="form-label fw-semibold mb-1 small">
-                                    Proponent's Response Date
-                                </label>
-                                <input class="form-control form-control-sm"
-                                   value="{{ info.additional_info_proponent_date|default:'' }}"
-                                   disabled>
+
+                            <!-- PROPONENT RESPONSE SECTION -->
+                            <div class="mt-3">
+                                <div class="row g-2">
+                                    <div class="col-lg-8">
+                                        <label class="form-label small fw-bold text-muted">Proponent Response</label>
+                                        <textarea class="form-control form-control-sm border-light"
+                                                  rows="2"
+                                                  readonly
+                                                  style="background-color: #f8f9fa;">{{ info.additional_info_proponent }}</textarea>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label class="form-label small fw-bold text-muted">Response Date</label>
+                                        <input class="form-control form-control-sm border-light"
+                                               type="text"
+                                               value="{{ info.additional_info_proponent_date }}"
+                                               readonly
+                                               style="background-color: #f8f9fa;">
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <!-- Space alignment -->
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
+
                 </div>
-                {% endif %}
-                {% if ai_attach %}
                 <table id="basic-datatable" class="table dt-responsive nowrap w-100">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">File</th>
+                            <th scope="col">File (Additional Information Attachment)</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -1059,10 +1071,19 @@
                     </tbody>
                 </table>
             </div>
+            {% else %}
+            <!--
+                <div class="alert alert-info" role="alert">
+                    <strong> No Additional Information</strong>
+                </div>
+                -->
             {% endif %}
+
             <div class="row verifier_payment_details" style="display: none;">
+                <div class="alert alert-success border-0" role="alert">
+                  Payment Details
+                </div>
                 <div class="col-lg-12">
-                <label class="form-label fw-bold mb-2">Payment</label>
                 {% for payment in payment_details %}
                     <div class="mb-3 border rounded p-2
                         {% if not info.additional_info_proponent %}
@@ -1104,7 +1125,11 @@
                 {% endfor %}
                 </div>
             </div>
+
             <div class="col-md-12 verifier_ec_draft_div" style="display: none;">
+                <div class="alert alert-success border-0" role="alert">
+                  EC Details/Information
+                </div>
                 <table id="basic-datatable" class="table dt-responsive nowrap w-100" style="table-layout: fixed;">
                     <thead>
                         <tr>
@@ -1941,7 +1966,7 @@ function forwardApplication(identifier) {
         //const eatcHasFiles = $('#eatc_file_attachment tbody tr td:contains("No Data")').length === 0 &&
         //                    $('#eatc_file_attachment tbody tr').length > 0;
         if (!revLuHasFiles) {
-            $('#luErrorMsg').html("Please upload Draft Legal Undertaking and Committee before submitting.");
+            $('#luErrorMsg').html("Please upload Draft Legal Undertaking before submitting.");
             $('#luErrorMsg').show();
             $('#luErrorMsg').delay(2000).fadeOut('slow');
             $('#luErrorMsg').focus();
@@ -2036,6 +2061,13 @@ function forwardApplication(identifier) {
         $('#tat_v').focus();
         return; // stop execution here
     }
+    if (identifier === 'ALS' && additional_info === "") {
+        $('#additional_infoCErrorMsg').html("Please Enter Additional Information.");
+        $('#additional_infoCErrorMsg').show();
+        $('#additional_infoCErrorMsg').delay(2000).fadeOut('slow');
+        $('#additional_info').focus();
+        return; // stop execution here
+    }
 
     // Show spinner AFTER validation passes
         $('#pageloader').show();
@@ -2047,6 +2079,7 @@ function forwardApplication(identifier) {
     };
 
     if (identifier === 'R' || identifier === 'ALS') {
+
         postData['forward_to'] = forward_to;
         postData['additional_info'] = additional_info;
         postData['record_id'] = record_id;

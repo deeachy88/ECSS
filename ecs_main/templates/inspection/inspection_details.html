@@ -1,134 +1,208 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
+
 <style>
-    label{
-    font-weight:bold;
-}
+    /* Styling for the detail labels and values */
+    .detail-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.2rem;
+    }
 
+    .detail-value {
+        font-size: 1rem;
+        color: #212529;
+        margin-bottom: 1.25rem;
+        font-weight: 500;
+    }
+
+    /* Print-specific styles */
+    @media print {
+        /* Hide everything else on the page except the print section */
+        body * {
+            visibility: hidden;
+        }
+        .print-section {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+        .print-section, .print-section * {
+            visibility: visible;
+        }
+        .no-print {
+            display: none !important;
+        }
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Force background colors to print */
+        .light-shade-header {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            background-color: #f0f4f8 !important; /* Light shade for print */
+        }
+
+        /* Force fields to stay side-by-side (prevent stacking on print) */
+        .row {
+            display: flex !important;
+            flex-wrap: wrap !important;
+        }
+        .col-md-4 {
+            flex: 0 0 33.333333% !important;
+            max-width: 33.333333% !important;
+        }
+        .col-md-8 {
+            flex: 0 0 66.666667% !important;
+            max-width: 66.666667% !important;
+        }
+    }
 </style>
-<div class="card">
-    <div class="card-header">
-        <h4 class="card-title">Inspection and Monitoring Report Details</h4>
+
+<div class="card shadow-sm mb-4 print-section">
+    <!-- Header with Light Shade and Flexbox -->
+    <!-- Added inline style for a pleasant light shade -->
+    <div class="card-header d-flex justify-content-between align-items-center light-shade-header" style="background-color: #f0f4f8; border-bottom: 1px solid #e3e6f0;">
+        <h4 class="card-title mb-0" style="color: #2c3e50;">Inspection and Monitoring Report Details</h4>
+
+        <!-- Print Button (Hidden during actual printing) -->
+        <button onclick="window.print()" class="btn btn-sm btn-primary no-print">
+            <i class="fas fa-print"></i> Print Report
+        </button>
     </div>
+
     <div class="card-body">
-        {% for inspection_details in inspection_details %}
-        {% csrf_token %}
+        {% for detail in inspection_details %}
             <div class="tab-content mt-2 mb-3" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel">
+
                     <div id="applicant_details">
+                        <!-- ROW 1 -->
                         <div class="row">
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Inspection Reference No : &nbsp;&nbsp;</label> {{ inspection_details.inspection_reference_no }}
-                                </div>
+                                <label class="text-muted font-weight-bold detail-label d-block">Inspection Reference No</label>
+                                <div class="detail-value">{{ detail.inspection_reference_no|default:"N/A" }}</div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Inspection Type: &nbsp;&nbsp;</label> {{ inspection_details.inspection_type }}
-                                </div>
+                                <label class="text-muted font-weight-bold detail-label d-block">Inspection Type</label>
+                                <div class="detail-value">{{ detail.inspection_type|default:"N/A" }}</div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Inspection Date: &nbsp;&nbsp;</label> {{ inspection_details.inspection_date|date:'d-m-Y' }}
-                                </div>
+                                <label class="text-muted font-weight-bold detail-label d-block">Inspection Date</label>
+                                <div class="detail-value">{{ detail.inspection_date|date:'d-m-Y'|default:"N/A" }}</div>
                             </div>
                         </div>
-                        <div class="row">
+
+                        <!-- ROW 2 -->
+                        <div class="row mt-2">
                              <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Name of the Proponent: &nbsp;&nbsp;</label> {{ inspection_details.proponent_name }}
-                                </div>
+                                <label class="text-muted font-weight-bold detail-label d-block">Name of the Proponent</label>
+                                <div class="detail-value">{{ detail.proponent_name|default:"N/A" }}</div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Project Name: &nbsp;&nbsp;</label> {{ inspection_details.project_name }}
-                                </div>
+                                <label class="text-muted font-weight-bold detail-label d-block">Project Name</label>
+                                <div class="detail-value">{{ detail.project_name|default:"N/A" }}</div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Address: &nbsp;&nbsp;</label>{{ inspection_details.address }}
-                                </div>
+                                <label class="text-muted font-weight-bold detail-label d-block">Address</label>
+                                <div class="detail-value">{{ detail.address|default:"N/A" }}</div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">EC Number: &nbsp;&nbsp;</label>{{ inspection_details.ec_clearance_no }}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Reason for Inspection: &nbsp;&nbsp;</label>{{ inspection_details.inspection_reason }}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Observation: &nbsp;&nbsp;</label>{{ inspection_details.observation }}
-                                </div>
-                            </div>
 
+                        <!-- ROW 3 -->
+                        <div class="row mt-2">
+                            <div class="col-md-4">
+                                <label class="text-muted font-weight-bold detail-label d-block">EC Number</label>
+                                <div class="detail-value">{{ detail.ec_clearance_no|default:"N/A" }}</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="text-muted font-weight-bold detail-label d-block">Reason for Inspection</label>
+                                <div class="detail-value">{{ detail.inspection_reason|default:"N/A" }}</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="text-muted font-weight-bold detail-label d-block">Observation</label>
+                                <div class="detail-value">{{ detail.observation|default:"N/A" }}</div>
+                            </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Status: &nbsp;&nbsp;</label>{{ inspection_details.status }}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Team Leader: &nbsp;&nbsp;</label>{{ inspection_details.team_leader }}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Team Members: &nbsp;&nbsp;</label>{{ inspection_details.team_members }}
-                                </div>
-                            </div>
 
-                        </div>
-                        <div class="row">
+                        <!-- ROW 4 -->
+                        <div class="row mt-2">
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Fine & Penalties: &nbsp;&nbsp;</label>{{ inspection_details.fines_penalties }}
+                                <label class="text-muted font-weight-bold detail-label d-block">Status</label>
+                                <div class="detail-value">
+                                    <span class="detail-value">{{ detail.status|default:"N/A" }}</span>
                                 </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="text-muted font-weight-bold detail-label d-block">Team Leader</label>
+                                <div class="detail-value">{{ detail.team_leader|default:"N/A" }}</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="text-muted font-weight-bold detail-label d-block">Team Members</label>
+                                <div class="detail-value">{{ detail.team_members|default:"N/A" }}</div>
+                            </div>
+                        </div>
+
+                        <!-- ROW 5 -->
+                        <div class="row mt-2">
+                            <div class="col-md-4">
+                                <label class="text-muted font-weight-bold detail-label d-block">Fine & Penalties</label>
+                                <div class="detail-value">{{ detail.fines_penalties|default:"None" }}</div>
                             </div>
                             <div class="col-md-8">
-                                <div class="form-group">
-                                    <label class="form-label">Remarks: &nbsp;&nbsp;</label>{{ inspection_details.remarks }}
-                                </div>
+                                <label class="text-muted font-weight-bold detail-label d-block">Remarks</label>
+                                <div class="detail-value">{{ detail.remarks|default:"None" }}</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
-                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
-                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+
+                <!-- Divider for Attachments (Hidden during print) -->
+                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4 no-print">
+                    <div class="border-bottom w-100 ml-5" style="border: 1px solid #e3e6f0;"></div>
+                    <span class="px-3 small text-muted font-weight-bold text-uppercase text-nowrap">File Attachments</span>
+                    <div class="border-bottom w-100 mr-5" style="border: 1px solid #e3e6f0;"></div>
                 </div>
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
+
+                <!-- Attachments Table (Hidden during print) -->
+                <div class="table-responsive no-print">
+                    <table class="table table-hover table-bordered">
+                        <thead class="thead-light">
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">File</th>
+                                <th scope="col" width="5%">#</th>
+                                <th scope="col">File Name</th>
+                                <th scope="col" width="15%" class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                           {% for file_attach in file_attach %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="3" class="text-center">No Data</td>
-                                    </tr>
+                           {% for file in file_attach %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td class="align-middle">{{ file.attachment }}</td>
+                                    <td class="text-center">
+                                        <a href="{{ file.file_path }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                            View File
+                                        </a>
+                                    </td>
+                                </tr>
+                           {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-3">No attachments uploaded.</td>
+                                </tr>
                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
+
+                {% if not forloop.last %}
+                    <hr class="my-5 no-print">
+                {% endif %}
+
             </div>
         {% endfor %}
     </div>

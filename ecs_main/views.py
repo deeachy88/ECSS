@@ -2207,6 +2207,7 @@ def forward_application(request):
 def _move_ec_to_history(ec_reference_no):
     existing_t1_records = t_ec_t1.objects.filter(ec_reference_no=ec_reference_no)
     t1_history_objects = []
+    print('inside_move_ec_to_history')
 
     for record in existing_t1_records:
         t1_history_objects.append(t_ec_t1_history(
@@ -2623,6 +2624,7 @@ def _handle_renewal_application_ec_tables(ec_refs, application_no):
 def _handle_oc_application_ec_tables(ec_refs, application_no):
     source_t1_records = t_ec_application_t1.objects.filter(ec_reference_no__in=ec_refs,
                                                            application_no=application_no)
+    print('inside_handle_oc_application_ec_tables')
     t1_history_objects = []
     for s in source_t1_records:
         updated_count = t_ec_t1.objects.filter(ec_reference_no=s.ec_reference_no).update(
@@ -2712,7 +2714,7 @@ def _handle_oc_application_ec_tables(ec_refs, application_no):
             ec_heading=s.ec_heading,
             ec_terms=s.ec_terms,
             application_no=s.application_no,
-            order_no=s.order_no
+            order=s.order
         ))
 
         t2_history_objects.append(t_ec_t2_history(
@@ -2723,7 +2725,7 @@ def _handle_oc_application_ec_tables(ec_refs, application_no):
             history_date=now(),
             history_action='OWNERSHIP CHANGE',
             application_no=application_no,
-            order_no=s.order_no
+            order=s.order
         ))
 
     if t2_objects_to_create:
@@ -2822,7 +2824,7 @@ def _handle_nc_application_ec_tables(ec_refs, application_no):
             ec_heading=s.ec_heading,
             ec_terms=s.ec_terms,
             application_no=s.application_no,
-            order_no=s.order_no
+            order=s.order
         ))
 
         t2_history_objects.append(t_ec_t2_history(
@@ -2833,7 +2835,7 @@ def _handle_nc_application_ec_tables(ec_refs, application_no):
             history_date=now(),
             history_action='NAME CHANGE',
             application_no=application_no,
-            order_no=s.order_no
+            order=s.order
         ))
 
     if t2_objects_to_create:
@@ -3430,7 +3432,6 @@ def save_draft_ec_details(request):
 
     return render(request, 'ec_draft_details.html', {'ec_details': ec_details})
 
-
 def update_draft_ec_details(request):
     record_id = request.POST.get('record_id')
     application_no = request.POST.get('application_no')
@@ -3500,6 +3501,7 @@ def delete_draft_ec_details(request):
 # Inspection Report
 def inspection_list(request):
     login_id = request.session.get('login_id')
+    print('inside inspection_list')
 
     inspection_list = t_inspection_monitoring_t1.objects.filter(record_status='Active').order_by('inspection_date')
     user_list = t_user_master.objects.all()
@@ -3684,8 +3686,41 @@ def get_inspection_submission_ref_no(request, service_code):
 def submit_inspection_form(request):
     reference_no = request.POST.get('record_id')
     created_on = datetime.now()
-    details = t_inspection_monitoring_t1.objects.filter(inspection_reference_no=reference_no)
-    details.update(updated_on=created_on)
+    t_inspection_monitoring_t1.objects.filter(
+        inspection_reference_no=reference_no
+    ).update(updated_on=created_on)
+
+    return JsonResponse({'status': 'success'})
+
+
+def add_inspection_report_file(request):
+    data = dict()
+    myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = app_no + "_" + myFile.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/REPORT")
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(
+            timezone.now().year) + "/REPORT" + "/" + file_name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+    return JsonResponse(data)
+
+
+def add_inspection_report_file_name(request):
+    app_no = request.POST.get('refNo')
+    fileName = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+
+    t_file_attachment.objects.create(application_no=app_no,
+                                     file_path=file_url, attachment=fileName)
+    file_attach = t_file_attachment.objects.filter(application_no=app_no)
+    return render(request, 'inspection/inspection_file_attachment.html', {'file_attach': file_attach})
+
 
 # EndInspection
 def get_birms_token():
