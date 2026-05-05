@@ -71,6 +71,7 @@ urlpatterns = [
     path('view_tor_application_details',views.view_tor_application_details, name='view_tor_application_details'),
     path('save_tor_attachment', views.save_tor_attachment, name='save_tor_attachment'),
     path('save_tor_attachment_details', views.save_tor_attachment_details, name='save_tor_attachment_details'),
+    path('validate-fmfsr/', views.validate_fmfsr, name='validate_fmfsr'),
 
     #Report Submission
     path('report_list', views.report_list, name='report_list'),

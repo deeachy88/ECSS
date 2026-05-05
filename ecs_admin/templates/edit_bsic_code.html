@@ -97,6 +97,35 @@
                             <div class="alert alert-danger" id="has_torErrorMsg" style="display:none"></div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label">Has MAS Integration</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <div class="mb-3">
+                                {% if bsic_code_details.mas_integration == "Yes" %}
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="mas_integration" value="Yes" checked>
+                                        <label class="form-check-label">Yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="mas_integration" value="No">
+                                        <label class="form-check-label">No</label>
+                                    </div>
+                                {% else %}
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="mas_integration" value="Yes">
+                                        <label class="form-check-label">Yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="mas_integration" value="No" checked>
+                                        <label class="form-check-label">No</label>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="alert alert-danger" id="mas_integrationErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
                     <input type="hidden" class="form-control" id="bsic_id" value="{{bsic_code_details.bsic_id}}">
                     <div id="edit_activityErrorMsg" class="alert alert-danger" style="display: none;"></div>
                     <div id="edit_colour_codeErrorMsg" class="alert alert-danger" style="display: none;"></div>
@@ -124,7 +153,7 @@
         var competent_authority = $('#competent_authority').val();
         var service_id = $('#service_id').val();
         var has_tor = $('input[name="has_tor"]:checked').val();
-
+        var mas_integration = $('input[name="mas_integration"]:checked').val();
 
         if(activity == "")
         {
@@ -156,12 +185,18 @@
             $('#has_torErrorMsg').show();
             $('#has_torErrorMsg').delay(2000).fadeOut('slow');
         }
+        else if(mas_integration == "")
+        {
+            $('#mas_integrationErrorMsg').html("Select One");
+            $('#mas_integrationErrorMsg').show();
+            $('#mas_integrationErrorMsg').delay(2000).fadeOut('slow');
+        }
         else
         {
             $.ajax({
                 type : "post",
                 url : "{% url 'edit_bsic_code_master' %}",
-                data : {'bsic_id':bsic_id,'activity':activity, 'colour_code':colour_code, 'competent_authority':competent_authority, 'service_id':service_id,'has_tor':has_tor, csrfmiddlewaretoken:'{{ csrf_token }}'},
+                data : {'bsic_id':bsic_id,'activity':activity, 'colour_code':colour_code, 'competent_authority':competent_authority, 'service_id':service_id,'has_tor':has_tor, 'mas_integration':mas_integration,csrfmiddlewaretoken:'{{ csrf_token }}'},
                 success : function(data)
                 {
                     $('#edit_successMsg').html("Activity Updated Successfully.");

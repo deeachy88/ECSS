@@ -54,6 +54,7 @@
                                 <input type="text" class="form-control" value="Main Activity" name="service_type" id="service_type" style="display:none;">
                                 <input type="text" class="form-control" value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
                                 <input type="text" class="form-control" value="{{request.session.activity}}" name="activity" style="display:none;">
+                                <input type="text" class="form-control" value="{{mas_integration}}" name="mas_integration" id="mas_integration" style="display:none;">
                                 <div class="row justify-content-left">
                                     <div class="col-lg-12">
                                         <label class="form-label fw-bold">Activity</label>
@@ -63,24 +64,30 @@
                                 </div>
                                 <br>
                                 <!-- FMFSR Number + Retrieve -->
-                                <div class="row" style="margin-bottom: -15px;">
+                                <div class="row">
                                     <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">
-                                                FMFSR Number
-                                                <span style="color: red; font-weight: 600;">(If Processing from MAS)</span>
-                                            </label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" id="fmfsr_no" name="fmfsr_no" placeholder="e.g., FMFSR-00123">
-                                                <button type="button" id="btnFmfsrLookup" class="btn btn-outline-secondary">
+                                        <label class="form-label fw-bold">
+                                            FMFSR Number
+                                            <span style="color:red;">(If Processing from MAS)</span>
+                                        </label>
+
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="fmfsr_no" name="fmfsr_no">
+
+                                            <button type="button" id="btnFmfsrLookup" class="btn btn-outline-secondary">
+                                                <span id="fmfsr_btn_text">
                                                     <i class="mdi mdi-database-search me-1"></i> Retrieve
-                                                </button>
-                                            </div>
-                                            <small class="text-muted">Enter FMFSR number to auto-fill project details</small>
-                                            <div id="fmfsr_error" class="text-danger mt-1" style="display:none;"></div>
-                                            <div id="fmfsr_success" class="text-success mt-1" style="display:none;">
-                                                <i class="mdi mdi-check-circle me-1"></i> Project details retrieved successfully
-                                            </div>
+                                                </span>
+                                                <span id="fmfsr_btn_loader" style="display:none;">
+                                                    <span class="spinner-border spinner-border-sm"></span> Loading...
+                                                </span>
+                                            </button>
+                                        </div>
+
+                                        <div id="fmfsr_error" class="text-danger mt-1" style="display:none;"></div>
+
+                                        <div id="fmfsr_success" class="text-success mt-1" style="display:none;">
+                                            ✔ Data fetched successfully
                                         </div>
                                     </div>
                                 </div>
@@ -119,7 +126,7 @@
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Name of the Project</label>
-                                            <input type="text" name="project_name" class="form-control" id="project_name" value="{{project_name}}">
+                                            <input type="text" name="project_name" class="form-control" id="project_name" value="{{project_name}}" readonly>
                                         </div>
                                         <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
@@ -134,7 +141,7 @@
                                     <div class="col-lg-8">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Brief Description of the project</label>
-                                            <textarea class="form-control" name="project_description" id="project_description" rows="3">{{project_description}}</textarea>
+                                            <textarea class="form-control" name="project_description" id="project_description" rows="3" readonly>{{project_description}}</textarea>
                                         </div>
                                         <div id="project_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
@@ -142,172 +149,113 @@
                                 <div class="alert custom-bg border-0" role="alert">
                                     <h5 class="mb-0">Project Location</h5>
                                 </div>
-                                <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+
+                                <div class="row">
                                     <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            {% if dzongkhag_throm != "Thromde" and dzongkhag_throm != "Dzongkhag" %}
-                                                <label class="form-label fw-bold">Select One</label>
-                                            {% endif %}
-                                            <div class="mt-2">
-                                                {% if dzongkhag_throm == "Thromde" %}
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" checked>
-                                                        <label class="form-label">Thromde</label>
-                                                    </div>
-                                                {% elif dzongkhag_throm == "DEC" %}
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" checked>
-                                                        <label class="form-label">Dzongkhag</label>
-                                                    </div>
-                                                {% else %}
-                                                    {# Default case: Both options available, Thromde is checked by default #}
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde"
-                                                            onclick="check_dzong_throm(this.value)" checked>
-                                                        <label class="form-label">Thromde</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag"
-                                                            onclick="check_dzong_throm(this.value)">
-                                                        <label class="form-label">Dzongkhag</label>
-                                                    </div>
-                                                {% endif %}
+                                        <div class="mb-3 mt-2">
+
+                                            <!-- Thromde -->
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio"
+                                                       name="dzongkhag_throm"
+                                                       class="form-check-input"
+                                                       value="Thromde"
+                                                       {% if dzongkhag_throm == "Thromde" %}checked{% endif %}
+                                                       {% if dzongkhag_throm == "Dzongkhag" %}disabled{% endif %}
+                                                       onchange="check_dzong_throm(this.value)">
+                                                <label class="form-label">Thromde</label>
                                             </div>
+
+                                            <!-- Dzongkhag -->
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio"
+                                                       name="dzongkhag_throm"
+                                                       class="form-check-input"
+                                                       value="Dzongkhag"
+                                                       {% if dzongkhag_throm == "Dzongkhag" %}checked{% endif %}
+                                                       {% if dzongkhag_throm == "Thromde" %}disabled{% endif %}
+                                                       onchange="check_dzong_throm(this.value)">
+                                                <label class="form-label">Dzongkhag</label>
+                                            </div>
+
                                         </div>
-                                        <div id="dzongkhag_thromErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                 </div>
 
-                                <!---------------------------------------------------------------------------------------------------->
-                                {# Section for Thromde selection #}
-                                {% if dzongkhag_throm == "Thromde" %}
-                                    <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Thromde</label>
-                                                <select class="form-select" name="thromde_id" id="thromde_id">
-                                                    <option value="">--SELECT THROMDE--</option>
-                                                    {% for thromde in thromde %}
-                                                        <option value="{{ thromde.thromde_id }}"
-                                                            {% if thromde_id == thromde.thromde_id %}selected{% endif %}>
-                                                            {{ thromde.thromde_name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
+                                <!-- Thromde Section -->
+                                <div class="row thromde_section"
+                                     {% if dzongkhag_throm != "Thromde" %}style="display:none;"{% endif %}>
+                                    <div class="col-lg-6">
+                                        <label class="form-label fw-bold">Thromde</label>
+                                        <select class="form-select"
+                                                name="thromde_id"
+                                                id="thromde_id"
+                                                disabled>
+                                            <option value="">--SELECT THROMDE--</option>
+                                            {% for thromde in thromde %}
+                                                <option value="{{ thromde.thromde_id }}"
+                                                    {% if thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                                    {{ thromde.thromde_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
-                                {% endif %}
-                                <!---------------------------------------------------------------------------------------------------->
-                                {# Section for DEC selection #}
-                                {% if dzongkhag_throm == "Dzongkhag" %}
-                                    <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Dzongkhag</label>
-                                                <select class="form-select" name="dzongkhag" id="dzongkhag" onchange="getGewog(this.value)">
-                                                    <option value="">--SELECT DZONGKHAG--</option>
-                                                    {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{ dzongkhag.dzongkhag_code }}"
-                                                            {% if dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
-                                                            {{ dzongkhag.dzongkhag_code }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Gewog</label>
-                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                                    <option value="">--SELECT GEWOG--</option>
-                                                    {% for gewog in gewog %}
-                                                        <option value="{{ gewog.gewog_code }}"
-                                                            {% if gewog_code == gewog.gewog_code %}selected{% endif %}>
-                                                            {{ gewog.gewog_code }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
-                                                    <option value="">--SELECT VILLAGE--</option>
-                                                    {% for village in village %}
-                                                        <option value="{{ village.village_code }}"
-                                                            {% if village_code == village.village_code %}selected{% endif %}>
-                                                            {{ village.villageg_code }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
+                                </div>
+
+                                <!-- Dzongkhag Section -->
+                                <div class="row dzongkhag_section"
+                                     {% if dzongkhag_throm != "Dzongkhag" %}style="display:none;"{% endif %}>
+
+                                    <div class="col-lg-4">
+                                        <label class="form-label fw-bold">Dzongkhag</label>
+                                        <select class="form-select"
+                                                name="dzongkhag"
+                                                id="dzongkhag"
+                                                onchange="getGewog(this.value)"
+                                                disabled>
+                                            <option value="">--SELECT DZONGKHAG--</option>
+                                            {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.dzongkhag_code }}"
+                                                    {% if dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                    {{ dzongkhag.dzongkhag_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
-                                {% endif %}
-                                <!---------------------------------------------------------------------------------------------------->
-                                {# Section for when ca_auth is neither Thromde nor DEC #}
-                                {% if dzongkhag_throm != "Thromde" and dzongkhag_throm != "Dzongkhag" %}
-                                    {# Thromde selection #}
-                                    <div class="row thromde_section"> {# Added a class for potential JavaScript targeting #}
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Thromde</label>
-                                                <select class="form-select" name="thromde_id" id="thromde_id">
-                                                    <option value="">--SELECT THROMDE--</option>
-                                                    {% for thromde in thromde %}
-                                                        <option value="{{ thromde.thromde_id }}">{{ thromde.thromde_name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div id="thromde_idErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
+
+                                    <div class="col-lg-4">
+                                        <label class="form-label fw-bold">Gewog</label>
+                                        <select class="form-select"
+                                                name="gewog"
+                                                id="gewog"
+                                                onchange="getVillage(this.value)"
+                                                disabled>
+                                            <option value="">--SELECT GEWOG--</option>
+                                            {% for gewog in gewog %}
+                                                <option value="{{ gewog.gewog_code }}"
+                                                    {% if gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                    {{ gewog.gewog_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
-                                    {# Dzongkhag, Gewog, Village selection #}
-                                    <div class="row dzongkhag_section" style="display: none;"> {# Added a class for potential JavaScript targeting #}
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Dzongkhag</label>
-                                                <select class="form-select" name="dzongkhag" id="dzongkhag" onchange="getGewog(this.value)">
-                                                    <option value="">--SELECT DZONGKHAG--</option>
-                                                    {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{ dzongkhag.dzongkhag_code }}">{{ dzongkhag.dzongkhag_name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div id="dzongkhagErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Gewog</label>
-                                                <select class="form-select" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                                    <option value="">--SELECT GEWOG--</option>
-                                                    {% for gewog in gewog %}
-                                                        <option value="{{ gewog.gewog_code }}">{{ gewog.gewog_name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                                <select class="form-select" name="vil_chiwog" id="vil_chiwog">
-                                                    <option value="">--SELECT VILLAGE--</option>
-                                                    {% for village in village %}
-                                                    <option value="{{ village.village_code }}">{{ village.village_name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                        </div>
+
+                                    <div class="col-lg-4">
+                                        <label class="form-label fw-bold">Village/Chiwog</label>
+                                        <select class="form-select"
+                                                name="vil_chiwog"
+                                                id="vil_chiwog"
+                                                disabled>
+                                            <option value="">--SELECT VILLAGE--</option>
+                                            {% for village in village %}
+                                                <option value="{{ village.village_code }}"
+                                                    {% if village_code == village.village_code %}selected{% endif %}>
+                                                    {{ village.village_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
-                                {% endif %}
+                                </div>
                                 <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                     <div class="col-lg-6">
                                         <div class="mb-3">
@@ -359,7 +307,7 @@
                                         </div>
                                         <h5 class="card-title mb-0">Attachments</h5>
                                         <div id="cardCollpase7" class="collapse pt-3 show">
-                                            <div id="general_attachment">
+                                            <div id="TOR_attachment">
                                                 {% include 'file_attachment_page.html' %}
                                             </div>
                                         </div>
@@ -470,8 +418,136 @@
     </div>
 </form>
 <script>
+    let fmfsr_validated = false;
+
+    $('#fmfsr_no').on('input', function () {
+        fmfsr_validated = false;
+        $('#fmfsr_success').hide();
+    });
+
+    $('#btnFmfsrLookup').click(function () {
+
+        let fmfsr_no = $('#fmfsr_no').val().trim();
+        let mas_integration = $('#mas_integration').val();
+
+        if (mas_integration !== "Yes") return;
+
+        if (fmfsr_no === "") {
+            $('#fmfsr_error').text("Enter FMFSR Number").show();
+            return;
+        }
+
+        // Reset UI
+        $('#fmfsr_error').hide();
+        $('#fmfsr_success').hide();
+
+        // Show loader
+        $('#fmfsr_btn_text').hide();
+        $('#fmfsr_btn_loader').show();
+        $('#btnFmfsrLookup').prop('disabled', true);
+
+        $.ajax({
+            type: "GET",
+            url: "{% url 'validate_fmfsr' %}",
+            data: { fmfsr_no: fmfsr_no },
+
+            success: function (data) {
+
+                if (data.status === "success") {
+
+                    fmfsr_validated = true;
+
+                    $('#fmfsr_success').show();
+
+                    // ✅ Autofill fields
+                    $('#project_name').val(data.project_name);
+                    $('#project_description').val(data.project_description);
+
+                    // Optional: lock fields
+                    $('#project_name').prop('readonly', true);
+                    $('#project_description').prop('readonly', true);
+
+                } else {
+
+                    fmfsr_validated = false;
+
+                    $('#fmfsr_error').text(data.message).show();
+                }
+            },
+
+            error: function () {
+                fmfsr_validated = false;
+                $('#fmfsr_error').text("API Error. Try again.").show();
+            },
+
+            complete: function () {
+                $('#fmfsr_btn_loader').hide();
+                $('#fmfsr_btn_text').show();
+                $('#btnFmfsrLookup').prop('disabled', false);
+            }
+        });
+    });
+
+
+    function check_dzong_throm(value) {
+        if (value === "Thromde") {
+
+            // Show Thromde, hide Dzongkhag
+            $('.thromde_section').show();
+            $('.dzongkhag_section').hide();
+
+            // Enable Thromde inputs
+            $('#thromde_id').prop('disabled', false);
+
+            // Disable Dzongkhag inputs
+            $('#dzongkhag, #gewog, #vil_chiwog').prop('disabled', true);
+
+            // Disable Dzongkhag radio
+            $('input[value="Dzongkhag"]').prop('disabled', true);
+
+        } else if (value === "Dzongkhag") {
+
+            // Show Dzongkhag, hide Thromde
+            $('.dzongkhag_section').show();
+            $('.thromde_section').hide();
+
+            // Enable Dzongkhag inputs
+            $('#dzongkhag, #gewog, #vil_chiwog').prop('disabled', false);
+
+            // Disable Thromde inputs
+            $('#thromde_id').prop('disabled', true);
+
+            // Disable Thromde radio
+            $('input[value="Thromde"]').prop('disabled', true);
+        }
+    }
+
+    // Run on page load (important)
+    $(document).ready(function () {
+        let selected = $('input[name="dzongkhag_throm"]:checked').val();
+        if (selected) {
+            check_dzong_throm(selected);
+        }
+    });
+
     function save_general_info()
     {
+        let mas_integration = $('#mas_integration').val();
+        let fmfsr_no = $('#fmfsr_no').val();
+
+        if (mas_integration === "Yes") {
+
+            if (fmfsr_no === "") {
+                showErrorAndFocus('#fmfsr_error', 'Enter FMFSR Number', '#fmfsr_no');
+                return false;
+            }
+
+            if (!fmfsr_validated) {
+                showErrorAndFocus('#fmfsr_error', 'Please validate FMFSR first', '#fmfsr_no');
+                return false;
+            }
+        }
+
         let activity = $('#activity').val();
         let project_name = $('#project_name').val();
         let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
@@ -692,7 +768,7 @@
                             success : function(responseText)
                             {
                                 $('#general_attachment_modal').modal('hide');
-                                $('#general_attachment').html(responseText);
+                                $('#TOR_attachment').html(responseText);
                                 $('.modal-backdrop').remove();
                                 $('#general_attachment_form')[0].reset();
                             }

@@ -35,7 +35,10 @@ urlpatterns = [
     path('delete_ai_attachment', views.delete_ai_attachment, name='delete_ai_attachment'),
     path('save_rev_tor_attachment', views.save_rev_tor_attachment, name='save_rev_tor_attachment'),
     path('save_rev_tor_attachment_details', views.save_rev_tor_attachment_details, name='save_rev_tor_attachment_details'),
+    path('save_ver_tor_attachment', views.save_ver_tor_attachment, name='save_ver_tor_attachment'),
+    path('save_ver_tor_attachment_details', views.save_ver_tor_attachment_details, name='save_ver_tor_attachment_details'),
     path('delete_rev_tor_attachment', views.delete_rev_tor_attachment, name='delete_rev_tor_attachment'),
+    path('delete_ver_tor_attachment', views.delete_ver_tor_attachment, name='delete_ver_tor_attachment'),
 
 #InspectionMonitoring
     path('inspection_submission_form', views.inspection_submission_form, name='inspection_submission_form'),

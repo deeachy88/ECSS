@@ -822,7 +822,11 @@ def client_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        file_attach = t_file_attachment.objects.filter(attachment_type=service_code, application_no=application_no)
+        file_attach = t_file_attachment.objects.filter(
+            application_no=application_no
+        ).exclude(
+            attachment_type__in=['EATC', 'LU', 'RLU', 'AI', 'ECNC', 'ENOC', 'ECR', 'REPORT', 'RRJ', 'RTOR', 'TOR']
+        )
         ec_details = t_ec_application_t2.objects.filter(application_no=application_no)
         reviewer_list = t_user_master.objects.filter(role_id='3',agency_code=ca_auth)
         eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')

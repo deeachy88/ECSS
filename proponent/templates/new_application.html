@@ -26,9 +26,15 @@
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>
-                                            <a href="javascript:void(0);"
+                                            <!--<a href="javascript:void(0);"
                                                 class="btn btn-link text-info mb-0"
                                                 onclick="viewApplicationDetails('{{bsic_code_list.activity}}')">
+                                                {{bsic_code_list.activity}}
+                                            </a>
+                                            -->
+                                            <a href="javascript:void(0);"
+                                               class="btn btn-outline-primary btn-sm"
+                                               onclick="viewApplicationDetails('{{bsic_code_list.activity}}')">
                                                 {{bsic_code_list.activity}}
                                             </a>
                                         </td>
@@ -62,6 +68,7 @@
             success: function(data) {
                 colour_code = data.colour_code;
                 has_tor = data.has_tor;
+                mas_integration = data.mas_integration;
 
                 if(colour_code == 'Green') {
                     $('#alertMsg').html("No need For Environment Clearance.");

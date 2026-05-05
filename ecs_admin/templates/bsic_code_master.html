@@ -20,6 +20,7 @@
                             <th>Competent Authority</th>
                             <th>Service</th>
                             <th>Has TOR</th>
+                            <th>Has MAS Integration</th>
                             <th></th>
                         </thead>
                         <tbody>
@@ -36,6 +37,13 @@
                                     {% endfor %}
                                     <td>
                                         {% if bsic_code_list.has_tor == 'Yes' %}
+                                            Yes
+                                        {% else %}
+                                            No
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if bsic_code_list.mas_integration == 'Yes' %}
                                             Yes
                                         {% else %}
                                             No
@@ -131,6 +139,20 @@
                     </div>
                     <div class="alert alert-danger" id="has_torErrorMsg" style="display:none"></div>
                 </div>
+                <div class="col-lg-6">
+                    <label class="form-label fw-bold">Has MAS Integration</label>
+                    <div class="mb-3">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="mas_integration" value="Yes">
+                            <label class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="mas_integration" value="No">
+                            <label class="form-check-label">No</label>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger" id="mas_integrationErrorMsg" style="display:none"></div>
+                </div>
                 
               </div>
                <button id="editpageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
@@ -186,6 +208,7 @@ function add_bsic_code_details()
         let competent_authority = $('#competent_authority').val();
         let service_id = $('#service_id').val();
         let has_tor = $('input[name="has_tor"]:checked').val();
+        let mas_integration = $('input[name="mas_integration"]:checked').val();
 
         if(activity == "")
         {
@@ -216,6 +239,12 @@ function add_bsic_code_details()
             $('#has_torErrorMsg').html("Select One");
             $('#has_torErrorMsg').show();
             $('#has_torErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(mas_integration == "")
+        {
+            $('#mas_integrationErrorMsg').html("Select One");
+            $('#mas_integrationErrorMsg').show();
+            $('#mas_integrationErrorMsg').delay(2000).fadeOut('slow');
         }
         else
         {

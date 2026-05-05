@@ -920,8 +920,14 @@ def add_bsic_code_master(request):
     entry_point = 'ECSS'
     service_id = request.GET.get('service_id')
     has_tor = request.GET.get('has_tor')
-    t_bsic_code.objects.create(activity=activity, colour_code=colour_code,
-                               competent_authority=competent_authority, entry_point=entry_point, service_id=service_id,has_tor=has_tor)
+    mas_integration = request.GET.get('mas_integration')
+    t_bsic_code.objects.create(activity=activity,
+                               colour_code=colour_code,
+                               competent_authority=competent_authority,
+                               entry_point=entry_point,
+                               service_id=service_id,
+                               has_tor=has_tor,
+                               mas_integration=mas_integration)
     return redirect(bsic_master)
 
 def get_bsic_code_details(request, bsic_id):
@@ -937,8 +943,14 @@ def edit_bsic_code_master(request):
     edit_competent_authority = request.POST.get('competent_authority')
     edit_service_id = request.POST.get('service_id')
     has_tor = request.POST.get('has_tor')
+    mas_integration = request.POST.get('mas_integration')
     bsic_code_details = t_bsic_code.objects.filter(bsic_id=edit_bsic_id)
-    bsic_code_details.update(activity=edit_activity, colour_code=edit_colour_code, competent_authority=edit_competent_authority, service_id=edit_service_id,has_tor=has_tor)
+    bsic_code_details.update(activity=edit_activity,
+                             colour_code=edit_colour_code,
+                             competent_authority=edit_competent_authority,
+                             service_id=edit_service_id,
+                             has_tor=has_tor,
+                             mas_integration=mas_integration)
     return redirect(bsic_master)
 
 def delete_bsic_code_master(request):
@@ -1133,10 +1145,114 @@ def delete_attachment(request):
     elif identifier == 'GEN':
         for file_obj in files_to_delete:
             file_name = file_obj.attachment
+            file_n = f"{application_no}_{file_name}"
             fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/GEN/")
-            fs.delete(str(file_name))
+            fs.delete(str(file_n))
         files_to_delete.delete()
-
+    elif identifier == 'ECR':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            file_n = f"{application_no}_{file_name}"
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ECR/")
+            fs.delete(str(file_n))
+        file.delete()
+    elif identifier == 'ECOC':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            file_n = f"{application_no}_{file_name}"
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ECOC/")
+            fs.delete(str(file_n))
+        file.delete()
+    elif identifier == 'ECNC':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            file_n = f"{application_no}_{file_name}"
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ECNC/")
+            fs.delete(str(file_n))
+        file.delete()
+    elif identifier == 'TOR':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            file_n = f"{application_no}_{file_name}"
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/TOR/")
+            fs.delete(str(file_n))
+        file.delete()
+    elif identifier == 'FO':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            file_n = f"{application_no}_{file_name}"
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/FO/")
+            fs.delete(str(file_n))
+        file.delete()
+    elif identifier == 'IEE':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            file_n = f"{application_no}_{file_name}"
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/IEE/")
+            fs.delete(str(file_n))
+        file.delete()
+    elif identifier == 'TRA':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            file_n = f"{application_no}_{file_name}"
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/TRA/")
+            fs.delete(str(file_n))
+        file.delete()
+    elif identifier == 'ROA':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            file_n = f"{application_no}_{file_name}"
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ROA/")
+            fs.delete(str(file_n))
+        file.delete()
+    elif identifier == 'ENE':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            file_n = f"{application_no}_{file_name}"
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/ENE/")
+            fs.delete(str(file_n))
+        file.delete()
+    elif identifier == 'EA':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            file_n = f"{application_no}_{file_name}"
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/EA/")
+            fs.delete(str(file_n))
+        file.delete()
+    elif identifier == 'TOU':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            file_n = f"{application_no}_{file_name}"
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/TOU/")
+            fs.delete(str(file_n))
+        file.delete()
+    elif identifier == 'QUA':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            file_n = f"{application_no}_{file_name}"
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/QUA/")
+            fs.delete(str(file_n))
+        file.delete()
+    elif identifier == 'GW':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            file_n = f"{application_no}_{file_name}"
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/GW/")
+            fs.delete(str(file_n))
+        file.delete()
     elif identifier == 'RRJ':
         for file_obj in files_to_delete:
             file_name = file_obj.attachment

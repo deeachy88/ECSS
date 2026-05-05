@@ -13,10 +13,11 @@
                             <label class="form-label fw-bold">Activity</label>
                             <input type="hidden" name="activity" class="form-control" id="activity" value="{{request.session.activity}}" readonly>
                             <p class="distinct-activity">{{request.session.activity}}</p>
+                            <input type="hidden" name="mas_integration" class="form-control" id="mas_integration" value="{{request.session.mas_integration}}" readonly>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-8">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Name of the Project</label>
                                 <input type="text" name="project_name" class="form-control" id="project_name">
@@ -67,7 +68,7 @@
                         </div>
                     </div>
                     <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
-                        <div class="col-lg-8">
+                        <div class="col-lg-12">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Brief Description of the project</label>
                                 <textarea class="form-control" name="project_description" id="project_description" rows="3"></textarea>
@@ -188,7 +189,7 @@
                                 </div>
                                 <h5 class="card-title mb-0">Attachments</h5>
                                 <div id="cardCollpase7" class="collapse pt-3 show">
-                                    <div id="tor_attachment">
+                                    <div id="TOR_attachment">
                                         {% include 'file_attachment_page.html' %}
                                     </div>
                                 </div>
@@ -327,8 +328,8 @@
         let thromde = $('#thromde_id').val();  // ✅ Correct ID
 
 
-        alert(site);
-        alert(site_value);
+        //alert(site);
+        //alert(site_value);
         if(project_name == "")
         {
             $('#project_nameErrorMsg').html("Enter Name of Project");
@@ -464,7 +465,7 @@
                         headers: { "X-CSRFToken": token_value },
                         success: function (responseText) {
                             $('#tor_attachment_modal').modal('hide');
-                            $('#tor_attachment').html(responseText);
+                            $('#TOR_attachment').html(responseText);
                             $('.modal-backdrop').remove();
                             $('#tor_attachment_form')[0].reset();
                         }

@@ -34,13 +34,14 @@
                         <div class="tab-pane active show" id="general_info">
                             <form method="post" id="general_application_form">
                                 {% csrf_token %}
-                                <input type="text" class="form-control" id="new_application_no" name="new_application_no" style="display:none;">
+                                <input type="text" class="form-control" id="new_application_no" name="new_application_no">
                                 <input type="text" class="form-control" value="{{application_details.ec_reference_no}}" name="previous_ec_reference_no" id="previous_ec_reference_no" style="display:none;">
                                 <input type="text" class="form-control" value="{{application_details.service_id}}" name="service_id" id="service_id" style="display:none;">
                                 <input type="text" class="form-control" value="{{application_details.colour_code}}" name="colour_code" id="colour_code" style="display:none;">
                                 <input type="text" class="form-control" value="Main Activity" name="service_type" id="service_type" style="display:none;">
                                 <input type="text" class="form-control" value="{{application_details.activity}}" name="activity" id="activity" style="display:none;">
                                 <input type="text" class="form-control" value="{{identifier}}" id="identifier" name="identifier" style="display:none;">
+                                <input type="hidden" id="selected_attachment_type" value="{{ attachment_type|default:'GEN' }}">
                                 <div class="row justify-content-left">
                                     <div class="col-lg-12">
                                         <label class="form-label fw-bold">Activity</label>
@@ -284,11 +285,11 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="card-widgets">
-                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#general_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#general_attachment_modal" data-attachment-type="{{ attachment_type|default:'GEN' }}"><i class="mdi mdi-plus me-2"></i>Add</button>
                                         </div>
                                         <h5 class="card-title mb-0">Attachments</h5>
                                         <div id="cardCollpase7" class="collapse pt-3 show">
-                                            <div id="general_attachment">
+                                            <div id="{{ attachment_type|default:'GEN' }}_attachment">
                                                 {% include 'file_attachment_page.html' %}
                                             </div>
                                         </div>
@@ -522,11 +523,11 @@
 
     function save_general_attachment_details() {
         // Set success message and attributes
-        let new_application_no = $('#general_disclaimer_application_no').val();
+        let application_no = $('#general_disclaimer_application_no').val();
         $.ajax({
             type: "GET",
             url: "{% url 'check_file_attachment' %}",
-            data: {'application_no':new_application_no},
+            data: {'application_no':application_no},
             success: function(data) {
                 if (data.file_count > 0) {
                     $('#general_attachment_successMsg')
@@ -575,8 +576,6 @@
                 }
             }
         });
-
-
     }
 
     function save_general_attachment()
@@ -593,7 +592,11 @@
             var fileName = document.getElementById('general_attach').files[0].name;
             var fd = new FormData();
             var file = document.getElementById('general_attach').files[0];
+            let application_no = $('#new_application_no').val();
+
             fd.append('general_attach', file);
+            fd.append('application_no', application_no);
+
             token_value=$("input[name=csrfmiddlewaretoken]").val();
             $.ajaxSetup
             ({
@@ -615,16 +618,19 @@
                     if (data.form_is_valid)
                     {
                         let file_url = data.file_url;
-                        let new_application_no = $('#general_disclaimer_application_no').val();
+                        let application_no = $('#general_disclaimer_application_no').val();
+                        let attachment_type = $('#selected_attachment_type').val();
+                        //alert(attachment_type);
                         $.ajax
                         ({
                             type : "POST",
                             url : "{% url 'save_general_attachment_details' %}",
-                            data : {'application_no':new_application_no, 'filename':fileName, 'file_url':file_url},
+                            data : {'application_no':application_no, 'filename':fileName, 'file_url':file_url},
                             success : function(responseText)
                             {
                                 $('#general_attachment_modal').modal('hide');
-                                $('#general_attachment').html(responseText);
+                                //$('#general_attachment').html(responseText);
+                                $('#' + attachment_type + '_attachment').html(responseText);
                                 $('.modal-backdrop').remove();
                                 $('#general_attachment_form')[0].reset();
                             }

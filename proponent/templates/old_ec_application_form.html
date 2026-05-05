@@ -23,6 +23,8 @@
                                     <input type="text" class="form-control" id="application_no" name="application_no" style="display:none;">
                                     <input type="text" class="form-control" value="Main Activity" name="service_type" id="service_type" style="display:none;">
                                     <input type="text" class="form-control" value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
+                                    <input type="hidden" id="selected_attachment_type" value="{{ attachment_type|default:'GEN' }}">
+
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <label class="form-label fw-bold">Activity</label>
@@ -332,11 +334,11 @@
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="card-widgets">
-                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#general_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#general_attachment_modal" data-attachment-type="{{ attachment_type|default:'GEN' }}"><i class="mdi mdi-plus me-2"></i>Add</button>
                                             </div>
                                             <h5 class="card-title mb-0">EC Copy</h5>
                                             <div id="cardCollpase7" class="collapse pt-3 show">
-                                                <div id="general_attachment">
+                                                <div id="{{ attachment_type|default:'GEN' }}_attachment">
                                                     {% include 'file_attachment_page.html' %}
                                                 </div>
                                             </div>
@@ -654,7 +656,11 @@
             var fileName = document.getElementById('general_attach').files[0].name;
             var fd = new FormData();
             var file = document.getElementById('general_attach').files[0];
+            let application_no = $('#application_no').val();
+
             fd.append('general_attach', file);
+            fd.append('application_no', application_no);
+
             token_value=$("input[name=csrfmiddlewaretoken]").val();
             $.ajaxSetup
             ({
@@ -677,6 +683,8 @@
                     {
                         let file_url = data.file_url;
                         let application_no = $('#general_disclaimer_application_no').val();
+                        let attachment_type = $('#selected_attachment_type').val();
+                        //alert(attachment_type);
                         $.ajax
                         ({
                             type : "POST",
@@ -685,7 +693,8 @@
                             success : function(responseText)
                             {
                                 $('#general_attachment_modal').modal('hide');
-                                $('#general_attachment').html(responseText);
+                                //$('#general_attachment').html(responseText);
+                                $('#' + attachment_type + '_attachment').html(responseText);
                                 $('.modal-backdrop').remove();
                                 $('#general_attachment_form')[0].reset();
                             }
@@ -693,7 +702,7 @@
                     }
                     else
                     {
-                            $('#general_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#general_attachErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
                         $('#general_attachErrorMsg').show();
                         $('#general_attachErrorMsg').delay(2000).fadeOut('slow');
                     }

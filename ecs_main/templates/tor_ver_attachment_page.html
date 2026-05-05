@@ -33,7 +33,7 @@
     {
         $.ajax({
             type : "POST",
-            url : "{% url 'delete_rev_tor_attachment' %}",
+            url : "{% url 'delete_ver_tor_attachment' %}",
             data :{
                 'file_id':file_id ,
                 'application_no': application_no,
@@ -41,9 +41,9 @@
             },
             success : function(responseText)
             {
-                $('#tor_rev_attachment').html(responseText);
+                $('#tor_ver_attachment').html(responseText);
                 if (typeof toggleForwardButton === "function") {
-                toggleForwardButton();
+                toggleApproveButton();
                 }
             }
         });

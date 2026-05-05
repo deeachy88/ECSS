@@ -61,6 +61,32 @@
                                     <p class="distinct-activity">{{application_details.activity}}</p>
                                 </div>
                             </div>
+                            <!-- FMFSR Number + Retrieve -->
+                            {% if application_details.fmfsr_no %}
+                            <div class="row" style="margin-bottom: -15px;">
+                                <div class="col-lg-4">
+                                    <label class="form-label fw-bold text-primary">
+                                        <i class="fas fa-link me-1"></i> Application integrated with MAS
+                                    </label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-5">
+                                        <label class="form-label fw-bold text-primary">
+                                            <i class="fas fa-link me-1"></i> FMFSR No:
+                                        </label>
+                                        <div class="input-group">
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                id="fmfsr_no"
+                                                name="fmfsr_no"
+                                                value="{{ application_details.fmfsr_no }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
                             <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                 <div class="col-lg-4">
                                     <div class="mb-3">
@@ -1855,6 +1881,7 @@ function handleRejectConfirm() {
 
 function forwardApplication(identifier) {
     let application_no = $('#application_no').val();
+    let fmfsr_no = $('#fmfsr_no').val();
     let additional_info_letter = $('#additional_info_letter').val();
     let due_date = $('#due_date').val();
     let additional_info = $('#additional_info').val();
@@ -2048,8 +2075,11 @@ function forwardApplication(identifier) {
         'application_no': application_no,
         'identifier': identifier,
         'applicant_id': applicant_id,
-        csrfmiddlewaretoken: '{{ csrf_token }}'
+        'fmfsr_no': fmfsr_no,
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
     };
+
+    alert(fmfsr_no);
 
     if (identifier === 'R' || identifier === 'ALS') {
         postData['forward_to'] = forward_to;
@@ -2075,6 +2105,7 @@ function forwardApplication(identifier) {
     }
 
     $.ajax({
+
         type: "POST",
         url: "{% url 'forward_application' %}",
         data: postData,

@@ -1254,7 +1254,8 @@ def view_application_details(request):
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
-            file_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='GEN')
+            #file_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='GEN')
+            file_attach = t_file_attachment.objects.filter(application_no=application_no)
             ec_details = t_ec_application_t2.objects.filter(application_no=application_no).order_by('order','ec_type')
             reviewer_list = t_user_master.objects.filter(
                 role_id__in=['3', '5'],
@@ -1531,6 +1532,7 @@ def forward_application(request):
         forward_to = request.POST.get('forward_to')
         record_id = request.POST.get('record_id')
         applicant_id = request.POST.get('applicant_id')
+
         actor_id = request.session['login_id'],
         reject_remarks = request.POST.get('reject_remarks')
 
@@ -1956,6 +1958,8 @@ def forward_application(request):
         elif identifier == 'A':
             ec_expiry_date = request.POST.get('ec_expiry_date_v')
             tat_v = request.POST.get('tat_ecv')
+            fmfsr_no = request.POST.get('fmfsr_no')
+            print(fmfsr_no)
 
             # Convert TAT to integer safely
             try:
@@ -2074,6 +2078,17 @@ def forward_application(request):
                         daemon=True
                     ).start()
                 )
+                # =====================================================
+                # PUSH TO MAS ONLY FOR NEW + APPROVED
+                # =====================================================
+                if application_type == 'NEW' and fmfsr_no:
+                    transaction.on_commit(
+                        lambda: threading.Thread(
+                            target=push_ec_to_mas,
+                            args=(fmfsr_no, ec_no, ec_expiry_date),
+                            daemon=True
+                        ).start()
+                    )
 
             data['message'] = "success"
             data['redirect_to'] = "verify_application_list"
@@ -2842,6 +2857,60 @@ def _handle_nc_application_ec_tables(ec_refs, application_no):
         t_ec_t2.objects.bulk_create(t2_objects_to_create)
         t_ec_t2_history.objects.bulk_create(t2_history_objects)
 
+# =====================================================
+# API PUSH FUNCTION   start
+# =====================================================
+def push_ec_to_mas(fmfs_id, ec_no, ec_expiry_date):
+    try:
+        # Step 1: Get Token
+        token_response = requests.post(
+            "https://stg-sso.tech.gov.bt/oauth2/token",
+            data={"grant_type": "client_credentials"},
+            auth=(
+                "wz_hmjRfUWx4ZGyUfL1KfQrAReka",
+                "qIAoW01LGvU7XW5tHF_ZuuSNSGUa"
+            ),
+            timeout=30
+        )
+
+        token_json = token_response.json()
+        access_token = token_json.get("access_token")
+
+        if not access_token:
+            print("MAS TOKEN FAILED:", token_json)
+            return
+
+        # Step 2: Payload
+        payload = {
+            "ec_status": "APPROVED",
+            "ec_expiry_date": ec_expiry_date,
+            "ec_no": ec_no,
+            "fmfs_id": fmfs_id
+        }
+
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json"
+        }
+
+        # Step 3: Call API
+        response = requests.post(
+            "https://staging-datahub-apim.tech.gov.bt/mas_ecss_quarryleaseserviceapi/1.0.0/updateLease",
+            json=payload,
+            headers=headers,
+            timeout=30
+        )
+
+        print("MAS PUSH STATUS:", response.status_code)
+        print("MAS PUSH RESPONSE:", response.text)
+
+    except Exception as e:
+        print("MAS PUSH ERROR:", str(e))
+
+# =====================================================
+# API PUSH FUNCTION   end
+# =====================================================
+
 def _send_tor_reject_email_in_background(name, email_id, application_no, reject_reason):
     try:
         send_tor_reject_application_mail(name, email_id, application_no, reject_reason)
@@ -2873,7 +2942,7 @@ def _send_tor_approve_email_in_background(name, email_id, tor_clearance_no):
         logger.exception("Failed to send submit email for application_no=%s", tor_clearance_no)
 
 def send_tor_approve_application_mail(name, email_id, tor_clearance_no):
-    subject = "Application Submitted"
+    subject = "TOR Application Approved"
     message = (
         f"Dear {name},\n\n"
         f"Your TOR Application has been Approved.\n"
@@ -3086,10 +3155,6 @@ def save_lu_attachment(request):
 
     return JsonResponse(data)
 
-
-
-
-
 def _send_payment_mail_in_background(name, email, application_no, amount):
     """
     Thread target: never uses request/session. Only uses passed primitives.
@@ -3270,19 +3335,34 @@ def delete_rev_lu_attachment(request):
 
 # TOR ATTACHMENTS
 def save_rev_tor_attachment(request):
-    data = dict()
-    lu_attach = request.FILES['rev_tor_attach']
+    data = {}
+
+    if 'rev_tor_attach' not in request.FILES:
+        return HttpResponseBadRequest("No file uploaded")
+
+    rev_tor_attach = request.FILES['rev_tor_attach']
     app_no = request.POST.get('application_no')
-    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + lu_attach.name
-    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/RTOR/")
+
+    if not app_no:
+        return HttpResponseBadRequest("application_no is required")
+
+    # Simply use the full application number + underscore + filename
+    # This gives: "OC-2026-00705_TDSReport_2024.pdf"
+    file_name = f"{app_no}_{rev_tor_attach.name}"
+
+    year = timezone.now().year
+    fs = FileSystemStorage(f"attachments/{year}/RTOR/")
+
     if fs.exists(file_name):
         data['form_is_valid'] = False
+        data['error'] = "File already exists"
     else:
-        fs.save(file_name, lu_attach)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/RTOR" + "/" + file_name
+        fs.save(file_name, rev_tor_attach)
+        file_url = f"attachments/{year}/RTOR/{file_name}"
         data['form_is_valid'] = True
         data['file_url'] = file_url
         data['file_name'] = file_name
+
     return JsonResponse(data)
 
 def save_rev_tor_attachment_details(request):
@@ -3298,16 +3378,71 @@ def save_rev_tor_attachment_details(request):
 def delete_rev_tor_attachment(request):
     file_id = request.POST.get('file_id')
     application_no = request.POST.get('application_no')
-    
+
     file = t_file_attachment.objects.filter(file_id=file_id)
     for file in file:
-        file_name = str(application_no)[0:3] + "_" + str(application_no)[4:8] + "_" + str(application_no)[9:13] + "_" + str(file.attachment)
+        file_name = file.attachment
+        file_n = f"{application_no}_{file_name}"
         fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/RTOR")
-        fs.delete(str(file_name))
+        fs.delete(str(file_n))
     file.delete()
-
     tor_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='RTOR')
-    return render(request, 'tor_attachment_page.html', {'tor_attach':tor_attach})
+    return render(request, 'tor_attachment_page.html', {'tor_attach': tor_attach})
+
+def save_ver_tor_attachment(request):
+    data = {}
+
+    if 'ver_tor_attach' not in request.FILES:
+        return HttpResponseBadRequest("No file uploaded")
+
+    rev_tor_attach = request.FILES['ver_tor_attach']
+    app_no = request.POST.get('application_no')
+
+    if not app_no:
+        return HttpResponseBadRequest("application_no is required")
+
+    # Simply use the full application number + underscore + filename
+    # This gives: "OC-2026-00705_TDSReport_2024.pdf"
+    file_name = f"{app_no}_{rev_tor_attach.name}"
+
+    year = timezone.now().year
+    fs = FileSystemStorage(f"attachments/{year}/RTOR/")
+
+    if fs.exists(file_name):
+        data['form_is_valid'] = False
+        data['error'] = "File already exists"
+    else:
+        fs.save(file_name, rev_tor_attach)
+        file_url = f"attachments/{year}/RTOR/{file_name}"
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
+
+    return JsonResponse(data)
+
+def save_ver_tor_attachment_details(request):
+    file_name = request.POST.get('filename')
+    file_url = request.POST.get('file_url')
+    application_no = request.POST.get('application_no')
+
+    t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='RTOR')
+    file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RTOR')
+
+    return render(request, 'tor_ver_attachment_page.html', {'tor_attach': file_attach})
+
+def delete_ver_tor_attachment(request):
+    file_id = request.POST.get('file_id')
+    application_no = request.POST.get('application_no')
+
+    file = t_file_attachment.objects.filter(file_id=file_id)
+    for file in file:
+        file_name = file.attachment
+        file_n = f"{application_no}_{file_name}"
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/RTOR")
+        fs.delete(str(file_n))
+    file.delete()
+    tor_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='RTOR')
+    return render(request, 'tor_ver_attachment_page.html', {'tor_attach': tor_attach})
 
 def save_ai_attachment(request):
     data = {}

@@ -52,6 +52,8 @@
                                 <input type="text" class="form-control" value="DR" name="identifier" style="display:none;">
                                 <input type="text" class="form-control" value="Main Activity" name="service_type" style="display:none;">
                                 <input type="text" class="form-control" value="{{application_details.activity}}" name="activity" style="display:none;">
+                                <input type="hidden" id="selected_attachment_type" value="{{ attachment_type|default:'GEN' }}">
+
                                 <div class="row justify-content-left">
                                     <div class="col-lg-12">
                                         <label class="form-label fw-bold">Activity</label>
@@ -62,17 +64,25 @@
                                 <!-- FMFSR Number + Retrieve -->
                                 {% if application_details.fmfsr_no %}
                                 <div class="row" style="margin-bottom: -15px;">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">
-                                                FMFSR Number
-                                                <span style="color: red; font-weight: 600;">(If Processing from MAS)</span>
+                                    <div class="col-lg-4">
+                                        <label class="form-label fw-bold text-primary">
+                                            <i class="fas fa-link me-1"></i> Application integrated with MAS
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-5">
+                                            <label class="form-label fw-bold text-primary">
+                                                <i class="fas fa-link me-1"></i> FMFSR No:
                                             </label>
                                             <div class="input-group">
-                                                <input type="text" class="form-control" id="fmfsr_no" name="fmfsr_no" value="{{application_details.fmfsr_no}}" >
-                                                <button type="button" id="btnFmfsrLookup" class="btn btn-outline-secondary">
-                                                    <i class="mdi mdi-database-search me-1"></i> Retrieve
-                                                </button>
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="fmfsr_no"
+                                                    name="fmfsr_no"
+                                                    value="{{ application_details.fmfsr_no }}"
+                                                    readonly
+                                                >
                                             </div>
                                         </div>
                                     </div>
@@ -113,7 +123,7 @@
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Name of the Project</label>
-                                            <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}">
+                                            <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}" {% if application_details.fmfsr_no %}readonly{% endif %}>
                                         </div>
                                         <div id="project_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
@@ -316,11 +326,11 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="card-widgets">
-                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#general_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#general_attachment_modal" data-attachment-type="{{ attachment_type|default:'GEN' }}"><i class="mdi mdi-plus me-2"></i>Add</button>
                                         </div>
                                         <h5 class="card-title mb-0">Attachments</h5>
                                         <div id="cardCollpase7" class="collapse pt-3 show">
-                                            <div id="general_attachment">
+                                            <div id="{{ attachment_type|default:'GEN' }}_attachment">
                                                 {% include 'file_attachment_page.html' %}
                                             </div>
                                         </div>
@@ -434,6 +444,9 @@
     </div>
 </form>
 <script>
+    $(document).on('click', '.btn[data-bs-target="#general_attachment_modal"]', function () {
+        $('#selected_attachment_type').val($(this).data('attachment-type'));
+    });
     function save_general_info() {
         let project_name = $('#project_name').val();
         let dzongkhag_throm = $("input[name=dzongkhag_throm]:checked").length;
@@ -617,8 +630,6 @@
                 }
             }
         });
-
-        
     }
 
     function save_general_attachment()
@@ -635,7 +646,11 @@
             var fileName = document.getElementById('general_attach').files[0].name;
             var fd = new FormData();
             var file = document.getElementById('general_attach').files[0];
+            let application_no = $('#application_no').val();
+
             fd.append('general_attach', file);
+            fd.append('application_no', application_no);
+
             token_value=$("input[name=csrfmiddlewaretoken]").val();
             $.ajaxSetup
             ({
@@ -658,6 +673,8 @@
                     {
                         let file_url = data.file_url;
                         let application_no = $('#general_disclaimer_application_no').val();
+                        let attachment_type = $('#selected_attachment_type').val();
+                        //alert(attachment_type);
                         $.ajax
                         ({
                             type : "POST",
@@ -666,7 +683,8 @@
                             success : function(responseText)
                             {
                                 $('#general_attachment_modal').modal('hide');
-                                $('#general_attachment').html(responseText);
+                                //$('#general_attachment').html(responseText);
+                                $('#' + attachment_type + '_attachment').html(responseText);
                                 $('.modal-backdrop').remove();
                                 $('#general_attachment_form')[0].reset();
                             }

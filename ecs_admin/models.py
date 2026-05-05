@@ -100,6 +100,7 @@ class t_bsic_code(models.Model):
     service_id = models.IntegerField()
     has_tor = models.CharField(max_length=3,default=None, blank=True, null=True)
     status = models.CharField(max_length=10,default=None, blank=True, null=True)
+    mas_integration = models.CharField(max_length=3, default=None, blank=True, null=True)
 
 
 class t_competant_authority_master(models.Model):

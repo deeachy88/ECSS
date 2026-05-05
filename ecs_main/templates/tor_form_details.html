@@ -241,15 +241,14 @@
                         <div class="card-widgets">
                             <button type="button" class="btn btn-primary btn-sm"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#rev_tor_attachment_modal"
-                                    onclick="setAttachmentTarget('reviewer')">
+                                    data-bs-target="#rev_tor_attachment_modal">
                                 <i class="mdi mdi-plus me-2"></i>Add
                             </button>
                         </div>
                         <h5 class="card-title mb-0">DRAFT TOR</h5>
                         <div id="cardCollpase7" class="collapse pt-3 show">
                             <div id="tor_rev_attachment">
-                                {% include 'tor_attachment_page.html' with container_id='tor_rev_attachment' table_id='basic-datatable-reviewer' %}
+                                {% include 'tor_attachment_page.html' %}
                             </div>
                         </div>
                     </div>
@@ -265,8 +264,9 @@
                 </div>
             </div>
             <div class="mb-3 F_button" style="display:none;">
-                <a href="#" class="btn btn-success" onclick="forward_tor_form('FT')">
-                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward </a>
+                <a href="#" id="forwardBtn" class="btn btn-success" onclick="forward_tor_form('FT')">
+                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward
+                </a>
             </div>
         </form>
     </div>
@@ -310,15 +310,14 @@
                             <div class="card-widgets">
                                 <button type="button" class="btn btn-primary btn-sm"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#rev_tor_attachment_modal"
-                                        onclick="setAttachmentTarget('verifier')">
+                                        data-bs-target="#ver_tor_attachment_modal">
                                     <i class="mdi mdi-plus me-2"></i>Add
                                 </button>
                             </div>
                             <h5 class="card-title mb-0">DRAFT TOR</h5>
                             <div id="cardCollpase7" class="collapse pt-3 show">
                                 <div id="tor_ver_attachment">
-                                    {% include 'tor_attachment_page.html' with container_id='tor_ver_attachment' table_id='basic-datatable-verifier' %}
+                                    {% include 'tor_ver_attachment_page.html' %}
                                 </div>
                             </div>
                         </div>
@@ -336,9 +335,12 @@
                         <textarea class="form-control" name="reject_reason" id="reject_reason" rows="2" ></textarea>
                     </div>
                 </div>
+                <div class="alert alert-success border-0 rounded-0" role="alert" id="tor_approve_successMsg" style="display:none">
+                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                </div>
                 <div class="row g-2 align-items-end" id="approveButtonDiv" style="display:none;">
                     <div class="col-lg-4">
-                        <button type="button" class="btn btn-success me-2" onclick="forward_tor_form('AT')">
+                        <button type="button" id="approveBtn" class="btn btn-success me-2" onclick="forward_tor_form('AT')">
                             <i class="mdi mdi-arrow-right me-1"></i> Approve
                         </button>
                         <button type="button" class="btn btn-danger" id="openRejectModalBtn">
@@ -403,7 +405,66 @@
         </div>
     </div>
 </form>
+<form method="post" id="ver_tor_attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="ver_tor_attachment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content form-elegant">
+            <!--Header-->
+                <div class="modal-header text-center">
+                    <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3"><strong>
+                                                        &nbsp;Attach</strong></h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <!--Body-->
+                <div class="modal-body mx-4">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Attachment</label>
+                                <input type="file" name="ver_tor_attach" class="form-control" id="ver_tor_attach" accept=".pdf, .doc, .docx">
+                            </div>
+                            <div class="alert alert-danger" id="ver_tor_attachErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer flex-center justify-content-center">
+                  <button type="button" class="btn btn-sm btn-primary" onclick="save_ver_tor_attachment()">Add</button>
+                  <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <!--/.Content-->
+        </div>
+    </div>
+</form>
 <script>
+
+    function toggleForwardButton() {
+        let noDataText = $('#tor_rev_attachment table tbody tr td').text().trim();
+
+        if (noDataText === 'No Data') {
+            $('#forwardBtn').addClass('disabled');
+            $('#forwardBtn').css('pointer-events', 'none');
+        } else {
+            $('#forwardBtn').removeClass('disabled');
+            $('#forwardBtn').css('pointer-events', 'auto');
+        }
+    }
+
+    function toggleApproveButton() {
+        let noDataText = $('#tor_ver_attachment table tbody tr td').text().trim();
+
+        if (noDataText === 'No Data') {
+            $('#approveBtn').addClass('disabled');
+            $('#approveBtn').css('pointer-events', 'none');
+        } else {
+            $('#approveBtn').removeClass('disabled');
+            $('#approveBtn').css('pointer-events', 'auto');
+        }
+    }
+
     $(function() {
         let status = $('#status').val();
         let role_id = $('#role_id').val();
@@ -460,6 +521,9 @@
             $('.reviewer_attach_details').show();
             $('#approveButtonDiv').hide();
         }
+
+        toggleForwardButton();
+        toggleApproveButton();
     });
 
     (function () {
@@ -562,11 +626,11 @@
                     if(data.message == 'success' && identifier == 'AT')
                     {
                         $("#pageloader").hide();
-                        $('#tor_form_successMsg').html("TOR Application Approved");
-                        $('#tor_form_successMsg').show();
+                        $('#tor_approve_successMsg').html("TOR Application Approved");
+                        $('#tor_approve_successMsg').show();
                         setTimeout(function()
                         {
-                            $('#tor_form_successMsg').delay(2000).fadeOut('slow');
+                            $('#tor_approve_successMsg').delay(2000).fadeOut('slow');
                         }, 2000);
                         setTimeout(function() {
                             location.reload()
@@ -614,13 +678,6 @@
 
     }
 
-    let attachmentTargetDiv = '#tor_rev_attachment'; // default
-    function setAttachmentTarget(who) {
-        attachmentTargetDiv = (who === 'verifier')
-            ? '#tor_ver_attachment'
-            : '#tor_rev_attachment';
-    }
-
     function save_rev_tor_attachment() {
         let file_length = document.getElementById("rev_tor_attach");
         if (file_length.value.length < 1) {
@@ -656,13 +713,64 @@
                         success: function(responseText) {
                             $('#rev_tor_attachment_modal').modal('hide');
                             // IMPORTANT: refresh the right section
-                            $(attachmentTargetDiv).html(responseText);
+                            $(tor_rev_attachment).html(responseText);
+                            toggleForwardButton();
                             $('.modal-backdrop').remove();
                             $('#rev_tor_attachment_form')[0].reset();
                         }
                     });
                 } else {
                     $('#rev_tor_attachErrorMsg')
+                        .html("File Already Exists With Same Name. Please Upload Another File")
+                        .show().delay(2000).fadeOut('slow');
+                }
+            }
+        });
+    }
+
+    function save_ver_tor_attachment() {
+        let file_length = document.getElementById("ver_tor_attach");
+        if (file_length.value.length < 1) {
+            $('#ver_tor_attachErrorMsg').html("Please Choose A Attachment").show().delay(2000).fadeOut('slow');
+            return;
+        }
+        let application_no = $('#application_no').val();
+        let fileName = document.getElementById('ver_tor_attach').files[0].name;
+        let fd = new FormData();
+        let file = document.getElementById('ver_tor_attach').files[0];
+        fd.append('ver_tor_attach', file);
+        fd.append('application_no', application_no);
+        let token_value = $("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup({
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+        $.ajax({
+            type: "POST",
+            url: "{% url 'save_ver_tor_attachment' %}",
+            data: fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                if (data.form_is_valid) {
+                    let file_url = data.file_url;
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'save_ver_tor_attachment_details' %}",
+                        data: { application_no, filename: fileName, file_url },
+                        success: function(responseText) {
+                            $('#ver_tor_attachment_modal').modal('hide');
+                            // IMPORTANT: refresh the right section
+                            $(tor_ver_attachment).html(responseText);
+                            toggleApproveButton();
+                            $('.modal-backdrop').remove();
+                            $('#ver_tor_attachment_form')[0].reset();
+                        }
+                    });
+                } else {
+                    $('#ver_tor_attachErrorMsg')
                         .html("File Already Exists With Same Name. Please Upload Another File")
                         .show().delay(2000).fadeOut('slow');
                 }
