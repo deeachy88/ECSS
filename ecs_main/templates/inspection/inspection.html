@@ -37,7 +37,13 @@
                                 {% for inspection_list in inspection_list %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td><button class="btn btn-primary btn-link" onclick="viewInspectionDetails('{{inspection_list.inspection_reference_no}}')">{{ inspection_list.inspection_reference_no }}</button></td>
+                                        <td>
+                                            <a href="javascript:void(0);"
+                                                class="btn btn-outline-primary btn-sm"
+                                                onclick="viewInspectionDetails('{{inspection_list.inspection_reference_no}}')">
+                                                {{ inspection_list.inspection_reference_no }}
+                                            </a>
+                                        </td>
                                         <td>{{inspection_list.inspection_type}}</td>
                                         <td>{{inspection_list.inspection_date}}</td>
                                         <td>{{inspection_list.proponent_name}}</td>

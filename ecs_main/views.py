@@ -4163,32 +4163,43 @@ def tor_submit_email(email_id, application_no, service_name):
     
 def fines_penalties(request):
     login_id = request.session.get('login_id')
-    ca_auth = request.session.get('ca_authority')
+    ca_authority = request.session.get('ca_authority')
 
     v_application_count = t_workflow_dtls.objects.filter(
         assigned_role_id='2',
         assigned_role_name='Verifier',
-        ca_authority=ca_auth
+        action_date__isnull=False,
+        application_status__in=['P', 'DEC', 'AL', 'FT', 'V', 'RRJ'],
+        ca_authority=request.session['ca_authority']
     ).count()
     # Reviewer application count
     r_application_count = t_workflow_dtls.objects.filter(
         assigned_role_id='3',
         assigned_user_id=login_id,
         assigned_role_name='Reviewer',
-        ca_authority=ca_auth
+        ca_authority=ca_authority
     ).count()
 
     p_application_count = t_workflow_dtls.objects.filter(
         assigned_role_id='3',
         assigned_role_name='Reviewer',
-        ca_authority=ca_auth,
+        ca_authority=ca_authority,
         assigned_user_id__isnull=True,  # assigned_user_id is null
         action_date__isnull=False  # action_date is not null
+    ).exclude(
+        ca_authority=1  # Exclude ca_authority = 1
     ).count()
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+    ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                          application_status='A',
+                                                          ec_expiry_date__lt=expiry_date_threshold).count()
 
     response = render(request, 'fines_penalties.html',
                   {'v_application_count': v_application_count, 'r_application_count': r_application_count,
                    'p_application_count': p_application_count})
+
+
 
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response['Pragma'] = 'no-cache'
