@@ -2079,8 +2079,6 @@ function forwardApplication(identifier) {
         'csrfmiddlewaretoken': '{{ csrf_token }}'
     };
 
-    alert(fmfsr_no);
-
     if (identifier === 'R' || identifier === 'ALS') {
         postData['forward_to'] = forward_to;
         postData['additional_info'] = additional_info;
