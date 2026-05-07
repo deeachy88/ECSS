@@ -15,18 +15,23 @@ from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password, check_password
 import string
 import random
+import logging
+import threading
 from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
 from django.shortcuts import redirect, render
 from datetime import date
 from ecs_main.models import t_application_history
 from datetime import datetime, timedelta
+from django.db import transaction
+from django.core.mail import send_mail
 from django.views.decorators.cache import cache_control
 from proponent.models import t_workflow_dtls
 from django.db.models import Case, When, Value, CharField, Count
 
 #from proponent.views import oc_application
-
+from django.conf import settings
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 def home(request):
@@ -606,24 +611,24 @@ def dashboard(request):
     return response
 
 def add_user(request):
-    employee_id     = request.POST.get('employee_id')
-    name            = request.POST.get('name')
-    gender          = request.POST.get('gender')
-    email           = request.POST.get('email')
-    contact_number  = request.POST.get('contact_number')
-    role            = request.POST.get('role')
-    agency          = request.POST.get('agency')
+    try:
+        employee_id    = request.POST.get('employee_id')
+        name           = request.POST.get('name')
+        gender         = request.POST.get('gender')
+        email          = request.POST.get('email')
+        contact_number = request.POST.get('contact_number')
+        role           = request.POST.get('role')
+        agency         = request.POST.get('agency')
 
-    # ── Duplicate Email Check ──────────────────────────────
-    if t_user_master.objects.filter(email_id=email).exists():
-        return JsonResponse({'status': 'error', 'message': 'Email is already in use.'})
+        # ── Duplicate Email Check ──────────────────────────────
+        if t_user_master.objects.filter(email_id=email).exists():
+            return JsonResponse({'status': 'error', 'message': 'Email is already in use.'})
 
-    # ── Create User ────────────────────────────────────────
-    password       = get_random_password_string(8)
-    password_value = make_password(password)
+        # ── Create User ────────────────────────────────────────
+        password       = get_random_password_string(8)
+        password_value = make_password(password)
 
-    if role == '1':
-        t_user_master.objects.create(
+        common_fields = dict(
             login_type      = "I",
             employee_id     = employee_id,
             name            = name,
@@ -632,37 +637,71 @@ def add_user(request):
             email_id        = email,
             password        = password_value,
             is_active       = "Y",
-            agency_code     = None,
             logical_delete  = "N",
-            last_login_date = None,
-            created_by      = None,
+            last_login_date = date.today(),
             created_on      = date.today(),
             modified_by     = None,
             modified_on     = None,
-            role_id_id      = role
-        )
-    else:
-        t_user_master.objects.create(
-            login_type      = "I",
-            employee_id     = employee_id,
-            name            = name,
-            gender          = gender,
-            contact_number  = contact_number,
-            email_id        = email,
-            password        = password_value,
-            is_active       = "Y",
-            agency_code     = agency,
-            logical_delete  = "N",
-            last_login_date = None,
-            created_by      = request.session['login_id'],
-            created_on      = date.today(),
-            modified_by     = None,
-            modified_on     = None,
-            role_id_id      = role
+            role_id_id      = role,
         )
 
-    sendmail(request, name, email, password)
-    return JsonResponse({'status': 'success', 'message': 'User successfully added.'})
+        with transaction.atomic():
+            if role == '1':
+                t_user_master.objects.create(
+                    **common_fields,
+                    agency_code = None,
+                    created_by  = None,
+                )
+            else:
+                t_user_master.objects.create(
+                    **common_fields,
+                    agency_code = agency,
+                    created_by  = request.session['login_id'],
+                )
+
+            # ── Send Email After Successful Commit ─────────────
+            transaction.on_commit(lambda: threading.Thread(
+                target=_send_add_user_mail_in_background,
+                args=(name, email, password),
+                daemon=True
+            ).start())
+
+        return JsonResponse({'status': 'success', 'message': 'User successfully added.'})
+
+    except Exception as exc:
+        logger.exception("add_user failed for email=%s", email)
+        return JsonResponse({'status': 'error', 'message': str(exc).splitlines()[0]}, status=500)
+
+
+def _send_add_user_mail_in_background(name, email, password):
+    """
+    Thread target: never uses request/session. Only uses passed primitives.
+    """
+    try:
+        send_add_user_mail(name, email, password)
+    except Exception:
+        logger.exception("Failed to send add user email to=%s", email)
+
+
+def send_add_user_mail(name, email, password):
+    subject = "User Account Created - ECS System"
+    message = (
+        f"Dear {name},\n\n"
+        f"Your account has been created for the ECS System.\n"
+        f"Your login credentials are as follows:\n\n"
+        f"  Login ID : {email}\n"
+        f"  Password : {password}\n\n"
+        f"Please log in and change your password after your first login.\n\n"
+        f"Regards,\nECS System Team"
+    )
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+        recipient_list=[email],
+        fail_silently=False,
+    )
+
 
 def update_user(request):
     login_id = request.POST.get('editLoginId')
@@ -733,15 +772,6 @@ def check_emp_id(request):
     message_count = t_user_master.objects.filter(employee_id=employee_id).count()
     data['count'] = message_count
     return JsonResponse(data)
-
-def sendmail(request, name, email, password):
-    subject = 'USER CREATED'
-    message = "Dear " + name + " Login Id has been created for ECS System. Your Login Id is " \
-              + email + " And Password is " + password + ""
-    recipient_list = [email]
-    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
-              auth_user='systems@moenr.gov.bt', auth_password='wdiigzpprtutwmdc',
-              connection=None, html_message=None)
 
 
 def manage_menu(request):
@@ -1667,59 +1697,160 @@ def registered_client(request):
 
 
 def manage_client(request):
-    login_id = request.POST.get('login_id')
-    email_id = request.POST.get('email')
-    name = request.POST.get('name')
-    identifier = request.POST.get('identifier')
+    try:
+        login_id   = request.POST.get('login_id')
+        email_id   = request.POST.get('email')
+        name       = request.POST.get('name')
+        identifier = request.POST.get('identifier')
 
-    reg_clients = t_user_master.objects.filter(login_id=login_id)
-    if identifier == 'Accept':
-        password = get_random_password_string(8)
-        password_value = make_password(password)
-        reg_clients.update(accept_reject="A")
-        reg_clients.update(is_active="Y")
-        reg_clients.update(password=password_value)
-        accept_mail(request, name, email_id, password)
-    elif identifier == 'Reject':
-        reg_clients.update(accept_reject="R")
-        reject_mail(request, name, email_id)
-    elif identifier == 'Reset':
-        password = get_random_password_string(8)
-        password_value = make_password(password)
-        reg_clients.update(password=password_value)
+        reg_clients = t_user_master.objects.filter(login_id=login_id)
+
+        if identifier == 'Accept':
+            password = get_random_password_string(8)
+            with transaction.atomic():
+                reg_clients.update(
+                    accept_reject='A',
+                    is_active='Y',
+                    password=make_password(password),
+                    last_login_date=date.today()
+                )
+                transaction.on_commit(lambda: threading.Thread(
+                    target=_send_accept_mail_in_background,
+                    args=(name, email_id, password),
+                    daemon=True
+                ).start())
+
+        elif identifier == 'Reject':
+            with transaction.atomic():
+                reg_clients.update(accept_reject='R')
+                transaction.on_commit(lambda: threading.Thread(
+                    target=_send_reject_mail_in_background,
+                    args=(name, email_id),
+                    daemon=True
+                ).start())
+
+        elif identifier == 'Reset':
+            password = get_random_password_string(8)
+            with transaction.atomic():
+                reg_clients.update(password=make_password(password))
+                transaction.on_commit(lambda: threading.Thread(
+                    target=_send_reset_pass_mail_in_background,
+                    args=(name, email_id, password),
+                    daemon=True
+                ).start())
+
+        elif identifier == 'Activate':
+            reg_clients.update(is_active='Y')
+
+        elif identifier == 'Deactivate':
+            reg_clients.update(is_active='N')
+
+        return redirect(new_client_registration)
+
+    except Exception as exc:
+        logger.exception("manage_client failed for login_id=%s", login_id)
+        return redirect(new_client_registration)  # or return an error page/message
+
+
+
+# ────────────────────────────────────────────────
+# ACCEPT
+# ────────────────────────────────────────────────
+
+def _send_accept_mail_in_background(name, email_id, password):
+    """
+    Thread target: never uses request/session. Only uses passed primitives.
+    """
+    try:
+        send_accept_mail(name, email_id, password)
+    except Exception:
+        logger.exception("Failed to send accept email to=%s", email_id)
+
+
+def send_accept_mail(name, email_id, password):
+    subject = "Registration Accepted - ECS System"
+    message = (
+        f"Dear {name},\n\n"
+        f"Your registration for the ECS System has been accepted.\n"
+        f"Your login credentials are as follows:\n\n"
+        f"  Login ID : {email_id}\n"
+        f"  Password : {password}\n\n"
+        f"Please log in and change your password after your first login.\n\n"
+        f"Regards,\nECS System Team"
+    )
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+        recipient_list=[email_id],
+        fail_silently=False,
+    )
+
+
+# ────────────────────────────────────────────────
+# REJECT
+# ────────────────────────────────────────────────
+
+def _send_reject_mail_in_background(name, email_id):
+    """
+    Thread target: never uses request/session. Only uses passed primitives.
+    """
+    try:
+        send_reject_mail(name, email_id)
+    except Exception:
+        logger.exception("Failed to send reject email to=%s", email_id)
+
+
+def send_reject_mail(name, email_id):
+    subject = "Registration Status - ECS System"
+    message = (
+        f"Dear {name},\n\n"
+        f"We regret to inform you that your registration for the ECS System "
+        f"has been rejected.\n\n"
+        f"If you believe this is a mistake, please contact our support team.\n\n"
+        f"Regards,\nECS System Team"
+    )
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+        recipient_list=[email_id],
+        fail_silently=False,
+    )
+
+
+# ────────────────────────────────────────────────
+# RESET PASSWORD
+# ────────────────────────────────────────────────
+
+def _send_reset_pass_mail_in_background(name, email_id, password):
+    """
+    Thread target: never uses request/session. Only uses passed primitives.
+    """
+    try:
         send_reset_pass_mail(name, email_id, password)
-    elif identifier == 'Activate':
-        reg_clients.update(is_active='Y')
-    elif identifier == 'Deactivate':
-        reg_clients.update(is_active='N')
-    return redirect(new_client_registration)
+    except Exception:
+        logger.exception("Failed to send password reset email to=%s", email_id)
 
-def accept_mail(request, name, email_id, password):
-    subject = 'Client Accepted'
-    message = "Dear " + name + " Your Registration for ECS System Is Accepted. Your Login Id is " \
-              + email_id + " And Password is " + password + ""
-    recipient_list = [email_id]
-    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
-              auth_user='systems@moenr.gov.bt', auth_password='wdiigzpprtutwmdc',
-              connection=None, html_message=None)
 
-def reject_mail(request, name, email_id):
-    subject = 'Client Accepted'
-    message = "Dear " + name + " Your Registration for ECS System Has Been Rejected. Your Login Id is " \
-                ""
-    recipient_list = [email_id]
-    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
-              auth_user='systems@moenr.gov.bt', auth_password='wdiigzpprtutwmdc',
-              connection=None, html_message=None)
-
-def send_reset_pass_mail(name, email, password):
-    subject = 'PASSWORD_RESET'
-    message = "Dear " + name + " Your password has been reset for ECS System. Your Login Id is " \
-              + email + " And Password is " + password + ""
-    recipient_list = [email]
-    send_mail(subject, message, 'systems@moenr.gov.bt', recipient_list, fail_silently=False,
-              auth_user='systems@moenr.gov.bt', auth_password='wdiigzpprtutwmdc',
-              connection=None, html_message=None)
+def send_reset_pass_mail(name, email_id, password):
+    subject = "Password Reset - ECS System"
+    message = (
+        f"Dear {name},\n\n"
+        f"Your password for the ECS System has been reset.\n"
+        f"Your updated login credentials are as follows:\n\n"
+        f"  Login ID : {email_id}\n"
+        f"  Password : {password}\n\n"
+        f"Please log in and change your password at your earliest convenience.\n\n"
+        f"Regards,\nECS System Team"
+    )
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+        recipient_list=[email_id],
+        fail_silently=False,
+    )
 
 def update_first_login_details(request):
     login_id = request.POST['login_id']

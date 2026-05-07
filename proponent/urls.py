@@ -112,7 +112,4 @@ urlpatterns = [
     path('ecss_payment_update', views.ecss_payment_update, name='ecss_payment_update'),
     path('ecss_payment_reversal', views.ecss_payment_reversal, name='ecss_payment_reversal'),
 
-
-
-
 ]

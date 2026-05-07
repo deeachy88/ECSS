@@ -1149,14 +1149,15 @@
             $('#gewog').hide();
             $('#village').hide();
             $('.cid_details').show();
-            $('#generateQRCode').hide();
-           // $('#proponent_name').attr("readonly", "readonly");
-            //$('#i_dzongkhag').show();
+            $('#generateQRCode').show();
+            $('#cid').attr("readonly", "readonly");
+            $('#proponent_name').attr("readonly", "readonly");
+            $('#i_dzongkhag').show();
             $('#i_dzongkhag').attr('type', 'text');
             $('#i_gewog').attr('type', 'text');
             $('#i_village').attr('type', 'text');
-            // $('#i_gewog').show();
-            // $('#i_village').show();
+            $('#i_gewog').show();
+            $('#i_village').show();
         // Clear the values of the fields
             $('#dzongkhag').val('');
             $('#gewog').val('');
@@ -1188,6 +1189,7 @@
             $('#i_village').val('');
         }
     }
+
     function getCitizenDetails(cid)
     {
         $.ajax({
@@ -1233,23 +1235,25 @@
         });
     }
 
+    let socket = null;
+    let sessionId = null;
+
     function authenticate_ndi(value) {
+
         // Show progress indicator
-        if(value=="Issuance")
-        {
+        if (value == "Issuance") {
+
             $('#loginModalForm').modal('show');
             $('#progressLoader').show();
             $('#loginBox').hide();
             $('#cls_but').show();
 
-
             setTimeout(() => {
-                $('#progressLoader').hide(); // Hide loader
-            }, 5000); // Adjust timing as needed
+                $('#progressLoader').hide();
+            }, 5000);
 
-        }
-        else
-        {
+        } else {
+
             $('#back_but').show();
         }
 
@@ -1257,22 +1261,193 @@
 
         $.ajax({
             type: "GET",
-            url: `/proof_request/?category=${value}`, // Pass category as a query parameter
+            url: `/proof_request/?category=${value}`,
+
             success: function(data) {
+
                 var verifierData = data.data;
+
                 var proofRequestURL = verifierData.proofRequestURL;
                 var proofRequestThreadId = verifierData.proofRequestThreadId;
                 var deepLinkURL = verifierData.deepLinkURL;
-                sessionId = data.session_id; // Store session ID from response
+
+                // Store session id
+                sessionId = data.session_id;
+
+                console.log("Session ID:", sessionId);
+                console.log("Thread ID:", proofRequestThreadId);
+
+                /*
+                =========================================
+                CLOSE OLD SOCKET IF EXISTS
+                =========================================
+                */
+
+                if (socket) {
+                    socket.close();
+                }
+
+                /*
+                =========================================
+                CREATE SECURE WEBSOCKET
+                =========================================
+                */
+
+                const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+
+                socket = new WebSocket(
+                    `${protocol}${window.location.host}/ws/socketserver/${proofRequestThreadId}/`
+                );
+
+                /*
+                =========================================
+                WEBSOCKET CONNECTED
+                =========================================
+                */
+
+                socket.onopen = function() {
+
+                    console.log("WebSocket connected");
+
+                    /*
+                    Subscribe webhook after websocket ready
+                    */
+
+                    nats_call(proofRequestThreadId, value);
+                };
+
+                /*
+                =========================================
+                RECEIVE MESSAGE
+                =========================================
+                */
+
+                socket.onmessage = function(e) {
+
+                    const response = JSON.parse(e.data);
+
+                    console.log("WebSocket Response:", response);
+
+                    /*
+                    =========================================
+                    SECURITY CHECK
+                    =========================================
+                    */
+
+                    if (
+                        response.session_id &&
+                        response.session_id !== sessionId
+                    ) {
+
+                        console.warn("Session mismatch detected");
+
+                        return;
+                    }
+
+                    /*
+                    =========================================
+                    HANDLE REJECTED PROOF
+                    =========================================
+                    */
+
+                    if (response.proof_type === 'present-proof/rejected') {
+
+                        $('#ndi_login_error')
+                            .html("NDI verification rejected")
+                            .show()
+                            .delay(5000)
+                            .fadeOut('slow');
+
+                        return;
+                    }
+
+                    /*
+                    =========================================
+                    EID LOGIN
+                    =========================================
+                    */
+
+                    if (response.eid) {
+
+                        makeNdiDashCallEID(response.eid);
+
+                        return;
+                    }
+
+                    /*
+                    =========================================
+                    CID LOGIN
+                    =========================================
+                    */
+
+                    if (response.id_number && response.id_number !== '1111') {
+
+                        makeNdiDashCall(response.id_number);
+
+                        return;
+                    }
+
+                    /*
+                    =========================================
+                    PROPONENT FLOW
+                    =========================================
+                    */
+
+                    if (
+                        response.full_name &&
+                        response.id_number
+                    ) {
+
+                        console.log("Proponent verified");
+
+                        // your proponent logic here
+                    }
+                };
+
+                /*
+                =========================================
+                SOCKET CLOSED
+                =========================================
+                */
+
+                socket.onclose = function(event) {
+
+                    console.log("WebSocket closed", event);
+                };
+
+                /*
+                =========================================
+                SOCKET ERROR
+                =========================================
+                */
+
+                socket.onerror = function(error) {
+
+                    console.error("WebSocket error:", error);
+                };
+
+                /*
+                =========================================
+                UPDATE QR DISPLAY
+                =========================================
+                */
 
                 $('.modal-footer').hide();
-                updateDisplay(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
 
-                // Hide progress indicator
+                updateDisplay(
+                    proofRequestURL,
+                    deepLinkURL,
+                    proofRequestThreadId,
+                    value
+                );
+
                 $('#progressIndicator').hide();
             },
-            error: function() {
-                // Hide progress indicator in case of error
+
+            error: function(error) {
+
+                console.error("Proof request error:", error);
+
                 $('#progressIndicator').hide();
             }
         });
@@ -1480,6 +1655,18 @@
             document.getElementById('proponentLoginForm').style.display = 'none';
             document.getElementById('agencyLoginForm').style.display = 'block';
         }
+    }
+
+    socket.onmessage = function(e) {
+
+        const data = JSON.parse(e.data);
+
+        if (data.session_id !== sessionId) {
+            console.log("Ignoring чужой session");
+            return;
+        }
+
+        // continue login flow
     }
 </script>
 </body>

@@ -1319,11 +1319,17 @@ def send_submit_renewal_application_mail(name, email_id, application_no):
 def proof_request(request):
     category = request.GET.get('category', '')
 
+    if category == 'Login':
+        purpose = 'login'
+    else:
+        purpose = 'ekyc'
+
     try:
         # Invalidate existing session and create a new session
         session_id = request.session.session_key
         if session_id:
-            Session.objects.filter(session_key=session_id).delete()  # Delete the old session
+            request.session.flush()
+            request.session.create()
 
         request.session.create()  # Create a new session
         new_session_id = request.session.session_key
@@ -1387,7 +1393,8 @@ def proof_request_employee(request):
         # Invalidate existing session and create a new session
         session_id = request.session.session_key
         if session_id:
-            Session.objects.filter(session_key=session_id).delete()  # Delete the old session
+            request.session.flush()
+            request.session.create()
 
         request.session.create()  # Create a new session
         new_session_id = request.session.session_key
@@ -1498,7 +1505,8 @@ def proof_request_proponent(request):
         # Invalidate existing session and create a new session
         session_id = request.session.session_key
         if session_id:
-            Session.objects.filter(session_key=session_id).delete()  # Delete the old session
+            request.session.flush()
+            request.session.create()
 
         request.session.create()  # Create a new session
         new_session_id = request.session.session_key
@@ -1627,124 +1635,167 @@ def fetch_verified_user_data(request):
 
 @csrf_exempt
 def webhook(request):
+
     print("Inside Webhook")
-    request.session.clear()
+
     try:
+
         cleaned_body = request.body.decode('utf-8')
         data = json.loads(cleaned_body)
-        
-    
+
         requested_presentation = data.get('requested_presentation', {})
         revealed_attrs = requested_presentation.get('revealed_attrs', {})
 
         id_number = revealed_attrs.get('ID Number', [{}])[0].get('value', '1111')
+
         eid = revealed_attrs.get('EID', [{}])[0].get('value', None)
+
         full_name = revealed_attrs.get('Full Name', [{}])[0].get('value', None)
+
         relationshipDid = data.get('relationship_did')
+
         thid = data.get('thid')
+
         holder_did = data.get('holder_did')
 
-        # Fetch category and session_id from database based on thid
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT category, session_id FROM proponent_t_ndi_login_temp WHERE thread_id = %s",
-                [thid]
+        proof_type = data.get('type')
+
+        if not thid:
+            return JsonResponse(
+                {
+                    "statusCode": "400",
+                    "statusDescription": "Missing thread id"
+                },
+                status=400
             )
+
+        with connection.cursor() as cursor:
+
+            cursor.execute("""
+                SELECT category, session_id, is_used
+                FROM proponent_t_ndi_login_temp
+                WHERE thread_id = %s
+            """, [thid])
+
             row = cursor.fetchone()
-            if row:
-                category, session_id = row
-            else:
-                category = None
-                session_id = None
 
-        if session_id is None:
-            return JsonResponse({"statusCode": "400", "statusDescription": "Session not found"}, status=400)
+            if not row:
 
-        if eid is not None and id_number == '1111' and full_name is None:
+                return JsonResponse(
+                    {
+                        "statusCode": "400",
+                        "statusDescription": "Session not found"
+                    },
+                    status=400
+                )
+
+            category, session_id, is_used = row
+
+            if is_used == 'Y':
+
+                return JsonResponse(
+                    {
+                        "statusCode": "403",
+                        "statusDescription": "Request already consumed"
+                    },
+                    status=403
+                )
+
             payload = {
                 'type': 'send_id_number',
                 'id_number': id_number,
                 'eid': eid,
-                'relationshipDid': relationshipDid,
-                'thid': thid,
-                'holder_did': holder_did,
-                'category': category,
-                'session_id': session_id,  # Include session_id in payload
-                'proof_type': data.get('type')
-            }
-            payload = {k: v for k, v in payload.items() if v is not None}
-            print("Payload to be sent to WebSocket:", payload)
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                'id_number_group',
-                payload
-            )
-            return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
-        elif eid is None and id_number is not None and full_name is None:
-            payload = {
-                'type': 'send_id_number',
-                'id_number': id_number,
-                'relationshipDid': relationshipDid,
-                'thid': thid,
-                'holder_did': holder_did,
-                'category': category,
-                'session_id': session_id,  # Include session_id in payload
-                'proof_type': data.get('type')
-            }
-            payload = {k: v for k, v in payload.items() if v is not None}
-            print("Payload to be sent to WebSocket:", payload)
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                'id_number_group',
-                payload
-            )
-            return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
-        elif eid is None and id_number is not None and full_name is not None:
-            print('inside proponent')
-            dzongkhag = revealed_attrs.get('Dzongkhag', [{}])[0].get('value', None)
-            gewog = revealed_attrs.get('Gewog', [{}])[0].get('value', None)
-            village = revealed_attrs.get('Village', [{}])[0].get('value', None)
-            payload = {
-                'type': 'send_id_number',
-                'id_number': id_number,
                 'full_name': full_name,
-                'dzongkhag': dzongkhag,
-                'gewog': gewog,
-                'village': village,
+                'relationshipDid': relationshipDid,
                 'thid': thid,
+                'holder_did': holder_did,
                 'category': category,
-                'session_id': session_id , # Include session_id in payload
-                'proof_type': data.get('type')
+                'session_id': session_id,
+                'proof_type': proof_type
             }
-            payload = {k: v for k, v in payload.items() if v is not None}
-            print("Payload to be sent to WebSocket:", payload)
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                'id_number_group',
-                payload
-            )
-            return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
-        elif data.get('type') == 'present-proof/rejected':
+
+            # Add optional fields
+            dzongkhag = revealed_attrs.get('Dzongkhag', [{}])[0].get('value')
+
+            gewog = revealed_attrs.get('Gewog', [{}])[0].get('value')
+
+            village = revealed_attrs.get('Village', [{}])[0].get('value')
+
+            if dzongkhag:
+                payload['dzongkhag'] = dzongkhag
+
+            if gewog:
+                payload['gewog'] = gewog
+
+            if village:
+                payload['village'] = village
+
+            # Remove None values
             payload = {
-                'type': 'send_id_number',
-                'id_number': None,
-                'category': category,
-                'session_id': session_id , # Include session_id in payload
-                'proof_type': data.get('type')
+                k: v for k, v in payload.items()
+                if v is not None
             }
-            payload = {k: v for k, v in payload.items() if v is not None}
-            print("Payload to be sent to WebSocket:", payload)
+
+            print("Payload to WebSocket:", payload)
+
             channel_layer = get_channel_layer()
+
             async_to_sync(channel_layer.group_send)(
-                'id_number_group',
+                f'ndi_{thid}',
                 payload
             )
-            return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
+
+            """
+            Mark request consumed
+            """
+
+            cursor.execute("""
+                UPDATE proponent_t_ndi_login_temp
+                SET is_used = 'Y'
+                WHERE thread_id = %s
+            """, [thid])
+
+        return JsonResponse(
+            {
+                "statusCode": "202",
+                "statusDescription": "Accepted"
+            },
+            status=202
+        )
+
     except KeyError as e:
+
         print(f"KeyError: {e}")
-        return JsonResponse({"statusCode": "400", "statusDescription": "Invalid request payload"}, status=400)
+
+        return JsonResponse(
+            {
+                "statusCode": "400",
+                "statusDescription": "Invalid request payload"
+            },
+            status=400
+        )
+
     except json.JSONDecodeError:
-        return JsonResponse({"statusCode": "400", "statusDescription": "Invalid JSON"}, status=400)
+
+        return JsonResponse(
+            {
+                "statusCode": "400",
+                "statusDescription": "Invalid JSON"
+            },
+            status=400
+        )
+
+    except Exception as e:
+
+        print(f"Unexpected Error: {e}")
+
+        return JsonResponse(
+            {
+                "statusCode": "500",
+                "statusDescription": "Internal Server Error"
+            },
+            status=500
+        )
 
 def ndi_dash(request):
     if request.method == 'POST':
@@ -5040,7 +5091,7 @@ def ecss_payment_update(request):
             original_responseDate = datetime.strptime(responseDate, "%a %b %d %H:%M:%S BTT %Y")
             formatted_responseDate = original_responseDate.strftime("%Y-%m-%d %H:%M:%S")
 
-            payment_details = t_payment_details.objects.filter(ref_no=ref_no)
+            payment_details = t_payment_details.objects.filter(application_no=ref_no)
             payment_details.update(
                 payment_method = payment_method,
                 payment_mode = payment_mode,
