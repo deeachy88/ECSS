@@ -326,5 +326,7 @@ class t_ndi_login_temp(models.Model):
     revocation_id = models.CharField(max_length=100, blank=True, null=True)
     created_date = models.DateField(blank=True, null=True)
     session_id = models.CharField(max_length=255, blank=True, null=True)
+    is_used = models.CharField(max_length=1, blank=True, null=True)
+
 
 
