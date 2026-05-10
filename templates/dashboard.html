@@ -477,30 +477,29 @@
 
                 <!-- Download List -->
                 <div class="download-list">
-                    <div class="row g-2">
+                    <div class="row g-1">
                         {% for download in download_forms %}
                         <div class="col-12">
                             <a href="{{download.file_path}}" target="_blank"
-                               class="download-item d-flex justify-content-between align-items-center p-3 border rounded-3 text-decoration-none bg-hover-light transition-all">
-                                <div class="d-flex align-items-center">
-                                    <div class="file-icon bg-primary bg-opacity-10 rounded p-2 me-3">
-                                        <i class="mdi mdi-file-document-outline text-primary fs-5"></i>
-                                    </div>
-                                    <div class="text-truncate">
-                                        <div class="fw-medium text-dark text-truncate">{{download.attachment}}</div>
-                                        <small class="text-muted">Click to download</small>
+                               class="download-item d-flex justify-content-between align-items-center px-2 py-1 border rounded-2 text-decoration-none">
+
+                                <div class="d-flex align-items-center gap-2 w-100">
+                                    <i class="mdi mdi-download text-primary fs-6"></i>
+
+                                    <div class="fw-medium text-dark text-truncate small">
+                                        {{download.attachment}}
                                     </div>
                                 </div>
-                                <div class="download-action">
-                                    <i class="mdi mdi-download text-primary fs-5"></i>
-                                </div>
+
                             </a>
                         </div>
                         {% empty %}
                         <div class="col-12">
-                            <div class="text-center py-4">
-                                <i class="mdi mdi-file-remove-outline text-muted fs-1 mb-3"></i>
-                                <p class="text-muted mb-0">No forms available for download</p>
+                            <div class="text-center py-2">
+                                <i class="mdi mdi-file-remove-outline text-muted fs-4"></i>
+                                <p class="text-muted mb-0 small">
+                                    No forms available for download
+                                </p>
                             </div>
                         </div>
                         {% endfor %}
